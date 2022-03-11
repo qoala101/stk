@@ -1,0 +1,9 @@
+[requires]
+ms-gsl/4.0.0
+cpprestsdk/2.10.18
+
+[options]
+cpprestsdk:shared=False
+
+[generators]
+cmake_find_package
