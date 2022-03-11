@@ -1,8 +1,8 @@
 # stonks
 
-# How to build
+## How to build
 
-# Setup conan profile if not already
+## Setup conan profile if not already
 conan profile new vhcpp || true
 conan profile update settings.os=Linux vhcpp
 conan profile update settings.arch=x86_64 vhcpp
@@ -10,22 +10,21 @@ conan profile update settings.compiler=gcc vhcpp
 conan profile update settings.compiler.libcxx=libstdc++11 vhcpp
 conan profile update settings.compiler.version=10 vhcpp
 
-# Create build directory
+## Create build directory
 mkdir build
 cd build
 
-# Install missing libraries
+## Install missing libraries
 conan install .. --build=missing -pr=vhcpp
 
-# Build
+## Build
 cmake ..
 cmake --build .
 
-# Run
+## Run
 ../bin/stonks
 
-# Set contents of .vscode/c_cpp_properties.json
-# to following for correct IntellSence:
+## Set contents of .vscode/c_cpp_properties.json to following for correct IntellSence:
 {
     "configurations": [
         {

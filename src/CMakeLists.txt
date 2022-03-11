@@ -1,7 +1,7 @@
 find_package(cpprestsdk REQUIRED)
 
 add_library(libstonks
-  test_service.cc
+  get_service.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include)
