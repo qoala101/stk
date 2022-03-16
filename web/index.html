@@ -7,8 +7,27 @@
 
 <body>
 
-  <h1>Header</h1>
-  <p>Paragraph</p>
+  <h1>HTML DOM Events</h1>
+  <h2>The onclick Event</h2>
+
+  <p>Field1: <input type="text" id="field1" value=""></p>
+
+  <button onclick="OnStartClicked()">Start</button>
+
+  <p id="p1">Response</p>
+
+  <script>
+    function OnStartClicked() {
+      const request = new XMLHttpRequest();
+      const url = "http://localhost:6506/api/currency_list";
+      request.open("GET", url);
+      request.send();
+
+      request.onreadystatechange = (event) => {
+        document.getElementById("p1").textContent = request.responseText;
+      }
+    }
+  </script>
 
 </body>
 
