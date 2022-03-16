@@ -1,37 +1,55 @@
-#include <iostream>
+#include <variant>
+#include <vector>
 
+#include <pplx/pplxtasks.h>
 #include <spdlog/spdlog.h>
 
 #include "get_file_service.h"
+#include "get_currency_list_service.h"
 
-int main(int, const char *[])
+int main(int, char const *[])
 {
-  auto get_file_service_controller = stonks::GetFileService{};
-  get_file_service_controller.SetUriToFilePathMapping(
-      {
-        {"/", "../web/index.html"},
-        {"/styles1.css", "../web/styles.css"}
-      });
+  using ServiceVariant = std::variant<
+      stonks::GetFileService,
+      stonks::GetCurrencyListService>;
 
-  get_file_service_controller.Start().wait();
-  spdlog::info("Started");
+  auto services = std::vector<ServiceVariant>{};
+  services.emplace_back(stonks::GetFileService{});
+  services.emplace_back(stonks::GetCurrencyListService{});
+
+  for (auto &service : services)
+  {
+    std::visit(
+        [](auto &service)
+        {
+          service.Start();
+        },
+        service);
+  }
+
+  spdlog::info("Started {} services", services.size());
   getchar();
-  get_file_service_controller.Stop().wait();
+  spdlog::info("Stopping...");
 
-  // auto get_file_service_controller1 = stonks::GetFileService{};
-  // get_file_service_controller1.SetUriToFilePathMapping(
-  //     {{"/", "../web/index.html"}});
+  auto stop_tasks = std::vector<pplx::task<void>>{};
 
-  // auto get_file_service_controller2 = stonks::GetFileService{};
-  // get_file_service_controller2.SetUriToFilePathMapping(
-  //     {{"/styles1.css", "../web/styles.css"}});
+  for (auto &service : services)
+  {
+    auto stop_task = std::visit(
+        [](auto &service)
+        {
+          return service.Stop();
+        },
+        service);
+    stop_tasks.emplace_back(std::move(stop_task));
+  }
 
-  // get_file_service_controller1.Start().wait();
-  // get_file_service_controller2.Start().wait();
-  // spdlog::info("Started");
-  // getchar();
-  // get_file_service_controller1.Stop().wait();
-  // get_file_service_controller2.Stop().wait();
+  for (auto &stop_task : stop_tasks)
+  {
+    stop_task.wait();
+  }
+
+  spdlog::info("Stopped");
 
   return 0;
 }

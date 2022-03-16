@@ -5,13 +5,14 @@
 
 namespace
 {
-  web::uri BaseUri()
+  std::string FilePathFromRequestPath(const std::string &request_path)
   {
-    auto uri_builder = web::uri_builder{};
-    uri_builder.set_scheme("http");
-    uri_builder.set_host("localhost");
-    uri_builder.set_port(6506);
-    return uri_builder.to_uri();
+    if (request_path == "/")
+    {
+      return "../web/index.html";
+    }
+
+    return "../web" + request_path;
   }
 
   std::string ContentTypeFromFilePath(const std::string &file_path)
@@ -28,30 +29,21 @@ namespace
 
     if (file_path.ends_with(".js"))
     {
-      return "text/js";
+      return "text/javascript";
     }
 
     return "text/plain";
   }
 
-  void HandleGetRequest(const stonks::GetFileService &service, const web::http::http_request &request)
+  void HandleGetRequest(const web::http::http_request &request)
   {
+    spdlog::info(BOOST_CURRENT_FUNCTION);
+
     const auto request_path = request.absolute_uri().path();
-    spdlog::info("GET: requested URI {}", request_path);
+    spdlog::info("Requested URI {}", request_path);
 
-    const auto &uri_to_file_path_mapping = service.UriToFilePathMapping();
-    const auto uri_to_file_path_iter = uri_to_file_path_mapping.find(request_path);
-    const auto uri_is_mapped = uri_to_file_path_iter != uri_to_file_path_mapping.end();
-
-    if (!uri_is_mapped)
-    {
-      spdlog::info("GET: URI is not mapped");
-      request.reply(web::http::status_codes::NotFound);
-      return;
-    }
-
-    const auto &file_path = uri_to_file_path_iter->second;
-    auto open_file_stream_task = decltype(concurrency::streams::fstream::open_istream((const char *){})){};
+    const auto file_path = FilePathFromRequestPath(request_path);
+    auto open_file_stream_task = decltype(concurrency::streams::fstream::open_istream(decltype(file_path){})){};
 
     try
     {
@@ -59,16 +51,14 @@ namespace
     }
     catch (...)
     {
-      spdlog::info("GET: cannot read requested file {}", file_path);
+      spdlog::info("Cannot read requested file {}", file_path);
       request.reply(web::http::status_codes::NotFound);
       return;
     }
 
-    open_file_stream_task.then(
-        [request, content_type = ContentTypeFromFilePath(file_path)](const concurrency::streams::istream &input_stream)
-        {
-          request.reply(web::http::status_codes::OK, input_stream, content_type);
-        });
+    const auto file_stream = open_file_stream_task.get();
+    const auto content_type = ContentTypeFromFilePath(file_path);
+    request.reply(web::http::status_codes::OK, file_stream, content_type);
   }
 }
 
@@ -76,27 +66,13 @@ namespace stonks
 {
   pplx::task<void> GetFileService::Start()
   {
-    http_listener_ = web::http::experimental::listener::http_listener{BaseUri()};
-    http_listener_.support(web::http::methods::GET,
-                           [this](web::http::http_request request)
-                           {
-                             HandleGetRequest(*this, request);
-                           });
+    http_listener_ = web::http::experimental::listener::http_listener{"http://localhost:6506/"};
+    http_listener_.support(web::http::methods::GET, HandleGetRequest);
     return http_listener_.open();
   }
 
   pplx::task<void> GetFileService::Stop()
   {
     return http_listener_.close();
-  }
-
-  const std::map<std::string, std::string> &GetFileService::UriToFilePathMapping() const
-  {
-    return uri_to_file_path_map_;
-  }
-
-  void GetFileService::SetUriToFilePathMapping(std::map<std::string, std::string> uri_to_file_path_map)
-  {
-    uri_to_file_path_map_ = std::move(uri_to_file_path_map);
   }
 }
