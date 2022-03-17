@@ -5,17 +5,17 @@
 #include <spdlog/spdlog.h>
 
 #include "get_file_service.h"
-#include "get_currency_list_service.h"
+#include "get_coin_names_service.h"
 
 int main(int, char const *[])
 {
   using ServiceVariant = std::variant<
       stonks::GetFileService,
-      stonks::GetCurrencyListService>;
+      stonks::GetCoinNamesService>;
 
   auto services = std::vector<ServiceVariant>{};
   services.emplace_back(stonks::GetFileService{});
-  services.emplace_back(stonks::GetCurrencyListService{});
+  services.emplace_back(stonks::GetCoinNamesService{});
 
   for (auto &service : services)
   {
