@@ -1,12 +1,12 @@
-#ifndef STONKS_GET_COIN_NAMES_SERVICE_H_
-#define STONKS_GET_COIN_NAMES_SERVICE_H_
+#ifndef STONKS_GET_SYMBOLS_SERVICE_H_
+#define STONKS_GET_SYMBOLS_SERVICE_H_
 
 #include <cpprest/http_listener.h>
 #include <pplx/pplxtasks.h>
 
 namespace stonks
 {
-  class GetCoinNamesService
+  class GetSymbolsService
   {
   public:
     pplx::task<void> Start();
@@ -17,4 +17,4 @@ namespace stonks
   };
 }
 
-#endif // STONKS_GET_COIN_NAMES_SERVICE_H_
+#endif // STONKS_GET_SYMBOLS_SERVICE_H_

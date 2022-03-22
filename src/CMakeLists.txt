@@ -3,7 +3,9 @@ find_package(spdlog REQUIRED)
 
 add_library(libstonks
   get_file_service.cc
-  get_coin_names_service.cc
+  get_symbols_service.cc
+  rest_request.cc
+  binance_api.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include)
