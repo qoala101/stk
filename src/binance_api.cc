@@ -1,5 +1,7 @@
 #include "binance_api.h"
 
+#include <range/v3/view/filter.hpp>
+#include <range/v3/view/transform.hpp>
 #include <spdlog/spdlog.h>
 
 #include "rest_request.h"
@@ -40,8 +42,12 @@ namespace
       return value.at("symbol").as_string();
     };
 
-    auto symbols_range = symbols_array | (std::views::filter(has_usdt_quote_asset) | std::views::filter(has_symbol_field) | std::views::transform(get_symbol_field));
-    return std::vector<stonks::binance::Symbol>(symbols_range.begin(), symbols_range.end());
+    auto symbols_range = symbols_array |
+                         ranges::views::filter(has_usdt_quote_asset) |
+                         ranges::views::filter(has_symbol_field) |
+                         ranges::views::transform(get_symbol_field);
+    return std::vector<stonks::binance::Symbol>(symbols_range.begin(),
+                                                symbols_range.end());
   }
 }
 

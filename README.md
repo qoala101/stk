@@ -7,9 +7,12 @@
 conan profile new vhcpp || true
 conan profile update settings.os=Linux vhcpp
 conan profile update settings.arch=x86_64 vhcpp
-conan profile update settings.compiler=gcc vhcpp
+conan profile update settings.compiler=clang vhcpp
 conan profile update settings.compiler.libcxx=libstdc++11 vhcpp
-conan profile update settings.compiler.version=10 vhcpp
+conan profile update settings.compiler.version=11 vhcpp
+conan profile update env.CC=/usr/bin/clang-11 vhcpp
+conan profile update env.CXX=/usr/bin/clang++-11 vhcpp
+
 ```
 
 ## Create build directory
@@ -44,11 +47,12 @@ cmake --build .
                 "${workspaceFolder}/**"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/gcc-10",
+            "compilerPath": "/usr/bin/clang++-11",
             "cStandard": "c17",
             "cppStandard": "c++20",
-            "intelliSenseMode": "linux-gcc-x64",
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
+            "intelliSenseMode": "linux-clang-x64",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],
     "version": 4
