@@ -3,13 +3,12 @@
 
 #include <string>
 
-namespace stonks::binance::settings
-{
-  std::string BaseUri();
+namespace stonks::binance::settings {
+std::string BaseUri();
 
-  std::string ApiKey();
+std::string ApiKey();
 
-  std::string SecretKey();
-}
+std::string SecretKey();
+}  // namespace stonks::binance::settings
 
-#endif // STONKS_BINANCE_SETTINGS_H_
+#endif  // STONKS_BINANCE_SETTINGS_H_

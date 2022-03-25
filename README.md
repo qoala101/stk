@@ -37,24 +37,44 @@ cmake --build .
 ../bin/stonks
 ```
 
-## Set contents of .vscode/c_cpp_properties.json to following for correct IntellSence
+## Run unit tests
+```bash
+../bin/unittests
+```
+
+## Set contents of .vscode/c_cpp_properties.json to following for correct VS Code IntellSence
 ```json
 {
-    "configurations": [
-        {
-            "name": "Linux",
-            "includePath": [
-                "${workspaceFolder}/**"
-            ],
-            "defines": [],
-            "compilerPath": "/usr/bin/clang++-11",
-            "cStandard": "c17",
-            "cppStandard": "c++20",
-            "intelliSenseMode": "linux-clang-x64",
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
-            "configurationProvider": "ms-vscode.cmake-tools"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": [
+        "${workspaceFolder}/**"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/clang++-11",
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "linux-clang-x64",
+      "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+      "configurationProvider": "ms-vscode.cmake-tools"
+    }
+  ],
+  "version": 4
+}
+```
+
+## VS Code formatting settings from extensions
+```json
+{
+  "C/C++ Include Guard.Macro Type": "Filepath",
+  "C/C++ Include Guard.Path Skip": 1,
+  "C/C++ Include Guard.Prefix": "STONKS_",
+  "C/C++ Include Guard.Comment Style": "Line",
+  "C/C++ Include Guard.Insert Blank Line": true,
+  "C/C++ Include Guard.Remove Extension": false,
+  "C/C++ Include Guard.Suffix": "_",
+  "C_Cpp.clang_format_sortIncludes": true,
+  "C_Cpp.clang_format_fallbackStyle": "Google"
 }
 ```

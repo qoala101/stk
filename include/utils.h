@@ -3,13 +3,13 @@
 
 #include <string>
 
-namespace stonks::utils
-{
-  long UnixTimeMillis();
+namespace stonks::utils {
+long UnixTimeMillis();
 
-  std::string UnixTimeMillisAsString();
+std::string UnixTimeMillisAsString();
 
-  std::string SignUsingHmacSha256(const std::string &data, const std::string &key);
-}
+std::string SignUsingHmacSha256(const std::string &data,
+                                const std::string &key);
+}  // namespace stonks::utils
 
-#endif // STONKS_UTILS_H_
+#endif  // STONKS_UTILS_H_

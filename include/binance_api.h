@@ -5,15 +5,14 @@
 #include <string>
 #include <vector>
 
-namespace stonks::binance
-{
-  using Symbol = std::string;
+namespace stonks::binance {
+using Symbol = std::string;
 
-  std::optional<std::vector<Symbol>> GetSymbols();
+std::optional<std::vector<Symbol>> GetSymbols();
 
-  using Balance = std::string;
+using Balance = std::string;
 
-  std::optional<std::vector<Balance>> GetBalances();
-}
+std::optional<std::vector<Balance>> GetBalances();
+}  // namespace stonks::binance
 
-#endif // STONKS_BINANCE_API_H_
+#endif  // STONKS_BINANCE_API_H_

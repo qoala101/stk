@@ -1,30 +1,22 @@
-#include <variant>
-#include <vector>
-
 #include <pplx/pplxtasks.h>
 #include <spdlog/spdlog.h>
+
+#include <variant>
+#include <vector>
 
 #include "get_file_service.h"
 #include "get_symbols_service.h"
 
-int main(int, const char *[])
-{
-  using ServiceVariant = std::variant<
-      stonks::GetFileService,
-      stonks::GetSymbolsService>;
+int main(int, const char *[]) {
+  using ServiceVariant =
+      std::variant<stonks::GetFileService, stonks::GetSymbolsService>;
 
   auto services = std::vector<ServiceVariant>{};
   services.emplace_back(stonks::GetFileService{});
   services.emplace_back(stonks::GetSymbolsService{});
 
-  for (auto &service : services)
-  {
-    std::visit(
-        [](auto &service)
-        {
-          service.Start();
-        },
-        service);
+  for (auto &service : services) {
+    std::visit([](auto &service) { service.Start(); }, service);
   }
 
   spdlog::info("Started {} services", services.size());
@@ -33,19 +25,13 @@ int main(int, const char *[])
 
   auto stop_tasks = std::vector<pplx::task<void>>{};
 
-  for (auto &service : services)
-  {
-    auto stop_task = std::visit(
-        [](auto &service)
-        {
-          return service.Stop();
-        },
-        service);
+  for (auto &service : services) {
+    auto stop_task =
+        std::visit([](auto &service) { return service.Stop(); }, service);
     stop_tasks.emplace_back(std::move(stop_task));
   }
 
-  for (auto &stop_task : stop_tasks)
-  {
+  for (auto &stop_task : stop_tasks) {
     stop_task.wait();
   }
 
