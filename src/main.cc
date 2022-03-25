@@ -7,7 +7,7 @@
 #include "get_file_service.h"
 #include "get_symbols_service.h"
 
-int main(int, char const *[])
+int main(int, const char *[])
 {
   using ServiceVariant = std::variant<
       stonks::GetFileService,

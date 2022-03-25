@@ -13,8 +13,9 @@ add_library(libstonks
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(libstonks PUBLIC cpprestsdk::cpprest)
-target_link_libraries(libstonks PUBLIC spdlog::spdlog)
-target_link_libraries(libstonks PUBLIC range-v3::range-v3)
+target_link_libraries(libstonks PRIVATE spdlog::spdlog)
+target_link_libraries(libstonks PRIVATE range-v3::range-v3)
 
 add_executable(stonks main.cc)
-target_link_libraries(stonks PUBLIC libstonks)
+target_link_libraries(stonks PRIVATE libstonks)
+target_link_libraries(stonks PRIVATE spdlog::spdlog)

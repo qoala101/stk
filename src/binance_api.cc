@@ -95,6 +95,6 @@ namespace stonks::binance
       spdlog::info(response.value().serialize());
     }
 
-    return std::nullopt;
+    return std::vector<Balance>{};
   }
 }

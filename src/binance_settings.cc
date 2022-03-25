@@ -26,19 +26,19 @@ namespace stonks::binance::settings
 {
   std::string BaseUri()
   {
-    static const auto value_opt = FirstWordFromFile("../binance_base_uri.txt");
+    static const auto value_opt = FirstWordFromFile("../settings/binance_base_uri.txt");
     return value_opt.value_or(std::string{});
   }
 
   std::string ApiKey()
   {
-    static const auto value_opt = FirstWordFromFile("../binance_api_key.txt");
+    static const auto value_opt = FirstWordFromFile("../settings/binance_api_key.txt");
     return value_opt.value_or(std::string{});
   }
 
   std::string SecretKey()
   {
-    static const auto value_opt = FirstWordFromFile("../binance_secret_key.txt");
+    static const auto value_opt = FirstWordFromFile("../settings/binance_secret_key.txt");
     return value_opt.value_or(std::string{});
   }
 }
