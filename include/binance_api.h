@@ -1,15 +1,19 @@
 #ifndef STONKS_BINANCE_API_H_
 #define STONKS_BINANCE_API_H_
 
-#include <vector>
-#include <string>
 #include <optional>
+#include <string>
+#include <vector>
 
 namespace stonks::binance
 {
   using Symbol = std::string;
 
   std::optional<std::vector<Symbol>> GetSymbols();
+
+  using Balance = std::string;
+
+  std::optional<std::vector<Balance>> GetBalances();
 }
 
 #endif // STONKS_BINANCE_API_H_

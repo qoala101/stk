@@ -13,7 +13,7 @@ namespace stonks
     pplx::task<void> Stop();
 
   private:
-    web::http::experimental::listener::http_listener http_listener_;
+    web::http::experimental::listener::http_listener http_listener_{};
   };
 }
 

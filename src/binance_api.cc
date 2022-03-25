@@ -4,7 +4,9 @@
 #include <range/v3/view/transform.hpp>
 #include <spdlog/spdlog.h>
 
+#include "binance_settings.h"
 #include "rest_request.h"
+#include "utils.h"
 
 namespace
 {
@@ -70,5 +72,29 @@ namespace stonks::binance
     }
 
     return symbols.value();
+  }
+
+  std::optional<std::vector<Balance>> GetBalances()
+  {
+    auto request = rest::RestRequest{"https://testnet.binance.vision/api/v3/account"}
+                       .WithHeader("X-MBX-APIKEY", settings::ApiKey())
+                       .WithParameter("timestamp", utils::UnixTimeMillisAsString());
+
+    const auto params = request.ParametersAsString();
+    const auto signed_params = utils::SignUsingHmacSha256(params, settings::SecretKey());
+
+    const auto response = request.WithParameter("signature", signed_params)
+                              .SendAndGetResponse();
+
+    if (!response.has_value())
+    {
+      spdlog::error("Cannot get balance");
+    }
+    else
+    {
+      spdlog::info(response.value().serialize());
+    }
+
+    return std::nullopt;
   }
 }

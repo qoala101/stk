@@ -7,6 +7,8 @@ add_library(libstonks
   get_symbols_service.cc
   rest_request.cc
   binance_api.cc
+  binance_settings.cc
+  utils.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include)

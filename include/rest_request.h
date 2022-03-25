@@ -16,12 +16,15 @@ namespace stonks::rest
     explicit RestRequest(const std::string &uri, web::http::method method = web::http::methods::GET);
 
     RestRequest &WithParameter(const std::string &key, const std::string &value);
+    RestRequest &WithHeader(const std::string &key, const std::string &value);
+
+    std::string ParametersAsString() const;
 
     std::optional<web::json::value> SendAndGetResponse() const;
 
   private:
-    web::uri_builder uri_builder_;
-    web::http::method method_;
+    web::http::http_request http_request_{};
+    web::uri_builder uri_builder_{};
   };
 }
 

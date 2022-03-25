@@ -3,3 +3,4 @@ lib/
 build/
 .vscode/
 tasks.txt
+settings/
