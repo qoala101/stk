@@ -1,6 +1,7 @@
 find_package(cpprestsdk REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(range-v3 REQUIRED)
+find_package(magic_enum REQUIRED)
 
 add_library(libstonks
   get_file_service.cc
@@ -9,12 +10,15 @@ add_library(libstonks
   binance_api.cc
   binance_settings.cc
   utils.cc
+  json_conversions.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/binance_types)
 target_link_libraries(libstonks PUBLIC cpprestsdk::cpprest)
 target_link_libraries(libstonks PRIVATE spdlog::spdlog)
 target_link_libraries(libstonks PRIVATE range-v3::range-v3)
+target_link_libraries(libstonks PRIVATE magic_enum::magic_enum)
 
 add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)
