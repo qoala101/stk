@@ -20,9 +20,15 @@ std::optional<std::string> GetFirstWordFromFile(std::string_view file_path) {
 }  // namespace
 
 namespace stonks::binance::settings {
-std::string GetBaseUri() {
+std::string GetBaseRestUri() {
   static const auto value =
-      GetFirstWordFromFile("../settings/binance_base_uri.txt");
+      GetFirstWordFromFile("../settings/binance_base_rest_uri.txt");
+  return value.value_or(std::string{});
+}
+
+std::string GetBaseStreamUri() {
+  static const auto value =
+      GetFirstWordFromFile("../settings/binance_base_stream_uri.txt");
   return value.value_or(std::string{});
 }
 

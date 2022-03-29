@@ -14,6 +14,8 @@ class RestRequest {
   explicit RestRequest(std::string_view uri);
   explicit RestRequest(web::http::method method, std::string_view uri);
 
+  RestRequest &AppendUri(std::string_view uri);
+
   RestRequest &AddParameter(std::string_view key, std::string_view value);
   RestRequest &AddHeader(std::string_view key, std::string_view value);
 

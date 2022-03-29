@@ -53,8 +53,8 @@ ParseSymbolsFromExchangeInfo(const web::json::value &exchange_info) {
 namespace stonks::binance {
 std::optional<std::vector<Symbol>> GetSymbols() {
   const auto exchange_info =
-      rest::RestRequest{web::http::methods::GET,
-                        "https://testnet.binance.vision/api/v3/exchangeInfo"}
+      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+          .AppendUri("/api/v3/exchangeInfo")
           .SendAndGetResponse();
 
   if (!exchange_info.has_value()) {
@@ -67,8 +67,8 @@ std::optional<std::vector<Symbol>> GetSymbols() {
 
 std::optional<Balances> GetBalances() {
   auto request =
-      rest::RestRequest{web::http::methods::GET,
-                        "https://testnet.binance.vision/api/v3/account"}
+      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+          .AppendUri("/api/v3/account")
           .AddHeader("X-MBX-APIKEY", settings::GetApiKey())
           .AddParameter("timestamp", utils::GetUnixTimeMillisAsString());
   const auto params = request.GetParametersAsString();
@@ -91,8 +91,8 @@ std::optional<PlaceOrderResult> PlaceOrder(const Symbol &symbol, Side side,
                                            std::optional<double> price,
                                            TimeInForce time_in_force) {
   auto request =
-      rest::RestRequest{web::http::methods::POST,
-                        "https://testnet.binance.vision/api/v3/order"}
+      rest::RestRequest{web::http::methods::POST, settings::GetBaseRestUri()}
+          .AppendUri("/api/v3/order")
           .AddHeader("X-MBX-APIKEY", settings::GetApiKey())
           .AddParameter("symbol", symbol)
           .AddParameter("side", magic_enum::enum_name(side))

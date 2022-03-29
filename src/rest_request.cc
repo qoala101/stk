@@ -10,6 +10,11 @@ RestRequest::RestRequest(std::string_view uri)
 RestRequest::RestRequest(web::http::method method, std::string_view uri)
     : http_request_{method}, uri_builder_{std::string{uri}} {}
 
+RestRequest &RestRequest::AppendUri(std::string_view uri) {
+  uri_builder_.append(std::string{uri});
+  return *this;
+}
+
 RestRequest &RestRequest::AddParameter(std::string_view key,
                                        std::string_view value) {
   uri_builder_.append_query(std::string{key}, std::string{value});

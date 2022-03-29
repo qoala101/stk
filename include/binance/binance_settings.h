@@ -4,7 +4,9 @@
 #include <string>
 
 namespace stonks::binance::settings {
-std::string GetBaseUri();
+std::string GetBaseRestUri();
+
+std::string GetBaseStreamUri();
 
 std::string GetApiKey();
 
