@@ -4,12 +4,11 @@
 #include <string>
 
 namespace stonks::utils {
-long UnixTimeMillis();
+int64_t GetUnixTimeMillis();
 
-std::string UnixTimeMillisAsString();
+std::string GetUnixTimeMillisAsString();
 
-std::string SignUsingHmacSha256(const std::string &data,
-                                const std::string &key);
+std::string SignUsingHmacSha256(std::string_view data, std::string_view key);
 }  // namespace stonks::utils
 
 #endif  // STONKS_UTILS_H_

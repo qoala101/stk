@@ -4,11 +4,11 @@
 #include <string>
 
 namespace stonks::binance::settings {
-std::string BaseUri();
+std::string GetBaseUri();
 
-std::string ApiKey();
+std::string GetApiKey();
 
-std::string SecretKey();
+std::string GetSecretKey();
 }  // namespace stonks::binance::settings
 
 #endif  // STONKS_BINANCE_SETTINGS_H_

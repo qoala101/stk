@@ -5,8 +5,8 @@
 #include <fstream>
 
 namespace {
-std::optional<std::string> FirstWordFromFile(const std::string &file_path) {
-  auto file_stream = std::ifstream{file_path};
+std::optional<std::string> GetFirstWordFromFile(std::string_view file_path) {
+  auto file_stream = std::ifstream{std::string{file_path}};
 
   if (!file_stream.good()) {
     spdlog::error("Cannot read file {}", file_path);
@@ -20,21 +20,21 @@ std::optional<std::string> FirstWordFromFile(const std::string &file_path) {
 }  // namespace
 
 namespace stonks::binance::settings {
-std::string BaseUri() {
-  static const auto value_opt =
-      FirstWordFromFile("../settings/binance_base_uri.txt");
-  return value_opt.value_or(std::string{});
+std::string GetBaseUri() {
+  static const auto value =
+      GetFirstWordFromFile("../settings/binance_base_uri.txt");
+  return value.value_or(std::string{});
 }
 
-std::string ApiKey() {
-  static const auto value_opt =
-      FirstWordFromFile("../settings/binance_api_key.txt");
-  return value_opt.value_or(std::string{});
+std::string GetApiKey() {
+  static const auto value =
+      GetFirstWordFromFile("../settings/binance_api_key.txt");
+  return value.value_or(std::string{});
 }
 
-std::string SecretKey() {
-  static const auto value_opt =
-      FirstWordFromFile("../settings/binance_secret_key.txt");
-  return value_opt.value_or(std::string{});
+std::string GetSecretKey() {
+  static const auto value =
+      GetFirstWordFromFile("../settings/binance_secret_key.txt");
+  return value.value_or(std::string{});
 }
 }  // namespace stonks::binance::settings

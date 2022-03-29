@@ -6,18 +6,18 @@
 #include <cpprest/uri_builder.h>
 
 #include <optional>
-#include <string>
+#include <string_view>
 
 namespace stonks::rest {
 class RestRequest {
  public:
-  explicit RestRequest(const std::string &uri,
-                       web::http::method method = web::http::methods::GET);
+  explicit RestRequest(std::string_view uri);
+  explicit RestRequest(web::http::method method, std::string_view uri);
 
-  RestRequest &WithParameter(const std::string &key, const std::string &value);
-  RestRequest &WithHeader(const std::string &key, const std::string &value);
+  RestRequest &AddParameter(std::string_view key, std::string_view value);
+  RestRequest &AddHeader(std::string_view key, std::string_view value);
 
-  std::string ParametersAsString() const;
+  const std::string &GetParametersAsString() const;
 
   std::optional<web::json::value> SendAndGetResponse() const;
 

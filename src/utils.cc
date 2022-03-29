@@ -7,21 +7,20 @@
 #include <chrono>
 
 namespace stonks::utils {
-long UnixTimeMillis() {
+int64_t GetUnixTimeMillis() {
   const auto current_time = std::chrono::system_clock::now().time_since_epoch();
-  return long{
+  return int64_t{
       std::chrono::duration_cast<std::chrono::milliseconds>(current_time)
           .count()};
 }
 
-std::string UnixTimeMillisAsString() {
-  return std::to_string(UnixTimeMillis());
+std::string GetUnixTimeMillisAsString() {
+  return std::to_string(GetUnixTimeMillis());
 }
 
-std::string SignUsingHmacSha256(const std::string &data,
-                                const std::string &key) {
-  const auto raw_key = static_cast<const void *>(key.c_str());
-  const auto raw_data = reinterpret_cast<const unsigned char *>(data.c_str());
+std::string SignUsingHmacSha256(std::string_view data, std::string_view key) {
+  const auto raw_key = static_cast<const void *>(key.data());
+  const auto raw_data = reinterpret_cast<const unsigned char *>(data.data());
 
   static const auto kSignedDataSize = 32;
 

@@ -4,15 +4,15 @@
 #include <spdlog/spdlog.h>
 
 namespace {
-std::string FilePathFromRequestPath(const std::string &request_path) {
+std::string GetFilePathForRequestPath(std::string_view request_path) {
   if (request_path == "/") {
     return "../web/index.html";
   }
 
-  return "../web" + request_path;
+  return "../web" + std::string{request_path};
 }
 
-std::string ContentTypeFromFilePath(const std::string &file_path) {
+std::string_view GetContentTypeForFilePath(std::string_view file_path) {
   if (file_path.ends_with(".html")) {
     return "text/html";
   }
@@ -34,7 +34,7 @@ void HandleGetRequest(const web::http::http_request &request) {
   const auto request_path = request.absolute_uri().path();
   spdlog::info("Requested URI {}", request_path);
 
-  const auto file_path = FilePathFromRequestPath(request_path);
+  const auto file_path = GetFilePathForRequestPath(request_path);
   auto open_file_stream_task =
       decltype(concurrency::streams::fstream::open_istream(
           decltype(file_path){})){};
@@ -49,8 +49,9 @@ void HandleGetRequest(const web::http::http_request &request) {
   }
 
   const auto file_stream = open_file_stream_task.get();
-  const auto content_type = ContentTypeFromFilePath(file_path);
-  request.reply(web::http::status_codes::OK, file_stream, content_type);
+  const auto content_type = GetContentTypeForFilePath(file_path);
+  request.reply(web::http::status_codes::OK, file_stream,
+                std::string{content_type});
 }
 }  // namespace
 

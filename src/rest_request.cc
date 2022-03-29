@@ -4,22 +4,25 @@
 #include <spdlog/spdlog.h>
 
 namespace stonks::rest {
-RestRequest::RestRequest(const std::string &uri, web::http::method method)
-    : http_request_{method}, uri_builder_{uri} {}
+RestRequest::RestRequest(std::string_view uri)
+    : RestRequest{web::http::methods::GET, uri} {}
 
-RestRequest &RestRequest::WithParameter(const std::string &key,
-                                        const std::string &value) {
-  uri_builder_.append_query(key, value);
+RestRequest::RestRequest(web::http::method method, std::string_view uri)
+    : http_request_{method}, uri_builder_{std::string{uri}} {}
+
+RestRequest &RestRequest::AddParameter(std::string_view key,
+                                       std::string_view value) {
+  uri_builder_.append_query(std::string{key}, std::string{value});
   return *this;
 }
 
-RestRequest &RestRequest::WithHeader(const std::string &key,
-                                     const std::string &value) {
-  http_request_.headers().add(key, value);
+RestRequest &RestRequest::AddHeader(std::string_view key,
+                                    std::string_view value) {
+  http_request_.headers().add(std::string{key}, std::string{value});
   return *this;
 }
 
-std::string RestRequest::ParametersAsString() const {
+const std::string &RestRequest::GetParametersAsString() const {
   return uri_builder_.query();
 }
 

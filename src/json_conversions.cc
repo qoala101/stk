@@ -7,8 +7,8 @@
 #include "binance_types/enum_conversions.h"
 
 namespace {
-std::string GetStringPropertyAsString(const web::json::value& json,
-                                      const std::string_view property_name) {
+const std::string& GetStringPropertyAsString(
+    const web::json::value& json, const std::string_view property_name) {
   return json.at(std::string{property_name}).as_string();
 }
 
