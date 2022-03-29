@@ -1,5 +1,5 @@
-#ifndef STONKS_BINANCE_SETTINGS_H_
-#define STONKS_BINANCE_SETTINGS_H_
+#ifndef STONKS_BINANCE_BINANCE_SETTINGS_H_
+#define STONKS_BINANCE_BINANCE_SETTINGS_H_
 
 #include <string>
 
@@ -11,4 +11,4 @@ std::string GetApiKey();
 std::string GetSecretKey();
 }  // namespace stonks::binance::settings
 
-#endif  // STONKS_BINANCE_SETTINGS_H_
+#endif  // STONKS_BINANCE_BINANCE_SETTINGS_H_

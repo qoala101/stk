@@ -1,5 +1,5 @@
-#ifndef STONKS_BINANCE_TYPES_ENUMS_H_
-#define STONKS_BINANCE_TYPES_ENUMS_H_
+#ifndef STONKS_BINANCE_ENUMS_H_
+#define STONKS_BINANCE_ENUMS_H_
 
 namespace stonks::binance {
 enum class Side { kInvalid, kBuy, kSell };
@@ -34,4 +34,4 @@ enum class Type {
 };
 }  // namespace stonks::binance
 
-#endif  // STONKS_BINANCE_TYPES_ENUMS_H_
+#endif  // STONKS_BINANCE_ENUMS_H_

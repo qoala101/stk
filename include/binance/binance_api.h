@@ -1,11 +1,11 @@
-#ifndef STONKS_BINANCE_API_H_
-#define STONKS_BINANCE_API_H_
+#ifndef STONKS_BINANCE_BINANCE_API_H_
+#define STONKS_BINANCE_BINANCE_API_H_
 
 #include <optional>
 #include <string>
 #include <vector>
 
-#include "binance_types/types.h"
+#include "types.h"
 
 namespace stonks::binance {
 using Symbol = std::string;
@@ -22,4 +22,4 @@ std::optional<PlaceOrderResult> PlaceOrder(
     TimeInForce time_in_force = TimeInForce::kGoodTillCanceled);
 }  // namespace stonks::binance
 
-#endif  // STONKS_BINANCE_API_H_
+#endif  // STONKS_BINANCE_BINANCE_API_H_

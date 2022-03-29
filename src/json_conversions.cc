@@ -4,7 +4,7 @@
 
 #include <magic_enum.hpp>
 
-#include "binance_types/enum_conversions.h"
+#include "enum_conversions.h"
 
 namespace {
 const std::string& GetStringPropertyAsString(

@@ -1,5 +1,5 @@
-#ifndef STONKS_BINANCE_TYPES_TYPES_H_
-#define STONKS_BINANCE_TYPES_TYPES_H_
+#ifndef STONKS_BINANCE_TYPES_H_
+#define STONKS_BINANCE_TYPES_H_
 
 #include <string>
 #include <vector>
@@ -31,4 +31,4 @@ struct PlaceOrderResult {
 };
 }  // namespace stonks::binance
 
-#endif  // STONKS_BINANCE_TYPES_TYPES_H_
+#endif  // STONKS_BINANCE_TYPES_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_GET_FILE_SERVICE_H_
-#define STONKS_GET_FILE_SERVICE_H_
+#ifndef STONKS_SERVICES_GET_FILE_SERVICE_H_
+#define STONKS_SERVICES_GET_FILE_SERVICE_H_
 
 #include <cpprest/http_listener.h>
 #include <pplx/pplxtasks.h>
@@ -15,4 +15,4 @@ class GetFileService {
 };
 }  // namespace stonks
 
-#endif  // STONKS_GET_FILE_SERVICE_H_
+#endif  // STONKS_SERVICES_GET_FILE_SERVICE_H_

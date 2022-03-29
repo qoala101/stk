@@ -74,7 +74,8 @@ cmake --build .
   "C/C++ Include Guard.Insert Blank Line": true,
   "C/C++ Include Guard.Remove Extension": false,
   "C/C++ Include Guard.Suffix": "_",
+  "C/C++ Include Guard.Spaces After Endif": 2,
   "C_Cpp.clang_format_sortIncludes": true,
-  "C_Cpp.clang_format_fallbackStyle": "Google"
+  "C_Cpp.clang_format_style": "Google"
 }
 ```
