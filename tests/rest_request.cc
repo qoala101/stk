@@ -1,5 +1,3 @@
-#define _TURN_OFF_PLATFORM_STRING
-
 #include "rest_request.h"
 
 #include <gtest/gtest.h>
@@ -74,5 +72,3 @@ TEST(RestRequest, ParameterTypesToString) {
       "optional_custom_enum_name=CUSTOM_ENUM_NAME";
   EXPECT_EQ(result_string, expected_string);
 }
-
-#undef _TURN_OFF_PLATFORM_STRING

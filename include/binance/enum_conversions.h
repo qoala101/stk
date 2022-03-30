@@ -92,4 +92,46 @@ magic_enum::customize::enum_name<stonks::binance::Type>(
   return {};
 }
 
+template <>
+constexpr std::string_view
+magic_enum::customize::enum_name<stonks::binance::CandlestickInterval>(
+    stonks::binance::CandlestickInterval value) noexcept {
+  switch (value) {
+    case stonks::binance::CandlestickInterval::k1Minute:
+      return "1m";
+    case stonks::binance::CandlestickInterval::k3Minutes:
+      return "3m";
+    case stonks::binance::CandlestickInterval::k5Minutes:
+      return "5m";
+    case stonks::binance::CandlestickInterval::k15Minutes:
+      return "15m";
+    case stonks::binance::CandlestickInterval::k30Minutes:
+      return "30m";
+    case stonks::binance::CandlestickInterval::k1Hour:
+      return "1h";
+    case stonks::binance::CandlestickInterval::k2Hours:
+      return "2h";
+    case stonks::binance::CandlestickInterval::k4Hours:
+      return "4h";
+    case stonks::binance::CandlestickInterval::k6Hours:
+      return "6h";
+    case stonks::binance::CandlestickInterval::k8Hours:
+      return "8h";
+    case stonks::binance::CandlestickInterval::k12Hours:
+      return "12h";
+    case stonks::binance::CandlestickInterval::k1Day:
+      return "1d";
+    case stonks::binance::CandlestickInterval::k3Days:
+      return "3d";
+    case stonks::binance::CandlestickInterval::k1Week:
+      return "1w";
+    case stonks::binance::CandlestickInterval::k1Month:
+      return "1M";
+    default:
+      break;
+  }
+
+  return {};
+}
+
 #endif  // STONKS_BINANCE_ENUM_CONVERSIONS_H_

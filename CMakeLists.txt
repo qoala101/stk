@@ -23,5 +23,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
+# Removes the clash of U macro between cpprestsdk and gtest libs
+add_compile_definitions(_TURN_OFF_PLATFORM_STRING)
+
 add_subdirectory(src)
 add_subdirectory(tests)

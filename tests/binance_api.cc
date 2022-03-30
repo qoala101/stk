@@ -3,15 +3,17 @@
 #include <gtest/gtest.h>
 #include <spdlog/spdlog.h>
 
-#include "json_conversions.h"
-
-TEST(BinanceApi, Responses) {
+TEST(BinanceApi, GetSymbols) {
   const auto symbols = stonks::binance::GetSymbols();
   EXPECT_TRUE(symbols.has_value());
+}
 
+TEST(BinanceApi, GetBalances) {
   const auto balances = stonks::binance::GetBalances();
   EXPECT_TRUE(balances.has_value());
+}
 
+TEST(BinanceApi, PlaceOrder) {
   const auto place_order_result =
       stonks::binance::PlaceOrder("BTCUSDT", stonks::binance::Side::kBuy,
                                   stonks::binance::Type::kLimit, 0.01, 20000);
@@ -22,4 +24,19 @@ TEST(BinanceApi, Responses) {
   EXPECT_EQ(place_order_result->price, 20000);
   EXPECT_EQ(place_order_result->time_in_force,
             stonks::binance::TimeInForce::kGoodTillCanceled);
+}
+
+TEST(BinanceApi, GetKlines) {
+  const auto klines = stonks::binance::GetKlines(
+      "BTCUSDT", stonks::binance::CandlestickInterval::k1Day, std::nullopt,
+      std::nullopt, 10);
+
+  ASSERT_TRUE(klines.has_value());
+  EXPECT_EQ(klines->size(), 10);
+
+  for (auto iter = std::next(klines->begin()); iter != klines->end(); ++iter) {
+    EXPECT_GT(iter->open_time, 0);
+    EXPECT_GT(iter->open_time, iter->close_price);
+    EXPECT_LT(std::prev(iter)->open_time, iter->open_time);
+  }
 }

@@ -32,6 +32,24 @@ enum class Type {
   kTakeProfitLimit,
   kLimitMaker
 };
+
+enum class CandlestickInterval {
+  k1Minute,
+  k3Minutes,
+  k5Minutes,
+  k15Minutes,
+  k30Minutes,
+  k1Hour,
+  k2Hours,
+  k4Hours,
+  k6Hours,
+  k8Hours,
+  k12Hours,
+  k1Day,
+  k3Days,
+  k1Week,
+  k1Month
+};
 }  // namespace stonks::binance
 
 #endif  // STONKS_BINANCE_ENUMS_H_

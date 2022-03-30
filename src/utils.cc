@@ -14,10 +14,6 @@ int64_t GetUnixTimeMillis() {
           .count()};
 }
 
-std::string GetUnixTimeMillisAsString() {
-  return std::to_string(GetUnixTimeMillis());
-}
-
 std::string SignUsingHmacSha256(std::string_view data, std::string_view key) {
   const auto raw_key = static_cast<const void *>(key.data());
   const auto raw_data = reinterpret_cast<const unsigned char *>(data.data());

@@ -1,5 +1,3 @@
-#define _TURN_OFF_PLATFORM_STRING
-
 #include "json_conversions.h"
 
 #include <cpprest/json.h>
@@ -7,8 +5,7 @@
 #include <spdlog/spdlog.h>
 
 TEST(JsonConversions, PlaceOrderResult) {
-  const auto raw_json = R"(
-{
+  const auto raw_json = R"({
   "clientOrderId":"0PaNMDgehJmHYC9UApeK2y",
   "cummulativeQuoteQty":"123456789.123456789",
   "executedQty":"123456789.123456789",
@@ -48,4 +45,141 @@ TEST(JsonConversions, PlaceOrderResult) {
   EXPECT_EQ(*parsed_object, object);
 }
 
-#undef _TURN_OFF_PLATFORM_STRING
+TEST(JsonConversions, Kline) {
+  const auto raw_json = R"([
+  1647820800000,
+  "41256.16000000",
+  "42293.25000000",
+  "21213.92000000",
+  "41004.51000000",
+  "3880.27536100",
+  1647907199999,
+  "159422440.52710729",
+  161896,
+  "2357.30430400",
+  "96848939.73882025",
+  "0"
+])";
+  const auto object =
+      stonks::binance::Kline{.open_time = 1647820800000,
+                             .open_price = 41256.16,
+                             .high_price = 42293.25,
+                             .low_price = 21213.92,
+                             .close_price = 41004.51,
+                             .volume = 3880.275361,
+                             .close_time = 1647907199999,
+                             .quote_asset_volume = 159422440.52710729,
+                             .num_trades = 161896,
+                             .taker_buy_base_asset_volume = 2357.304304,
+                             .taker_buy_quote_asset_volume = 96848939.73882025};
+
+  const auto parsed_json = web::json::value::parse(raw_json);
+  const auto parsed_object =
+      stonks::ParseFromJson<stonks::binance::Kline>(parsed_json);
+
+  ASSERT_TRUE(parsed_object.has_value());
+  EXPECT_EQ(*parsed_object, object);
+}
+
+TEST(JsonConversions, Klines) {
+  const auto raw_json = R"([
+  [
+    1647820800000,
+    "41256.16000000",
+    "42293.25000000",
+    "21213.92000000",
+    "41004.51000000",
+    "3880.27536100",
+    1647907199999,
+    "159422440.52710729",
+    161896,
+    "2357.30430400",
+    "96848939.73882025",
+    "0"
+  ],
+  [
+    1647907200000,
+    "41003.64000000",
+    "60000.00000000",
+    "40419.49000000",
+    "42364.14000000",
+    "3985.02355200",
+    1647993599999,
+    "169122058.79004571",
+    172787,
+    "2437.26573300",
+    "103435583.49075382",
+    "0"
+  ]
+])";
+  const auto object = std::vector<stonks::binance::Kline>{
+      stonks::binance::Kline{.open_time = 1647820800000,
+                             .open_price = 41256.16,
+                             .high_price = 42293.25,
+                             .low_price = 21213.92,
+                             .close_price = 41004.51,
+                             .volume = 3880.275361,
+                             .close_time = 1647907199999,
+                             .quote_asset_volume = 159422440.52710729,
+                             .num_trades = 161896,
+                             .taker_buy_base_asset_volume = 2357.304304,
+                             .taker_buy_quote_asset_volume = 96848939.73882025},
+      stonks::binance::Kline{
+          .open_time = 1647907200000,
+          .open_price = 41003.64,
+          .high_price = 60000,
+          .low_price = 40419.49,
+          .close_price = 42364.14,
+          .volume = 3985.023552,
+          .close_time = 1647993599999,
+          .quote_asset_volume = 169122058.79004571,
+          .num_trades = 172787,
+          .taker_buy_base_asset_volume = 2437.265733,
+          .taker_buy_quote_asset_volume = 103435583.49075382}};
+
+  const auto parsed_json = web::json::value::parse(raw_json);
+  const auto parsed_object =
+      stonks::ParseFromJson<std::vector<stonks::binance::Kline>>(parsed_json);
+
+  ASSERT_TRUE(parsed_object.has_value());
+  EXPECT_EQ(*parsed_object, object);
+}
+
+TEST(JsonConversions, BrokenKlineInArray) {
+  const auto raw_json = R"([
+  [
+    1647820800000,
+    "41256.16000000",
+    "42293.25000000",
+    "21213.92000000",
+    "41004.51000000",
+    "3880.27536100",
+    1647907199999,
+    "159422440.52710729",
+    161896,
+    "2357.30430400",
+    "96848939.73882025",
+    "0"
+  ],
+  [
+    "should be number",
+    "41003.64000000",
+    "60000.00000000",
+    "40419.49000000",
+    "42364.14000000",
+    "3985.02355200",
+    1647993599999,
+    "169122058.79004571",
+    172787,
+    "2437.26573300",
+    "103435583.49075382",
+    "0"
+  ]
+])";
+
+  const auto parsed_json = web::json::value::parse(raw_json);
+  const auto parsed_object =
+      stonks::ParseFromJson<std::vector<stonks::binance::Kline>>(parsed_json);
+
+  ASSERT_FALSE(parsed_object.has_value());
+}

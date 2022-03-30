@@ -2,6 +2,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <range/v3/to_container.hpp>
 #include <range/v3/view/filter.hpp>
 #include <range/v3/view/transform.hpp>
 
@@ -40,13 +41,9 @@ ParseSymbolsFromExchangeInfo(const web::json::value &exchange_info) {
     return value.at("symbol").as_string();
   };
 
-  auto symbols_range = symbols_array |
-                       ranges::views::filter(has_usdt_quote_asset) |
-                       ranges::views::filter(has_symbol_field) |
-                       ranges::views::transform(get_symbol_field);
-
-  return std::vector<stonks::binance::Symbol>{symbols_range.begin(),
-                                              symbols_range.end()};
+  return symbols_array | ranges::views::filter(has_usdt_quote_asset) |
+         ranges::views::filter(has_symbol_field) |
+         ranges::views::transform(get_symbol_field) | ranges::to_vector;
 }
 }  // namespace
 
@@ -70,7 +67,7 @@ std::optional<Balances> GetBalances() {
       rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/account")
           .AddHeader("X-MBX-APIKEY", settings::GetApiKey())
-          .AddParameter("timestamp", utils::GetUnixTimeMillisAsString());
+          .AddParameter("timestamp", utils::GetUnixTimeMillis());
   const auto params = request.GetParametersAsString();
   const auto signed_params =
       utils::SignUsingHmacSha256(params, settings::GetSecretKey());
@@ -85,7 +82,7 @@ std::optional<Balances> GetBalances() {
   return response->serialize();
 }
 
-std::optional<PlaceOrderResult> PlaceOrder(const Symbol &symbol, Side side,
+std::optional<PlaceOrderResult> PlaceOrder(std::string_view symbol, Side side,
                                            Type type,
                                            std::optional<double> quantity,
                                            std::optional<double> price,
@@ -95,18 +92,12 @@ std::optional<PlaceOrderResult> PlaceOrder(const Symbol &symbol, Side side,
           .AppendUri("/api/v3/order")
           .AddHeader("X-MBX-APIKEY", settings::GetApiKey())
           .AddParameter("symbol", symbol)
-          .AddParameter("side", magic_enum::enum_name(side))
-          .AddParameter("type", magic_enum::enum_name(type))
-          .AddParameter("timeInForce", magic_enum::enum_name(time_in_force))
-          .AddParameter("timestamp", utils::GetUnixTimeMillisAsString());
-
-  if (quantity.has_value()) {
-    request.AddParameter("quantity", std::to_string(*quantity));
-  }
-
-  if (price.has_value()) {
-    request.AddParameter("price", std::to_string(*price));
-  }
+          .AddParameter("side", side)
+          .AddParameter("type", type)
+          .AddParameter("timeInForce", time_in_force)
+          .AddParameter("timestamp", utils::GetUnixTimeMillis())
+          .AddParameter("quantity", quantity)
+          .AddParameter("price", price);
 
   const auto params = request.GetParametersAsString();
   const auto signed_params =
@@ -120,5 +111,28 @@ std::optional<PlaceOrderResult> PlaceOrder(const Symbol &symbol, Side side,
   }
 
   return ParseFromJson<PlaceOrderResult>(*response);
+}
+
+std::optional<std::vector<Kline>> GetKlines(std::string_view symbol,
+                                            CandlestickInterval interval,
+                                            std::optional<int64_t> start_time,
+                                            std::optional<int64_t> end_time,
+                                            std::optional<int64_t> limit) {
+  const auto response =
+      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+          .AppendUri("/api/v3/klines")
+          .AddParameter("symbol", symbol)
+          .AddParameter("interval", interval)
+          .AddParameter("startTime", start_time)
+          .AddParameter("endTime", end_time)
+          .AddParameter("limit", limit)
+          .SendAndGetResponse();
+
+  if (!response.has_value()) {
+    spdlog::error("Cannot get klines");
+    return std::nullopt;
+  }
+
+  return ParseFromJson<std::vector<Kline>>(*response);
 }
 }  // namespace stonks::binance

@@ -3,6 +3,8 @@
 #include <cpprest/http_client.h>
 #include <spdlog/spdlog.h>
 
+#include <magic_enum.hpp>
+
 namespace stonks::rest {
 RestRequest::RestRequest(std::string_view uri)
     : RestRequest{web::http::methods::GET, uri} {}
@@ -27,6 +29,8 @@ RestRequest &RestRequest::AddHeader(std::string_view key,
   return *this;
 }
 
+std::string RestRequest::GetUri() const { return uri_builder_.to_string(); }
+
 const std::string &RestRequest::GetParametersAsString() const {
   return uri_builder_.query();
 }
@@ -36,14 +40,18 @@ std::optional<web::json::value> RestRequest::SendAndGetResponse() const {
   spdlog::info("Sending {} request to {}", http_request_.method(),
                uri.to_string());
 
+  auto json = std::optional<web::json::value>{};
+
   try {
     auto http_client = web::http::client::http_client{uri};
     const auto response = http_client.request(http_request_).get();
-    return response.extract_json().get();
+    json = response.extract_json().get();
   } catch (...) {
     spdlog::error("Request failed");
+    return std::nullopt;
   }
 
-  return std::nullopt;
+  spdlog::info("Got response of type {}", magic_enum::enum_name(json->type()));
+  return json;
 }
 }  // namespace stonks::rest

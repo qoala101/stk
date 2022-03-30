@@ -4,6 +4,7 @@ find_package(spdlog REQUIRED)
 add_executable(unittests
   main.cc
   binance_api.cc
+  rest_request.cc
   json_conversions.cc
 )
 target_link_libraries(unittests PRIVATE libstonks)

@@ -21,7 +21,7 @@ target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/servic
 target_link_libraries(libstonks PUBLIC cpprestsdk::cpprest)
 target_link_libraries(libstonks PRIVATE spdlog::spdlog)
 target_link_libraries(libstonks PRIVATE range-v3::range-v3)
-target_link_libraries(libstonks PRIVATE magic_enum::magic_enum)
+target_link_libraries(libstonks PUBLIC magic_enum::magic_enum)
 
 add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)
