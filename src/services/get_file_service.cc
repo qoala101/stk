@@ -25,6 +25,10 @@ std::string_view GetContentTypeForFilePath(std::string_view file_path) {
     return "text/javascript";
   }
 
+  if (file_path.ends_with(".ico")) {
+    return "image/x-icon";
+  }
+
   return "text/plain";
 }
 
