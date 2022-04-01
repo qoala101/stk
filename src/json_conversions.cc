@@ -7,7 +7,7 @@
 #include <range/v3/view/take_while.hpp>
 #include <range/v3/view/transform.hpp>
 
-#include "enum_conversions.h"
+#include "binance_enum_conversions.h"
 
 namespace {
 const std::string& GetStringPropertyAsString(

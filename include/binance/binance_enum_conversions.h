@@ -1,10 +1,10 @@
-#ifndef STONKS_BINANCE_ENUM_CONVERSIONS_H_
-#define STONKS_BINANCE_ENUM_CONVERSIONS_H_
+#ifndef STONKS_BINANCE_BINANCE_ENUM_CONVERSIONS_H_
+#define STONKS_BINANCE_BINANCE_ENUM_CONVERSIONS_H_
 
 #include <magic_enum.hpp>
 #include <string_view>
 
-#include "enums.h"
+#include "binance_enums.h"
 
 template <>
 constexpr std::string_view
@@ -134,4 +134,4 @@ magic_enum::customize::enum_name<stonks::binance::CandlestickInterval>(
   return {};
 }
 
-#endif  // STONKS_BINANCE_ENUM_CONVERSIONS_H_
+#endif  // STONKS_BINANCE_BINANCE_ENUM_CONVERSIONS_H_

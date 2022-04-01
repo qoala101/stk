@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "types.h"
+#include "binance_types.h"
 
 namespace stonks::binance {
 using Symbol = std::string;

@@ -1,10 +1,10 @@
-#ifndef STONKS_BINANCE_TYPES_H_
-#define STONKS_BINANCE_TYPES_H_
+#ifndef STONKS_BINANCE_BINANCE_TYPES_H_
+#define STONKS_BINANCE_BINANCE_TYPES_H_
 
 #include <string>
 #include <vector>
 
-#include "enums.h"
+#include "binance_enums.h"
 
 namespace stonks::binance {
 using Fill = std::string;
@@ -48,4 +48,4 @@ struct Kline {
 };
 }  // namespace stonks::binance
 
-#endif  // STONKS_BINANCE_TYPES_H_
+#endif  // STONKS_BINANCE_BINANCE_TYPES_H_

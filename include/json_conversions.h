@@ -5,7 +5,7 @@
 
 #include <vector>
 
-#include "binance/types.h"
+#include "binance_types.h"
 
 namespace stonks {
 template <typename T>

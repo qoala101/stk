@@ -6,8 +6,8 @@
 #include <range/v3/view/filter.hpp>
 #include <range/v3/view/transform.hpp>
 
+#include "binance_enum_conversions.h"
 #include "binance_settings.h"
-#include "enum_conversions.h"
 #include "json_conversions.h"
 #include "rest_request.h"
 #include "utils.h"
