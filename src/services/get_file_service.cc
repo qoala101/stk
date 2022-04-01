@@ -33,8 +33,6 @@ std::string_view GetContentTypeForFilePath(std::string_view file_path) {
 }
 
 void HandleGetRequest(const web::http::http_request &request) {
-  spdlog::info(BOOST_CURRENT_FUNCTION);
-
   const auto request_path = request.absolute_uri().path();
   spdlog::info("Requested URI {}", request_path);
 

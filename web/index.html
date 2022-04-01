@@ -2,33 +2,35 @@
 <html>
 
 <head>
-  <link rel="stylesheet" href="styles1.css">
+  <meta charset="utf-8">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(OnChartsLoaded);
+
+    function OnChartsLoaded() {
+      $.ajax({
+        url: "http://localhost:6506/api/candlestick_chart_data"
+      }).done(OnResponseReceived);
+    }
+
+    function OnResponseReceived(response) {
+      var data = new google.visualization.DataTable(response);
+
+      var options = {
+        legend: 'none'
+      };
+
+      var chart = new google.visualization.CandlestickChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+
+  </script>
 </head>
 
 <body>
-
-  <h1>HTML DOM Events</h1>
-  <h2>The onclick Event</h2>
-
-  <p>Field1: <input type="text" id="field1" value=""></p>
-
-  <button onclick="OnStartClicked()">Start</button>
-
-  <p id="p1">Response</p>
-
-  <script>
-    function OnStartClicked() {
-      const request = new XMLHttpRequest();
-      const url = "http://localhost:6506/api/symbols";
-      request.open("GET", url);
-      request.send();
-
-      request.onreadystatechange = (event) => {
-        document.getElementById("p1").textContent = request.responseText;
-      }
-    }
-  </script>
-
+  <div id="chart_div"></div>
 </body>
 
 </html>
