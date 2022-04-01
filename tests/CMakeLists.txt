@@ -6,6 +6,8 @@ add_executable(unittests
   binance_api.cc
   rest_request.cc
   json_conversions.cc
+  finance_api.cc
+  finance_conversions.cc
 )
 target_link_libraries(unittests PRIVATE libstonks)
 target_link_libraries(unittests PRIVATE spdlog::spdlog)
