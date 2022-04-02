@@ -19,7 +19,11 @@
       var data = new google.visualization.DataTable(response);
 
       var options = {
-        legend: 'none'
+        title: "ETHUSDT",
+        vAxis: { title: "Price, USDT" },
+        hAxis: { title: "Date" },
+        series: [{ type: "candlesticks" }, { type: "line", curveType: "function" }, { type: "line" }],
+        height: 800
       };
 
       var chart = new google.visualization.CandlestickChart(document.getElementById('chart_div'));

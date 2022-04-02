@@ -10,7 +10,7 @@ namespace {
 void HandleGetRequest(const web::http::http_request &request) {
   spdlog::info("Got {} request on {}", request.method(),
                request.request_uri().to_string());
-  const auto candlesticks = stonks::GetCandlesticks("BTCUSDT");
+  const auto candlesticks = stonks::GetCandlesticks("ETHUSDT");
 
   if (!candlesticks.has_value()) {
     request.reply(web::http::status_codes::NotFound);

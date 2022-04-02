@@ -1,43 +1,53 @@
 #include "google_charts_conversions.h"
 
-#include <gsl/pointers>
 #include <range/v3/to_container.hpp>
 #include <range/v3/view/transform.hpp>
+
+#include "concepts.h"
+
+namespace {
+void AddColumn(std::vector<web::json::value> &columns, std::string_view label,
+               std::string_view type) {
+  auto &column = columns.emplace_back();
+  column["label"] = web::json::value::string(std::string{label});
+  column["type"] = web::json::value::string(std::string{type});
+}
+
+template <Number T>
+void AddCell(std::vector<web::json::value> &cells, T value) {
+  auto &cell = cells.emplace_back();
+  cell["v"] = web::json::value::number(value);
+}
+
+void AddCell(std::vector<web::json::value> &cells, std::string_view value) {
+  auto &cell = cells.emplace_back();
+  cell["v"] = web::json::value::string(std::string{value});
+}
+}  // namespace
 
 namespace stonks {
 web::json::value ConvertToJson(const std::vector<Candlestick> &data) {
   auto cols = std::vector<web::json::value>{};
   cols.reserve(5);
-  auto col = gsl::not_null{&cols.emplace_back()};
-  (*col)["label"] = web::json::value::string("Time");
-  (*col)["type"] = web::json::value::string("string");
-  col = gsl::not_null{&cols.emplace_back()};
-  (*col)["label"] = web::json::value::string("High");
-  (*col)["type"] = web::json::value::string("number");
-  col = gsl::not_null{&cols.emplace_back()};
-  (*col)["label"] = web::json::value::string("Open");
-  (*col)["type"] = web::json::value::string("number");
-  col = gsl::not_null{&cols.emplace_back()};
-  (*col)["label"] = web::json::value::string("Close");
-  (*col)["type"] = web::json::value::string("number");
-  col = gsl::not_null{&cols.emplace_back()};
-  (*col)["label"] = web::json::value::string("Low");
-  (*col)["type"] = web::json::value::string("number");
+  AddColumn(cols, "Time", "string");
+  AddColumn(cols, "High", "number");
+  AddColumn(cols, "Open", "number");
+  AddColumn(cols, "Close", "number");
+  AddColumn(cols, "Low", "number");
+  AddColumn(cols, "AA", "number"); // TODO
+  AddColumn(cols, "BB", "number"); // TODO
 
   const auto candlestick_to_json = [](const Candlestick &candlestick) {
     auto json = web::json::value{};
     auto row_cells = std::vector<web::json::value>{};
-    row_cells.reserve(5);
-    row_cells.emplace_back()["v"] =
-        web::json::value::string(std::to_string(candlestick.open_time));
-    row_cells.emplace_back()["v"] =
-        web::json::value::number(candlestick.low_price);
-    row_cells.emplace_back()["v"] =
-        web::json::value::number(candlestick.open_price);
-    row_cells.emplace_back()["v"] =
-        web::json::value::number(candlestick.close_price);
-    row_cells.emplace_back()["v"] =
-        web::json::value::number(candlestick.high_price);
+    row_cells.reserve(7);
+    AddCell(row_cells, candlestick.open_time);
+    AddCell(row_cells, candlestick.low_price);
+    AddCell(row_cells, candlestick.open_price);
+    AddCell(row_cells, candlestick.close_price);
+    AddCell(row_cells, candlestick.high_price);
+    AddCell(row_cells, candlestick.high_price); // TODO
+    AddCell(row_cells, candlestick.low_price); // TODO
     json["c"] = web::json::value::array(std::move(row_cells));
     return json;
   };
