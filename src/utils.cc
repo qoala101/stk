@@ -1,5 +1,6 @@
 #include "utils.h"
 
+#include <date/date.h>
 #include <openssl/hmac.h>
 #include <spdlog/spdlog.h>
 
@@ -8,10 +9,29 @@
 
 namespace stonks::utils {
 int64_t GetUnixTimeMillis() {
-  const auto current_time = std::chrono::system_clock::now().time_since_epoch();
-  return int64_t{
-      std::chrono::duration_cast<std::chrono::milliseconds>(current_time)
-          .count()};
+  const auto current_time = std::chrono::system_clock::now();
+  return int64_t{std::chrono::duration_cast<std::chrono::milliseconds>(
+                     current_time.time_since_epoch())
+                     .count()};
+}
+
+std::optional<int64_t> GetUnixTimeMillisFromString(std::string_view time) {
+  auto input_stream = std::istringstream(std::string{time});
+  auto parsed_time = std::chrono::time_point<std::chrono::system_clock,
+                                             std::chrono::seconds>{};
+  input_stream >> date::parse("%d %b %Y %H:%M:%S", parsed_time);
+  const auto parsing_error =
+      parsed_time == std::chrono::time_point<std::chrono::system_clock,
+                                             std::chrono::seconds>{};
+
+  if (parsing_error) {
+    spdlog::error("Cannot parse time: {}", time);
+    return std::nullopt;
+  }
+
+  return int64_t{std::chrono::duration_cast<std::chrono::milliseconds>(
+                     parsed_time.time_since_epoch())
+                     .count()};
 }
 
 std::string SignUsingHmacSha256(std::string_view data, std::string_view key) {

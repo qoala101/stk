@@ -2,6 +2,7 @@ find_package(cpprestsdk REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(range-v3 REQUIRED)
 find_package(magic_enum REQUIRED)
+find_package(date REQUIRED)
 
 add_library(libstonks
   utils.cc
@@ -22,6 +23,7 @@ target_link_libraries(libstonks PUBLIC cpprestsdk::cpprest)
 target_link_libraries(libstonks PRIVATE spdlog::spdlog)
 target_link_libraries(libstonks PRIVATE range-v3::range-v3)
 target_link_libraries(libstonks PUBLIC magic_enum::magic_enum)
+target_link_libraries(libstonks PRIVATE date::date)
 
 add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)
