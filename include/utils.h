@@ -11,10 +11,10 @@ namespace stonks::utils {
 int64_t GetUnixTimeMillis();
 
 /**
- * @param time Date time in the format "9 Jan 2014 12:35:34".
  * @return Unix GMT milliseconds or nullopt if cannot parse.
  */
-std::optional<int64_t> GetUnixTimeMillisFromString(std::string_view time);
+std::optional<int64_t> GetUnixTimeMillisFromString(
+    std::string_view time, std::string_view format = "%d %b %Y %H:%M:%S");
 
 std::string SignUsingHmacSha256(std::string_view data, std::string_view key);
 }  // namespace stonks::utils

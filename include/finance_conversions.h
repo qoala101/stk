@@ -7,7 +7,7 @@
 #include "binance_types.h"
 #include "finance_types.h"
 
-namespace stonks {
+namespace stonks::finance {
 Candlestick ParseCandlestickFromBinanceKline(const binance::Kline &kline);
 }
 

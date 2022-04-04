@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace stonks {
+namespace stonks::finance {
 struct Candlestick {
   int64_t open_time{};
   double open_price{};

@@ -15,7 +15,7 @@ TEST(FinanceConversions, CandlestickFromKline) {
                              .num_trades = 161896,
                              .taker_buy_base_asset_volume = 2357.304304,
                              .taker_buy_quote_asset_volume = 96848939.73882025};
-  const auto candlestick = stonks::ParseCandlestickFromBinanceKline(kline);
+  const auto candlestick = stonks::finance::ParseCandlestickFromBinanceKline(kline);
 
   EXPECT_EQ(candlestick.open_time, kline.open_time);
   EXPECT_EQ(candlestick.open_price, kline.open_price);

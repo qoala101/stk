@@ -6,7 +6,7 @@
 #include "finance_types.h"
 
 namespace stonks {
-web::json::value ConvertToJson(const std::vector<Candlestick> &data);
+web::json::value ConvertToJson(const std::vector<finance::Candlestick> &data);
 }
 
 #endif  // STONKS_GOOGLE_CHARTS_CONVERSIONS_H_

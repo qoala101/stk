@@ -15,11 +15,12 @@ int64_t GetUnixTimeMillis() {
                      .count()};
 }
 
-std::optional<int64_t> GetUnixTimeMillisFromString(std::string_view time) {
+std::optional<int64_t> GetUnixTimeMillisFromString(std::string_view time,
+                                                   std::string_view format) {
   auto input_stream = std::istringstream(std::string{time});
   auto parsed_time = std::chrono::time_point<std::chrono::system_clock,
                                              std::chrono::seconds>{};
-  input_stream >> date::parse("%d %b %Y %H:%M:%S", parsed_time);
+  input_stream >> date::parse(std::string{format}, parsed_time);
   const auto parsing_error =
       parsed_time == std::chrono::time_point<std::chrono::system_clock,
                                              std::chrono::seconds>{};

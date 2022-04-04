@@ -1,6 +1,6 @@
 #include "finance_conversions.h"
 
-namespace stonks {
+namespace stonks::finance {
 Candlestick ParseCandlestickFromBinanceKline(const binance::Kline &kline) {
   return Candlestick{.open_time = kline.open_time,
                      .open_price = kline.open_price,

@@ -26,7 +26,7 @@ void AddCell(std::vector<web::json::value> &cells, std::string_view value) {
 }  // namespace
 
 namespace stonks {
-web::json::value ConvertToJson(const std::vector<Candlestick> &data) {
+web::json::value ConvertToJson(const std::vector<finance::Candlestick> &data) {
   auto cols = std::vector<web::json::value>{};
   cols.reserve(5);
   AddColumn(cols, "Time", "string");
@@ -37,7 +37,7 @@ web::json::value ConvertToJson(const std::vector<Candlestick> &data) {
   AddColumn(cols, "AA", "number"); // TODO
   AddColumn(cols, "BB", "number"); // TODO
 
-  const auto candlestick_to_json = [](const Candlestick &candlestick) {
+  const auto candlestick_to_json = [](const finance::Candlestick &candlestick) {
     auto json = web::json::value{};
     auto row_cells = std::vector<web::json::value>{};
     row_cells.reserve(7);

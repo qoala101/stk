@@ -5,12 +5,16 @@
 
 #include "finance_api.h"
 #include "google_charts_conversions.h"
+#include "utils.h"
 
 namespace {
 void HandleGetRequest(const web::http::http_request &request) {
   spdlog::info("Got {} request on {}", request.method(),
                request.request_uri().to_string());
-  const auto candlesticks = stonks::GetCandlesticks("ETHUSDT");
+  const auto candlesticks = stonks::finance::GetCandlesticks(
+      "ETHUSDT", stonks::finance::Interval::k1Hour,
+      *stonks::utils::GetUnixTimeMillisFromString("1 Mar 2022 00:00:00"),
+      *stonks::utils::GetUnixTimeMillisFromString("2 Mar 2022 00:00:00"));
 
   if (!candlesticks.has_value()) {
     request.reply(web::http::status_codes::NotFound);

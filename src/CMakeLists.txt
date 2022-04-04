@@ -3,17 +3,23 @@ find_package(spdlog REQUIRED)
 find_package(range-v3 REQUIRED)
 find_package(magic_enum REQUIRED)
 find_package(date REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
 
 add_library(libstonks
   utils.cc
   rest_request.cc
   json_conversions.cc
+  finance_api.cc
+  finance_conversions.cc
+  finance_enum_conversions.cc
+  google_charts_conversions.cc
 
   binance/binance_api.cc
   binance/binance_settings.cc
 
   services/get_file_service.cc
   services/get_symbols_service.cc
+  services/get_candlestick_chart_data_service.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include)
@@ -24,6 +30,7 @@ target_link_libraries(libstonks PRIVATE spdlog::spdlog)
 target_link_libraries(libstonks PRIVATE range-v3::range-v3)
 target_link_libraries(libstonks PUBLIC magic_enum::magic_enum)
 target_link_libraries(libstonks PRIVATE date::date)
+target_link_libraries(libstonks PRIVATE Microsoft.GSL::GSL)
 
 add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)

@@ -8,6 +8,7 @@ add_executable(unittests
   json_conversions.cc
   finance_api.cc
   finance_conversions.cc
+  finance_enum_conversions.cc
   utils.cc
 )
 target_link_libraries(unittests PRIVATE libstonks)
