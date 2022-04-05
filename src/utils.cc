@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 
 #include <array>
+#include <ctime>
 
 namespace stonks::utils {
 std::chrono::milliseconds GetUnixTime() {
@@ -13,23 +14,25 @@ std::chrono::milliseconds GetUnixTime() {
       current_time.time_since_epoch());
 }
 
-std::optional<std::chrono::milliseconds> GetUnixTimeFromString(
-    std::string_view time, std::string_view format) {
-  auto input_stream = std::istringstream(std::string{time});
+std::chrono::milliseconds ParseUnixTimeFromString(std::string_view time,
+                                                  std::string_view format) {
+  auto input_stream = std::istringstream{std::string{time}};
   auto parsed_time = std::chrono::time_point<std::chrono::system_clock,
                                              std::chrono::seconds>{};
   input_stream >> date::parse(std::string{format}, parsed_time);
   const auto parsing_error =
       parsed_time == std::chrono::time_point<std::chrono::system_clock,
                                              std::chrono::seconds>{};
-
-  if (parsing_error) {
-    spdlog::error("Cannot parse time: {}", time);
-    return std::nullopt;
-  }
-
   return std::chrono::duration_cast<std::chrono::milliseconds>(
       parsed_time.time_since_epoch());
+}
+
+std::string ConvertUnixTimeToString(std::chrono::milliseconds time,
+                                    std::string_view format) {
+  const auto epoch_start_time_point =
+      std::chrono::system_clock::from_time_t(std::time_t{0});
+  const auto time_point = epoch_start_time_point + time;
+  return date::format(std::string{format}, time_point);
 }
 
 std::string SignUsingHmacSha256(std::string_view data, std::string_view key) {
