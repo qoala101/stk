@@ -67,7 +67,7 @@ std::optional<Balances> GetBalances() {
       rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/account")
           .AddHeader("X-MBX-APIKEY", settings::GetApiKey())
-          .AddParameter("timestamp", utils::GetUnixTimeMillis());
+          .AddParameter("timestamp", utils::GetUnixTime());
   const auto params = request.GetParametersAsString();
   const auto signed_params =
       utils::SignUsingHmacSha256(params, settings::GetSecretKey());
@@ -95,7 +95,7 @@ std::optional<PlaceOrderResult> PlaceOrder(std::string_view symbol, Side side,
           .AddParameter("side", side)
           .AddParameter("type", type)
           .AddParameter("timeInForce", time_in_force)
-          .AddParameter("timestamp", utils::GetUnixTimeMillis())
+          .AddParameter("timestamp", utils::GetUnixTime())
           .AddParameter("quantity", quantity)
           .AddParameter("price", price);
 
@@ -113,11 +113,11 @@ std::optional<PlaceOrderResult> PlaceOrder(std::string_view symbol, Side side,
   return ParseFromJson<PlaceOrderResult>(*response);
 }
 
-std::optional<std::vector<Kline>> GetKlines(std::string_view symbol,
-                                            CandlestickInterval interval,
-                                            std::optional<int64_t> start_time,
-                                            std::optional<int64_t> end_time,
-                                            std::optional<int64_t> limit) {
+std::optional<std::vector<Kline>> GetKlines(
+    std::string_view symbol, CandlestickInterval interval,
+    std::optional<std::chrono::milliseconds> start_time,
+    std::optional<std::chrono::milliseconds> end_time,
+    std::optional<int> limit) {
   const auto response =
       rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/klines")

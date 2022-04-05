@@ -23,6 +23,11 @@ void AddCell(std::vector<web::json::value> &cells, std::string_view value) {
   auto &cell = cells.emplace_back();
   cell["v"] = web::json::value::string(std::string{value});
 }
+
+void AddCell(std::vector<web::json::value> &cells,
+             std::chrono::milliseconds value) {
+  AddCell(cells, value.count());
+}
 }  // namespace
 
 namespace stonks {
@@ -34,8 +39,8 @@ web::json::value ConvertToJson(const std::vector<finance::Candlestick> &data) {
   AddColumn(cols, "Open", "number");
   AddColumn(cols, "Close", "number");
   AddColumn(cols, "Low", "number");
-  AddColumn(cols, "AA", "number"); // TODO
-  AddColumn(cols, "BB", "number"); // TODO
+  AddColumn(cols, "AA", "number");  // TODO
+  AddColumn(cols, "BB", "number");  // TODO
 
   const auto candlestick_to_json = [](const finance::Candlestick &candlestick) {
     auto json = web::json::value{};
@@ -46,8 +51,8 @@ web::json::value ConvertToJson(const std::vector<finance::Candlestick> &data) {
     AddCell(row_cells, candlestick.open_price);
     AddCell(row_cells, candlestick.close_price);
     AddCell(row_cells, candlestick.high_price);
-    AddCell(row_cells, candlestick.high_price); // TODO
-    AddCell(row_cells, candlestick.low_price); // TODO
+    AddCell(row_cells, candlestick.high_price);  // TODO
+    AddCell(row_cells, candlestick.low_price);   // TODO
     json["c"] = web::json::value::array(std::move(row_cells));
     return json;
   };

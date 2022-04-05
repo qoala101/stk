@@ -23,6 +23,11 @@ RestRequest &RestRequest::AddParameter(std::string_view key,
   return *this;
 }
 
+RestRequest &RestRequest::AddParameter(std::string_view key,
+                                       std::chrono::milliseconds value) {
+  return AddParameter(key, value.count());
+}
+
 RestRequest &RestRequest::AddHeader(std::string_view key,
                                     std::string_view value) {
   http_request_.headers().add(std::string{key}, std::string{value});

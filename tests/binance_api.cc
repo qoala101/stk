@@ -3,6 +3,8 @@
 #include <gtest/gtest.h>
 #include <spdlog/spdlog.h>
 
+#include <chrono>
+
 TEST(BinanceApi, GetSymbols) {
   const auto symbols = stonks::binance::GetSymbols();
   EXPECT_TRUE(symbols.has_value());
@@ -35,8 +37,8 @@ TEST(BinanceApi, GetKlines) {
   EXPECT_EQ(klines->size(), 10);
 
   for (auto iter = std::next(klines->begin()); iter != klines->end(); ++iter) {
-    EXPECT_GT(iter->open_time, 0);
-    EXPECT_GT(iter->open_time, iter->close_price);
+    EXPECT_GT(iter->open_time, std::chrono::milliseconds{0});
+    EXPECT_LT(iter->open_time, iter->close_time);
     EXPECT_LT(std::prev(iter)->open_time, iter->open_time);
   }
 }

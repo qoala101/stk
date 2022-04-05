@@ -2,6 +2,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <chrono>
 #include <magic_enum.hpp>
 #include <range/v3/to_container.hpp>
 #include <range/v3/view/take_while.hpp>
@@ -35,6 +36,17 @@ int64_t GetInt64PropertyAsInt64(const web::json::value& json,
 
 int64_t GetInt64ElementAsInt64(const web::json::value& json, const int index) {
   return json.at(index).as_number().to_int64();
+}
+
+std::chrono::milliseconds GetInt64PropertyAsMilliseconds(
+    const web::json::value& json, const std::string_view property_name) {
+  return std::chrono::milliseconds{
+      json.at(std::string{property_name}).as_number().to_int64()};
+}
+
+std::chrono::milliseconds GetInt64ElementAsMilliseconds(
+    const web::json::value& json, const int index) {
+  return std::chrono::milliseconds{json.at(index).as_number().to_int64()};
 }
 
 template <typename E>
@@ -72,7 +84,7 @@ std::optional<binance::PlaceOrderResult> ParseFromJson(
         .symbol = GetStringPropertyAsString(json, "symbol"),
         .time_in_force =
             GetStringPropertyAsEnum<binance::TimeInForce>(json, "timeInForce"),
-        .transaction_time = GetInt64PropertyAsInt64(json, "transactTime"),
+        .transaction_time = GetInt64PropertyAsMilliseconds(json, "transactTime"),
         .type = GetStringPropertyAsEnum<binance::Type>(json, "type")};
   } catch (const std::exception& exeption) {
     spdlog::error("Parse from JSON: {}", exeption.what());
@@ -87,13 +99,13 @@ template <>
 std::optional<binance::Kline> ParseFromJson(const web::json::value& json) {
   try {
     return binance::Kline{
-        .open_time = GetInt64ElementAsInt64(json, 0),
+        .open_time = GetInt64ElementAsMilliseconds(json, 0),
         .open_price = GetStringElementAsDouble(json, 1),
         .high_price = GetStringElementAsDouble(json, 2),
         .low_price = GetStringElementAsDouble(json, 3),
         .close_price = GetStringElementAsDouble(json, 4),
         .volume = GetStringElementAsDouble(json, 5),
-        .close_time = GetInt64ElementAsInt64(json, 6),
+        .close_time = GetInt64ElementAsMilliseconds(json, 6),
         .quote_asset_volume = GetStringElementAsDouble(json, 7),
         .num_trades = GetInt64ElementAsInt64(json, 8),
         .taker_buy_base_asset_volume = GetStringElementAsDouble(json, 9),

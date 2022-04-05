@@ -1,6 +1,7 @@
 #ifndef STONKS_BINANCE_BINANCE_API_H_
 #define STONKS_BINANCE_BINANCE_API_H_
 
+#include <chrono>
 #include <optional>
 #include <string>
 #include <vector>
@@ -24,9 +25,9 @@ std::optional<PlaceOrderResult> PlaceOrder(
 
 std::optional<std::vector<Kline>> GetKlines(
     std::string_view symbol, CandlestickInterval interval,
-    std::optional<int64_t> start_time = std::nullopt,
-    std::optional<int64_t> end_time = std::nullopt,
-    std::optional<int64_t> limit = std::nullopt);
+    std::optional<std::chrono::milliseconds> start_time = std::nullopt,
+    std::optional<std::chrono::milliseconds> end_time = std::nullopt,
+    std::optional<int> limit = std::nullopt);
 }  // namespace stonks::binance
 
 #endif  // STONKS_BINANCE_BINANCE_API_H_

@@ -12,33 +12,35 @@
 #include "finance_enum_conversions.h"
 
 namespace {
-int64_t CalculateNumIntervalsBetweenTimes(stonks::finance::Interval interval,
-                                          int64_t start_time_ms,
-                                          int64_t end_time_ms) {
+int CalculateNumIntervalsBetweenTimes(stonks::finance::Interval interval,
+                                      std::chrono::milliseconds start_time,
+                                      std::chrono::milliseconds end_time) {
   Expects(interval != stonks::finance::Interval::kInvalid);
-  Expects(start_time_ms <= end_time_ms);
+  Expects(start_time <= end_time);
 
-  const auto period = end_time_ms - start_time_ms;
+  const auto period_ms = (end_time - start_time).count();
 
-  if (period == 0) {
+  if (period_ms == 0) {
     return 1;
   }
 
-  const auto interval_ms = stonks::finance::ConvertIntervalToMillis(interval);
-  return static_cast<int64_t>(
-      std::ceil(static_cast<double>(period) / static_cast<double>(interval_ms)));
+  const auto interval_ms =
+      stonks::finance::ConvertIntervalToMilliseconds(interval).count();
+  return static_cast<int>(std::ceil(static_cast<double>(period_ms) /
+                                    static_cast<double>(interval_ms)));
 }
 }  // namespace
 
 namespace stonks::finance {
 std::optional<std::vector<Candlestick>> GetCandlesticks(
-    std::string_view symbol, Interval interval, int64_t history_start_time_ms,
-    int64_t history_end_time_ms) {
+    std::string_view symbol, Interval interval,
+    std::chrono::milliseconds history_start_time,
+    std::chrono::milliseconds history_end_time) {
   Expects(interval != Interval::kInvalid);
-  Expects(history_start_time_ms <= history_end_time_ms);
+  Expects(history_start_time <= history_end_time);
 
   const auto num_candlesticks = CalculateNumIntervalsBetweenTimes(
-      interval, history_start_time_ms, history_end_time_ms);
+      interval, history_start_time, history_end_time);
 
   static const auto kMaxNumCandlesticks = 10000;
 
@@ -53,13 +55,13 @@ std::optional<std::vector<Candlestick>> GetCandlesticks(
 
   while (candlesticks.size() < num_candlesticks) {
     if (!candlesticks.empty()) {
-      history_start_time_ms = candlesticks.back().close_time;
+      history_start_time = candlesticks.back().close_time;
     }
 
     const auto num_klines_to_request = num_candlesticks - candlesticks.size();
     const auto klines =
-        binance::GetKlines(symbol, interval, history_start_time_ms,
-                           history_end_time_ms, num_klines_to_request);
+        binance::GetKlines(symbol, interval, history_start_time,
+                           history_end_time, num_klines_to_request);
 
     if (!klines.has_value()) {
       spdlog::error("Cannot get candlesticks");

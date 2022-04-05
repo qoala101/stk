@@ -2,7 +2,8 @@
 
 #include <cpprest/json.h>
 #include <gtest/gtest.h>
-#include <spdlog/spdlog.h>
+
+#include <chrono>
 
 TEST(JsonConversions, PlaceOrderResult) {
   const auto raw_json = R"({
@@ -34,7 +35,7 @@ TEST(JsonConversions, PlaceOrderResult) {
       .status = stonks::binance::Status::kNew,
       .symbol = "BTCUSDT",
       .time_in_force = stonks::binance::TimeInForce::kGoodTillCanceled,
-      .transaction_time = 1648412181820,
+      .transaction_time = std::chrono::milliseconds{1648412181820},
       .type = stonks::binance::Type::kLimit};
 
   const auto parsed_json = web::json::value::parse(raw_json);
@@ -60,18 +61,18 @@ TEST(JsonConversions, Kline) {
   "96848939.73882025",
   "0"
 ])";
-  const auto object =
-      stonks::binance::Kline{.open_time = 1647820800000,
-                             .open_price = 41256.16,
-                             .high_price = 42293.25,
-                             .low_price = 21213.92,
-                             .close_price = 41004.51,
-                             .volume = 3880.275361,
-                             .close_time = 1647907199999,
-                             .quote_asset_volume = 159422440.52710729,
-                             .num_trades = 161896,
-                             .taker_buy_base_asset_volume = 2357.304304,
-                             .taker_buy_quote_asset_volume = 96848939.73882025};
+  const auto object = stonks::binance::Kline{
+      .open_time = std::chrono::milliseconds{1647820800000},
+      .open_price = 41256.16,
+      .high_price = 42293.25,
+      .low_price = 21213.92,
+      .close_price = 41004.51,
+      .volume = 3880.275361,
+      .close_time = std::chrono::milliseconds{1647907199999},
+      .quote_asset_volume = 159422440.52710729,
+      .num_trades = 161896,
+      .taker_buy_base_asset_volume = 2357.304304,
+      .taker_buy_quote_asset_volume = 96848939.73882025};
 
   const auto parsed_json = web::json::value::parse(raw_json);
   const auto parsed_object =
@@ -113,25 +114,26 @@ TEST(JsonConversions, Klines) {
   ]
 ])";
   const auto object = std::vector<stonks::binance::Kline>{
-      stonks::binance::Kline{.open_time = 1647820800000,
-                             .open_price = 41256.16,
-                             .high_price = 42293.25,
-                             .low_price = 21213.92,
-                             .close_price = 41004.51,
-                             .volume = 3880.275361,
-                             .close_time = 1647907199999,
-                             .quote_asset_volume = 159422440.52710729,
-                             .num_trades = 161896,
-                             .taker_buy_base_asset_volume = 2357.304304,
-                             .taker_buy_quote_asset_volume = 96848939.73882025},
       stonks::binance::Kline{
-          .open_time = 1647907200000,
+          .open_time = std::chrono::milliseconds{1647820800000},
+          .open_price = 41256.16,
+          .high_price = 42293.25,
+          .low_price = 21213.92,
+          .close_price = 41004.51,
+          .volume = 3880.275361,
+          .close_time = std::chrono::milliseconds{1647907199999},
+          .quote_asset_volume = 159422440.52710729,
+          .num_trades = 161896,
+          .taker_buy_base_asset_volume = 2357.304304,
+          .taker_buy_quote_asset_volume = 96848939.73882025},
+      stonks::binance::Kline{
+          .open_time = std::chrono::milliseconds{1647907200000},
           .open_price = 41003.64,
           .high_price = 60000,
           .low_price = 40419.49,
           .close_price = 42364.14,
           .volume = 3985.023552,
-          .close_time = 1647993599999,
+          .close_time = std::chrono::milliseconds{1647993599999},
           .quote_asset_volume = 169122058.79004571,
           .num_trades = 172787,
           .taker_buy_base_asset_volume = 2437.265733,

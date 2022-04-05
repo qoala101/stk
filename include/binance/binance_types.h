@@ -1,6 +1,7 @@
 #ifndef STONKS_BINANCE_BINANCE_TYPES_H_
 #define STONKS_BINANCE_BINANCE_TYPES_H_
 
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -22,7 +23,7 @@ struct PlaceOrderResult {
   Status status{};
   std::string symbol{};
   TimeInForce time_in_force{};
-  int64_t transaction_time{};
+  std::chrono::milliseconds transaction_time{};
   Type type{};
 
  private:
@@ -31,13 +32,13 @@ struct PlaceOrderResult {
 };
 
 struct Kline {
-  int64_t open_time{};
+  std::chrono::milliseconds open_time{};
   double open_price{};
   double high_price{};
   double low_price{};
   double close_price{};
   double volume{};
-  int64_t close_time{};
+  std::chrono::milliseconds close_time{};
   double quote_asset_volume{};
   int64_t num_trades{};
   double taker_buy_base_asset_volume{};

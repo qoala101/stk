@@ -9,6 +9,7 @@
 #include <magic_enum.hpp>
 #include <optional>
 #include <string_view>
+#include <chrono>
 
 #include "concepts.h"
 
@@ -21,6 +22,8 @@ namespace stonks::rest {
     RestRequest &AppendUri(std::string_view uri);
 
     RestRequest &AddParameter(std::string_view key, std::string_view value);
+
+    RestRequest &AddParameter(std::string_view key, std::chrono::milliseconds value);
 
     template <Number T>
     RestRequest &AddParameter(std::string_view key, T value) {

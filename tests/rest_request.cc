@@ -33,6 +33,7 @@ TEST(RestRequest, ParameterTypesToString) {
   const auto result_string =
       stonks::rest::RestRequest{""}
           .AddParameter("string", "abc")
+          .AddParameter("milliseconds", std::chrono::milliseconds{123456789})
           .AddParameter("int", 123456789)
           .AddParameter("int64_t", int64_t{123456789})
           .AddParameter("float", float{123456789.123456789})
@@ -40,6 +41,8 @@ TEST(RestRequest, ParameterTypesToString) {
           .AddParameter("default_enum_name", DefaultNameEnum::kDefaultEnumName)
           .AddParameter("custom_enum_name", CustomNameEnum::kCustomEnumName)
           .AddParameter("optional_string", std::optional<std::string>{"abc"})
+          .AddParameter("optional_milliseconds",
+                        std::optional<std::chrono::milliseconds>{123456789})
           .AddParameter("optional_int", std::optional<int>{123456789})
           .AddParameter("optional_int64_t",
                         std::optional<int64_t>{int64_t{123456789}})
@@ -57,6 +60,7 @@ TEST(RestRequest, ParameterTypesToString) {
           .GetParametersAsString();
   const auto expected_string =
       "string=abc&"
+      "milliseconds=123456789&"
       "int=123456789&"
       "int64_t=123456789&"
       "float=123456792&"
@@ -64,6 +68,7 @@ TEST(RestRequest, ParameterTypesToString) {
       "default_enum_name=kDefaultEnumName&"
       "custom_enum_name=CUSTOM_ENUM_NAME&"
       "optional_string=abc&"
+      "optional_milliseconds=123456789&"
       "optional_int=123456789&"
       "optional_int64_t=123456789&"
       "optional_float=123456792&"

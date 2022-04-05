@@ -5,18 +5,16 @@
 #include <spdlog/spdlog.h>
 
 #include <array>
-#include <chrono>
 
 namespace stonks::utils {
-int64_t GetUnixTimeMillis() {
+std::chrono::milliseconds GetUnixTime() {
   const auto current_time = std::chrono::system_clock::now();
-  return int64_t{std::chrono::duration_cast<std::chrono::milliseconds>(
-                     current_time.time_since_epoch())
-                     .count()};
+  return std::chrono::duration_cast<std::chrono::milliseconds>(
+      current_time.time_since_epoch());
 }
 
-std::optional<int64_t> GetUnixTimeMillisFromString(std::string_view time,
-                                                   std::string_view format) {
+std::optional<std::chrono::milliseconds> GetUnixTimeFromString(
+    std::string_view time, std::string_view format) {
   auto input_stream = std::istringstream(std::string{time});
   auto parsed_time = std::chrono::time_point<std::chrono::system_clock,
                                              std::chrono::seconds>{};
@@ -30,9 +28,8 @@ std::optional<int64_t> GetUnixTimeMillisFromString(std::string_view time,
     return std::nullopt;
   }
 
-  return int64_t{std::chrono::duration_cast<std::chrono::milliseconds>(
-                     parsed_time.time_since_epoch())
-                     .count()};
+  return std::chrono::duration_cast<std::chrono::milliseconds>(
+      parsed_time.time_since_epoch());
 }
 
 std::string SignUsingHmacSha256(std::string_view data, std::string_view key) {
