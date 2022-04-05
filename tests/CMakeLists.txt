@@ -1,5 +1,6 @@
 find_package(GTest REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(range-v3 REQUIRED)
 
 add_executable(unittests
   main.cc
@@ -14,3 +15,4 @@ add_executable(unittests
 target_link_libraries(unittests PRIVATE libstonks)
 target_link_libraries(unittests PRIVATE spdlog::spdlog)
 target_link_libraries(unittests PRIVATE GTest::gtest GTest::gtest_main)
+target_link_libraries(unittests PRIVATE range-v3::range-v3)

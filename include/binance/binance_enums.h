@@ -34,6 +34,7 @@ enum class Type {
 };
 
 enum class CandlestickInterval {
+  kInvalid,
   k1Minute,
   k3Minutes,
   k5Minutes,

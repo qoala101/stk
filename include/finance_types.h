@@ -13,8 +13,8 @@ struct Candlestick {
   int64_t close_time{};
 
  private:
-  friend bool operator==(const Candlestick &, const Candlestick &) = default;
+  friend auto operator<=>(const Candlestick &, const Candlestick &) = default;
 };
-}  // namespace stonks
+}  // namespace stonks::finance
 
 #endif  // STONKS_FINANCE_TYPES_H_
