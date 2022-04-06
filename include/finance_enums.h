@@ -3,9 +3,11 @@
 
 #include "binance_enums.h"
 
-namespace stonks::finance
-{
-  using Interval = binance::CandlestickInterval;
-}
+namespace stonks::finance {
+using Interval = binance::CandlestickInterval;
+using Action = binance::Side;
+
+enum class StrategyResult { kInvalid, kOne, kMinusOne, kZero };
+}  // namespace stonks::finance
 
 #endif  // STONKS_FINANCE_ENUMS_H_

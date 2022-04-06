@@ -9,13 +9,9 @@
 #include "binance_types.h"
 
 namespace stonks::binance {
-using Symbol = std::string;
+std::optional<std::vector<std::string>> GetSymbols();
 
-std::optional<std::vector<Symbol>> GetSymbols();
-
-using Balances = std::string;
-
-std::optional<Balances> GetBalances();
+std::optional<std::string> GetBalances();
 
 std::optional<PlaceOrderResult> PlaceOrder(
     std::string_view symbol, Side side, Type type,

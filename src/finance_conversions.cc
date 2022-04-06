@@ -7,6 +7,7 @@ Candlestick ParseCandlestickFromBinanceKline(const binance::Kline &kline) {
                      .high_price = kline.high_price,
                      .low_price = kline.low_price,
                      .close_price = kline.close_price,
-                     .close_time = kline.close_time};
+                     .close_time = kline.close_time,
+                     .volume = kline.volume};
 };
 }  // namespace stonks

@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "binance_types.h"
+#include "finance_types.h"
 
 namespace stonks {
 template <typename T>
@@ -21,6 +22,20 @@ std::optional<binance::Kline> ParseFromJson(const web::json::value &json);
 template <>
 std::optional<std::vector<binance::Kline>> ParseFromJson(
     const web::json::value &json);
+
+template <>
+std::optional<finance::Symbol> ParseFromJson(const web::json::value &json);
+web::json::value ConvertToJson(const finance::Symbol &data);
+
+template <>
+std::optional<finance::StrategyInfo> ParseFromJson(
+    const web::json::value &json);
+web::json::value ConvertToJson(const finance::StrategyInfo &data);
+
+template <>
+std::optional<finance::OrderRequest> ParseFromJson(
+    const web::json::value &json);
+web::json::value ConvertToJson(const finance::OrderRequest &data);
 }  // namespace stonks
 
 #endif  // STONKS_JSON_CONVERSIONS_H_

@@ -185,3 +185,37 @@ TEST(JsonConversions, BrokenKlineInArray) {
 
   ASSERT_FALSE(parsed_object.has_value());
 }
+
+TEST(JsonConversions, OrderRequest) {
+  const auto original_object = stonks::finance::OrderRequest{
+      .time = std::chrono::milliseconds{1647820800000},
+      .action = stonks::finance::Action::kBuy,
+      .symbol =
+          stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"},
+      .quantity = 123456789.123456789,
+      .price = 123456789.123456789,
+  };
+  const auto json = stonks::ConvertToJson(original_object);
+  const auto parsed_object =
+      stonks::ParseFromJson<stonks::finance::OrderRequest>(json);
+
+  ASSERT_TRUE(parsed_object.has_value());
+  EXPECT_EQ(original_object, *parsed_object);
+}
+
+TEST(JsonConversions, NonParsableObjectProperty) {
+  const auto raw_json = R"({
+  "action":"BUY",
+  "price":123456789.12345679,
+  "quantity":123456789.12345679,
+  "symbol":{
+    "ERROR":"ETH"
+  },
+  "time":1647820800000
+})";
+  const auto parsed_json = web::json::value::parse(raw_json);
+  const auto parsed_object =
+      stonks::ParseFromJson<stonks::finance::OrderRequest>(parsed_json);
+
+  ASSERT_FALSE(parsed_object.has_value());
+}

@@ -9,6 +9,7 @@
 #include <range/v3/view/transform.hpp>
 
 #include "binance_enum_conversions.h"
+#include "concepts.h"
 
 namespace {
 const std::string& GetStringPropertyAsString(
@@ -38,6 +39,15 @@ int64_t GetInt64ElementAsInt64(const web::json::value& json, const int index) {
   return json.at(index).as_number().to_int64();
 }
 
+double GetDoublePropertyAsDouble(const web::json::value& json,
+                                 const std::string_view property_name) {
+  return json.at(std::string{property_name}).as_number().to_double();
+}
+
+double GetDoubleElementAsDouble(const web::json::value& json, const int index) {
+  return json.at(index).as_number().to_double();
+}
+
 std::chrono::milliseconds GetInt64PropertyAsMilliseconds(
     const web::json::value& json, const std::string_view property_name) {
   return std::chrono::milliseconds{
@@ -49,7 +59,7 @@ std::chrono::milliseconds GetInt64ElementAsMilliseconds(
   return std::chrono::milliseconds{json.at(index).as_number().to_int64()};
 }
 
-template <typename E>
+template <Enumeration E>
 E GetStringPropertyAsEnum(const web::json::value& json,
                           const std::string_view property_name) {
   return magic_enum::enum_cast<E>(
@@ -57,10 +67,34 @@ E GetStringPropertyAsEnum(const web::json::value& json,
       .value_or(E::kInvalid);
 }
 
-template <typename E>
+template <Enumeration E>
 E GetStringElementAsEnum(const web::json::value& json, const int index) {
   return magic_enum::enum_cast<E>(json.at(index).as_string())
       .value_or(E::kInvalid);
+}
+
+template <typename T>
+T GetObjectPropertyAsObject(const web::json::value& json,
+                            const std::string_view property_name) {
+  const auto object =
+      stonks::ParseFromJson<T>(json.at(std::string{property_name}));
+
+  if (!object.has_value()) {
+    throw std::invalid_argument{"Cannot parse object"};
+  }
+
+  return *object;
+}
+
+template <typename T>
+T GetObjectElementAsObject(const web::json::value& json, const int index) {
+  const auto object = stonks::ParseFromJson<T>(json.at(index));
+
+  if (!object.has_value()) {
+    throw std::invalid_argument{"Cannot parse object"};
+  }
+
+  return *object;
 }
 }  // namespace
 
@@ -84,7 +118,8 @@ std::optional<binance::PlaceOrderResult> ParseFromJson(
         .symbol = GetStringPropertyAsString(json, "symbol"),
         .time_in_force =
             GetStringPropertyAsEnum<binance::TimeInForce>(json, "timeInForce"),
-        .transaction_time = GetInt64PropertyAsMilliseconds(json, "transactTime"),
+        .transaction_time =
+            GetInt64PropertyAsMilliseconds(json, "transactTime"),
         .type = GetStringPropertyAsEnum<binance::Type>(json, "type")};
   } catch (const std::exception& exeption) {
     spdlog::error("Parse from JSON: {}", exeption.what());
@@ -151,5 +186,78 @@ std::optional<std::vector<binance::Kline>> ParseFromJson(
   }
 
   return parsed_klines;
+}
+
+template <>
+std::optional<finance::Symbol> ParseFromJson(const web::json::value& json) {
+  try {
+    return finance::Symbol{
+        .base_asset = GetStringPropertyAsString(json, "base_asset"),
+        .quote_asset = GetStringPropertyAsString(json, "quote_asset")};
+  } catch (const std::exception& exeption) {
+    spdlog::error("Parse from JSON: {}", exeption.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::Symbol& data) {
+  auto json = web::json::value{};
+  json["base_asset"] = web::json::value::string(data.base_asset);
+  json["quote_asset"] = web::json::value::string(data.quote_asset);
+  return json;
+}
+
+template <>
+std::optional<finance::StrategyInfo> ParseFromJson(
+    const web::json::value& json) {
+  try {
+    return finance::StrategyInfo{.name =
+                                     GetStringPropertyAsString(json, "name")};
+  } catch (const std::exception& exeption) {
+    spdlog::error("Parse from JSON: {}", exeption.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::StrategyInfo& data) {
+  auto json = web::json::value{};
+  json["name"] = web::json::value::string(data.name);
+  return json;
+}
+
+template <>
+std::optional<finance::OrderRequest> ParseFromJson(
+    const web::json::value& json) {
+  try {
+    return finance::OrderRequest{
+        .time = GetInt64PropertyAsMilliseconds(json, "time"),
+        .action = GetStringPropertyAsEnum<finance::Action>(json, "action"),
+        .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
+        .quantity = GetDoublePropertyAsDouble(json, "quantity"),
+        .price = GetDoublePropertyAsDouble(json, "price")};
+  } catch (const std::exception& exeption) {
+    spdlog::error("Parse from JSON: {}", exeption.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::OrderRequest& data) {
+  auto json = web::json::value{};
+  json["time"] = web::json::value::number(data.time.count());
+  json["action"] =
+      web::json::value::string(std::string{magic_enum::enum_name(data.action)});
+  json["symbol"] = ConvertToJson(data.symbol);
+  json["quantity"] = web::json::value::number(data.quantity);
+  json["price"] = web::json::value::number(data.price);
+  return json;
 }
 }  // namespace stonks

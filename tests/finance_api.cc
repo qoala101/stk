@@ -4,6 +4,7 @@
 
 #include <range/v3/all.hpp>
 
+#include "finance_enum_conversions.h"
 #include "utils.h"
 
 TEST(FinanceApi, GetCandlesticks) {
@@ -17,13 +18,37 @@ TEST(FinanceApi, GetCandlesticks) {
 }
 
 TEST(FinanceApi, GetCandlesticksSingle) {
+  const auto open_time =
+      stonks::utils::ParseUnixTimeFromString("1 Apr 2022 00:00:00");
   const auto candlesticks = stonks::finance::GetCandlesticks(
-      "ETHUSDT", stonks::finance::Interval::k1Hour,
-      stonks::utils::ParseUnixTimeFromString("1 Apr 2022 00:00:00"),
-      stonks::utils::ParseUnixTimeFromString("1 Apr 2022 00:00:00"));
+      "ETHUSDT", stonks::finance::Interval::k1Hour, open_time, open_time);
 
   ASSERT_TRUE(candlesticks.has_value());
   EXPECT_EQ(candlesticks->size(), 1);
+  EXPECT_EQ(candlesticks->back().open_time, open_time);
+}
+
+TEST(FinanceApi, GetConsecutiveCandlesticks) {
+  const auto interval = stonks::finance::Interval::k1Hour;
+  const auto first_open_time =
+      stonks::utils::ParseUnixTimeFromString("1 Apr 2022 01:00:00");
+
+  auto candlesticks = stonks::finance::GetCandlesticks(
+      "ETHUSDT", interval, first_open_time, first_open_time);
+  ASSERT_TRUE(candlesticks.has_value());
+  EXPECT_EQ(candlesticks->size(), 1);
+  const auto first_candlestick = candlesticks->back();
+  EXPECT_EQ(first_candlestick.open_time, first_open_time);
+
+  const auto second_open_time =
+      first_open_time +
+      stonks::finance::ConvertIntervalToMilliseconds(interval);
+  candlesticks = stonks::finance::GetCandlesticks(
+      "ETHUSDT", interval, second_open_time, second_open_time);
+  ASSERT_TRUE(candlesticks.has_value());
+  EXPECT_EQ(candlesticks->size(), 1);
+  const auto second_candlestick = candlesticks->back();
+  EXPECT_EQ(second_candlestick.open_time, second_open_time);
 }
 
 TEST(FinanceApi, GetCandlesticksMoreThan1000) {

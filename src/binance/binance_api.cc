@@ -13,8 +13,8 @@
 #include "utils.h"
 
 namespace {
-std::optional<std::vector<stonks::binance::Symbol>>
-ParseSymbolsFromExchangeInfo(const web::json::value &exchange_info) {
+std::optional<std::vector<std::string>> ParseSymbolsFromExchangeInfo(
+    const web::json::value &exchange_info) {
   if (!exchange_info.has_field("symbols")) {
     return std::nullopt;
   }
@@ -48,7 +48,7 @@ ParseSymbolsFromExchangeInfo(const web::json::value &exchange_info) {
 }  // namespace
 
 namespace stonks::binance {
-std::optional<std::vector<Symbol>> GetSymbols() {
+std::optional<std::vector<std::string>> GetSymbols() {
   const auto exchange_info =
       rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/exchangeInfo")
@@ -62,7 +62,7 @@ std::optional<std::vector<Symbol>> GetSymbols() {
   return ParseSymbolsFromExchangeInfo(*exchange_info);
 }
 
-std::optional<Balances> GetBalances() {
+std::optional<std::string> GetBalances() {
   auto request =
       rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/account")
