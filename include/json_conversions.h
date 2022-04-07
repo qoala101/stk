@@ -36,6 +36,11 @@ template <>
 std::optional<finance::OrderRequest> ParseFromJson(
     const web::json::value &json);
 web::json::value ConvertToJson(const finance::OrderRequest &data);
+
+template <>
+std::optional<finance::StrategyOrderRequest> ParseFromJson(
+    const web::json::value &json);
+web::json::value ConvertToJson(const finance::StrategyOrderRequest &data);
 }  // namespace stonks
 
 #endif  // STONKS_JSON_CONVERSIONS_H_

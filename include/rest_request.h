@@ -45,6 +45,8 @@ namespace stonks::rest {
       return *this;
     }
 
+    RestRequest &SetJson(const web::json::value &json);
+
     RestRequest &AddHeader(std::string_view key, std::string_view value);
 
     std::string GetUri() const;

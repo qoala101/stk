@@ -13,6 +13,7 @@ add_library(libstonks
   finance_conversions.cc
   finance_enum_conversions.cc
   google_charts_conversions.cc
+  order_proxy.cc
 
   binance/binance_api.cc
   binance/binance_settings.cc
@@ -20,6 +21,8 @@ add_library(libstonks
   services/get_file_service.cc
   services/get_symbols_service.cc
   services/get_candlestick_chart_data_service.cc
+  services/breakout_strategy_service.cc
+  services/order_proxy_service.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include)

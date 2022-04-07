@@ -4,16 +4,26 @@
 #include <variant>
 #include <vector>
 
+#include "breakout_strategy_service.h"
+#include "finance_enums.h"
+#include "get_candlestick_chart_data_service.h"
 #include "get_file_service.h"
 #include "get_symbols_service.h"
+#include "order_proxy_service.h"
+#include "utils.h"
 
 int main(int, const char *[]) {
   using ServiceVariant =
-      std::variant<stonks::GetFileService, stonks::GetSymbolsService>;
+      std::variant<stonks::GetFileService, stonks::GetSymbolsService,
+                   stonks::GetCandlestickChartDataService,
+                   stonks::BreakoutStrategyService, stonks::OrderProxyService>;
 
   auto services = std::vector<ServiceVariant>{};
   services.emplace_back(stonks::GetFileService{});
   services.emplace_back(stonks::GetSymbolsService{});
+  services.emplace_back(stonks::GetCandlestickChartDataService{});
+  services.emplace_back(stonks::OrderProxyService{});
+  services.emplace_back(stonks::BreakoutStrategyService{});
 
   for (auto &service : services) {
     std::visit([](auto &service) { service.Start(); }, service);

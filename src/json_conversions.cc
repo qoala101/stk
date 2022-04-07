@@ -260,4 +260,29 @@ web::json::value ConvertToJson(const finance::OrderRequest& data) {
   json["price"] = web::json::value::number(data.price);
   return json;
 }
+
+template <>
+std::optional<finance::StrategyOrderRequest> ParseFromJson(
+    const web::json::value& json) {
+  try {
+    return finance::StrategyOrderRequest{
+        .strategy_info = GetObjectPropertyAsObject<finance::StrategyInfo>(
+            json, "strategy_info"),
+        .order_request = GetObjectPropertyAsObject<finance::OrderRequest>(
+            json, "order_request")};
+  } catch (const std::exception& exeption) {
+    spdlog::error("Parse from JSON: {}", exeption.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::StrategyOrderRequest& data) {
+  auto json = web::json::value{};
+  json["strategy_info"] = ConvertToJson(data.strategy_info);
+  json["order_request"] = ConvertToJson(data.order_request);
+  return json;
+}
 }  // namespace stonks

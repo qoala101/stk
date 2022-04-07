@@ -12,9 +12,9 @@ void HandleGetRequest(const web::http::http_request &request) {
   spdlog::info("Got {} request on {}", request.method(),
                request.request_uri().to_string());
   const auto candlesticks = stonks::finance::GetCandlesticks(
-      "ETHUSDT", stonks::finance::Interval::k1Hour,
-      stonks::utils::ParseUnixTimeFromString("1 Mar 2022 00:00:00"),
-      stonks::utils::ParseUnixTimeFromString("2 Mar 2022 00:00:00"));
+      "ETHUSDT", stonks::finance::Interval::k1Minute,
+      stonks::utils::GetUnixTime() - std::chrono::hours{1},
+      stonks::utils::GetUnixTime());
 
   if (!candlesticks.has_value()) {
     request.reply(web::http::status_codes::NotFound);

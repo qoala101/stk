@@ -186,18 +186,20 @@ TEST(JsonConversions, BrokenKlineInArray) {
   ASSERT_FALSE(parsed_object.has_value());
 }
 
-TEST(JsonConversions, OrderRequest) {
-  const auto original_object = stonks::finance::OrderRequest{
-      .time = std::chrono::milliseconds{1647820800000},
-      .action = stonks::finance::Action::kBuy,
-      .symbol =
-          stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"},
-      .quantity = 123456789.123456789,
-      .price = 123456789.123456789,
-  };
+TEST(JsonConversions, StrategyOrderRequest) {
+  const auto original_object = stonks::finance::StrategyOrderRequest{
+      .strategy_info = stonks::finance::StrategyInfo{.name = "breakout"},
+      .order_request = stonks::finance::OrderRequest{
+          .time = std::chrono::milliseconds{1647820800000},
+          .action = stonks::finance::Action::kBuy,
+          .symbol = stonks::finance::Symbol{.base_asset = "ETH",
+                                            .quote_asset = "USDT"},
+          .quantity = 123456789.123456789,
+          .price = 123456789.123456789,
+      }};
   const auto json = stonks::ConvertToJson(original_object);
   const auto parsed_object =
-      stonks::ParseFromJson<stonks::finance::OrderRequest>(json);
+      stonks::ParseFromJson<stonks::finance::StrategyOrderRequest>(json);
 
   ASSERT_TRUE(parsed_object.has_value());
   EXPECT_EQ(original_object, *parsed_object);

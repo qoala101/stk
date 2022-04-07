@@ -34,6 +34,11 @@ RestRequest &RestRequest::AddHeader(std::string_view key,
   return *this;
 }
 
+RestRequest &RestRequest::SetJson(const web::json::value &json) {
+  http_request_.set_body(json);
+  return *this;
+}
+
 std::string RestRequest::GetUri() const { return uri_builder_.to_string(); }
 
 const std::string &RestRequest::GetParametersAsString() const {

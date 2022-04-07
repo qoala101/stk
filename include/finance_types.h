@@ -33,6 +33,15 @@ struct OrderRequest {
   friend bool operator==(const OrderRequest &, const OrderRequest &) = default;
 };
 
+struct StrategyOrderRequest {
+  StrategyInfo strategy_info;
+  OrderRequest order_request;
+
+ private:
+  friend bool operator==(const StrategyOrderRequest &,
+                         const StrategyOrderRequest &) = default;
+};
+
 struct Candlestick {
   std::chrono::milliseconds open_time{};
   double open_price{};
