@@ -1,6 +1,7 @@
 #include <pplx/pplxtasks.h>
 #include <spdlog/spdlog.h>
 
+#include <memory>
 #include <variant>
 #include <vector>
 
@@ -18,15 +19,20 @@ int main(int, const char *[]) {
                    stonks::GetCandlestickChartDataService,
                    stonks::BreakoutStrategyService, stonks::OrderProxyService>;
 
-  auto services = std::vector<ServiceVariant>{};
-  services.emplace_back(stonks::GetFileService{});
-  services.emplace_back(stonks::GetSymbolsService{});
-  services.emplace_back(stonks::GetCandlestickChartDataService{});
-  services.emplace_back(stonks::OrderProxyService{});
-  services.emplace_back(stonks::BreakoutStrategyService{});
+  auto services = std::vector<std::unique_ptr<ServiceVariant>>{};
+  services.emplace_back(std::make_unique<ServiceVariant>());
+  services.back()->emplace<stonks::GetFileService>();
+  services.emplace_back(std::make_unique<ServiceVariant>());
+  services.back()->emplace<stonks::GetSymbolsService>();
+  services.emplace_back(std::make_unique<ServiceVariant>());
+  services.back()->emplace<stonks::GetCandlestickChartDataService>();
+  services.emplace_back(std::make_unique<ServiceVariant>());
+  services.back()->emplace<stonks::OrderProxyService>();
+  services.emplace_back(std::make_unique<ServiceVariant>());
+  services.back()->emplace<stonks::BreakoutStrategyService>();
 
   for (auto &service : services) {
-    std::visit([](auto &service) { service.Start(); }, service);
+    std::visit([](auto &service) { service.Start(); }, *service);
   }
 
   spdlog::info("Started {} services", services.size());
@@ -37,7 +43,7 @@ int main(int, const char *[]) {
 
   for (auto &service : services) {
     auto stop_task =
-        std::visit([](auto &service) { return service.Stop(); }, service);
+        std::visit([](auto &service) { return service.Stop(); }, *service);
     stop_tasks.emplace_back(std::move(stop_task));
   }
 

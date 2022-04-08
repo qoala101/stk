@@ -69,7 +69,7 @@ web::json::value ConvertToJson(
     const std::vector<finance::StrategyOrderRequest> &data) {
   auto cols = std::vector<web::json::value>{};
   cols.reserve(3);
-  AddColumn(cols, "Time", "string");
+  AddColumn(cols, "Time", "number");
   AddColumn(cols, "ETH", "number");
   AddColumn(cols, "USDT", "number");
 

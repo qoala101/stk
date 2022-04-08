@@ -9,35 +9,26 @@
     google.charts.load('current', { 'packages': ['corechart'] });
     google.charts.setOnLoadCallback(OnChartsLoaded);
 
+    var strategy_chart;
+    var strategy_chart_data;
+    var strategy_chart_options;
+
     function OnChartsLoaded() {
       $.ajax({
-        url: "http://localhost:6506/api/candlestick_chart_data"
-      }).done(OnCandlesticksResponseReceived);
-
-      $.ajax({
         url: "http://localhost:6506/api/order_proxy/order"
-      }).done(OnStrategyResponseReceived);
+      }).done(OnStrategyChartInitialDataReceived);
     }
 
-    function OnCandlesticksResponseReceived(response) {
-      var data = new google.visualization.DataTable(response);
-
-      var options = {
-        title: "ETHUSDT",
-        vAxis: { title: "Price, USDT" },
-        hAxis: { title: "Date" },
-        series: [{ type: "candlesticks" }, { type: "line", curveType: "function" }, { type: "line" }],
-        height: 800
-      };
-
-      var candlesticks_chart = new google.visualization.ComboChart(document.getElementById('candlesticks_chart_div'));
-      candlesticks_chart.draw(data, options);
+    function OnStrategyChartReady() {
+      $.ajax({
+        url: "http://localhost:6506/api/order_proxy/order?drop_first=" + strategy_chart_data.getNumberOfRows()
+      }).done(OnStrategyChartNewDataReceived);
     }
 
-    function OnStrategyResponseReceived(response) {
-      var data = new google.visualization.DataTable(response);
+    function OnStrategyChartInitialDataReceived(response) {
+      strategy_chart_data = new google.visualization.DataTable(response);
 
-      var options = {
+      strategy_chart_options = {
         title: "ETHUSDT",
         hAxis: { title: "Date" },
         series: {
@@ -55,15 +46,35 @@
         height: 800
       };
 
-      var strategy_chart = new google.visualization.ComboChart(document.getElementById('strategy_chart_div'));
-      strategy_chart.draw(data, options);
+      strategy_chart = new google.visualization.ComboChart(document.getElementById("strategy_chart_div"));
+      google.visualization.events.addListener(strategy_chart, "ready", OnStrategyChartReady);
+      strategy_chart.draw(strategy_chart_data, strategy_chart_options);
+    }
+
+    function OnStrategyChartNewDataReceived(response) {
+      var new_data = new google.visualization.DataTable(response);
+      var keys = [];
+
+      for (var i = 0; i < strategy_chart_data.getNumberOfColumns(); ++i) {
+        keys.push([i, i]);
+      }
+
+      strategy_chart_data = new google.visualization.data.join(
+        strategy_chart_data,
+        new_data,
+        "full",
+        keys,
+        [],
+        []
+      );
+
+      strategy_chart.draw(strategy_chart_data, strategy_chart_options);
     }
 
   </script>
 </head>
 
 <body>
-  <div id="candlesticks_chart_div"></div>
   <div id="strategy_chart_div"></div>
 </body>
 
