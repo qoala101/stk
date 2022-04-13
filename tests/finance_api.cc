@@ -10,18 +10,25 @@
 TEST(FinanceApi, GetCandlesticks) {
   const auto candlesticks = stonks::finance::GetCandlesticks(
       "ETHUSDT", stonks::finance::Interval::k1Hour,
-      stonks::utils::ParseUnixTimeFromString("1 Apr 2022 00:00:00"),
-      stonks::utils::ParseUnixTimeFromString("1 Apr 2022 23:59:59"));
+      stonks::utils::GetUnixTime() - std::chrono::days{2},
+      stonks::utils::GetUnixTime() - std::chrono::days{1} -
+          std::chrono::seconds{1});
 
   ASSERT_TRUE(candlesticks.has_value());
   EXPECT_EQ(candlesticks->size(), 24);
 }
 
+namespace {
+std::chrono::milliseconds RoundToMinutes(std::chrono::milliseconds time) {
+  return std::chrono::milliseconds{(time.count() / 1000000) * 1000000};
+}
+}  // namespace
+
 TEST(FinanceApi, GetCandlesticksSingle) {
   const auto open_time =
-      stonks::utils::ParseUnixTimeFromString("1 Apr 2022 00:00:00");
+      RoundToMinutes(stonks::utils::GetUnixTime() - std::chrono::hours{1});
   const auto candlesticks = stonks::finance::GetCandlesticks(
-      "ETHUSDT", stonks::finance::Interval::k1Hour, open_time, open_time);
+      "ETHUSDT", stonks::finance::Interval::k1Minute, open_time, open_time);
 
   ASSERT_TRUE(candlesticks.has_value());
   EXPECT_EQ(candlesticks->size(), 1);
@@ -29,9 +36,9 @@ TEST(FinanceApi, GetCandlesticksSingle) {
 }
 
 TEST(FinanceApi, GetConsecutiveCandlesticks) {
-  const auto interval = stonks::finance::Interval::k1Hour;
+  const auto interval = stonks::finance::Interval::k1Minute;
   const auto first_open_time =
-      stonks::utils::ParseUnixTimeFromString("1 Apr 2022 01:00:00");
+      RoundToMinutes(stonks::utils::GetUnixTime() - std::chrono::hours{1});
 
   auto candlesticks = stonks::finance::GetCandlesticks(
       "ETHUSDT", interval, first_open_time, first_open_time);
@@ -54,8 +61,9 @@ TEST(FinanceApi, GetConsecutiveCandlesticks) {
 TEST(FinanceApi, GetCandlesticksMoreThan1000) {
   auto candlesticks = stonks::finance::GetCandlesticks(
       "ETHUSDT", stonks::finance::Interval::k1Minute,
-      stonks::utils::ParseUnixTimeFromString("1 Apr 2022 00:00:00"),
-      stonks::utils::ParseUnixTimeFromString("2 Apr 2022 23:59:59"));
+      stonks::utils::GetUnixTime() - std::chrono::days{3},
+      stonks::utils::GetUnixTime() - std::chrono::days{1} -
+          std::chrono::seconds{1});
 
   ASSERT_TRUE(candlesticks.has_value());
   EXPECT_EQ(candlesticks->size(), 60 * 24 * 2);
@@ -64,24 +72,57 @@ TEST(FinanceApi, GetCandlesticksMoreThan1000) {
   EXPECT_EQ(candlesticks->size(), 60 * 24 * 2);
 }
 
-TEST(FinanceApi, GetCandlesticksWrongDates) {
+TEST(FinanceApi, GetCandlesticksPast) {
   auto candlesticks = stonks::finance::GetCandlesticks(
       "ETHUSDT", stonks::finance::Interval::k1Month,
-      stonks::utils::ParseUnixTimeFromString("1 Apr 2022 00:00:00"),
-      stonks::utils::ParseUnixTimeFromString("1 Apr 2122 23:59:59"));
-  EXPECT_FALSE(candlesticks.has_value());
-
-  candlesticks = stonks::finance::GetCandlesticks(
-      "ETHUSDT", stonks::finance::Interval::k1Minute,
-      stonks::utils::ParseUnixTimeFromString("1 Apr 3000 00:00:00"),
-      stonks::utils::ParseUnixTimeFromString("1 Apr 3000 23:59:59"));
-  EXPECT_FALSE(candlesticks.has_value());
+      stonks::utils::GetUnixTime() - std::chrono::years{50},
+      stonks::utils::GetUnixTime() - std::chrono::years{49});
+  ASSERT_TRUE(candlesticks.has_value());
+  EXPECT_TRUE(candlesticks->empty());
 }
 
-TEST(FinanceApi, GetCandlesticksBigNumber) {
-  auto candlesticks = stonks::finance::GetCandlesticks(
-      "ETHUSDT", stonks::finance::Interval::k1Minute,
-      stonks::utils::ParseUnixTimeFromString("1 Apr 2022 00:00:00"),
-      stonks::utils::ParseUnixTimeFromString("1 Apr 3000 23:59:59"));
-  EXPECT_FALSE(candlesticks.has_value());
+TEST(FinanceApi, GetCandlesticksFuture) {
+  const auto interval = stonks::finance::Interval::k1Minute;
+  const auto candlesticks = stonks::finance::GetCandlesticks(
+      "ETHUSDT", interval,
+      stonks::utils::GetUnixTime() + std::chrono::minutes{1},
+      stonks::utils::GetUnixTime() + std::chrono::minutes{3});
+  ASSERT_TRUE(candlesticks.has_value());
+  EXPECT_EQ(candlesticks->size(), 2);
+  const auto candlesticks_time_difference =
+      (*candlesticks)[1].open_time - (*candlesticks)[0].open_time;
+  EXPECT_EQ(candlesticks_time_difference,
+            stonks::finance::ConvertIntervalToMilliseconds(interval));
+}
+
+TEST(FinanceApi, GetCandlesticksNoEndTime) {
+  const auto interval = stonks::finance::Interval::k1Minute;
+  const auto candlesticks = stonks::finance::GetCandlesticks(
+      "ETHUSDT", interval,
+      stonks::utils::GetUnixTime() - std::chrono::hours{1});
+  ASSERT_TRUE(candlesticks.has_value());
+  EXPECT_EQ(candlesticks->size(), 60);
+}
+
+TEST(FinanceApi, GetCandlesticksFutureNoEndTime) {
+  const auto interval = stonks::finance::Interval::k1Minute;
+  const auto candlesticks = stonks::finance::GetCandlesticks(
+      "ETHUSDT", interval,
+      stonks::utils::GetUnixTime() + std::chrono::hours{1});
+  ASSERT_TRUE(candlesticks.has_value());
+  EXPECT_TRUE(candlesticks->empty());
+}
+
+TEST(FinanceApi, GetCandlesticksPastAndFuture) {
+  const auto interval = stonks::finance::Interval::k1Minute;
+  const auto candlesticks = stonks::finance::GetCandlesticks(
+      "ETHUSDT", interval,
+      stonks::utils::GetUnixTime() - std::chrono::minutes{1},
+      stonks::utils::GetUnixTime() + std::chrono::minutes{1});
+  ASSERT_TRUE(candlesticks.has_value());
+  EXPECT_EQ(candlesticks->size(), 2);
+  const auto candlesticks_time_difference =
+      (*candlesticks)[1].open_time - (*candlesticks)[0].open_time;
+  EXPECT_EQ(candlesticks_time_difference,
+            stonks::finance::ConvertIntervalToMilliseconds(interval));
 }

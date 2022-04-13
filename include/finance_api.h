@@ -11,13 +11,15 @@
 
 namespace stonks::finance {
 /**
- * @remark If requested amount is greater than 10000, nullopt is returned.
- * @remark If end time is same as start time, single candlestick is returned.
+ * @remark If end time is specified, call would block untill all the data up
+ * till the end time is received.
+ * @return Nullopt if server error occured at any time. Empty vector if
+ * requested data is missing on server.
  */
 std::optional<std::vector<Candlestick>> GetCandlesticks(
     std::string_view symbol, Interval interval,
-    std::chrono::milliseconds history_start_time,
-    std::chrono::milliseconds history_end_time);
+    std::chrono::milliseconds start_time,
+    std::optional<std::chrono::milliseconds> end_time = std::nullopt);
 }  // namespace stonks::finance
 
 #endif  // STONKS_FINANCE_API_H_
