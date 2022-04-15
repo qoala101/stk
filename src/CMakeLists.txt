@@ -16,6 +16,7 @@ add_library(libstonks
   google_charts_conversions.cc
   order_proxy.cc
   candlesticks_stream.cc
+  buffered_candlesticks_stream.cc
 
   binance/binance_api.cc
   binance/binance_settings.cc
