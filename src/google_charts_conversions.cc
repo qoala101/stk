@@ -47,12 +47,19 @@ web::json::value ConvertToJson(const std::vector<finance::Candlestick> &data) {
     auto row_cells = std::vector<web::json::value>{};
     row_cells.reserve(7);
     AddCell(row_cells, candlestick.open_time);
-    AddCell(row_cells, candlestick.low_price);
-    AddCell(row_cells, candlestick.open_price);
-    AddCell(row_cells, candlestick.close_price);
-    AddCell(row_cells, candlestick.high_price);
-    AddCell(row_cells, candlestick.high_price);  // TODO
-    AddCell(row_cells, candlestick.low_price);   // TODO
+    AddCell(row_cells,
+            candlestick.data.value_or(finance::Candlestick::Data{}).low_price);
+    AddCell(row_cells,
+            candlestick.data.value_or(finance::Candlestick::Data{}).open_price);
+    AddCell(
+        row_cells,
+        candlestick.data.value_or(finance::Candlestick::Data{}).close_price);
+    AddCell(row_cells,
+            candlestick.data.value_or(finance::Candlestick::Data{}).high_price);
+    AddCell(row_cells, candlestick.data.value_or(finance::Candlestick::Data{})
+                           .high_price);  // TODO
+    AddCell(row_cells, candlestick.data.value_or(finance::Candlestick::Data{})
+                           .low_price);  // TODO
     json["c"] = web::json::value::array(std::move(row_cells));
     return json;
   };

@@ -12,8 +12,10 @@ add_library(libstonks
   finance_api.cc
   finance_conversions.cc
   finance_enum_conversions.cc
+  finance_types.cc
   google_charts_conversions.cc
   order_proxy.cc
+  candlesticks_stream.cc
 
   binance/binance_api.cc
   binance/binance_settings.cc

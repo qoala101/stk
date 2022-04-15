@@ -20,11 +20,10 @@ class CandlesticksStream {
 
   /**
    * @remark If start time is in future, call would block until it's reached.
-   * @remark If nullopt returned, next call would retry to get the same data.
-   * @return Nullopt if server error occured. Empty vector if stream has ended
+   * @return Empty vector if stream has ended
    * and no more data would be provided.
    */
-  std::optional<std::vector<Candlestick>> GetNextCandlesticks();
+  std::vector<Candlestick> GetNextCandlesticks();
 
  private:
   const Symbol symbol_;

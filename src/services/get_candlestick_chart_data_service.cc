@@ -12,7 +12,8 @@ void HandleGetRequest(const web::http::http_request &request) {
   spdlog::info("Got {} request on {}", request.method(),
                request.request_uri().to_string());
   const auto candlesticks = stonks::finance::GetCandlesticks(
-      "ETHUSDT", stonks::finance::Interval::k1Minute,
+      stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"},
+      stonks::finance::Interval::k1Minute,
       stonks::utils::GetUnixTime() - std::chrono::hours{1},
       stonks::utils::GetUnixTime());
 

@@ -20,9 +20,6 @@ std::chrono::milliseconds ParseUnixTimeFromString(std::string_view time,
   auto parsed_time = std::chrono::time_point<std::chrono::system_clock,
                                              std::chrono::seconds>{};
   input_stream >> date::parse(std::string{format}, parsed_time);
-  const auto parsing_error =
-      parsed_time == std::chrono::time_point<std::chrono::system_clock,
-                                             std::chrono::seconds>{};
   return std::chrono::duration_cast<std::chrono::milliseconds>(
       parsed_time.time_since_epoch());
 }

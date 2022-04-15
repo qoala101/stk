@@ -11,6 +11,12 @@ namespace stonks::utils {
  */
 std::chrono::milliseconds GetUnixTime();
 
+template <typename T>
+constexpr std::chrono::milliseconds FloorTo(std::chrono::milliseconds time) {
+  constexpr auto coef = T::period::num * 1000;
+  return std::chrono::milliseconds{(time.count() / coef) * coef};
+}
+
 /**
  * @return Unix GMT milliseconds or nullopt if cannot parse.
  */

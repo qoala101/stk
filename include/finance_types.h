@@ -2,6 +2,7 @@
 #define STONKS_FINANCE_TYPES_H_
 
 #include <chrono>
+#include <optional>
 #include <string>
 
 #include "finance_enums.h"
@@ -43,16 +44,27 @@ struct StrategyOrderRequest {
 };
 
 struct Candlestick {
+  struct Data {
+    double open_price{};
+    double high_price{};
+    double low_price{};
+    double close_price{};
+    double volume{};
+
+   private:
+    friend bool operator==(const Data &left, const Data &right) = default;
+    friend std::partial_ordering operator<=>(const Data &left,
+                                             const Data &right) = default;
+  };
+
   std::chrono::milliseconds open_time{};
-  double open_price{};
-  double high_price{};
-  double low_price{};
-  double close_price{};
   std::chrono::milliseconds close_time{};
-  double volume{};
+  std::optional<Data> data{};
 
  private:
-  friend auto operator<=>(const Candlestick &, const Candlestick &) = default;
+  friend bool operator==(const Candlestick &left, const Candlestick &right);
+  friend std::partial_ordering operator<=>(const Candlestick &left,
+                                           const Candlestick &right);
 };
 }  // namespace stonks::finance
 

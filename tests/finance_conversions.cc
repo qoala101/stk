@@ -21,9 +21,10 @@ TEST(FinanceConversions, CandlestickFromKline) {
       stonks::finance::ParseCandlestickFromBinanceKline(kline);
 
   EXPECT_EQ(candlestick.open_time, kline.open_time);
-  EXPECT_EQ(candlestick.open_price, kline.open_price);
-  EXPECT_EQ(candlestick.high_price, kline.high_price);
-  EXPECT_EQ(candlestick.low_price, kline.low_price);
-  EXPECT_EQ(candlestick.close_price, kline.close_price);
   EXPECT_EQ(candlestick.close_time, kline.close_time);
+  EXPECT_EQ(candlestick.data->open_price, kline.open_price);
+  EXPECT_EQ(candlestick.data->high_price, kline.high_price);
+  EXPECT_EQ(candlestick.data->low_price, kline.low_price);
+  EXPECT_EQ(candlestick.data->close_price, kline.close_price);
+  EXPECT_EQ(candlestick.data->volume, kline.volume);
 }

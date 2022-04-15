@@ -3,9 +3,6 @@
 #include <spdlog/spdlog.h>
 
 #include <gsl/gsl>
-#include <range/v3/action/push_back.hpp>
-#include <range/v3/to_container.hpp>
-#include <range/v3/view/transform.hpp>
 #include <thread>
 
 #include "binance_api.h"
@@ -13,69 +10,101 @@
 #include "finance_enum_conversions.h"
 #include "utils.h"
 
-namespace {
-int CalculateNumIntervalsBetweenTimes(stonks::finance::Interval interval,
-                                      std::chrono::milliseconds start_time,
-                                      std::chrono::milliseconds end_time) {
-  Expects(interval != stonks::finance::Interval::kInvalid);
-  Expects(start_time <= end_time);
-
-  const auto period_ms = (end_time - start_time).count();
-  const auto interval_ms =
-      stonks::finance::ConvertIntervalToMilliseconds(interval).count();
-  return static_cast<int>(std::ceil(static_cast<double>(period_ms) /
-                                    static_cast<double>(interval_ms)));
-}
-}  // namespace
-
 namespace stonks::finance {
 std::optional<std::vector<Candlestick>> GetCandlesticks(
-    std::string_view symbol, Interval interval,
-    std::chrono::milliseconds start_time,
-    std::optional<std::chrono::milliseconds> end_time) {
+    const Symbol &symbol, Interval interval,
+    std::chrono::milliseconds start_time, std::chrono::milliseconds end_time) {
   Expects(interval != Interval::kInvalid);
-  Expects(!end_time.has_value() || (start_time <= *end_time));
+  Expects(start_time < end_time);
 
+  const auto first_candlestick_open_time =
+      CeilStartTimeToInterval(start_time, interval);
+  const auto last_candlestick_close_time =
+      FloorEndTimeToInterval(end_time, interval);
+
+  if (first_candlestick_open_time > last_candlestick_close_time) {
+    return std::vector<Candlestick>{};
+  }
+
+  const auto num_candlesticks = CanculateNumIntervalsInPeriod(
+      first_candlestick_open_time, last_candlestick_close_time, interval);
+
+  std::this_thread::sleep_until(
+      std::chrono::system_clock::time_point{last_candlestick_close_time});
+
+  const auto interval_time = ConvertIntervalToMilliseconds(interval);
+  start_time = first_candlestick_open_time;
+  end_time = last_candlestick_close_time;
   auto candlesticks = std::vector<Candlestick>{};
 
-  while (true) {
+  while (candlesticks.size() < num_candlesticks) {
     if (!candlesticks.empty()) {
-      start_time = candlesticks.back().close_time;
+      start_time =
+          candlesticks.back().close_time + std::chrono::milliseconds{1};
     }
 
-    if (end_time.has_value() && (start_time > *end_time)) {
-      break;
-    }
-
-    const auto klines =
-        binance::GetKlines(symbol, interval, start_time, end_time,
-                           std::numeric_limits<int>::max());
+    const auto klines = binance::GetKlines(
+        symbol.base_asset + symbol.quote_asset, interval, start_time,
+        last_candlestick_close_time, std::numeric_limits<int>::max());
 
     if (!klines.has_value()) {
       spdlog::error("Cannot get candlesticks");
       return std::nullopt;
     }
 
-    if (!klines->empty()) {
-      candlesticks |= ranges::actions::push_back(
-          *klines | ranges::views::transform(ParseCandlestickFromBinanceKline));
-      continue;
+    const auto last_kline_close_time = klines->empty()
+                                           ? last_candlestick_close_time
+                                           : klines->back().close_time;
+    auto kline = klines->begin();
+
+    for (auto kline_open_time = start_time;
+         kline_open_time < last_kline_close_time;
+         kline_open_time += interval_time) {
+      if (const auto kline_is_valid = (kline != klines->end()) &&
+                                      (kline->open_time == kline_open_time)) {
+        candlesticks.emplace_back(ParseCandlestickFromBinanceKline(*kline));
+        kline++;
+        continue;
+      }
+
+      auto &null_kline = candlesticks.emplace_back();
+      null_kline.open_time = kline_open_time;
+      null_kline.close_time =
+          kline_open_time + interval_time - std::chrono::milliseconds{1};
     }
-
-    if (!end_time.has_value()) {
-      return candlesticks;
-    }
-
-    const auto time_till_end_time = *end_time - utils::GetUnixTime();
-
-    if (const auto end_time_in_past =
-            time_till_end_time < std::chrono::milliseconds{0}) {
-      return candlesticks;
-    }
-
-    std::this_thread::sleep_for(time_till_end_time);
   }
 
   return candlesticks;
+}
+
+std::chrono::milliseconds CeilStartTimeToInterval(
+    std::chrono::milliseconds time, Interval interval) {
+  Expects(interval != Interval::kInvalid);
+
+  const auto interval_ms =
+      stonks::finance::ConvertIntervalToMilliseconds(interval).count();
+  return std::chrono::milliseconds{
+      ((time.count() + interval_ms - 1) / interval_ms) * interval_ms};
+}
+
+std::chrono::milliseconds FloorEndTimeToInterval(std::chrono::milliseconds time,
+                                                 Interval interval) {
+  Expects(interval != Interval::kInvalid);
+
+  const auto interval_ms =
+      stonks::finance::ConvertIntervalToMilliseconds(interval).count();
+  return std::chrono::milliseconds{
+      (((time.count() + 1) / interval_ms) * interval_ms) - 1};
+}
+
+int CanculateNumIntervalsInPeriod(std::chrono::milliseconds start_time,
+                                  std::chrono::milliseconds end_time,
+                                  Interval interval) {
+  Expects(interval != Interval::kInvalid);
+  Expects(start_time < end_time);
+
+  return (FloorEndTimeToInterval(end_time, interval).count() + 1 -
+          CeilStartTimeToInterval(start_time, interval).count()) /
+         stonks::finance::ConvertIntervalToMilliseconds(interval).count();
 }
 }  // namespace stonks::finance
