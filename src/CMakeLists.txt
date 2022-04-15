@@ -17,6 +17,7 @@ add_library(libstonks
   order_proxy.cc
   candlesticks_stream.cc
   buffered_candlesticks_stream.cc
+  breakout_strategy.cc
 
   binance/binance_api.cc
   binance/binance_settings.cc
