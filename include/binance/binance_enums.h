@@ -2,9 +2,9 @@
 #define STONKS_BINANCE_BINANCE_ENUMS_H_
 
 namespace stonks::binance {
-enum class Side { kInvalid, kBuy, kSell };
+enum class OrderSide { kInvalid, kBuy, kSell };
 
-enum class Status {
+enum class OrderStatus {
   kInvalid,
   kNew,
   kPartiallyFilled,
@@ -15,14 +15,14 @@ enum class Status {
   kExpired,
 };
 
-enum class TimeInForce {
+enum class OrderTimeInForce {
   kInvalid,
   kGoodTillCanceled,
   kImmediateOrCancel,
   kFillOrKill
 };
 
-enum class Type {
+enum class OrderType {
   kInvalid,
   kLimit,
   kMarket,

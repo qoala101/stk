@@ -31,12 +31,12 @@ TEST(JsonConversions, PlaceOrderResult) {
       .order_list_id = -123456789,
       .original_quantity = 123456789.123456789,
       .price = 123456789.123456789,
-      .side = stonks::binance::Side::kBuy,
-      .status = stonks::binance::Status::kNew,
+      .side = stonks::binance::OrderSide::kBuy,
+      .status = stonks::binance::OrderStatus::kNew,
       .symbol = "BTCUSDT",
-      .time_in_force = stonks::binance::TimeInForce::kGoodTillCanceled,
+      .time_in_force = stonks::binance::OrderTimeInForce::kGoodTillCanceled,
       .transaction_time = std::chrono::milliseconds{1648412181820},
-      .type = stonks::binance::Type::kLimit};
+      .type = stonks::binance::OrderType::kLimit};
 
   const auto parsed_json = web::json::value::parse(raw_json);
   const auto parsed_object =

@@ -82,11 +82,11 @@ std::optional<std::string> GetBalances() {
   return response->serialize();
 }
 
-std::optional<PlaceOrderResult> PlaceOrder(std::string_view symbol, Side side,
-                                           Type type,
+std::optional<PlaceOrderResult> PlaceOrder(std::string_view symbol,
+                                           OrderSide side, OrderType type,
                                            std::optional<double> quantity,
                                            std::optional<double> price,
-                                           TimeInForce time_in_force) {
+                                           OrderTimeInForce time_in_force) {
   auto request =
       rest::RestRequest{web::http::methods::POST, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/order")

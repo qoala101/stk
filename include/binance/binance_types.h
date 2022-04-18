@@ -19,12 +19,12 @@ struct PlaceOrderResult {
   int64_t order_list_id{};
   double original_quantity{};
   double price{};
-  Side side{};
-  Status status{};
+  OrderSide side{};
+  OrderStatus status{};
   std::string symbol{};
-  TimeInForce time_in_force{};
+  OrderTimeInForce time_in_force{};
   std::chrono::milliseconds transaction_time{};
-  Type type{};
+  OrderType type{};
 
  private:
   friend bool operator==(const PlaceOrderResult &,

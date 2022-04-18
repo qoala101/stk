@@ -112,14 +112,14 @@ std::optional<binance::PlaceOrderResult> ParseFromJson(
         .order_list_id = GetInt64PropertyAsInt64(json, "orderListId"),
         .original_quantity = GetStringPropertyAsDouble(json, "origQty"),
         .price = GetStringPropertyAsDouble(json, "price"),
-        .side = GetStringPropertyAsEnum<binance::Side>(json, "side"),
-        .status = GetStringPropertyAsEnum<binance::Status>(json, "status"),
+        .side = GetStringPropertyAsEnum<binance::OrderSide>(json, "side"),
+        .status = GetStringPropertyAsEnum<binance::OrderStatus>(json, "status"),
         .symbol = GetStringPropertyAsString(json, "symbol"),
-        .time_in_force =
-            GetStringPropertyAsEnum<binance::TimeInForce>(json, "timeInForce"),
+        .time_in_force = GetStringPropertyAsEnum<binance::OrderTimeInForce>(
+            json, "timeInForce"),
         .transaction_time =
             GetInt64PropertyAsMilliseconds(json, "transactTime"),
-        .type = GetStringPropertyAsEnum<binance::Type>(json, "type")};
+        .type = GetStringPropertyAsEnum<binance::OrderType>(json, "type")};
   } catch (const std::exception& exeption) {
     spdlog::error("Parse from JSON: {}", exeption.what());
   } catch (...) {

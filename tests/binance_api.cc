@@ -16,16 +16,16 @@ TEST(BinanceApi, GetBalances) {
 }
 
 TEST(BinanceApi, PlaceOrder) {
-  const auto place_order_result =
-      stonks::binance::PlaceOrder("BTCUSDT", stonks::binance::Side::kBuy,
-                                  stonks::binance::Type::kLimit, 0.01, 20000);
+  const auto place_order_result = stonks::binance::PlaceOrder(
+      "BTCUSDT", stonks::binance::OrderSide::kBuy,
+      stonks::binance::OrderType::kLimit, 0.01, 20000);
   ASSERT_TRUE(place_order_result.has_value());
   EXPECT_EQ(place_order_result->symbol, "BTCUSDT");
-  EXPECT_EQ(place_order_result->side, stonks::binance::Side::kBuy);
-  EXPECT_EQ(place_order_result->type, stonks::binance::Type::kLimit);
+  EXPECT_EQ(place_order_result->side, stonks::binance::OrderSide::kBuy);
+  EXPECT_EQ(place_order_result->type, stonks::binance::OrderType::kLimit);
   EXPECT_EQ(place_order_result->price, 20000);
   EXPECT_EQ(place_order_result->time_in_force,
-            stonks::binance::TimeInForce::kGoodTillCanceled);
+            stonks::binance::OrderTimeInForce::kGoodTillCanceled);
 }
 
 TEST(BinanceApi, GetKlines) {

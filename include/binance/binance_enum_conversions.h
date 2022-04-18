@@ -8,12 +8,12 @@
 
 template <>
 constexpr std::string_view
-magic_enum::customize::enum_name<stonks::binance::Side>(
-    stonks::binance::Side value) noexcept {
+magic_enum::customize::enum_name<stonks::binance::OrderSide>(
+    stonks::binance::OrderSide value) noexcept {
   switch (value) {
-    case stonks::binance::Side::kBuy:
+    case stonks::binance::OrderSide::kBuy:
       return "BUY";
-    case stonks::binance::Side::kSell:
+    case stonks::binance::OrderSide::kSell:
       return "SELL";
     default:
       break;
@@ -24,22 +24,22 @@ magic_enum::customize::enum_name<stonks::binance::Side>(
 
 template <>
 constexpr std::string_view
-magic_enum::customize::enum_name<stonks::binance::Status>(
-    stonks::binance::Status value) noexcept {
+magic_enum::customize::enum_name<stonks::binance::OrderStatus>(
+    stonks::binance::OrderStatus value) noexcept {
   switch (value) {
-    case stonks::binance::Status::kNew:
+    case stonks::binance::OrderStatus::kNew:
       return "NEW";
-    case stonks::binance::Status::kPartiallyFilled:
+    case stonks::binance::OrderStatus::kPartiallyFilled:
       return "PARTIALLY_FILLED";
-    case stonks::binance::Status::kFilled:
+    case stonks::binance::OrderStatus::kFilled:
       return "FILLED";
-    case stonks::binance::Status::kCancelled:
+    case stonks::binance::OrderStatus::kCancelled:
       return "CANCELED";
-    case stonks::binance::Status::kPendingCancel:
+    case stonks::binance::OrderStatus::kPendingCancel:
       return "PENDING_CANCEL";
-    case stonks::binance::Status::kRejected:
+    case stonks::binance::OrderStatus::kRejected:
       return "REJECTED";
-    case stonks::binance::Status::kExpired:
+    case stonks::binance::OrderStatus::kExpired:
       return "EXPIRED";
     default:
       break;
@@ -50,14 +50,14 @@ magic_enum::customize::enum_name<stonks::binance::Status>(
 
 template <>
 constexpr std::string_view
-magic_enum::customize::enum_name<stonks::binance::TimeInForce>(
-    stonks::binance::TimeInForce value) noexcept {
+magic_enum::customize::enum_name<stonks::binance::OrderTimeInForce>(
+    stonks::binance::OrderTimeInForce value) noexcept {
   switch (value) {
-    case stonks::binance::TimeInForce::kGoodTillCanceled:
+    case stonks::binance::OrderTimeInForce::kGoodTillCanceled:
       return "GTC";
-    case stonks::binance::TimeInForce::kImmediateOrCancel:
+    case stonks::binance::OrderTimeInForce::kImmediateOrCancel:
       return "IOC";
-    case stonks::binance::TimeInForce::kFillOrKill:
+    case stonks::binance::OrderTimeInForce::kFillOrKill:
       return "FOK";
     default:
       break;
@@ -68,22 +68,22 @@ magic_enum::customize::enum_name<stonks::binance::TimeInForce>(
 
 template <>
 constexpr std::string_view
-magic_enum::customize::enum_name<stonks::binance::Type>(
-    stonks::binance::Type value) noexcept {
+magic_enum::customize::enum_name<stonks::binance::OrderType>(
+    stonks::binance::OrderType value) noexcept {
   switch (value) {
-    case stonks::binance::Type::kLimit:
+    case stonks::binance::OrderType::kLimit:
       return "LIMIT";
-    case stonks::binance::Type::kMarket:
+    case stonks::binance::OrderType::kMarket:
       return "MARKET";
-    case stonks::binance::Type::kStopLoss:
+    case stonks::binance::OrderType::kStopLoss:
       return "STOP_LOSS";
-    case stonks::binance::Type::kStopLossLimit:
+    case stonks::binance::OrderType::kStopLossLimit:
       return "STOP_LOSS_LIMIT";
-    case stonks::binance::Type::kTakeProfit:
+    case stonks::binance::OrderType::kTakeProfit:
       return "TAKE_PROFIT";
-    case stonks::binance::Type::kTakeProfitLimit:
+    case stonks::binance::OrderType::kTakeProfitLimit:
       return "TAKE_PROFIT_LIMIT";
-    case stonks::binance::Type::kLimitMaker:
+    case stonks::binance::OrderType::kLimitMaker:
       return "LIMIT_MARKET";
     default:
       break;

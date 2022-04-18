@@ -14,10 +14,10 @@ std::optional<std::vector<std::string>> GetSymbols();
 std::optional<std::string> GetBalances();
 
 std::optional<PlaceOrderResult> PlaceOrder(
-    std::string_view symbol, Side side, Type type,
+    std::string_view symbol, OrderSide side, OrderType type,
     std::optional<double> quantity = std::nullopt,
     std::optional<double> price = std::nullopt,
-    TimeInForce time_in_force = TimeInForce::kGoodTillCanceled);
+    OrderTimeInForce time_in_force = OrderTimeInForce::kGoodTillCanceled);
 
 std::optional<std::vector<Kline>> GetKlines(
     std::string_view symbol, CandleInterval interval,
