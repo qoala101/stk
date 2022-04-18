@@ -5,7 +5,7 @@
 #include <pplx/pplxtasks.h>
 
 namespace stonks {
-class GetCandlestickChartDataService {
+class GetCandleChartDataService {
  public:
   pplx::task<void> Start();
   pplx::task<void> Stop();

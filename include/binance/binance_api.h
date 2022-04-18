@@ -20,7 +20,7 @@ std::optional<PlaceOrderResult> PlaceOrder(
     TimeInForce time_in_force = TimeInForce::kGoodTillCanceled);
 
 std::optional<std::vector<Kline>> GetKlines(
-    std::string_view symbol, CandlestickInterval interval,
+    std::string_view symbol, CandleInterval interval,
     std::optional<std::chrono::milliseconds> start_time = std::nullopt,
     std::optional<std::chrono::milliseconds> end_time = std::nullopt,
     std::optional<int> limit = std::nullopt);

@@ -6,7 +6,7 @@
 #include "finance_types.h"
 
 namespace stonks {
-web::json::value ConvertToJson(const std::vector<finance::Candlestick> &data);
+web::json::value ConvertToJson(const std::vector<finance::Candle> &data);
 
 web::json::value ConvertToJson(
     const std::vector<finance::StrategyOrderRequest> &data);

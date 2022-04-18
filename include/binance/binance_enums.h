@@ -33,7 +33,7 @@ enum class Type {
   kLimitMaker
 };
 
-enum class CandlestickInterval {
+enum class CandleInterval {
   kInvalid,
   k1Minute,
   k3Minutes,

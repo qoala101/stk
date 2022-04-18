@@ -4,7 +4,7 @@
 
 #include <chrono>
 
-TEST(FinanceConversions, CandlestickFromKline) {
+TEST(FinanceConversions, CandleFromKline) {
   const auto kline = stonks::binance::Kline{
       .open_time = std::chrono::milliseconds{1647820800000},
       .open_price = 41256.16,
@@ -17,14 +17,13 @@ TEST(FinanceConversions, CandlestickFromKline) {
       .num_trades = 161896,
       .taker_buy_base_asset_volume = 2357.304304,
       .taker_buy_quote_asset_volume = 96848939.73882025};
-  const auto candlestick =
-      stonks::finance::ParseCandlestickFromBinanceKline(kline);
+  const auto candle = stonks::finance::ParseCandleFromBinanceKline(kline);
 
-  EXPECT_EQ(candlestick.open_time, kline.open_time);
-  EXPECT_EQ(candlestick.close_time, kline.close_time);
-  EXPECT_EQ(candlestick.data->open_price, kline.open_price);
-  EXPECT_EQ(candlestick.data->high_price, kline.high_price);
-  EXPECT_EQ(candlestick.data->low_price, kline.low_price);
-  EXPECT_EQ(candlestick.data->close_price, kline.close_price);
-  EXPECT_EQ(candlestick.data->volume, kline.volume);
+  EXPECT_EQ(candle.open_time, kline.open_time);
+  EXPECT_EQ(candle.close_time, kline.close_time);
+  EXPECT_EQ(candle.data->open_price, kline.open_price);
+  EXPECT_EQ(candle.data->high_price, kline.high_price);
+  EXPECT_EQ(candle.data->low_price, kline.low_price);
+  EXPECT_EQ(candle.data->close_price, kline.close_price);
+  EXPECT_EQ(candle.data->volume, kline.volume);
 }

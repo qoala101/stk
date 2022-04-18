@@ -7,7 +7,7 @@
 
 #include "breakout_strategy_service.h"
 #include "finance_enums.h"
-#include "get_candlestick_chart_data_service.h"
+#include "get_candle_chart_data_service.h"
 #include "get_file_service.h"
 #include "get_symbols_service.h"
 #include "order_proxy_service.h"
@@ -16,20 +16,25 @@
 int main(int, const char *[]) {
   using ServiceVariant =
       std::variant<stonks::GetFileService, stonks::GetSymbolsService,
-                   stonks::GetCandlestickChartDataService,
+                   stonks::GetCandleChartDataService,
                    stonks::BreakoutStrategyService, stonks::OrderProxyService>;
 
   auto services = std::vector<std::unique_ptr<ServiceVariant>>{};
-  services.emplace_back(std::make_unique<ServiceVariant>());
-  services.back()->emplace<stonks::GetFileService>();
-  services.emplace_back(std::make_unique<ServiceVariant>());
-  services.back()->emplace<stonks::GetSymbolsService>();
-  services.emplace_back(std::make_unique<ServiceVariant>());
-  services.back()->emplace<stonks::GetCandlestickChartDataService>();
-  services.emplace_back(std::make_unique<ServiceVariant>());
-  services.back()->emplace<stonks::OrderProxyService>();
-  services.emplace_back(std::make_unique<ServiceVariant>());
-  services.back()->emplace<stonks::BreakoutStrategyService>();
+
+  services.emplace_back(std::make_unique<ServiceVariant>())
+      ->emplace<stonks::GetFileService>();
+
+  services.emplace_back(std::make_unique<ServiceVariant>())
+      ->emplace<stonks::GetSymbolsService>();
+
+  services.emplace_back(std::make_unique<ServiceVariant>())
+      ->emplace<stonks::GetCandleChartDataService>();
+
+  services.emplace_back(std::make_unique<ServiceVariant>())
+      ->emplace<stonks::OrderProxyService>();
+
+  services.emplace_back(std::make_unique<ServiceVariant>())
+      ->emplace<stonks::BreakoutStrategyService>();
 
   for (auto &service : services) {
     std::visit([](auto &service) { service.Start(); }, *service);

@@ -10,8 +10,8 @@ add_executable(unittests
   finance_api.cc
   finance_conversions.cc
   finance_enum_conversions.cc
-  candlesticks_stream.cc
-  buffered_candlesticks_stream.cc
+  candles_stream.cc
+  buffered_candles_stream.cc
   utils.cc
 )
 target_link_libraries(unittests PRIVATE libstonks)

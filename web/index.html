@@ -11,7 +11,7 @@
 
     function OnChartsLoaded() {
       $.ajax({
-        url: "http://localhost:6506/api/candlestick_chart_data"
+        url: "http://localhost:6506/api/candle_chart_data"
       }).done(OnResponseReceived);
     }
 
@@ -22,7 +22,7 @@
         title: "ETHUSDT",
         vAxis: { title: "Price, USDT" },
         hAxis: { title: "Date" },
-        series: [{ type: "candlesticks" }, { type: "line", curveType: "function" }, { type: "line" }],
+        series: [{ type: "candles" }, { type: "line", curveType: "function" }, { type: "line" }],
         height: 800
       };
 

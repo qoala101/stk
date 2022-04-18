@@ -15,8 +15,8 @@ add_library(libstonks
   finance_types.cc
   google_charts_conversions.cc
   order_proxy.cc
-  candlesticks_stream.cc
-  buffered_candlesticks_stream.cc
+  candles_stream.cc
+  buffered_candles_stream.cc
   breakout_strategy.cc
 
   binance/binance_api.cc
@@ -24,7 +24,7 @@ add_library(libstonks
 
   services/get_file_service.cc
   services/get_symbols_service.cc
-  services/get_candlestick_chart_data_service.cc
+  services/get_candle_chart_data_service.cc
   services/breakout_strategy_service.cc
   services/order_proxy_service.cc
 )

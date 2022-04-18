@@ -9,12 +9,12 @@
 #include "finance_types.h"
 
 namespace stonks::finance {
-class CandlesticksStream {
+class CandlesStream {
  public:
   /**
    * @remark Both start and end time can be in future.
    */
-  explicit CandlesticksStream(
+  explicit CandlesStream(
       Symbol symbol, Interval interval, std::chrono::milliseconds start_time,
       std::optional<std::chrono::milliseconds> end_time = std::nullopt);
 
@@ -23,7 +23,7 @@ class CandlesticksStream {
    * @return Empty vector if stream has ended
    * and no more data would be provided.
    */
-  std::vector<Candlestick> GetNextCandlesticks();
+  std::vector<Candle> GetNextCandles();
 
  private:
   const Symbol symbol_;

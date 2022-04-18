@@ -11,6 +11,7 @@
 #include "binance_enum_conversions.h"
 #include "concepts.h"
 
+namespace stonks {
 namespace {
 const std::string& GetStringPropertyAsString(
     const web::json::value& json, const std::string_view property_name) {
@@ -76,8 +77,7 @@ E GetStringElementAsEnum(const web::json::value& json, const int index) {
 template <typename T>
 T GetObjectPropertyAsObject(const web::json::value& json,
                             const std::string_view property_name) {
-  const auto object =
-      stonks::ParseFromJson<T>(json.at(std::string{property_name}));
+  const auto object = ParseFromJson<T>(json.at(std::string{property_name}));
 
   if (!object.has_value()) {
     throw std::invalid_argument{"Cannot parse object"};
@@ -88,7 +88,7 @@ T GetObjectPropertyAsObject(const web::json::value& json,
 
 template <typename T>
 T GetObjectElementAsObject(const web::json::value& json, const int index) {
-  const auto object = stonks::ParseFromJson<T>(json.at(index));
+  const auto object = ParseFromJson<T>(json.at(index));
 
   if (!object.has_value()) {
     throw std::invalid_argument{"Cannot parse object"};
@@ -98,7 +98,6 @@ T GetObjectElementAsObject(const web::json::value& json, const int index) {
 }
 }  // namespace
 
-namespace stonks {
 template <>
 std::optional<binance::PlaceOrderResult> ParseFromJson(
     const web::json::value& json) {

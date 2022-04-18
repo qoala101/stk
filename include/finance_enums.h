@@ -4,7 +4,7 @@
 #include "binance_enums.h"
 
 namespace stonks::finance {
-using Interval = binance::CandlestickInterval;
+using Interval = binance::CandleInterval;
 using BuyOrSell = binance::Side;
 
 enum class StrategyResult { kInvalid, kOne, kMinusOne, kZero };

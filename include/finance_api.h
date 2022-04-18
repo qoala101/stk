@@ -16,14 +16,14 @@ namespace stonks::finance {
  * till the end time is received.
  * @remark If end time is not specified, call would block untill all the data up
  * till the current moment is recived.
- * @remark Result would only contain candlesticks whose both open and close time
+ * @remark Result would only contain candles whose both open and close time
  * entirely fit in the period.
- * @remark If data for particular candlestick is missing on server, candlestick
+ * @remark If data for particular candle is missing on server, candle
  * would have only open and close time.
  * @return Nullopt if server error occured at any time. Empty vector if none of
- * the candlesticks fully match the period.
+ * the candles fully match the period.
  */
-std::optional<std::vector<Candlestick>> GetCandlesticks(
+std::optional<std::vector<Candle>> GetCandles(
     const Symbol &symbol, Interval interval,
     std::chrono::milliseconds start_time,
     std::chrono::milliseconds end_time = utils::GetUnixTime());

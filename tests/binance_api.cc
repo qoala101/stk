@@ -30,7 +30,7 @@ TEST(BinanceApi, PlaceOrder) {
 
 TEST(BinanceApi, GetKlines) {
   const auto klines = stonks::binance::GetKlines(
-      "BTCUSDT", stonks::binance::CandlestickInterval::k1Day, std::nullopt,
+      "BTCUSDT", stonks::binance::CandleInterval::k1Day, std::nullopt,
       std::nullopt, 10);
 
   ASSERT_TRUE(klines.has_value());

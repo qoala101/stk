@@ -3,7 +3,7 @@
 #include <tuple>
 
 namespace stonks::finance {
-bool operator==(const Candlestick &left, const Candlestick &right) {
+bool operator==(const Candle &left, const Candle &right) {
   const auto equal = std::tie(left.open_time, left.close_time) ==
                      std::tie(right.open_time, right.close_time);
 
@@ -11,12 +11,11 @@ bool operator==(const Candlestick &left, const Candlestick &right) {
     return equal;
   }
 
-  return left.data.value_or(Candlestick::Data{}) ==
-         right.data.value_or(Candlestick::Data{});
+  return left.data.value_or(Candle::Data{}) ==
+         right.data.value_or(Candle::Data{});
 }
 
-std::partial_ordering operator<=>(const Candlestick &left,
-                                  const Candlestick &right) {
+std::partial_ordering operator<=>(const Candle &left, const Candle &right) {
   const auto ordering = std::tie(left.open_time, left.close_time) <=>
                         std::tie(right.open_time, right.close_time);
 
@@ -24,7 +23,7 @@ std::partial_ordering operator<=>(const Candlestick &left,
     return ordering;
   }
 
-  return left.data.value_or(Candlestick::Data{}) <=>
-         right.data.value_or(Candlestick::Data{});
+  return left.data.value_or(Candle::Data{}) <=>
+         right.data.value_or(Candle::Data{});
 }
 };  // namespace stonks::finance

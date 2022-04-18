@@ -11,12 +11,12 @@ class BreakoutStrategy {
  public:
   explicit BreakoutStrategy(double min_volume);
 
-  std::optional<OrderRequest> ProcessNewCandlesticks(
-      const std::vector<Candlestick> &candlesticks);
+  std::optional<OrderRequest> ProcessNewCandles(
+      const std::vector<Candle> &candles);
 
  private:
   const double min_volume_{};
-  std::optional<Candlestick> prev_candlestick_{};
+  std::optional<Candle> prev_candle_{};
 };
 }  // namespace stonks::finance
 

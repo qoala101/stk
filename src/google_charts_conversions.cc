@@ -31,7 +31,7 @@ void AddCell(std::vector<web::json::value> &cells,
 }
 }  // namespace
 
-web::json::value ConvertToJson(const std::vector<finance::Candlestick> &data) {
+web::json::value ConvertToJson(const std::vector<finance::Candle> &data) {
   auto cols = std::vector<web::json::value>{};
   cols.reserve(5);
   AddColumn(cols, "Time", "string");
@@ -42,29 +42,27 @@ web::json::value ConvertToJson(const std::vector<finance::Candlestick> &data) {
   AddColumn(cols, "AA", "number");  // TODO
   AddColumn(cols, "BB", "number");  // TODO
 
-  const auto candlestick_to_json = [](const finance::Candlestick &candlestick) {
+  const auto candle_to_json = [](const finance::Candle &candle) {
     auto json = web::json::value{};
     auto row_cells = std::vector<web::json::value>{};
     row_cells.reserve(7);
-    AddCell(row_cells, candlestick.open_time);
+    AddCell(row_cells, candle.open_time);
+    AddCell(row_cells, candle.data.value_or(finance::Candle::Data{}).low_price);
     AddCell(row_cells,
-            candlestick.data.value_or(finance::Candlestick::Data{}).low_price);
+            candle.data.value_or(finance::Candle::Data{}).open_price);
     AddCell(row_cells,
-            candlestick.data.value_or(finance::Candlestick::Data{}).open_price);
-    AddCell(
-        row_cells,
-        candlestick.data.value_or(finance::Candlestick::Data{}).close_price);
+            candle.data.value_or(finance::Candle::Data{}).close_price);
     AddCell(row_cells,
-            candlestick.data.value_or(finance::Candlestick::Data{}).high_price);
-    AddCell(row_cells, candlestick.data.value_or(finance::Candlestick::Data{})
-                           .high_price);  // TODO
-    AddCell(row_cells, candlestick.data.value_or(finance::Candlestick::Data{})
-                           .low_price);  // TODO
+            candle.data.value_or(finance::Candle::Data{}).high_price);
+    AddCell(row_cells,
+            candle.data.value_or(finance::Candle::Data{}).high_price);  // TODO
+    AddCell(row_cells,
+            candle.data.value_or(finance::Candle::Data{}).low_price);  // TODO
     json["c"] = web::json::value::array(std::move(row_cells));
     return json;
   };
   auto rows =
-      data | ranges::views::transform(candlestick_to_json) | ranges::to_vector;
+      data | ranges::views::transform(candle_to_json) | ranges::to_vector;
 
   auto json = web::json::value{};
   json["cols"] = web::json::value::array(std::move(cols));

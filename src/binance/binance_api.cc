@@ -114,7 +114,7 @@ std::optional<PlaceOrderResult> PlaceOrder(std::string_view symbol, Side side,
 }
 
 std::optional<std::vector<Kline>> GetKlines(
-    std::string_view symbol, CandlestickInterval interval,
+    std::string_view symbol, CandleInterval interval,
     std::optional<std::chrono::milliseconds> start_time,
     std::optional<std::chrono::milliseconds> end_time,
     std::optional<int> limit) {

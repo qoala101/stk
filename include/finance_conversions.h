@@ -8,7 +8,7 @@
 #include "finance_types.h"
 
 namespace stonks::finance {
-Candlestick ParseCandlestickFromBinanceKline(const binance::Kline &kline);
+Candle ParseCandleFromBinanceKline(const binance::Kline &kline);
 }
 
 #endif  // STONKS_FINANCE_CONVERSIONS_H_

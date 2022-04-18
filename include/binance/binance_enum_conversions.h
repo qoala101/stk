@@ -94,38 +94,38 @@ magic_enum::customize::enum_name<stonks::binance::Type>(
 
 template <>
 constexpr std::string_view
-magic_enum::customize::enum_name<stonks::binance::CandlestickInterval>(
-    stonks::binance::CandlestickInterval value) noexcept {
+magic_enum::customize::enum_name<stonks::binance::CandleInterval>(
+    stonks::binance::CandleInterval value) noexcept {
   switch (value) {
-    case stonks::binance::CandlestickInterval::k1Minute:
+    case stonks::binance::CandleInterval::k1Minute:
       return "1m";
-    case stonks::binance::CandlestickInterval::k3Minutes:
+    case stonks::binance::CandleInterval::k3Minutes:
       return "3m";
-    case stonks::binance::CandlestickInterval::k5Minutes:
+    case stonks::binance::CandleInterval::k5Minutes:
       return "5m";
-    case stonks::binance::CandlestickInterval::k15Minutes:
+    case stonks::binance::CandleInterval::k15Minutes:
       return "15m";
-    case stonks::binance::CandlestickInterval::k30Minutes:
+    case stonks::binance::CandleInterval::k30Minutes:
       return "30m";
-    case stonks::binance::CandlestickInterval::k1Hour:
+    case stonks::binance::CandleInterval::k1Hour:
       return "1h";
-    case stonks::binance::CandlestickInterval::k2Hours:
+    case stonks::binance::CandleInterval::k2Hours:
       return "2h";
-    case stonks::binance::CandlestickInterval::k4Hours:
+    case stonks::binance::CandleInterval::k4Hours:
       return "4h";
-    case stonks::binance::CandlestickInterval::k6Hours:
+    case stonks::binance::CandleInterval::k6Hours:
       return "6h";
-    case stonks::binance::CandlestickInterval::k8Hours:
+    case stonks::binance::CandleInterval::k8Hours:
       return "8h";
-    case stonks::binance::CandlestickInterval::k12Hours:
+    case stonks::binance::CandleInterval::k12Hours:
       return "12h";
-    case stonks::binance::CandlestickInterval::k1Day:
+    case stonks::binance::CandleInterval::k1Day:
       return "1d";
-    case stonks::binance::CandlestickInterval::k3Days:
+    case stonks::binance::CandleInterval::k3Days:
       return "3d";
-    case stonks::binance::CandlestickInterval::k1Week:
+    case stonks::binance::CandleInterval::k1Week:
       return "1w";
-    case stonks::binance::CandlestickInterval::k1Month:
+    case stonks::binance::CandleInterval::k1Month:
       return "1M";
     default:
       break;

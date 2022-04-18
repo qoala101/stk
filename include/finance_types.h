@@ -43,7 +43,7 @@ struct StrategyOrderRequest {
                          const StrategyOrderRequest &) = default;
 };
 
-struct Candlestick {
+struct Candle {
   struct Data {
     double open_price{};
     double high_price{};
@@ -62,9 +62,9 @@ struct Candlestick {
   std::optional<Data> data{};
 
  private:
-  friend bool operator==(const Candlestick &left, const Candlestick &right);
-  friend std::partial_ordering operator<=>(const Candlestick &left,
-                                           const Candlestick &right);
+  friend bool operator==(const Candle &left, const Candle &right);
+  friend std::partial_ordering operator<=>(const Candle &left,
+                                           const Candle &right);
 };
 
 struct TimeDouble {

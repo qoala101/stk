@@ -3,8 +3,8 @@
 #include <spdlog/spdlog.h>
 
 #include "breakout_strategy.h"
-#include "buffered_candlesticks_stream.h"
-#include "candlesticks_stream.h"
+#include "buffered_candles_stream.h"
+#include "candles_stream.h"
 #include "finance_api.h"
 #include "finance_enums.h"
 #include "finance_types.h"
@@ -32,37 +32,36 @@ void SendOrderRequest(finance::Symbol symbol,
 pplx::task<void> BreakoutStrategyService::Start() {
   service_state_ = true;
 
-  return pplx::create_task(
-      [&thread = thread_, &service_state = service_state_]() {
-        thread = std::thread{[&service_state]() {
-          const auto symbol =
-              finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"};
-          const auto interval = finance::Interval::k1Minute;
-          auto strategy = finance::BreakoutStrategy{0};
-          auto stream = finance::BufferedCandlesticksStream{
-              finance::CandlesticksStream{
-                  symbol, interval, utils::GetUnixTime() - std::chrono::days{2},
-                  utils::GetUnixTime() - std::chrono::days{1}},
-              1};
+  return pplx::create_task([&thread = thread_,
+                            &service_state = service_state_]() {
+    thread = std::thread{[&service_state]() {
+      const auto symbol =
+          finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"};
+      const auto interval = finance::Interval::k1Minute;
+      auto strategy = finance::BreakoutStrategy{0};
+      auto stream = finance::BufferedCandlesStream{
+          finance::CandlesStream{symbol, interval,
+                                 utils::GetUnixTime() - std::chrono::days{2},
+                                 utils::GetUnixTime() - std::chrono::days{1}},
+          1};
 
-          while (service_state) {
-            std::this_thread::sleep_for(std::chrono::milliseconds{500});
-            const auto new_candlesticks = stream.GetNextCandlesticks();
+      while (service_state) {
+        std::this_thread::sleep_for(std::chrono::milliseconds{500});
+        const auto new_candles = stream.GetNextCandles();
 
-            if (new_candlesticks.empty()) {
-              spdlog::info("Breakout stretegy service is done");
-              return;
-            }
+        if (new_candles.empty()) {
+          spdlog::info("Breakout stretegy service is done");
+          return;
+        }
 
-            const auto new_data_result =
-                strategy.ProcessNewCandlesticks(new_candlesticks);
+        const auto new_data_result = strategy.ProcessNewCandles(new_candles);
 
-            if (new_data_result.has_value()) {
-              SendOrderRequest(symbol, *new_data_result);
-            }
-          }
-        }};
-      });
+        if (new_data_result.has_value()) {
+          SendOrderRequest(symbol, *new_data_result);
+        }
+      }
+    }};
+  });
 }
 
 pplx::task<void> BreakoutStrategyService::Stop() {
