@@ -15,13 +15,13 @@
 
     function OnChartsLoaded() {
       $.ajax({
-        url: "http://localhost:6506/api/order_proxy/order/strategy"
+        url: "http://localhost:6506/api/order_proxy/order/balance_history"
       }).done(OnStrategyChartInitialDataReceived);
     }
 
     function OnStrategyChartReady() {
       $.ajax({
-        url: "http://localhost:6506/api/order_proxy/order/strategy?drop_first=" + strategy_chart_data.getNumberOfRows()
+        url: "http://localhost:6506/api/order_proxy/order/balance_history?drop_first=" + strategy_chart_data.getNumberOfRows()
       }).done(OnStrategyChartNewDataReceived);
     }
 
@@ -30,17 +30,13 @@
 
       strategy_chart_options = {
         title: "ETHUSDT",
-        hAxis: { title: "Date" },
+        hAxis: { title: "TIme" },
         series: {
-          0: { type: "area", targetAxisIndex: 0 },
-          1: { type: "area", targetAxisIndex: 1 }
+          0: { type: "area", targetAxisIndex: 0 }
         },
         vAxes: {
           0: {
-            title: 'AAA'
-          },
-          1: {
-            title: 'BBB'
+            title: 'USDT'
           }
         },
         height: 800

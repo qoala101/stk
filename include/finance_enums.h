@@ -5,7 +5,7 @@
 
 namespace stonks::finance {
 using Interval = binance::CandlestickInterval;
-using Action = binance::Side;
+using BuyOrSell = binance::Side;
 
 enum class StrategyResult { kInvalid, kOne, kMinusOne, kZero };
 }  // namespace stonks::finance

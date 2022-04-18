@@ -10,6 +10,8 @@ web::json::value ConvertToJson(const std::vector<finance::Candlestick> &data);
 
 web::json::value ConvertToJson(
     const std::vector<finance::StrategyOrderRequest> &data);
+
+web::json::value ConvertToJson(const std::vector<finance::TimeDouble> &data);
 }  // namespace stonks
 
 #endif  // STONKS_GOOGLE_CHARTS_CONVERSIONS_H_

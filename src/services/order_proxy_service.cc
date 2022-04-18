@@ -20,11 +20,26 @@ void HandleGetRequest(const web::http::http_request &request,
     drop_first = std::stoi(drop_first_iter->second);
   }
 
-  const auto records = order_proxy.FindRecords(
-      "breakout",
-      stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"},
-      drop_first);
-  request.reply(web::http::status_codes::OK, stonks::ConvertToJson(records));
+  const auto relative_uri = request.relative_uri().path();
+
+  if (relative_uri == "/strategy") {
+    const auto records = order_proxy.FindOrderRequests(
+        "breakout",
+        stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"},
+        drop_first);
+    request.reply(web::http::status_codes::OK, stonks::ConvertToJson(records));
+    return;
+  }
+
+  if (relative_uri == "/balance_history") {
+    const auto balance_history =
+        order_proxy.CalcBalanceHistory("USDT", drop_first);
+    request.reply(web::http::status_codes::OK,
+                  stonks::ConvertToJson(balance_history));
+    return;
+  }
+
+  request.reply(web::http::status_codes::NotFound);
 }
 
 void HandlePostRequest(const web::http::http_request &request,

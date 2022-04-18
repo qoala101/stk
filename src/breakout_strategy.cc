@@ -14,7 +14,7 @@ std::optional<stonks::finance::OrderRequest> ProcessLastCandlesticks(
     if (new_candlestick.data->close_price > prev_candlestick.data->high_price) {
       return stonks::finance::OrderRequest{
           .time = new_candlestick.close_time,
-          .action = stonks::finance::Action::kBuy,
+          .buy_or_sell = stonks::finance::BuyOrSell::kBuy,
           .quantity = 1,
           .price = (new_candlestick.data->open_price +
                     new_candlestick.data->close_price) /
@@ -24,7 +24,7 @@ std::optional<stonks::finance::OrderRequest> ProcessLastCandlesticks(
     if (new_candlestick.data->close_price < prev_candlestick.data->low_price) {
       return stonks::finance::OrderRequest{
           .time = new_candlestick.close_time,
-          .action = stonks::finance::Action::kSell,
+          .buy_or_sell = stonks::finance::BuyOrSell::kSell,
           .quantity = 1,
           .price = (new_candlestick.data->open_price +
                     new_candlestick.data->close_price) /

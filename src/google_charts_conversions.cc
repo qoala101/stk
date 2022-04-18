@@ -83,7 +83,7 @@ web::json::value ConvertToJson(
   const auto record_to_json = [](const finance::StrategyOrderRequest &record) {
     auto json = web::json::value{};
     auto row_cells = std::vector<web::json::value>{};
-    row_cells.reserve(7);
+    row_cells.reserve(3);
     AddCell(row_cells, record.order_request.time);
     AddCell(row_cells, record.order_request.quantity);
     AddCell(row_cells, record.order_request.price);
@@ -92,6 +92,30 @@ web::json::value ConvertToJson(
   };
   auto rows =
       data | ranges::views::transform(record_to_json) | ranges::to_vector;
+
+  auto json = web::json::value{};
+  json["cols"] = web::json::value::array(std::move(cols));
+  json["rows"] = web::json::value::array(std::move(rows));
+  return json;
+}
+
+web::json::value ConvertToJson(const std::vector<finance::TimeDouble> &data) {
+  auto cols = std::vector<web::json::value>{};
+  cols.reserve(2);
+  AddColumn(cols, "Time", "number");
+  AddColumn(cols, "Value", "number");
+
+  const auto time_double_to_json = [](const finance::TimeDouble &record) {
+    auto json = web::json::value{};
+    auto row_cells = std::vector<web::json::value>{};
+    row_cells.reserve(2);
+    AddCell(row_cells, record.time);
+    AddCell(row_cells, record.value);
+    json["c"] = web::json::value::array(std::move(row_cells));
+    return json;
+  };
+  auto rows =
+      data | ranges::views::transform(time_double_to_json) | ranges::to_vector;
 
   auto json = web::json::value{};
   json["cols"] = web::json::value::array(std::move(cols));

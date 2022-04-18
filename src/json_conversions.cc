@@ -237,7 +237,8 @@ std::optional<finance::OrderRequest> ParseFromJson(
   try {
     return finance::OrderRequest{
         .time = GetInt64PropertyAsMilliseconds(json, "time"),
-        .action = GetStringPropertyAsEnum<finance::Action>(json, "action"),
+        .buy_or_sell =
+            GetStringPropertyAsEnum<finance::BuyOrSell>(json, "buy_or_sell"),
         .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
         .quantity = GetDoublePropertyAsDouble(json, "quantity"),
         .price = GetDoublePropertyAsDouble(json, "price")};
@@ -253,8 +254,8 @@ std::optional<finance::OrderRequest> ParseFromJson(
 web::json::value ConvertToJson(const finance::OrderRequest& data) {
   auto json = web::json::value{};
   json["time"] = web::json::value::number(data.time.count());
-  json["action"] =
-      web::json::value::string(std::string{magic_enum::enum_name(data.action)});
+  json["buy_or_sell"] = web::json::value::string(
+      std::string{magic_enum::enum_name(data.buy_or_sell)});
   json["symbol"] = ConvertToJson(data.symbol);
   json["quantity"] = web::json::value::number(data.quantity);
   json["price"] = web::json::value::number(data.price);

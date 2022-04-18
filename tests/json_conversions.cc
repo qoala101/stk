@@ -191,7 +191,7 @@ TEST(JsonConversions, StrategyOrderRequest) {
       .strategy_info = stonks::finance::StrategyInfo{.name = "breakout"},
       .order_request = stonks::finance::OrderRequest{
           .time = std::chrono::milliseconds{1647820800000},
-          .action = stonks::finance::Action::kBuy,
+          .buy_or_sell = stonks::finance::BuyOrSell::kBuy,
           .symbol = stonks::finance::Symbol{.base_asset = "ETH",
                                             .quote_asset = "USDT"},
           .quantity = 123456789.123456789,
@@ -207,7 +207,7 @@ TEST(JsonConversions, StrategyOrderRequest) {
 
 TEST(JsonConversions, NonParsableObjectProperty) {
   const auto raw_json = R"({
-  "action":"BUY",
+  "buy_or_sell":"BUY",
   "price":123456789.12345679,
   "quantity":123456789.12345679,
   "symbol":{

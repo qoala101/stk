@@ -12,14 +12,19 @@ class OrderProxy {
  public:
   void RecordStrategyOrderRequest(StrategyOrderRequest strategy_order_request);
 
-  std::vector<StrategyOrderRequest> FindRecords(std::string_view strategy_name,
-                                                const Symbol &symbol,
-                                                int drop_first = 0) const;
+  std::vector<StrategyOrderRequest> FindOrderRequests(
+      std::string_view strategy_name, const Symbol &symbol,
+      int drop_first = 0) const;
+
+  std::vector<TimeDouble> CalcBalanceHistory(std::string_view asset,
+                                             int drop_first = 0) const;
 
  private:
-  std::vector<StrategyOrderRequest> records_{};
-  mutable std::condition_variable cond_var_{};
-  mutable std::mutex mutex_{};
+  std::vector<StrategyOrderRequest> order_requests_{};
+  mutable std::condition_variable order_requests_cond_var_{};
+  mutable std::mutex order_requests_mutex_{};
+
+  std::vector<std::string> order_responses_{}; // TODO
 };
 }  // namespace stonks::finance
 

@@ -32,51 +32,37 @@ namespace stonks {
 pplx::task<void> BreakoutStrategyService::Start() {
   service_state_ = true;
 
-  return pplx::create_task([&thread = thread_,
-                            &service_state = service_state_]() {
-    thread = std::thread{[&service_state]() {
-      const auto symbol =
-          finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"};
-      const auto interval = finance::Interval::k1Minute;
-      const auto history = finance::GetCandlesticks(
-          symbol, interval, utils::GetUnixTime() - std::chrono::minutes{200},
-          utils::GetUnixTime() - std::chrono::minutes{100});
+  return pplx::create_task(
+      [&thread = thread_, &service_state = service_state_]() {
+        thread = std::thread{[&service_state]() {
+          const auto symbol =
+              finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"};
+          const auto interval = finance::Interval::k1Minute;
+          auto strategy = finance::BreakoutStrategy{0};
+          auto stream = finance::BufferedCandlesticksStream{
+              finance::CandlesticksStream{
+                  symbol, interval, utils::GetUnixTime() - std::chrono::days{2},
+                  utils::GetUnixTime() - std::chrono::days{1}},
+              1};
 
-      if (!history.has_value()) {
-        spdlog::error("Cannot get history");
-        return;
-      }
+          while (service_state) {
+            std::this_thread::sleep_for(std::chrono::milliseconds{500});
+            const auto new_candlesticks = stream.GetNextCandlesticks();
 
-      auto strategy = finance::BreakoutStrategy{0};
-      const auto history_result = strategy.ProcessNewCandlesticks(*history);
+            if (new_candlesticks.empty()) {
+              spdlog::info("Breakout stretegy service is done");
+              return;
+            }
 
-      if (history_result.has_value()) {
-        SendOrderRequest(symbol, *history_result);
-      }
+            const auto new_data_result =
+                strategy.ProcessNewCandlesticks(new_candlesticks);
 
-      auto stream = finance::BufferedCandlesticksStream{
-          finance::CandlesticksStream{
-              symbol, interval, utils::GetUnixTime() - std::chrono::minutes{100}},
-          1};
-
-      while (service_state) {
-        std::this_thread::sleep_for(std::chrono::milliseconds{500});
-        const auto new_candlesticks = stream.GetNextCandlesticks();
-
-        if (new_candlesticks.empty()) {
-          spdlog::info("Breakout stretegy service is done");
-          return;
-        }
-
-        const auto new_data_result =
-            strategy.ProcessNewCandlesticks(new_candlesticks);
-
-        if (new_data_result.has_value()) {
-          SendOrderRequest(symbol, *new_data_result);
-        }
-      }
-    }};
-  });
+            if (new_data_result.has_value()) {
+              SendOrderRequest(symbol, *new_data_result);
+            }
+          }
+        }};
+      });
 }
 
 pplx::task<void> BreakoutStrategyService::Stop() {

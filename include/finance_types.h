@@ -25,7 +25,7 @@ struct StrategyInfo {
 
 struct OrderRequest {
   std::chrono::milliseconds time;
-  Action action;
+  BuyOrSell buy_or_sell;
   Symbol symbol;
   double quantity;
   double price;
@@ -65,6 +65,11 @@ struct Candlestick {
   friend bool operator==(const Candlestick &left, const Candlestick &right);
   friend std::partial_ordering operator<=>(const Candlestick &left,
                                            const Candlestick &right);
+};
+
+struct TimeDouble {
+  std::chrono::milliseconds time;
+  double value;
 };
 }  // namespace stonks::finance
 
