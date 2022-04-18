@@ -5,11 +5,12 @@
 
 #include "binance_api.h"
 
+namespace stonks {
 namespace {
 void HandleGetRequest(const web::http::http_request &request) {
   spdlog::info("Got {} request on {}", request.method(),
                request.request_uri().to_string());
-  const auto symbols = stonks::binance::GetSymbols();
+  const auto symbols = binance::GetSymbols();
 
   if (!symbols.has_value()) {
     request.reply(web::http::status_codes::NotFound);
@@ -25,7 +26,6 @@ void HandleGetRequest(const web::http::http_request &request) {
 }
 }  // namespace
 
-namespace stonks {
 pplx::task<void> GetSymbolsService::Start() {
   http_listener_ = web::http::experimental::listener::http_listener{
       "http://localhost:6506/api/symbols"};

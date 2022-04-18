@@ -3,6 +3,7 @@
 #include <cpprest/filestream.h>
 #include <spdlog/spdlog.h>
 
+namespace stonks {
 namespace {
 std::string GetFilePathForRequestPath(std::string_view request_path) {
   if (request_path == "/") {
@@ -57,7 +58,6 @@ void HandleGetRequest(const web::http::http_request &request) {
 }
 }  // namespace
 
-namespace stonks {
 pplx::task<void> GetFileService::Start() {
   http_listener_ = web::http::experimental::listener::http_listener{
       "http://localhost:6506/"};

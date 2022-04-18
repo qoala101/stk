@@ -12,6 +12,7 @@
 #include "rest_request.h"
 #include "utils.h"
 
+namespace stonks::binance {
 namespace {
 std::optional<std::vector<std::string>> ParseSymbolsFromExchangeInfo(
     const web::json::value &exchange_info) {
@@ -47,7 +48,6 @@ std::optional<std::vector<std::string>> ParseSymbolsFromExchangeInfo(
 }
 }  // namespace
 
-namespace stonks::binance {
 std::optional<std::vector<std::string>> GetSymbols() {
   const auto exchange_info =
       rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}

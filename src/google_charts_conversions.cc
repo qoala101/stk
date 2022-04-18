@@ -5,6 +5,7 @@
 
 #include "concepts.h"
 
+namespace stonks {
 namespace {
 void AddColumn(std::vector<web::json::value> &columns, std::string_view label,
                std::string_view type) {
@@ -30,7 +31,6 @@ void AddCell(std::vector<web::json::value> &cells,
 }
 }  // namespace
 
-namespace stonks {
 web::json::value ConvertToJson(const std::vector<finance::Candlestick> &data) {
   auto cols = std::vector<web::json::value>{};
   cols.reserve(5);

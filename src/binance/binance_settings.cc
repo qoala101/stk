@@ -4,6 +4,7 @@
 
 #include <fstream>
 
+namespace stonks::binance::settings {
 namespace {
 std::optional<std::string> GetFirstWordFromFile(std::string_view file_path) {
   auto file_stream = std::ifstream{std::string{file_path}};
@@ -19,7 +20,6 @@ std::optional<std::string> GetFirstWordFromFile(std::string_view file_path) {
 }
 }  // namespace
 
-namespace stonks::binance::settings {
 std::string GetBaseRestUri() {
   static const auto value =
       GetFirstWordFromFile("../settings/binance_base_rest_uri.txt");

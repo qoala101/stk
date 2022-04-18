@@ -12,23 +12,23 @@
 #include "rest_request.h"
 #include "utils.h"
 
+namespace stonks {
 namespace {
-void SendOrderRequest(stonks::finance::Symbol symbol,
-                      stonks::finance::OrderRequest order_request) {
+void SendOrderRequest(finance::Symbol symbol,
+                      finance::OrderRequest order_request) {
   order_request.symbol = std::move(symbol);
 
-  auto json = stonks::ConvertToJson(stonks::finance::StrategyOrderRequest{
-      .strategy_info = stonks::finance::StrategyInfo{.name = "breakout"},
+  auto json = ConvertToJson(finance::StrategyOrderRequest{
+      .strategy_info = finance::StrategyInfo{.name = "breakout"},
       .order_request = std::move(order_request)});
 
-  stonks::rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
+  rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
       .AppendUri("/api/order_proxy/order")
       .SetJson(json)
       .SendAndGetResponse();
 }
 }  // namespace
 
-namespace stonks {
 pplx::task<void> BreakoutStrategyService::Start() {
   service_state_ = true;
 

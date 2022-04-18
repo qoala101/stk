@@ -6,9 +6,10 @@
 #include "google_charts_conversions.h"
 #include "json_conversions.h"
 
+namespace stonks {
 namespace {
 void HandleGetRequest(const web::http::http_request &request,
-                      stonks::finance::OrderProxy &order_proxy) {
+                      finance::OrderProxy &order_proxy) {
   spdlog::info("Got {} request on {}", request.method(),
                request.request_uri().to_string());
 
@@ -24,18 +25,16 @@ void HandleGetRequest(const web::http::http_request &request,
 
   if (relative_uri == "/strategy") {
     const auto records = order_proxy.FindOrderRequests(
-        "breakout",
-        stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"},
+        "breakout", finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"},
         drop_first);
-    request.reply(web::http::status_codes::OK, stonks::ConvertToJson(records));
+    request.reply(web::http::status_codes::OK, ConvertToJson(records));
     return;
   }
 
   if (relative_uri == "/balance_history") {
     const auto balance_history =
         order_proxy.CalcBalanceHistory("USDT", drop_first);
-    request.reply(web::http::status_codes::OK,
-                  stonks::ConvertToJson(balance_history));
+    request.reply(web::http::status_codes::OK, ConvertToJson(balance_history));
     return;
   }
 
@@ -43,13 +42,13 @@ void HandleGetRequest(const web::http::http_request &request,
 }
 
 void HandlePostRequest(const web::http::http_request &request,
-                       stonks::finance::OrderProxy &order_proxy) {
+                       finance::OrderProxy &order_proxy) {
   spdlog::info("Got {} request on {}", request.method(),
                request.request_uri().to_string());
 
   const auto json = request.extract_json().get();
   auto strategy_order_request =
-      stonks::ParseFromJson<stonks::finance::StrategyOrderRequest>(json);
+      ParseFromJson<finance::StrategyOrderRequest>(json);
 
   if (!strategy_order_request.has_value()) {
     spdlog::error("Cannot parse strategy order request");
@@ -62,7 +61,6 @@ void HandlePostRequest(const web::http::http_request &request,
 }
 }  // namespace
 
-namespace stonks {
 pplx::task<void> OrderProxyService::Start() {
   http_listener_ = web::http::experimental::listener::http_listener{
       "http://localhost:6506/api/order_proxy/order"};

@@ -2,33 +2,32 @@
 
 #include <gsl/assert>
 
+namespace stonks::finance {
 namespace {
-std::optional<stonks::finance::OrderRequest> ProcessLastCandlesticks(
-    const stonks::finance::Candlestick &prev_candlestick,
-    const stonks::finance::Candlestick &new_candlestick, double min_volume) {
+std::optional<OrderRequest> ProcessLastCandlesticks(
+    const Candlestick &prev_candlestick, const Candlestick &new_candlestick,
+    double min_volume) {
   Expects(prev_candlestick.data.has_value());
   Expects(new_candlestick.data.has_value());
   Expects(min_volume >= 0);
 
   if (new_candlestick.data->volume > min_volume) {
     if (new_candlestick.data->close_price > prev_candlestick.data->high_price) {
-      return stonks::finance::OrderRequest{
-          .time = new_candlestick.close_time,
-          .buy_or_sell = stonks::finance::BuyOrSell::kBuy,
-          .quantity = 1,
-          .price = (new_candlestick.data->open_price +
-                    new_candlestick.data->close_price) /
-                   2};
+      return OrderRequest{.time = new_candlestick.close_time,
+                          .buy_or_sell = BuyOrSell::kBuy,
+                          .quantity = 1,
+                          .price = (new_candlestick.data->open_price +
+                                    new_candlestick.data->close_price) /
+                                   2};
     }
 
     if (new_candlestick.data->close_price < prev_candlestick.data->low_price) {
-      return stonks::finance::OrderRequest{
-          .time = new_candlestick.close_time,
-          .buy_or_sell = stonks::finance::BuyOrSell::kSell,
-          .quantity = 1,
-          .price = (new_candlestick.data->open_price +
-                    new_candlestick.data->close_price) /
-                   2};
+      return OrderRequest{.time = new_candlestick.close_time,
+                          .buy_or_sell = BuyOrSell::kSell,
+                          .quantity = 1,
+                          .price = (new_candlestick.data->open_price +
+                                    new_candlestick.data->close_price) /
+                                   2};
     }
   }
 
@@ -36,7 +35,6 @@ std::optional<stonks::finance::OrderRequest> ProcessLastCandlesticks(
 }
 }  // namespace
 
-namespace stonks::finance {
 BreakoutStrategy::BreakoutStrategy(double min_volume)
     : min_volume_{min_volume} {
   Expects(min_volume >= 0);

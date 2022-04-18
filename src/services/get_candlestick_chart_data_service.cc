@@ -7,15 +7,15 @@
 #include "google_charts_conversions.h"
 #include "utils.h"
 
+namespace stonks {
 namespace {
 void HandleGetRequest(const web::http::http_request &request) {
   spdlog::info("Got {} request on {}", request.method(),
                request.request_uri().to_string());
-  const auto candlesticks = stonks::finance::GetCandlesticks(
-      stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"},
-      stonks::finance::Interval::k1Minute,
-      stonks::utils::GetUnixTime() - std::chrono::hours{1},
-      stonks::utils::GetUnixTime());
+  const auto candlesticks = finance::GetCandlesticks(
+      finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"},
+      finance::Interval::k1Minute, utils::GetUnixTime() - std::chrono::hours{1},
+      utils::GetUnixTime());
 
   if (!candlesticks.has_value()) {
     request.reply(web::http::status_codes::NotFound);
@@ -23,13 +23,11 @@ void HandleGetRequest(const web::http::http_request &request) {
     return;
   }
 
-  request.reply(web::http::status_codes::OK,
-                stonks::ConvertToJson(*candlesticks));
+  request.reply(web::http::status_codes::OK, ConvertToJson(*candlesticks));
   spdlog::info("Sent OK response");
 }
 }  // namespace
 
-namespace stonks {
 pplx::task<void> GetCandlestickChartDataService::Start() {
   http_listener_ = web::http::experimental::listener::http_listener{
       "http://localhost:6506/api/candlestick_chart_data"};

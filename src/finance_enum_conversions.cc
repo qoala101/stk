@@ -4,6 +4,7 @@
 
 #include "utils.h"
 
+namespace stonks::finance {
 namespace {
 template <typename T>
 std::chrono::milliseconds ConvertToMilliseconds(T time) {
@@ -11,7 +12,6 @@ std::chrono::milliseconds ConvertToMilliseconds(T time) {
 }
 }  // namespace
 
-namespace stonks::finance {
 std::chrono::milliseconds ConvertIntervalToMilliseconds(Interval interval) {
   switch (interval) {
     case Interval::k1Minute:
