@@ -33,6 +33,13 @@ enum class OrderType {
   kLimitMaker
 };
 
+enum class NewOrderResponseType {
+  kInvalid,
+  kAcknowledgement,
+  kResult,
+  kFull
+};
+
 enum class CandleInterval {
   kInvalid,
   k1Minute,

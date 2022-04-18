@@ -82,11 +82,17 @@ std::optional<std::string> GetBalances() {
   return response->serialize();
 }
 
-std::optional<PlaceOrderResult> PlaceOrder(std::string_view symbol,
-                                           OrderSide side, OrderType type,
-                                           std::optional<double> quantity,
-                                           std::optional<double> price,
-                                           OrderTimeInForce time_in_force) {
+std::optional<PlaceOrderResult> PlaceOrder(
+    std::string_view symbol, OrderSide side, OrderType type,
+    std::optional<OrderTimeInForce> time_in_force,
+    std::optional<double> quantity, std::optional<double> quote_order_quantity,
+    std::optional<double> price,
+    std::optional<std::string_view> new_client_order_id,
+    std::optional<double> stop_price, std::optional<int64_t> trailing_delta,
+    std::optional<double> iceberg_quantity,
+    std::optional<NewOrderResponseType> new_order_response_type,
+    std::optional<int64_t> receiving_window,
+    std::chrono::milliseconds timestamp) {
   auto request =
       rest::RestRequest{web::http::methods::POST, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/order")
@@ -95,9 +101,16 @@ std::optional<PlaceOrderResult> PlaceOrder(std::string_view symbol,
           .AddParameter("side", side)
           .AddParameter("type", type)
           .AddParameter("timeInForce", time_in_force)
-          .AddParameter("timestamp", utils::GetUnixTime())
           .AddParameter("quantity", quantity)
-          .AddParameter("price", price);
+          .AddParameter("quoteOrderQty", quote_order_quantity)
+          .AddParameter("price", price)
+          .AddParameter("newClientOrderId", new_client_order_id)
+          .AddParameter("stopPrice", stop_price)
+          .AddParameter("trailingDelta", trailing_delta)
+          .AddParameter("icebergQty", iceberg_quantity)
+          .AddParameter("newOrderRespType", new_order_response_type)
+          .AddParameter("recvWindow", receiving_window)
+          .AddParameter("timestamp", timestamp);
 
   const auto params = request.GetParametersAsString();
   const auto signed_params =

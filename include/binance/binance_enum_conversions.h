@@ -94,6 +94,24 @@ magic_enum::customize::enum_name<stonks::binance::OrderType>(
 
 template <>
 constexpr std::string_view
+magic_enum::customize::enum_name<stonks::binance::NewOrderResponseType>(
+    stonks::binance::NewOrderResponseType value) noexcept {
+  switch (value) {
+    case stonks::binance::NewOrderResponseType::kAcknowledgement:
+      return "ACKNOWLEDGEMENT";
+    case stonks::binance::NewOrderResponseType::kResult:
+      return "RESULT";
+    case stonks::binance::NewOrderResponseType::kFull:
+      return "FULL";
+    default:
+      break;
+  }
+
+  return {};
+}
+
+template <>
+constexpr std::string_view
 magic_enum::customize::enum_name<stonks::binance::CandleInterval>(
     stonks::binance::CandleInterval value) noexcept {
   switch (value) {

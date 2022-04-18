@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "binance_types.h"
+#include "utils.h"
 
 namespace stonks::binance {
 std::optional<std::vector<std::string>> GetSymbols();
@@ -15,9 +16,17 @@ std::optional<std::string> GetBalances();
 
 std::optional<PlaceOrderResult> PlaceOrder(
     std::string_view symbol, OrderSide side, OrderType type,
+    std::optional<OrderTimeInForce> time_in_force = std::nullopt,
     std::optional<double> quantity = std::nullopt,
+    std::optional<double> quote_order_quantity = std::nullopt,
     std::optional<double> price = std::nullopt,
-    OrderTimeInForce time_in_force = OrderTimeInForce::kGoodTillCanceled);
+    std::optional<std::string_view> new_client_order_id = std::nullopt,
+    std::optional<double> stop_price = std::nullopt,
+    std::optional<int64_t> trailing_delta = std::nullopt,
+    std::optional<double> iceberg_quantity = std::nullopt,
+    std::optional<NewOrderResponseType> new_order_response_type = std::nullopt,
+    std::optional<int64_t> receiving_window = std::nullopt,
+    std::chrono::milliseconds timestamp = utils::GetUnixTime());
 
 std::optional<std::vector<Kline>> GetKlines(
     std::string_view symbol, CandleInterval interval,
