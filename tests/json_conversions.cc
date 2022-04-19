@@ -5,42 +5,24 @@
 
 #include <chrono>
 
-TEST(JsonConversions, PlaceOrderResult) {
+TEST(JsonConversions, PlaceOrderAcknowledgement) {
   const auto raw_json = R"({
   "clientOrderId":"0PaNMDgehJmHYC9UApeK2y",
-  "cummulativeQuoteQty":"123456789.123456789",
-  "executedQty":"123456789.123456789",
-  "fills":[],
   "orderId":123456789,
   "orderListId":-123456789,
-  "origQty":"123456789.123456789",
-  "price":"123456789.123456789",
-  "side":"BUY",
-  "status":"NEW",
   "symbol":"BTCUSDT",
-  "timeInForce":"GTC",
-  "transactTime":1648412181820,
-  "type":"LIMIT"
+  "transactTime":1648412181820
 })";
-  const auto object = stonks::binance::PlaceOrderResult{
-      .client_order_id = "0PaNMDgehJmHYC9UApeK2y",
-      .cummulative_quote_quantity = 123456789.123456789,
-      .executed_quantity = 123456789.123456789,
-      // .fills
+  const auto object = stonks::binance::PlaceOrderAcknowledgement{
+      .symbol = "BTCUSDT",
       .order_id = 123456789,
       .order_list_id = -123456789,
-      .original_quantity = 123456789.123456789,
-      .price = 123456789.123456789,
-      .side = stonks::binance::OrderSide::kBuy,
-      .status = stonks::binance::OrderStatus::kNew,
-      .symbol = "BTCUSDT",
-      .time_in_force = stonks::binance::OrderTimeInForce::kGoodTillCanceled,
-      .transaction_time = std::chrono::milliseconds{1648412181820},
-      .type = stonks::binance::OrderType::kLimit};
+      .client_order_id = "0PaNMDgehJmHYC9UApeK2y",
+      .transaction_time = std::chrono::milliseconds{1648412181820}};
 
   const auto parsed_json = web::json::value::parse(raw_json);
   const auto parsed_object =
-      stonks::ParseFromJson<stonks::binance::PlaceOrderResult>(parsed_json);
+      stonks::ParseFromJson<stonks::binance::PlaceOrderAcknowledgement>(parsed_json);
 
   ASSERT_TRUE(parsed_object.has_value());
   EXPECT_EQ(*parsed_object, object);

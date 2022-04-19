@@ -140,27 +140,16 @@ std::optional<std::vector<T>> ParseFromJsonArray(const web::json::value& json) {
 }  // namespace
 
 template <>
-std::optional<binance::PlaceOrderResult> ParseFromJson(
+std::optional<binance::PlaceOrderAcknowledgement> ParseFromJson(
     const web::json::value& json) {
   try {
-    return binance::PlaceOrderResult{
-        .client_order_id = GetStringPropertyAsString(json, "clientOrderId"),
-        .cummulative_quote_quantity =
-            GetStringPropertyAsDouble(json, "cummulativeQuoteQty"),
-        .executed_quantity = GetStringPropertyAsDouble(json, "executedQty"),
-        // .fills
+    return binance::PlaceOrderAcknowledgement{
+        .symbol = GetStringPropertyAsString(json, "symbol"),
         .order_id = GetInt64PropertyAsInt64(json, "orderId"),
         .order_list_id = GetInt64PropertyAsInt64(json, "orderListId"),
-        .original_quantity = GetStringPropertyAsDouble(json, "origQty"),
-        .price = GetStringPropertyAsDouble(json, "price"),
-        .side = GetStringPropertyAsEnum<binance::OrderSide>(json, "side"),
-        .status = GetStringPropertyAsEnum<binance::OrderStatus>(json, "status"),
-        .symbol = GetStringPropertyAsString(json, "symbol"),
-        .time_in_force = GetStringPropertyAsEnum<binance::OrderTimeInForce>(
-            json, "timeInForce"),
+        .client_order_id = GetStringPropertyAsString(json, "clientOrderId"),
         .transaction_time =
-            GetInt64PropertyAsMilliseconds(json, "transactTime"),
-        .type = GetStringPropertyAsEnum<binance::OrderType>(json, "type")};
+            GetInt64PropertyAsMilliseconds(json, "transactTime")};
   } catch (const std::exception& exeption) {
     spdlog::error("Parse from JSON: {}", exeption.what());
   } catch (...) {

@@ -13,7 +13,7 @@ template <typename T>
 std::optional<T> ParseFromJson(const web::json::value &json) = delete;
 
 template <>
-std::optional<binance::PlaceOrderResult> ParseFromJson(
+std::optional<binance::PlaceOrderAcknowledgement> ParseFromJson(
     const web::json::value &json);
 
 template <>
