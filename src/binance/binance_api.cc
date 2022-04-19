@@ -82,7 +82,7 @@ std::optional<std::string> GetBalances() {
   return response->serialize();
 }
 
-std::optional<PlaceOrderResult> PlaceOrder(
+std::optional<PlaceOrderAcknowledgement> PlaceOrder(
     std::string_view symbol, OrderSide side, OrderType type,
     std::optional<OrderTimeInForce> time_in_force,
     std::optional<double> quantity, std::optional<double> quote_order_quantity,
@@ -123,7 +123,7 @@ std::optional<PlaceOrderResult> PlaceOrder(
     return std::nullopt;
   }
 
-  return ParseFromJson<PlaceOrderResult>(*response);
+  return ParseFromJson<PlaceOrderAcknowledgement>(*response);
 }
 
 std::optional<std::vector<OrderInfo>> GetAllOrders(
@@ -154,7 +154,7 @@ std::optional<std::vector<OrderInfo>> GetAllOrders(
     spdlog::error("Cannot get all orders");
     return std::nullopt;
   }
-spdlog::info(response->serialize());
+
   return ParseFromJson<std::vector<OrderInfo>>(*response);
 }
 

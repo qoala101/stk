@@ -14,7 +14,7 @@ std::optional<std::vector<std::string>> GetSymbols();
 
 std::optional<std::string> GetBalances();
 
-std::optional<PlaceOrderResult> PlaceOrder(
+std::optional<PlaceOrderAcknowledgement> PlaceOrder(
     std::string_view symbol, OrderSide side, OrderType type,
     std::optional<OrderTimeInForce> time_in_force = std::nullopt,
     std::optional<double> quantity = std::nullopt,
@@ -24,7 +24,8 @@ std::optional<PlaceOrderResult> PlaceOrder(
     std::optional<double> stop_price = std::nullopt,
     std::optional<int64_t> trailing_delta = std::nullopt,
     std::optional<double> iceberg_quantity = std::nullopt,
-    std::optional<NewOrderResponseType> new_order_response_type = std::nullopt,
+    std::optional<NewOrderResponseType> new_order_response_type =
+        NewOrderResponseType::kAcknowledgement,
     std::optional<int64_t> receiving_window = std::nullopt,
     std::chrono::milliseconds timestamp = utils::GetUnixTime());
 

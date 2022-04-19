@@ -3,6 +3,7 @@
 
 #include <chrono>
 #include <string>
+#include <variant>
 #include <vector>
 
 #include "binance_enums.h"
@@ -10,25 +11,16 @@
 namespace stonks::binance {
 using Fill = std::string;
 
-struct PlaceOrderResult {
-  std::string client_order_id{};
-  double cummulative_quote_quantity{};
-  double executed_quantity{};
-  std::vector<Fill> fills{};
+struct PlaceOrderAcknowledgement {
+  std::string symbol{};
   int64_t order_id{};
   int64_t order_list_id{};
-  double original_quantity{};
-  double price{};
-  OrderSide side{};
-  OrderStatus status{};
-  std::string symbol{};
-  OrderTimeInForce time_in_force{};
+  std::string client_order_id{};
   std::chrono::milliseconds transaction_time{};
-  OrderType type{};
 
  private:
-  friend bool operator==(const PlaceOrderResult &,
-                         const PlaceOrderResult &) = default;
+  friend bool operator==(const PlaceOrderAcknowledgement &,
+                         const PlaceOrderAcknowledgement &) = default;
 };
 
 struct OrderInfo {
