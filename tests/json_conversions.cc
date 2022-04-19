@@ -46,6 +46,56 @@ TEST(JsonConversions, PlaceOrderResult) {
   EXPECT_EQ(*parsed_object, object);
 }
 
+TEST(JsonConversions, OrderInfo) {
+  const auto raw_json = R"({
+  "clientOrderId":"jxCqHJvQQ8E9oupknIW9k5",
+  "cummulativeQuoteQty":"12.00000000",
+  "executedQty":"34.00000000",
+  "icebergQty":"56.00000000",
+  "isWorking":true,
+  "orderId":2378656,
+  "orderListId":-1,
+  "origQty":"0.01000000",
+  "origQuoteOrderQty":"78.00000000",
+  "price":"1500.00000000",
+  "side":"BUY",
+  "status":"NEW",
+  "stopPrice":"9.00000000",
+  "symbol":"ETHUSDT",
+  "time":1650322872825,
+  "timeInForce":"GTC",
+  "type":"LIMIT",
+  "updateTime":1650322872825
+})";
+  const auto object = stonks::binance::OrderInfo{
+      .symbol = "ETHUSDT",
+      .order_id = 2378656,
+      .order_list_id = -1,
+      .client_order_id = "jxCqHJvQQ8E9oupknIW9k5",
+      .price = 1500,
+      .original_quantity = 0.01,
+      .executed_quantity = 34,
+      .cummulative_quote_quantity = 12,
+      .status = stonks::binance::OrderStatus::kNew,
+      .time_in_force = stonks::binance::OrderTimeInForce::kGoodTillCanceled,
+      .type = stonks::binance::OrderType::kLimit,
+      .side = stonks::binance::OrderSide::kBuy,
+      .stop_price = 9,
+      .iceberg_quantity = 56,
+      .time = std::chrono::milliseconds{1650322872825},
+      .update_time = std::chrono::milliseconds{1650322872825},
+      .is_working = true,
+      .original_quote_order_quantity = 78,
+  };
+
+  const auto parsed_json = web::json::value::parse(raw_json);
+  const auto parsed_object =
+      stonks::ParseFromJson<stonks::binance::OrderInfo>(parsed_json);
+
+  ASSERT_TRUE(parsed_object.has_value());
+  EXPECT_EQ(*parsed_object, object);
+}
+
 TEST(JsonConversions, Kline) {
   const auto raw_json = R"([
   1647820800000,

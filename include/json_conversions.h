@@ -17,6 +17,13 @@ std::optional<binance::PlaceOrderResult> ParseFromJson(
     const web::json::value &json);
 
 template <>
+std::optional<binance::OrderInfo> ParseFromJson(const web::json::value &json);
+
+template <>
+std::optional<std::vector<binance::OrderInfo>> ParseFromJson(
+    const web::json::value &json);
+
+template <>
 std::optional<binance::Kline> ParseFromJson(const web::json::value &json);
 
 template <>

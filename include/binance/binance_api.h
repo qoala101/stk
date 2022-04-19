@@ -28,6 +28,14 @@ std::optional<PlaceOrderResult> PlaceOrder(
     std::optional<int64_t> receiving_window = std::nullopt,
     std::chrono::milliseconds timestamp = utils::GetUnixTime());
 
+std::optional<std::vector<OrderInfo>> GetAllOrders(
+    std::string_view symbol, std::optional<int64_t> order_id = std::nullopt,
+    std::optional<std::chrono::milliseconds> start_time = std::nullopt,
+    std::optional<std::chrono::milliseconds> end_time = std::nullopt,
+    std::optional<int> limit = std::nullopt,
+    std::optional<int64_t> receiving_window = std::nullopt,
+    std::chrono::milliseconds timestamp = utils::GetUnixTime());
+
 std::optional<std::vector<Kline>> GetKlines(
     std::string_view symbol, CandleInterval interval,
     std::optional<std::chrono::milliseconds> start_time = std::nullopt,

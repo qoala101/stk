@@ -49,6 +49,15 @@ double GetDoubleElementAsDouble(const web::json::value& json, const int index) {
   return json.at(index).as_number().to_double();
 }
 
+bool GetBoolPropertyAsBool(const web::json::value& json,
+                           const std::string_view property_name) {
+  return json.at(std::string{property_name}).as_bool();
+}
+
+bool GetBoolElementAsBool(const web::json::value& json, const int index) {
+  return json.at(index).as_bool();
+}
+
 std::chrono::milliseconds GetInt64PropertyAsMilliseconds(
     const web::json::value& json, const std::string_view property_name) {
   return std::chrono::milliseconds{
@@ -96,6 +105,38 @@ T GetObjectElementAsObject(const web::json::value& json, const int index) {
 
   return *object;
 }
+
+template <typename T>
+std::optional<std::vector<T>> ParseFromJsonArray(const web::json::value& json) {
+  if (!json.is_array()) {
+    spdlog::error("Parse from JSON: {}", "not array");
+    return std::nullopt;
+  }
+
+  const auto& json_array = json.as_array();
+
+  const auto parse_item = [](const web::json::value& value) {
+    return ParseFromJson<T>(value);
+  };
+  auto item_succesfully_parsed = [](const std::optional<T>& item) {
+    return item.has_value();
+  };
+  const auto get_item = [](const std::optional<T>& item) {
+    return std::move(*item);
+  };
+
+  const auto parsed_items = json_array | ranges::views::transform(parse_item) |
+                            ranges::views::take_while(item_succesfully_parsed) |
+                            ranges::views::transform(get_item) |
+                            ranges::to_vector;
+
+  if (parsed_items.size() < json_array.size()) {
+    spdlog::error("Parse from JSON: {}", "cannot parse all items");
+    return std::nullopt;
+  }
+
+  return parsed_items;
+}
 }  // namespace
 
 template <>
@@ -130,6 +171,46 @@ std::optional<binance::PlaceOrderResult> ParseFromJson(
 }
 
 template <>
+std::optional<binance::OrderInfo> ParseFromJson(const web::json::value& json) {
+  try {
+    return binance::OrderInfo{
+        .symbol = GetStringPropertyAsString(json, "symbol"),
+        .order_id = GetInt64PropertyAsInt64(json, "orderId"),
+        .order_list_id = GetInt64PropertyAsInt64(json, "orderListId"),
+        .client_order_id = GetStringPropertyAsString(json, "clientOrderId"),
+        .price = GetStringPropertyAsDouble(json, "price"),
+        .original_quantity = GetStringPropertyAsDouble(json, "origQty"),
+        .executed_quantity = GetStringPropertyAsDouble(json, "executedQty"),
+        .cummulative_quote_quantity =
+            GetStringPropertyAsDouble(json, "cummulativeQuoteQty"),
+        .status = GetStringPropertyAsEnum<binance::OrderStatus>(json, "status"),
+        .time_in_force = GetStringPropertyAsEnum<binance::OrderTimeInForce>(
+            json, "timeInForce"),
+        .type = GetStringPropertyAsEnum<binance::OrderType>(json, "type"),
+        .side = GetStringPropertyAsEnum<binance::OrderSide>(json, "side"),
+        .stop_price = GetStringPropertyAsDouble(json, "stopPrice"),
+        .iceberg_quantity = GetStringPropertyAsDouble(json, "icebergQty"),
+        .time = GetInt64PropertyAsMilliseconds(json, "time"),
+        .update_time = GetInt64PropertyAsMilliseconds(json, "updateTime"),
+        .is_working = GetBoolPropertyAsBool(json, "isWorking"),
+        .original_quote_order_quantity =
+            GetStringPropertyAsDouble(json, "origQuoteOrderQty")};
+  } catch (const std::exception& exeption) {
+    spdlog::error("Parse from JSON: {}", exeption.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+template <>
+std::optional<std::vector<binance::OrderInfo>> ParseFromJson(
+    const web::json::value& json) {
+  return ParseFromJsonArray<binance::OrderInfo>(json);
+}
+
+template <>
 std::optional<binance::Kline> ParseFromJson(const web::json::value& json) {
   try {
     return binance::Kline{
@@ -156,35 +237,7 @@ std::optional<binance::Kline> ParseFromJson(const web::json::value& json) {
 template <>
 std::optional<std::vector<binance::Kline>> ParseFromJson(
     const web::json::value& json) {
-  if (!json.is_array()) {
-    spdlog::error("Parse from JSON: {}", "not array");
-    return std::nullopt;
-  }
-
-  const auto& klines_array = json.as_array();
-
-  const auto parse_kline = [](const web::json::value& value) {
-    return ParseFromJson<binance::Kline>(value);
-  };
-  auto kline_succesfully_parsed =
-      [](const std::optional<binance::Kline>& kline) {
-        return kline.has_value();
-      };
-  const auto get_kline = [](const std::optional<binance::Kline>& kline) {
-    return std::move(*kline);
-  };
-
-  const auto parsed_klines =
-      klines_array | ranges::views::transform(parse_kline) |
-      ranges::views::take_while(kline_succesfully_parsed) |
-      ranges::views::transform(get_kline) | ranges::to_vector;
-
-  if (parsed_klines.size() < klines_array.size()) {
-    spdlog::error("Parse from JSON: {}", "cannot parse all klines");
-    return std::nullopt;
-  }
-
-  return parsed_klines;
+  return ParseFromJsonArray<binance::Kline>(json);
 }
 
 template <>
