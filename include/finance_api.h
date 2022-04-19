@@ -1,6 +1,7 @@
 #ifndef STONKS_FINANCE_API_H_
 #define STONKS_FINANCE_API_H_
 
+#include <boost/uuid/uuid.hpp>
 #include <chrono>
 #include <optional>
 #include <string_view>
@@ -37,6 +38,11 @@ std::chrono::milliseconds FloorEndTimeToInterval(std::chrono::milliseconds time,
 int CanculateNumIntervalsInPeriod(std::chrono::milliseconds start_time,
                                   std::chrono::milliseconds end_time,
                                   Interval interval);
+
+bool PlaceOrder(const OrderRequest &order_request);
+
+std::optional<OrderInfo> GetOrderInfo(const Symbol &symbol,
+                                      boost::uuids::uuid uuid);
 }  // namespace stonks::finance
 
 #endif  // STONKS_FINANCE_API_H_

@@ -1,6 +1,7 @@
 #ifndef STONKS_FINANCE_TYPES_H_
 #define STONKS_FINANCE_TYPES_H_
 
+#include <boost/uuid/uuid.hpp>
 #include <chrono>
 #include <optional>
 #include <string>
@@ -9,38 +10,44 @@
 
 namespace stonks::finance {
 struct Symbol {
-  std::string base_asset;
-  std::string quote_asset;
+  std::string base_asset{};
+  std::string quote_asset{};
 
  private:
   friend bool operator==(const Symbol &, const Symbol &) = default;
 };
 
 struct StrategyInfo {
-  std::string name;
+  std::string name{};
 
  private:
   friend bool operator==(const StrategyInfo &, const StrategyInfo &) = default;
 };
 
 struct OrderRequest {
-  std::chrono::milliseconds time;
-  BuyOrSell buy_or_sell;
-  Symbol symbol;
-  double quantity;
-  double price;
+  boost::uuids::uuid uuid{};
+  std::chrono::milliseconds time{};
+  BuyOrSell buy_or_sell{};
+  Symbol symbol{};
+  double quantity{};
+  double price{};
 
  private:
   friend bool operator==(const OrderRequest &, const OrderRequest &) = default;
 };
 
 struct StrategyOrderRequest {
-  StrategyInfo strategy_info;
-  OrderRequest order_request;
+  StrategyInfo strategy_info{};
+  OrderRequest order_request{};
 
  private:
   friend bool operator==(const StrategyOrderRequest &,
                          const StrategyOrderRequest &) = default;
+};
+
+struct OrderInfo {
+  boost::uuids::uuid uuid{};
+  OrderStatus status{};
 };
 
 struct Candle {
@@ -68,8 +75,8 @@ struct Candle {
 };
 
 struct TimeDouble {
-  std::chrono::milliseconds time;
-  double value;
+  std::chrono::milliseconds time{};
+  double value{};
 };
 }  // namespace stonks::finance
 

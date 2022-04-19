@@ -9,6 +9,8 @@
 
 namespace stonks::finance {
 Candle ParseCandleFromBinanceKline(const binance::Kline &kline);
+
+OrderInfo ParseOrderInfoFromBinanceOrderInfo(const binance::OrderInfo &order_info);
 }
 
 #endif  // STONKS_FINANCE_CONVERSIONS_H_

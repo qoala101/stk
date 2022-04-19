@@ -8,7 +8,7 @@ TEST(Utils, ParseUnixTimeFromString) {
   EXPECT_EQ(date, std::chrono::milliseconds{1649030400000});
 
   const auto time = stonks::utils::ParseUnixTimeFromString("18:35:44");
-  EXPECT_EQ(time, std::chrono::milliseconds{0});
+  EXPECT_EQ(time, std::chrono::milliseconds::zero());
 
   const auto date_time =
       stonks::utils::ParseUnixTimeFromString("4 Apr 2022 18:35:44");

@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 
+#include <boost/uuid/random_generator.hpp>
 #include <range/v3/all.hpp>
 
 #include "finance_enum_conversions.h"
@@ -138,4 +139,26 @@ TEST(FinanceApi, GetCandlesNoEndTime) {
   ASSERT_TRUE(candles.has_value());
   EXPECT_GE(candles->size(), 59);
   EXPECT_LE(candles->size(), 61);
+}
+
+namespace {
+auto last_order_uuid = boost::uuids::random_generator{}();
+}
+
+TEST(FinanceApi, PlaceOrder) {
+  const auto order_request = stonks::finance::OrderRequest{
+      .uuid = last_order_uuid,
+      .time = stonks::utils::GetUnixTime(),
+      .buy_or_sell = stonks::finance::BuyOrSell::kSell,
+      .symbol = kDefaultSymbol,
+      .quantity = 2,  // TODO test with 2.1 which has big percision
+      .price = 1500};
+  ASSERT_TRUE(stonks::finance::PlaceOrder(order_request));
+}
+
+TEST(FinanceApi, GetOrderInfo) {
+  const auto order_info =
+      stonks::finance::GetOrderInfo(kDefaultSymbol, last_order_uuid);
+  ASSERT_TRUE(order_info.has_value());
+  EXPECT_EQ(order_info->uuid, last_order_uuid);
 }
