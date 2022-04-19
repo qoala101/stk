@@ -1,7 +1,6 @@
 #include "finance_conversions.h"
 
-#include <boost/lexical_cast.hpp>
-#include <boost/uuid/uuid_io.hpp>
+#include "utils.h"
 
 namespace stonks::finance {
 Candle ParseCandleFromBinanceKline(const binance::Kline &kline) {
@@ -16,8 +15,8 @@ Candle ParseCandleFromBinanceKline(const binance::Kline &kline) {
 
 OrderInfo ParseOrderInfoFromBinanceOrderInfo(
     const binance::OrderInfo &order_info) {
-  return OrderInfo{.uuid = boost::lexical_cast<boost::uuids::uuid>(
-                       order_info.client_order_id),
-                   .status = order_info.status};
+  return OrderInfo{
+      .uuid = utils::ParseUuidFromString(order_info.client_order_id),
+      .status = order_info.status};
 }
 }  // namespace stonks::finance

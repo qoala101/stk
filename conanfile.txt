@@ -6,6 +6,7 @@ range-v3/0.11.0
 gtest/cci.20210126
 magic_enum/0.7.3
 date/3.0.1
+boost/1.78.0
 
 [options]
 cpprestsdk:shared=False

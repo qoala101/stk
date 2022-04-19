@@ -38,7 +38,7 @@ target_link_libraries(libstonks PRIVATE range-v3::range-v3)
 target_link_libraries(libstonks PUBLIC magic_enum::magic_enum)
 target_link_libraries(libstonks PRIVATE date::date)
 target_link_libraries(libstonks PRIVATE Microsoft.GSL::GSL)
-target_link_libraries(libstonks PUBLIC Boost::boost)
+target_link_libraries(libstonks PRIVATE Boost::boost)
 
 add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)

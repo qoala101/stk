@@ -1,6 +1,7 @@
 #ifndef STONKS_UTILS_H_
 #define STONKS_UTILS_H_
 
+#include <boost/uuid/uuid.hpp>
 #include <chrono>
 #include <optional>
 #include <string>
@@ -33,6 +34,10 @@ std::string ConvertUnixTimeToString(
     std::string_view format = "%d %b %Y %H:%M:%OS");
 
 std::string SignUsingHmacSha256(std::string_view data, std::string_view key);
+
+boost::uuids::uuid ParseUuidFromString(std::string_view uuid);
+
+std::string ConvertUuidToString(boost::uuids::uuid uuid);
 }  // namespace stonks::utils
 
 #endif  // STONKS_UTILS_H_

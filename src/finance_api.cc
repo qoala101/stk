@@ -2,8 +2,6 @@
 
 #include <spdlog/spdlog.h>
 
-#include <boost/lexical_cast.hpp>
-#include <boost/uuid/uuid_io.hpp>
 #include <gsl/gsl>
 #include <thread>
 
@@ -114,7 +112,7 @@ bool PlaceOrder(const OrderRequest &order_request) {
       order_request.buy_or_sell, binance::OrderType::kLimit,
       binance::OrderTimeInForce::kGoodTillCanceled, order_request.quantity,
       std::nullopt, order_request.price,
-      boost::lexical_cast<std::string>(order_request.uuid));
+      utils::ConvertUuidToString(order_request.uuid));
 
   return acknowledgement.has_value();
 }
@@ -123,7 +121,7 @@ std::optional<OrderInfo> GetOrderInfo(const Symbol &symbol,
                                       boost::uuids::uuid uuid) {
   const auto order =
       binance::QueryOrder(symbol.base_asset + symbol.quote_asset, std::nullopt,
-                          boost::lexical_cast<std::string>(uuid));
+                          utils::ConvertUuidToString(uuid));
 
   if (!order.has_value()) {
     spdlog::error("Cannot query order");

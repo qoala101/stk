@@ -5,6 +5,8 @@
 #include <spdlog/spdlog.h>
 
 #include <array>
+#include <boost/lexical_cast.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include <ctime>
 
 namespace stonks::utils {
@@ -53,5 +55,13 @@ std::string SignUsingHmacSha256(std::string_view data, std::string_view key) {
   }
 
   return std::string{decoded_signed_data_array.data(), kDecodedSignedDataSize};
+}
+
+boost::uuids::uuid ParseUuidFromString(std::string_view uuid) {
+  return boost::lexical_cast<boost::uuids::uuid>(uuid);
+}
+
+std::string ConvertUuidToString(boost::uuids::uuid uuid) {
+  return boost::lexical_cast<std::string>(uuid);
 }
 }  // namespace stonks::utils
