@@ -37,6 +37,12 @@ std::optional<std::vector<OrderInfo>> GetAllOrders(
     std::optional<int64_t> receiving_window = std::nullopt,
     std::chrono::milliseconds timestamp = utils::GetUnixTime());
 
+std::optional<OrderInfo> QueryOrder(
+    std::string_view symbol, std::optional<int64_t> order_id = std::nullopt,
+    std::optional<std::string> original_client_order_id = std::nullopt,
+    std::optional<int64_t> receiving_window = std::nullopt,
+    std::chrono::milliseconds timestamp = utils::GetUnixTime());
+
 std::optional<std::vector<Kline>> GetKlines(
     std::string_view symbol, CandleInterval interval,
     std::optional<std::chrono::milliseconds> start_time = std::nullopt,

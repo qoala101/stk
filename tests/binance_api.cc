@@ -40,8 +40,16 @@ TEST(BinanceApi, GetKlines) {
   EXPECT_EQ(klines->size(), 10);
 
   for (auto iter = std::next(klines->begin()); iter != klines->end(); ++iter) {
-    EXPECT_GT(iter->open_time, std::chrono::milliseconds{0});
+    EXPECT_GT(iter->open_time, std::chrono::milliseconds::zero());
     EXPECT_LT(iter->open_time, iter->close_time);
     EXPECT_LT(std::prev(iter)->open_time, iter->open_time);
   }
+}
+
+TEST(BinanceApi, QueryOrder) {
+  const auto order_info = stonks::binance::QueryOrder("ETHUSDT", std::nullopt,
+                                                      "bl0L7ilSoT7eESDH1dcJr9");
+  ASSERT_TRUE(order_info.has_value());
+  EXPECT_EQ(order_info->symbol, "ETHUSDT");
+  EXPECT_EQ(order_info->client_order_id, "bl0L7ilSoT7eESDH1dcJr9");
 }

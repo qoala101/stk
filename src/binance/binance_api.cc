@@ -158,6 +158,35 @@ std::optional<std::vector<OrderInfo>> GetAllOrders(
   return ParseFromJson<std::vector<OrderInfo>>(*response);
 }
 
+std::optional<OrderInfo> QueryOrder(
+    std::string_view symbol, std::optional<int64_t> order_id,
+    std::optional<std::string> original_client_order_id,
+    std::optional<int64_t> receiving_window,
+    std::chrono::milliseconds timestamp) {
+  auto request =
+      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+          .AppendUri("/api/v3/order")
+          .AddHeader("X-MBX-APIKEY", settings::GetApiKey())
+          .AddParameter("symbol", symbol)
+          .AddParameter("orderId", order_id)
+          .AddParameter("origClientOrderId", original_client_order_id)
+          .AddParameter("recvWindow", receiving_window)
+          .AddParameter("timestamp", timestamp);
+
+  const auto params = request.GetParametersAsString();
+  const auto signed_params =
+      utils::SignUsingHmacSha256(params, settings::GetSecretKey());
+  const auto response =
+      request.AddParameter("signature", signed_params).SendAndGetResponse();
+
+  if (!response.has_value()) {
+    spdlog::error("Cannot query order");
+    return std::nullopt;
+  }
+  spdlog::info(response->serialize());
+  return ParseFromJson<OrderInfo>(*response);
+}
+
 std::optional<std::vector<Kline>> GetKlines(
     std::string_view symbol, CandleInterval interval,
     std::optional<std::chrono::milliseconds> start_time,
