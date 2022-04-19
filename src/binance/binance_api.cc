@@ -82,7 +82,7 @@ std::optional<std::string> GetBalances() {
   return response->serialize();
 }
 
-std::optional<PlaceOrderAcknowledgement> PlaceOrder(
+std::variant<std::monostate, PlaceOrderAcknowledgement, ApiError> PlaceOrder(
     std::string_view symbol, OrderSide side, OrderType type,
     std::optional<OrderTimeInForce> time_in_force,
     std::optional<double> quantity, std::optional<double> quote_order_quantity,
@@ -120,10 +120,23 @@ std::optional<PlaceOrderAcknowledgement> PlaceOrder(
 
   if (!response.has_value()) {
     spdlog::error("Cannot place order");
-    return std::nullopt;
+    return std::monostate{};
   }
 
-  return ParseFromJson<PlaceOrderAcknowledgement>(*response);
+  const auto acknowledgement =
+      ParseFromJson<PlaceOrderAcknowledgement>(*response);
+
+  if (acknowledgement.has_value()) {
+    return *acknowledgement;
+  }
+
+  const auto api_error = ParseFromJson<ApiError>(*response);
+
+  if (api_error.has_value()) {
+    return *api_error;
+  }
+
+  return std::monostate{};
 }
 
 std::optional<std::vector<OrderInfo>> GetAllOrders(
@@ -183,7 +196,7 @@ std::optional<OrderInfo> QueryOrder(
     spdlog::error("Cannot query order");
     return std::nullopt;
   }
-  spdlog::info(response->serialize());
+  
   return ParseFromJson<OrderInfo>(*response);
 }
 

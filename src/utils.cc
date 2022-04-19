@@ -6,6 +6,7 @@
 
 #include <array>
 #include <boost/lexical_cast.hpp>
+#include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <ctime>
 
@@ -63,5 +64,10 @@ boost::uuids::uuid ParseUuidFromString(std::string_view uuid) {
 
 std::string ConvertUuidToString(boost::uuids::uuid uuid) {
   return boost::lexical_cast<std::string>(uuid);
+}
+
+boost::uuids::uuid GenerateUuid() {
+  static auto uuid_generator = boost::uuids::random_generator{};
+  return uuid_generator();
 }
 }  // namespace stonks::utils

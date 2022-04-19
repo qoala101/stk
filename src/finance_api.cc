@@ -106,15 +106,24 @@ int CanculateNumIntervalsInPeriod(std::chrono::milliseconds start_time,
          stonks::finance::ConvertIntervalToMilliseconds(interval).count();
 }
 
-bool PlaceOrder(const OrderRequest &order_request) {
-  const auto acknowledgement = binance::PlaceOrder(
+std::optional<OrderError> PlaceOrder(const OrderRequest &order_request) {
+  const auto result = binance::PlaceOrder(
       order_request.symbol.base_asset + order_request.symbol.quote_asset,
       order_request.buy_or_sell, binance::OrderType::kLimit,
       binance::OrderTimeInForce::kGoodTillCanceled, order_request.quantity,
       std::nullopt, order_request.price,
       utils::ConvertUuidToString(order_request.uuid));
 
-  return acknowledgement.has_value();
+  if (std::holds_alternative<binance::PlaceOrderAcknowledgement>(result)) {
+    return std::nullopt;
+  }
+
+  if (std::holds_alternative<binance::ApiError>(result)) {
+    return ParseOrderErrorFromBinanceApiError(
+        std::get<binance::ApiError>(result));
+  }
+
+  return OrderError{.message = "stonks: Binance API failure."};
 }
 
 std::optional<OrderInfo> GetOrderInfo(const Symbol &symbol,

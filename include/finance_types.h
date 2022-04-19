@@ -50,6 +50,10 @@ struct OrderInfo {
   OrderStatus status{};
 };
 
+struct OrderError {
+  std::string message;
+};
+
 struct Candle {
   struct Data {
     double open_price{};

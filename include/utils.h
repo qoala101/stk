@@ -38,6 +38,8 @@ std::string SignUsingHmacSha256(std::string_view data, std::string_view key);
 boost::uuids::uuid ParseUuidFromString(std::string_view uuid);
 
 std::string ConvertUuidToString(boost::uuids::uuid uuid);
+
+boost::uuids::uuid GenerateUuid();
 }  // namespace stonks::utils
 
 #endif  // STONKS_UTILS_H_

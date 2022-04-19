@@ -4,6 +4,7 @@
 #include <chrono>
 #include <optional>
 #include <string>
+#include <variant>
 #include <vector>
 
 #include "binance_types.h"
@@ -14,7 +15,7 @@ std::optional<std::vector<std::string>> GetSymbols();
 
 std::optional<std::string> GetBalances();
 
-std::optional<PlaceOrderAcknowledgement> PlaceOrder(
+std::variant<std::monostate, PlaceOrderAcknowledgement, ApiError> PlaceOrder(
     std::string_view symbol, OrderSide side, OrderType type,
     std::optional<OrderTimeInForce> time_in_force = std::nullopt,
     std::optional<double> quantity = std::nullopt,

@@ -160,6 +160,20 @@ std::optional<binance::PlaceOrderAcknowledgement> ParseFromJson(
 }
 
 template <>
+std::optional<binance::ApiError> ParseFromJson(const web::json::value& json) {
+  try {
+    return binance::ApiError{.code = GetInt64PropertyAsInt64(json, "code"),
+                             .message = GetStringPropertyAsString(json, "msg")};
+  } catch (const std::exception& exeption) {
+    spdlog::error("Parse from JSON: {}", exeption.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+template <>
 std::optional<binance::OrderInfo> ParseFromJson(const web::json::value& json) {
   try {
     return binance::OrderInfo{

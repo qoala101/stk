@@ -39,7 +39,7 @@ int CanculateNumIntervalsInPeriod(std::chrono::milliseconds start_time,
                                   std::chrono::milliseconds end_time,
                                   Interval interval);
 
-bool PlaceOrder(const OrderRequest &order_request);
+std::optional<OrderError> PlaceOrder(const OrderRequest &order_request);
 
 std::optional<OrderInfo> GetOrderInfo(const Symbol &symbol,
                                       boost::uuids::uuid uuid);

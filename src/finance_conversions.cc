@@ -19,4 +19,10 @@ OrderInfo ParseOrderInfoFromBinanceOrderInfo(
       .uuid = utils::ParseUuidFromString(order_info.client_order_id),
       .status = order_info.status};
 }
+
+OrderError ParseOrderErrorFromBinanceApiError(
+    const binance::ApiError &api_error) {
+  return OrderError{.message = std::to_string(api_error.code) + ": " +
+                               api_error.message};
+}
 }  // namespace stonks::finance

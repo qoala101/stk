@@ -63,6 +63,11 @@ struct Kline {
  private:
   friend bool operator==(const Kline &, const Kline &) = default;
 };
+
+struct ApiError {
+  int64_t code;
+  std::string message;
+};
 }  // namespace stonks::binance
 
 #endif  // STONKS_BINANCE_BINANCE_TYPES_H_

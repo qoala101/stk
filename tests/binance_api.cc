@@ -15,14 +15,29 @@ TEST(BinanceApi, GetBalances) {
   EXPECT_TRUE(balances.has_value());
 }
 
-TEST(BinanceApi, PlaceOrder) {
-  const auto place_order_acknowledgement = stonks::binance::PlaceOrder(
+TEST(BinanceApi, PlaceOrderOk) {
+  const auto result = stonks::binance::PlaceOrder(
       "ETHUSDT", stonks::binance::OrderSide::kBuy,
       stonks::binance::OrderType::kLimit,
       stonks::binance::OrderTimeInForce::kGoodTillCanceled, 0.01, std::nullopt,
       1500);
-  ASSERT_TRUE(place_order_acknowledgement.has_value());
-  EXPECT_EQ(place_order_acknowledgement->symbol, "ETHUSDT");
+  ASSERT_TRUE(
+      std::holds_alternative<stonks::binance::PlaceOrderAcknowledgement>(
+          result));
+  EXPECT_EQ(std::get<stonks::binance::PlaceOrderAcknowledgement>(result).symbol,
+            "ETHUSDT");
+}
+
+TEST(BinanceApi, PlaceOrderError) {
+  const auto result = stonks::binance::PlaceOrder(
+      "ERROR", stonks::binance::OrderSide::kBuy,
+      stonks::binance::OrderType::kLimit,
+      stonks::binance::OrderTimeInForce::kGoodTillCanceled, 0.1, std::nullopt,
+      0.1);
+  ASSERT_TRUE(std::holds_alternative<stonks::binance::ApiError>(result));
+  EXPECT_EQ(std::get<stonks::binance::ApiError>(result).code, -1121);
+  EXPECT_EQ(std::get<stonks::binance::ApiError>(result).message,
+            "Invalid symbol.");
 }
 
 TEST(BinanceApi, GetAllOrders) {

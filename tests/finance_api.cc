@@ -2,7 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/uuid/random_generator.hpp>
 #include <range/v3/all.hpp>
 
 #include "finance_enum_conversions.h"
@@ -141,11 +140,26 @@ TEST(FinanceApi, GetCandlesNoEndTime) {
   EXPECT_LE(candles->size(), 61);
 }
 
-namespace {
-auto last_order_uuid = boost::uuids::random_generator{}();
+TEST(FinanceApi, PlaceInvalidOrder) {
+  const auto order_request = stonks::finance::OrderRequest{
+      .uuid = stonks::utils::GenerateUuid(),
+      .time = stonks::utils::GetUnixTime(),
+      .buy_or_sell = stonks::finance::BuyOrSell::kSell,
+      .symbol = kDefaultSymbol,
+      .quantity = 2.1,
+      .price = 1500};
+
+  const auto error = stonks::finance::PlaceOrder(order_request);
+  ASSERT_TRUE(error.has_value());
+  EXPECT_EQ(error->message,
+            "-1111: Precision is over the maximum defined for this asset.");
 }
 
-TEST(FinanceApi, PlaceOrder) {
+namespace {
+auto last_order_uuid = stonks::utils::GenerateUuid();
+}
+
+TEST(FinanceApi, PlaceValidOrder) {
   const auto order_request = stonks::finance::OrderRequest{
       .uuid = last_order_uuid,
       .time = stonks::utils::GetUnixTime(),
@@ -153,7 +167,9 @@ TEST(FinanceApi, PlaceOrder) {
       .symbol = kDefaultSymbol,
       .quantity = 2,  // TODO test with 2.1 which has big percision
       .price = 1500};
-  ASSERT_TRUE(stonks::finance::PlaceOrder(order_request));
+
+  const auto error = stonks::finance::PlaceOrder(order_request);
+  ASSERT_FALSE(error.has_value());
 }
 
 TEST(FinanceApi, GetOrderInfo) {
