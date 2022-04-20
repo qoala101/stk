@@ -140,41 +140,42 @@ TEST(FinanceApi, GetCandlesNoEndTime) {
   EXPECT_LE(candles->size(), 61);
 }
 
-TEST(FinanceApi, PlaceInvalidOrder) {
-  const auto order_request = stonks::finance::OrderRequest{
-      .uuid = stonks::utils::GenerateUuid(),
-      .time = stonks::utils::GetUnixTime(),
-      .buy_or_sell = stonks::finance::BuyOrSell::kSell,
-      .symbol = kDefaultSymbol,
-      .quantity = 2.1,
-      .price = 1500};
+// TEST(FinanceApi, PlaceInvalidOrder) {
+//   const auto order_request = stonks::finance::OrderRequest{
+//       .uuid = stonks::utils::GenerateUuid(),
+//       .time = stonks::utils::GetUnixTime(),
+//       .buy_or_sell = stonks::finance::BuyOrSell::kSell,
+//       .symbol = kDefaultSymbol,
+//       .quantity = 2.1,
+//       .price = 1500};
 
-  const auto error = stonks::finance::PlaceOrder(order_request);
-  ASSERT_TRUE(error.has_value());
-  EXPECT_EQ(error->message,
-            "-1111: Precision is over the maximum defined for this asset.");
-}
+//   const auto error = stonks::finance::PlaceOrder(order_request);
+//   ASSERT_TRUE(error.has_value());
+//   EXPECT_EQ(error->uuid, order_request.uuid);
+//   EXPECT_EQ(error->message,
+//             "-1111: Precision is over the maximum defined for this asset.");
+// }
 
-namespace {
-auto last_order_uuid = stonks::utils::GenerateUuid();
-}
+// namespace {
+// auto last_order_uuid = stonks::utils::GenerateUuid();
+// }
 
-TEST(FinanceApi, PlaceValidOrder) {
-  const auto order_request = stonks::finance::OrderRequest{
-      .uuid = last_order_uuid,
-      .time = stonks::utils::GetUnixTime(),
-      .buy_or_sell = stonks::finance::BuyOrSell::kSell,
-      .symbol = kDefaultSymbol,
-      .quantity = 2,  // TODO test with 2.1 which has big percision
-      .price = 1500};
+// TEST(FinanceApi, PlaceValidOrder) {
+//   const auto order_request = stonks::finance::OrderRequest{
+//       .uuid = last_order_uuid,
+//       .time = stonks::utils::GetUnixTime(),
+//       .buy_or_sell = stonks::finance::BuyOrSell::kSell,
+//       .symbol = kDefaultSymbol,
+//       .quantity = 2,  // TODO test with 2.1 which has big percision
+//       .price = 1500};
 
-  const auto error = stonks::finance::PlaceOrder(order_request);
-  ASSERT_FALSE(error.has_value());
-}
+//   const auto error = stonks::finance::PlaceOrder(order_request);
+//   ASSERT_FALSE(error.has_value());
+// }
 
-TEST(FinanceApi, GetOrderInfo) {
-  const auto order_info =
-      stonks::finance::GetOrderInfo(kDefaultSymbol, last_order_uuid);
-  ASSERT_TRUE(order_info.has_value());
-  EXPECT_EQ(order_info->uuid, last_order_uuid);
-}
+// TEST(FinanceApi, GetOrderInfo) {
+//   const auto order_info =
+//       stonks::finance::GetOrderInfo(kDefaultSymbol, last_order_uuid);
+//   ASSERT_TRUE(order_info.has_value());
+//   EXPECT_EQ(order_info->uuid, last_order_uuid);
+// }

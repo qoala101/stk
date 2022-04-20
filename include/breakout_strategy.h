@@ -11,7 +11,7 @@ class BreakoutStrategy {
  public:
   explicit BreakoutStrategy(double min_volume);
 
-  std::optional<OrderRequest> ProcessNewCandles(
+  std::optional<StrategyOrderRequest> ProcessNewCandles(
       const std::vector<Candle> &candles);
 
  private:

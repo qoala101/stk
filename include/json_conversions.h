@@ -38,19 +38,48 @@ std::optional<finance::Symbol> ParseFromJson(const web::json::value &json);
 web::json::value ConvertToJson(const finance::Symbol &data);
 
 template <>
-std::optional<finance::StrategyInfo> ParseFromJson(
-    const web::json::value &json);
-web::json::value ConvertToJson(const finance::StrategyInfo &data);
+std::optional<finance::StrategyData> ParseFromJson(const web::json::value &json);
+web::json::value ConvertToJson(const finance::StrategyData &data);
 
 template <>
-std::optional<finance::OrderRequest> ParseFromJson(
-    const web::json::value &json);
-web::json::value ConvertToJson(const finance::OrderRequest &data);
+std::optional<finance::OrderType> ParseFromJson(const web::json::value &json);
+web::json::value ConvertToJson(const finance::OrderType &data);
 
 template <>
-std::optional<finance::StrategyOrderRequest> ParseFromJson(
-    const web::json::value &json);
+std::optional<finance::OrderUpdate> ParseFromJson(const web::json::value &json);
+web::json::value ConvertToJson(const finance::OrderUpdate &data);
+
+template <>
+std::optional<finance::OrderProxyOrderUpdate> ParseFromJson(const web::json::value &json);
+web::json::value ConvertToJson(const finance::OrderProxyOrderUpdate &data);
+
+template <>
+std::optional<finance::Amount> ParseFromJson(const web::json::value &json);
+web::json::value ConvertToJson(const finance::Amount &data);
+
+template <>
+std::optional<finance::Order> ParseFromJson(const web::json::value &json);
+web::json::value ConvertToJson(const finance::Order &data);
+
+template <>
+std::optional<finance::StrategyOrderRequest> ParseFromJson(const web::json::value &json);
 web::json::value ConvertToJson(const finance::StrategyOrderRequest &data);
+
+template <>
+std::optional<finance::OrderProxyOrderRequest> ParseFromJson(const web::json::value &json);
+web::json::value ConvertToJson(const finance::OrderProxyOrderRequest &data);
+
+template <>
+std::optional<finance::OrderProxyMonitorRequest> ParseFromJson(const web::json::value &json);
+web::json::value ConvertToJson(const finance::OrderProxyMonitorRequest &data);
+
+template <>
+std::optional<finance::OrderMonitorOrderUpdate> ParseFromJson(const web::json::value &json);
+web::json::value ConvertToJson(const finance::OrderMonitorOrderUpdate &data);
+
+template <>
+std::optional<finance::OrderMonitorOrderState> ParseFromJson(const web::json::value &json);
+web::json::value ConvertToJson(const finance::OrderMonitorOrderState &data);
 }  // namespace stonks
 
 #endif  // STONKS_JSON_CONVERSIONS_H_

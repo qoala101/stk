@@ -5,9 +5,24 @@
 
 #include "google_charts_conversions.h"
 #include "json_conversions.h"
+#include "rest_request.h"
 
 namespace stonks {
 namespace {
+void ForwardOrderRequestToProcessing(const finance::Order &order) {
+  const auto order_request =
+      finance::OrderProxyOrderRequest{.order_uuid = order.uuid,
+                                      .symbol = order.symbol,
+                                      .buy_or_sell = order.buy_or_sell,
+                                      .amount = order.amount,
+                                      .order_type = order.order_type};
+
+  rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
+      .AppendUri("/api/orderer/order")
+      .SetJson(ConvertToJson(order_request))
+      .SendAndGetResponse();
+}
+
 void HandleGetRequest(const web::http::http_request &request,
                       finance::OrderProxy &order_proxy) {
   spdlog::info("Got {} request on {}", request.method(),
@@ -47,17 +62,42 @@ void HandlePostRequest(const web::http::http_request &request,
                request.request_uri().to_string());
 
   const auto json = request.extract_json().get();
-  auto strategy_order_request =
-      ParseFromJson<finance::StrategyOrderRequest>(json);
+  const auto relative_uri = request.relative_uri().path();
 
-  if (!strategy_order_request.has_value()) {
-    spdlog::error("Cannot parse strategy order request");
-    request.reply(web::http::status_codes::BadRequest);
+  if (relative_uri == "/order") {
+    auto strategy_order_request =
+        ParseFromJson<finance::StrategyOrderRequest>(json);
+
+    if (!strategy_order_request.has_value()) {
+      spdlog::error("Cannot parse strategy order request");
+      request.reply(web::http::status_codes::BadRequest);
+      return;
+    }
+
+    const auto &order =
+        order_proxy.RecordStrategyOrderRequest(*strategy_order_request);
+    ForwardOrderRequestToProcessing(order);
+
+    request.reply(web::http::status_codes::OK);
     return;
   }
 
-  order_proxy.RecordStrategyOrderRequest(std::move(*strategy_order_request));
-  request.reply(web::http::status_codes::OK);
+  if (relative_uri == "/order_update") {
+    auto order_update = ParseFromJson<finance::OrderMonitorOrderUpdate>(json);
+
+    if (!order_update.has_value()) {
+      spdlog::error("Cannot parse order update");
+      request.reply(web::http::status_codes::BadRequest);
+      return;
+    }
+
+    order_proxy.UpdateOrder(*order_update);
+
+    request.reply(web::http::status_codes::OK);
+    return;
+  }
+
+  request.reply(web::http::status_codes::NotFound);
 }
 }  // namespace
 

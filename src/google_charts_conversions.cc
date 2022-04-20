@@ -82,9 +82,9 @@ web::json::value ConvertToJson(
     auto json = web::json::value{};
     auto row_cells = std::vector<web::json::value>{};
     row_cells.reserve(3);
-    AddCell(row_cells, record.order_request.time);
-    AddCell(row_cells, record.order_request.quantity);
-    AddCell(row_cells, record.order_request.price);
+    // AddCell(row_cells, record.order_request.time);
+    // AddCell(row_cells, record.order_request.quantity);
+    // AddCell(row_cells, record.order_request.price);
     json["c"] = web::json::value::array(std::move(row_cells));
     return json;
   };

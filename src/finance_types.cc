@@ -26,4 +26,20 @@ std::partial_ordering operator<=>(const Candle &left, const Candle &right) {
   return left.data.value_or(Candle::Data{}) <=>
          right.data.value_or(Candle::Data{});
 }
+
+std::optional<std::string> StrategyData::GetName() const {
+  return std::nullopt;
+}
+
+std::optional<std::string> OrderUpdate::GetErrorMessage() const {
+  return std::nullopt;
+}
+
+std::optional<OrderStatus> OrderUpdate::GetOrderStatus() const {
+  return std::nullopt;
+}
+
+std::optional<double> Amount::GetAmount() const { return std::nullopt; }
+
+std::optional<double> OrderType::GetPrice() const { return std::nullopt; }
 };  // namespace stonks::finance

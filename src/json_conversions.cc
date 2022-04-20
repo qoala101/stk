@@ -2,6 +2,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <boost/uuid/uuid.hpp>
 #include <chrono>
 #include <magic_enum.hpp>
 #include <range/v3/to_container.hpp>
@@ -10,6 +11,7 @@
 
 #include "binance_enum_conversions.h"
 #include "concepts.h"
+#include "utils.h"
 
 namespace stonks {
 namespace {
@@ -67,6 +69,17 @@ std::chrono::milliseconds GetInt64PropertyAsMilliseconds(
 std::chrono::milliseconds GetInt64ElementAsMilliseconds(
     const web::json::value& json, const int index) {
   return std::chrono::milliseconds{json.at(index).as_number().to_int64()};
+}
+
+boost::uuids::uuid GetStringPropertyAsUuid(
+    const web::json::value& json, const std::string_view property_name) {
+  return utils::ParseUuidFromString(
+      json.at(std::string{property_name}).as_string());
+}
+
+boost::uuids::uuid GetStringElementAsUuid(const web::json::value& json,
+                                          const int index) {
+  return utils::ParseUuidFromString(json.at(index).as_string());
 }
 
 template <Enumeration E>
@@ -136,6 +149,14 @@ std::optional<std::vector<T>> ParseFromJsonArray(const web::json::value& json) {
   }
 
   return parsed_items;
+}
+
+template <typename T>
+web::json::value ConvertToJsonArray(const std::vector<T>& data) {
+  const auto convert_item = [](const T& item) { return ConvertToJson(item); };
+  auto json_items =
+      data | ranges::views::transform(convert_item) | ranges::to_vector;
+  return web::json::value::array(std::move(json_items));
 }
 }  // namespace
 
@@ -266,79 +287,99 @@ web::json::value ConvertToJson(const finance::Symbol& data) {
 }
 
 template <>
-std::optional<finance::StrategyInfo> ParseFromJson(
+std::optional<finance::StrategyData> ParseFromJson(
     const web::json::value& json) {
-  try {
-    return finance::StrategyInfo{.name =
-                                     GetStringPropertyAsString(json, "name")};
-  } catch (const std::exception& exeption) {
-    spdlog::error("Parse from JSON: {}", exeption.what());
-  } catch (...) {
-    spdlog::error("Parse from JSON: {}", "Unknown error");
-  }
-
   return std::nullopt;
 }
 
-web::json::value ConvertToJson(const finance::StrategyInfo& data) {
-  auto json = web::json::value{};
-  json["name"] = web::json::value::string(data.name);
-  return json;
+web::json::value ConvertToJson(const finance::StrategyData& data) { return {}; }
+
+template <>
+std::optional<finance::OrderType> ParseFromJson(const web::json::value& json) {
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::OrderType& data) { return {}; }
+
+template <>
+std::optional<finance::OrderUpdate> ParseFromJson(
+    const web::json::value& json) {
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::OrderUpdate& data) { return {}; }
+
+template <>
+std::optional<finance::OrderProxyOrderUpdate> ParseFromJson(
+    const web::json::value& json) {
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::OrderProxyOrderUpdate& data) {
+  return {};
 }
 
 template <>
-std::optional<finance::OrderRequest> ParseFromJson(
-    const web::json::value& json) {
-  try {
-    return finance::OrderRequest{
-        .time = GetInt64PropertyAsMilliseconds(json, "time"),
-        .buy_or_sell =
-            GetStringPropertyAsEnum<finance::BuyOrSell>(json, "buy_or_sell"),
-        .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
-        .quantity = GetDoublePropertyAsDouble(json, "quantity"),
-        .price = GetDoublePropertyAsDouble(json, "price")};
-  } catch (const std::exception& exeption) {
-    spdlog::error("Parse from JSON: {}", exeption.what());
-  } catch (...) {
-    spdlog::error("Parse from JSON: {}", "Unknown error");
-  }
-
+std::optional<finance::Amount> ParseFromJson(const web::json::value& json) {
   return std::nullopt;
 }
 
-web::json::value ConvertToJson(const finance::OrderRequest& data) {
-  auto json = web::json::value{};
-  json["time"] = web::json::value::number(data.time.count());
-  json["buy_or_sell"] = web::json::value::string(
-      std::string{magic_enum::enum_name(data.buy_or_sell)});
-  json["symbol"] = ConvertToJson(data.symbol);
-  json["quantity"] = web::json::value::number(data.quantity);
-  json["price"] = web::json::value::number(data.price);
-  return json;
+web::json::value ConvertToJson(const finance::Amount& data) { return {}; }
+
+template <>
+std::optional<finance::Order> ParseFromJson(const web::json::value& json) {
+  return std::nullopt;
 }
+
+web::json::value ConvertToJson(const finance::Order& data) { return {}; }
 
 template <>
 std::optional<finance::StrategyOrderRequest> ParseFromJson(
     const web::json::value& json) {
-  try {
-    return finance::StrategyOrderRequest{
-        .strategy_info = GetObjectPropertyAsObject<finance::StrategyInfo>(
-            json, "strategy_info"),
-        .order_request = GetObjectPropertyAsObject<finance::OrderRequest>(
-            json, "order_request")};
-  } catch (const std::exception& exeption) {
-    spdlog::error("Parse from JSON: {}", exeption.what());
-  } catch (...) {
-    spdlog::error("Parse from JSON: {}", "Unknown error");
-  }
-
   return std::nullopt;
 }
 
 web::json::value ConvertToJson(const finance::StrategyOrderRequest& data) {
-  auto json = web::json::value{};
-  json["strategy_info"] = ConvertToJson(data.strategy_info);
-  json["order_request"] = ConvertToJson(data.order_request);
-  return json;
+  return {};
+}
+
+template <>
+std::optional<finance::OrderProxyOrderRequest> ParseFromJson(
+    const web::json::value& json) {
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::OrderProxyOrderRequest& data) {
+  return {};
+}
+
+template <>
+std::optional<finance::OrderProxyMonitorRequest> ParseFromJson(
+    const web::json::value& json) {
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::OrderProxyMonitorRequest& data) {
+  return {};
+}
+
+template <>
+std::optional<finance::OrderMonitorOrderUpdate> ParseFromJson(
+    const web::json::value& json) {
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::OrderMonitorOrderUpdate& data) {
+  return {};
+}
+
+template <>
+std::optional<finance::OrderMonitorOrderState> ParseFromJson(
+    const web::json::value& json) {
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::OrderMonitorOrderState& data) {
+  return {};
 }
 }  // namespace stonks

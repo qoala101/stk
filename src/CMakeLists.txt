@@ -18,6 +18,7 @@ add_library(libstonks
   candles_stream.cc
   buffered_candles_stream.cc
   breakout_strategy.cc
+  order_monitor.cc
 
   binance/binance_api.cc
   binance/binance_settings.cc
@@ -37,7 +38,7 @@ target_link_libraries(libstonks PRIVATE spdlog::spdlog)
 target_link_libraries(libstonks PRIVATE range-v3::range-v3)
 target_link_libraries(libstonks PUBLIC magic_enum::magic_enum)
 target_link_libraries(libstonks PRIVATE date::date)
-target_link_libraries(libstonks PRIVATE Microsoft.GSL::GSL)
+target_link_libraries(libstonks PUBLIC Microsoft.GSL::GSL)
 target_link_libraries(libstonks PRIVATE Boost::boost)
 
 add_executable(stonks main.cc)

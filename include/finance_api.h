@@ -35,11 +35,12 @@ std::chrono::milliseconds CeilStartTimeToInterval(
 std::chrono::milliseconds FloorEndTimeToInterval(std::chrono::milliseconds time,
                                                  Interval interval);
 
-int CanculateNumIntervalsInPeriod(std::chrono::milliseconds start_time,
+int CalculateNumIntervalsInPeriod(std::chrono::milliseconds start_time,
                                   std::chrono::milliseconds end_time,
                                   Interval interval);
 
-std::optional<OrderError> PlaceOrder(const OrderRequest &order_request);
+std::optional<OrderError> PlaceOrder(
+    const OrderProxyOrderRequest &order_request);
 
 std::optional<OrderInfo> GetOrderInfo(const Symbol &symbol,
                                       boost::uuids::uuid uuid);

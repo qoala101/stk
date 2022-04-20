@@ -15,14 +15,17 @@ Candle ParseCandleFromBinanceKline(const binance::Kline &kline) {
 
 OrderInfo ParseOrderInfoFromBinanceOrderInfo(
     const binance::OrderInfo &order_info) {
-  return OrderInfo{
-      .uuid = utils::ParseUuidFromString(order_info.client_order_id),
-      .status = order_info.status};
+  return OrderInfo{.order_status = order_info.status};
 }
 
 OrderError ParseOrderErrorFromBinanceApiError(
     const binance::ApiError &api_error) {
   return OrderError{.message = std::to_string(api_error.code) + ": " +
                                api_error.message};
+}
+
+binance::OrderType ConvertOrderTypeToBinanceOrderType(
+    const OrderType &order_type) {
+  return binance::OrderType::kInvalid;
 }
 }  // namespace stonks::finance

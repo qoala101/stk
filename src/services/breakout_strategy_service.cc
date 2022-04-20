@@ -15,12 +15,10 @@
 namespace stonks {
 namespace {
 void SendOrderRequest(finance::Symbol symbol,
-                      finance::OrderRequest order_request) {
+                      finance::StrategyOrderRequest order_request) {
   order_request.symbol = std::move(symbol);
 
-  auto json = ConvertToJson(finance::StrategyOrderRequest{
-      .strategy_info = finance::StrategyInfo{.name = "breakout"},
-      .order_request = std::move(order_request)});
+  auto json = ConvertToJson(order_request);
 
   rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
       .AppendUri("/api/order_proxy/order")
@@ -50,7 +48,7 @@ pplx::task<void> BreakoutStrategyService::Start() {
         const auto new_candles = stream.GetNextCandles();
 
         if (new_candles.empty()) {
-          spdlog::info("Breakout stretegy service is done");
+          spdlog::info("Breakout strategy service is done");
           return;
         }
 

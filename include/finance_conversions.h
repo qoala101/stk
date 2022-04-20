@@ -15,6 +15,8 @@ OrderInfo ParseOrderInfoFromBinanceOrderInfo(
 
 OrderError ParseOrderErrorFromBinanceApiError(
     const binance::ApiError &api_error);
+
+binance::OrderType ConvertOrderTypeToBinanceOrderType(const OrderType &order_type);
 }  // namespace stonks::finance
 
 #endif  // STONKS_FINANCE_CONVERSIONS_H_

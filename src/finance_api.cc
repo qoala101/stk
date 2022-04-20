@@ -26,7 +26,7 @@ std::optional<std::vector<Candle>> GetCandles(
     return std::vector<Candle>{};
   }
 
-  const auto num_candles = CanculateNumIntervalsInPeriod(
+  const auto num_candles = CalculateNumIntervalsInPeriod(
       first_candle_open_time, last_candle_close_time, interval);
 
   std::this_thread::sleep_until(
@@ -95,7 +95,7 @@ std::chrono::milliseconds FloorEndTimeToInterval(std::chrono::milliseconds time,
       (((time.count() + 1) / interval_ms) * interval_ms) - 1};
 }
 
-int CanculateNumIntervalsInPeriod(std::chrono::milliseconds start_time,
+int CalculateNumIntervalsInPeriod(std::chrono::milliseconds start_time,
                                   std::chrono::milliseconds end_time,
                                   Interval interval) {
   Expects(interval != Interval::kInvalid);
@@ -106,13 +106,16 @@ int CanculateNumIntervalsInPeriod(std::chrono::milliseconds start_time,
          stonks::finance::ConvertIntervalToMilliseconds(interval).count();
 }
 
-std::optional<OrderError> PlaceOrder(const OrderRequest &order_request) {
+std::optional<OrderError> PlaceOrder(
+    const OrderProxyOrderRequest &order_request) {
   const auto result = binance::PlaceOrder(
       order_request.symbol.base_asset + order_request.symbol.quote_asset,
-      order_request.buy_or_sell, binance::OrderType::kLimit,
-      binance::OrderTimeInForce::kGoodTillCanceled, order_request.quantity,
-      std::nullopt, order_request.price,
-      utils::ConvertUuidToString(order_request.uuid));
+      order_request.buy_or_sell,
+      ConvertOrderTypeToBinanceOrderType(order_request.order_type),
+      binance::OrderTimeInForce::kGoodTillCanceled,
+      order_request.amount.GetAmount(), std::nullopt,
+      order_request.order_type.GetPrice(),
+      utils::ConvertUuidToString(order_request.order_uuid));
 
   if (std::holds_alternative<binance::PlaceOrderAcknowledgement>(result)) {
     return std::nullopt;
