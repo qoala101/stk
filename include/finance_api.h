@@ -44,6 +44,8 @@ std::optional<OrderError> PlaceOrder(
 
 std::optional<OrderInfo> GetOrderInfo(const Symbol &symbol,
                                       boost::uuids::uuid uuid);
+
+std::optional<double> GetCurrentAverageSymbolPrice(const Symbol &symbol);
 }  // namespace stonks::finance
 
 #endif  // STONKS_FINANCE_API_H_

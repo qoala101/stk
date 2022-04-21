@@ -68,6 +68,11 @@ struct ApiError {
   int64_t code;
   std::string message;
 };
+
+struct AverageSymbolPrice {
+  int64_t mins;
+  double price;
+};
 }  // namespace stonks::binance
 
 #endif  // STONKS_BINANCE_BINANCE_TYPES_H_

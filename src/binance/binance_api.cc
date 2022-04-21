@@ -222,4 +222,20 @@ std::optional<std::vector<Kline>> GetKlines(
 
   return json::ParseFromJson<std::vector<Kline>>(*response);
 }
+
+std::optional<AverageSymbolPrice> GetCurrentAverageSymbolPrice(
+    std::string_view symbol) {
+  const auto response =
+      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+          .AppendUri("/api/v3/avgPrice")
+          .AddParameter("symbol", symbol)
+          .SendAndGetResponse();
+
+  if (!response.has_value()) {
+    spdlog::error("Cannot get average symbol price");
+    return std::nullopt;
+  }
+
+  return json::ParseFromJson<AverageSymbolPrice>(*response);
+}
 }  // namespace stonks::binance

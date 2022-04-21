@@ -179,3 +179,15 @@ TEST(FinanceApi, GetCandlesNoEndTime) {
 //   ASSERT_TRUE(order_info.has_value());
 //   EXPECT_EQ(order_info->uuid, last_order_uuid);
 // }
+
+TEST(FinanceApi, GetCurrentAverageSymbolPriceGood) {
+  const auto price =
+      stonks::finance::GetCurrentAverageSymbolPrice(kDefaultSymbol);
+  ASSERT_TRUE(price.has_value());
+}
+
+TEST(FinanceApi, GetCurrentAverageSymbolPriceBad) {
+  const auto price =
+      stonks::finance::GetCurrentAverageSymbolPrice(stonks::finance::Symbol{});
+  ASSERT_FALSE(price.has_value());
+}

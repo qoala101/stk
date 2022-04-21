@@ -49,6 +49,9 @@ std::optional<std::vector<Kline>> GetKlines(
     std::optional<std::chrono::milliseconds> start_time = std::nullopt,
     std::optional<std::chrono::milliseconds> end_time = std::nullopt,
     std::optional<int> limit = std::nullopt);
+
+std::optional<AverageSymbolPrice> GetCurrentAverageSymbolPrice(
+    std::string_view symbol);
 }  // namespace stonks::binance
 
 #endif  // STONKS_BINANCE_BINANCE_API_H_

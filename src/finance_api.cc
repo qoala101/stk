@@ -142,4 +142,16 @@ std::optional<OrderInfo> GetOrderInfo(const Symbol &symbol,
 
   return ParseOrderInfoFromBinanceOrderInfo(*order);
 }
+
+std::optional<double> GetCurrentAverageSymbolPrice(const Symbol &symbol) {
+  const auto result = binance::GetCurrentAverageSymbolPrice(symbol.base_asset +
+                                                            symbol.quote_asset);
+
+  if (!result.has_value()) {
+    spdlog::error("Cannot get current average symbol price");
+    return std::nullopt;
+  }
+
+  return result->price;
+}
 }  // namespace stonks::finance

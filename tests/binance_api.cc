@@ -68,3 +68,14 @@ TEST(BinanceApi, QueryOrder) {
   EXPECT_EQ(order_info->symbol, "ETHUSDT");
   EXPECT_EQ(order_info->client_order_id, "bl0L7ilSoT7eESDH1dcJr9");
 }
+
+TEST(BinanceApi, GetCurrentAverageSymbolPriceGood) {
+  const auto price = stonks::binance::GetCurrentAverageSymbolPrice("ETHUSDT");
+  ASSERT_TRUE(price.has_value());
+}
+
+TEST(BinanceApi, GetCurrentAverageSymbolPriceBad) {
+  const auto price =
+      stonks::binance::GetCurrentAverageSymbolPrice("WRONG_SYMBOL");
+  ASSERT_FALSE(price.has_value());
+}

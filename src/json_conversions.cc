@@ -287,6 +287,22 @@ std::optional<std::vector<binance::Kline>> ParseFromJson(
 }
 
 template <>
+std::optional<binance::AverageSymbolPrice> ParseFromJson(
+    const web::json::value& json) {
+  try {
+    return binance::AverageSymbolPrice{
+        .mins = GetInt64PropertyAsInt64(json, "mins"),
+        .price = GetStringPropertyAsDouble(json, "price")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+template <>
 std::optional<finance::Symbol> ParseFromJson(const web::json::value& json) {
   try {
     return finance::Symbol{
@@ -445,15 +461,40 @@ web::json::value ConvertToJson(const finance::OrderUpdate& data) {
   return json;
 }
 
-// template <>
-// std::optional<finance::OrderProxyOrderUpdate> ParseFromJson(
-//     const web::json::value& json) {
-//   return std::nullopt;
-// }
+template <>
+std::optional<finance::OrderProxyOrderUpdate> ParseFromJson(
+    const web::json::value& json) {
+  try {
+    return finance::OrderProxyOrderUpdate{
+        .received_time = GetInt64PropertyAsMilliseconds(json, "received_time"),
+        .order_update = GetObjectPropertyAsObject<finance::OrderUpdate>(
+            json, "last_order_update")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
 
-// web::json::value ConvertToJson(const finance::OrderProxyOrderUpdate& data) {
-//   return {};
-// }
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::OrderProxyOrderUpdate& data) {
+  auto json = web::json::value{};
+  json["received_time"] = ConvertToJson(data.received_time);
+  json["order_update"] = ConvertToJson(data.order_update);
+  return json;
+}
+
+template <>
+std::optional<std::vector<finance::OrderProxyOrderUpdate>> ParseFromJson(
+    const web::json::value& json) {
+  return ParseFromJsonArray<std::vector<finance::OrderProxyOrderUpdate>>(json);
+}
+
+web::json::value ConvertToJson(
+    const std::vector<finance::OrderProxyOrderUpdate>& data) {
+  return ConvertToJsonArray(data);
+}
 
 template <>
 std::optional<finance::Amount> ParseFromJson(const web::json::value& json) {
