@@ -9,8 +9,8 @@
 namespace stonks::finance {
 class OrderMonitor {
  public:
-  using OrdersUpdatedCallback =
-      std::function<void(const std::vector<finance::OrderUpdate> &)>;
+  using OrdersUpdatedCallback = std::function<void(
+      const std::vector<finance::OrderMonitorOrderUpdate> &)>;
 
   /**
    * @param orders_updated_callback Function to be called when monitor observes

@@ -18,7 +18,7 @@ void ForwardOrderRequestToProcessing(const finance::Order &order) {
                                       .order_type = order.order_type};
 
   rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
-      .AppendUri("/api/orderer/order")
+      .AppendUri("/api/order_monitor/order")
       .SetJson(ConvertToJson(order_request))
       .SendAndGetResponse();
 }
@@ -103,7 +103,7 @@ void HandlePostRequest(const web::http::http_request &request,
 
 pplx::task<void> OrderProxyService::Start() {
   http_listener_ = web::http::experimental::listener::http_listener{
-      "http://localhost:6506/api/order_proxy/order"};
+      "http://localhost:6506/api/order_proxy"};
 
   const auto get_handler =
       [&order_proxy = order_proxy_](const web::http::http_request &request) {

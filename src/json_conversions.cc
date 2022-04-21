@@ -120,7 +120,9 @@ T GetObjectElementAsObject(const web::json::value& json, const int index) {
 }
 
 template <typename T>
-std::optional<std::vector<T>> ParseFromJsonArray(const web::json::value& json) {
+std::optional<T> ParseFromJsonArray(const web::json::value& json) {
+  using V = typename T::value_type;
+
   if (!json.is_array()) {
     spdlog::error("Parse from JSON: {}", "not array");
     return std::nullopt;
@@ -129,19 +131,19 @@ std::optional<std::vector<T>> ParseFromJsonArray(const web::json::value& json) {
   const auto& json_array = json.as_array();
 
   const auto parse_item = [](const web::json::value& value) {
-    return ParseFromJson<T>(value);
+    return ParseFromJson<V>(value);
   };
-  auto item_succesfully_parsed = [](const std::optional<T>& item) {
+  auto item_successfully_parsed = [](const std::optional<V>& item) {
     return item.has_value();
   };
-  const auto get_item = [](const std::optional<T>& item) {
+  const auto get_item = [](const std::optional<V>& item) {
     return std::move(*item);
   };
 
-  const auto parsed_items = json_array | ranges::views::transform(parse_item) |
-                            ranges::views::take_while(item_succesfully_parsed) |
-                            ranges::views::transform(get_item) |
-                            ranges::to_vector;
+  const auto parsed_items =
+      json_array | ranges::views::transform(parse_item) |
+      ranges::views::take_while(item_successfully_parsed) |
+      ranges::views::transform(get_item) | ranges::to_vector;
 
   if (parsed_items.size() < json_array.size()) {
     spdlog::error("Parse from JSON: {}", "cannot parse all items");
@@ -158,6 +160,36 @@ web::json::value ConvertToJsonArray(const std::vector<T>& data) {
       data | ranges::views::transform(convert_item) | ranges::to_vector;
   return web::json::value::array(std::move(json_items));
 }
+
+template <Enumeration T>
+web::json::value ConvertToJson(T data) {
+  return web::json::value::string(std::string{magic_enum::enum_name(data)});
+}
+
+template <Number T>
+web::json::value ConvertToJson(T data) {
+  return web::json::value::number(data);
+}
+
+web::json::value ConvertToJson(const std::string& data) {
+  return web::json::value::string(data);
+}
+
+web::json::value ConvertToJson(std::string_view data) {
+  return web::json::value::string(std::string{data});
+}
+
+web::json::value ConvertToJson(const char* data) {
+  return web::json::value::string(data);
+}
+
+web::json::value ConvertToJson(std::chrono::milliseconds data) {
+  return web::json::value::number(data.count());
+}
+
+web::json::value ConvertToJson(boost::uuids::uuid data) {
+  return web::json::value::string(utils::ConvertUuidToString(data));
+}
 }  // namespace
 
 template <>
@@ -171,8 +203,8 @@ std::optional<binance::PlaceOrderAcknowledgement> ParseFromJson(
         .client_order_id = GetStringPropertyAsString(json, "clientOrderId"),
         .transaction_time =
             GetInt64PropertyAsMilliseconds(json, "transactTime")};
-  } catch (const std::exception& exeption) {
-    spdlog::error("Parse from JSON: {}", exeption.what());
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
   } catch (...) {
     spdlog::error("Parse from JSON: {}", "Unknown error");
   }
@@ -185,8 +217,8 @@ std::optional<binance::ApiError> ParseFromJson(const web::json::value& json) {
   try {
     return binance::ApiError{.code = GetInt64PropertyAsInt64(json, "code"),
                              .message = GetStringPropertyAsString(json, "msg")};
-  } catch (const std::exception& exeption) {
-    spdlog::error("Parse from JSON: {}", exeption.what());
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
   } catch (...) {
     spdlog::error("Parse from JSON: {}", "Unknown error");
   }
@@ -219,8 +251,8 @@ std::optional<binance::OrderInfo> ParseFromJson(const web::json::value& json) {
         .is_working = GetBoolPropertyAsBool(json, "isWorking"),
         .original_quote_order_quantity =
             GetStringPropertyAsDouble(json, "origQuoteOrderQty")};
-  } catch (const std::exception& exeption) {
-    spdlog::error("Parse from JSON: {}", exeption.what());
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
   } catch (...) {
     spdlog::error("Parse from JSON: {}", "Unknown error");
   }
@@ -231,7 +263,7 @@ std::optional<binance::OrderInfo> ParseFromJson(const web::json::value& json) {
 template <>
 std::optional<std::vector<binance::OrderInfo>> ParseFromJson(
     const web::json::value& json) {
-  return ParseFromJsonArray<binance::OrderInfo>(json);
+  return ParseFromJsonArray<std::vector<binance::OrderInfo>>(json);
 }
 
 template <>
@@ -249,8 +281,8 @@ std::optional<binance::Kline> ParseFromJson(const web::json::value& json) {
         .num_trades = GetInt64ElementAsInt64(json, 8),
         .taker_buy_base_asset_volume = GetStringElementAsDouble(json, 9),
         .taker_buy_quote_asset_volume = GetStringElementAsDouble(json, 10)};
-  } catch (const std::exception& exeption) {
-    spdlog::error("Parse from JSON: {}", exeption.what());
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
   } catch (...) {
     spdlog::error("Parse from JSON: {}", "Unknown error");
   }
@@ -261,7 +293,7 @@ std::optional<binance::Kline> ParseFromJson(const web::json::value& json) {
 template <>
 std::optional<std::vector<binance::Kline>> ParseFromJson(
     const web::json::value& json) {
-  return ParseFromJsonArray<binance::Kline>(json);
+  return ParseFromJsonArray<std::vector<binance::Kline>>(json);
 }
 
 template <>
@@ -270,8 +302,8 @@ std::optional<finance::Symbol> ParseFromJson(const web::json::value& json) {
     return finance::Symbol{
         .base_asset = GetStringPropertyAsString(json, "base_asset"),
         .quote_asset = GetStringPropertyAsString(json, "quote_asset")};
-  } catch (const std::exception& exeption) {
-    spdlog::error("Parse from JSON: {}", exeption.what());
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
   } catch (...) {
     spdlog::error("Parse from JSON: {}", "Unknown error");
   }
@@ -281,105 +313,355 @@ std::optional<finance::Symbol> ParseFromJson(const web::json::value& json) {
 
 web::json::value ConvertToJson(const finance::Symbol& data) {
   auto json = web::json::value{};
-  json["base_asset"] = web::json::value::string(data.base_asset);
-  json["quote_asset"] = web::json::value::string(data.quote_asset);
+  json["base_asset"] = ConvertToJson(data.base_asset);
+  json["quote_asset"] = ConvertToJson(data.quote_asset);
   return json;
 }
 
 template <>
 std::optional<finance::StrategyData> ParseFromJson(
     const web::json::value& json) {
+  try {
+    const auto type = GetStringPropertyAsString(json, "typename");
+
+    if (type == "BreakoutStrategyData") {
+      return finance::StrategyData{
+          .strategy_data = finance::BreakoutStrategyData{
+              .last_candle_close_time = GetInt64PropertyAsMilliseconds(
+                  json, "last_candle_close_time"),
+              .expected_price =
+                  GetDoublePropertyAsDouble(json, "expected_price")}};
+    }
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
   return std::nullopt;
 }
 
-web::json::value ConvertToJson(const finance::StrategyData& data) { return {}; }
+web::json::value ConvertToJson(const finance::StrategyData& data) {
+  auto json = web::json::value{};
+  std::visit(
+      [&json](const auto& variant) {
+        using T = std::decay_t<decltype(variant)>;
+
+        if constexpr (std::is_same_v<T, finance::BreakoutStrategyData>) {
+          json["typename"] = ConvertToJson("BreakoutStrategyData");
+          json["last_candle_close_time"] =
+              ConvertToJson(variant.last_candle_close_time);
+          json["expected_price"] = ConvertToJson(variant.expected_price);
+          return;
+        }
+      },
+      data.strategy_data);
+  return json;
+}
 
 template <>
 std::optional<finance::OrderType> ParseFromJson(const web::json::value& json) {
+  try {
+    const auto type = GetStringPropertyAsString(json, "typename");
+
+    if (type == "MarketOrderType") {
+      return finance::OrderType{.order_type = finance::MarketOrderType{}};
+    }
+
+    if (type == "LimitOrderType") {
+      return finance::OrderType{
+          .order_type = finance::LimitOrderType{
+              .price = GetDoublePropertyAsDouble(json, "price")}};
+    }
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
   return std::nullopt;
 }
 
-web::json::value ConvertToJson(const finance::OrderType& data) { return {}; }
+web::json::value ConvertToJson(const finance::OrderType& data) {
+  auto json = web::json::value{};
+  std::visit(
+      [&json](const auto& variant) {
+        using T = std::decay_t<decltype(variant)>;
+
+        if constexpr (std::is_same_v<T, finance::LimitOrderType>) {
+          json["typename"] = ConvertToJson("LimitOrderType");
+          json["price"] = ConvertToJson(variant.price);
+          return;
+        }
+
+        if constexpr (std::is_same_v<T, finance::MarketOrderType>) {
+          json["typename"] = ConvertToJson("MarketOrderType");
+          return;
+        }
+      },
+      data.order_type);
+  return json;
+}
 
 template <>
 std::optional<finance::OrderUpdate> ParseFromJson(
     const web::json::value& json) {
+  try {
+    const auto type = GetStringPropertyAsString(json, "typename");
+
+    if (type == "OrderError") {
+      return finance::OrderUpdate{
+          .order_update = finance::OrderError{
+              .message = GetStringPropertyAsString(json, "message")}};
+    }
+
+    if (type == "OrderInfo") {
+      return finance::OrderUpdate{
+          .order_update = finance::OrderInfo{
+              .order_status = GetStringPropertyAsEnum<finance::OrderStatus>(
+                  json, "order_status")}};
+    }
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
   return std::nullopt;
 }
 
-web::json::value ConvertToJson(const finance::OrderUpdate& data) { return {}; }
+web::json::value ConvertToJson(const finance::OrderUpdate& data) {
+  auto json = web::json::value{};
+  std::visit(
+      [&json](const auto& variant) {
+        using T = std::decay_t<decltype(variant)>;
 
-template <>
-std::optional<finance::OrderProxyOrderUpdate> ParseFromJson(
-    const web::json::value& json) {
-  return std::nullopt;
+        if constexpr (std::is_same_v<T, finance::OrderError>) {
+          json["typename"] = ConvertToJson("OrderError");
+          json["message"] = ConvertToJson(variant.message);
+          return;
+        }
+
+        if constexpr (std::is_same_v<T, finance::OrderInfo>) {
+          json["typename"] = ConvertToJson("OrderInfo");
+          json["order_status"] = ConvertToJson(variant.order_status);
+          return;
+        }
+      },
+      data.order_update);
+  return json;
 }
 
-web::json::value ConvertToJson(const finance::OrderProxyOrderUpdate& data) {
-  return {};
-}
+// template <>
+// std::optional<finance::OrderProxyOrderUpdate> ParseFromJson(
+//     const web::json::value& json) {
+//   return std::nullopt;
+// }
+
+// web::json::value ConvertToJson(const finance::OrderProxyOrderUpdate& data) {
+//   return {};
+// }
 
 template <>
 std::optional<finance::Amount> ParseFromJson(const web::json::value& json) {
+  try {
+    const auto type = GetStringPropertyAsString(json, "typename");
+
+    if (type == "SpecificAmount") {
+      return finance::Amount{
+          .amount = finance::SpecificAmount{
+              .amount = GetDoublePropertyAsDouble(json, "amount")}};
+    }
+
+    if (type == "UnspecifiedAmount") {
+      return finance::Amount{.amount = finance::UnspecifiedAmount{}};
+    }
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
   return std::nullopt;
 }
 
-web::json::value ConvertToJson(const finance::Amount& data) { return {}; }
+web::json::value ConvertToJson(const finance::Amount& data) {
+  auto json = web::json::value{};
+  std::visit(
+      [&json](const auto& variant) {
+        using T = std::decay_t<decltype(variant)>;
 
-template <>
-std::optional<finance::Order> ParseFromJson(const web::json::value& json) {
-  return std::nullopt;
+        if constexpr (std::is_same_v<T, finance::SpecificAmount>) {
+          json["typename"] = ConvertToJson("SpecificAmount");
+          json["amount"] = ConvertToJson(variant.amount);
+          return;
+        }
+
+        if constexpr (std::is_same_v<T, finance::UnspecifiedAmount>) {
+          json["typename"] = ConvertToJson("UnspecifiedAmount");
+          return;
+        }
+      },
+      data.amount);
+  return json;
 }
 
-web::json::value ConvertToJson(const finance::Order& data) { return {}; }
+// template <>
+// std::optional<finance::Order> ParseFromJson(const web::json::value& json) {
+//   return std::nullopt;
+// }
+
+// web::json::value ConvertToJson(const finance::Order& data) { return {}; }
 
 template <>
 std::optional<finance::StrategyOrderRequest> ParseFromJson(
     const web::json::value& json) {
+  try {
+    return finance::StrategyOrderRequest{
+        .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
+        .buy_or_sell =
+            GetStringPropertyAsEnum<finance::BuyOrSell>(json, "buy_or_sell"),
+        .amount = GetObjectPropertyAsObject<finance::Amount>(json, "amount"),
+        .order_type =
+            GetObjectPropertyAsObject<finance::OrderType>(json, "order_type"),
+        .strategy_data = GetObjectPropertyAsObject<finance::StrategyData>(
+            json, "strategy_data")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
   return std::nullopt;
 }
 
 web::json::value ConvertToJson(const finance::StrategyOrderRequest& data) {
-  return {};
+  auto json = web::json::value{};
+  json["symbol"] = ConvertToJson(data.symbol);
+  json["buy_or_sell"] = ConvertToJson(data.buy_or_sell);
+  json["amount"] = ConvertToJson(data.amount);
+  json["order_type"] = ConvertToJson(data.order_type);
+  json["strategy_data"] = ConvertToJson(data.strategy_data);
+  return json;
 }
 
 template <>
 std::optional<finance::OrderProxyOrderRequest> ParseFromJson(
     const web::json::value& json) {
+  try {
+    return finance::OrderProxyOrderRequest{
+        .order_uuid = GetStringPropertyAsUuid(json, "order_uuid"),
+        .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
+        .buy_or_sell =
+            GetStringPropertyAsEnum<finance::BuyOrSell>(json, "buy_or_sell"),
+        .amount = GetObjectPropertyAsObject<finance::Amount>(json, "amount"),
+        .order_type =
+            GetObjectPropertyAsObject<finance::OrderType>(json, "order_type")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
   return std::nullopt;
 }
 
 web::json::value ConvertToJson(const finance::OrderProxyOrderRequest& data) {
-  return {};
+  auto json = web::json::value{};
+  json["order_uuid"] = ConvertToJson(data.order_uuid);
+  json["symbol"] = ConvertToJson(data.symbol);
+  json["buy_or_sell"] = ConvertToJson(data.buy_or_sell);
+  json["amount"] = ConvertToJson(data.amount);
+  json["order_type"] = ConvertToJson(data.order_type);
+  return json;
 }
 
 template <>
 std::optional<finance::OrderProxyMonitorRequest> ParseFromJson(
     const web::json::value& json) {
+  try {
+    return finance::OrderProxyMonitorRequest{
+        .order_uuid = GetStringPropertyAsUuid(json, "order_uuid"),
+        .last_order_update =
+            json.has_field("last_order_update")
+                ? GetObjectPropertyAsObject<finance::OrderUpdate>(
+                      json, "last_order_update")
+                : std::optional<finance::OrderUpdate>{std::nullopt}};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
   return std::nullopt;
 }
 
 web::json::value ConvertToJson(const finance::OrderProxyMonitorRequest& data) {
-  return {};
+  auto json = web::json::value{};
+  json["order_uuid"] = ConvertToJson(data.order_uuid);
+
+  if (data.last_order_update.has_value()) {
+    json["last_order_update"] = ConvertToJson(*data.last_order_update);
+  }
+
+  return json;
+}
+
+template <>
+std::optional<std::vector<finance::OrderProxyMonitorRequest>> ParseFromJson(
+    const web::json::value& json) {
+  return ParseFromJsonArray<std::vector<finance::OrderProxyMonitorRequest>>(
+      json);
+}
+
+web::json::value ConvertToJson(
+    const std::vector<finance::OrderProxyMonitorRequest>& data) {
+  return ConvertToJsonArray(data);
 }
 
 template <>
 std::optional<finance::OrderMonitorOrderUpdate> ParseFromJson(
     const web::json::value& json) {
+  try {
+    return finance::OrderMonitorOrderUpdate{
+        .order_uuid = GetStringPropertyAsUuid(json, "order_uuid"),
+        .order_update = GetObjectPropertyAsObject<finance::OrderUpdate>(
+            json, "last_order_update")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
   return std::nullopt;
 }
 
 web::json::value ConvertToJson(const finance::OrderMonitorOrderUpdate& data) {
-  return {};
+  auto json = web::json::value{};
+  json["order_uuid"] = ConvertToJson(data.order_uuid);
+  json["order_update"] = ConvertToJson(data.order_update);
+  return json;
 }
 
 template <>
-std::optional<finance::OrderMonitorOrderState> ParseFromJson(
+std::optional<std::vector<finance::OrderMonitorOrderUpdate>> ParseFromJson(
     const web::json::value& json) {
-  return std::nullopt;
+  return ParseFromJsonArray<std::vector<finance::OrderMonitorOrderUpdate>>(
+      json);
 }
 
-web::json::value ConvertToJson(const finance::OrderMonitorOrderState& data) {
-  return {};
+web::json::value ConvertToJson(
+    const std::vector<finance::OrderMonitorOrderUpdate>& data) {
+  return ConvertToJsonArray(data);
 }
+
+// template <>
+// std::optional<finance::OrderMonitorOrderState> ParseFromJson(
+//     const web::json::value& json) {
+//   return std::nullopt;
+// }
+
+// web::json::value ConvertToJson(const finance::OrderMonitorOrderState& data) {
+//   return {};
+// }
 }  // namespace stonks
