@@ -15,14 +15,14 @@
 
     function OnChartsLoaded() {
       $.ajax({
-        url: "http://localhost:6506/api/order_proxy/order/balance_history"
+        url: "http://localhost:6506/api/order_proxy/balance_history"
       }).done(OnStrategyChartInitialDataReceived);
     }
 
     function OnStrategyChartReady() {
-      $.ajax({
-        url: "http://localhost:6506/api/order_proxy/order/balance_history?drop_first=" + strategy_chart_data.getNumberOfRows()
-      }).done(OnStrategyChartNewDataReceived);
+      // $.ajax({
+      //   url: "http://localhost:6506/api/order_proxy/balance_history?drop_first=" + strategy_chart_data.getNumberOfRows()
+      // }).done(OnStrategyChartNewDataReceived);
     }
 
     function OnStrategyChartInitialDataReceived(response) {

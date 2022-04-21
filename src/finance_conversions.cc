@@ -15,7 +15,10 @@ Candle ParseCandleFromBinanceKline(const binance::Kline &kline) {
 
 OrderInfo ParseOrderInfoFromBinanceOrderInfo(
     const binance::OrderInfo &order_info) {
-  return OrderInfo{.order_status = order_info.status};
+  return OrderInfo{.order_status = order_info.status,
+                   .requested_amount = order_info.original_quantity,
+                   .executed_amount = order_info.executed_quantity,
+                   .price = order_info.price};
 }
 
 OrderError ParseOrderErrorFromBinanceApiError(

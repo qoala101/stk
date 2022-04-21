@@ -39,14 +39,20 @@ class OrderProxy {
    */
   std::vector<Order> GetOpenOrders() const;
 
+  /**
+   * @param balance_asset Asset for which balance is calculated.
+   * @param second_asset If specified, only operations performed with this asset
+   * would count.
+   */
+  std::vector<TimeDouble> CalcBalanceHistory(
+      std::string_view balance_asset,
+      std::optional<std::string_view> second_asset = std::nullopt,
+      int drop_first = 0) const;
+
   // TODO
   std::vector<StrategyOrderRequest> FindOrderRequests(
       std::string_view strategy_name, const Symbol &symbol,
       int drop_first = 0) const;
-
-  // TODO
-  std::vector<TimeDouble> CalcBalanceHistory(std::string_view asset,
-                                             int drop_first = 0) const;
 
  private:
   std::vector<Order> orders_{};

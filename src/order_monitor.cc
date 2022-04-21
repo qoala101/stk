@@ -70,7 +70,8 @@ void OrderMonitor::ProcessOrderRequest(
   if (price.has_value()) {
     order_update.order_update.order_update =
         OrderInfo{.order_status = OrderStatus::kFilled,
-                  .executed_amount = 0,
+                  .requested_amount = (float{1} / *price) * float{10},
+                  .executed_amount = (float{1} / *price) * float{10},
                   .price = *price};
   } else {
     order_update.order_update.order_update =

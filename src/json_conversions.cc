@@ -426,6 +426,8 @@ std::optional<finance::OrderUpdate> ParseFromJson(
           .order_update = finance::OrderInfo{
               .order_status = GetStringPropertyAsEnum<finance::OrderStatus>(
                   json, "order_status"),
+              .requested_amount =
+                  GetDoublePropertyAsDouble(json, "requested_amount"),
               .executed_amount =
                   GetDoublePropertyAsDouble(json, "executed_amount"),
               .price = GetDoublePropertyAsDouble(json, "price")}};
@@ -454,6 +456,7 @@ web::json::value ConvertToJson(const finance::OrderUpdate& data) {
         if constexpr (std::is_same_v<T, finance::OrderInfo>) {
           json["typename"] = ConvertToJson("OrderInfo");
           json["order_status"] = ConvertToJson(variant.order_status);
+          json["requested_amount"] = ConvertToJson(variant.requested_amount);
           json["executed_amount"] = ConvertToJson(variant.executed_amount);
           json["price"] = ConvertToJson(variant.price);
           return;

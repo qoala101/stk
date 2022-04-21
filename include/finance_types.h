@@ -80,6 +80,7 @@ struct OrderType {
 
 struct OrderInfo {
   OrderStatus order_status{};
+  double requested_amount{};
   double executed_amount{};
   double price{};
 };
@@ -144,6 +145,8 @@ struct Order {
    * Would be used for strategy analysis.
    */
   StrategyData strategy_data{};
+
+  std::optional<OrderInfo> GetLastFilledOrderInfo() const;
 };
 
 /**

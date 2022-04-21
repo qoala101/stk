@@ -49,7 +49,7 @@ void HandleGetRequest(const web::http::http_request &request,
 
   if (relative_uri == "/balance_history") {
     const auto balance_history =
-        order_proxy.CalcBalanceHistory("USDT", drop_first);
+        order_proxy.CalcBalanceHistory("USDT", std::nullopt, drop_first);
     request.reply(web::http::status_codes::OK,
                   google_charts::ConvertToJson(balance_history));
     return;

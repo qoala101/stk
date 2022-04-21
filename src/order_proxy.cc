@@ -82,16 +82,100 @@ std::vector<Order> OrderProxy::GetOpenOrders() const {
   }
 }
 
+namespace {
+double CalcBaseBalanceChange(const Order &order) {
+  const auto filled_order_info = order.GetLastFilledOrderInfo();
+
+  if (!filled_order_info.has_value()) {
+    return 0;
+  }
+
+  if (order.buy_or_sell == stonks::finance::BuyOrSell::kBuy) {
+    return filled_order_info->executed_amount;
+  }
+
+  return -filled_order_info->executed_amount;
+}
+
+double CalcQuoteBalanceChange(const Order &order) {
+  const auto filled_order_info = order.GetLastFilledOrderInfo();
+
+  if (!filled_order_info.has_value()) {
+    return 0;
+  }
+
+  const auto value =
+      filled_order_info->executed_amount * filled_order_info->price;
+
+  if (order.buy_or_sell == stonks::finance::BuyOrSell::kSell) {
+    return value;
+  }
+
+  return -value;
+}
+
+double CalcAssetBalanceChange(std::string_view asset, const Order &order) {
+  if (asset == order.symbol.base_asset) {
+    return CalcBaseBalanceChange(order);
+  }
+
+  if (asset == order.symbol.quote_asset) {
+    return CalcQuoteBalanceChange(order);
+  }
+
+  return 0;
+}
+}  // namespace
+
+std::vector<TimeDouble> OrderProxy::CalcBalanceHistory(
+    std::string_view balance_asset,
+    std::optional<std::string_view> second_asset, int drop_first) const {
+  const auto filter_orders_by_asset = [balance_asset,
+                                       second_asset](const Order &order) {
+    if (second_asset.has_value()) {
+      return ((order.symbol.base_asset == balance_asset) &&
+              (order.symbol.quote_asset == *second_asset)) ||
+             ((order.symbol.base_asset == *second_asset) &&
+              (order.symbol.quote_asset == balance_asset));
+    }
+
+    return (order.symbol.base_asset == balance_asset) ||
+           (order.symbol.quote_asset == balance_asset);
+  };
+  const auto enough_orders = [drop_first, &orders = orders_,
+                              &filter_orders_by_asset]() {
+    return !(orders | ranges::views::filter(filter_orders_by_asset) |
+             ranges::views::drop(drop_first))
+                .empty();
+  };
+
+  auto balance_history = std::vector<TimeDouble>{};
+
+  const auto calc_balance_changes = [balance_asset,
+                                     &balance_history](const Order &order) {
+    const auto balance =
+        balance_history.empty() ? 0 : balance_history.back().value;
+    const auto balance_change = CalcAssetBalanceChange(balance_asset, order);
+
+    balance_history.emplace_back(TimeDouble{.time = order.request_time,
+                                            .value = balance + balance_change});
+  };
+
+  {
+    auto lock = std::unique_lock{orders_mutex_};
+    orders_cond_var_.wait(lock, enough_orders);
+
+    ranges::for_each(orders_ | ranges::views::filter(filter_orders_by_asset),
+                     calc_balance_changes);
+  }
+
+  return balance_history;
+}
+
 // TODO
 std::vector<StrategyOrderRequest> OrderProxy::FindOrderRequests(
     std::string_view strategy_name, const Symbol &symbol,
     int drop_first) const {
-  return {};
-}
-
-// TODO
-std::vector<TimeDouble> OrderProxy::CalcBalanceHistory(std::string_view asset,
-                                                       int drop_first) const {
   return {};
 }
 
@@ -123,82 +207,5 @@ std::vector<TimeDouble> OrderProxy::CalcBalanceHistory(std::string_view asset,
 //   }
 
 //   return found_requests;
-// }
-
-// namespace {
-// double CalcBaseBalanceChange(const OrderRequest &order_request) {
-//   if (order_request.buy_or_sell == stonks::finance::BuyOrSell::kBuy) {
-//     return order_request.quantity;
-//   }
-
-//   return -order_request.quantity;
-// }
-
-// double CalcQuoteBalanceChange(const OrderRequest &order_request) {
-//   const auto value = order_request.quantity * order_request.price;
-
-//   if (order_request.buy_or_sell == stonks::finance::BuyOrSell::kSell) {
-//     return value;
-//   }
-
-//   return -value;
-// }
-
-// double CalcAssetBalanceChange(std::string_view asset,
-//                               const OrderRequest &order_request) {
-//   if (asset == order_request.symbol.base_asset) {
-//     return CalcBaseBalanceChange(order_request);
-//   }
-
-//   if (asset == order_request.symbol.quote_asset) {
-//     return CalcQuoteBalanceChange(order_request);
-//   }
-
-//   return 0;
-// }
-// }  // namespace
-
-// std::vector<TimeDouble> OrderProxy::CalcBalanceHistory(std::string_view
-// asset,
-//                                                        int drop_first) const
-//                                                        {
-//   const auto filter_records_by_asset =
-//       [asset](const StrategyOrderRequest &request) {
-//         return (request.order_request.symbol.base_asset == asset) ||
-//                (request.order_request.symbol.quote_asset == asset);
-//       };
-//   const auto enough_records = [drop_first, &order_states = order_states_,
-//                                &filter_records_by_asset]() {
-//     return !(order_states | ranges::views::filter(filter_records_by_asset) |
-//              ranges::views::drop(drop_first))
-//                 .empty();
-//   };
-
-//   auto balance_history = std::vector<TimeDouble>{};
-
-//   const auto calc_balance_changes = [asset, &balance_history](
-//                                         const StrategyOrderRequest &request)
-//                                         {
-//     const auto balance =
-//         balance_history.empty() ? 0 : balance_history.back().value;
-//     const auto balance_change =
-//         CalcAssetBalanceChange(asset, request.order_request);
-
-//     balance_history.emplace_back(TimeDouble{.time =
-//     request.order_request.time,
-//                                             .value = balance +
-//                                             balance_change});
-//   };
-
-//   {
-//     auto lock = std::unique_lock{order_states_mutex_};
-//     order_states_cond_var_.wait(lock, enough_records);
-
-//     ranges::for_each(
-//         order_states_ | ranges::views::filter(filter_records_by_asset),
-//         calc_balance_changes);
-//   }
-
-//   return balance_history;
 // }
 }  // namespace stonks::finance
