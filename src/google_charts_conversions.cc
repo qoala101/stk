@@ -149,7 +149,7 @@ web::json::value ConvertToJson(const std::vector<finance::Order> &data) {
     AddCell(row_cells, json::ConvertToJson(item.buy_or_sell));
     AddCell(row_cells, json::ConvertToJson(item.amount));
     AddCell(row_cells, json::ConvertToJson(item.order_type));
-    AddCell(row_cells, "LINK");
+    AddCell(row_cells, json::ConvertToJson(item.order_updates));
     AddCell(row_cells, json::ConvertToJson(item.strategy_data));
     json["c"] = web::json::value::array(std::move(row_cells));
     return json;

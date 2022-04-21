@@ -91,17 +91,18 @@ void HandlePostRequest(const web::http::http_request &request,
     return;
   }
 
-  if (relative_uri == "/order_update") {
-    auto order_update =
-        json::ParseFromJson<finance::OrderMonitorOrderUpdate>(json);
+  if (relative_uri == "/update_orders") {
+    auto order_updates =
+        json::ParseFromJson<std::vector<finance::OrderMonitorOrderUpdate>>(
+            json);
 
-    if (!order_update.has_value()) {
+    if (!order_updates.has_value()) {
       spdlog::error("Cannot parse order update");
       request.reply(web::http::status_codes::BadRequest);
       return;
     }
 
-    order_proxy.UpdateOrder(*order_update);
+    order_proxy.UpdateOrders(*order_updates);
 
     request.reply(web::http::status_codes::OK);
     return;

@@ -427,7 +427,8 @@ std::optional<finance::OrderUpdate> ParseFromJson(
               .order_status = GetStringPropertyAsEnum<finance::OrderStatus>(
                   json, "order_status"),
               .executed_amount =
-                  GetDoublePropertyAsDouble(json, "executed_amount")}};
+                  GetDoublePropertyAsDouble(json, "executed_amount"),
+              .price = GetDoublePropertyAsDouble(json, "price")}};
     }
   } catch (const std::exception& exception) {
     spdlog::error("Parse from JSON: {}", exception.what());
@@ -454,6 +455,7 @@ web::json::value ConvertToJson(const finance::OrderUpdate& data) {
           json["typename"] = ConvertToJson("OrderInfo");
           json["order_status"] = ConvertToJson(variant.order_status);
           json["executed_amount"] = ConvertToJson(variant.executed_amount);
+          json["price"] = ConvertToJson(variant.price);
           return;
         }
       },
@@ -662,7 +664,7 @@ std::optional<finance::OrderMonitorOrderUpdate> ParseFromJson(
     return finance::OrderMonitorOrderUpdate{
         .order_uuid = GetStringPropertyAsUuid(json, "order_uuid"),
         .order_update = GetObjectPropertyAsObject<finance::OrderUpdate>(
-            json, "last_order_update")};
+            json, "order_update")};
   } catch (const std::exception& exception) {
     spdlog::error("Parse from JSON: {}", exception.what());
   } catch (...) {

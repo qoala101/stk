@@ -81,6 +81,7 @@ struct OrderType {
 struct OrderInfo {
   OrderStatus order_status{};
   double executed_amount{};
+  double price{};
 };
 
 struct OrderError {

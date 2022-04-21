@@ -32,25 +32,28 @@ Order OrderProxy::RecordStrategyOrderRequest(
   return *order;
 }
 
-void OrderProxy::UpdateOrder(const OrderMonitorOrderUpdate &order_update) {
-  const auto check_uuid = [order_update](const Order &order) {
-    return order.uuid == order_update.order_uuid;
-  };
-
+void OrderProxy::UpdateOrders(
+    const std::vector<OrderMonitorOrderUpdate> &order_updates) {
   {
     const auto lock = std::lock_guard{orders_mutex_};
 
-    auto order = std::find_if(orders_.begin(), orders_.end(), check_uuid);
+    for (const auto &order_update : order_updates) {
+      const auto check_uuid = [&order_update](const Order &order) {
+        return order.uuid == order_update.order_uuid;
+      };
 
-    if (order == orders_.end()) {
-      spdlog::error("Cannot update order {} because it's missing.",
-                    utils::ConvertUuidToString(order_update.order_uuid));
-      return;
+      auto order = std::find_if(orders_.begin(), orders_.end(), check_uuid);
+
+      if (order == orders_.end()) {
+        spdlog::error("Cannot update order {} because it's missing.",
+                      utils::ConvertUuidToString(order_update.order_uuid));
+        continue;
+      }
+
+      auto &new_order_update = order->order_updates.emplace_back();
+      new_order_update.received_time = utils::GetUnixTime();
+      new_order_update.order_update = order_update.order_update;
     }
-
-    auto &new_order_update = order->order_updates.emplace_back();
-    new_order_update.received_time = utils::GetUnixTime();
-    new_order_update.order_update = order_update.order_update;
   }
 
   orders_cond_var_.notify_all();

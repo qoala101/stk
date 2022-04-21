@@ -21,9 +21,9 @@ class OrderProxy {
       const StrategyOrderRequest &strategy_order_request);
 
   /**
-   * @brief Adds order update to the order list of updates.
+   * @brief Adds order updates to the corresponding lists of updates.
    */
-  void UpdateOrder(const OrderMonitorOrderUpdate &order_update);
+  void UpdateOrders(const std::vector<OrderMonitorOrderUpdate> &order_updates);
 
   /**
    * @remark Copies of the orders are returned because orders could be updated

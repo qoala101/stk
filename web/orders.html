@@ -19,9 +19,9 @@
     }
 
     function OnOrdersTableReady() {
-      $.ajax({
-        url: "http://localhost:6506/api/order_proxy/orders?drop_first=" + orders_table_data.getNumberOfRows()
-      }).done(OnOrdersTableNewDataReceived);
+      // $.ajax({
+      //   url: "http://localhost:6506/api/order_proxy/orders?drop_first=" + orders_table_data.getNumberOfRows()
+      // }).done(OnOrdersTableNewDataReceived);
     }
 
     function OnOrdersTableInitialDataReceived(response) {

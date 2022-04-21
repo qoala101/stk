@@ -54,7 +54,7 @@ void HandlePostRequest(const web::http::http_request &request,
 void HandleOrdersUpdated(
     const std::vector<finance::OrderMonitorOrderUpdate> &order_updates) {
   rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
-      .AppendUri("/api/order_proxy/update")
+      .AppendUri("/api/order_proxy/update_orders")
       .SetJson(json::ConvertToJson(order_updates))
       .SendAndGetResponse();
 }
