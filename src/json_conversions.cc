@@ -13,7 +13,7 @@
 #include "concepts.h"
 #include "utils.h"
 
-namespace stonks {
+namespace stonks::json {
 namespace {
 const std::string& GetStringPropertyAsString(
     const web::json::value& json, const std::string_view property_name) {
@@ -160,16 +160,7 @@ web::json::value ConvertToJsonArray(const std::vector<T>& data) {
       data | ranges::views::transform(convert_item) | ranges::to_vector;
   return web::json::value::array(std::move(json_items));
 }
-
-template <Enumeration T>
-web::json::value ConvertToJson(T data) {
-  return web::json::value::string(std::string{magic_enum::enum_name(data)});
-}
-
-template <Number T>
-web::json::value ConvertToJson(T data) {
-  return web::json::value::number(data);
-}
+}  // namespace
 
 web::json::value ConvertToJson(const std::string& data) {
   return web::json::value::string(data);
@@ -190,7 +181,6 @@ web::json::value ConvertToJson(std::chrono::milliseconds data) {
 web::json::value ConvertToJson(boost::uuids::uuid data) {
   return web::json::value::string(utils::ConvertUuidToString(data));
 }
-}  // namespace
 
 template <>
 std::optional<binance::PlaceOrderAcknowledgement> ParseFromJson(
@@ -419,7 +409,9 @@ std::optional<finance::OrderUpdate> ParseFromJson(
       return finance::OrderUpdate{
           .order_update = finance::OrderInfo{
               .order_status = GetStringPropertyAsEnum<finance::OrderStatus>(
-                  json, "order_status")}};
+                  json, "order_status"),
+              .executed_amount =
+                  GetDoublePropertyAsDouble(json, "executed_amount")}};
     }
   } catch (const std::exception& exception) {
     spdlog::error("Parse from JSON: {}", exception.what());
@@ -445,6 +437,7 @@ web::json::value ConvertToJson(const finance::OrderUpdate& data) {
         if constexpr (std::is_same_v<T, finance::OrderInfo>) {
           json["typename"] = ConvertToJson("OrderInfo");
           json["order_status"] = ConvertToJson(variant.order_status);
+          json["executed_amount"] = ConvertToJson(variant.executed_amount);
           return;
         }
       },
@@ -582,6 +575,7 @@ std::optional<finance::OrderProxyMonitorRequest> ParseFromJson(
   try {
     return finance::OrderProxyMonitorRequest{
         .order_uuid = GetStringPropertyAsUuid(json, "order_uuid"),
+        .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
         .last_order_update =
             json.has_field("last_order_update")
                 ? GetObjectPropertyAsObject<finance::OrderUpdate>(
@@ -599,6 +593,7 @@ std::optional<finance::OrderProxyMonitorRequest> ParseFromJson(
 web::json::value ConvertToJson(const finance::OrderProxyMonitorRequest& data) {
   auto json = web::json::value{};
   json["order_uuid"] = ConvertToJson(data.order_uuid);
+  json["symbol"] = ConvertToJson(data.symbol);
 
   if (data.last_order_update.has_value()) {
     json["last_order_update"] = ConvertToJson(*data.last_order_update);
@@ -664,4 +659,4 @@ web::json::value ConvertToJson(
 // web::json::value ConvertToJson(const finance::OrderMonitorOrderState& data) {
 //   return {};
 // }
-}  // namespace stonks
+}  // namespace stonks::json

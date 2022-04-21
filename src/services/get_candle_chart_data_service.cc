@@ -23,7 +23,8 @@ void HandleGetRequest(const web::http::http_request &request) {
     return;
   }
 
-  request.reply(web::http::status_codes::OK, ConvertToJson(*candles));
+  request.reply(web::http::status_codes::OK,
+                google_charts::ConvertToJson(*candles));
   spdlog::info("Sent OK response");
 }
 }  // namespace

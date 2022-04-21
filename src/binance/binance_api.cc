@@ -124,13 +124,13 @@ std::variant<std::monostate, PlaceOrderAcknowledgement, ApiError> PlaceOrder(
   }
 
   const auto acknowledgement =
-      ParseFromJson<PlaceOrderAcknowledgement>(*response);
+      json::ParseFromJson<PlaceOrderAcknowledgement>(*response);
 
   if (acknowledgement.has_value()) {
     return *acknowledgement;
   }
 
-  const auto api_error = ParseFromJson<ApiError>(*response);
+  const auto api_error = json::ParseFromJson<ApiError>(*response);
 
   if (api_error.has_value()) {
     return *api_error;
@@ -168,7 +168,7 @@ std::optional<std::vector<OrderInfo>> GetAllOrders(
     return std::nullopt;
   }
 
-  return ParseFromJson<std::vector<OrderInfo>>(*response);
+  return json::ParseFromJson<std::vector<OrderInfo>>(*response);
 }
 
 std::optional<OrderInfo> QueryOrder(
@@ -196,8 +196,8 @@ std::optional<OrderInfo> QueryOrder(
     spdlog::error("Cannot query order");
     return std::nullopt;
   }
-  
-  return ParseFromJson<OrderInfo>(*response);
+
+  return json::ParseFromJson<OrderInfo>(*response);
 }
 
 std::optional<std::vector<Kline>> GetKlines(
@@ -220,6 +220,6 @@ std::optional<std::vector<Kline>> GetKlines(
     return std::nullopt;
   }
 
-  return ParseFromJson<std::vector<Kline>>(*response);
+  return json::ParseFromJson<std::vector<Kline>>(*response);
 }
 }  // namespace stonks::binance

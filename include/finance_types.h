@@ -80,6 +80,7 @@ struct OrderType {
 
 struct OrderInfo {
   OrderStatus order_status{};
+  double executed_amount{};
 };
 
 struct OrderError {
@@ -176,6 +177,7 @@ struct OrderProxyOrderRequest {
  */
 struct OrderProxyMonitorRequest {
   boost::uuids::uuid order_uuid{};
+  Symbol symbol{};
   /**
    * @brief Last order state which proxy has. Nullopt if order proxy doesn't
    * have any updates for the order.
@@ -198,6 +200,7 @@ struct OrderMonitorOrderUpdate {
  */
 struct OrderMonitorOrderState {
   boost::uuids::uuid order_uuid{};
+  Symbol symbol{};
   std::optional<OrderUpdate> last_order_update{};
 };
 }  // namespace stonks::finance

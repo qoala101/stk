@@ -28,6 +28,7 @@ add_library(libstonks
   services/get_candle_chart_data_service.cc
   services/breakout_strategy_service.cc
   services/order_proxy_service.cc
+  services/order_monitor_service.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include)

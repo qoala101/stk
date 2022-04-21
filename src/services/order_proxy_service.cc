@@ -19,7 +19,7 @@ void ForwardOrderRequestToProcessing(const finance::Order &order) {
 
   rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
       .AppendUri("/api/order_monitor/order")
-      .SetJson(ConvertToJson(order_request))
+      .SetJson(json::ConvertToJson(order_request))
       .SendAndGetResponse();
 }
 
@@ -42,14 +42,23 @@ void HandleGetRequest(const web::http::http_request &request,
     const auto records = order_proxy.FindOrderRequests(
         "breakout", finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"},
         drop_first);
-    request.reply(web::http::status_codes::OK, ConvertToJson(records));
+    request.reply(web::http::status_codes::OK,
+                  google_charts::ConvertToJson(records));
     return;
   }
 
   if (relative_uri == "/balance_history") {
     const auto balance_history =
         order_proxy.CalcBalanceHistory("USDT", drop_first);
-    request.reply(web::http::status_codes::OK, ConvertToJson(balance_history));
+    request.reply(web::http::status_codes::OK,
+                  google_charts::ConvertToJson(balance_history));
+    return;
+  }
+
+  if (relative_uri == "/orders") {
+    const auto orders = order_proxy.GetAllOrders(drop_first);
+    request.reply(web::http::status_codes::OK,
+                  google_charts::ConvertToJson(orders));
     return;
   }
 
@@ -66,7 +75,7 @@ void HandlePostRequest(const web::http::http_request &request,
 
   if (relative_uri == "/order") {
     auto strategy_order_request =
-        ParseFromJson<finance::StrategyOrderRequest>(json);
+        json::ParseFromJson<finance::StrategyOrderRequest>(json);
 
     if (!strategy_order_request.has_value()) {
       spdlog::error("Cannot parse strategy order request");
@@ -83,7 +92,8 @@ void HandlePostRequest(const web::http::http_request &request,
   }
 
   if (relative_uri == "/order_update") {
-    auto order_update = ParseFromJson<finance::OrderMonitorOrderUpdate>(json);
+    auto order_update =
+        json::ParseFromJson<finance::OrderMonitorOrderUpdate>(json);
 
     if (!order_update.has_value()) {
       spdlog::error("Cannot parse order update");

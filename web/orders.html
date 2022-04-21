@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', { 'packages': ['table'] });
+    google.charts.setOnLoadCallback(OnChartsLoaded);
+
+    var orders_table;
+    var orders_table_data;
+
+    function OnChartsLoaded() {
+      $.ajax({
+        url: "http://localhost:6506/api/order_proxy/orders"
+      }).done(OnOrdersTableInitialDataReceived);
+    }
+
+    function OnOrdersTableReady() {
+      $.ajax({
+        url: "http://localhost:6506/api/order_proxy/orders?drop_first=" + orders_table_data.getNumberOfRows()
+      }).done(OnOrdersTableNewDataReceived);
+    }
+
+    function OnOrdersTableInitialDataReceived(response) {
+      orders_table_data = new google.visualization.DataTable(response);
+
+      orders_table = new google.visualization.Table(document.getElementById("orders_table_div"));
+      google.visualization.events.addListener(orders_table, "ready", OnOrdersTableReady);
+      orders_table.draw(orders_table_data);
+    }
+
+    function OnOrdersTableNewDataReceived(response) {
+      var new_data = new google.visualization.DataTable(response);
+      var keys = [];
+
+      for (var i = 0; i < orders_table_data.getNumberOfColumns(); ++i) {
+        keys.push([i, i]);
+      }
+
+      orders_table_data = new google.visualization.data.join(
+        orders_table_data,
+        new_data,
+        "full",
+        keys,
+        [],
+        []
+      );
+
+      orders_table.draw(orders_table_data);
+    }
+
+  </script>
+</head>
+
+<body>
+  <div id="orders_table_div"></div>
+</body>
+
+</html>

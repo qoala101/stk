@@ -14,8 +14,10 @@ class OrderProxy {
  public:
   /**
    * @brief Adds order request to the list of all orders.
+   * @remark Copy of the order is returned because orders could be updated from
+   * the other thread.
    */
-  Order &RecordStrategyOrderRequest(
+  Order RecordStrategyOrderRequest(
       const StrategyOrderRequest &strategy_order_request);
 
   /**
@@ -24,10 +26,18 @@ class OrderProxy {
   void UpdateOrder(const OrderMonitorOrderUpdate &order_update);
 
   /**
+   * @remark Copies of the orders are returned because orders could be updated
+   * from the other thread.
+   */
+  std::vector<Order> GetAllOrders(int drop_first = 0) const;
+
+  /**
    * @brief Gives list of orders which have not yet received any type of closing
    * update.
+   * @remark Copies of the orders are returned because orders could be updated
+   * from the other thread.
    */
-  std::vector<gsl::not_null<const Order *>> GetOpenOrders() const;
+  std::vector<Order> GetOpenOrders() const;
 
   // TODO
   std::vector<StrategyOrderRequest> FindOrderRequests(

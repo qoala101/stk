@@ -22,7 +22,8 @@ TEST(JsonConversions, PlaceOrderAcknowledgement) {
 
   const auto parsed_json = web::json::value::parse(raw_json);
   const auto parsed_object =
-      stonks::ParseFromJson<stonks::binance::PlaceOrderAcknowledgement>(parsed_json);
+      stonks::json::ParseFromJson<stonks::binance::PlaceOrderAcknowledgement>(
+          parsed_json);
 
   ASSERT_TRUE(parsed_object.has_value());
   EXPECT_EQ(*parsed_object, object);
@@ -72,7 +73,7 @@ TEST(JsonConversions, OrderInfo) {
 
   const auto parsed_json = web::json::value::parse(raw_json);
   const auto parsed_object =
-      stonks::ParseFromJson<stonks::binance::OrderInfo>(parsed_json);
+      stonks::json::ParseFromJson<stonks::binance::OrderInfo>(parsed_json);
 
   ASSERT_TRUE(parsed_object.has_value());
   EXPECT_EQ(*parsed_object, object);
@@ -108,7 +109,7 @@ TEST(JsonConversions, Kline) {
 
   const auto parsed_json = web::json::value::parse(raw_json);
   const auto parsed_object =
-      stonks::ParseFromJson<stonks::binance::Kline>(parsed_json);
+      stonks::json::ParseFromJson<stonks::binance::Kline>(parsed_json);
 
   ASSERT_TRUE(parsed_object.has_value());
   EXPECT_EQ(*parsed_object, object);
@@ -173,7 +174,8 @@ TEST(JsonConversions, Klines) {
 
   const auto parsed_json = web::json::value::parse(raw_json);
   const auto parsed_object =
-      stonks::ParseFromJson<std::vector<stonks::binance::Kline>>(parsed_json);
+      stonks::json::ParseFromJson<std::vector<stonks::binance::Kline>>(
+          parsed_json);
 
   ASSERT_TRUE(parsed_object.has_value());
   EXPECT_EQ(*parsed_object, object);
@@ -213,7 +215,8 @@ TEST(JsonConversions, BrokenKlineInArray) {
 
   const auto parsed_json = web::json::value::parse(raw_json);
   const auto parsed_object =
-      stonks::ParseFromJson<std::vector<stonks::binance::Kline>>(parsed_json);
+      stonks::json::ParseFromJson<std::vector<stonks::binance::Kline>>(
+          parsed_json);
 
   ASSERT_FALSE(parsed_object.has_value());
 }

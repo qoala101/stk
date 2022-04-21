@@ -11,7 +11,7 @@
 #include "utils.h"
 
 namespace stonks::finance {
-Order &OrderProxy::RecordStrategyOrderRequest(
+Order OrderProxy::RecordStrategyOrderRequest(
     const StrategyOrderRequest &strategy_order_request) {
   auto order = (Order *){nullptr};
 
@@ -19,6 +19,7 @@ Order &OrderProxy::RecordStrategyOrderRequest(
     const auto lock = std::lock_guard{orders_mutex_};
 
     order = &orders_.emplace_back();
+    order->request_time = utils::GetUnixTime();
     order->uuid = utils::GenerateUuid();
     order->symbol = strategy_order_request.symbol;
     order->buy_or_sell = strategy_order_request.buy_or_sell;
@@ -55,17 +56,26 @@ void OrderProxy::UpdateOrder(const OrderMonitorOrderUpdate &order_update) {
   orders_cond_var_.notify_all();
 }
 
-std::vector<gsl::not_null<const Order *>> OrderProxy::GetOpenOrders() const {
-  const auto filter_by_status = [](const Order &order) { return true; };
-  const auto to_pointer = [](const Order &order) {
-    return gsl::not_null<const Order *>(&order);
+std::vector<Order> OrderProxy::GetAllOrders(int drop_first) const {
+  const auto check_if_enough_orders = [drop_first, &orders = orders_]() {
+    return orders.size() > drop_first;
   };
 
   {
-    const auto lock = std::lock_guard{orders_mutex_};
+    auto lock = std::unique_lock{orders_mutex_};
+    orders_cond_var_.wait(lock, check_if_enough_orders);
 
+    return orders_ | ranges::views::drop(drop_first) | ranges::to_vector;
+  }
+}
+
+std::vector<Order> OrderProxy::GetOpenOrders() const {
+  const auto filter_by_status = [](const Order &order) { return true; };
+
+  {
+    const auto lock = std::lock_guard{orders_mutex_};
     return orders_ | ranges::views::filter(filter_by_status) |
-           ranges::views::transform(to_pointer) | ranges::to_vector;
+           ranges::to_vector;
   }
 }
 

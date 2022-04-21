@@ -3,12 +3,30 @@
 
 #include <cpprest/json.h>
 
+#include <magic_enum.hpp>
 #include <vector>
 
 #include "binance_types.h"
+#include "concepts.h"
 #include "finance_types.h"
 
-namespace stonks {
+namespace stonks::json {
+template <Enumeration T>
+web::json::value ConvertToJson(T data) {
+  return web::json::value::string(std::string{magic_enum::enum_name(data)});
+}
+
+template <Number T>
+web::json::value ConvertToJson(T data) {
+  return web::json::value::number(data);
+}
+
+web::json::value ConvertToJson(const std::string &data);
+web::json::value ConvertToJson(std::string_view data);
+web::json::value ConvertToJson(const char *data);
+web::json::value ConvertToJson(std::chrono::milliseconds data);
+web::json::value ConvertToJson(boost::uuids::uuid data);
+
 template <typename T>
 std::optional<T> ParseFromJson(const web::json::value &json) = delete;
 
@@ -99,6 +117,6 @@ template <>
 std::optional<finance::OrderMonitorOrderState> ParseFromJson(
     const web::json::value &json);
 web::json::value ConvertToJson(const finance::OrderMonitorOrderState &data);
-}  // namespace stonks
+}  // namespace stonks::json
 
 #endif  // STONKS_JSON_CONVERSIONS_H_

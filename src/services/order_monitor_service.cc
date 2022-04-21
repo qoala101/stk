@@ -18,7 +18,8 @@ void HandlePostRequest(const web::http::http_request &request,
   const auto relative_uri = request.relative_uri().path();
 
   if (relative_uri == "/order") {
-    auto order_request = ParseFromJson<finance::OrderProxyOrderRequest>(json);
+    auto order_request =
+        json::ParseFromJson<finance::OrderProxyOrderRequest>(json);
 
     if (!order_request.has_value()) {
       spdlog::error("Cannot parse order request");
@@ -33,7 +34,8 @@ void HandlePostRequest(const web::http::http_request &request,
 
   if (relative_uri == "/monitor") {
     auto monitor_requests =
-        ParseFromJson<std::vector<finance::OrderProxyMonitorRequest>>(json);
+        json::ParseFromJson<std::vector<finance::OrderProxyMonitorRequest>>(
+            json);
 
     if (!monitor_requests.has_value()) {
       spdlog::error("Cannot parse monitor request");
@@ -53,7 +55,7 @@ void HandleOrdersUpdated(
     const std::vector<finance::OrderMonitorOrderUpdate> &order_updates) {
   rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
       .AppendUri("/api/order_proxy/update")
-      .SetJson(ConvertToJson(order_updates))
+      .SetJson(json::ConvertToJson(order_updates))
       .SendAndGetResponse();
 }
 }  // namespace

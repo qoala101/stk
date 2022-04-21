@@ -18,7 +18,7 @@ void SendOrderRequest(finance::Symbol symbol,
                       finance::StrategyOrderRequest order_request) {
   order_request.symbol = std::move(symbol);
 
-  auto json = ConvertToJson(order_request);
+  auto json = json::ConvertToJson(order_request);
 
   rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
       .AppendUri("/api/order_proxy/order")
