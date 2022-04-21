@@ -5,45 +5,37 @@
 namespace stonks::finance {
 namespace {
 std::optional<StrategyOrderRequest> ProcessLastCandles(
-    const Candle &prev_candle, const Candle &new_candle, double min_volume) {
+    const Candle &prev_candle, const Candle &new_candle) {
   Expects(prev_candle.data.has_value());
   Expects(new_candle.data.has_value());
-  Expects(min_volume >= 0);
 
-  if (new_candle.data->volume > min_volume) {
-    if (new_candle.data->close_price > prev_candle.data->high_price) {
-      return StrategyOrderRequest{
-          .buy_or_sell = BuyOrSell::kBuy,
-          .amount = UnspecifiedAmount{},
-          .order_type = MarketOrderType{},
-          .strategy_data = BreakoutStrategyData{
-              .last_candle_close_time = new_candle.close_time,
-              .expected_price =
-                  (new_candle.data->open_price + new_candle.data->close_price) /
-                  2}};
-    }
+  if (new_candle.data->close_price > prev_candle.data->high_price) {
+    return StrategyOrderRequest{
+        .buy_or_sell = BuyOrSell::kBuy,
+        .amount = UnspecifiedAmount{},
+        .order_type = MarketOrderType{},
+        .strategy_data = BreakoutStrategyData{
+            .last_candle_close_time = new_candle.close_time,
+            .expected_price =
+                (new_candle.data->open_price + new_candle.data->close_price) /
+                2}};
+  }
 
-    if (new_candle.data->close_price < prev_candle.data->low_price) {
-      return StrategyOrderRequest{
-          .buy_or_sell = BuyOrSell::kSell,
-          .amount = UnspecifiedAmount{},
-          .order_type = MarketOrderType{},
-          .strategy_data = BreakoutStrategyData{
-              .last_candle_close_time = new_candle.close_time,
-              .expected_price =
-                  (new_candle.data->open_price + new_candle.data->close_price) /
-                  2}};
-    }
+  if (new_candle.data->close_price < prev_candle.data->low_price) {
+    return StrategyOrderRequest{
+        .buy_or_sell = BuyOrSell::kSell,
+        .amount = UnspecifiedAmount{},
+        .order_type = MarketOrderType{},
+        .strategy_data = BreakoutStrategyData{
+            .last_candle_close_time = new_candle.close_time,
+            .expected_price =
+                (new_candle.data->open_price + new_candle.data->close_price) /
+                2}};
   }
 
   return std::nullopt;
 }
 }  // namespace
-
-BreakoutStrategy::BreakoutStrategy(double min_volume)
-    : min_volume_{min_volume} {
-  Expects(min_volume >= 0);
-}
 
 std::optional<StrategyOrderRequest> BreakoutStrategy::ProcessNewCandles(
     const std::vector<Candle> &candles) {
@@ -62,8 +54,7 @@ std::optional<StrategyOrderRequest> BreakoutStrategy::ProcessNewCandles(
       return std::nullopt;
     }
 
-    const auto result =
-        ProcessLastCandles(*prev_candle_, candles.back(), min_volume_);
+    const auto result = ProcessLastCandles(*prev_candle_, candles.back());
 
     prev_candle_ = candles.back();
     return result;
@@ -76,6 +67,6 @@ std::optional<StrategyOrderRequest> BreakoutStrategy::ProcessNewCandles(
     return std::nullopt;
   }
 
-  return ProcessLastCandles(new_prev, *prev_candle_, min_volume_);
+  return ProcessLastCandles(new_prev, *prev_candle_);
 }
 }  // namespace stonks::finance

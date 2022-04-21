@@ -36,7 +36,7 @@ pplx::task<void> BreakoutStrategyService::Start() {
       const auto symbol =
           finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"};
       const auto interval = finance::Interval::k1Minute;
-      auto strategy = finance::BreakoutStrategy{0};
+      auto strategy = finance::BreakoutStrategy{};
       auto stream = finance::BufferedCandlesStream{
           finance::CandlesStream{symbol, interval,
                                  utils::GetUnixTime() - std::chrono::days{2},
