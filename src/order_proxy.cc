@@ -104,8 +104,7 @@ double CalcQuoteBalanceChange(const Order &order) {
     return 0;
   }
 
-  const auto value =
-      filled_order_info->executed_amount * filled_order_info->price;
+  const auto value = filled_order_info->executed_quote_amount;
 
   if (order.buy_or_sell == stonks::finance::BuyOrSell::kSell) {
     return value;

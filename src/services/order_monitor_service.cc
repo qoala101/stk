@@ -64,6 +64,8 @@ OrderMonitorService::OrderMonitorService()
     : order_monitor_{HandleOrdersUpdated} {}
 
 pplx::task<void> OrderMonitorService::Start() {
+  order_monitor_.Start();
+
   http_listener_ = web::http::experimental::listener::http_listener{
       "http://localhost:6506/api/order_monitor"};
   const auto post_request_handler =
@@ -75,5 +77,8 @@ pplx::task<void> OrderMonitorService::Start() {
   return http_listener_.open();
 }
 
-pplx::task<void> OrderMonitorService::Stop() { return http_listener_.close(); }
+pplx::task<void> OrderMonitorService::Stop() {
+  order_monitor_.Stop();
+  return http_listener_.close();
+}
 }  // namespace stonks

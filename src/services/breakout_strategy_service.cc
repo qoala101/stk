@@ -2,6 +2,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <gsl/util>
+
 #include "breakout_strategy.h"
 #include "buffered_candles_stream.h"
 #include "candles_stream.h"
@@ -27,24 +29,27 @@ void SendOrderRequest(finance::Symbol symbol,
 }
 }  // namespace
 
+BreakoutStrategyService::BreakoutStrategyService(finance::Symbol symbol)
+    : symbol_{std::move(symbol)} {}
+
 pplx::task<void> BreakoutStrategyService::Start() {
   service_state_ = true;
 
-  return pplx::create_task([&thread = thread_,
+  return pplx::create_task([&symbol = symbol_, &thread = thread_,
                             &service_state = service_state_]() {
-    thread = std::thread{[&service_state]() {
-      const auto symbol =
-          finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"};
+    thread = std::thread{[&symbol, &service_state]() {
       const auto interval = finance::Interval::k1Minute;
       auto strategy = finance::BreakoutStrategy{};
       auto stream = finance::BufferedCandlesStream{
           finance::CandlesStream{symbol, interval,
-                                 utils::GetUnixTime() - std::chrono::days{2},
-                                 utils::GetUnixTime() - std::chrono::days{1}},
+                                 utils::GetUnixTime() - std::chrono::hours{5},
+                                 utils::GetUnixTime()},
           1};
 
       while (service_state) {
-        std::this_thread::sleep_for(std::chrono::milliseconds{500});
+        const auto sleep_finally = gsl::finally(
+            []() { std::this_thread::sleep_for(std::chrono::seconds{1}); });
+
         const auto new_candles = stream.GetNextCandles();
 
         if (new_candles.empty()) {

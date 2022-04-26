@@ -112,10 +112,10 @@ std::optional<OrderError> PlaceOrder(
       order_request.symbol.base_asset + order_request.symbol.quote_asset,
       order_request.buy_or_sell,
       ConvertOrderTypeToBinanceOrderType(order_request.order_type),
-      binance::OrderTimeInForce::kGoodTillCanceled,
-      order_request.amount.GetAmount(), std::nullopt,
+      std::nullopt, order_request.amount.GetAmount(), 11,
       order_request.order_type.GetPrice(),
-      utils::ConvertUuidToString(order_request.order_uuid));
+      utils::ConvertUuidToString(order_request.order_uuid), std::nullopt,
+      std::nullopt, std::nullopt, std::nullopt, 10000);
 
   if (std::holds_alternative<binance::PlaceOrderAcknowledgement>(result)) {
     return std::nullopt;
@@ -141,6 +141,22 @@ std::optional<OrderInfo> GetOrderInfo(const Symbol &symbol,
   }
 
   return ParseOrderInfoFromBinanceOrderInfo(*order);
+}
+
+bool IsOrderStatusFinal(OrderStatus order_status) {
+  switch (order_status) {
+    case OrderStatus::kInvalid:
+    case OrderStatus::kFilled:
+    case OrderStatus::kCancelled:
+    case OrderStatus::kRejected:
+    case OrderStatus::kExpired:
+      return true;
+      break;
+    default:
+      break;
+  }
+
+  return false;
 }
 
 std::optional<double> GetCurrentAverageSymbolPrice(const Symbol &symbol) {

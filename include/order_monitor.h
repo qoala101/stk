@@ -2,6 +2,7 @@
 #define STONKS_ORDER_MONITOR_H_
 
 #include <atomic>
+#include <condition_variable>
 #include <functional>
 #include <shared_mutex>
 #include <thread>
@@ -21,7 +22,20 @@ class OrderMonitor {
    */
   explicit OrderMonitor(OrdersUpdatedCallback orders_updated_callback);
 
+  /**
+   * @brief Stops monitoring thread.
+   */
   ~OrderMonitor();
+
+  /**
+   * @brief Starts monitoring thread.
+   */
+  void Start();
+
+  /**
+   * @brief Stops monitoring thread.
+   */
+  void Stop();
 
   /**
    * @brief Adds requested orders to monitoring.
@@ -36,10 +50,13 @@ class OrderMonitor {
 
  private:
   OrdersUpdatedCallback orders_updated_callback_{};
+
   std::vector<OrderMonitorOrderState> monitored_orders_{};
-  std::shared_mutex monitored_orders_mutex_{};
-  std::atomic_bool keep_monitoring_{};
+  std::mutex monitored_orders_mutex_{};
+  std::condition_variable monitored_orders_cond_var_{};
+
   std::thread monitor_thread_{};
+  std::atomic_bool keep_monitoring_{};
 };
 }  // namespace stonks::finance
 

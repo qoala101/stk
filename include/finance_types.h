@@ -83,6 +83,7 @@ struct OrderInfo {
   double requested_amount{};
   double executed_amount{};
   double price{};
+  double executed_quote_amount{};
 };
 
 struct OrderError {

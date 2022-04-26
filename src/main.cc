@@ -7,9 +7,11 @@
 
 #include "breakout_strategy_service.h"
 #include "finance_enums.h"
+#include "finance_types.h"
 #include "get_candle_chart_data_service.h"
 #include "get_file_service.h"
 #include "get_symbols_service.h"
+#include "order_monitor_service.h"
 #include "order_proxy_service.h"
 #include "utils.h"
 
@@ -17,7 +19,8 @@ int main(int, const char *[]) {
   using ServiceVariant =
       std::variant<stonks::GetFileService, stonks::GetSymbolsService,
                    stonks::GetCandleChartDataService,
-                   stonks::BreakoutStrategyService, stonks::OrderProxyService>;
+                   stonks::BreakoutStrategyService, stonks::OrderProxyService,
+                   stonks::OrderMonitorService>;
 
   auto services = std::vector<std::unique_ptr<ServiceVariant>>{};
 
@@ -27,14 +30,37 @@ int main(int, const char *[]) {
   services.emplace_back(std::make_unique<ServiceVariant>())
       ->emplace<stonks::GetSymbolsService>();
 
+  // services.emplace_back(std::make_unique<ServiceVariant>())
+  //     ->emplace<stonks::GetCandleChartDataService>();
+
   services.emplace_back(std::make_unique<ServiceVariant>())
-      ->emplace<stonks::GetCandleChartDataService>();
+      ->emplace<stonks::OrderMonitorService>();
 
   services.emplace_back(std::make_unique<ServiceVariant>())
       ->emplace<stonks::OrderProxyService>();
 
-  services.emplace_back(std::make_unique<ServiceVariant>())
-      ->emplace<stonks::BreakoutStrategyService>();
+  const auto symbols = std::vector<stonks::finance::Symbol>{
+      // stonks::finance::Symbol{.base_asset = "BTC", .quote_asset = "USDT"},
+      stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "BNB", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "NEO", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "LTC", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "QTUM", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "ADA", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "XRP", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "EOS", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "TUSD", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "IOTA", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "XLM", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "ONT", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "TRX", .quote_asset = "USDT"},
+      // stonks::finance::Symbol{.base_asset = "ETC", .quote_asset = "USDT"}
+  };
+
+  for (const auto &symbol : symbols) {
+    services.emplace_back(std::make_unique<ServiceVariant>())
+        ->emplace<stonks::BreakoutStrategyService>(symbol);
+  }
 
   for (auto &service : services) {
     std::visit([](auto &service) { service.Start(); }, *service);

@@ -14,8 +14,27 @@
     var strategy_chart_options;
 
     function OnChartsLoaded() {
+      strategy_chart_options = {
+        hAxis: { title: "Time" },
+        series: {
+          0: { type: "area", targetAxisIndex: 0 }
+        },
+        height: 800
+      };
+
+      $("#apply_button").click(OnApplyButtonClicked);
+    }
+
+    function OnApplyButtonClicked() {
+      var balance_asset = $("#balance_asset_select").val();
+      var second_asset = $("#second_asset_select").val();
+
+      strategy_chart_options.title = balance_asset + second_asset;
+
       $.ajax({
-        url: "http://localhost:6506/api/order_proxy/balance_history"
+        url: "http://localhost:6506/api/order_proxy/balance_history" +
+          "?balance_asset=" + balance_asset +
+          "&second_asset=" + second_asset
       }).done(OnStrategyChartInitialDataReceived);
     }
 
@@ -27,21 +46,6 @@
 
     function OnStrategyChartInitialDataReceived(response) {
       strategy_chart_data = new google.visualization.DataTable(response);
-
-      strategy_chart_options = {
-        title: "ETHUSDT",
-        hAxis: { title: "TIme" },
-        series: {
-          0: { type: "area", targetAxisIndex: 0 }
-        },
-        vAxes: {
-          0: {
-            title: 'USDT'
-          }
-        },
-        height: 800
-      };
-
       strategy_chart = new google.visualization.ComboChart(document.getElementById("strategy_chart_div"));
       google.visualization.events.addListener(strategy_chart, "ready", OnStrategyChartReady);
       strategy_chart.draw(strategy_chart_data, strategy_chart_options);
@@ -71,6 +75,31 @@
 </head>
 
 <body>
+  <div>
+    <select id="second_asset_select">
+      <option value="BTC">BTC</option>
+      <option value="ETH">ETH</option>
+      <option value="BNB">BNB</option>
+      <option value="NEO">NEO</option>
+      <option value="LTC">LTC</option>
+      <option value="QTUM">QTUM</option>
+      <option value="ADA">ADA</option>
+      <option value="XRP">XRP</option>
+      <option value="EOS">EOS</option>
+      <option value="TUSD">TUSD</option>
+      <option value="IOTA">IOTA</option>
+      <option value="XLM">XLM</option>
+      <option value="ONT">ONT</option>
+      <option value="TRX">TRX</option>
+      <option value="ETC">ETC</option>
+    </select>
+
+    <select id="balance_asset_select">
+      <option value="USDT">USDT</option>
+    </select>
+
+    <button id="apply_button">Apply</button>
+  </div>
   <div id="strategy_chart_div"></div>
 </body>
 

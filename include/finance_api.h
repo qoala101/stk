@@ -45,6 +45,11 @@ std::optional<OrderError> PlaceOrder(
 std::optional<OrderInfo> GetOrderInfo(const Symbol &symbol,
                                       boost::uuids::uuid uuid);
 
+/**
+ * @brief Check whether order should not be monitored further.
+ */
+bool IsOrderStatusFinal(OrderStatus order_status);
+
 std::optional<double> GetCurrentAverageSymbolPrice(const Symbol &symbol);
 }  // namespace stonks::finance
 

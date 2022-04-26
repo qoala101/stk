@@ -430,7 +430,9 @@ std::optional<finance::OrderUpdate> ParseFromJson(
                   GetDoublePropertyAsDouble(json, "requested_amount"),
               .executed_amount =
                   GetDoublePropertyAsDouble(json, "executed_amount"),
-              .price = GetDoublePropertyAsDouble(json, "price")}};
+              .price = GetDoublePropertyAsDouble(json, "price"),
+              .executed_quote_amount =
+                  GetDoublePropertyAsDouble(json, "executed_quote_amount")}};
     }
   } catch (const std::exception& exception) {
     spdlog::error("Parse from JSON: {}", exception.what());
@@ -459,6 +461,8 @@ web::json::value ConvertToJson(const finance::OrderUpdate& data) {
           json["requested_amount"] = ConvertToJson(variant.requested_amount);
           json["executed_amount"] = ConvertToJson(variant.executed_amount);
           json["price"] = ConvertToJson(variant.price);
+          json["executed_quote_amount"] =
+              ConvertToJson(variant.executed_quote_amount);
           return;
         }
       },

@@ -48,8 +48,22 @@ void HandleGetRequest(const web::http::http_request &request,
   }
 
   if (relative_uri == "/balance_history") {
-    const auto balance_history =
-        order_proxy.CalcBalanceHistory("USDT", std::nullopt, drop_first);
+    const auto balance_asset = params_map.find("balance_asset");
+
+    if (balance_asset == params_map.end()) {
+      spdlog::error("balance_asset parameter is missing.");
+      request.reply(web::http::status_codes::BadRequest);
+      return;
+    }
+
+    const auto second_asset_iter = params_map.find("second_assset");
+    const auto second_assset =
+        (second_asset_iter != params_map.end())
+            ? second_asset_iter->second
+            : std::optional<std::string_view>{std::nullopt};
+
+    const auto balance_history = order_proxy.CalcBalanceHistory(
+        balance_asset->second, second_assset, drop_first);
     request.reply(web::http::status_codes::OK,
                   google_charts::ConvertToJson(balance_history));
     return;
