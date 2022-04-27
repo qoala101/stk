@@ -13,15 +13,15 @@
 
 namespace stonks::finance {
 /**
- * @remark If end time is specified, call would block untill all the data up
+ * @remark If end time is specified, call would block until all the data up
  * till the end time is received.
- * @remark If end time is not specified, call would block untill all the data up
- * till the current moment is recived.
+ * @remark If end time is not specified, call would block until all the data up
+ * till the current moment is received.
  * @remark Result would only contain candles whose both open and close time
  * entirely fit in the period.
  * @remark If data for particular candle is missing on server, candle
  * would have only open and close time.
- * @return Nullopt if server error occured at any time. Empty vector if none of
+ * @return Nullopt if server error ocurred at any time. Empty vector if none of
  * the candles fully match the period.
  */
 std::optional<std::vector<Candle>> GetCandles(
@@ -50,7 +50,9 @@ std::optional<OrderInfo> GetOrderInfo(const Symbol &symbol,
  */
 bool IsOrderStatusFinal(OrderStatus order_status);
 
-std::optional<double> GetCurrentAverageSymbolPrice(const Symbol &symbol);
+std::optional<double> GetAverageSymbolPrice(const Symbol &symbol);
+
+std::optional<double> GetSymbolPrice(const Symbol &symbol);
 }  // namespace stonks::finance
 
 #endif  // STONKS_FINANCE_API_H_

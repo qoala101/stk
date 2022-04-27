@@ -223,7 +223,7 @@ std::optional<std::vector<Kline>> GetKlines(
   return json::ParseFromJson<std::vector<Kline>>(*response);
 }
 
-std::optional<AverageSymbolPrice> GetCurrentAverageSymbolPrice(
+std::optional<AverageSymbolPrice> GetAverageSymbolPrice(
     std::string_view symbol) {
   const auto response =
       rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
@@ -237,5 +237,21 @@ std::optional<AverageSymbolPrice> GetCurrentAverageSymbolPrice(
   }
 
   return json::ParseFromJson<AverageSymbolPrice>(*response);
+}
+
+std::optional<SymbolPrice> GetSymbolPrice(
+    std::optional<std::string_view> symbol) {
+  const auto response =
+      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+          .AppendUri("/api/v3/ticker/price")
+          .AddParameter("symbol", symbol)
+          .SendAndGetResponse();
+
+  if (!response.has_value()) {
+    spdlog::error("Cannot get symbol price");
+    return std::nullopt;
+  }
+
+  return json::ParseFromJson<SymbolPrice>(*response);
 }
 }  // namespace stonks::binance

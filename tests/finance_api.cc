@@ -180,14 +180,13 @@ TEST(FinanceApi, GetCandlesNoEndTime) {
 //   EXPECT_EQ(order_info->uuid, last_order_uuid);
 // }
 
-TEST(FinanceApi, GetCurrentAverageSymbolPriceGood) {
-  const auto price =
-      stonks::finance::GetCurrentAverageSymbolPrice(kDefaultSymbol);
+TEST(FinanceApi, GetAverageSymbolPriceGood) {
+  const auto price = stonks::finance::GetAverageSymbolPrice(kDefaultSymbol);
   ASSERT_TRUE(price.has_value());
 }
 
-TEST(FinanceApi, GetCurrentAverageSymbolPriceBad) {
+TEST(FinanceApi, GetAverageSymbolPriceBad) {
   const auto price =
-      stonks::finance::GetCurrentAverageSymbolPrice(stonks::finance::Symbol{});
+      stonks::finance::GetAverageSymbolPrice(stonks::finance::Symbol{});
   ASSERT_FALSE(price.has_value());
 }

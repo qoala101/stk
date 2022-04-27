@@ -13,6 +13,7 @@ add_executable(unittests
   candles_stream.cc
   buffered_candles_stream.cc
   utils.cc
+  prices_stream.cc
 )
 target_link_libraries(unittests PRIVATE libstonks)
 target_link_libraries(unittests PRIVATE spdlog::spdlog)

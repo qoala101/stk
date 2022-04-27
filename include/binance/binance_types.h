@@ -65,13 +65,18 @@ struct Kline {
 };
 
 struct ApiError {
-  int64_t code;
-  std::string message;
+  int64_t code{};
+  std::string message{};
 };
 
 struct AverageSymbolPrice {
-  int64_t mins;
-  double price;
+  int64_t mins{};
+  double price{};
+};
+
+struct SymbolPrice {
+  std::string symbol{};
+  double price{};
 };
 }  // namespace stonks::binance
 

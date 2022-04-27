@@ -56,6 +56,9 @@ std::optional<binance::AverageSymbolPrice> ParseFromJson(
     const web::json::value &json);
 
 template <>
+std::optional<binance::SymbolPrice> ParseFromJson(const web::json::value &json);
+
+template <>
 std::optional<finance::Symbol> ParseFromJson(const web::json::value &json);
 web::json::value ConvertToJson(const finance::Symbol &data);
 

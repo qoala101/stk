@@ -159,12 +159,24 @@ bool IsOrderStatusFinal(OrderStatus order_status) {
   return false;
 }
 
-std::optional<double> GetCurrentAverageSymbolPrice(const Symbol &symbol) {
-  const auto result = binance::GetCurrentAverageSymbolPrice(symbol.base_asset +
-                                                            symbol.quote_asset);
+std::optional<double> GetAverageSymbolPrice(const Symbol &symbol) {
+  const auto result =
+      binance::GetAverageSymbolPrice(symbol.base_asset + symbol.quote_asset);
 
   if (!result.has_value()) {
-    spdlog::error("Cannot get current average symbol price");
+    spdlog::error("Cannot get average symbol price");
+    return std::nullopt;
+  }
+
+  return result->price;
+}
+
+std::optional<double> GetSymbolPrice(const Symbol &symbol) {
+  const auto result =
+      binance::GetSymbolPrice(symbol.base_asset + symbol.quote_asset);
+
+  if (!result.has_value()) {
+    spdlog::error("Cannot get symbol price");
     return std::nullopt;
   }
 

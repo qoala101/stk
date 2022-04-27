@@ -49,7 +49,7 @@ class OrderMonitor {
   void ProcessOrderRequest(const OrderProxyOrderRequest &order_request);
 
  private:
-  OrdersUpdatedCallback orders_updated_callback_{};
+  const OrdersUpdatedCallback orders_updated_callback_{};
 
   std::vector<OrderMonitorOrderState> monitored_orders_{};
   std::mutex monitored_orders_mutex_{};

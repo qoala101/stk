@@ -19,6 +19,7 @@ add_library(libstonks
   buffered_candles_stream.cc
   breakout_strategy.cc
   order_monitor.cc
+  prices_stream.cc
 
   binance/binance_api.cc
   binance/binance_settings.cc

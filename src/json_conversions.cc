@@ -303,6 +303,22 @@ std::optional<binance::AverageSymbolPrice> ParseFromJson(
 }
 
 template <>
+std::optional<binance::SymbolPrice> ParseFromJson(
+    const web::json::value& json) {
+  try {
+    return binance::SymbolPrice{
+        .symbol = GetStringPropertyAsString(json, "symbol"),
+        .price = GetStringPropertyAsDouble(json, "price")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+template <>
 std::optional<finance::Symbol> ParseFromJson(const web::json::value& json) {
   try {
     return finance::Symbol{
