@@ -39,7 +39,7 @@ void PricesStream::Start() {
       }
 
       {
-        auto lock = std::unique_lock{prices_mutex};
+        auto lock = std::lock_guard{prices_mutex};
 
         prices.emplace_back(
             TimeDouble{.time = utils::GetUnixTime(), .value = *price});
@@ -53,16 +53,20 @@ void PricesStream::Stop() {
   keep_alive_.store(false, std::memory_order::relaxed);
 }
 
-std::vector<TimeDouble> PricesStream::GetPrices(int drop_first) {
-  const auto check_if_enough_prices = [drop_first, &prices = prices_]() {
-    return prices.size() > drop_first;
+std::vector<TimeDouble> PricesStream::GetNextPrices() {
+  const auto check_if_has_prices = [&prices = prices_]() {
+    return !prices.empty();
   };
+
+  auto prices = std::vector<TimeDouble>{};
 
   {
     auto lock = std::unique_lock{prices_mutex_};
-    prices_cond_var_.wait(lock, check_if_enough_prices);
+    prices_cond_var_.wait(lock, check_if_has_prices);
 
-    return prices_ | ranges::views::drop(drop_first) | ranges::to_vector;
+    prices.swap(prices_);
   }
+
+  return prices;
 }
 }  // namespace stonks::finance

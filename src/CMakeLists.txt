@@ -20,6 +20,7 @@ add_library(libstonks
   breakout_strategy.cc
   order_monitor.cc
   prices_stream.cc
+  mean_average_strategy.cc
 
   binance/binance_api.cc
   binance/binance_settings.cc
@@ -30,6 +31,7 @@ add_library(libstonks
   services/breakout_strategy_service.cc
   services/order_proxy_service.cc
   services/order_monitor_service.cc
+  services/mean_average_strategy_service.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include)

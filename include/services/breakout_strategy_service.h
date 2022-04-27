@@ -16,9 +16,9 @@ class BreakoutStrategyService {
   pplx::task<void> Stop();
 
  private:
-  finance::Symbol symbol_;
+  const finance::Symbol symbol_{};
   std::thread thread_{};
-  bool service_state_{};
+  std::atomic_bool service_state_{};
 };
 }  // namespace stonks
 

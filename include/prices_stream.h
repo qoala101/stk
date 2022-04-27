@@ -20,7 +20,7 @@ class PricesStream {
   void Start();
   void Stop();
 
-  std::vector<TimeDouble> GetPrices(int drop_first = 0);
+  std::vector<TimeDouble> GetNextPrices();
 
  private:
   const Symbol symbol_{};

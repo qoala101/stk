@@ -19,18 +19,10 @@ TEST(PricesStream, Stream) {
 
   std::this_thread::sleep_for(std::chrono::seconds{5});
 
-  auto prices = stream.GetPrices();
+  auto prices = stream.GetNextPrices();
   EXPECT_FALSE(prices.empty());
-
-  auto old_size = prices.size();
-  prices |= ranges::actions::push_back(stream.GetPrices(prices.size()));
-  EXPECT_GT(prices.size(), old_size);
-
-  old_size = prices.size();
-  prices |= ranges::actions::push_back(stream.GetPrices(prices.size()));
-  EXPECT_GT(prices.size(), old_size);
-
-  old_size = prices.size();
-  prices |= ranges::actions::push_back(stream.GetPrices(prices.size()));
-  EXPECT_GT(prices.size(), old_size);
+  prices = stream.GetNextPrices();
+  EXPECT_FALSE(prices.empty());
+  prices = stream.GetNextPrices();
+  EXPECT_FALSE(prices.empty());
 }

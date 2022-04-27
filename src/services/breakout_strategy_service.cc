@@ -33,7 +33,7 @@ BreakoutStrategyService::BreakoutStrategyService(finance::Symbol symbol)
     : symbol_{std::move(symbol)} {}
 
 pplx::task<void> BreakoutStrategyService::Start() {
-  service_state_ = true;
+  service_state_.store(true, std::memory_order::relaxed);
 
   return pplx::create_task([&symbol = symbol_, &thread = thread_,
                             &service_state = service_state_]() {
@@ -46,7 +46,7 @@ pplx::task<void> BreakoutStrategyService::Start() {
                                  utils::GetUnixTime()},
           1};
 
-      while (service_state) {
+      while (service_state.load(std::memory_order::relaxed)) {
         const auto sleep_finally = gsl::finally(
             []() { std::this_thread::sleep_for(std::chrono::seconds{1}); });
 
@@ -68,7 +68,7 @@ pplx::task<void> BreakoutStrategyService::Start() {
 }
 
 pplx::task<void> BreakoutStrategyService::Stop() {
-  service_state_ = false;
+  service_state_.store(false, std::memory_order::relaxed);
 
   return pplx::create_task([&thread = thread_]() { thread.join(); });
 }
