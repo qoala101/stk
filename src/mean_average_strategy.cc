@@ -14,6 +14,11 @@ std::optional<StrategyOrderRequest> MeanAverageStrategy::ProcessNewPrices(
   return std::nullopt;
 }
 
+std::optional<StrategyOrderRequest> MeanAverageStrategy::ProcessOrderUpdate(
+    const OrderProxyToStrategyOrderUpdate &order_update) {
+  return std::nullopt;
+}
+
 std::vector<TimeDouble> MeanAverageStrategy::GetAllPrices() const {
   {
     auto lock = std::lock_guard{prices_mutex_};

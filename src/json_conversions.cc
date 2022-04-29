@@ -33,6 +33,15 @@ double GetStringElementAsDouble(const web::json::value& json, const int index) {
   return std::stod(json.at(index).as_string());
 }
 
+int GetIntPropertyAsInt(const web::json::value& json,
+                        const std::string_view property_name) {
+  return json.at(std::string{property_name}).as_number().to_int32();
+}
+
+int GetIntElementAsInt(const web::json::value& json, const int index) {
+  return json.at(index).as_number().to_int32();
+}
+
 int64_t GetInt64PropertyAsInt64(const web::json::value& json,
                                 const std::string_view property_name) {
   return json.at(std::string{property_name}).as_number().to_int64();
@@ -354,6 +363,11 @@ std::optional<finance::StrategyData> ParseFromJson(
               .expected_price =
                   GetDoublePropertyAsDouble(json, "expected_price")}};
     }
+
+    if (type == "MeanAverageStrategyData") {
+      return finance::StrategyData{.strategy_data =
+                                       finance::MeanAverageStrategyData{}};
+    }
   } catch (const std::exception& exception) {
     spdlog::error("Parse from JSON: {}", exception.what());
   } catch (...) {
@@ -374,6 +388,11 @@ web::json::value ConvertToJson(const finance::StrategyData& data) {
           json["last_candle_close_time"] =
               ConvertToJson(variant.last_candle_close_time);
           json["expected_price"] = ConvertToJson(variant.expected_price);
+          return;
+        }
+
+        if constexpr (std::is_same_v<T, finance::MeanAverageStrategyData>) {
+          json["typename"] = ConvertToJson("MeanAverageStrategyData");
           return;
         }
       },
@@ -526,14 +545,20 @@ std::optional<finance::Amount> ParseFromJson(const web::json::value& json) {
   try {
     const auto type = GetStringPropertyAsString(json, "typename");
 
-    if (type == "SpecificAmount") {
-      return finance::Amount{
-          .amount = finance::SpecificAmount{
-              .amount = GetDoublePropertyAsDouble(json, "amount")}};
-    }
-
     if (type == "UnspecifiedAmount") {
       return finance::Amount{.amount = finance::UnspecifiedAmount{}};
+    }
+
+    if (type == "BaseAmount") {
+      return finance::Amount{
+          .amount = finance::BaseAmount{
+              .base_amount = GetDoublePropertyAsDouble(json, "base_amount")}};
+    }
+
+    if (type == "QuoteAmount") {
+      return finance::Amount{
+          .amount = finance::QuoteAmount{
+              .quote_amount = GetDoublePropertyAsDouble(json, "quote_amount")}};
     }
   } catch (const std::exception& exception) {
     spdlog::error("Parse from JSON: {}", exception.what());
@@ -550,14 +575,20 @@ web::json::value ConvertToJson(const finance::Amount& data) {
       [&json](const auto& variant) {
         using T = std::decay_t<decltype(variant)>;
 
-        if constexpr (std::is_same_v<T, finance::SpecificAmount>) {
-          json["typename"] = ConvertToJson("SpecificAmount");
-          json["amount"] = ConvertToJson(variant.amount);
+        if constexpr (std::is_same_v<T, finance::UnspecifiedAmount>) {
+          json["typename"] = ConvertToJson("UnspecifiedAmount");
           return;
         }
 
-        if constexpr (std::is_same_v<T, finance::UnspecifiedAmount>) {
-          json["typename"] = ConvertToJson("UnspecifiedAmount");
+        if constexpr (std::is_same_v<T, finance::BaseAmount>) {
+          json["typename"] = ConvertToJson("BaseAmount");
+          json["base_amount"] = ConvertToJson(variant.base_amount);
+          return;
+        }
+
+        if constexpr (std::is_same_v<T, finance::QuoteAmount>) {
+          json["typename"] = ConvertToJson("QuoteAmount");
+          json["quote_amount"] = ConvertToJson(variant.quote_amount);
           return;
         }
       },
@@ -577,6 +608,7 @@ std::optional<finance::StrategyOrderRequest> ParseFromJson(
     const web::json::value& json) {
   try {
     return finance::StrategyOrderRequest{
+        .order_uuid = GetStringPropertyAsUuid(json, "order_uuid"),
         .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
         .buy_or_sell =
             GetStringPropertyAsEnum<finance::BuyOrSell>(json, "buy_or_sell"),
@@ -596,6 +628,7 @@ std::optional<finance::StrategyOrderRequest> ParseFromJson(
 
 web::json::value ConvertToJson(const finance::StrategyOrderRequest& data) {
   auto json = web::json::value{};
+  json["order_uuid"] = ConvertToJson(data.order_uuid);
   json["symbol"] = ConvertToJson(data.symbol);
   json["buy_or_sell"] = ConvertToJson(data.buy_or_sell);
   json["amount"] = ConvertToJson(data.amount);
@@ -632,6 +665,30 @@ web::json::value ConvertToJson(const finance::OrderProxyOrderRequest& data) {
   json["buy_or_sell"] = ConvertToJson(data.buy_or_sell);
   json["amount"] = ConvertToJson(data.amount);
   json["order_type"] = ConvertToJson(data.order_type);
+  return json;
+}
+
+template <>
+std::optional<finance::StrategySubscribeToOrderUpdatesRequest> ParseFromJson(
+    const web::json::value& json) {
+  try {
+    return finance::StrategySubscribeToOrderUpdatesRequest{
+        .order_uuid = GetStringPropertyAsUuid(json, "order_uuid"),
+        .subscriber_uri = GetStringPropertyAsString(json, "subscriber_uri")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(
+    const finance::StrategySubscribeToOrderUpdatesRequest& data) {
+  auto json = web::json::value{};
+  json["order_uuid"] = ConvertToJson(data.order_uuid);
+  json["subscriber_uri"] = ConvertToJson(data.subscriber_uri);
   return json;
 }
 

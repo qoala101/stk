@@ -49,9 +49,47 @@ std::optional<OrderStatus> OrderUpdate::GetOrderStatus() const {
       order_update);
 }
 
-std::optional<double> Amount::GetAmount() const { return std::nullopt; }
+std::optional<double> Amount::GetBaseAmount() const {
+  return std::visit(
+      [](const auto &variant) -> std::optional<double> {
+        using T = std::decay_t<decltype(variant)>;
 
-std::optional<double> OrderType::GetPrice() const { return std::nullopt; }
+        if constexpr (std::is_same_v<T, finance::BaseAmount>) {
+          return variant.base_amount;
+        }
+
+        return std::nullopt;
+      },
+      amount);
+}
+
+std::optional<double> Amount::GetQuoteAmount() const {
+  return std::visit(
+      [](const auto &variant) -> std::optional<double> {
+        using T = std::decay_t<decltype(variant)>;
+
+        if constexpr (std::is_same_v<T, finance::QuoteAmount>) {
+          return variant.quote_amount;
+        }
+
+        return std::nullopt;
+      },
+      amount);
+}
+
+std::optional<double> OrderType::GetPrice() const {
+  return std::visit(
+      [](const auto &variant) -> std::optional<double> {
+        using T = std::decay_t<decltype(variant)>;
+
+        if constexpr (std::is_same_v<T, finance::LimitOrderType>) {
+          return variant.price;
+        }
+
+        return std::nullopt;
+      },
+      order_type);
+}
 
 std::optional<OrderInfo> Order::GetLastFilledOrderInfo() const {
   if (order_updates.empty()) {

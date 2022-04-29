@@ -105,6 +105,12 @@ std::optional<finance::OrderProxyOrderRequest> ParseFromJson(
 web::json::value ConvertToJson(const finance::OrderProxyOrderRequest &data);
 
 template <>
+std::optional<finance::StrategySubscribeToOrderUpdatesRequest> ParseFromJson(
+    const web::json::value &json);
+web::json::value ConvertToJson(
+    const finance::StrategySubscribeToOrderUpdatesRequest &data);
+
+template <>
 std::optional<finance::OrderProxyMonitorRequest> ParseFromJson(
     const web::json::value &json);
 web::json::value ConvertToJson(const finance::OrderProxyMonitorRequest &data);

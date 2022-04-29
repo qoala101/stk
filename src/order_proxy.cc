@@ -2,34 +2,39 @@
 
 #include <spdlog/spdlog.h>
 
+#include <range/v3/algorithm/find_if.hpp>
 #include <range/v3/algorithm/for_each.hpp>
 #include <range/v3/to_container.hpp>
 #include <range/v3/view/drop.hpp>
 #include <range/v3/view/filter.hpp>
 #include <range/v3/view/transform.hpp>
 
+#include "finance_api.h"
 #include "utils.h"
 
 namespace stonks::finance {
 Order OrderProxy::RecordStrategyOrderRequest(
     const StrategyOrderRequest &strategy_order_request) {
-  auto order = (Order *){nullptr};
+  auto new_order = Order{};
 
   {
     const auto lock = std::lock_guard{orders_mutex_};
 
-    order = &orders_.emplace_back();
-    order->request_time = utils::GetUnixTime();
-    order->uuid = utils::GenerateUuid();
-    order->symbol = strategy_order_request.symbol;
-    order->buy_or_sell = strategy_order_request.buy_or_sell;
-    order->amount = strategy_order_request.amount;
-    order->order_type = strategy_order_request.order_type;
-    order->strategy_data = strategy_order_request.strategy_data;
+    auto &order = orders_.emplace_back();
+    order.request_time = utils::GetUnixTime();
+    order.uuid = strategy_order_request.order_uuid;
+    order.symbol = strategy_order_request.symbol;
+    order.buy_or_sell = strategy_order_request.buy_or_sell;
+    order.amount = strategy_order_request.amount;
+    order.order_type = strategy_order_request.order_type;
+    order.strategy_data = strategy_order_request.strategy_data;
+
+    new_order = order;
+
+    orders_cond_var_.notify_all();
   }
 
-  orders_cond_var_.notify_all();
-  return *order;
+  return new_order;
 }
 
 void OrderProxy::UpdateOrders(
@@ -54,9 +59,20 @@ void OrderProxy::UpdateOrders(
       new_order_update.received_time = utils::GetUnixTime();
       new_order_update.order_update = order_update.order_update;
     }
+
+    orders_cond_var_.notify_all();
   }
 
-  orders_cond_var_.notify_all();
+  if (order_update_received_callback_) {
+    for (const auto &order_update : order_updates) {
+      order_update_received_callback_(order_update);
+    }
+  }
+}
+
+void OrderProxy::SetOrderUpdateReceivedCallback(
+    OrderUpdateReceivedCallback order_update_received_callback) {
+  order_update_received_callback_ = std::move(order_update_received_callback);
 }
 
 std::vector<Order> OrderProxy::GetAllOrders(int drop_first) const {
@@ -70,6 +86,25 @@ std::vector<Order> OrderProxy::GetAllOrders(int drop_first) const {
 
     return orders_ | ranges::views::drop(drop_first) | ranges::to_vector;
   }
+}
+
+std::optional<Order> OrderProxy::FindOrderByUuid(
+    boost::uuids::uuid order_uuid) const {
+  const auto search_by_uuid = [order_uuid](const Order &order) {
+    return order.uuid == order_uuid;
+  };
+
+  {
+    const auto lock = std::lock_guard{orders_mutex_};
+
+    const auto order = ranges::find_if(orders_, search_by_uuid);
+
+    if (order != orders_.end()) {
+      return *order;
+    }
+  }
+
+  return std::nullopt;
 }
 
 std::vector<Order> OrderProxy::GetOpenOrders() const {

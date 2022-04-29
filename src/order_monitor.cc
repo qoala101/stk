@@ -43,7 +43,7 @@ void OrderMonitor::Start() {
             auto stop_monitoring_orders =
                 std::vector<gsl::not_null<const OrderMonitorOrderState *>>{};
 
-            for (const auto &monitored_order : monitored_orders) {
+            for (auto &monitored_order : monitored_orders) {
               const auto sleep_finally = gsl::finally([]() {
                 std::this_thread::sleep_for(std::chrono::seconds{1});
               });
@@ -69,36 +69,39 @@ void OrderMonitor::Start() {
                 auto &order_update = order_updates.emplace_back();
                 order_update.order_uuid = monitored_order.order_uuid;
                 order_update.order_update.order_update = *order_info;
+
+                if (IsOrderStatusFinal(order_info->order_status)) {
+                  stop_monitoring_orders.emplace_back(&monitored_order);
+                  continue;
+                }
               }
 
-              if (IsOrderStatusFinal(order_info->order_status)) {
-                stop_monitoring_orders.emplace_back(&monitored_order);
-              }
-
-              const auto check_if_order_marked_to_be_unmonitored =
-                  [&stop_monitoring_orders](
-                      const OrderMonitorOrderState &monitored_order) {
-                    const auto compare_pointers =
-                        [&monitored_order](
-                            const gsl::not_null<const OrderMonitorOrderState *>
-                                unmonitored_order) {
-                          return unmonitored_order == &monitored_order;
-                        };
-
-                    const auto marked_to_be_unmonitored =
-                        std::find_if(stop_monitoring_orders.begin(),
-                                     stop_monitoring_orders.end(),
-                                     compare_pointers) !=
-                        stop_monitoring_orders.end();
-                    return marked_to_be_unmonitored;
-                  };
-
-              monitored_orders.erase(
-                  std::remove_if(monitored_orders.begin(),
-                                 monitored_orders.end(),
-                                 check_if_order_marked_to_be_unmonitored),
-                  monitored_orders.end());
+              monitored_order.last_order_update =
+                  OrderUpdate{.order_update = *order_info};
             }
+
+            const auto check_if_order_marked_to_be_unmonitored =
+                [&stop_monitoring_orders](
+                    const OrderMonitorOrderState &monitored_order) {
+                  const auto compare_pointers =
+                      [&monitored_order](
+                          const gsl::not_null<const OrderMonitorOrderState *>
+                              unmonitored_order) {
+                        return unmonitored_order == &monitored_order;
+                      };
+
+                  const auto marked_to_be_unmonitored =
+                      std::find_if(stop_monitoring_orders.begin(),
+                                   stop_monitoring_orders.end(),
+                                   compare_pointers) !=
+                      stop_monitoring_orders.end();
+                  return marked_to_be_unmonitored;
+                };
+
+            monitored_orders.erase(
+                std::remove_if(monitored_orders.begin(), monitored_orders.end(),
+                               check_if_order_marked_to_be_unmonitored),
+                monitored_orders.end());
 
             if (!order_updates.empty()) {
               orders_updated_callback(order_updates);

@@ -23,6 +23,13 @@ void ForwardOrderRequestToProcessing(const finance::Order &order) {
       .SendAndGetResponse();
 }
 
+void SendOrderUpdateToUri(const finance::OrderMonitorOrderUpdate &order_update,
+                          std::string_view uri) {
+  rest::RestRequest{web::http::methods::POST, uri}
+      .SetJson(json::ConvertToJson(order_update))
+      .SendAndGetResponse();
+}
+
 void HandleGetRequest(const web::http::http_request &request,
                       finance::OrderProxy &order_proxy) {
   spdlog::info("Got {} request on {}", request.method(),
@@ -79,8 +86,10 @@ void HandleGetRequest(const web::http::http_request &request,
   request.reply(web::http::status_codes::NotFound);
 }
 
-void HandlePostRequest(const web::http::http_request &request,
-                       finance::OrderProxy &order_proxy) {
+void HandlePostRequest(
+    const web::http::http_request &request, finance::OrderProxy &order_proxy,
+    std::vector<finance::StrategySubscribeToOrderUpdatesRequest> &subscribers,
+    std::mutex &subscribers_mutex) {
   spdlog::info("Got {} request on {}", request.method(),
                request.request_uri().to_string());
 
@@ -122,11 +131,67 @@ void HandlePostRequest(const web::http::http_request &request,
     return;
   }
 
+  if (relative_uri == "/subscribe") {
+    auto subscribe_request =
+        json::ParseFromJson<finance::StrategySubscribeToOrderUpdatesRequest>(
+            json);
+
+    if (!subscribe_request.has_value()) {
+      spdlog::error("Cannot parse order subscribe request");
+      request.reply(web::http::status_codes::BadRequest);
+      return;
+    }
+
+    {
+      const auto lock = std::lock_guard{subscribers_mutex};
+
+      subscribers.emplace_back(std::move(*subscribe_request));
+    }
+
+    const auto order =
+        order_proxy.FindOrderByUuid(subscribe_request->order_uuid);
+
+    if (const auto order_has_updates =
+            order.has_value() && !order->order_updates.empty()) {
+      const auto &last_update = order->order_updates.back().order_update;
+      SendOrderUpdateToUri(
+          finance::OrderMonitorOrderUpdate{
+              .order_uuid = subscribe_request->order_uuid,
+              .order_update = last_update},
+          subscribe_request->subscriber_uri);
+    }
+
+    request.reply(web::http::status_codes::OK);
+    return;
+  }
+
   request.reply(web::http::status_codes::NotFound);
+}
+
+void OnOrderUpdateReceived(
+    const finance::OrderMonitorOrderUpdate &order_update,
+    std::vector<finance::StrategySubscribeToOrderUpdatesRequest> &subscribers,
+    std::mutex &subscribers_mutex) {
+  {
+    const auto lock = std::lock_guard{subscribers_mutex};
+
+    for (const auto &subscriber : subscribers) {
+      if (subscriber.order_uuid == order_update.order_uuid) {
+        SendOrderUpdateToUri(order_update, subscriber.subscriber_uri);
+      }
+    }
+  }
 }
 }  // namespace
 
 pplx::task<void> OrderProxyService::Start() {
+  const auto order_update_received_callback =
+      [&subscribers = subscribers_, &subscribers_mutex = subscribers_mutex_](
+          const finance::OrderMonitorOrderUpdate &order_update) {
+        OnOrderUpdateReceived(order_update, subscribers, subscribers_mutex);
+      };
+  order_proxy_.SetOrderUpdateReceivedCallback(order_update_received_callback);
+
   http_listener_ = web::http::experimental::listener::http_listener{
       "http://localhost:6506/api/order_proxy"};
 
@@ -136,10 +201,12 @@ pplx::task<void> OrderProxyService::Start() {
       };
   http_listener_.support(web::http::methods::GET, get_handler);
 
-  const auto post_handler =
-      [&order_proxy = order_proxy_](const web::http::http_request &request) {
-        HandlePostRequest(request, order_proxy);
-      };
+  const auto post_handler = [&order_proxy = order_proxy_,
+                             &subscribers = subscribers_,
+                             &subscribers_mutex = subscribers_mutex_](
+                                const web::http::http_request &request) {
+    HandlePostRequest(request, order_proxy, subscribers, subscribers_mutex);
+  };
   http_listener_.support(web::http::methods::POST, post_handler);
 
   return http_listener_.open();

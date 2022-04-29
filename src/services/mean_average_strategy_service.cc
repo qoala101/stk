@@ -25,6 +25,19 @@ void SendOrderRequest(finance::Symbol symbol,
       .SendAndGetResponse();
 }
 
+void SendSubscribeToOrderUpdatesRequest(boost::uuids::uuid order_uuid) {
+  auto json =
+      json::ConvertToJson(finance::StrategySubscribeToOrderUpdatesRequest{
+          .order_uuid = order_uuid,
+          .subscriber_uri =
+              "http://localhost:6506/api/mean_average/order_update"});
+
+  rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
+      .AppendUri("/api/order_proxy/subscribe")
+      .SetJson(json)
+      .SendAndGetResponse();
+}
+
 void HandleGetRequest(const web::http::http_request &request,
                       const finance::MeanAverageStrategy &strategy) {
   spdlog::info("Got {} request on {}", request.method(),
@@ -35,6 +48,39 @@ void HandleGetRequest(const web::http::http_request &request,
   return;
 }
 
+void HandlePostRequest(const web::http::http_request &request,
+                       finance::Symbol symbol,
+                       finance::MeanAverageStrategy &strategy) {
+  spdlog::info("Got {} request on {}", request.method(),
+               request.request_uri().to_string());
+
+  const auto json = request.extract_json().get();
+  const auto relative_uri = request.relative_uri().path();
+
+  if (relative_uri == "/order_update") {
+    auto order_update =
+        json::ParseFromJson<finance::OrderProxyToStrategyOrderUpdate>(json);
+
+    if (!order_update.has_value()) {
+      spdlog::error("Cannot parse order update");
+      request.reply(web::http::status_codes::BadRequest);
+      return;
+    }
+
+    const auto order_request = strategy.ProcessOrderUpdate(*order_update);
+
+    if (order_request.has_value()) {
+      SendOrderRequest(std::move(symbol), *order_request);
+      SendSubscribeToOrderUpdatesRequest(order_request->order_uuid);
+    }
+
+    request.reply(web::http::status_codes::OK);
+    return;
+  }
+
+  request.reply(web::http::status_codes::NotFound);
+  return;
+}
 }  // namespace
 
 MeanAverageStrategyService::MeanAverageStrategyService(finance::Symbol symbol)
@@ -45,11 +91,19 @@ pplx::task<void> MeanAverageStrategyService::Start() {
 
   http_listener_ = web::http::experimental::listener::http_listener{
       "http://localhost:6506/api/mean_average"};
+
   const auto get_request_handler =
       [&strategy = strategy_](const web::http::http_request &request) {
         HandleGetRequest(request, strategy);
       };
   http_listener_.support(web::http::methods::GET, get_request_handler);
+
+  const auto post_request_handler =
+      [&symbol = symbol_,
+       &strategy = strategy_](const web::http::http_request &request) {
+        HandlePostRequest(request, symbol, strategy);
+      };
+  http_listener_.support(web::http::methods::POST, post_request_handler);
 
   return http_listener_.open().then(
       [&symbol = symbol_, &service_state = service_state_, &thread = thread_,
@@ -66,10 +120,11 @@ pplx::task<void> MeanAverageStrategyService::Start() {
               return;
             }
 
-            const auto new_data_result = strategy.ProcessNewPrices(new_prices);
+            const auto order_request = strategy.ProcessNewPrices(new_prices);
 
-            if (new_data_result.has_value()) {
-              SendOrderRequest(symbol, *new_data_result);
+            if (order_request.has_value()) {
+              SendOrderRequest(symbol, *order_request);
+              SendSubscribeToOrderUpdatesRequest(order_request->order_uuid);
             }
           }
         }};

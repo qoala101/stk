@@ -4,6 +4,10 @@
 #include <cpprest/http_listener.h>
 #include <pplx/pplxtasks.h>
 
+#include <mutex>
+#include <vector>
+
+#include "finance_types.h"
 #include "order_proxy.h"
 
 namespace stonks {
@@ -14,7 +18,10 @@ class OrderProxyService {
 
  private:
   web::http::experimental::listener::http_listener http_listener_{};
-  finance::OrderProxy order_proxy_;
+  finance::OrderProxy order_proxy_{};
+
+  std::vector<finance::StrategySubscribeToOrderUpdatesRequest> subscribers_{};
+  mutable std::mutex subscribers_mutex_{};
 };
 }  // namespace stonks
 

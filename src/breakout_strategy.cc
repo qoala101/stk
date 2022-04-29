@@ -2,6 +2,8 @@
 
 #include <gsl/assert>
 
+#include "utils.h"
+
 namespace stonks::finance {
 namespace {
 std::optional<StrategyOrderRequest> ProcessLastCandles(
@@ -11,6 +13,7 @@ std::optional<StrategyOrderRequest> ProcessLastCandles(
 
   if (new_candle.data->close_price > prev_candle.data->high_price) {
     return StrategyOrderRequest{
+        .order_uuid = utils::GenerateUuid(),
         .buy_or_sell = BuyOrSell::kBuy,
         .amount = UnspecifiedAmount{},
         .order_type = MarketOrderType{},
@@ -23,6 +26,7 @@ std::optional<StrategyOrderRequest> ProcessLastCandles(
 
   if (new_candle.data->close_price < prev_candle.data->low_price) {
     return StrategyOrderRequest{
+        .order_uuid = utils::GenerateUuid(),
         .buy_or_sell = BuyOrSell::kSell,
         .amount = UnspecifiedAmount{},
         .order_type = MarketOrderType{},

@@ -53,10 +53,13 @@ struct BreakoutStrategyData {
   double expected_price{};
 };
 
+struct MeanAverageStrategyData {};
+
 /**
  * @brief Relevant strategy information which could be used for analysis.
  */
-using StrategyDataVariant = std::variant<BreakoutStrategyData>;
+using StrategyDataVariant =
+    std::variant<BreakoutStrategyData, MeanAverageStrategyData>;
 
 struct StrategyData {
   StrategyDataVariant strategy_data{};
@@ -78,16 +81,16 @@ struct OrderType {
   std::optional<double> GetPrice() const;
 };
 
+struct OrderError {
+  std::string message{};
+};
+
 struct OrderInfo {
   OrderStatus order_status{};
   double requested_amount{};
   double executed_amount{};
   double price{};
   double executed_quote_amount{};
-};
-
-struct OrderError {
-  std::string message{};
 };
 
 using OrderUpdateVariant = std::variant<OrderError, OrderInfo>;
@@ -108,18 +111,23 @@ struct OrderProxyOrderUpdate {
   OrderUpdate order_update{};
 };
 
-struct SpecificAmount {
-  double amount{};
-};
-
 struct UnspecifiedAmount {};
 
-using AmountVariant = std::variant<UnspecifiedAmount, SpecificAmount>;
+struct BaseAmount {
+  double base_amount{};
+};
+
+struct QuoteAmount {
+  double quote_amount{};
+};
+
+using AmountVariant = std::variant<UnspecifiedAmount, BaseAmount, QuoteAmount>;
 
 struct Amount {
   AmountVariant amount{};
 
-  std::optional<double> GetAmount() const;
+  std::optional<double> GetBaseAmount() const;
+  std::optional<double> GetQuoteAmount() const;
 };
 
 struct Order {
@@ -155,6 +163,8 @@ struct Order {
  * order.
  */
 struct StrategyOrderRequest {
+  boost::uuids::uuid order_uuid{};
+
   Symbol symbol{};
   BuyOrSell buy_or_sell{};
   Amount amount{};
@@ -174,6 +184,14 @@ struct OrderProxyOrderRequest {
   BuyOrSell buy_or_sell{};
   Amount amount{};
   OrderType order_type{};
+};
+
+/**
+ * @brief Sent by strategy to order proxy to subscribe to order updates.
+ */
+struct StrategySubscribeToOrderUpdatesRequest {
+  boost::uuids::uuid order_uuid{};
+  std::string subscriber_uri{};
 };
 
 /**
@@ -198,6 +216,11 @@ struct OrderMonitorOrderUpdate {
   boost::uuids::uuid order_uuid{};
   OrderUpdate order_update{};
 };
+
+/**
+ * @brief Data sent to subscribed strategy when order proxy gets order update.
+ */
+using OrderProxyToStrategyOrderUpdate = OrderMonitorOrderUpdate;
 
 /**
  * @brief Data stored by the order monitor to check whether order state is

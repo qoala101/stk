@@ -1,10 +1,10 @@
 #ifndef STONKS_ORDER_PROXY_H_
 #define STONKS_ORDER_PROXY_H_
 
-#include <boost/uuid/uuid.hpp>
 #include <condition_variable>
-#include <gsl/pointers>
+#include <functional>
 #include <mutex>
+#include <string_view>
 #include <vector>
 
 #include "finance_types.h"
@@ -25,11 +25,25 @@ class OrderProxy {
    */
   void UpdateOrders(const std::vector<OrderMonitorOrderUpdate> &order_updates);
 
+  using OrderUpdateReceivedCallback =
+      std::function<void(OrderMonitorOrderUpdate)>;
+
+  /**
+   * @brief Set callback to be called when order update is received.
+   */
+  void SetOrderUpdateReceivedCallback(
+      OrderUpdateReceivedCallback order_update_received_callback);
+
   /**
    * @remark Copies of the orders are returned because orders could be updated
    * from the other thread.
    */
   std::vector<Order> GetAllOrders(int drop_first = 0) const;
+
+  /**
+   * @return Nullopt if order doesn't exist.
+   */
+  std::optional<Order> FindOrderByUuid(boost::uuids::uuid order_uuid) const;
 
   /**
    * @brief Gives list of orders which have not yet received any type of closing
@@ -58,6 +72,8 @@ class OrderProxy {
   std::vector<Order> orders_{};
   mutable std::mutex orders_mutex_{};
   mutable std::condition_variable orders_cond_var_{};
+
+  OrderUpdateReceivedCallback order_update_received_callback_{};
 };
 }  // namespace stonks::finance
 

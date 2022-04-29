@@ -13,6 +13,9 @@ class MeanAverageStrategy {
   std::optional<StrategyOrderRequest> ProcessNewPrices(
       const std::vector<TimeDouble> &prices);
 
+  std::optional<StrategyOrderRequest> ProcessOrderUpdate(
+      const OrderProxyToStrategyOrderUpdate &order_update);
+
   std::vector<TimeDouble> GetAllPrices() const;
 
  private:

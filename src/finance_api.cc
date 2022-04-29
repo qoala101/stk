@@ -112,7 +112,9 @@ std::optional<OrderError> PlaceOrder(
       order_request.symbol.base_asset + order_request.symbol.quote_asset,
       order_request.buy_or_sell,
       ConvertOrderTypeToBinanceOrderType(order_request.order_type),
-      std::nullopt, order_request.amount.GetAmount(), 11,
+      binance::OrderTimeInForce::kGoodTillCanceled,
+      order_request.amount.GetBaseAmount(),
+      order_request.amount.GetQuoteAmount(),
       order_request.order_type.GetPrice(),
       utils::ConvertUuidToString(order_request.order_uuid), std::nullopt,
       std::nullopt, std::nullopt, std::nullopt, 10000);
