@@ -10,6 +10,9 @@
 namespace stonks::finance {
 class MeanAverageStrategy {
  public:
+  explicit MeanAverageStrategy(double symbol_precision, double comission,
+                               double profit);
+
   std::optional<StrategyOrderRequest> ProcessNewPrices(
       const std::vector<TimeDouble> &prices);
 
@@ -21,6 +24,17 @@ class MeanAverageStrategy {
  private:
   std::vector<TimeDouble> prices_{};
   mutable std::mutex prices_mutex_{};
+
+  const double symbol_precision_{};
+  const double comission_{};
+  const double profit_{};
+
+  boost::uuids::uuid buy_order_uuid_{};
+  boost::uuids::uuid sell_order_uuid_{};
+  mutable std::mutex order_uuids_mutex_{};
+
+  double sell_order_price_{};
+  double sell_order_amount_{};
 };
 }  // namespace stonks::finance
 
