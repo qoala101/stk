@@ -72,25 +72,37 @@ int main(int, const char *[]) {
 
   auto symbol =
       stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"};
-  auto symbol_precision = 0.0001;
+  auto base_precision = 0.0001;
+  auto price_precision = 0.01;
   auto comission = 0.001;
-  auto profit = 0.001;
+  auto profit = 0.002;
 
   // symbol = stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"};
-  // symbol_precision = 0.0001;
+  // base_precision = 0.0001;
+  // price_precision = 0.01;
   // comission = 0.001;
-  // profit = 0.001;
+  // profit = 0.002;
   // services.emplace_back(std::make_unique<ServiceVariant>())
-  //     ->emplace<stonks::MeanAverageStrategyService>(symbol, symbol_precision,
-  //                                                   comission, profit);
+  //     ->emplace<stonks::MeanAverageStrategyService>(
+  //         symbol, base_precision, price_precision, comission, profit);
 
-  symbol = stonks::finance::Symbol{.base_asset = "BTC", .quote_asset = "USDT"};
-  symbol_precision = 0.00001;
+  // symbol = stonks::finance::Symbol{.base_asset = "BTC", .quote_asset = "USDT"};
+  // base_precision = 0.00001;
+  // price_precision = 0.01;
+  // comission = 0.001;
+  // profit = 0.002;
+  // services.emplace_back(std::make_unique<ServiceVariant>())
+  //     ->emplace<stonks::MeanAverageStrategyService>(
+  //         symbol, base_precision, price_precision, comission, profit);
+
+  symbol = stonks::finance::Symbol{.base_asset = "BNB", .quote_asset = "USDT"};
+  base_precision = 0.001;
+  price_precision = 0.1;
   comission = 0.001;
   profit = 0.002;
   services.emplace_back(std::make_unique<ServiceVariant>())
-      ->emplace<stonks::MeanAverageStrategyService>(symbol, symbol_precision,
-                                                    comission, profit);
+      ->emplace<stonks::MeanAverageStrategyService>(
+          symbol, base_precision, price_precision, comission, profit);
 
   for (auto &service : services) {
     std::visit([](auto &service) { service.Start(); }, *service);

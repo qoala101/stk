@@ -84,11 +84,12 @@ void HandlePostRequest(const web::http::http_request &request,
 }  // namespace
 
 MeanAverageStrategyService::MeanAverageStrategyService(finance::Symbol symbol,
-                                                       double symbol_precision,
+                                                       double base_precision,
+                                                       double price_precision,
                                                        double comission,
                                                        double profit)
     : symbol_{std::move(symbol)},
-      strategy_{symbol_precision, comission, profit} {}
+      strategy_{base_precision, price_precision, comission, profit} {}
 
 pplx::task<void> MeanAverageStrategyService::Start() {
   service_state_.store(true, std::memory_order::relaxed);

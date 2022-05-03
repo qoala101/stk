@@ -14,7 +14,7 @@ namespace stonks {
 class MeanAverageStrategyService {
  public:
   explicit MeanAverageStrategyService(finance::Symbol symbol,
-                                      double symbol_precision, double comission,
+                                      double base_precision, double price_precision, double comission,
                                       double profit);
 
   pplx::task<void> Start();

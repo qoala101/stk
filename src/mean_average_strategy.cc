@@ -25,11 +25,10 @@ void DropItemsBeforeMax(std::vector<TimeDouble> &data) {
     return;
   }
 
-  const auto last_max_item =
-      ranges::max_element(data,
-                          [](const TimeDouble &left, const TimeDouble &right) {
-                            return left.value < right.value;
-                          });
+  const auto last_max_item = ranges::max_element(
+      data, [](const TimeDouble &left, const TimeDouble &right) {
+        return left.value < right.value;
+      });
 
   if (last_max_item != data.begin()) {
     data = std::vector<TimeDouble>{last_max_item, data.end()};
@@ -51,9 +50,11 @@ void DropItemsOlderThanFromLast(std::vector<TimeDouble> &data,
 }
 }  // namespace
 
-MeanAverageStrategy::MeanAverageStrategy(double symbol_precision,
+MeanAverageStrategy::MeanAverageStrategy(double base_precision,
+                                         double price_precision,
                                          double comission, double profit)
-    : symbol_precision_{symbol_precision},
+    : base_precision_{base_precision},
+      price_precision_{price_precision},
       comission_{comission},
       profit_{profit},
       sell_order_price_{0},
@@ -66,7 +67,7 @@ std::optional<StrategyOrderRequest> MeanAverageStrategy::ProcessNewPrices(
 
     prices_ |= ranges::actions::push_back(prices);
     DropItemsBeforeMax(prices_);
-    DropItemsOlderThanFromLast(prices_, std::chrono::hours{1});
+    DropItemsOlderThanFromLast(prices_, std::chrono::hours{3});
   }
 
   {
@@ -107,7 +108,7 @@ std::optional<StrategyOrderRequest> MeanAverageStrategy::ProcessNewPrices(
     const auto base_amount_for_want_to_spend_quote_amount =
         want_to_spend_quote_amount / base_buy_price;
     const auto base_amount_to_buy = CeilValueToPercision(
-        base_amount_for_want_to_spend_quote_amount, symbol_precision_);
+        base_amount_for_want_to_spend_quote_amount, base_precision_);
     // Quote amount withdrawn from account for the first trade.
     const auto quote_amount_to_spend = base_amount_to_buy * base_buy_price;
     // Base amount to be added to account after the first trade.
@@ -116,7 +117,7 @@ std::optional<StrategyOrderRequest> MeanAverageStrategy::ProcessNewPrices(
     const auto want_to_spend_base_amount = base_amount_received;
     // Base amount withdrawn from account for the second trade.
     const auto base_amount_to_sell =
-        FloorValueToPercision(want_to_spend_base_amount, symbol_precision_);
+        FloorValueToPercision(want_to_spend_base_amount, base_precision_);
     const auto quote_amount_spent_on_base_to_sell =
         quote_amount_to_spend * base_amount_to_sell / base_amount_received;
     // Quote amount to be added to account after the first trade.
@@ -124,14 +125,16 @@ std::optional<StrategyOrderRequest> MeanAverageStrategy::ProcessNewPrices(
         quote_amount_spent_on_base_to_sell * (double{1} + profit_);
     const auto quote_amount_to_sell_base_for =
         quote_amount_spent_with_profit / (double{1} - comission_);
-    // Second trade high price at which base is sold.
     const auto sell_base_price =
         quote_amount_to_sell_base_for / base_amount_to_sell;
+    // Second trade high price at which base is sold.
+    const auto normalized_sell_base_price =
+        CeilValueToPercision(sell_base_price, price_precision_);
 
     const auto buy_order_price = base_buy_price;
     const auto buy_order_amount = base_amount_to_buy;
 
-    const auto sell_order_price = sell_base_price;
+    const auto sell_order_price = normalized_sell_base_price;
     const auto sell_order_amount = base_amount_to_sell;
 
     spdlog::info(
