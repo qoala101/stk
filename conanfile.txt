@@ -7,6 +7,7 @@ gtest/cci.20210126
 magic_enum/0.7.3
 date/3.0.1
 boost/1.78.0
+sqlite3/3.38.1
 
 [options]
 cpprestsdk:shared=False

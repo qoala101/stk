@@ -14,8 +14,10 @@ add_executable(unittests
   buffered_candles_stream.cc
   utils.cc
   prices_stream.cc
+  sqlite_db.cc
 )
 target_link_libraries(unittests PRIVATE libstonks)
+target_link_libraries(unittests PRIVATE libdb)
 target_link_libraries(unittests PRIVATE spdlog::spdlog)
 target_link_libraries(unittests PRIVATE GTest::gtest GTest::gtest_main)
 target_link_libraries(unittests PRIVATE range-v3::range-v3)

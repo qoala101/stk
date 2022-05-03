@@ -48,3 +48,5 @@ target_link_libraries(libstonks PRIVATE Boost::boost)
 add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)
 target_link_libraries(stonks PRIVATE spdlog::spdlog)
+
+add_subdirectory(db)
