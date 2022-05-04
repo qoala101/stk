@@ -1,22 +1,42 @@
 #ifndef STONKS_DB_SQLITE_SQLITE_DB_H_
 #define STONKS_DB_SQLITE_SQLITE_DB_H_
 
-#include "db.h"
+#include <optional>
+#include <string_view>
+#include <vector>
 
-namespace stonks::db {
+#include "db.h"
+#include "db_types.h"
+
+class sqlite3;
+
+namespace stonks::db::sqlite {
 class SqliteDb : public Db {
  public:
-  std::optional<DbError> CreateTable(
-      const TableDefinition &table_definition) override;
+  static std::optional<SqliteDb> OpenOrCreateDbFromFile(
+      std::string_view file_name);
 
-  std::optional<DbError> DropTable(const Table &table) override;
+  explicit SqliteDb(SqliteDb &&other);
+  explicit SqliteDb(const SqliteDb &) = delete;
+  SqliteDb &operator=(SqliteDb &&other);
+  SqliteDb &operator=(const SqliteDb &) = delete;
+  ~SqliteDb();
 
-  GetTableDefinitionResult GetTableDefinition(const Table &table) override;
+  bool CreateTable(const TableDefinition &table_definition) override;
 
-  std::optional<DbError> Insert(const Table &table, const Row &row) override;
+  bool DropTable(const Table &table) override;
+
+  bool Insert(const Table &table, const Row &row) override;
 
   std::optional<std::vector<Row>> Select(const Table &table) override;
+
+ private:
+  friend void swap(SqliteDb &left, SqliteDb &right);
+
+  explicit SqliteDb(sqlite3 *sqlite_db_handle = nullptr);
+
+  sqlite3 *sqlite_db_handle_{};
 };
-}  // namespace stonks::db
+}  // namespace stonks::db::sqlite
 
 #endif  // STONKS_DB_SQLITE_SQLITE_DB_H_

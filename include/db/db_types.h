@@ -66,13 +66,6 @@ struct Cell {
 struct Row {
   std::vector<Cell> cells{};
 };
-
-struct GetTableDefinitionResult {
-  std::variant<DbError, TableDefinition> result{};
-
-  std::optional<DbError> GetError() const;
-  std::optional<TableDefinition> GetValue() const;
-};
 }  // namespace stonks::db
 
 #endif  // STONKS_DB_DB_TYPES_H_
