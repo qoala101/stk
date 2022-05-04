@@ -38,57 +38,59 @@ TEST(Db, CreateAndDropTable) {
   EXPECT_FALSE(success);
 }
 
-// TEST(Db, InsertAndSelect) {
-//   const auto table = stonks::db::Table{.name = "Asset"};
-//   const auto table_definition = stonks::db::TableDefinition{
-//       .table = table,
-//       .columns = {
-//           stonks::db::Column{.name = "id",
-//                              .data_type = stonks::db::DataType::kInteger,
-//                              .primary_key = true,
-//                              .auto_increment = true,
-//                              .unique = true},
-//           stonks::db::Column{.name = "name",
-//                              .data_type = stonks::db::DataType::kText,
-//                              .unique = true},
-//       }};
-//   db.CreateTable(table_definition);
-//   db.Insert(
-//       stonks::db::Table{.name = "Asset"},
-//       stonks::db::Row{
-//           .cells = {stonks::db::Cell{.column_name = "name", .value = "BTC"},
-//                     stonks::db::Cell{.column_name = "name", .value = "ETH"},
-//                     stonks::db::Cell{.column_name = "name", .value =
-//                     "USDT"}}});
+TEST(Db, InsertAndSelect) {
+  const auto table = stonks::db::Table{.name = "Asset"};
+  const auto table_definition = stonks::db::TableDefinition{
+      .table = table,
+      .columns = {
+          stonks::db::Column{.name = "id",
+                             .data_type = stonks::db::DataType::kInteger,
+                             .primary_key = true,
+                             .auto_increment = true,
+                             .unique = true},
+          stonks::db::Column{.name = "name",
+                             .data_type = stonks::db::DataType::kText,
+                             .unique = true},
+      }};
+  db.CreateTable(table_definition);
+  db.Insert(table,
+            stonks::db::Row{.cells = {stonks::db::Cell{.column_name = "name",
+                                                       .value = "BTC"}}});
+  db.Insert(table,
+            stonks::db::Row{.cells = {stonks::db::Cell{.column_name = "name",
+                                                       .value = "ETH"}}});
+  db.Insert(table,
+            stonks::db::Row{.cells = {stonks::db::Cell{.column_name = "name",
+                                                       .value = "USDT"}}});
 
-//   const auto rows = db.Select(stonks::db::Table{.name = "Asset"});
-//   ASSERT_TRUE(rows.has_value());
-//   EXPECT_EQ(rows->size(), 3);
+  const auto rows = db.Select(table_definition);
+  ASSERT_TRUE(rows.has_value());
+  EXPECT_EQ(rows->size(), 3);
 
-//   EXPECT_EQ((*rows)[0].cells.size(), 2);
-//   EXPECT_EQ((*rows)[0].cells[0].column_name, "id");
-//   ASSERT_TRUE((*rows)[0].cells[0].value.GetInt64().has_value());
-//   EXPECT_EQ(*(*rows)[0].cells[0].value.GetInt64(), 1);
-//   EXPECT_EQ((*rows)[0].cells[1].column_name, "name");
-//   ASSERT_TRUE((*rows)[0].cells[1].value.GetString().has_value());
-//   EXPECT_EQ(*(*rows)[0].cells[1].value.GetString(), "BTC");
+  EXPECT_EQ((*rows)[0].cells.size(), 2);
+  EXPECT_EQ((*rows)[0].cells[0].column_name, "id");
+  ASSERT_TRUE((*rows)[0].cells[0].value.GetInt64().has_value());
+  EXPECT_EQ(*(*rows)[0].cells[0].value.GetInt64(), 1);
+  EXPECT_EQ((*rows)[0].cells[1].column_name, "name");
+  ASSERT_TRUE((*rows)[0].cells[1].value.GetString().has_value());
+  EXPECT_EQ(*(*rows)[0].cells[1].value.GetString(), "BTC");
 
-//   EXPECT_EQ((*rows)[1].cells.size(), 2);
-//   EXPECT_EQ((*rows)[1].cells[0].column_name, "id");
-//   ASSERT_TRUE((*rows)[1].cells[0].value.GetInt64().has_value());
-//   EXPECT_EQ(*(*rows)[1].cells[0].value.GetInt64(), 2);
-//   EXPECT_EQ((*rows)[1].cells[1].column_name, "name");
-//   ASSERT_TRUE((*rows)[1].cells[1].value.GetString().has_value());
-//   EXPECT_EQ(*(*rows)[1].cells[1].value.GetString(), "ETH");
+  EXPECT_EQ((*rows)[1].cells.size(), 2);
+  EXPECT_EQ((*rows)[1].cells[0].column_name, "id");
+  ASSERT_TRUE((*rows)[1].cells[0].value.GetInt64().has_value());
+  EXPECT_EQ(*(*rows)[1].cells[0].value.GetInt64(), 2);
+  EXPECT_EQ((*rows)[1].cells[1].column_name, "name");
+  ASSERT_TRUE((*rows)[1].cells[1].value.GetString().has_value());
+  EXPECT_EQ(*(*rows)[1].cells[1].value.GetString(), "ETH");
 
-//   EXPECT_EQ((*rows)[2].cells.size(), 2);
-//   EXPECT_EQ((*rows)[2].cells[0].column_name, "id");
-//   ASSERT_TRUE((*rows)[2].cells[0].value.GetInt64().has_value());
-//   EXPECT_EQ(*(*rows)[2].cells[0].value.GetInt64(), 3);
-//   EXPECT_EQ((*rows)[2].cells[1].column_name, "name");
-//   ASSERT_TRUE((*rows)[2].cells[1].value.GetString().has_value());
-//   EXPECT_EQ(*(*rows)[2].cells[1].value.GetString(), "USDT");
-// }
+  EXPECT_EQ((*rows)[2].cells.size(), 2);
+  EXPECT_EQ((*rows)[2].cells[0].column_name, "id");
+  ASSERT_TRUE((*rows)[2].cells[0].value.GetInt64().has_value());
+  EXPECT_EQ(*(*rows)[2].cells[0].value.GetInt64(), 3);
+  EXPECT_EQ((*rows)[2].cells[1].column_name, "name");
+  ASSERT_TRUE((*rows)[2].cells[1].value.GetString().has_value());
+  EXPECT_EQ(*(*rows)[2].cells[1].value.GetString(), "USDT");
+}
 
 // TEST(Db, ForeignKey) {
 //   auto table = stonks::db::Table{.name = "Symbol"};

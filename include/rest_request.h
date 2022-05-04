@@ -28,7 +28,7 @@ class RestRequest {
 
   template <Number T>
   RestRequest &AddParameter(std::string_view key, T value) {
-    auto stream = std::stringstream{};
+    auto stream = std::ostringstream{};
     stream << value;
     return AddParameter(key, stream.str());
   }

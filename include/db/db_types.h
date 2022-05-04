@@ -27,6 +27,10 @@ struct Value {
   std::optional<int64_t> GetInt64() const;
   std::optional<double> GetDouble() const;
   std::optional<std::string> GetString() const;
+
+  std::string ToString() const;
+
+  static Value FromString(std::string_view value, DataType data_type);
 };
 
 struct ForeignKey {

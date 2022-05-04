@@ -28,7 +28,8 @@ class SqliteDb : public Db {
 
   bool Insert(const Table &table, const Row &row) override;
 
-  std::optional<std::vector<Row>> Select(const Table &table) override;
+  std::optional<std::vector<Row>> Select(
+      const TableDefinition &table_definition) override;
 
  private:
   friend void swap(SqliteDb &left, SqliteDb &right);

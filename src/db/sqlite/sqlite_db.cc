@@ -73,14 +73,17 @@ SqliteDb::~SqliteDb() {
 
 namespace {
 std::optional<std::string> ExecuteQuery(sqlite3 &sqlite_db_handle,
-                                        std::string_view query) {
+                                        std::string_view query,
+                                        int (*callback)(void *, int, char **,
+                                                        char **) = nullptr,
+                                        void *data = nullptr) {
   auto error_message = (char *){nullptr};
   const auto finally_free_error_message =
       gsl::finally([&error_message]() { sqlite3_free(error_message); });
 
   spdlog::info("Executing query: {}", query);
   const auto result_code = sqlite3_exec(&sqlite_db_handle, query.data(),
-                                        nullptr, nullptr, &error_message);
+                                        callback, data, &error_message);
 
   if (result_code != SQLITE_OK) {
     return error_message;
@@ -191,10 +194,102 @@ bool SqliteDb::DropTable(const Table &table) {
   return true;
 }
 
-bool SqliteDb::Insert(const Table &table, const Row &row) { return false; }
+bool SqliteDb::Insert(const Table &table, const Row &row) {
+  auto query = std::string{"INSERT INTO \"" + table.name + "\"("};
 
-std::optional<std::vector<Row>> SqliteDb::Select(const Table &table) {
-  return {};
+  for (const auto &cell : row.cells) {
+    query += "\"" + cell.column_name + "\"";
+
+    const auto last_cell = &cell == &row.cells.back();
+
+    if (!last_cell) {
+      query += ", ";
+    }
+  }
+
+  query += ") VALUES (";
+
+  for (const auto &cell : row.cells) {
+    query += cell.value.ToString();
+
+    const auto last_cell = &cell == &row.cells.back();
+
+    if (!last_cell) {
+      query += ", ";
+    }
+  }
+
+  query += ")";
+
+  const auto error_message = ExecuteQuery(*sqlite_db_handle_, query);
+
+  if (error_message.has_value()) {
+    spdlog::error("Cannot insert into table: {}", *error_message);
+    return false;
+  }
+
+  return true;
+}
+
+namespace {
+struct SelectData {
+  const TableDefinition &table_definition{};
+  std::vector<Row> rows{};
+};
+
+int SelectCallback(void *data, int num_cells, char **cells_data,
+                   char **column_names) {
+  assert(data != nullptr);
+  assert(cells_data != nullptr);
+  assert(column_names != nullptr);
+
+  auto select_data = static_cast<SelectData *>(data);
+  const auto &columns = select_data->table_definition.columns;
+
+  auto &row = select_data->rows.emplace_back();
+  row.cells.reserve(num_cells);
+
+  for (auto i = 0; i < num_cells; ++i) {
+    const auto column_name = column_names[i];
+    assert(column_name != nullptr);
+
+    const auto column =
+        ranges::find_if(columns, [column_name](const Column &column) {
+          return column.name == column_name;
+        });
+
+    if (column == columns.end()) {
+      spdlog::error("Column is not present in table definition {}",
+                    column_name);
+      continue;
+    }
+
+    auto cell_data = cells_data[i];
+    assert(cell_data != nullptr);
+
+    row.cells.emplace_back(
+        Cell{.column_name = column->name,
+             .value = Value::FromString(cell_data, column->data_type)});
+  }
+
+  return 0;
+}
+}  // namespace
+
+std::optional<std::vector<Row>> SqliteDb::Select(
+    const TableDefinition &table_definition) {
+  const auto query =
+      std::string{"SELECT * from \"" + table_definition.table.name + "\";"};
+  auto select_data = SelectData{.table_definition = table_definition};
+  const auto error_message =
+      ExecuteQuery(*sqlite_db_handle_, query, SelectCallback, &select_data);
+
+  if (error_message.has_value()) {
+    spdlog::error("Cannot select from table: {}", *error_message);
+    return std::nullopt;
+  }
+
+  return select_data.rows;
 }
 
 SqliteDb::SqliteDb(sqlite3 *sqlite_db_handle)

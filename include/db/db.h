@@ -12,7 +12,8 @@ class Db {
 
   virtual bool Insert(const Table &table, const Row &row) = 0;
 
-  virtual std::optional<std::vector<Row>> Select(const Table &table) = 0;
+  virtual std::optional<std::vector<Row>> Select(
+      const TableDefinition &table_definition) = 0;
 };
 }  // namespace stonks::db
 
