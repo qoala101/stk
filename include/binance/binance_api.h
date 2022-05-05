@@ -54,7 +54,9 @@ std::optional<AverageSymbolPrice> GetAverageSymbolPrice(
     std::string_view symbol);
 
 std::optional<SymbolPrice> GetSymbolPrice(
-    std::optional<std::string_view> symbol = std::nullopt);
+    std::optional<std::string_view> symbol);
+
+std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices();
 }  // namespace stonks::binance
 
 #endif  // STONKS_BINANCE_BINANCE_API_H_

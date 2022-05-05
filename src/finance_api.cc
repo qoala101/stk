@@ -3,6 +3,8 @@
 #include <spdlog/spdlog.h>
 
 #include <gsl/gsl>
+#include <range/v3/to_container.hpp>
+#include <range/v3/view/transform.hpp>
 #include <thread>
 
 #include "binance_api.h"
@@ -183,5 +185,25 @@ std::optional<double> GetSymbolPrice(const Symbol &symbol) {
   }
 
   return result->price;
+}
+
+std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices() {
+  const auto result = binance::GetAllSymbolsPrices();
+
+  if (!result.has_value()) {
+    spdlog::error("Cannot all symbols prices");
+    return std::nullopt;
+  }
+
+  const auto binance_symbol_price_to_symbol_price =
+      [](const binance::SymbolPrice &symbol_price) {
+        return SymbolPrice{
+            .symbol = ParseSymbolFromBinanceSymbol(symbol_price.symbol),
+            .price = TimeDouble{.time = utils::GetUnixTime(),
+                                .value = symbol_price.price}};
+      };
+  return *result |
+         ranges::views::transform(binance_symbol_price_to_symbol_price) |
+         ranges::to_vector;
 }
 }  // namespace stonks::finance

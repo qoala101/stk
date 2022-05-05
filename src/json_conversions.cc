@@ -328,6 +328,12 @@ std::optional<binance::SymbolPrice> ParseFromJson(
 }
 
 template <>
+std::optional<std::vector<binance::SymbolPrice>> ParseFromJson(
+    const web::json::value& json) {
+  return ParseFromJsonArray<std::vector<binance::SymbolPrice>>(json);
+}
+
+template <>
 std::optional<finance::Symbol> ParseFromJson(const web::json::value& json) {
   try {
     return finance::Symbol{
@@ -347,6 +353,72 @@ web::json::value ConvertToJson(const finance::Symbol& data) {
   json["base_asset"] = ConvertToJson(data.base_asset);
   json["quote_asset"] = ConvertToJson(data.quote_asset);
   return json;
+}
+
+template <>
+std::optional<finance::TimeDouble> ParseFromJson(const web::json::value& json) {
+  try {
+    return finance::TimeDouble{
+        .time = GetInt64PropertyAsMilliseconds(json, "time"),
+        .value = GetDoublePropertyAsDouble(json, "value")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::TimeDouble& data) {
+  auto json = web::json::value{};
+  json["time"] = ConvertToJson(data.time);
+  json["value"] = ConvertToJson(data.value);
+  return json;
+}
+
+template <>
+std::optional<std::vector<finance::TimeDouble>> ParseFromJson(
+    const web::json::value& json) {
+  return ParseFromJsonArray<std::vector<finance::TimeDouble>>(json);
+}
+
+web::json::value ConvertToJson(const std::vector<finance::TimeDouble>& data) {
+  return ConvertToJsonArray(data);
+}
+
+template <>
+std::optional<finance::SymbolPrices> ParseFromJson(
+    const web::json::value& json) {
+  try {
+    return finance::SymbolPrices{
+        .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
+        .prices =
+            GetObjectPropertyAsObject<std::vector<finance::TimeDouble>>(json, "prices")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const finance::SymbolPrices& data) {
+  auto json = web::json::value{};
+  json["symbol"] = ConvertToJson(data.symbol);
+  json["prices"] = ConvertToJson(data.prices);
+  return json;
+}
+
+template <>
+std::optional<std::vector<finance::SymbolPrices>> ParseFromJson(
+    const web::json::value& json) {
+  return ParseFromJsonArray<std::vector<finance::SymbolPrices>>(json);
+}
+
+web::json::value ConvertToJson(const std::vector<finance::SymbolPrices>& data) {
+  return ConvertToJsonArray(data);
 }
 
 template <>

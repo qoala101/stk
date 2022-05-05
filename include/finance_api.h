@@ -53,6 +53,8 @@ bool IsOrderStatusFinal(OrderStatus order_status);
 std::optional<double> GetAverageSymbolPrice(const Symbol &symbol);
 
 std::optional<double> GetSymbolPrice(const Symbol &symbol);
+
+std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices();
 }  // namespace stonks::finance
 
 #endif  // STONKS_FINANCE_API_H_

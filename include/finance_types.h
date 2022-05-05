@@ -19,6 +19,21 @@ struct Symbol {
   friend bool operator==(const Symbol &, const Symbol &) = default;
 };
 
+struct TimeDouble {
+  std::chrono::milliseconds time{};
+  double value{};
+};
+
+struct SymbolPrice {
+  Symbol symbol{};
+  TimeDouble price{};
+};
+
+struct SymbolPrices {
+  Symbol symbol{};
+  std::vector<TimeDouble> prices{};
+};
+
 struct Candle {
   struct Data {
     double open_price{};
@@ -41,11 +56,6 @@ struct Candle {
   friend bool operator==(const Candle &left, const Candle &right);
   friend std::partial_ordering operator<=>(const Candle &left,
                                            const Candle &right);
-};
-
-struct TimeDouble {
-  std::chrono::milliseconds time{};
-  double value{};
 };
 
 struct BreakoutStrategyData {

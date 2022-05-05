@@ -254,4 +254,18 @@ std::optional<SymbolPrice> GetSymbolPrice(
 
   return json::ParseFromJson<SymbolPrice>(*response);
 }
+
+std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices() {
+  const auto response =
+      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+          .AppendUri("/api/v3/ticker/price")
+          .SendAndGetResponse();
+
+  if (!response.has_value()) {
+    spdlog::error("Cannot get all symbols prices");
+    return std::nullopt;
+  }
+
+  return json::ParseFromJson<std::vector<SymbolPrice>>(*response);
+}
 }  // namespace stonks::binance

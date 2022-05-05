@@ -190,3 +190,9 @@ TEST(FinanceApi, GetAverageSymbolPriceBad) {
       stonks::finance::GetAverageSymbolPrice(stonks::finance::Symbol{});
   ASSERT_FALSE(price.has_value());
 }
+
+TEST(FinanceApi, GetAllSymbolsPrices) {
+  const auto prices = stonks::finance::GetAllSymbolsPrices();
+  ASSERT_TRUE(prices.has_value());
+  EXPECT_FALSE(prices->empty());
+}

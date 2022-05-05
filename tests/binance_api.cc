@@ -78,3 +78,9 @@ TEST(BinanceApi, GetAverageSymbolPriceBad) {
   const auto price = stonks::binance::GetAverageSymbolPrice("WRONG_SYMBOL");
   ASSERT_FALSE(price.has_value());
 }
+
+TEST(BinanceApi, GetAllSymbolsPrices) {
+  const auto prices = stonks::binance::GetAllSymbolsPrices();
+  ASSERT_TRUE(prices.has_value());
+  EXPECT_FALSE(prices->empty());
+}

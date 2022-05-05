@@ -59,8 +59,31 @@ template <>
 std::optional<binance::SymbolPrice> ParseFromJson(const web::json::value &json);
 
 template <>
+std::optional<std::vector<binance::SymbolPrice>> ParseFromJson(
+    const web::json::value &json);
+
+template <>
 std::optional<finance::Symbol> ParseFromJson(const web::json::value &json);
 web::json::value ConvertToJson(const finance::Symbol &data);
+
+template <>
+std::optional<finance::TimeDouble> ParseFromJson(const web::json::value &json);
+web::json::value ConvertToJson(const finance::TimeDouble &data);
+
+template <>
+std::optional<std::vector<finance::TimeDouble>> ParseFromJson(
+    const web::json::value &json);
+web::json::value ConvertToJson(const std::vector<finance::TimeDouble> &data);
+
+template <>
+std::optional<finance::SymbolPrices> ParseFromJson(
+    const web::json::value &json);
+web::json::value ConvertToJson(const finance::SymbolPrices &data);
+
+template <>
+std::optional<std::vector<finance::SymbolPrices>> ParseFromJson(
+    const web::json::value &json);
+web::json::value ConvertToJson(const std::vector<finance::SymbolPrices> &data);
 
 template <>
 std::optional<finance::StrategyData> ParseFromJson(
