@@ -31,6 +31,9 @@ class SqliteDb : public Db {
   std::optional<std::vector<Row>> Select(
       const TableDefinition &table_definition) override;
 
+  std::optional<std::vector<Row>> Select(
+      std::string_view query, const std::vector<Column> &columns) override;
+
  private:
   friend void swap(SqliteDb &left, SqliteDb &right);
 

@@ -7,6 +7,7 @@ find_package(range-v3 REQUIRED)
 add_library(libdb
   db.cc
   db_types.cc
+  null_db.cc
   sqlite/sqlite_db.cc
 )
 set_target_properties(libdb PROPERTIES OUTPUT_NAME db)

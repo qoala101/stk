@@ -19,6 +19,9 @@ class NullDb : public Db {
 
   std::optional<std::vector<Row>> Select(
       const TableDefinition &table_definition) override;
+
+  std::optional<std::vector<Row>> Select(
+      std::string_view query, const std::vector<Column> &columns) override;
 };
 }  // namespace stonks::db
 

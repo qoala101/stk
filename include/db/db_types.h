@@ -24,9 +24,10 @@ struct Table {
 struct Value {
   std::variant<int64_t, double, std::string> value{};
 
+  std::optional<int> GetInt() const;
   std::optional<int64_t> GetInt64() const;
   std::optional<double> GetDouble() const;
-  std::optional<std::string> GetString() const;
+  const std::string *GetString() const;
 
   std::string ToString() const;
 
@@ -69,6 +70,13 @@ struct Cell {
 
 struct Row {
   std::vector<Cell> cells{};
+
+  const Value *GetCellValue(std::string_view column_name) const;
+
+  std::optional<int> GetCellValueInt(std::string_view column_name) const;
+  std::optional<int64_t> GetCellValueInt64(std::string_view column_name) const;
+  std::optional<double> GetCellValueDouble(std::string_view column_name) const;
+  const std::string *GetCellValueString(std::string_view column_name) const;
 };
 }  // namespace stonks::db
 

@@ -14,6 +14,9 @@ class Db {
 
   virtual std::optional<std::vector<Row>> Select(
       const TableDefinition &table_definition) = 0;
+
+  virtual std::optional<std::vector<Row>> Select(
+      std::string_view query, const std::vector<Column> &columns) = 0;
 };
 }  // namespace stonks::db
 

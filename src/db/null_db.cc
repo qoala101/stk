@@ -28,4 +28,10 @@ std::optional<std::vector<Row>> NullDb::Select(
   spdlog::error("Not implemented");
   return std::nullopt;
 }
+
+std::optional<std::vector<Row>> NullDb::Select(
+    std::string_view query, const std::vector<Column> &columns) {
+  spdlog::error("Not implemented");
+  return std::nullopt;
+}
 }  // namespace stonks::db

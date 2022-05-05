@@ -23,7 +23,7 @@ std::optional<std::string> GetDbFileName(sqlite3 &sqlite_db_handle) {
 std::optional<SqliteDb> SqliteDb::OpenOrCreateDbFromFile(
     std::string_view file_name) {
   auto sqlite_db_handle = (sqlite3 *){nullptr};
-  const auto result_code = sqlite3_open(file_name.data(), &sqlite_db_handle);
+  auto result_code = sqlite3_open(file_name.data(), &sqlite_db_handle);
   assert(sqlite_db_handle != nullptr);
 
   auto sqlite_db = SqliteDb{sqlite_db_handle};
@@ -32,6 +32,14 @@ std::optional<SqliteDb> SqliteDb::OpenOrCreateDbFromFile(
     spdlog::error("Cannot open DB from {}: {}", file_name,
                   sqlite3_errmsg(sqlite_db.sqlite_db_handle_));
     return std::nullopt;
+  }
+
+  result_code =
+      sqlite3_exec(sqlite_db.sqlite_db_handle_, "PRAGMA foreign_keys = ON",
+                   nullptr, nullptr, nullptr);
+
+  if (result_code != SQLITE_OK) {
+    spdlog::error("Failed to enable foreign key checks in SQLite DB");
   }
 
   const auto full_file_name = GetDbFileName(*sqlite_db.sqlite_db_handle_);
@@ -154,7 +162,7 @@ bool SqliteDb::CreateTable(const TableDefinition &table_definition) {
 
   if (has_foreign_keys) {
     auto foreign_key_columns =
-        table_definition.columns | ranges::views::filter(column_is_primary_key);
+        table_definition.columns | ranges::views::filter(column_is_foreign_key);
 
     for (const auto &column : foreign_key_columns) {
       const auto &foreign_key = *column.foreign_key;
@@ -233,7 +241,7 @@ bool SqliteDb::Insert(const Table &table, const Row &row) {
 
 namespace {
 struct SelectData {
-  const TableDefinition &table_definition{};
+  const std::vector<Column> &columns{};
   std::vector<Row> rows{};
 };
 
@@ -244,7 +252,6 @@ int SelectCallback(void *data, int num_cells, char **cells_data,
   assert(column_names != nullptr);
 
   auto select_data = static_cast<SelectData *>(data);
-  const auto &columns = select_data->table_definition.columns;
 
   auto &row = select_data->rows.emplace_back();
   row.cells.reserve(num_cells);
@@ -253,14 +260,13 @@ int SelectCallback(void *data, int num_cells, char **cells_data,
     const auto column_name = column_names[i];
     assert(column_name != nullptr);
 
-    const auto column =
-        ranges::find_if(columns, [column_name](const Column &column) {
-          return column.name == column_name;
-        });
+    const auto column = ranges::find_if(select_data->columns,
+                                        [column_name](const Column &column) {
+                                          return column.name == column_name;
+                                        });
 
-    if (column == columns.end()) {
-      spdlog::error("Column is not present in table definition {}",
-                    column_name);
+    if (column == select_data->columns.end()) {
+      spdlog::error("Column {} is not found", column_name);
       continue;
     }
 
@@ -280,7 +286,21 @@ std::optional<std::vector<Row>> SqliteDb::Select(
     const TableDefinition &table_definition) {
   const auto query =
       std::string{"SELECT * from \"" + table_definition.table.name + "\";"};
-  auto select_data = SelectData{.table_definition = table_definition};
+  auto select_data = SelectData{.columns = table_definition.columns};
+  const auto error_message =
+      ExecuteQuery(*sqlite_db_handle_, query, SelectCallback, &select_data);
+
+  if (error_message.has_value()) {
+    spdlog::error("Cannot select from table: {}", *error_message);
+    return std::nullopt;
+  }
+
+  return select_data.rows;
+}
+
+std::optional<std::vector<Row>> SqliteDb::Select(
+    std::string_view query, const std::vector<Column> &columns) {
+  auto select_data = SelectData{.columns = columns};
   const auto error_message =
       ExecuteQuery(*sqlite_db_handle_, query, SelectCallback, &select_data);
 
