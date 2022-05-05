@@ -78,6 +78,32 @@ struct SymbolPrice {
   std::string symbol{};
   double price{};
 };
+
+struct SymbolExchangeInfo {
+  // std::string symbol{};
+  //  std::string status{};
+  std::string base_asset{};
+  // int base_asset_precision{};
+  std::string quote_asset{};
+  // int quote_precision{};
+  //  std::string order_types{};
+  // bool iceberg_allowed{};
+  // bool oco_allowed{};
+  // bool quote_order_quantity_market_allowed{};
+  // bool allow_trailing_stop{};
+  // bool is_spot_trading_allowed{};
+  // bool is_margin_trading_allowed{};
+  //  std::string filters{};
+  //  std::string permissions{};
+};
+
+struct ExchangeInfo {
+  // std::string timezone{};
+  // std::chrono::milliseconds server_time{};
+  // std::string rate_limits{};
+  // std::string exchange_filters{};
+  std::vector<SymbolExchangeInfo> symbols{};
+};
 }  // namespace stonks::binance
 
 #endif  // STONKS_BINANCE_BINANCE_TYPES_H_

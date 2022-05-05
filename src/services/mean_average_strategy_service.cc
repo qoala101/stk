@@ -58,7 +58,7 @@ void HandlePostRequest(const web::http::http_request &request,
   const auto relative_uri = request.relative_uri().path();
 
   if (relative_uri == "/order_update") {
-    auto order_update =
+    const auto order_update =
         json::ParseFromJson<finance::OrderProxyToStrategyOrderUpdate>(json);
 
     if (!order_update.has_value()) {

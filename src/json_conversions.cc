@@ -334,6 +334,45 @@ std::optional<std::vector<binance::SymbolPrice>> ParseFromJson(
 }
 
 template <>
+std::optional<binance::SymbolExchangeInfo> ParseFromJson(
+    const web::json::value& json) {
+  try {
+    return binance::SymbolExchangeInfo{
+        .base_asset = GetStringPropertyAsString(json, "baseAsset"),
+        .quote_asset = GetStringPropertyAsString(json, "quoteAsset")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+template <>
+std::optional<std::vector<binance::SymbolExchangeInfo>> ParseFromJson(
+    const web::json::value& json) {
+  return ParseFromJsonArray<std::vector<binance::SymbolExchangeInfo>>(json);
+}
+
+template <>
+std::optional<binance::ExchangeInfo> ParseFromJson(
+    const web::json::value& json) {
+  try {
+    return binance::ExchangeInfo{
+        .symbols =
+            GetObjectPropertyAsObject<std::vector<binance::SymbolExchangeInfo>>(
+                json, "symbols")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+template <>
 std::optional<finance::Symbol> ParseFromJson(const web::json::value& json) {
   try {
     return finance::Symbol{
@@ -393,8 +432,8 @@ std::optional<finance::SymbolPrices> ParseFromJson(
   try {
     return finance::SymbolPrices{
         .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
-        .prices =
-            GetObjectPropertyAsObject<std::vector<finance::TimeDouble>>(json, "prices")};
+        .prices = GetObjectPropertyAsObject<std::vector<finance::TimeDouble>>(
+            json, "prices")};
   } catch (const std::exception& exception) {
     spdlog::error("Parse from JSON: {}", exception.what());
   } catch (...) {
@@ -851,7 +890,8 @@ web::json::value ConvertToJson(
 //   return std::nullopt;
 // }
 
-// web::json::value ConvertToJson(const finance::OrderMonitorOrderState& data) {
+// web::json::value ConvertToJson(const finance::OrderMonitorOrderState& data)
+// {
 //   return {};
 // }
 }  // namespace stonks::json

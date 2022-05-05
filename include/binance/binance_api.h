@@ -11,7 +11,7 @@
 #include "utils.h"
 
 namespace stonks::binance {
-std::optional<std::vector<std::string>> GetSymbols();
+std::optional<ExchangeInfo> GetExchangeInfo();
 
 std::optional<std::string> GetBalances();
 

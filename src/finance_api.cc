@@ -191,7 +191,7 @@ std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices() {
   const auto result = binance::GetAllSymbolsPrices();
 
   if (!result.has_value()) {
-    spdlog::error("Cannot all symbols prices");
+    spdlog::error("Cannot get all symbols prices");
     return std::nullopt;
   }
 
@@ -204,6 +204,23 @@ std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices() {
       };
   return *result |
          ranges::views::transform(binance_symbol_price_to_symbol_price) |
+         ranges::to_vector;
+}
+
+std::optional<std::vector<Symbol>> GetAllSymbols() {
+  const auto result = binance::GetExchangeInfo();
+
+  if (!result.has_value()) {
+    spdlog::error("Cannot get all symbols");
+    return std::nullopt;
+  }
+
+  const auto symbol_from_symbol_info =
+      [](const binance::SymbolExchangeInfo &symbol_info) {
+        return Symbol{.base_asset = symbol_info.base_asset,
+                      .quote_asset = symbol_info.quote_asset};
+      };
+  return result->symbols | ranges::views::transform(symbol_from_symbol_info) |
          ranges::to_vector;
 }
 }  // namespace stonks::finance

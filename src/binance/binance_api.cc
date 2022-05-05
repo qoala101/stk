@@ -48,18 +48,18 @@ std::optional<std::vector<std::string>> ParseSymbolsFromExchangeInfo(
 }
 }  // namespace
 
-std::optional<std::vector<std::string>> GetSymbols() {
-  const auto exchange_info =
+std::optional<ExchangeInfo> GetExchangeInfo() {
+  const auto response =
       rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/exchangeInfo")
           .SendAndGetResponse();
 
-  if (!exchange_info.has_value()) {
-    spdlog::error("Cannot get symbols");
+  if (!response.has_value()) {
+    spdlog::error("Cannot get exchange info");
     return std::nullopt;
   }
 
-  return ParseSymbolsFromExchangeInfo(*exchange_info);
+  return json::ParseFromJson<ExchangeInfo>(*response);
 }
 
 std::optional<std::string> GetBalances() {

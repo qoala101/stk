@@ -5,9 +5,10 @@
 
 #include <chrono>
 
-TEST(BinanceApi, GetSymbols) {
-  const auto symbols = stonks::binance::GetSymbols();
-  EXPECT_TRUE(symbols.has_value());
+TEST(BinanceApi, GetExchangeInfo) {
+  const auto exchange_info = stonks::binance::GetExchangeInfo();
+  ASSERT_TRUE(exchange_info.has_value());
+  EXPECT_FALSE(exchange_info->symbols.empty());
 }
 
 TEST(BinanceApi, GetBalances) {
