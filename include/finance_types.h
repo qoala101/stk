@@ -17,6 +17,8 @@ struct Symbol {
 
  private:
   friend bool operator==(const Symbol &, const Symbol &) = default;
+  friend std::partial_ordering operator<=>(const Symbol &left,
+                                           const Symbol &right) = default;
 };
 
 struct TimeDouble {

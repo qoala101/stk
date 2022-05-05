@@ -7,15 +7,16 @@
 #include "utils.h"
 
 namespace {
-auto sqlite_db = []() {
-  std::remove("sqlite_db_test.db");
-  return stonks::db::sqlite::SqliteDb::OpenOrCreateDbFromFile(
-      "sqlite_db_test.db");
-}();
+const auto kTestDbFileName = "sqlite_db_test.db";
 
+auto sqlite_db = std::optional<stonks::db::sqlite::SqliteDb>{};
 auto &db = static_cast<stonks::db::Db &>(*sqlite_db);
 
 TEST(SqliteDb, CreateAndDropTable) {
+  std::remove(kTestDbFileName);
+  sqlite_db =
+      stonks::db::sqlite::SqliteDb::OpenOrCreateDbFromFile(kTestDbFileName);
+
   const auto table = stonks::db::Table{.name = "TestTable"};
   const auto table_definition = stonks::db::TableDefinition{
       .table = table,

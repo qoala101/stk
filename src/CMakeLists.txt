@@ -21,6 +21,7 @@ add_library(libstonks
   order_monitor.cc
   prices_stream.cc
   mean_average_strategy.cc
+  finance_db.cc
 
   binance/binance_api.cc
   binance/binance_settings.cc
@@ -44,6 +45,7 @@ target_link_libraries(libstonks PUBLIC magic_enum::magic_enum)
 target_link_libraries(libstonks PRIVATE date::date)
 target_link_libraries(libstonks PUBLIC Microsoft.GSL::GSL)
 target_link_libraries(libstonks PRIVATE Boost::boost)
+target_link_libraries(libstonks PRIVATE libdb)
 
 add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)
