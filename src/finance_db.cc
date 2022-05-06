@@ -10,13 +10,14 @@
 #include <range/v3/view/set_algorithm.hpp>
 #include <range/v3/view/transform.hpp>
 
+#include "db_types.h"
 #include "finance_api.h"
 #include "finance_db_table_definitions.h"
+#include "finance_types.h"
 #include "null_db.h"
 #include "sqlite_db.h"
 
 namespace stonks::finance {
-
 namespace {
 struct AssetTableRow {
   int id{};
@@ -128,7 +129,7 @@ void UpdateAssetTable(db::Db &db, const std::vector<Symbol> &new_symbols) {
     const auto success = db.Insert(
         kAssetTableDefinition.table,
         stonks::db::Row{.cells = {stonks::db::Cell{.column_name = "name",
-                                                   .value = added_asset}}});
+                                                   .value = {added_asset}}}});
 
     if (!success) {
       spdlog::error("Cannot insert asset");
@@ -186,9 +187,9 @@ void UpdateSymbolTable(db::Db &db, std::vector<Symbol> new_symbols) {
         kSymbolTableDefinition.table,
         stonks::db::Row{
             .cells = {stonks::db::Cell{.column_name = "base_asset_id",
-                                       .value = base_asset->id},
+                                       .value = {base_asset->id}},
                       stonks::db::Cell{.column_name = "quote_asset_id",
-                                       .value = quote_asset->id}}});
+                                       .value = {quote_asset->id}}}});
 
     if (!success) {
       spdlog::error("Cannot insert symbol");
@@ -262,5 +263,63 @@ std::optional<std::vector<std::string>> FinanceDb::SelectAssets() const {
 
 std::optional<std::vector<Symbol>> FinanceDb::SelectSymbols() const {
   return ::stonks::finance::SelectSymbols(impl_->GetDb());
+}
+
+bool FinanceDb::InsertSymbolsPrices(
+    const std::vector<SymbolPrices> &symbols_prices) {
+  for (const auto &symbol_prices : symbols_prices) {
+    for (const auto &price : symbol_prices.prices) {
+      const auto success = impl_->GetDb().Insert(
+          kSymbolPriceTableDefinition.table,
+          db::Row{.cells = {db::Cell{.column_name = "time",
+                                     .value = {price.time.count()}}}});
+
+      if (!success) {
+        spdlog::info("Cannot insert symbol price {}",
+                     symbol_prices.symbol.GetName());
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+std::optional<std::vector<TimeDouble>> FinanceDb::SelectSymbolPrices(
+    const Symbol &symbol) const {
+  const auto columns = std::vector<db::Column>{
+      db::Column{.name = "time", .data_type = db::DataType::kInteger},
+      db::Column{.name = "price", .data_type = db::DataType::kReal}};
+  const auto rows = impl_->GetDb().Select(
+      "SELECT time, price FROM SymbolPrice JOIN Symbol ON "
+      "SymbolPrice.symbol_id = Symbol.id JOIN Asset AS BaseAsset ON "
+      "Symbol.base_asset_id = BaseAsset.id JOIN Asset AS QuoteAsset ON "
+      "Symbol.quote_asset_id = QuoteAsset.id WHERE BaseAsset.name = \"" +
+          symbol.base_asset + "\" AND QuoteAsset.name = \"" +
+          symbol.quote_asset + "\";",
+      columns);
+
+  if (!rows.has_value()) {
+    spdlog::error("Cannot get symbol prices from DB");
+    return std::nullopt;
+  }
+
+  auto result = std::vector<TimeDouble>{};
+  result.reserve(rows->size());
+
+  for (const auto &row : *rows) {
+    const auto time = row.GetCellValueInt64("time");
+    const auto price = row.GetCellValueDouble("price");
+
+    if (!time.has_value() || !price.has_value()) {
+      spdlog::error("Select result doesn't have expected cell");
+      return std::nullopt;
+    }
+
+    result.emplace_back(
+        TimeDouble{.time = std::chrono::milliseconds{*time}, .value = *price});
+  }
+
+  return result;
 }
 }  // namespace stonks::finance

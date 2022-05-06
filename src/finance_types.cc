@@ -3,6 +3,8 @@
 #include <tuple>
 
 namespace stonks::finance {
+std::string Symbol::GetName() const { return base_asset + quote_asset; }
+
 bool operator==(const Candle &left, const Candle &right) {
   const auto equal = std::tie(left.open_time, left.close_time) ==
                      std::tie(right.open_time, right.close_time);

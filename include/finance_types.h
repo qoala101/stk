@@ -15,6 +15,8 @@ struct Symbol {
   std::string base_asset{};
   std::string quote_asset{};
 
+  std::string GetName() const;
+
  private:
   friend bool operator==(const Symbol &, const Symbol &) = default;
   friend std::partial_ordering operator<=>(const Symbol &left,
@@ -24,6 +26,9 @@ struct Symbol {
 struct TimeDouble {
   std::chrono::milliseconds time{};
   double value{};
+
+ private:
+  friend bool operator==(const TimeDouble &, const TimeDouble &) = default;
 };
 
 struct SymbolPrice {

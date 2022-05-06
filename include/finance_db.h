@@ -13,8 +13,13 @@ class FinanceDb {
   ~FinanceDb();
 
   std::optional<std::vector<std::string>> SelectAssets() const;
-  
+
   std::optional<std::vector<Symbol>> SelectSymbols() const;
+
+  bool InsertSymbolsPrices(const std::vector<SymbolPrices> &symbols_prices);
+
+  std::optional<std::vector<TimeDouble>> SelectSymbolPrices(
+      const Symbol &symbol) const;
 
  private:
   class Impl;
