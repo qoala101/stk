@@ -9,6 +9,7 @@
 #include <range/v3/view/concat.hpp>
 #include <range/v3/view/set_algorithm.hpp>
 #include <range/v3/view/transform.hpp>
+#include <string>
 
 #include "db_types.h"
 #include "finance_api.h"
@@ -81,6 +82,167 @@ std::optional<std::vector<Symbol>> SelectSymbols(db::Db &db) {
 
     result.emplace_back(
         Symbol{.base_asset = *base_asset, .quote_asset = *quote_asset});
+  }
+
+  return result;
+}
+
+std::optional<Symbol> SelectSymbolById(db::Db &db, int64_t symbol_id) {
+  const auto columns = std::vector<db::Column>{
+      db::Column{.name = "base_asset", .data_type = db::DataType::kText},
+      db::Column{.name = "quote_asset", .data_type = db::DataType::kText}};
+  const auto rows = db.Select(
+      "SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS quote_asset "
+      "FROM Symbol "
+      "JOIN Asset AS BaseAsset ON Symbol.base_asset_id = BaseAsset.id "
+      "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id = QuoteAsset.id "
+      "WHERE Symbol.id = " +
+          std::to_string(symbol_id) + ";",
+      columns);
+
+  if (!rows.has_value()) {
+    spdlog::error("Cannot get symbol from DB");
+    return std::nullopt;
+  }
+
+  if (rows->empty()) {
+    spdlog::error("No symbol with ID {}", symbol_id);
+    return std::nullopt;
+  }
+
+  const auto &row = (*rows)[0];
+  const auto base_asset = row.GetCellValueString("base_asset");
+  const auto quote_asset = row.GetCellValueString("quote_asset");
+
+  if ((base_asset == nullptr) || (quote_asset == nullptr)) {
+    spdlog::error("Select result doesn't have expected cell");
+    return std::nullopt;
+  }
+
+  return Symbol{.base_asset = *base_asset, .quote_asset = *quote_asset};
+}
+
+std::optional<Symbol> SelectSymbolByName(db::Db &db,
+                                         std::string_view symbol_name) {
+  const auto columns = std::vector<db::Column>{
+      db::Column{.name = "base_asset", .data_type = db::DataType::kText},
+      db::Column{.name = "quote_asset", .data_type = db::DataType::kText}};
+  const auto rows = db.Select(
+      "SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS quote_asset "
+      "FROM Symbol "
+      "JOIN Asset AS BaseAsset ON Symbol.base_asset_id = BaseAsset.id "
+      "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id = QuoteAsset.id "
+      "WHERE base_asset || quote_asset = \"" +
+          std::string{symbol_name} + "\";",
+      columns);
+
+  if (!rows.has_value()) {
+    spdlog::error("Cannot get symbol from DB");
+    return std::nullopt;
+  }
+
+  if (rows->empty()) {
+    spdlog::error("No symbol with name {}", symbol_name);
+    return std::nullopt;
+  }
+
+  const auto &row = (*rows)[0];
+  const auto base_asset = row.GetCellValueString("base_asset");
+  const auto quote_asset = row.GetCellValueString("quote_asset");
+
+  if ((base_asset == nullptr) || (quote_asset == nullptr)) {
+    spdlog::error("Select result doesn't have expected cell");
+    return std::nullopt;
+  }
+
+  return Symbol{.base_asset = *base_asset, .quote_asset = *quote_asset};
+}
+
+std::optional<int64_t> SelectSymbolIdBySymbol(db::Db &db,
+                                              const Symbol &symbol) {
+  const auto columns = std::vector<db::Column>{
+      db::Column{.name = "id", .data_type = db::DataType::kInteger}};
+  const auto rows = db.Select(
+      "SELECT Symbol.id "
+      "FROM Symbol "
+      "JOIN Asset AS BaseAsset ON Symbol.base_asset_id = BaseAsset.id "
+      "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id = QuoteAsset.id "
+      "WHERE BaseAsset.name || QuoteAsset.name = \"" +
+          symbol.base_asset + symbol.quote_asset + "\";",
+      columns);
+
+  if (!rows.has_value()) {
+    spdlog::error("Cannot get symbol from DB");
+    return std::nullopt;
+  }
+
+  if (rows->empty()) {
+    spdlog::error("No symbol with assets {} {}", symbol.base_asset,
+                  symbol.quote_asset);
+    return std::nullopt;
+  }
+
+  const auto &row = (*rows)[0];
+  const auto id = row.GetCellValueInt64("id");
+
+  if (!id.has_value()) {
+    spdlog::error("Select result doesn't have expected cell");
+    return std::nullopt;
+  }
+
+  return *id;
+}
+
+std::optional<std::vector<SymbolBookTick>> SelectSymbolBookTicks(
+    db::Db &db, const std::optional<Symbol> &symbol = std::nullopt) {
+  auto query = std::string{"SELECT * FROM SymbolBookTick"};
+
+  if (symbol.has_value()) {
+    const auto symbol_id = SelectSymbolIdBySymbol(db, *symbol);
+
+    if (!symbol_id.has_value()) {
+      spdlog::error("Symbol not found in DB");
+      return std::nullopt;
+    }
+
+    query += " WHERE SymbolBookTick.symbol_id = " + std::to_string(*symbol_id);
+  }
+
+  query += ";";
+
+  const auto rows = db.Select(query, kSymbolBookTickTableDefinition.columns);
+
+  if (!rows.has_value()) {
+    spdlog::error("Cannot get symbol book ticks from DB");
+    return std::nullopt;
+  }
+
+  auto result = std::vector<SymbolBookTick>{};
+  result.reserve(rows->size());
+
+  for (const auto &row : *rows) {
+    const auto symbol_id = row.GetCellValueInt64("symbol_id");
+    const auto time = row.GetCellValueInt64("time");
+    const auto buy_price = row.GetCellValueDouble("buy_price");
+    const auto sell_price = row.GetCellValueDouble("sell_price");
+
+    if (!symbol_id.has_value() || !time.has_value() || !buy_price.has_value() ||
+        !sell_price.has_value()) {
+      spdlog::error("Select result doesn't have expected cell");
+      return std::nullopt;
+    }
+
+    const auto symbol = SelectSymbolById(db, *symbol_id);
+
+    if (!symbol.has_value()) {
+      spdlog::error("No symbol with ID {}", *symbol_id);
+      return std::nullopt;
+    }
+
+    result.emplace_back(SymbolBookTick{.symbol = *symbol,
+                                       .time = std::chrono::milliseconds{*time},
+                                       .buy_price = *buy_price,
+                                       .sell_price = *sell_price});
   }
 
   return result;
@@ -198,6 +360,19 @@ void UpdateSymbolTable(db::Db &db, std::vector<Symbol> new_symbols) {
   }
 }
 
+void UpdateSymbolBookTickTable(db::Db &db) {
+  auto symbol_book_ticks = SelectSymbolBookTicks(db);
+
+  if (!symbol_book_ticks.has_value()) {
+    db.CreateTable(kSymbolBookTickTableDefinition);
+    symbol_book_ticks = SelectSymbolBookTicks(db);
+
+    if (!symbol_book_ticks.has_value()) {
+      spdlog::error("Cannot create Symbol Book Tick table");
+    }
+  }
+}
+
 void UpdateTables(db::Db &db) {
   const auto symbols = GetAllSymbols();
 
@@ -208,6 +383,7 @@ void UpdateTables(db::Db &db) {
 
   UpdateAssetTable(db, *symbols);
   UpdateSymbolTable(db, *symbols);
+  UpdateSymbolBookTickTable(db);
 }
 }  // namespace
 
@@ -321,5 +497,52 @@ std::optional<std::vector<TimeDouble>> FinanceDb::SelectSymbolPrices(
   }
 
   return result;
+}
+
+bool FinanceDb::InsertSymbolBookTick(const SymbolBookTick &symbol_book_tick) {
+  const auto symbol_id = SelectSymbolIdBySymbol(symbol_book_tick.symbol);
+
+  if (!symbol_id.has_value()) {
+    spdlog::error("Symbol not found in DB");
+    return false;
+  }
+
+  const auto success = impl_->GetDb().Insert(
+      kSymbolBookTickTableDefinition.table,
+      db::Row{
+          .cells = {db::Cell{.column_name = "symbol_id", .value = {*symbol_id}},
+                    db::Cell{.column_name = "time",
+                             .value = {symbol_book_tick.time.count()}},
+                    db::Cell{.column_name = "buy_price",
+                             .value = {symbol_book_tick.buy_price}},
+                    db::Cell{.column_name = "sell_price",
+                             .value = {symbol_book_tick.sell_price}}}});
+
+  if (!success) {
+    spdlog::info("Cannot insert symbol book tick {}",
+                 symbol_book_tick.symbol.GetName());
+    return false;
+  }
+
+  return true;
+}
+
+std::optional<std::vector<SymbolBookTick>> FinanceDb::SelectSymbolBookTicks(
+    const Symbol &symbol) const {
+  return ::stonks::finance::SelectSymbolBookTicks(impl_->GetDb(), symbol);
+}
+
+std::optional<Symbol> FinanceDb::SelectSymbolById(int64_t symbol_id) const {
+  return ::stonks::finance::SelectSymbolById(impl_->GetDb(), symbol_id);
+}
+
+std::optional<Symbol> FinanceDb::SelectSymbolByName(
+    std::string_view symbol_name) const {
+  return ::stonks::finance::SelectSymbolByName(impl_->GetDb(), symbol_name);
+}
+
+std::optional<int64_t> FinanceDb::SelectSymbolIdBySymbol(
+    const Symbol &symbol) const {
+  return ::stonks::finance::SelectSymbolIdBySymbol(impl_->GetDb(), symbol);
 }
 }  // namespace stonks::finance

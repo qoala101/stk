@@ -373,6 +373,26 @@ std::optional<binance::ExchangeInfo> ParseFromJson(
 }
 
 template <>
+std::optional<binance::SymbolBookTicker> ParseFromJson(
+    const web::json::value& json) {
+  try {
+    return binance::SymbolBookTicker{
+        .order_book_update_id = GetInt64PropertyAsInt64(json, "u"),
+        .symbol = GetStringPropertyAsString(json, "s"),
+        .best_bid_price = GetStringPropertyAsDouble(json, "b"),
+        .best_bid_quantity = GetStringPropertyAsDouble(json, "B"),
+        .best_ask_price = GetStringPropertyAsDouble(json, "a"),
+        .best_ask_quantity = GetStringPropertyAsDouble(json, "A")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+template <>
 std::optional<finance::Symbol> ParseFromJson(const web::json::value& json) {
   try {
     return finance::Symbol{

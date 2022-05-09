@@ -23,6 +23,11 @@ TEST(FinanceDb, TablesInitialization) {
   const auto symbols = finance_db->SelectSymbols();
   ASSERT_TRUE(symbols.has_value());
   EXPECT_FALSE(symbols->empty());
+
+  const auto symbol_ticks = finance_db->SelectSymbolBookTicks(
+      stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"});
+  ASSERT_TRUE(symbol_ticks.has_value());
+  EXPECT_TRUE(symbols->empty());
 }
 
 TEST(FinanceDb, InsertAndSelectSymbolPrices) {

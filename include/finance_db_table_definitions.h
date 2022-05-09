@@ -47,6 +47,21 @@ static const auto kSymbolPriceTableDefinition = stonks::db::TableDefinition{
                            .data_type = stonks::db::DataType::kInteger},
         stonks::db::Column{.name = "price",
                            .data_type = stonks::db::DataType::kReal}}};
+
+static const auto kSymbolBookTickTableDefinition = stonks::db::TableDefinition{
+    .table = stonks::db::Table{.name = "SymbolBookTick"},
+    .columns = {
+        stonks::db::Column{
+            .name = "symbol_id",
+            .data_type = stonks::db::DataType::kInteger,
+            .foreign_key = stonks::db::ForeignKey{.table_name = "Symbol",
+                                                  .column_name = "id"}},
+        stonks::db::Column{.name = "time",
+                           .data_type = stonks::db::DataType::kInteger},
+        stonks::db::Column{.name = "buy_price",
+                           .data_type = stonks::db::DataType::kReal},
+        stonks::db::Column{.name = "sell_price",
+                           .data_type = stonks::db::DataType::kReal}}};
 }  // namespace stonks::finance
 
 #endif  // STONKS_FINANCE_DB_TABLE_DEFINITIONS_H_

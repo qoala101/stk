@@ -21,6 +21,17 @@ class FinanceDb {
   std::optional<std::vector<TimeDouble>> SelectSymbolPrices(
       const Symbol &symbol) const;
 
+  bool InsertSymbolBookTick(const SymbolBookTick &symbol_book_tick);
+
+  std::optional<std::vector<SymbolBookTick>> SelectSymbolBookTicks(
+      const Symbol &symbol) const;
+
+  std::optional<Symbol> SelectSymbolById(int64_t symbol_id) const;
+
+  std::optional<Symbol> SelectSymbolByName(std::string_view symbol_name) const;
+  
+  std::optional<int64_t> SelectSymbolIdBySymbol(const Symbol &symbol) const;
+
  private:
   class Impl;
   std::unique_ptr<Impl> impl_{};

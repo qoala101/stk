@@ -65,6 +65,13 @@ struct Candle {
                                            const Candle &right);
 };
 
+struct SymbolBookTick {
+  Symbol symbol{};
+  std::chrono::milliseconds time{};
+  double buy_price{};
+  double sell_price{};
+};
+
 struct BreakoutStrategyData {
   std::chrono::milliseconds last_candle_close_time{};
   double expected_price{};

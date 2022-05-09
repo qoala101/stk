@@ -104,6 +104,15 @@ struct ExchangeInfo {
   // std::string exchange_filters{};
   std::vector<SymbolExchangeInfo> symbols{};
 };
+
+struct SymbolBookTicker {
+  int64_t order_book_update_id{};
+  std::string symbol{};
+  double best_bid_price{};
+  double best_bid_quantity{};
+  double best_ask_price{};
+  double best_ask_quantity{};
+};
 }  // namespace stonks::binance
 
 #endif  // STONKS_BINANCE_BINANCE_TYPES_H_
