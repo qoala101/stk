@@ -43,7 +43,7 @@ cmake --build .
 ```
 
 ## VS Code formatting settings from extensions
-## Others are in .clang-format file
+## Others are in .clangd, .clang-tidy, and .clang-format files
 ```json
 {
   "C/C++ Include Guard.Macro Type": "Filepath",
