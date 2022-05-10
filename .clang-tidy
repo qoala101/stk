@@ -1,2 +1,2 @@
 ---
-Checks: '-*, abseil-*, boost-*, cert-*, clang-analyzer-*, concurrency-*, cppcoreguidelines-*, google-*, misc-*, modernize-*, performance-*, portability-*, readability-*'
+Checks: '*, -fuchsia-trailing-return, -fuchsia-default-arguments-declarations, -readability-identifier-length, -llvmlibc-restrict-system-libc-headers, -llvmlibc-implementation-in-namespace, -llvmlibc-callee-namespace, -fuchsia-default-arguments-calls, -altera-unroll-loops, -fuchsia-overloaded-operator'

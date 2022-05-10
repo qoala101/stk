@@ -19,14 +19,14 @@ Candle ParseCandleFromBinanceKline(const binance::Kline &kline) {
                                      .volume = kline.volume}};
 }
 
-SymbolBookTick ParseSymbolBookTickFromBinanceSymbolBookTicker(
+SymbolPriceTick ParseSymbolPriceTickFromBinanceSymbolBookTicker(
     const binance::SymbolBookTicker &symbol_book_ticker,
     const FinanceDb &finance_db) {
-  return SymbolBookTick{.symbol = ParseSymbolFromBinanceSymbol(
-                            symbol_book_ticker.symbol, finance_db),
-                        .time = utils::GetUnixTime(),
-                        .buy_price = symbol_book_ticker.best_ask_price,
-                        .sell_price = symbol_book_ticker.best_bid_price};
+  return SymbolPriceTick{.symbol = ParseSymbolFromBinanceSymbol(
+                             symbol_book_ticker.symbol, finance_db),
+                         .time = utils::GetUnixTime(),
+                         .buy_price = symbol_book_ticker.best_ask_price,
+                         .sell_price = symbol_book_ticker.best_bid_price};
 }
 
 OrderInfo ParseOrderInfoFromBinanceOrderInfo(

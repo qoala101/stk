@@ -187,7 +187,8 @@ std::optional<double> GetSymbolPrice(const Symbol &symbol) {
   return result->price;
 }
 
-std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices() {
+std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices(
+    const FinanceDb &finance_db) {
   const auto result = binance::GetAllSymbolsPrices();
 
   if (!result.has_value()) {
@@ -196,11 +197,11 @@ std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices() {
   }
 
   const auto binance_symbol_price_to_symbol_price =
-      [](const binance::SymbolPrice &symbol_price) {
-        return SymbolPrice{
-            .symbol = ParseSymbolFromBinanceSymbol(symbol_price.symbol),
-            .price = TimeDouble{.time = utils::GetUnixTime(),
-                                .value = symbol_price.price}};
+      [&finance_db](const binance::SymbolPrice &symbol_price) {
+        return SymbolPrice{.symbol = ParseSymbolFromBinanceSymbol(
+                               symbol_price.symbol, finance_db),
+                           .price = TimeDouble{.time = utils::GetUnixTime(),
+                                               .value = symbol_price.price}};
       };
   return *result |
          ranges::views::transform(binance_symbol_price_to_symbol_price) |

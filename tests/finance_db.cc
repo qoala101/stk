@@ -23,49 +23,77 @@ TEST(FinanceDb, TablesInitialization) {
   const auto symbols = finance_db->SelectSymbols();
   ASSERT_TRUE(symbols.has_value());
   EXPECT_FALSE(symbols->empty());
-
-  const auto symbol_ticks = finance_db->SelectSymbolBookTicks(
-      stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"});
-  ASSERT_TRUE(symbol_ticks.has_value());
-  EXPECT_TRUE(symbols->empty());
 }
 
-TEST(FinanceDb, InsertAndSelectSymbolPrices) {
-  const auto eth_prices = std::vector<stonks::finance::TimeDouble>{
-      stonks::finance::TimeDouble{.time = std::chrono::milliseconds{1000},
-                                  .value = 0.1},
-      stonks::finance::TimeDouble{.time = std::chrono::milliseconds{2000},
-                                  .value = 0.2},
-      stonks::finance::TimeDouble{.time = std::chrono::milliseconds{3000},
-                                  .value = 0.3}};
-  const auto btc_prices = std::vector<stonks::finance::TimeDouble>{
-      stonks::finance::TimeDouble{.time = std::chrono::milliseconds{10000},
-                                  .value = double{1}},
-      stonks::finance::TimeDouble{.time = std::chrono::milliseconds{20000},
-                                  .value = double{2}},
-      stonks::finance::TimeDouble{.time = std::chrono::milliseconds{30000},
-                                  .value = double{3}}};
-
-  const auto success = finance_db->InsertSymbolsPrices(
-      {stonks::finance::SymbolPrices{
-           .symbol = stonks::finance::Symbol{.base_asset = "ETH",
-                                             .quote_asset = "USDT"},
-           .prices = eth_prices},
-
-       stonks::finance::SymbolPrices{
-           .symbol = stonks::finance::Symbol{.base_asset = "BTC",
-                                             .quote_asset = "USDT"},
-           .prices = btc_prices}});
-  EXPECT_TRUE(success);
-
-  const auto eth_prices_received = finance_db->SelectSymbolPrices(
+TEST(FinanceDb, InsertAndSelectSymbolPriceTicks) {
+  const auto symbol_price_ticks = finance_db->SelectSymbolPriceTicks(
       stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"});
-  ASSERT_TRUE(eth_prices_received.has_value());
-  EXPECT_EQ(*eth_prices_received, eth_prices);
+  ASSERT_TRUE(symbol_price_ticks.has_value());
+  EXPECT_TRUE(symbol_price_ticks->empty());
 
-  const auto btc_prices_received = finance_db->SelectSymbolPrices(
+  const auto eth_price_ticks = std::vector<stonks::finance::SymbolPriceTick>{
+      stonks::finance::SymbolPriceTick{
+          .symbol = stonks::finance::Symbol{.base_asset = "ETH",
+                                            .quote_asset = "USDT"},
+          .time = std::chrono::milliseconds{1000},
+          .buy_price = 0.1,
+          .sell_price = 0.01},
+      stonks::finance::SymbolPriceTick{
+          .symbol = stonks::finance::Symbol{.base_asset = "ETH",
+                                            .quote_asset = "USDT"},
+          .time = std::chrono::milliseconds{2000},
+          .buy_price = 0.2,
+          .sell_price = 0.02},
+      stonks::finance::SymbolPriceTick{
+          .symbol = stonks::finance::Symbol{.base_asset = "ETH",
+                                            .quote_asset = "USDT"},
+          .time = std::chrono::milliseconds{3000},
+          .buy_price = 0.3,
+          .sell_price = 0.03}};
+
+  for (const auto &symbol_price_tick : eth_price_ticks) {
+    const auto success = finance_db->InsertSymbolPriceTick(symbol_price_tick);
+    EXPECT_TRUE(success);
+  }
+
+  const auto btc_price_ticks = std::vector<stonks::finance::SymbolPriceTick>{
+      stonks::finance::SymbolPriceTick{
+          .symbol = stonks::finance::Symbol{.base_asset = "BTC",
+                                            .quote_asset = "USDT"},
+          .time = std::chrono::milliseconds{10000},
+          .buy_price = 0.01,
+          .sell_price = 0.001},
+      stonks::finance::SymbolPriceTick{
+          .symbol = stonks::finance::Symbol{.base_asset = "BTC",
+                                            .quote_asset = "USDT"},
+          .time = std::chrono::milliseconds{20000},
+          .buy_price = 0.02,
+          .sell_price = 0.002},
+      stonks::finance::SymbolPriceTick{
+          .symbol = stonks::finance::Symbol{.base_asset = "BTC",
+                                            .quote_asset = "USDT"},
+          .time = std::chrono::milliseconds{30000},
+          .buy_price = 0.03,
+          .sell_price = 0.003}};
+
+  for (const auto &symbol_price_tick : btc_price_ticks) {
+    const auto success = finance_db->InsertSymbolPriceTick(symbol_price_tick);
+    EXPECT_TRUE(success);
+  }
+
+  const auto all_price_ticks_received = finance_db->SelectSymbolPriceTicks();
+  ASSERT_TRUE(all_price_ticks_received.has_value());
+  EXPECT_EQ(all_price_ticks_received->size(),
+            eth_price_ticks.size() + btc_price_ticks.size());
+
+  const auto eth_price_ticks_received = finance_db->SelectSymbolPriceTicks(
+      stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"});
+  ASSERT_TRUE(eth_price_ticks_received.has_value());
+  EXPECT_EQ(*eth_price_ticks_received, eth_price_ticks);
+
+  const auto btc_price_ticks_received = finance_db->SelectSymbolPriceTicks(
       stonks::finance::Symbol{.base_asset = "BTC", .quote_asset = "USDT"});
-  ASSERT_TRUE(btc_prices_received.has_value());
-  EXPECT_EQ(*btc_prices_received, btc_prices);
+  ASSERT_TRUE(btc_price_ticks_received.has_value());
+  EXPECT_EQ(*btc_price_ticks_received, btc_price_ticks);
 }
 }  // namespace

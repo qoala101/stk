@@ -65,12 +65,21 @@ struct Candle {
                                            const Candle &right);
 };
 
-struct SymbolBookTick {
+struct SymbolPriceTick {
+  static const auto kAlignment = 128;
+
   Symbol symbol{};
   std::chrono::milliseconds time{};
   double buy_price{};
   double sell_price{};
-};
+
+ private:
+  friend auto operator==(const SymbolPriceTick &left,
+                         const SymbolPriceTick &right) -> bool = default;
+  friend auto operator<=>(const SymbolPriceTick &left,
+                          const SymbolPriceTick &right)
+      -> std::partial_ordering = default;
+} __attribute__((aligned(kAlignment)));
 
 struct BreakoutStrategyData {
   std::chrono::milliseconds last_candle_close_time{};

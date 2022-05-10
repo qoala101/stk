@@ -15,7 +15,7 @@ Symbol ParseSymbolFromBinanceSymbol(std::string_view symbol,
 
 Candle ParseCandleFromBinanceKline(const binance::Kline &kline);
 
-SymbolBookTick ParseSymbolBookTickFromBinanceSymbolBookTicker(
+SymbolPriceTick ParseSymbolPriceTickFromBinanceSymbolBookTicker(
     const binance::SymbolBookTicker &symbol_book_ticker,
     const FinanceDb &finance_db);
 

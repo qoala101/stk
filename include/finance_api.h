@@ -7,6 +7,7 @@
 #include <string_view>
 #include <vector>
 
+#include "finance_db.h"
 #include "finance_enums.h"
 #include "finance_types.h"
 #include "utils.h"
@@ -54,7 +55,8 @@ std::optional<double> GetAverageSymbolPrice(const Symbol &symbol);
 
 std::optional<double> GetSymbolPrice(const Symbol &symbol);
 
-std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices();
+std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices(
+    const FinanceDb &finance_db);
 
 std::optional<std::vector<Symbol>> GetAllSymbols();
 }  // namespace stonks::finance

@@ -4,6 +4,7 @@ find_package(range-v3 REQUIRED)
 find_package(magic_enum REQUIRED)
 find_package(date REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
+find_package(absl REQUIRED)
 
 add_library(libstonks
   utils.cc
@@ -45,6 +46,7 @@ target_link_libraries(libstonks PUBLIC magic_enum::magic_enum)
 target_link_libraries(libstonks PRIVATE date::date)
 target_link_libraries(libstonks PUBLIC Microsoft.GSL::GSL)
 target_link_libraries(libstonks PRIVATE Boost::boost)
+target_link_libraries(libstonks PRIVATE absl::absl)
 target_link_libraries(libstonks PRIVATE libdb)
 
 add_executable(stonks main.cc)
