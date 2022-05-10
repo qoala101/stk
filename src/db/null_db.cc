@@ -23,6 +23,11 @@ bool NullDb::Insert(const Table &table, const Row &row) {
   return false;
 }
 
+bool NullDb::Delete(const Table &table, std::string_view where) {
+  spdlog::error("Not implemented");
+  return false;
+}
+
 std::optional<std::vector<Row>> NullDb::Select(
     const TableDefinition &table_definition) {
   spdlog::error("Not implemented");

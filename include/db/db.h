@@ -12,6 +12,8 @@ class Db {
 
   virtual bool Insert(const Table &table, const Row &row) = 0;
 
+  virtual bool Delete(const Table &table, std::string_view where) = 0;
+
   virtual std::optional<std::vector<Row>> Select(
       const TableDefinition &table_definition) = 0;
 

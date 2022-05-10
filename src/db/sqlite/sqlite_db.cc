@@ -168,7 +168,7 @@ bool SqliteDb::CreateTable(const TableDefinition &table_definition) {
       const auto &foreign_key = *column.foreign_key;
       query += "FOREIGN KEY(\"" + column.name + "\") REFERENCES \"" +
                foreign_key.table_name + "\"(\"" + foreign_key.column_name +
-               "\")";
+               "\") ON DELETE CASCADE";
 
       const auto last_column = &column == &foreign_key_columns.back();
 
@@ -233,6 +233,20 @@ bool SqliteDb::Insert(const Table &table, const Row &row) {
 
   if (error_message.has_value()) {
     spdlog::error("Cannot insert into table: {}", *error_message);
+    return false;
+  }
+
+  return true;
+}
+
+bool SqliteDb::Delete(const Table &table, std::string_view where) {
+  const auto query =
+      std::string{"DELETE FROM \"" + table.name + "\" " + std::string{where}};
+
+  const auto error_message = ExecuteQuery(*sqlite_db_handle_, query);
+
+  if (error_message.has_value()) {
+    spdlog::error("Cannot delete from table: {}", *error_message);
     return false;
   }
 

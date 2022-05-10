@@ -2,9 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <chrono>
-#include <optional>
-
 #include "finance_types.h"
 
 namespace {
@@ -12,8 +9,8 @@ const auto kTestDbFileName = "finance_db_test.db";
 
 auto finance_db = std::optional<stonks::finance::FinanceDb>{};
 
-TEST(FinanceDb, TablesInitialization) {
-  std::remove(kTestDbFileName);
+TEST(FinanceDb, TablesInitialization) {  // NOLINT(*)
+  static_cast<void>(std::remove(kTestDbFileName));
   finance_db.emplace(kTestDbFileName);
 
   const auto assets = finance_db->SelectAssets();
@@ -25,7 +22,7 @@ TEST(FinanceDb, TablesInitialization) {
   EXPECT_FALSE(symbols->empty());
 }
 
-TEST(FinanceDb, InsertAndSelectSymbolPriceTicks) {
+TEST(FinanceDb, InsertAndSelectSymbolPriceTicks) {  // NOLINT(*)
   const auto symbol_price_ticks = finance_db->SelectSymbolPriceTicks(
       stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"});
   ASSERT_TRUE(symbol_price_ticks.has_value());

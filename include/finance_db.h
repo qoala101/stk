@@ -19,6 +19,12 @@ class FinanceDb {
    */
   explicit FinanceDb(std::string_view uri = "stonks.db");
 
+  explicit FinanceDb(const FinanceDb &) = delete;
+  auto operator=(const FinanceDb &) -> FinanceDb & = delete;
+
+  FinanceDb(FinanceDb &&) = default;
+  auto operator=(FinanceDb &&) -> FinanceDb & = default;
+
   /**
    * @brief Releases DB handle.
    */
@@ -63,7 +69,7 @@ class FinanceDb {
       -> std::optional<int64_t>;
 
  private:
-  class Impl;
+  struct Impl;
   std::unique_ptr<Impl> impl_{};
 };
 }  // namespace stonks::finance

@@ -35,21 +35,8 @@ static const auto kSymbolTableDefinition = stonks::db::TableDefinition{
                            .foreign_key = stonks::db::ForeignKey{
                                .table_name = "Asset", .column_name = "id"}}}};
 
-static const auto kSymbolPriceTableDefinition = stonks::db::TableDefinition{
-    .table = stonks::db::Table{.name = "SymbolPrice"},
-    .columns = {
-        stonks::db::Column{
-            .name = "symbol_id",
-            .data_type = stonks::db::DataType::kInteger,
-            .foreign_key = stonks::db::ForeignKey{.table_name = "Symbol",
-                                                  .column_name = "id"}},
-        stonks::db::Column{.name = "time",
-                           .data_type = stonks::db::DataType::kInteger},
-        stonks::db::Column{.name = "price",
-                           .data_type = stonks::db::DataType::kReal}}};
-
-static const auto kSymbolBookTickTableDefinition = stonks::db::TableDefinition{
-    .table = stonks::db::Table{.name = "SymbolBookTick"},
+static const auto kSymbolPriceTickTableDefinition = stonks::db::TableDefinition{
+    .table = stonks::db::Table{.name = "SymbolPriceTick"},
     .columns = {
         stonks::db::Column{
             .name = "symbol_id",

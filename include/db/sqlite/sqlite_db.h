@@ -28,6 +28,8 @@ class SqliteDb : public Db {
 
   bool Insert(const Table &table, const Row &row) override;
 
+  bool Delete(const Table &table, std::string_view where) override;
+
   std::optional<std::vector<Row>> Select(
       const TableDefinition &table_definition) override;
 
