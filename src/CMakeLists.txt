@@ -23,6 +23,7 @@ add_library(libstonks
   prices_stream.cc
   mean_average_strategy.cc
   finance_db.cc
+  web_socket.cc
 
   binance/binance_api.cc
   binance/binance_settings.cc

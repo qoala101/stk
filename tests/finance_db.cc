@@ -9,7 +9,7 @@ const auto kTestDbFileName = "finance_db_test.db";
 
 auto finance_db = std::optional<stonks::finance::FinanceDb>{};
 
-TEST(FinanceDb, TablesInitialization) {  // NOLINT(*)
+TEST(FinanceDb, TablesInitialization) {
   static_cast<void>(std::remove(kTestDbFileName));
   finance_db.emplace(kTestDbFileName);
 
@@ -22,7 +22,7 @@ TEST(FinanceDb, TablesInitialization) {  // NOLINT(*)
   EXPECT_FALSE(symbols->empty());
 }
 
-TEST(FinanceDb, InsertAndSelectSymbolPriceTicks) {  // NOLINT(*)
+TEST(FinanceDb, InsertAndSelectSymbolPriceTicks) {
   const auto symbol_price_ticks = finance_db->SelectSymbolPriceTicks(
       stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"});
   ASSERT_TRUE(symbol_price_ticks.has_value());

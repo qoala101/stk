@@ -73,19 +73,7 @@ struct FinanceDb::Impl {
   }
 
   auto CreateAssetTable() -> bool {
-    auto assets = SelectAssets();
-
-    if (!assets.has_value()) {
-      GetDb().CreateTable(kAssetTableDefinition);
-      assets = SelectAssets();
-
-      if (!assets.has_value()) {
-        spdlog::error("Cannot create Asset table");
-        return false;
-      }
-    }
-
-    return true;
+    return GetDb().CreateTable(kAssetTableDefinition);
   }
 
   auto DeleteAssetFromTable(std::string_view asset) -> bool {
@@ -209,19 +197,7 @@ struct FinanceDb::Impl {
   }
 
   auto CreateSymbolTable() -> bool {
-    auto symbols = SelectSymbols();
-
-    if (!symbols.has_value()) {
-      GetDb().CreateTable(kSymbolTableDefinition);
-      symbols = SelectSymbols();
-
-      if (!symbols.has_value()) {
-        spdlog::error("Cannot create Symbol table");
-        return false;
-      }
-    }
-
-    return true;
+    return GetDb().CreateTable(kSymbolTableDefinition);
   }
 
   auto DeleteSymbolFromTable(const Symbol &symbol) -> bool {
@@ -448,19 +424,7 @@ struct FinanceDb::Impl {
   }
 
   auto CreateSymbolPriceTickTable() -> bool {
-    auto symbol_price_ticks = SelectSymbolPriceTicks();
-
-    if (!symbol_price_ticks.has_value()) {
-      GetDb().CreateTable(kSymbolPriceTickTableDefinition);
-      symbol_price_ticks = SelectSymbolPriceTicks();
-
-      if (!symbol_price_ticks.has_value()) {
-        spdlog::error("Cannot create Symbol Price Tick table");
-        return false;
-      }
-    }
-
-    return true;
+    return GetDb().CreateTable(kSymbolPriceTickTableDefinition);
   }
 
   auto InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick) -> bool {
@@ -483,7 +447,7 @@ struct FinanceDb::Impl {
                              .value = {symbol_price_tick.sell_price}}}});
 
     if (!success) {
-      spdlog::info("Cannot insert symbol price tick");
+      spdlog::error("Cannot insert symbol price tick");
       return false;
     }
 

@@ -16,6 +16,7 @@ add_executable(unittests
   prices_stream.cc
   sqlite_db.cc
   finance_db.cc
+  web_socket.cc
 )
 target_link_libraries(unittests PRIVATE libstonks)
 target_link_libraries(unittests PRIVATE libdb)

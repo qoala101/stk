@@ -116,8 +116,8 @@ bool SqliteDb::CreateTable(const TableDefinition &table_definition) {
 
   const auto has_keys = has_primary_keys || has_foreign_keys;
 
-  auto query =
-      std::string{"CREATE TABLE \"" + table_definition.table.name + "\"(\n"};
+  auto query = std::string{"CREATE TABLE IF NOT EXISTS \"" +
+                           table_definition.table.name + "\"(\n"};
 
   for (const auto &column : table_definition.columns) {
     query += "\t\"" + column.name + "\" " +
