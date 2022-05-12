@@ -7,39 +7,46 @@ find_package(Microsoft.GSL REQUIRED)
 find_package(absl REQUIRED)
 
 add_library(libstonks
-  utils.cc
-  rest_request.cc
-  json_conversions.cc
-  finance_api.cc
-  finance_conversions.cc
-  finance_enum_conversions.cc
-  finance_types.cc
-  google_charts_conversions.cc
-  order_proxy.cc
-  candles_stream.cc
-  buffered_candles_stream.cc
-  breakout_strategy.cc
-  order_monitor.cc
-  prices_stream.cc
-  mean_average_strategy.cc
-  finance_db.cc
-  web_socket.cc
-
   binance/binance_api.cc
   binance/binance_settings.cc
-
+  finance_api/finance_api.cc
+  finance_api/finance_conversions.cc
+  finance_api/finance_enum_conversions.cc
+  finance_api/finance_types.cc
+  finance_db/finance_db.cc
+  google_charts/google_charts_conversions.cc
+  json/json_conversions.cc
+  network/rest_request.cc
+  network/web_socket.cc
+  services/breakout_strategy_service.cc
+  services/get_candle_chart_data_service.cc
   services/get_file_service.cc
   services/get_symbols_service.cc
-  services/get_candle_chart_data_service.cc
-  services/breakout_strategy_service.cc
-  services/order_proxy_service.cc
-  services/order_monitor_service.cc
   services/mean_average_strategy_service.cc
+  services/order_monitor_service.cc
+  services/order_proxy_service.cc
+  stonks/order_proxy.cc
+  stonks/order_monitor.cc
+  strategies/breakout_strategy.cc
+  strategies/mean_average_strategy.cc
+  streams/buffered_candles_stream.cc
+  streams/candles_stream.cc
+  streams/prices_stream.cc
+  utility/utils.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/binance)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/finance_api)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/finance_db)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/google_charts)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/json)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/network)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/services)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/stonks)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/strategies)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/streams)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/utility)
 target_link_libraries(libstonks PUBLIC cpprestsdk::cpprest)
 target_link_libraries(libstonks PRIVATE spdlog::spdlog)
 target_link_libraries(libstonks PRIVATE range-v3::range-v3)

@@ -1,5 +1,5 @@
-#ifndef STONKS_CANDLESTICKS_STREAM_H_
-#define STONKS_CANDLESTICKS_STREAM_H_
+#ifndef STONKS_STREAMS_CANDLES_STREAM_H_
+#define STONKS_STREAMS_CANDLES_STREAM_H_
 
 #include <chrono>
 #include <optional>
@@ -33,4 +33,4 @@ class CandlesStream {
 };
 }  // namespace stonks::finance
 
-#endif  // STONKS_CANDLESTICKS_STREAM_H_
+#endif  // STONKS_STREAMS_CANDLES_STREAM_H_
