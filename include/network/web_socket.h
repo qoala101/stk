@@ -1,5 +1,5 @@
-#ifndef STONKS_WEB_SOCKET_H_
-#define STONKS_WEB_SOCKET_H_
+#ifndef STONKS_NETWORK_WEB_SOCKET_H_
+#define STONKS_NETWORK_WEB_SOCKET_H_
 
 #include <cpprest/json.h>
 #include <cpprest/uri_builder.h>
@@ -45,4 +45,4 @@ class WebSocket {
 };
 }  // namespace stonks::rest
 
-#endif  // STONKS_WEB_SOCKET_H_
+#endif  // STONKS_NETWORK_WEB_SOCKET_H_

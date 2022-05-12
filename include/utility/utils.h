@@ -1,5 +1,5 @@
-#ifndef STONKS_UTILS_H_
-#define STONKS_UTILS_H_
+#ifndef STONKS_UTILITY_UTILS_H_
+#define STONKS_UTILITY_UTILS_H_
 
 #include <boost/uuid/uuid.hpp>
 #include <chrono>
@@ -42,4 +42,4 @@ std::string ConvertUuidToString(boost::uuids::uuid uuid);
 boost::uuids::uuid GenerateUuid();
 }  // namespace stonks::utils
 
-#endif  // STONKS_UTILS_H_
+#endif  // STONKS_UTILITY_UTILS_H_

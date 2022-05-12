@@ -1,5 +1,5 @@
-#ifndef STONKS_MEAN_AVERAGE_STRATEGY_H_
-#define STONKS_MEAN_AVERAGE_STRATEGY_H_
+#ifndef STONKS_STRATEGIES_MEAN_AVERAGE_STRATEGY_H_
+#define STONKS_STRATEGIES_MEAN_AVERAGE_STRATEGY_H_
 
 #include <mutex>
 #include <optional>
@@ -39,4 +39,4 @@ class MeanAverageStrategy {
 };
 }  // namespace stonks::finance
 
-#endif  // STONKS_MEAN_AVERAGE_STRATEGY_H_
+#endif  // STONKS_STRATEGIES_MEAN_AVERAGE_STRATEGY_H_

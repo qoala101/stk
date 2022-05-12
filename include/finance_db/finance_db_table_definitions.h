@@ -1,5 +1,5 @@
-#ifndef STONKS_FINANCE_DB_TABLE_DEFINITIONS_H_
-#define STONKS_FINANCE_DB_TABLE_DEFINITIONS_H_
+#ifndef STONKS_FINANCE_DB_FINANCE_DB_TABLE_DEFINITIONS_H_
+#define STONKS_FINANCE_DB_FINANCE_DB_TABLE_DEFINITIONS_H_
 
 #include "db_types.h"
 
@@ -51,4 +51,4 @@ static const auto kSymbolPriceTickTableDefinition = stonks::db::TableDefinition{
                            .data_type = stonks::db::DataType::kReal}}};
 }  // namespace stonks::finance
 
-#endif  // STONKS_FINANCE_DB_TABLE_DEFINITIONS_H_
+#endif  // STONKS_FINANCE_DB_FINANCE_DB_TABLE_DEFINITIONS_H_

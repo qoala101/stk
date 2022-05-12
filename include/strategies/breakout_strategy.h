@@ -1,5 +1,5 @@
-#ifndef STONKS_INCLUDE_BREAKOUT_STRATEGY_H_
-#define STONKS_INCLUDE_BREAKOUT_STRATEGY_H_
+#ifndef STONKS_STRATEGIES_BREAKOUT_STRATEGY_H_
+#define STONKS_STRATEGIES_BREAKOUT_STRATEGY_H_
 
 #include <optional>
 #include <vector>
@@ -17,4 +17,4 @@ class BreakoutStrategy {
 };
 }  // namespace stonks::finance
 
-#endif  // STONKS_INCLUDE_BREAKOUT_STRATEGY_H_
+#endif  // STONKS_STRATEGIES_BREAKOUT_STRATEGY_H_

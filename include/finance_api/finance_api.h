@@ -1,5 +1,5 @@
-#ifndef STONKS_FINANCE_API_H_
-#define STONKS_FINANCE_API_H_
+#ifndef STONKS_FINANCE_API_FINANCE_API_H_
+#define STONKS_FINANCE_API_FINANCE_API_H_
 
 #include <boost/uuid/uuid.hpp>
 #include <chrono>
@@ -61,4 +61,4 @@ std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices(
 std::optional<std::vector<Symbol>> GetAllSymbols();
 }  // namespace stonks::finance
 
-#endif  // STONKS_FINANCE_API_H_
+#endif  // STONKS_FINANCE_API_FINANCE_API_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_FINANCE_ENUMS_H_
-#define STONKS_FINANCE_ENUMS_H_
+#ifndef STONKS_FINANCE_API_FINANCE_ENUMS_H_
+#define STONKS_FINANCE_API_FINANCE_ENUMS_H_
 
 #include "binance_enums.h"
 
@@ -9,4 +9,4 @@ using BuyOrSell = binance::OrderSide;
 using OrderStatus = binance::OrderStatus;
 }  // namespace stonks::finance
 
-#endif  // STONKS_FINANCE_ENUMS_H_
+#endif  // STONKS_FINANCE_API_FINANCE_ENUMS_H_

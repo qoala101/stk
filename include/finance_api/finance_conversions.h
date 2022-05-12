@@ -1,5 +1,5 @@
-#ifndef STONKS_FINANCE_CONVERSIONS_H_
-#define STONKS_FINANCE_CONVERSIONS_H_
+#ifndef STONKS_FINANCE_API_FINANCE_CONVERSIONS_H_
+#define STONKS_FINANCE_API_FINANCE_CONVERSIONS_H_
 
 #include <span>
 #include <string_view>
@@ -29,4 +29,4 @@ binance::OrderType ConvertOrderTypeToBinanceOrderType(
     const OrderType &order_type);
 }  // namespace stonks::finance
 
-#endif  // STONKS_FINANCE_CONVERSIONS_H_
+#endif  // STONKS_FINANCE_API_FINANCE_CONVERSIONS_H_

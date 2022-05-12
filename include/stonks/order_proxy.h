@@ -1,5 +1,5 @@
-#ifndef STONKS_ORDER_PROXY_H_
-#define STONKS_ORDER_PROXY_H_
+#ifndef STONKS_STONKS_ORDER_PROXY_H_
+#define STONKS_STONKS_ORDER_PROXY_H_
 
 #include <condition_variable>
 #include <functional>
@@ -77,4 +77,4 @@ class OrderProxy {
 };
 }  // namespace stonks::finance
 
-#endif  // STONKS_ORDER_PROXY_H_
+#endif  // STONKS_STONKS_ORDER_PROXY_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_FINANCE_TYPES_H_
-#define STONKS_FINANCE_TYPES_H_
+#ifndef STONKS_FINANCE_API_FINANCE_TYPES_H_
+#define STONKS_FINANCE_API_FINANCE_TYPES_H_
 
 #include <boost/uuid/uuid.hpp>
 #include <chrono>
@@ -274,4 +274,4 @@ struct OrderMonitorOrderState {
 };
 }  // namespace stonks::finance
 
-#endif  // STONKS_FINANCE_TYPES_H_
+#endif  // STONKS_FINANCE_API_FINANCE_TYPES_H_

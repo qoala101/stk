@@ -1,5 +1,5 @@
-#ifndef STONKS_FINANCE_DB_H_
-#define STONKS_FINANCE_DB_H_
+#ifndef STONKS_FINANCE_DB_FINANCE_DB_H_
+#define STONKS_FINANCE_DB_FINANCE_DB_H_
 
 #include <memory>
 #include <optional>
@@ -74,4 +74,4 @@ class FinanceDb {
 };
 }  // namespace stonks::finance
 
-#endif  // STONKS_FINANCE_DB_H_
+#endif  // STONKS_FINANCE_DB_FINANCE_DB_H_

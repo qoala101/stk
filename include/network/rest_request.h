@@ -1,5 +1,5 @@
-#ifndef STONKS_REST_REQUEST_H_
-#define STONKS_REST_REQUEST_H_
+#ifndef STONKS_NETWORK_REST_REQUEST_H_
+#define STONKS_NETWORK_REST_REQUEST_H_
 
 #include <cpprest/http_msg.h>
 #include <cpprest/json.h>
@@ -63,4 +63,4 @@ class RestRequest {
 };
 }  // namespace stonks::rest
 
-#endif  // STONKS_REST_REQUEST_H_
+#endif  // STONKS_NETWORK_REST_REQUEST_H_
