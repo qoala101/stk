@@ -33,6 +33,7 @@ add_library(libstonks
   strategies/mean_average_strategy.cc
   streams/buffered_candles_stream.cc
   streams/candles_stream.cc
+  streams/price_ticks_stream.cc
   utility/utils.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)

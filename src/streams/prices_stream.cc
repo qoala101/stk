@@ -39,7 +39,7 @@ void PricesStream::Start() {
       }
 
       {
-        auto lock = std::lock_guard{prices_mutex};
+        const auto lock = std::lock_guard{prices_mutex};
 
         prices.emplace_back(
             TimeDouble{.time = utils::GetUnixTime(), .value = *price});
