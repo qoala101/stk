@@ -228,6 +228,14 @@ struct StrategySubscribeToOrderUpdatesRequest {
 };
 
 /**
+ * @brief Sent by any service to price ticks service to subscribe to price
+ * ticks.
+ */
+struct PriceTicksServiceSubscribeRequest {
+  std::string subscriber_uri{};
+} __attribute__((aligned(32)));  // NOLINT(*-magic-numbers)
+
+/**
  * @brief Data sent by the order proxy to the order monitor to tell that order
  * should be monitored.
  */

@@ -19,19 +19,20 @@ add_library(libstonks
   network/rest_request.cc
   network/web_socket.cc
   services/breakout_strategy_service.cc
+  services/finance_db_updater_service.cc
   services/get_candle_chart_data_service.cc
   services/get_file_service.cc
   services/get_symbols_service.cc
   services/mean_average_strategy_service.cc
   services/order_monitor_service.cc
   services/order_proxy_service.cc
+  services/price_ticks_service.cc
   stonks/order_proxy.cc
   stonks/order_monitor.cc
   strategies/breakout_strategy.cc
   strategies/mean_average_strategy.cc
   streams/buffered_candles_stream.cc
   streams/candles_stream.cc
-  streams/prices_stream.cc
   utility/utils.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)

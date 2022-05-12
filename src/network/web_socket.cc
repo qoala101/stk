@@ -36,8 +36,7 @@ void WebSocket::SendMessage(std::string_view message) {
   spdlog::info("Sent message: {}", message);
 }
 
-auto WebSocket::ReceiveMessages(
-    std::function<bool(const web::json::value&)> message_handler)
+auto WebSocket::ReceiveMessages(MessageHandler message_handler)
     -> std::shared_future<void> {
   Expects(message_handler);
 
@@ -57,9 +56,9 @@ auto WebSocket::ReceiveMessages(
             spdlog::error("Cannot parse JSON from string: {}", message_string);
           }
 
-          const auto stop_listening = !message_handler(json);
+          const auto message_result = message_handler(json);
 
-          if (stop_listening) {
+          if (message_result == ReceiveMessagesResult::kStop) {
             return;
           }
         }

@@ -1,5 +1,5 @@
-#ifndef STONKS_JSON_CONVERSIONS_H_
-#define STONKS_JSON_CONVERSIONS_H_
+#ifndef STONKS_JSON_JSON_CONVERSIONS_H_
+#define STONKS_JSON_JSON_CONVERSIONS_H_
 
 #include <cpprest/json.h>
 
@@ -102,6 +102,11 @@ std::optional<std::vector<finance::SymbolPrices>> ParseFromJson(
 web::json::value ConvertToJson(const std::vector<finance::SymbolPrices> &data);
 
 template <>
+auto ParseFromJson(const web::json::value &json)
+    -> std::optional<finance::SymbolPriceTick>;
+auto ConvertToJson(const finance::SymbolPriceTick &data) -> web::json::value;
+
+template <>
 std::optional<finance::StrategyData> ParseFromJson(
     const web::json::value &json);
 web::json::value ConvertToJson(const finance::StrategyData &data);
@@ -150,6 +155,12 @@ web::json::value ConvertToJson(
     const finance::StrategySubscribeToOrderUpdatesRequest &data);
 
 template <>
+auto ParseFromJson(const web::json::value &json)
+    -> std::optional<finance::PriceTicksServiceSubscribeRequest>;
+auto ConvertToJson(const finance::PriceTicksServiceSubscribeRequest &data)
+    -> web::json::value;
+
+template <>
 std::optional<finance::OrderProxyMonitorRequest> ParseFromJson(
     const web::json::value &json);
 web::json::value ConvertToJson(const finance::OrderProxyMonitorRequest &data);
@@ -177,4 +188,4 @@ std::optional<finance::OrderMonitorOrderState> ParseFromJson(
 web::json::value ConvertToJson(const finance::OrderMonitorOrderState &data);
 }  // namespace stonks::json
 
-#endif  // STONKS_JSON_CONVERSIONS_H_
+#endif  // STONKS_JSON_JSON_CONVERSIONS_H_

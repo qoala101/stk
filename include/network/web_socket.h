@@ -30,8 +30,11 @@ class WebSocket {
 
   void SendMessage(std::string_view message);
 
-  auto ReceiveMessages(
-      std::function<bool(const web::json::value &)> message_handler)
+  enum class ReceiveMessagesResult { kContinue, kStop };
+  using MessageHandler =
+      std::function<ReceiveMessagesResult(const web::json::value &)>;
+
+  auto ReceiveMessages(MessageHandler message_handler)
       -> std::shared_future<void>;
 
  private:

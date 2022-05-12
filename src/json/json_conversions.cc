@@ -9,8 +9,6 @@
 #include <range/v3/view/take_while.hpp>
 #include <range/v3/view/transform.hpp>
 
-#include "binance_enum_conversions.h"
-#include "concepts.h"
 #include "utils.h"
 
 namespace stonks::json {
@@ -481,6 +479,33 @@ web::json::value ConvertToJson(const std::vector<finance::SymbolPrices>& data) {
 }
 
 template <>
+auto ParseFromJson(const web::json::value& json)
+    -> std::optional<finance::SymbolPriceTick> {
+  try {
+    return finance::SymbolPriceTick{
+        .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
+        .time = GetInt64PropertyAsMilliseconds(json, "time"),
+        .buy_price = GetDoublePropertyAsDouble(json, "buy_price"),
+        .sell_price = GetDoublePropertyAsDouble(json, "sell_price")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+auto ConvertToJson(const finance::SymbolPriceTick& data) -> web::json::value {
+  auto json = web::json::value{};
+  json["symbol"] = ConvertToJson(data.symbol);
+  json["time"] = ConvertToJson(data.time);
+  json["buy_price"] = ConvertToJson(data.buy_price);
+  json["sell_price"] = ConvertToJson(data.sell_price);
+  return json;
+}
+
+template <>
 std::optional<finance::StrategyData> ParseFromJson(
     const web::json::value& json) {
   try {
@@ -819,6 +844,28 @@ web::json::value ConvertToJson(
     const finance::StrategySubscribeToOrderUpdatesRequest& data) {
   auto json = web::json::value{};
   json["order_uuid"] = ConvertToJson(data.order_uuid);
+  json["subscriber_uri"] = ConvertToJson(data.subscriber_uri);
+  return json;
+}
+
+template <>
+auto ParseFromJson(const web::json::value& json)
+    -> std::optional<finance::PriceTicksServiceSubscribeRequest> {
+  try {
+    return finance::PriceTicksServiceSubscribeRequest{
+        .subscriber_uri = GetStringPropertyAsString(json, "subscriber_uri")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+auto ConvertToJson(const finance::PriceTicksServiceSubscribeRequest& data)
+    -> web::json::value {
+  auto json = web::json::value{};
   json["subscriber_uri"] = ConvertToJson(data.subscriber_uri);
   return json;
 }
