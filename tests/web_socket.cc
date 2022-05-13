@@ -47,7 +47,9 @@ TEST(WebSocket, Test) {
       symbol_book_ticks.emplace_back(*symbol_book_ticker);
     }
 
-    return symbol_book_ticks.size() < num_ticks;
+    return symbol_book_ticks.size() < num_ticks
+               ? stonks::rest::WebSocket::ReceiveMessagesResult::kContinue
+               : stonks::rest::WebSocket::ReceiveMessagesResult::kStop;
   };
 
   web_socket.ReceiveMessages(std::move(handler)).wait();

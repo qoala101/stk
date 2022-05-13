@@ -367,20 +367,69 @@ struct FinanceDb::Impl {
   }
 
   auto SelectSymbolPriceTicks(
-      const std::optional<Symbol> &symbol = std::nullopt)
+      const std::optional<Period> &period = std::nullopt,
+      const std::optional<std::vector<Symbol>> &symbols = std::nullopt)
       -> std::optional<std::vector<SymbolPriceTick>> {
     auto query = std::string{"SELECT * FROM SymbolPriceTick"};
+    auto condition = std::string{};
 
-    if (symbol.has_value()) {
-      const auto symbol_id = GetSymbolIdBySymbol(*symbol);
+    auto add_and = false;
 
-      if (!symbol_id.has_value()) {
-        spdlog::error("Symbol not found in DB");
-        return std::nullopt;
+    if (period.has_value()) {
+      if (period->start_time.has_value()) {
+        if (add_and) {
+          condition += " AND ";
+        }
+
+        condition += "SymbolPriceTick.time >= " +
+                     std::to_string(period->start_time->count());
+
+        add_and = true;
       }
 
-      query +=
-          " WHERE SymbolPriceTick.symbol_id = " + std::to_string(*symbol_id);
+      if (period->end_time.has_value()) {
+        if (add_and) {
+          condition += " AND ";
+        }
+
+        condition += "SymbolPriceTick.time <= " +
+                     std::to_string(period->end_time->count());
+
+        add_and = true;
+      }
+    }
+
+    if (symbols.has_value()) {
+      auto symbol_ids = std::string{};
+
+      for (const auto &symbol : *symbols) {
+        const auto symbol_id = GetSymbolIdBySymbol(symbol);
+
+        if (!symbol_id.has_value()) {
+          spdlog::error("Symbol not found in DB");
+          return std::nullopt;
+        }
+
+        symbol_ids += std::to_string(*symbol_id);
+
+        if (const auto not_last_item = &symbol != &symbols->back()) {
+          symbol_ids += ", ";
+        }
+      }
+
+      if (!symbol_ids.empty()) {
+        if (add_and) {
+          condition += " AND ";
+        }
+
+        condition += "SymbolPriceTick.symbol_id IN (" + symbol_ids + ")";
+
+        add_and = true;
+      }
+    }
+
+    if (!condition.empty()) {
+      query += " WHERE " + condition;
     }
 
     const auto rows =
@@ -545,9 +594,11 @@ auto FinanceDb::InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick)
   return impl_->InsertSymbolPriceTick(symbol_price_tick);
 }
 
-auto FinanceDb::SelectSymbolPriceTicks(const std::optional<Symbol> &symbol)
-    const -> std::optional<std::vector<SymbolPriceTick>> {
-  return impl_->SelectSymbolPriceTicks(symbol);
+auto FinanceDb::SelectSymbolPriceTicks(
+    const std::optional<Period> &period,
+    const std::optional<std::vector<Symbol>> &symbols) const
+    -> std::optional<std::vector<SymbolPriceTick>> {
+  return impl_->SelectSymbolPriceTicks(period, symbols);
 }
 
 auto FinanceDb::SelectSymbolById(int64_t symbol_id) const

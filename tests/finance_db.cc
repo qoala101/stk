@@ -2,6 +2,9 @@
 
 #include <gtest/gtest.h>
 
+#include <chrono>
+#include <optional>
+
 #include "finance_types.h"
 
 namespace {
@@ -24,7 +27,9 @@ TEST(FinanceDb, TablesInitialization) {
 
 TEST(FinanceDb, InsertAndSelectSymbolPriceTicks) {
   const auto symbol_price_ticks = finance_db->SelectSymbolPriceTicks(
-      stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"});
+      std::nullopt,
+      std::vector<stonks::finance::Symbol>{
+          stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"}});
   ASSERT_TRUE(symbol_price_ticks.has_value());
   EXPECT_TRUE(symbol_price_ticks->empty());
 
@@ -84,13 +89,52 @@ TEST(FinanceDb, InsertAndSelectSymbolPriceTicks) {
             eth_price_ticks.size() + btc_price_ticks.size());
 
   const auto eth_price_ticks_received = finance_db->SelectSymbolPriceTicks(
-      stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"});
+      std::nullopt,
+      std::vector<stonks::finance::Symbol>{
+          stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"}});
   ASSERT_TRUE(eth_price_ticks_received.has_value());
   EXPECT_EQ(*eth_price_ticks_received, eth_price_ticks);
 
   const auto btc_price_ticks_received = finance_db->SelectSymbolPriceTicks(
-      stonks::finance::Symbol{.base_asset = "BTC", .quote_asset = "USDT"});
+      std::nullopt,
+      std::vector<stonks::finance::Symbol>{
+          stonks::finance::Symbol{.base_asset = "BTC", .quote_asset = "USDT"}});
   ASSERT_TRUE(btc_price_ticks_received.has_value());
   EXPECT_EQ(*btc_price_ticks_received, btc_price_ticks);
+}
+
+TEST(FinanceDb, SelectPeriod) {
+  auto price_ticks = finance_db->SelectSymbolPriceTicks(
+      stonks::finance::Period{.start_time = std::nullopt,
+                              .end_time = std::nullopt},
+      std::vector<stonks::finance::Symbol>{
+          stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"},
+          stonks::finance::Symbol{.base_asset = "BTC", .quote_asset = "USDT"}});
+  ASSERT_TRUE(price_ticks.has_value());
+  EXPECT_EQ(price_ticks->size(), 6);
+
+  price_ticks = finance_db->SelectSymbolPriceTicks(
+      stonks::finance::Period{.start_time = std::chrono::milliseconds{1001},
+                              .end_time = std::nullopt},
+      std::vector<stonks::finance::Symbol>{
+          stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"}});
+  ASSERT_TRUE(price_ticks.has_value());
+  EXPECT_EQ(price_ticks->size(), 2);
+
+  price_ticks = finance_db->SelectSymbolPriceTicks(
+      stonks::finance::Period{.start_time = std::nullopt,
+                              .end_time = std::chrono::milliseconds{2999}},
+      std::vector<stonks::finance::Symbol>{
+          stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"}});
+  ASSERT_TRUE(price_ticks.has_value());
+  EXPECT_EQ(price_ticks->size(), 2);
+
+  price_ticks = finance_db->SelectSymbolPriceTicks(
+      stonks::finance::Period{.start_time = std::chrono::milliseconds{1001},
+                              .end_time = std::chrono::milliseconds{2999}},
+      std::vector<stonks::finance::Symbol>{
+          stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"}});
+  ASSERT_TRUE(price_ticks.has_value());
+  EXPECT_EQ(price_ticks->size(), 1);
 }
 }  // namespace

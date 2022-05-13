@@ -31,6 +31,11 @@ struct TimeDouble {
   friend bool operator==(const TimeDouble &, const TimeDouble &) = default;
 };
 
+struct Period {
+  std::optional<std::chrono::milliseconds> start_time{};
+  std::optional<std::chrono::milliseconds> end_time{};
+} __attribute__((aligned(32)));  // NOLINT(*-magic-numbers)
+
 struct SymbolPrice {
   Symbol symbol{};
   TimeDouble price{};

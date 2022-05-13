@@ -52,11 +52,12 @@ class FinanceDb {
       const SymbolPriceTick &symbol_price_tick) -> bool;
 
   /**
-   * @brief Selects all price ticks for the symbol.
+   * @brief Selects all price ticks for symbols in period.
    * @return Nullopt if operation failed.
    */
   [[nodiscard]] auto SelectSymbolPriceTicks(
-      const std::optional<Symbol> &symbol = std::nullopt) const
+      const std::optional<Period> &period = std::nullopt,
+      const std::optional<std::vector<Symbol>> &symbols = std::nullopt) const
       -> std::optional<std::vector<SymbolPriceTick>>;
 
   [[nodiscard]] auto SelectSymbolById(int64_t symbol_id) const
