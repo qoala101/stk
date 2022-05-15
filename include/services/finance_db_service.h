@@ -7,9 +7,9 @@
 #include "finance_db.h"
 
 namespace stonks {
-class FinanceDbUpdaterService {
+class FinanceDbService {
  public:
-  explicit FinanceDbUpdaterService();
+  explicit FinanceDbService();
 
   auto Start() -> pplx::task<void>;
   auto Stop() -> pplx::task<void>;

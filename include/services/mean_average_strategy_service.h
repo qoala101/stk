@@ -17,8 +17,8 @@ class MeanAverageStrategyService {
                                       double base_precision, double price_precision, double comission,
                                       double profit);
 
-  pplx::task<void> Start();
-  pplx::task<void> Stop();
+  auto Start() -> pplx::task<void>;
+  auto Stop() -> pplx::task<void>;
 
  private:
   const finance::Symbol symbol_{};

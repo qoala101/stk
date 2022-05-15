@@ -107,6 +107,12 @@ auto ParseFromJson(const web::json::value &json)
 auto ConvertToJson(const finance::SymbolPriceTick &data) -> web::json::value;
 
 template <>
+auto ParseFromJson(const web::json::value &json)
+    -> std::optional<std::vector<finance::SymbolPriceTick>>;
+auto ConvertToJson(const std::vector<finance::SymbolPriceTick> &data)
+    -> web::json::value;
+
+template <>
 std::optional<finance::StrategyData> ParseFromJson(
     const web::json::value &json);
 web::json::value ConvertToJson(const finance::StrategyData &data);

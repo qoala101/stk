@@ -54,8 +54,7 @@ void HandlePostRequest(const web::http::http_request &request,
 }
 }  // namespace
 
-PriceTicksStreamRealTime::PriceTicksStreamRealTime(Symbol symbol)
-    : symbol_{std::move(symbol)} {
+PriceTicksStreamRealTime::PriceTicksStreamRealTime() {
   http_listener_ = web::http::experimental::listener::http_listener{
       "http://localhost:6506/api/price_ticks_stream_real_time"};
 

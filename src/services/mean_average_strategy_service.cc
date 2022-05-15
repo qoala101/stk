@@ -4,7 +4,6 @@
 
 #include <gsl/util>
 
-#include "finance_api.h"
 #include "finance_types.h"
 #include "google_charts_conversions.h"
 #include "json_conversions.h"
@@ -45,7 +44,6 @@ void HandleGetRequest(const web::http::http_request &request,
 
   request.reply(web::http::status_codes::OK,
                 google_charts::ConvertToJson(strategy.GetAllPrices()));
-  return;
 }
 
 void HandlePostRequest(const web::http::http_request &request,
@@ -79,7 +77,6 @@ void HandlePostRequest(const web::http::http_request &request,
   }
 
   request.reply(web::http::status_codes::NotFound);
-  return;
 }
 }  // namespace
 
@@ -91,7 +88,7 @@ MeanAverageStrategyService::MeanAverageStrategyService(finance::Symbol symbol,
     : symbol_{std::move(symbol)},
       strategy_{base_precision, price_precision, comission, profit} {}
 
-pplx::task<void> MeanAverageStrategyService::Start() {
+auto MeanAverageStrategyService::Start() -> pplx::task<void> {
   service_state_.store(true, std::memory_order::relaxed);
 
   http_listener_ = web::http::experimental::listener::http_listener{
@@ -136,7 +133,7 @@ pplx::task<void> MeanAverageStrategyService::Start() {
       });
 }
 
-pplx::task<void> MeanAverageStrategyService::Stop() {
+auto MeanAverageStrategyService::Stop() -> pplx::task<void> {
   service_state_.store(false, std::memory_order::relaxed);
 
   return pplx::create_task([&thread = thread_]() { thread.join(); });

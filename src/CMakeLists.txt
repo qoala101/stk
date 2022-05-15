@@ -19,7 +19,7 @@ add_library(libstonks
   network/rest_request.cc
   network/web_socket.cc
   services/breakout_strategy_service.cc
-  services/finance_db_updater_service.cc
+  services/finance_db_service.cc
   services/get_candle_chart_data_service.cc
   services/get_file_service.cc
   services/get_symbols_service.cc
@@ -33,6 +33,7 @@ add_library(libstonks
   strategies/mean_average_strategy.cc
   streams/buffered_candles_stream.cc
   streams/candles_stream.cc
+  streams/price_ticks_db_stream.cc
   streams/price_ticks_stream.cc
   utility/utils.cc
 )

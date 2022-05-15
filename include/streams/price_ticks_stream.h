@@ -3,6 +3,8 @@
 
 #include <cpprest/http_listener.h>
 
+#include <chrono>
+#include <optional>
 #include <vector>
 
 #include "finance_types.h"
@@ -10,14 +12,13 @@
 namespace stonks::finance {
 class PriceTicksStreamRealTime {
  public:
-  explicit PriceTicksStreamRealTime(Symbol symbol);
+  explicit PriceTicksStreamRealTime();
 
   ~PriceTicksStreamRealTime();
 
   auto GetNextPriceTicks() -> std::vector<SymbolPriceTick>;
 
  private:
-  const Symbol symbol_{};
   web::http::experimental::listener::http_listener http_listener_{};
 
   std::vector<SymbolPriceTick> price_ticks_{};
