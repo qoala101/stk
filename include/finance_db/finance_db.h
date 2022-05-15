@@ -56,6 +56,7 @@ class FinanceDb {
    * @return Nullopt if operation failed.
    */
   [[nodiscard]] auto SelectSymbolPriceTicks(
+      std::optional<int> limit = std::nullopt,
       const std::optional<Period> &period = std::nullopt,
       const std::optional<std::vector<Symbol>> &symbols = std::nullopt) const
       -> std::optional<std::vector<SymbolPriceTick>>;

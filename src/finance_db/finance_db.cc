@@ -203,7 +203,7 @@ struct FinanceDb::Impl {
   auto DeleteSymbolFromTable(const Symbol &symbol) -> bool {
     return GetDb().Delete(
         kSymbolTableDefinition.table,
-        "WHERE Symbol.symbol_id = ("
+        "WHERE Symbol.id = ("
         "SELECT Symbol.id "
         "FROM Symbol "
         "JOIN Asset AS BaseAsset ON Symbol.base_asset_id = BaseAsset.id "
@@ -367,6 +367,7 @@ struct FinanceDb::Impl {
   }
 
   auto SelectSymbolPriceTicks(
+      std::optional<int> limit = std::nullopt,
       const std::optional<Period> &period = std::nullopt,
       const std::optional<std::vector<Symbol>> &symbols = std::nullopt)
       -> std::optional<std::vector<SymbolPriceTick>> {
@@ -430,6 +431,10 @@ struct FinanceDb::Impl {
 
     if (!condition.empty()) {
       query += " WHERE " + condition;
+    }
+
+    if (limit.has_value()) {
+      query += " LIMIT " + std::to_string(*limit);
     }
 
     const auto rows =
@@ -595,10 +600,10 @@ auto FinanceDb::InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick)
 }
 
 auto FinanceDb::SelectSymbolPriceTicks(
-    const std::optional<Period> &period,
+    std::optional<int> limit, const std::optional<Period> &period,
     const std::optional<std::vector<Symbol>> &symbols) const
     -> std::optional<std::vector<SymbolPriceTick>> {
-  return impl_->SelectSymbolPriceTicks(period, symbols);
+  return impl_->SelectSymbolPriceTicks(limit, period, symbols);
 }
 
 auto FinanceDb::SelectSymbolById(int64_t symbol_id) const
