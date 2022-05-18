@@ -8,12 +8,29 @@
 #include "client_server_types.h"
 
 namespace stonks {
+/**
+ * @brief HTTP server wrapper which handles type safety of prams,
+ * requests, and responses.
+ */
 class Server {
  public:
+  /**
+   * @brief Stops the HTTP server.
+   */
   virtual ~Server();
 
+  Server(Server &&) = default;
+  auto operator=(Server &&) -> Server & = default;
+
+  Server(const Server &) = delete;
+  auto operator=(const Server &) -> Server & = delete;
+
  protected:
-  explicit Server(std::string_view base_uri, std::vector<EndpointDesc> endpoints);
+  /**
+   * @brief Creates and starts HTTP server on the specified URI which would
+   * expose the endpoints and redirect the requests to them.
+   */
+  explicit Server(std::string_view base_uri, std::vector<Endpoint> endpoints);
 
  private:
   class Impl;

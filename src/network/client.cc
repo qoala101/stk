@@ -24,7 +24,7 @@ class Client::Impl {
 
   [[nodiscard]] auto Execute(const EndpointDesc &endpoint,
                              const std::map<std::string, json::Any> &params,
-                             const json::Any &object) const -> std::any {
+                             const json::Any &request_body) const -> std::any {
     auto request = rest::RestRequest{endpoint.method, base_uri_}.AppendUri(
         endpoint.relative_uri);
 
@@ -33,10 +33,10 @@ class Client::Impl {
       request.any_AddParameterValue(param.first, param.second);
     }
 
-    if (endpoint.object.has_value()) {
-      if (const auto no_mandatory_object =
-              !object.value.has_value() &&
-              (endpoint.object->optional == json::OptionalFlag::kMandatory)) {
+    if (endpoint.request_body.has_value()) {
+      if (const auto no_mandatory_object = !request_body.value.has_value() &&
+                                           (endpoint.request_body->optional ==
+                                            json::OptionalFlag::kMandatory)) {
         // TODO(vh): maybe throw?
         Logger().error("Request misses mandatory object");
         return {};
@@ -45,7 +45,7 @@ class Client::Impl {
       auto object_json = std::optional<web::json::value>{std::nullopt};
 
       object_json = std::visit(
-          [&value = object.value](
+          [&value = request_body.value](
               const auto &variant) -> std::optional<web::json::value> {
             try {
               return variant.any_ConvertToJson(value);
@@ -53,7 +53,7 @@ class Client::Impl {
               return std::nullopt;
             }
           },
-          object.converter);
+          request_body.converter);
 
       if (const auto not_converted = !object_json.has_value()) {
         Logger().error("Request has wrong object type");
@@ -66,10 +66,10 @@ class Client::Impl {
     auto result = std::any{};
     const auto result_json = request.SendAndGetResponse();
 
-    if (endpoint.result.has_value()) {
+    if (endpoint.response_body.has_value()) {
       if (!result_json.has_value()) {
-        if (const auto no_mandatory_result =
-                endpoint.result->optional == json::OptionalFlag::kMandatory) {
+        if (const auto no_mandatory_result = endpoint.response_body->optional ==
+                                             json::OptionalFlag::kMandatory) {
           // TODO(vh): maybe throw?
           Logger().error("Response misses mandatory result");
         }
@@ -81,7 +81,7 @@ class Client::Impl {
           [&result_json](const auto &variant) -> std::any {
             return variant.any_ParseFromJson(*result_json);
           },
-          endpoint.result->converter);
+          endpoint.response_body->converter);
 
       if (const auto not_converted = !result.has_value()) {
         Logger().error("Response has wrong result type");

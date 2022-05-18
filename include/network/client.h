@@ -1,28 +1,45 @@
 #ifndef STONKS_NETWORK_CLIENT_H_
 #define STONKS_NETWORK_CLIENT_H_
 
-#include <cpprest/json.h>
-
+#include <map>
 #include <memory>
-#include <optional>
+#include <string>
 #include <string_view>
 
 #include "client_server_types.h"
 
 namespace stonks {
+/**
+ * @brief Represents HTTP server client which handles type safety of prams,
+ * requests, and responses.
+ */
 class Client {
  public:
   virtual ~Client();
 
+  Client(Client &&) = default;
+  auto operator=(Client &&) -> Client & = default;
+
+  Client(const Client &) = delete;
+  auto operator=(const Client &) -> Client & = delete;
+
  protected:
+  /**
+   * @param base_uri Base server URI to which requests are sent.
+   */
   explicit Client(std::string_view base_uri);
 
   /**
-   * @throws std::exception if inputs or result dont match endpoint description
+   * @brief Sends rest request to the server on specified endpoint.
+   * Before sending the request, and after receiving the response, verifies
+   * params, body, and response.
+   * @throws std::exception if params, request, or response don't match endpoint
+   * description.
    */
+  // NOLINTNEXTLINE(*-use-nodiscard)
   auto Execute(const EndpointDesc &endpoint,
                const std::map<std::string, json::Any> &params,
-               const stonks::json::Any &object) const -> std::any;
+               const stonks::json::Any &request_body) const -> std::any;
 
  private:
   class Impl;
