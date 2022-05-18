@@ -1,6 +1,8 @@
-bin/
-lib/
-build/
-.vscode/
+bin
+lib
+build
+.vscode
+.TODO
+.cache
 tasks.txt
-settings/
+settings

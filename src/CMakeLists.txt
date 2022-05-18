@@ -16,7 +16,9 @@ add_library(libstonks
   finance_db/finance_db.cc
   google_charts/google_charts_conversions.cc
   json/json_conversions.cc
+  network/client.cc
   network/rest_request.cc
+  network/server.cc
   network/web_socket.cc
   services/breakout_strategy_service.cc
   services/finance_db_service.cc

@@ -190,6 +190,72 @@ web::json::value ConvertToJson(boost::uuids::uuid data) {
 }
 
 template <>
+auto ParseFromJson(const web::json::value& json) -> std::optional<std::string> {
+  try {
+    return json.as_string();
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+template <>
+auto ParseFromJson(const web::json::value& json) -> std::optional<int> {
+  try {
+    return json.as_number().to_int32();
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+template <>
+auto ParseFromJson(const web::json::value& json) -> std::optional<int64_t> {
+  try {
+    return json.as_number().to_int64();
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+template <>
+auto ParseFromJson(const web::json::value& json) -> std::optional<double> {
+  try {
+    return json.as_number().to_double();
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+template <>
+auto ParseFromJson(const web::json::value& json)
+    -> std::optional<std::chrono::milliseconds> {
+  try {
+    return std::chrono::milliseconds{json.as_number().to_int64()};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+template <>
 std::optional<binance::PlaceOrderAcknowledgement> ParseFromJson(
     const web::json::value& json) {
   try {
