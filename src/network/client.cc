@@ -12,7 +12,7 @@
 #include "json_conversions.h"
 #include "rest_request.h"
 
-namespace stonks {
+namespace stonks::network {
 namespace {
 auto Logger() -> spdlog::logger & {
   static auto logger = []() {
@@ -195,4 +195,4 @@ auto Client::Execute(const EndpointDesc &endpoint,
                      const json::Any &request_body) const -> std::any {
   return impl_->Execute(endpoint, params, request_body);
 }
-}  // namespace stonks
+}  // namespace stonks::network

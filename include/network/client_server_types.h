@@ -10,7 +10,7 @@
 
 #include "any_types.h"
 
-namespace stonks {
+namespace stonks::network {
 /**
  * @brief Description of REST endpoint.
  * Used by Client to send the request, and by Server to handle it.
@@ -62,6 +62,6 @@ struct Endpoint {
   EndpointDesc desc{};
   EndpointHandler handler{};
 } __attribute__((aligned(128)));  // NOLINT(*-magic-numbers)
-}  // namespace stonks
+}  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_CLIENT_SERVER_TYPES_H_

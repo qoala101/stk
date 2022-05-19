@@ -7,7 +7,7 @@
 
 #include "client_server_types.h"
 
-namespace stonks {
+namespace stonks::network {
 /**
  * @brief HTTP server wrapper which handles type safety of prams,
  * requests, and responses.
@@ -36,6 +36,6 @@ class Server {
   class Impl;
   std::unique_ptr<Impl> impl_{};
 };
-}  // namespace stonks
+}  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_SERVER_H_

@@ -5,8 +5,10 @@
 #include <spdlog/spdlog.h>
 
 #include <any>
+#include <cstdio>
 #include <exception>
 #include <stdexcept>
+#include <thread>
 
 #include "client.h"
 #include "client_server_types.h"
@@ -54,10 +56,11 @@ class Entity : public EntityInterface {
 };
 
 namespace {}  // namespace
-class EntityServer : public stonks::Server {
+class EntityServer : public stonks::network::Server {
  public:
-  [[nodiscard]] static auto PushSymbolEndpointDesc() -> stonks::EndpointDesc {
-    return stonks::EndpointDesc{
+  [[nodiscard]] static auto PushSymbolEndpointDesc()
+      -> stonks::network::EndpointDesc {
+    return stonks::network::EndpointDesc{
         .method = web::http::methods::POST,
         .relative_uri = "/PushSymbol",
         .request_body = stonks::json::AnyDesc{
@@ -65,8 +68,9 @@ class EntityServer : public stonks::Server {
             .optional = stonks::json::OptionalFlag::kMandatory}};
   }
 
-  [[nodiscard]] static auto GetSymbolEndpointDesc() -> stonks::EndpointDesc {
-    return stonks::EndpointDesc{
+  [[nodiscard]] static auto GetSymbolEndpointDesc()
+      -> stonks::network::EndpointDesc {
+    return stonks::network::EndpointDesc{
         .method = web::http::methods::GET,
         .relative_uri = "/GetSymbol",
         .params = {{"index",
@@ -78,8 +82,9 @@ class EntityServer : public stonks::Server {
             .optional = stonks::json::OptionalFlag::kOptional}};
   }
 
-  [[nodiscard]] static auto GetSizeEndpointDesc() -> stonks::EndpointDesc {
-    return stonks::EndpointDesc{
+  [[nodiscard]] static auto GetSizeEndpointDesc()
+      -> stonks::network::EndpointDesc {
+    return stonks::network::EndpointDesc{
         .method = web::http::methods::GET,
         .relative_uri = "/GetSize",
         .response_body = stonks::json::AnyDesc{
@@ -88,17 +93,18 @@ class EntityServer : public stonks::Server {
   }
 
   explicit EntityServer(std::string_view base_uri)
-      : stonks::Server{
+      : stonks::network::Server{
             base_uri,
-            {stonks::Endpoint{.desc = PushSymbolEndpointDesc(),
-                              .handler = PushSymbolEndpointHandler()},
-             stonks::Endpoint{.desc = GetSymbolEndpointDesc(),
-                              .handler = GetSymbolEndpointHandler()},
-             stonks::Endpoint{.desc = GetSizeEndpointDesc(),
-                              .handler = GetSizeEndpointHandler()}}} {}
+            {stonks::network::Endpoint{.desc = PushSymbolEndpointDesc(),
+                                       .handler = PushSymbolEndpointHandler()},
+             stonks::network::Endpoint{.desc = GetSymbolEndpointDesc(),
+                                       .handler = GetSymbolEndpointHandler()},
+             stonks::network::Endpoint{.desc = GetSizeEndpointDesc(),
+                                       .handler = GetSizeEndpointHandler()}}} {}
 
  private:
-  [[nodiscard]] auto PushSymbolEndpointHandler() -> stonks::EndpointHandler {
+  [[nodiscard]] auto PushSymbolEndpointHandler()
+      -> stonks::network::EndpointHandler {
     return [this](const std::map<std::string, stonks::json::Any>& /*params*/,
                   stonks::json::Any request_body) {
       spdlog::info("PushSymbol!!");
@@ -111,7 +117,8 @@ class EntityServer : public stonks::Server {
     };
   }
 
-  [[nodiscard]] auto GetSymbolEndpointHandler() -> stonks::EndpointHandler {
+  [[nodiscard]] auto GetSymbolEndpointHandler()
+      -> stonks::network::EndpointHandler {
     return [this](std::map<std::string, stonks::json::Any> params,
                   const stonks::json::Any& /*request_body*/) {
       spdlog::info("GetSymbol!!");
@@ -122,7 +129,8 @@ class EntityServer : public stonks::Server {
     };
   }
 
-  [[nodiscard]] auto GetSizeEndpointHandler() -> stonks::EndpointHandler {
+  [[nodiscard]] auto GetSizeEndpointHandler()
+      -> stonks::network::EndpointHandler {
     return [this](const std::map<std::string, stonks::json::Any>& /*params*/,
                   const stonks::json::Any& /*request_body*/) {
       spdlog::info("GetSize!!");
@@ -133,9 +141,10 @@ class EntityServer : public stonks::Server {
   Entity entity_{};
 };
 
-class EntityClient : public stonks::Client, public EntityInterface {
+class EntityClient : public stonks::network::Client, public EntityInterface {
  public:
-  explicit EntityClient(std::string_view base_uri) : stonks::Client{base_uri} {}
+  explicit EntityClient(std::string_view base_uri)
+      : stonks::network::Client{base_uri} {}
 
   void PushSymbol(stonks::finance::Symbol symbol) override {
     Execute(EntityServer::PushSymbolEndpointDesc(), {},
@@ -193,12 +202,12 @@ TEST(ClientServer, ApiTest) {
   }
 }
 
-TEST(ClientServer, ExceptionTest) {
+TEST(ClientServerDeathTest, ExceptionTest) {
   auto entity_server = EntityServer{kBaseUri};
 
-  class BadRequestClient : public stonks::Client {
+  class BadRequestClient : public stonks::network::Client {
    public:
-    explicit BadRequestClient() : stonks::Client{kBaseUri} {}
+    explicit BadRequestClient() : stonks::network::Client{kBaseUri} {}
     void SendBadRequests() {
       auto endpoint = EntityServer::GetSizeEndpointDesc();
       EXPECT_NO_THROW(Execute(endpoint));

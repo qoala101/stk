@@ -9,7 +9,7 @@
 #include <gsl/assert>
 #include <range/v3/algorithm/find_if.hpp>
 
-namespace stonks {
+namespace stonks::network {
 namespace {
 auto Logger() -> spdlog::logger & {
   static auto logger = []() {
@@ -249,4 +249,4 @@ Server::Server(std::string_view base_uri, std::vector<Endpoint> endpoints)
     : impl_{std::make_unique<Impl>(base_uri, std::move(endpoints))} {
   Expects(!base_uri.empty());
 }
-}  // namespace stonks
+}  // namespace stonks::network
