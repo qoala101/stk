@@ -4,12 +4,18 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
+#include <gsl/assert>
 #include <range/v3/algorithm/find_if.hpp>
 
 namespace stonks {
 namespace {
 auto Logger() -> spdlog::logger & {
-  static auto logger = spdlog::stdout_color_mt("Server");
+  static auto logger = []() {
+    auto logger = spdlog::stdout_color_mt("Server");
+    logger->set_level(spdlog::level::debug);
+    return logger;
+  }();
+
   return *logger;
 }
 }  // namespace
@@ -24,16 +30,19 @@ class Server::Impl {
   explicit Impl(std::string_view base_uri, std::vector<Endpoint> endpoints)
       : endpoints_{std::move(endpoints)},
         http_listener_{std::string{base_uri}} {
+    Expects(!base_uri.empty());
+    Expects(!endpoints_.empty());
+
     http_listener_.support([this](const web::http::http_request &request) {
       const auto result = RequestHandler(request);
 
       if (result.response_body.is_null()) {
-        Logger().info("Replying {} without body", result.status_code);
+        Logger().debug("Replying {} without body", result.status_code);
         request.reply(result.status_code);
         return;
       }
 
-      Logger().info("Replying {} with body", result.status_code);
+      Logger().debug("Replying {} with body", result.status_code);
       request.reply(result.status_code, result.response_body);
     });
     http_listener_.open();
@@ -72,8 +81,7 @@ class Server::Impl {
     auto parsed_params = std::map<std::string, json::Any>{};
 
     for (const auto &endpoint_param : endpoint_params) {
-      const auto &param_name = endpoint_param.first;
-      const auto &param_desc = endpoint_param.second;
+      const auto &[param_name, param_desc] = endpoint_param;
       const auto raw_param = raw_params.find(param_name);
 
       if (const auto no_param = raw_param == raw_params.end()) {
@@ -87,27 +95,28 @@ class Server::Impl {
       }
 
       const auto &raw_value = raw_param->second;
-      const auto value_parsed = std::visit(
-          [&param_name, &converter = param_desc.converter, &raw_value,
-           &parsed_params](const auto &variant) {
+      auto parsed_value = std::visit(
+          [&raw_value](const auto &variant) -> std::optional<std::any> {
             // TODO(vh): make throw here?
-            auto parsed_value =
+            const auto parsed_value =
                 variant.ParseFromJson(web::json::value::parse(raw_value));
 
             if (parsed_value.has_value()) {
-              parsed_params[param_name] = json::Any{
-                  .value = std::move(*parsed_value), .converter = converter};
-              return true;
+              // TODO(vh): move here?
+              return *parsed_value;
             }
 
-            return false;
+            return std::nullopt;
           },
           param_desc.converter);
 
-      if (!value_parsed) {
+      if (const auto not_parsed = !parsed_value->has_value()) {
         Logger().error("Cannot parse parameter {}", param_name);
         return std::nullopt;
       }
+
+      parsed_params[param_name] = json::Any{.value = std::move(*parsed_value),
+                                            .converter = param_desc.converter};
     }
 
     // TODO(vh): would this make a copy when constructing optional?
@@ -123,9 +132,9 @@ class Server::Impl {
     }
 
     const auto json = request.extract_json().get();
-    auto parsed_request_body = json::Any{};
+    auto request_body = json::Any{};
 
-    parsed_request_body.value = std::visit(
+    request_body.value = std::visit(
         [&json](const auto &variant) -> std::any {
           auto object = variant.ParseFromJson(json);
 
@@ -138,15 +147,15 @@ class Server::Impl {
         endpoint_request_body->converter);
 
     if (const auto missing_mandatory_object =
-            !parsed_request_body.value.has_value() &&
+            !request_body.value.has_value() &&
             (endpoint_request_body->optional ==
              json::OptionalFlag::kMandatory)) {
-      Logger().error("Request misses mandatory object {}", json.serialize());
+      Logger().error("Request misses mandatory body {}", json.serialize());
       return std::nullopt;
     }
 
-    parsed_request_body.converter = endpoint_request_body->converter;
-    return parsed_request_body;
+    request_body.converter = endpoint_request_body->converter;
+    return request_body;
   }
 
   [[nodiscard]] static auto ConvertResponseBodyToJson(
@@ -160,11 +169,11 @@ class Server::Impl {
     if (const auto no_mandatory_result =
             !response_body.has_value() && (endpoint_response_body->optional ==
                                            json::OptionalFlag::kMandatory)) {
-      Logger().error("Response misses mandatory result");
+      Logger().error("Response misses mandatory body");
       return std::nullopt;
     }
 
-    auto result_json = std::visit(
+    auto json = std::visit(
         [&response_body](
             const auto &variant) -> std::optional<web::json::value> {
           try {
@@ -175,19 +184,19 @@ class Server::Impl {
         },
         endpoint_response_body->converter);
 
-    if (const auto not_converted = !result_json.has_value()) {
-      Logger().error("Response has wrong result type");
+    if (const auto not_converted = !json.has_value()) {
+      Logger().error("Response body has wrong type");
       return std::nullopt;
     }
 
     // TODO(vh): should I add std::move here?
-    return *result_json;
+    return *json;
   }
 
   [[nodiscard]] auto RequestHandler(
       const web::http::http_request &request) const -> RequestHandlerResult {
-    Logger().info("Got {} request on {}", request.method(),
-                  request.relative_uri().path());
+    Logger().debug("Got {} request on {}", request.method(),
+                   request.relative_uri().path());
 
     const auto *const endpoint = FindEndpoint(request);
 
@@ -242,5 +251,7 @@ class Server::Impl {
 Server::~Server() = default;
 
 Server::Server(std::string_view base_uri, std::vector<Endpoint> endpoints)
-    : impl_{std::make_unique<Impl>(base_uri, std::move(endpoints))} {}
+    : impl_{std::make_unique<Impl>(base_uri, std::move(endpoints))} {
+  Expects(!base_uri.empty());
+}
 }  // namespace stonks

@@ -12,7 +12,6 @@
 #include <string_view>
 
 #include "concepts.h"
-#include "json_conversions.h"
 
 namespace stonks::rest {
 class RestRequest {
@@ -48,9 +47,6 @@ class RestRequest {
 
     return *this;
   }
-
-  auto any_AddParameterValue(std::string_view key, const json::Any &value)
-      -> RestRequest &;
 
   RestRequest &SetJson(const web::json::value &json);
 

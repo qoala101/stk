@@ -34,19 +34,6 @@ RestRequest &RestRequest::AddHeader(std::string_view key,
   return *this;
 }
 
-auto RestRequest::any_AddParameterValue(std::string_view key,
-                                        const json::Any &value)
-    -> RestRequest & {
-  const auto string_value = std::visit(
-      [&value = value.value](const auto &variant) {
-        return variant.any_ConvertToJson(value).serialize();
-      },
-      value.converter);
-
-  AddParameter(key, string_value);
-  return *this;
-}
-
 RestRequest &RestRequest::SetJson(const web::json::value &json) {
   http_request_.set_body(json);
   return *this;

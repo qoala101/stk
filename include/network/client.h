@@ -17,11 +17,11 @@ class Client {
  public:
   virtual ~Client();
 
-  Client(Client &&) = default;
-  auto operator=(Client &&) -> Client & = default;
-
   Client(const Client &) = delete;
   auto operator=(const Client &) -> Client & = delete;
+
+  Client(Client &&) = default;
+  auto operator=(Client &&) -> Client & = default;
 
  protected:
   /**

@@ -19,11 +19,11 @@ class Server {
    */
   virtual ~Server();
 
-  Server(Server &&) = default;
-  auto operator=(Server &&) -> Server & = default;
-
   Server(const Server &) = delete;
   auto operator=(const Server &) -> Server & = delete;
+
+  Server(Server &&) = default;
+  auto operator=(Server &&) -> Server & = default;
 
  protected:
   /**
