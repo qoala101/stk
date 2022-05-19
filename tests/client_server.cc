@@ -1,17 +1,23 @@
 #include <cpprest/http_msg.h>
 #include <cpprest/json.h>
+#include <gtest/gtest-death-test.h>
 #include <gtest/gtest.h>
 #include <spdlog/spdlog.h>
 
 #include <any>
+#include <exception>
+#include <stdexcept>
 
 #include "client.h"
 #include "client_server_types.h"
 #include "finance_types.h"
 #include "json_conversions.h"
+#include "rest_request.h"
 #include "server.h"
 
 namespace {
+const auto kBaseUri = "http://localhost:6506/Entity";
+
 class EntityInterface {
  public:
   virtual ~EntityInterface() = default;
@@ -19,24 +25,26 @@ class EntityInterface {
   virtual void PushSymbol(stonks::finance::Symbol symbol) = 0;
 
   [[nodiscard]] virtual auto GetSymbol(int index) const
-      -> std::optional<stonks::finance::Symbol> = 0;
+      -> stonks::finance::Symbol = 0;
 
   [[nodiscard]] virtual auto GetSize() const -> int = 0;
 };
 
 class Entity : public EntityInterface {
  public:
+  static constexpr auto kIndexOutOfBoundsMessage = "Index out of bounds";
+
   void PushSymbol(stonks::finance::Symbol symbol) override {
     symbols_.emplace_back(std::move(symbol));
   }
 
   [[nodiscard]] auto GetSymbol(int index) const
-      -> std::optional<stonks::finance::Symbol> override {
+      -> stonks::finance::Symbol override {
     if (symbols_.size() > index) {
       return symbols_[index];
     }
 
-    return std::nullopt;
+    throw std::runtime_error{kIndexOutOfBoundsMessage};
   }
 
   [[nodiscard]] auto GetSize() const -> int override { return symbols_.size(); }
@@ -107,7 +115,7 @@ class EntityServer : public stonks::Server {
     return [this](std::map<std::string, stonks::json::Any> params,
                   const stonks::json::Any& /*request_body*/) {
       spdlog::info("GetSymbol!!");
-      return *entity_.GetSymbol(
+      return entity_.GetSymbol(
           // TODO(vh): if param is optional, cast should be to std::optional and
           // function should take optional param
           std::any_cast<int>(std::move(params.at("index").value)));
@@ -138,33 +146,29 @@ class EntityClient : public stonks::Client, public EntityInterface {
   }
 
   [[nodiscard]] auto GetSymbol(int index) const
-      -> std::optional<stonks::finance::Symbol> override {
-    return std::any_cast<stonks::finance::Symbol>(
-        Execute(EntityServer::GetSymbolEndpointDesc(),
-                {{{"index",
-                   stonks::json::Any{
-                       .value = index,
-                       .converter = stonks::json::JsonConverter<int>{}}}}},
-                stonks::json::Any{}));
+      -> stonks::finance::Symbol override {
+    return std::any_cast<stonks::finance::Symbol>(Execute(
+        EntityServer::GetSymbolEndpointDesc(),
+        {{{"index", stonks::json::Any{
+                        .value = index,
+                        .converter = stonks::json::JsonConverter<int>{}}}}}));
   }
 
   [[nodiscard]] auto GetSize() const -> int override {
-    return std::any_cast<int>(
-        Execute(EntityServer::GetSizeEndpointDesc(), {}, {}));
+    return std::any_cast<int>(Execute(EntityServer::GetSizeEndpointDesc()));
   }
 };
 
-TEST(ClientServer, Test1) {
+TEST(ClientServer, ApiTest) {
   auto entity = Entity{};
   entity.PushSymbol(
       stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"});
   entity.PushSymbol(
       stonks::finance::Symbol{.base_asset = "BTC", .quote_asset = "USDT"});
 
-  const auto base_uri = "http://localhost:6506/Entity";
-  auto entity_server = EntityServer{base_uri};
+  auto entity_server = EntityServer{kBaseUri};
 
-  auto entity_client = EntityClient{base_uri};
+  auto entity_client = EntityClient{kBaseUri};
   entity_client.PushSymbol(
       stonks::finance::Symbol{.base_asset = "ETH", .quote_asset = "USDT"});
   entity_client.PushSymbol(
@@ -173,5 +177,61 @@ TEST(ClientServer, Test1) {
   EXPECT_EQ(entity.GetSize(), entity_client.GetSize());
   EXPECT_EQ(entity.GetSymbol(0), entity_client.GetSymbol(0));
   EXPECT_EQ(entity.GetSymbol(1), entity_client.GetSymbol(1));
+  EXPECT_ANY_THROW(static_cast<void>(entity.GetSymbol(2)));
+  EXPECT_ANY_THROW(static_cast<void>(entity_client.GetSymbol(2)));
+
+  try {
+    static_cast<void>(entity.GetSymbol(2));
+  } catch (const std::exception& exception) {
+    EXPECT_STRCASEEQ(exception.what(), Entity::kIndexOutOfBoundsMessage);
+  }
+
+  try {
+    static_cast<void>(entity_client.GetSymbol(2));
+  } catch (const std::exception& exception) {
+    EXPECT_STRCASEEQ(exception.what(), Entity::kIndexOutOfBoundsMessage);
+  }
+}
+
+TEST(ClientServer, ExceptionTest) {
+  auto entity_server = EntityServer{kBaseUri};
+
+  class BadRequestClient : public stonks::Client {
+   public:
+    explicit BadRequestClient() : stonks::Client{kBaseUri} {}
+    void SendBadRequests() {
+      auto endpoint = EntityServer::GetSizeEndpointDesc();
+      EXPECT_NO_THROW(Execute(endpoint));
+
+      endpoint = EntityServer::GetSizeEndpointDesc();
+      endpoint.method = web::http::methods::POST;
+      EXPECT_ANY_THROW(Execute(endpoint));
+
+      endpoint = EntityServer::GetSizeEndpointDesc();
+      endpoint.relative_uri += "BAD";
+      EXPECT_ANY_THROW(Execute(endpoint));
+
+      endpoint = EntityServer::PushSymbolEndpointDesc();
+      EXPECT_NO_THROW(Execute(
+          endpoint, {},
+          stonks::json::Any{
+              .value = stonks::finance::Symbol{},
+              .converter =
+                  stonks::json::JsonConverter<stonks::finance::Symbol>{}}));
+
+      endpoint = EntityServer::PushSymbolEndpointDesc();
+      EXPECT_DEATH(Execute(endpoint), "");
+
+      endpoint = EntityServer::PushSymbolEndpointDesc();
+      EXPECT_DEATH(
+          Execute(endpoint, {},
+                  stonks::json::Any{
+                      .value = 33,
+                      .converter = stonks::json::JsonConverter<int>{}}),
+          "");
+    }
+  } client;
+
+  client.SendBadRequests();
 }
 }  // namespace

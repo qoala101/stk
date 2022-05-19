@@ -7,6 +7,7 @@
 #include <chrono>
 #include <cstdint>
 #include <magic_enum.hpp>
+#include <stdexcept>
 #include <variant>
 #include <vector>
 
@@ -14,6 +15,8 @@
 #include "concepts.h"
 #include "finance_types.h"
 
+// TODO(vh): make all the conversions throw, because they should only be used by
+// the network client and server, which can handle throws
 namespace stonks::json {
 template <Enumeration T>
 web::json::value ConvertToJson(T data) {
@@ -208,6 +211,11 @@ template <>
 std::optional<finance::OrderMonitorOrderState> ParseFromJson(
     const web::json::value &json);
 web::json::value ConvertToJson(const finance::OrderMonitorOrderState &data);
+
+template <>
+auto ParseFromJson(const web::json::value &json)
+    -> std::optional<std::runtime_error>;
+auto ConvertToJson(const std::runtime_error &data) -> web::json::value;
 }  // namespace stonks::json
 
 #endif  // STONKS_JSON_JSON_CONVERSIONS_H_

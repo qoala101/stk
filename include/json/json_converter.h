@@ -36,7 +36,7 @@ class JsonConverter {
     const auto object = ::stonks::json::ParseFromJson<T>(json);
 
     if (!object.has_value()) {
-      throw std::invalid_argument("Couldn't parse type from JSON");
+      throw std::runtime_error{"Couldn't parse type from JSON"};
     }
 
     // TODO(vh): is move called here? or should I add move?
@@ -44,11 +44,10 @@ class JsonConverter {
   }
 };
 
-using JsonConverterVariant =
-    std::variant<JsonConverter<std::string>, JsonConverter<int>,
-                 JsonConverter<int64_t>, JsonConverter<double>,
-                 JsonConverter<std::chrono::milliseconds>,
-                 JsonConverter<finance::Symbol>>;
+using JsonConverterVariant = std::variant<
+    JsonConverter<std::string>, JsonConverter<int>, JsonConverter<int64_t>,
+    JsonConverter<double>, JsonConverter<std::chrono::milliseconds>,
+    JsonConverter<finance::Symbol>, JsonConverter<std::runtime_error>>;
 }  // namespace stonks::json
 
 #endif  // STONKS_JSON_JSON_CONVERTER_H_

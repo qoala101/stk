@@ -109,7 +109,7 @@ T GetObjectPropertyAsObject(const web::json::value& json,
   const auto object = ParseFromJson<T>(json.at(std::string{property_name}));
 
   if (!object.has_value()) {
-    throw std::invalid_argument{"Cannot parse object"};
+    throw std::runtime_error{"Cannot parse object"};
   }
 
   return *object;
@@ -120,7 +120,7 @@ T GetObjectElementAsObject(const web::json::value& json, const int index) {
   const auto object = ParseFromJson<T>(json.at(index));
 
   if (!object.has_value()) {
-    throw std::invalid_argument{"Cannot parse object"};
+    throw std::runtime_error{"Cannot parse object"};
   }
 
   return *object;
@@ -1026,6 +1026,30 @@ std::optional<std::vector<finance::OrderMonitorOrderUpdate>> ParseFromJson(
 web::json::value ConvertToJson(
     const std::vector<finance::OrderMonitorOrderUpdate>& data) {
   return ConvertToJsonArray(data);
+}
+
+template <>
+std::optional<std::runtime_error> ParseFromJson(const web::json::value& json) {
+  try {
+    const auto type = GetStringPropertyAsString(json, "typename");
+
+    if (type == "runtime_error") {
+      return std::runtime_error{GetStringPropertyAsString(json, "message")};
+    }
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+web::json::value ConvertToJson(const std::runtime_error& data) {
+  auto json = web::json::value{};
+  json["typename"] = ConvertToJson("runtime_error");
+  json["message"] = ConvertToJson(data.what());
+  return json;
 }
 
 // template <>

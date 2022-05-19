@@ -33,13 +33,13 @@ class Client {
    * @brief Sends rest request to the server on specified endpoint.
    * Before sending the request, and after receiving the response, verifies
    * params, body, and response.
-   * @throws std::exception if params, request, or response don't match endpoint
-   * description.
+   * @throws If response doesn't match endpoint description or response is an
+   * exception itself.
    */
   // NOLINTNEXTLINE(*-use-nodiscard)
   auto Execute(const EndpointDesc &endpoint,
-               const std::map<std::string, json::Any> &params,
-               const stonks::json::Any &request_body) const -> std::any;
+               const std::map<std::string, json::Any> &params = {},
+               const stonks::json::Any &request_body = {}) const -> std::any;
 
  private:
   class Impl;
