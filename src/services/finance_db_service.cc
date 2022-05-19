@@ -15,7 +15,7 @@ void SendSubscribeToPriceTicksRequest() {
   auto json = json::ConvertToJson(finance::PriceTicksServiceSubscribeRequest{
       .subscriber_uri = "http://localhost:6506/api/finance_db/new_price_tick"});
 
-  rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
+  network::RestRequest{web::http::methods::POST, "http://localhost:6506"}
       .AppendUri("/api/price_ticks/subscribe")
       .SetJson(json)
       .SendAndGetResponse();
@@ -100,8 +100,7 @@ void HandlePostRequest(const web::http::http_request &request,
 }
 }  // namespace
 
-FinanceDbService::FinanceDbService()
-    : finance_db_{"FinanceDbService.db"} {}
+FinanceDbService::FinanceDbService() : finance_db_{"FinanceDbService.db"} {}
 
 auto FinanceDbService::Start() -> pplx::task<void> {
   http_listener_ = web::http::experimental::listener::http_listener{

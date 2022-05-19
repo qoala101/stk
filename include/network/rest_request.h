@@ -13,7 +13,7 @@
 
 #include "concepts.h"
 
-namespace stonks::rest {
+namespace stonks::network {
 class RestRequest {
  public:
   explicit RestRequest(std::string_view uri);
@@ -61,6 +61,6 @@ class RestRequest {
   web::http::http_request http_request_{};
   web::uri_builder uri_builder_{};
 };
-}  // namespace stonks::rest
+}  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_REST_REQUEST_H_

@@ -5,7 +5,7 @@
 
 #include <magic_enum.hpp>
 
-namespace stonks::rest {
+namespace stonks::network {
 RestRequest::RestRequest(std::string_view uri)
     : RestRequest{web::http::methods::GET, uri} {}
 
@@ -64,4 +64,4 @@ std::optional<web::json::value> RestRequest::SendAndGetResponse() const {
   spdlog::info("Got response of type {}", magic_enum::enum_name(json->type()));
   return json;
 }
-}  // namespace stonks::rest
+}  // namespace stonks::network

@@ -9,7 +9,7 @@
 #include <future>
 #include <string_view>
 
-namespace stonks::rest {
+namespace stonks::network {
 class WebSocket {
  public:
   explicit WebSocket(std::string_view uri);
@@ -43,6 +43,6 @@ class WebSocket {
 
   std::shared_future<void> shared_future_{};
 };
-}  // namespace stonks::rest
+}  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_WEB_SOCKET_H_

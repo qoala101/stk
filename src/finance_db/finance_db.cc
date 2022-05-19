@@ -508,6 +508,9 @@ struct FinanceDb::Impl {
     return true;
   }
 
+  // TODO(vh): Change Impl to class and implement all methods as just forwards
+  // to Impl
+
   // NOLINTNEXTLINE(*-non-private-member-variables-in-classes)
   std::optional<db::sqlite::SqliteDb> sqlite_db{};
   // NOLINTNEXTLINE(*-non-private-member-variables-in-classes)

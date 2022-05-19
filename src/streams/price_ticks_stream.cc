@@ -13,7 +13,7 @@ void SendSubscribeToPriceTicksRequest() {
       .subscriber_uri = "http://localhost:6506/api/"
                         "price_ticks_stream_real_time/new_price_tick"});
 
-  rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
+  network::RestRequest{web::http::methods::POST, "http://localhost:6506"}
       .AppendUri("/api/price_ticks/subscribe")
       .SetJson(json)
       .SendAndGetResponse();

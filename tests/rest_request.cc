@@ -5,8 +5,9 @@
 #include <magic_enum.hpp>
 
 TEST(RestRequest, AppendUri) {
-  const auto result_uri =
-      stonks::rest::RestRequest{"base_uri"}.AppendUri("appended_uri").GetUri();
+  const auto result_uri = stonks::network::RestRequest{"base_uri"}
+                              .AppendUri("appended_uri")
+                              .GetUri();
   const auto exprected_uri = "base_uri/appended_uri";
   EXPECT_EQ(result_uri, exprected_uri);
 }
@@ -31,7 +32,7 @@ constexpr std::string_view magic_enum::customize::enum_name<CustomNameEnum>(
 
 TEST(RestRequest, ParameterTypesToString) {
   const auto result_string =
-      stonks::rest::RestRequest{""}
+      stonks::network::RestRequest{""}
           .AddParameter("string", "abc")
           .AddParameter("milliseconds", std::chrono::milliseconds{123456789})
           .AddParameter("int", 123456789)

@@ -19,7 +19,7 @@ auto SendGetPriceTicksRequest(
     const std::optional<std::vector<Symbol>> &symbols = std::nullopt)
     -> std::optional<std::vector<SymbolPriceTick>> {
   auto request =
-      rest::RestRequest{web::http::methods::GET, "http://localhost:6506"}
+      network::RestRequest{web::http::methods::GET, "http://localhost:6506"}
           .AppendUri("/api/finance_db/price_ticks")
           .AddParameter("limit", limit);
 

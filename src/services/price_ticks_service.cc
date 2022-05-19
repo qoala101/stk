@@ -37,7 +37,7 @@ const auto kBookTickerUnsubscribeMessage = R"(
 
 void SendPriceTickToUri(const finance::SymbolPriceTick &price_tick,
                         std::string_view uri) {
-  rest::RestRequest{web::http::methods::POST, uri}
+  network::RestRequest{web::http::methods::POST, uri}
       .SetJson(json::ConvertToJson(price_tick))
       .SendAndGetResponse();
 }
@@ -95,8 +95,8 @@ auto PriceTicksService::Start() -> pplx::task<void> {
                          &subscribers_mutex = subscribers_mutex_,
                          &finance_db = finance_db_,
                          &keep_alive = keep_alive_]() {
-    auto web_socket =
-        stonks::rest::WebSocket{stonks::binance::settings::GetBaseStreamUri()};
+    auto web_socket = stonks::network::WebSocket{
+        stonks::binance::settings::GetBaseStreamUri()};
     web_socket.AppendUri("ws");
     web_socket.Connect();
     web_socket.SendMessage(kBookTickerSubscribeMessage);
@@ -114,7 +114,7 @@ auto PriceTicksService::Start() -> pplx::task<void> {
         const auto lock = std::lock_guard{subscribers_mutex};
 
         if (subscribers.empty()) {
-          return rest::WebSocket::ReceiveMessagesResult::kContinue;
+          return network::WebSocket::ReceiveMessagesResult::kContinue;
         }
       }
 
@@ -160,8 +160,8 @@ auto PriceTicksService::Start() -> pplx::task<void> {
       }
 
       return keep_alive.load(std::memory_order_relaxed)
-                 ? rest::WebSocket::ReceiveMessagesResult::kContinue
-                 : rest::WebSocket::ReceiveMessagesResult::kStop;
+                 ? network::WebSocket::ReceiveMessagesResult::kContinue
+                 : network::WebSocket::ReceiveMessagesResult::kStop;
     };
 
     web_socket.ReceiveMessages(std::move(handler)).wait();

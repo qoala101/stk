@@ -6,6 +6,8 @@
 namespace stonks::db {
 class Db {
  public:
+  virtual ~Db() = default;
+
   virtual bool CreateTable(const TableDefinition &table_definition) = 0;
 
   virtual bool DropTable(const Table &table) = 0;

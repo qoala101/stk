@@ -17,7 +17,7 @@ void ForwardOrderRequestToProcessing(const finance::Order &order) {
                                       .amount = order.amount,
                                       .order_type = order.order_type};
 
-  rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
+  network::RestRequest{web::http::methods::POST, "http://localhost:6506"}
       .AppendUri("/api/order_monitor/order")
       .SetJson(json::ConvertToJson(order_request))
       .SendAndGetResponse();
@@ -25,7 +25,7 @@ void ForwardOrderRequestToProcessing(const finance::Order &order) {
 
 void SendOrderUpdateToUri(const finance::OrderMonitorOrderUpdate &order_update,
                           std::string_view uri) {
-  rest::RestRequest{web::http::methods::POST, uri}
+  network::RestRequest{web::http::methods::POST, uri}
       .SetJson(json::ConvertToJson(order_update))
       .SendAndGetResponse();
 }

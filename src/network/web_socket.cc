@@ -4,7 +4,7 @@
 
 #include <gsl/assert>
 
-namespace stonks::rest {
+namespace stonks::network {
 WebSocket::WebSocket(std::string_view uri) : uri_builder_{std::string{uri}} {}
 
 WebSocket::~WebSocket() {
@@ -66,4 +66,4 @@ auto WebSocket::ReceiveMessages(MessageHandler message_handler)
 
   return shared_future_;
 }
-}  // namespace stonks::rest
+}  // namespace stonks::network

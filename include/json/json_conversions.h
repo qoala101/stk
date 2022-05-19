@@ -208,61 +208,6 @@ template <>
 std::optional<finance::OrderMonitorOrderState> ParseFromJson(
     const web::json::value &json);
 web::json::value ConvertToJson(const finance::OrderMonitorOrderState &data);
-
-template <typename T>
-class JsonConverter {
- public:
-  using Type = T;
-
-  [[nodiscard]] auto ParseFromJson(const web::json::value &json) const
-      -> std::optional<T> {
-    return ::stonks::json::ParseFromJson<T>(json);
-  }
-
-  [[nodiscard]] auto ConvertToJson(const T &data) const -> web::json::value {
-    return ::stonks::json::ConvertToJson(data);
-  }
-
-  /**
-   * @throws If any stores wrong type.
-   */
-  [[nodiscard]] auto any_ConvertToJson(const std::any &data) const
-      -> web::json::value {
-    return ::stonks::json::ConvertToJson(std::any_cast<T>(data));
-  }
-
-  /**
-   * @throws If any stores wrong type.
-   */
-  [[nodiscard]] auto any_ParseFromJson(const web::json::value &json) const
-      -> std::any {
-    auto object = ::stonks::json::ParseFromJson<T>(json);
-
-    if (object.has_value()) {
-      return std::move(*object);
-    }
-
-    return {};
-  }
-};
-
-using JsonConverterVariant =
-    std::variant<JsonConverter<std::string>, JsonConverter<int>,
-                 JsonConverter<int64_t>, JsonConverter<double>,
-                 JsonConverter<std::chrono::milliseconds>,
-                 JsonConverter<finance::Symbol>>;
-
-struct Any {
-  std::any value{};
-  JsonConverterVariant converter{};
-} __attribute__((aligned(32)));  // NOLINT(*-magic-numbers)
-
-enum class OptionalFlag { kOptional, kMandatory };
-
-struct AnyDesc {
-  json::JsonConverterVariant converter{};
-  OptionalFlag optional{};
-} __attribute__((aligned(8)));  // NOLINT(*-magic-numbers)
 }  // namespace stonks::json
 
 #endif  // STONKS_JSON_JSON_CONVERSIONS_H_

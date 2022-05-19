@@ -20,7 +20,7 @@ class SqliteDb : public Db {
   explicit SqliteDb(const SqliteDb &) = delete;
   SqliteDb &operator=(SqliteDb &&other);
   SqliteDb &operator=(const SqliteDb &) = delete;
-  ~SqliteDb();
+  ~SqliteDb() override;
 
   bool CreateTable(const TableDefinition &table_definition) override;
 

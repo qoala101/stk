@@ -4,6 +4,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
+#include <exception>
 #include <gsl/assert>
 #include <range/v3/algorithm/find_if.hpp>
 
@@ -96,26 +97,23 @@ class Server::Impl {
 
       const auto &raw_value = raw_param->second;
       auto parsed_value = std::visit(
-          [&raw_value](const auto &variant) -> std::optional<std::any> {
-            // TODO(vh): make throw here?
-            const auto parsed_value =
-                variant.ParseFromJson(web::json::value::parse(raw_value));
-
-            if (parsed_value.has_value()) {
-              // TODO(vh): move here?
-              return *parsed_value;
+          [&raw_value](const auto &variant) {
+            try {
+              return variant.ParseAnyFromJson(
+                  web::json::value::parse(raw_value));
+            } catch (const std::exception &) {
             }
 
-            return std::nullopt;
+            return std::any{};
           },
           param_desc.converter);
 
-      if (const auto not_parsed = !parsed_value->has_value()) {
+      if (const auto not_parsed = !parsed_value.has_value()) {
         Logger().error("Cannot parse parameter {}", param_name);
         return std::nullopt;
       }
 
-      parsed_params[param_name] = json::Any{.value = std::move(*parsed_value),
+      parsed_params[param_name] = json::Any{.value = std::move(parsed_value),
                                             .converter = param_desc.converter};
     }
 
@@ -135,14 +133,13 @@ class Server::Impl {
     auto request_body = json::Any{};
 
     request_body.value = std::visit(
-        [&json](const auto &variant) -> std::any {
-          auto object = variant.ParseFromJson(json);
-
-          if (object.has_value()) {
-            return std::move(*object);
+        [&json](const auto &variant) {
+          try {
+            return variant.ParseAnyFromJson(json);
+          } catch (const std::exception &) {
           }
 
-          return {};
+          return std::any{};
         },
         endpoint_request_body->converter);
 
@@ -177,10 +174,11 @@ class Server::Impl {
         [&response_body](
             const auto &variant) -> std::optional<web::json::value> {
           try {
-            return variant.any_ConvertToJson(response_body);
-          } catch (const std::exception &exception) {
-            return std::nullopt;
+            return variant.ConvertAnyToJson(response_body);
+          } catch (const std::exception &) {
           }
+
+          return std::nullopt;
         },
         endpoint_response_body->converter);
 
@@ -227,7 +225,7 @@ class Server::Impl {
     try {
       response_body = endpoint->handler(std::move(*parsed_params),
                                         std::move(*parsed_request_body));
-    } catch (const std::exception &exception) {
+    } catch (const std::exception &) {
       // TODO(vh): return exception what to the client and handle it in client
     }
 

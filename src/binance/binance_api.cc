@@ -50,7 +50,7 @@ std::optional<std::vector<std::string>> ParseSymbolsFromExchangeInfo(
 
 std::optional<ExchangeInfo> GetExchangeInfo() {
   const auto response =
-      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+      network::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/exchangeInfo")
           .SendAndGetResponse();
 
@@ -64,7 +64,7 @@ std::optional<ExchangeInfo> GetExchangeInfo() {
 
 std::optional<std::string> GetBalances() {
   auto request =
-      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+      network::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/account")
           .AddHeader("X-MBX-APIKEY", settings::GetApiKey())
           .AddParameter("timestamp", utils::GetUnixTime());
@@ -94,7 +94,7 @@ std::variant<std::monostate, PlaceOrderAcknowledgement, ApiError> PlaceOrder(
     std::optional<int64_t> receiving_window,
     std::chrono::milliseconds timestamp) {
   auto request =
-      rest::RestRequest{web::http::methods::POST, settings::GetBaseRestUri()}
+      network::RestRequest{web::http::methods::POST, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/order")
           .AddHeader("X-MBX-APIKEY", settings::GetApiKey())
           .AddParameter("symbol", symbol)
@@ -146,7 +146,7 @@ std::optional<std::vector<OrderInfo>> GetAllOrders(
     std::optional<int64_t> receiving_window,
     std::chrono::milliseconds timestamp) {
   auto request =
-      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+      network::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/allOrders")
           .AddHeader("X-MBX-APIKEY", settings::GetApiKey())
           .AddParameter("symbol", symbol)
@@ -177,7 +177,7 @@ std::optional<OrderInfo> QueryOrder(
     std::optional<int64_t> receiving_window,
     std::chrono::milliseconds timestamp) {
   auto request =
-      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+      network::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/order")
           .AddHeader("X-MBX-APIKEY", settings::GetApiKey())
           .AddParameter("symbol", symbol)
@@ -206,7 +206,7 @@ std::optional<std::vector<Kline>> GetKlines(
     std::optional<std::chrono::milliseconds> end_time,
     std::optional<int> limit) {
   const auto response =
-      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+      network::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/klines")
           .AddParameter("symbol", symbol)
           .AddParameter("interval", interval)
@@ -226,7 +226,7 @@ std::optional<std::vector<Kline>> GetKlines(
 std::optional<AverageSymbolPrice> GetAverageSymbolPrice(
     std::string_view symbol) {
   const auto response =
-      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+      network::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/avgPrice")
           .AddParameter("symbol", symbol)
           .SendAndGetResponse();
@@ -242,7 +242,7 @@ std::optional<AverageSymbolPrice> GetAverageSymbolPrice(
 std::optional<SymbolPrice> GetSymbolPrice(
     std::optional<std::string_view> symbol) {
   const auto response =
-      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+      network::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/ticker/price")
           .AddParameter("symbol", symbol)
           .SendAndGetResponse();
@@ -257,7 +257,7 @@ std::optional<SymbolPrice> GetSymbolPrice(
 
 std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices() {
   const auto response =
-      rest::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
+      network::RestRequest{web::http::methods::GET, settings::GetBaseRestUri()}
           .AppendUri("/api/v3/ticker/price")
           .SendAndGetResponse();
 

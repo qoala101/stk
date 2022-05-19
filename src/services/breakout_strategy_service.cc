@@ -22,7 +22,7 @@ void SendOrderRequest(finance::Symbol symbol,
 
   auto json = json::ConvertToJson(order_request);
 
-  rest::RestRequest{web::http::methods::POST, "http://localhost:6506"}
+  network::RestRequest{web::http::methods::POST, "http://localhost:6506"}
       .AppendUri("/api/order_proxy/order")
       .SetJson(json)
       .SendAndGetResponse();

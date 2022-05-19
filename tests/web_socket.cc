@@ -30,7 +30,7 @@ const auto kBookTickerUnsubscribeMessage = R"(
 
 TEST(WebSocket, Test) {
   auto web_socket =
-      stonks::rest::WebSocket{stonks::binance::settings::GetBaseStreamUri()};
+      stonks::network::WebSocket{stonks::binance::settings::GetBaseStreamUri()};
   web_socket.AppendUri("ws");
   web_socket.Connect();
   web_socket.SendMessage(kBookTickerSubscribeMessage);
@@ -48,8 +48,8 @@ TEST(WebSocket, Test) {
     }
 
     return symbol_book_ticks.size() < num_ticks
-               ? stonks::rest::WebSocket::ReceiveMessagesResult::kContinue
-               : stonks::rest::WebSocket::ReceiveMessagesResult::kStop;
+               ? stonks::network::WebSocket::ReceiveMessagesResult::kContinue
+               : stonks::network::WebSocket::ReceiveMessagesResult::kStop;
   };
 
   web_socket.ReceiveMessages(std::move(handler)).wait();

@@ -4,6 +4,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
+#include <exception>
 #include <gsl/assert>
 
 #include "rest_request.h"
@@ -30,7 +31,7 @@ class Client::Impl {
   [[nodiscard]] static auto AddParamsToRequest(
       const std::map<std::string, json::Any> &params,
       const std::map<std::string, json::AnyDesc> &endpoint_params,
-      rest::RestRequest &request) -> bool {
+      network::RestRequest &request) -> bool {
     for (const auto &endpoint_param : endpoint_params) {
       const auto &[param_name, param_desc] = endpoint_param;
       const auto param = params.find(param_name);
@@ -49,10 +50,11 @@ class Client::Impl {
       auto value_json = std::visit(
           [&value](const auto &variant) -> std::optional<web::json::value> {
             try {
-              return variant.any_ConvertToJson(value.value);
-            } catch (const std::exception &exception) {
-              return std::nullopt;
+              return variant.ConvertAnyToJson(value.value);
+            } catch (const std::exception &) {
             }
+
+            return std::nullopt;
           },
           param_desc.converter);
 
@@ -87,10 +89,11 @@ class Client::Impl {
         [&value = request_body.value](
             const auto &variant) -> std::optional<web::json::value> {
           try {
-            return variant.any_ConvertToJson(value);
-          } catch (...) {
-            return std::nullopt;
+            return variant.ConvertAnyToJson(value);
+          } catch (const std::exception &) {
           }
+
+          return std::nullopt;
         },
         request_body.converter);
 
@@ -124,7 +127,7 @@ class Client::Impl {
 
     const auto response_body = std::visit(
         [&response_json](const auto &variant) -> std::any {
-          return variant.any_ParseFromJson(*response_json);
+          return variant.ParseAnyFromJson(*response_json);
         },
         endpoint_response_body->converter);
 
@@ -140,7 +143,7 @@ class Client::Impl {
   [[nodiscard]] auto Execute(const EndpointDesc &endpoint,
                              const std::map<std::string, json::Any> &params,
                              const json::Any &request_body) const -> std::any {
-    auto request = rest::RestRequest{endpoint.method, base_uri_}.AppendUri(
+    auto request = network::RestRequest{endpoint.method, base_uri_}.AppendUri(
         endpoint.relative_uri);
 
     const auto params_successfully_added =
