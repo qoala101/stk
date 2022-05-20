@@ -63,6 +63,12 @@ class Client::Impl {
       const auto not_converted = !value_json.has_value();
       ABSL_ASSERT(!not_converted && "Parameter {} has wrong type");
 
+      if (const auto no_value_for_optional_param =
+              value_json->is_null() &&
+              (param_desc.optional == json::OptionalFlag::kOptional)) {
+        continue;
+      }
+
       request.AddParameter(param_name, value_json->serialize());
     }
   }
@@ -113,7 +119,9 @@ class Client::Impl {
         throw std::runtime_error{"Response misses mandatory body"};
       }
 
-      return {};
+      return std::visit(
+          [](const auto &variant) { return variant.MakeNulloptAny(); },
+          endpoint_response_body->converter);
     }
 
     if (endpoint_response_body.has_value()) {

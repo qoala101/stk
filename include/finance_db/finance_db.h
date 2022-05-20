@@ -1,6 +1,7 @@
 #ifndef STONKS_FINANCE_DB_FINANCE_DB_H_
 #define STONKS_FINANCE_DB_FINANCE_DB_H_
 
+#include <concepts>
 #include <memory>
 #include <optional>
 #include <string>
@@ -9,6 +10,40 @@
 #include "finance_types.h"
 
 namespace stonks::finance {
+template <typename T>
+concept FinanceDbConcept = requires(const T &t) {
+  /**
+   * @brief Selects all assets.
+   * @return Nullopt if operation failed.
+   */
+  { t.SelectAssets() } -> std::same_as<std::optional<std::vector<std::string>>>;
+}
+&&requires(const T &t) {
+  /**
+   * @brief Selects all symbols.
+   * @return Nullopt if operation failed.
+   */
+  { t.SelectSymbols() } -> std::same_as<std::optional<std::vector<Symbol>>>;
+}
+&&requires(T &t, const SymbolPriceTick &symbol_price_tick) {
+  /**
+   * @brief Inserts value into the table.
+   * @return False if operation failed.
+   */
+  { t.InsertSymbolPriceTick(symbol_price_tick) } -> std::same_as<bool>;
+}
+&&requires(T &t, std::optional<int> limit, const std::optional<Period> &period,
+           const std::optional<std::vector<Symbol>> &symbols) {
+  /**
+   * @brief Selects all price ticks for symbols in period.
+   * @return Nullopt if operation failed.
+   */
+  {
+    t.SelectSymbolPriceTicks(limit, period, symbols)
+    } -> std::same_as<std::optional<std::vector<SymbolPriceTick>>>;
+};
+
+// TODO(vh): make finance db methods throw instead of optional return?
 class FinanceDb {
  public:
   /**
@@ -31,29 +66,25 @@ class FinanceDb {
   ~FinanceDb();
 
   /**
-   * @brief Selects all assets.
-   * @return Nullopt if operation failed.
+   * @see FinanceDbConcept
    */
   [[nodiscard]] auto SelectAssets() const
       -> std::optional<std::vector<std::string>>;
 
   /**
-   * @brief Selects all symbols.
-   * @return Nullopt if operation failed.
+   * @see FinanceDbConcept
    */
   [[nodiscard]] auto SelectSymbols() const
       -> std::optional<std::vector<Symbol>>;
 
   /**
-   * @brief Inserts value into the table.
-   * @return False if operation failed.
+   * @see FinanceDbConcept
    */
   [[nodiscard]] auto InsertSymbolPriceTick(
       const SymbolPriceTick &symbol_price_tick) -> bool;
 
   /**
-   * @brief Selects all price ticks for symbols in period.
-   * @return Nullopt if operation failed.
+   * @see FinanceDbConcept
    */
   [[nodiscard]] auto SelectSymbolPriceTicks(
       std::optional<int> limit = std::nullopt,
@@ -74,6 +105,8 @@ class FinanceDb {
   struct Impl;
   std::unique_ptr<Impl> impl_{};
 };
+
+static_assert(FinanceDbConcept<FinanceDb>);
 }  // namespace stonks::finance
 
 #endif  // STONKS_FINANCE_DB_FINANCE_DB_H_

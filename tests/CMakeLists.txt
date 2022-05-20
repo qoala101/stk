@@ -19,6 +19,8 @@ add_executable(unittests
   web_socket.cc
   price_ticks_db_stream.cc
   client_server.cc
+  finance_db_client_server.cc
+  # TODO(vh): make_optional!
 )
 target_link_libraries(unittests PRIVATE libstonks)
 target_link_libraries(unittests PRIVATE libdb)

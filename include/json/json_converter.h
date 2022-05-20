@@ -68,8 +68,13 @@ class JsonConverter<std::optional<T>> {
     }
 
     if (data.type() == typeid(std::optional<T>)) {
-      return JsonConverter<T>{}.ConvertAnyToJson(
-          *std::any_cast<std::optional<T>>(data));
+      const auto &optional_data = std::any_cast<std::optional<T>>(data);
+
+      if (!optional_data.has_value()) {
+        return web::json::value::null();
+      }
+
+      return JsonConverter<T>{}.ConvertAnyToJson(*optional_data);
     }
 
     return JsonConverter<T>{}.ConvertAnyToJson(data);

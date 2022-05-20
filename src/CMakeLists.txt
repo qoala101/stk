@@ -29,6 +29,9 @@ add_library(libstonks
   services/order_monitor_service.cc
   services/order_proxy_service.cc
   services/price_ticks_service.cc
+  services_v2/finance_db_client.cc
+  services_v2/finance_db_endpoints.cc
+  services_v2/finance_db_server.cc
   stonks/order_proxy.cc
   stonks/order_monitor.cc
   strategies/breakout_strategy.cc
@@ -48,6 +51,7 @@ target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/google
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/json)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/network)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/services)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/services_v2)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/strategies)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/streams)
@@ -65,5 +69,8 @@ target_link_libraries(libstonks PRIVATE libdb)
 add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)
 target_link_libraries(stonks PRIVATE spdlog::spdlog)
+
+add_executable(finance_db_server services_v2/finance_db_server.cc)
+target_link_libraries(finance_db_server PRIVATE libstonks)
 
 add_subdirectory(db)
