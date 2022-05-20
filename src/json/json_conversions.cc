@@ -5,6 +5,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <chrono>
 #include <magic_enum.hpp>
+#include <optional>
 #include <range/v3/to_container.hpp>
 #include <range/v3/view/take_while.hpp>
 #include <range/v3/view/transform.hpp>
@@ -71,6 +72,23 @@ std::chrono::milliseconds GetInt64PropertyAsMilliseconds(
     const web::json::value& json, const std::string_view property_name) {
   return std::chrono::milliseconds{
       json.at(std::string{property_name}).as_number().to_int64()};
+}
+
+std::optional<std::chrono::milliseconds> GetInt64PropertyAsOptionalMilliseconds(
+    const web::json::value& json, const std::string_view property_name) {
+  const auto property_name_string = std::string{property_name};
+
+  if (!json.has_field(property_name_string)) {
+    return std::nullopt;
+  }
+
+  const auto& value = json.at(property_name_string);
+
+  if (value.is_null()) {
+    return std::nullopt;
+  }
+
+  return std::chrono::milliseconds{value.as_number().to_int64()};
 }
 
 std::chrono::milliseconds GetInt64ElementAsMilliseconds(
@@ -1052,14 +1070,65 @@ web::json::value ConvertToJson(const std::runtime_error& data) {
   return json;
 }
 
-// template <>
-// std::optional<finance::OrderMonitorOrderState> ParseFromJson(
-//     const web::json::value& json) {
-//   return std::nullopt;
-// }
+template <>
+auto ParseFromJson(const web::json::value& json)
+    -> std::optional<std::vector<std::string>> {
+  return ParseFromJsonArray<std::vector<std::string>>(json);
+}
 
-// web::json::value ConvertToJson(const finance::OrderMonitorOrderState& data)
-// {
-//   return {};
-// }
+auto ConvertToJson(const std::vector<std::string>& data) -> web::json::value {
+  return ConvertToJsonArray(data);
+}
+
+template <>
+auto ParseFromJson(const web::json::value& json)
+    -> std::optional<std::vector<finance::Symbol>> {
+  return ParseFromJsonArray<std::vector<finance::Symbol>>(json);
+}
+
+auto ConvertToJson(const std::vector<finance::Symbol>& data)
+    -> web::json::value {
+  return ConvertToJsonArray(data);
+}
+
+template <>
+auto ParseFromJson(const web::json::value& json) -> std::optional<bool> {
+  try {
+    return json.as_bool();
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+auto ConvertToJson(const bool& data) -> web::json::value {
+  return web::json::value::boolean(data);
+}
+
+template <>
+auto ParseFromJson(const web::json::value& json)
+    -> std::optional<finance::Period> {
+  try {
+    return finance::Period{
+        .start_time =
+            GetInt64PropertyAsOptionalMilliseconds(json, "start_time"),
+        .end_time = GetInt64PropertyAsOptionalMilliseconds(json, "end_time")};
+  } catch (const std::exception& exception) {
+    spdlog::error("Parse from JSON: {}", exception.what());
+  } catch (...) {
+    spdlog::error("Parse from JSON: {}", "Unknown error");
+  }
+
+  return std::nullopt;
+}
+
+auto ConvertToJson(const finance::Period& data) -> web::json::value {
+  auto json = web::json::value{};
+  json["start_time"] = ConvertToJson(data.start_time);
+  json["end_time"] = ConvertToJson(data.end_time);
+  return json;
+}
 }  // namespace stonks::json

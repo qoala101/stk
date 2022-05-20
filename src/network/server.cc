@@ -1,6 +1,7 @@
 #include "server.h"
 
 #include <absl/base/macros.h>
+#include <cpprest/base_uri.h>
 #include <cpprest/http_listener.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
@@ -8,6 +9,8 @@
 #include <exception>
 #include <gsl/assert>
 #include <range/v3/algorithm/find_if.hpp>
+
+#include "any_types.h"
 
 namespace stonks::network {
 namespace {
@@ -35,6 +38,8 @@ class Server::Impl {
     Expects(!base_uri.empty());
     Expects(!endpoints_.empty());
 
+    PrependBaseUriToEndpoints();
+
     http_listener_.support([this](const web::http::http_request &request) {
       const auto result = RequestHandler(request);
 
@@ -58,6 +63,14 @@ class Server::Impl {
 
   ~Impl() { http_listener_.close().wait(); }
 
+  void PrependBaseUriToEndpoints() {
+    const auto &base_uri = http_listener_.uri().path();
+
+    for (auto &endpoint : endpoints_) {
+      endpoint.desc.relative_uri.insert(0, base_uri);
+    }
+  }
+
   /**
    * @throws If endpoint is not registered.
    */
@@ -65,7 +78,7 @@ class Server::Impl {
       -> const Endpoint & {
     const auto endpoint = ranges::find_if(
         endpoints_, [&request_method = request.method(),
-                     &request_relative_uri = request.relative_uri().path()](
+                     &request_relative_uri = request.request_uri().path()](
                         const Endpoint &endpoint) {
           return (endpoint.desc.method == request_method) &&
                  (endpoint.desc.relative_uri == request_relative_uri);
@@ -98,6 +111,12 @@ class Server::Impl {
           throw std::runtime_error{"Request misses mandatory parameter " +
                                    param_name};
         }
+
+        parsed_params[param_name] = json::Any{
+            .value = std::visit(
+                [](const auto &variant) { return variant.MakeNulloptAny(); },
+                param_desc.converter),
+            .converter = param_desc.converter};
 
         continue;
       }
@@ -196,7 +215,7 @@ class Server::Impl {
   [[nodiscard]] auto RequestHandler(
       const web::http::http_request &request) const -> RequestHandlerResult {
     Logger().debug("Got {} request on {}", request.method(),
-                   request.relative_uri().path());
+                   request.request_uri().path());
 
     const auto *endpoint = (const Endpoint *){};
     auto parsed_params = std::map<std::string, json::Any>{};
@@ -205,8 +224,8 @@ class Server::Impl {
     try {
       endpoint = &FindEndpoint(request);
 
-      const auto raw_params =
-          web::uri::split_query(request.request_uri().query());
+      const auto raw_params = web::uri::split_query(
+          web::uri::decode(request.request_uri().query()));
       parsed_params = ParseParams(raw_params, endpoint->desc.params);
 
       parsed_request_body =

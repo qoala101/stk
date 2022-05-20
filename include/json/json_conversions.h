@@ -216,6 +216,35 @@ template <>
 auto ParseFromJson(const web::json::value &json)
     -> std::optional<std::runtime_error>;
 auto ConvertToJson(const std::runtime_error &data) -> web::json::value;
+
+template <>
+auto ParseFromJson(const web::json::value &json)
+    -> std::optional<std::vector<std::string>>;
+auto ConvertToJson(const std::vector<std::string> &data) -> web::json::value;
+
+template <>
+auto ParseFromJson(const web::json::value &json)
+    -> std::optional<std::vector<finance::Symbol>>;
+auto ConvertToJson(const std::vector<finance::Symbol> &data)
+    -> web::json::value;
+
+template <>
+auto ParseFromJson(const web::json::value &json) -> std::optional<bool>;
+auto ConvertToJson(const bool &data) -> web::json::value;
+
+template <>
+auto ParseFromJson(const web::json::value &json)
+    -> std::optional<finance::Period>;
+auto ConvertToJson(const finance::Period &data) -> web::json::value;
+
+template <typename T>
+auto ConvertToJson(const std::optional<T> &data) -> web::json::value {
+  if (!data.has_value()) {
+    return web::json::value::null();
+  }
+
+  return ConvertToJson(*data);
+}
 }  // namespace stonks::json
 
 #endif  // STONKS_JSON_JSON_CONVERSIONS_H_
