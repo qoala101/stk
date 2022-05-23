@@ -21,9 +21,8 @@ TEST(JsonConversions, PlaceOrderAcknowledgement) {
       .transaction_time = std::chrono::milliseconds{1648412181820}};
 
   const auto parsed_json = web::json::value::parse(raw_json);
-  const auto parsed_object =
-      stonks::json::ParseFromJson<stonks::binance::PlaceOrderAcknowledgement>(
-          parsed_json);
+  const auto parsed_object = stonks::json::ParseFromJsonNoThrow<
+      stonks::binance::PlaceOrderAcknowledgement>(parsed_json);
 
   ASSERT_TRUE(parsed_object.has_value());
   EXPECT_EQ(*parsed_object, object);
@@ -73,7 +72,8 @@ TEST(JsonConversions, OrderInfo) {
 
   const auto parsed_json = web::json::value::parse(raw_json);
   const auto parsed_object =
-      stonks::json::ParseFromJson<stonks::binance::OrderInfo>(parsed_json);
+      stonks::json::ParseFromJsonNoThrow<stonks::binance::OrderInfo>(
+          parsed_json);
 
   ASSERT_TRUE(parsed_object.has_value());
   EXPECT_EQ(*parsed_object, object);
@@ -109,7 +109,7 @@ TEST(JsonConversions, Kline) {
 
   const auto parsed_json = web::json::value::parse(raw_json);
   const auto parsed_object =
-      stonks::json::ParseFromJson<stonks::binance::Kline>(parsed_json);
+      stonks::json::ParseFromJsonNoThrow<stonks::binance::Kline>(parsed_json);
 
   ASSERT_TRUE(parsed_object.has_value());
   EXPECT_EQ(*parsed_object, object);
@@ -174,7 +174,7 @@ TEST(JsonConversions, Klines) {
 
   const auto parsed_json = web::json::value::parse(raw_json);
   const auto parsed_object =
-      stonks::json::ParseFromJson<std::vector<stonks::binance::Kline>>(
+      stonks::json::ParseFromJsonNoThrow<std::vector<stonks::binance::Kline>>(
           parsed_json);
 
   ASSERT_TRUE(parsed_object.has_value());
@@ -215,7 +215,7 @@ TEST(JsonConversions, BrokenKlineInArray) {
 
   const auto parsed_json = web::json::value::parse(raw_json);
   const auto parsed_object =
-      stonks::json::ParseFromJson<std::vector<stonks::binance::Kline>>(
+      stonks::json::ParseFromJsonNoThrow<std::vector<stonks::binance::Kline>>(
           parsed_json);
 
   ASSERT_FALSE(parsed_object.has_value());

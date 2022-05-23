@@ -19,7 +19,7 @@ void HandlePostRequest(const web::http::http_request &request,
 
   if (relative_uri == "/order") {
     auto order_request =
-        json::ParseFromJson<finance::OrderProxyOrderRequest>(json);
+        json::ParseFromJsonNoThrow<finance::OrderProxyOrderRequest>(json);
 
     if (!order_request.has_value()) {
       spdlog::error("Cannot parse order request");
@@ -33,9 +33,8 @@ void HandlePostRequest(const web::http::http_request &request,
   }
 
   if (relative_uri == "/monitor") {
-    auto monitor_requests =
-        json::ParseFromJson<std::vector<finance::OrderProxyMonitorRequest>>(
-            json);
+    auto monitor_requests = json::ParseFromJsonNoThrow<
+        std::vector<finance::OrderProxyMonitorRequest>>(json);
 
     if (!monitor_requests.has_value()) {
       spdlog::error("Cannot parse monitor request");

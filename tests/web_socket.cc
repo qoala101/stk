@@ -41,7 +41,8 @@ TEST(WebSocket, Test) {
 
   auto handler = [&symbol_book_ticks](const web::json::value &json) mutable {
     const auto symbol_book_ticker =
-        stonks::json::ParseFromJson<stonks::binance::SymbolBookTicker>(json);
+        stonks::json::ParseFromJsonNoThrow<stonks::binance::SymbolBookTicker>(
+            json);
 
     if (symbol_book_ticker.has_value()) {
       symbol_book_ticks.emplace_back(*symbol_book_ticker);

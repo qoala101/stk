@@ -30,7 +30,8 @@ void HandlePostRequest(const web::http::http_request &request,
   const auto relative_uri = request.relative_uri().path();
 
   if (relative_uri == "/new_price_tick") {
-    auto price_tick = json::ParseFromJson<finance::SymbolPriceTick>(json);
+    auto price_tick =
+        json::ParseFromJsonNoThrow<finance::SymbolPriceTick>(json);
 
     if (!price_tick.has_value()) {
       spdlog::error("Cannot parse price tick");

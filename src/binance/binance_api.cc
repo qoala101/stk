@@ -124,13 +124,13 @@ std::variant<std::monostate, PlaceOrderAcknowledgement, ApiError> PlaceOrder(
   }
 
   const auto acknowledgement =
-      json::ParseFromJson<PlaceOrderAcknowledgement>(*response);
+      json::ParseFromJsonNoThrow<PlaceOrderAcknowledgement>(*response);
 
   if (acknowledgement.has_value()) {
     return *acknowledgement;
   }
 
-  const auto api_error = json::ParseFromJson<ApiError>(*response);
+  const auto api_error = json::ParseFromJsonNoThrow<ApiError>(*response);
 
   if (api_error.has_value()) {
     return *api_error;

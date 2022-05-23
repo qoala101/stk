@@ -57,7 +57,8 @@ void HandlePostRequest(const web::http::http_request &request,
 
   if (relative_uri == "/order_update") {
     const auto order_update =
-        json::ParseFromJson<finance::OrderProxyToStrategyOrderUpdate>(json);
+        json::ParseFromJsonNoThrow<finance::OrderProxyToStrategyOrderUpdate>(
+            json);
 
     if (!order_update.has_value()) {
       spdlog::error("Cannot parse order update");

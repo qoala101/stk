@@ -63,14 +63,14 @@ void HandleGetRequest(const web::http::http_request &request,
       return;
     }
 
-    const auto second_asset_iter = params_map.find("second_assset");
-    const auto second_assset =
+    const auto second_asset_iter = params_map.find("second_asset");
+    const auto second_asset =
         (second_asset_iter != params_map.end())
             ? second_asset_iter->second
             : std::optional<std::string_view>{std::nullopt};
 
     const auto balance_history = order_proxy.CalcBalanceHistory(
-        balance_asset->second, second_assset, drop_first);
+        balance_asset->second, second_asset, drop_first);
     request.reply(web::http::status_codes::OK,
                   google_charts::ConvertToJson(balance_history));
     return;
@@ -98,7 +98,7 @@ void HandlePostRequest(
 
   if (relative_uri == "/order") {
     auto strategy_order_request =
-        json::ParseFromJson<finance::StrategyOrderRequest>(json);
+        json::ParseFromJsonNoThrow<finance::StrategyOrderRequest>(json);
 
     if (!strategy_order_request.has_value()) {
       spdlog::error("Cannot parse strategy order request");
@@ -116,7 +116,7 @@ void HandlePostRequest(
 
   if (relative_uri == "/update_orders") {
     auto order_updates =
-        json::ParseFromJson<std::vector<finance::OrderMonitorOrderUpdate>>(
+        json::ParseFromJsonNoThrow<std::vector<finance::OrderMonitorOrderUpdate>>(
             json);
 
     if (!order_updates.has_value()) {
@@ -133,7 +133,7 @@ void HandlePostRequest(
 
   if (relative_uri == "/subscribe") {
     auto subscribe_request =
-        json::ParseFromJson<finance::StrategySubscribeToOrderUpdatesRequest>(
+        json::ParseFromJsonNoThrow<finance::StrategySubscribeToOrderUpdatesRequest>(
             json);
 
     if (!subscribe_request.has_value()) {

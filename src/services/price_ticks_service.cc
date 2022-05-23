@@ -54,7 +54,8 @@ void HandlePostRequest(
 
   if (relative_uri == "/subscribe") {
     auto subscribe_request =
-        json::ParseFromJson<finance::PriceTicksServiceSubscribeRequest>(json);
+        json::ParseFromJsonNoThrow<finance::PriceTicksServiceSubscribeRequest>(
+            json);
 
     if (!subscribe_request.has_value()) {
       spdlog::error("Cannot parse order subscribe request");
@@ -119,7 +120,8 @@ auto PriceTicksService::Start() -> pplx::task<void> {
       }
 
       const auto symbol_book_ticker =
-          stonks::json::ParseFromJson<stonks::binance::SymbolBookTicker>(json);
+          stonks::json::ParseFromJsonNoThrow<stonks::binance::SymbolBookTicker>(
+              json);
 
       if (symbol_book_ticker.has_value()) {
         const auto new_prices =
