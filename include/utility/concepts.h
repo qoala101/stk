@@ -26,4 +26,7 @@ concept Vector = IsVector<T>::Value();
 template <typename T>
 concept NotVector = !Vector<T>;
 
+template <typename T>
+concept NotVectorAndNotEnumeration = !Vector<T> && !Enumeration<T>;
+
 #endif  // STONKS_UTILITY_CONCEPTS_H_

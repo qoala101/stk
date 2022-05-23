@@ -1,5 +1,6 @@
 #include "json_conversions.h"
 
+#include <cpprest/json.h>
 #include <spdlog/spdlog.h>
 
 #include <boost/uuid/uuid.hpp>
@@ -12,152 +13,26 @@
 
 namespace stonks::json {
 namespace {
-auto GetStringPropertyAsString(const web::json::value& json,
-                               const std::string_view property_name)
-    -> const std::string& {
-  return json.at(std::string{property_name}).as_string();
-}
-auto GetStringElementAsString(const web::json::value& json, const int index)
-    -> const std::string& {
-  return json.at(index).as_string();
-}
-
-auto GetStringPropertyAsDouble(const web::json::value& json,
-                               const std::string_view property_name) -> double {
-  return std::stod(json.at(std::string{property_name}).as_string());
-}
-
-auto GetStringElementAsDouble(const web::json::value& json, const int index)
-    -> double {
-  return std::stod(json.at(index).as_string());
-}
-
-auto GetIntPropertyAsInt(const web::json::value& json,
-                         const std::string_view property_name) -> int {
-  return json.at(std::string{property_name}).as_number().to_int32();
-}
-
-auto GetIntElementAsInt(const web::json::value& json, const int index) -> int {
-  return json.at(index).as_number().to_int32();
-}
-
-auto GetInt64PropertyAsInt64(const web::json::value& json,
-                             const std::string_view property_name) -> int64_t {
-  return json.at(std::string{property_name}).as_number().to_int64();
-}
-
-auto GetInt64ElementAsInt64(const web::json::value& json, const int index)
-    -> int64_t {
-  return json.at(index).as_number().to_int64();
-}
-
-auto GetDoublePropertyAsDouble(const web::json::value& json,
-                               const std::string_view property_name) -> double {
-  return json.at(std::string{property_name}).as_number().to_double();
-}
-
-auto GetDoubleElementAsDouble(const web::json::value& json, const int index)
-    -> double {
-  return json.at(index).as_number().to_double();
-}
-
-auto GetBoolPropertyAsBool(const web::json::value& json,
-                           const std::string_view property_name) -> bool {
-  return json.at(std::string{property_name}).as_bool();
-}
-
-auto GetBoolElementAsBool(const web::json::value& json, const int index)
-    -> bool {
-  return json.at(index).as_bool();
-}
-
-auto GetInt64PropertyAsMilliseconds(const web::json::value& json,
-                                    const std::string_view property_name)
-    -> std::chrono::milliseconds {
-  return std::chrono::milliseconds{
-      json.at(std::string{property_name}).as_number().to_int64()};
-}
-
-auto GetInt64PropertyAsOptionalMilliseconds(
-    const web::json::value& json, const std::string_view property_name)
-    -> std::optional<std::chrono::milliseconds> {
-  const auto property_name_string = std::string{property_name};
-
-  if (!json.has_field(property_name_string)) {
-    return std::nullopt;
-  }
-
-  const auto& value = json.at(property_name_string);
-
-  if (value.is_null()) {
-    return std::nullopt;
-  }
-
-  return std::chrono::milliseconds{value.as_number().to_int64()};
-}
-
-auto GetInt64ElementAsMilliseconds(const web::json::value& json,
-                                   const int index)
-    -> std::chrono::milliseconds {
-  return std::chrono::milliseconds{json.at(index).as_number().to_int64()};
-}
-
-auto GetStringPropertyAsUuid(const web::json::value& json,
-                             const std::string_view property_name)
-    -> boost::uuids::uuid {
-  return utils::ParseUuidFromString(
-      json.at(std::string{property_name}).as_string());
-}
-
-auto GetStringElementAsUuid(const web::json::value& json, const int index)
-    -> boost::uuids::uuid {
-  return utils::ParseUuidFromString(json.at(index).as_string());
-}
-
-template <Enumeration E>
-auto GetStringPropertyAsEnum(const web::json::value& json,
-                             const std::string_view property_name) -> E {
-  return magic_enum::enum_cast<E>(
-             json.at(std::string{property_name}).as_string())
-      .value_or(E::kInvalid);
-}
-
-template <Enumeration E>
-auto GetStringElementAsEnum(const web::json::value& json, const int index)
-    -> E {
-  return magic_enum::enum_cast<E>(json.at(index).as_string())
-      .value_or(E::kInvalid);
-}
-
-template <typename T>
-auto GetObjectPropertyAsObject(const web::json::value& json,
-                               const std::string_view property_name) -> T {
-  return ParseFromJson<T>(json.at(std::string{property_name}));
-}
-
-template <typename T>
-auto GetObjectPropertyAsOptionalObject(const web::json::value& json,
-                                       const std::string_view property_name)
-    -> std::optional<T> {
-  const auto property_name_string = std::string{property_name};
-
-  if (!json.has_field(property_name_string)) {
-    return std::nullopt;
-  }
-
-  const auto& value = json.at(property_name_string);
-
-  if (value.is_null()) {
-    return std::nullopt;
-  }
-
-  return ParseFromJson<T>(json.at(std::string{property_name}));
-}
-
-template <typename T>
-auto GetObjectElementAsObject(const web::json::value& json, const int index)
-    -> T {
+template <typename T, typename Index>
+[[nodiscard]] auto ParseJsonElement(const web::json::value& json, Index index) {
   return ParseFromJson<T>(json.at(index));
+}
+
+template <typename T, typename Index>
+[[nodiscard]] auto GetJsonElementNoThrow(const web::json::value& json,
+                                         Index index) -> web::json::value {
+  try {
+    return json.at(index);
+  } catch (const std::exception& e) {
+  }
+
+  return web::json::value::null();
+}
+
+template <typename T, typename Index>
+[[nodiscard]] auto ParseJsonElementNoThrow(const web::json::value& json,
+                                           Index index) {
+  return ParseFromJsonNoThrow<T>(GetJsonElementNoThrow<T>(json, index));
 }
 }  // namespace
 
@@ -182,7 +57,11 @@ auto ParseFromJson(const web::json::value& json) -> int64_t {
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> double {
-  return json.as_number().to_double();
+  if (json.is_number()) {
+    return json.as_number().to_double();
+  }
+
+  return std::stod(json.as_string());
 }
 
 template <>
@@ -211,6 +90,11 @@ auto ConvertToJson(std::chrono::milliseconds data) -> web::json::value {
   return web::json::value::number(data.count());
 }
 
+template <>
+auto ParseFromJson(const web::json::value& json) -> boost::uuids::uuid {
+  return utils::ParseUuidFromString(json.as_string());
+}
+
 auto ConvertToJson(boost::uuids::uuid data) -> web::json::value {
   return web::json::value::string(utils::ConvertUuidToString(data));
 }
@@ -219,108 +103,110 @@ template <>
 auto ParseFromJson(const web::json::value& json)
     -> binance::PlaceOrderAcknowledgement {
   return binance::PlaceOrderAcknowledgement{
-      .symbol = GetStringPropertyAsString(json, "symbol"),
-      .order_id = GetInt64PropertyAsInt64(json, "orderId"),
-      .order_list_id = GetInt64PropertyAsInt64(json, "orderListId"),
-      .client_order_id = GetStringPropertyAsString(json, "clientOrderId"),
-      .transaction_time = GetInt64PropertyAsMilliseconds(json, "transactTime")};
+      .symbol = ParseJsonElement<std::string>(json, "symbol"),
+      .order_id = ParseJsonElement<int64_t>(json, "orderId"),
+      .order_list_id = ParseJsonElement<int64_t>(json, "orderListId"),
+      .client_order_id = ParseJsonElement<std::string>(json, "clientOrderId"),
+      .transaction_time =
+          ParseJsonElement<std::chrono::milliseconds>(json, "transactTime")};
 }
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> binance::ApiError {
-  return binance::ApiError{.code = GetInt64PropertyAsInt64(json, "code"),
-                           .message = GetStringPropertyAsString(json, "msg")};
+  return binance::ApiError{
+      .code = ParseJsonElement<int64_t>(json, "code"),
+      .message = ParseJsonElement<std::string>(json, "msg")};
 }
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> binance::OrderInfo {
   return binance::OrderInfo{
-      .symbol = GetStringPropertyAsString(json, "symbol"),
-      .order_id = GetInt64PropertyAsInt64(json, "orderId"),
-      .order_list_id = GetInt64PropertyAsInt64(json, "orderListId"),
-      .client_order_id = GetStringPropertyAsString(json, "clientOrderId"),
-      .price = GetStringPropertyAsDouble(json, "price"),
-      .original_quantity = GetStringPropertyAsDouble(json, "origQty"),
-      .executed_quantity = GetStringPropertyAsDouble(json, "executedQty"),
+      .symbol = ParseJsonElement<std::string>(json, "symbol"),
+      .order_id = ParseJsonElement<int64_t>(json, "orderId"),
+      .order_list_id = ParseJsonElement<int64_t>(json, "orderListId"),
+      .client_order_id = ParseJsonElement<std::string>(json, "clientOrderId"),
+      .price = ParseJsonElement<double>(json, "price"),
+      .original_quantity = ParseJsonElement<double>(json, "origQty"),
+      .executed_quantity = ParseJsonElement<double>(json, "executedQty"),
       .cummulative_quote_quantity =
-          GetStringPropertyAsDouble(json, "cummulativeQuoteQty"),
-      .status = GetStringPropertyAsEnum<binance::OrderStatus>(json, "status"),
-      .time_in_force = GetStringPropertyAsEnum<binance::OrderTimeInForce>(
-          json, "timeInForce"),
-      .type = GetStringPropertyAsEnum<binance::OrderType>(json, "type"),
-      .side = GetStringPropertyAsEnum<binance::OrderSide>(json, "side"),
-      .stop_price = GetStringPropertyAsDouble(json, "stopPrice"),
-      .iceberg_quantity = GetStringPropertyAsDouble(json, "icebergQty"),
-      .time = GetInt64PropertyAsMilliseconds(json, "time"),
-      .update_time = GetInt64PropertyAsMilliseconds(json, "updateTime"),
-      .is_working = GetBoolPropertyAsBool(json, "isWorking"),
+          ParseJsonElement<double>(json, "cummulativeQuoteQty"),
+      .status = ParseJsonElement<binance::OrderStatus>(json, "status"),
+      .time_in_force =
+          ParseJsonElement<binance::OrderTimeInForce>(json, "timeInForce"),
+      .type = ParseJsonElement<binance::OrderType>(json, "type"),
+      .side = ParseJsonElement<binance::OrderSide>(json, "side"),
+      .stop_price = ParseJsonElement<double>(json, "stopPrice"),
+      .iceberg_quantity = ParseJsonElement<double>(json, "icebergQty"),
+      .time = ParseJsonElement<std::chrono::milliseconds>(json, "time"),
+      .update_time =
+          ParseJsonElement<std::chrono::milliseconds>(json, "updateTime"),
+      .is_working = ParseJsonElement<bool>(json, "isWorking"),
       .original_quote_order_quantity =
-          GetStringPropertyAsDouble(json, "origQuoteOrderQty")};
+          ParseJsonElement<double>(json, "origQuoteOrderQty")};
 }
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> binance::Kline {
   return binance::Kline{
-      .open_time = GetInt64ElementAsMilliseconds(json, 0),
-      .open_price = GetStringElementAsDouble(json, 1),
-      .high_price = GetStringElementAsDouble(json, 2),
-      .low_price = GetStringElementAsDouble(json, 3),
-      .close_price = GetStringElementAsDouble(json, 4),
-      .volume = GetStringElementAsDouble(json, 5),
-      .close_time = GetInt64ElementAsMilliseconds(json, 6),
-      .quote_asset_volume = GetStringElementAsDouble(json, 7),
-      .num_trades = GetInt64ElementAsInt64(json, 8),
-      .taker_buy_base_asset_volume = GetStringElementAsDouble(json, 9),
-      .taker_buy_quote_asset_volume = GetStringElementAsDouble(json, 10)};
+      .open_time = ParseJsonElement<std::chrono::milliseconds>(json, 0),
+      .open_price = ParseJsonElement<double>(json, 1),
+      .high_price = ParseJsonElement<double>(json, 2),
+      .low_price = ParseJsonElement<double>(json, 3),
+      .close_price = ParseJsonElement<double>(json, 4),
+      .volume = ParseJsonElement<double>(json, 5),
+      .close_time = ParseJsonElement<std::chrono::milliseconds>(json, 6),
+      .quote_asset_volume = ParseJsonElement<double>(json, 7),
+      .num_trades = ParseJsonElement<int64_t>(json, 8),
+      .taker_buy_base_asset_volume = ParseJsonElement<double>(json, 9),
+      .taker_buy_quote_asset_volume = ParseJsonElement<double>(json, 10)};
 }
 
 template <>
 auto ParseFromJson(const web::json::value& json)
     -> binance::AverageSymbolPrice {
   return binance::AverageSymbolPrice{
-      .mins = GetInt64PropertyAsInt64(json, "mins"),
-      .price = GetStringPropertyAsDouble(json, "price")};
+      .mins = ParseJsonElement<int64_t>(json, "mins"),
+      .price = ParseJsonElement<double>(json, "price")};
 }
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> binance::SymbolPrice {
   return binance::SymbolPrice{
-      .symbol = GetStringPropertyAsString(json, "symbol"),
-      .price = GetStringPropertyAsDouble(json, "price")};
+      .symbol = ParseJsonElement<std::string>(json, "symbol"),
+      .price = ParseJsonElement<double>(json, "price")};
 }
 
 template <>
 auto ParseFromJson(const web::json::value& json)
     -> binance::SymbolExchangeInfo {
   return binance::SymbolExchangeInfo{
-      .base_asset = GetStringPropertyAsString(json, "baseAsset"),
-      .quote_asset = GetStringPropertyAsString(json, "quoteAsset")};
+      .base_asset = ParseJsonElement<std::string>(json, "baseAsset"),
+      .quote_asset = ParseJsonElement<std::string>(json, "quoteAsset")};
 }
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> binance::ExchangeInfo {
   return binance::ExchangeInfo{
-      .symbols =
-          GetObjectPropertyAsObject<std::vector<binance::SymbolExchangeInfo>>(
-              json, "symbols")};
+      .symbols = ParseJsonElement<std::vector<binance::SymbolExchangeInfo>>(
+          json, "symbols")};
 }
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> binance::SymbolBookTicker {
   return binance::SymbolBookTicker{
-      .order_book_update_id = GetInt64PropertyAsInt64(json, "u"),
-      .symbol = GetStringPropertyAsString(json, "s"),
-      .best_bid_price = GetStringPropertyAsDouble(json, "b"),
-      .best_bid_quantity = GetStringPropertyAsDouble(json, "B"),
-      .best_ask_price = GetStringPropertyAsDouble(json, "a"),
-      .best_ask_quantity = GetStringPropertyAsDouble(json, "A")};
+      .order_book_update_id = ParseJsonElement<int64_t>(json, "u"),
+      .symbol = ParseJsonElement<std::string>(json, "s"),
+      .best_bid_price = ParseJsonElement<double>(json, "b"),
+      .best_bid_quantity = ParseJsonElement<double>(json, "B"),
+      .best_ask_price = ParseJsonElement<double>(json, "a"),
+      .best_ask_quantity = ParseJsonElement<double>(json, "A")};
 }
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> finance::Symbol {
   return finance::Symbol{
-      .base_asset = GetStringPropertyAsString(json, "base_asset"),
-      .quote_asset = GetStringPropertyAsString(json, "quote_asset")};
+      .base_asset = ParseJsonElement<std::string>(json, "base_asset"),
+      .quote_asset = ParseJsonElement<std::string>(json, "quote_asset")};
 }
 
 auto ConvertToJson(const finance::Symbol& data) -> web::json::value {
@@ -333,8 +219,8 @@ auto ConvertToJson(const finance::Symbol& data) -> web::json::value {
 template <>
 auto ParseFromJson(const web::json::value& json) -> finance::TimeDouble {
   return finance::TimeDouble{
-      .time = GetInt64PropertyAsMilliseconds(json, "time"),
-      .value = GetDoublePropertyAsDouble(json, "value")};
+      .time = ParseJsonElement<std::chrono::milliseconds>(json, "time"),
+      .value = ParseJsonElement<double>(json, "value")};
 }
 
 auto ConvertToJson(const finance::TimeDouble& data) -> web::json::value {
@@ -347,9 +233,9 @@ auto ConvertToJson(const finance::TimeDouble& data) -> web::json::value {
 template <>
 auto ParseFromJson(const web::json::value& json) -> finance::SymbolPrices {
   return finance::SymbolPrices{
-      .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
-      .prices = GetObjectPropertyAsObject<std::vector<finance::TimeDouble>>(
-          json, "prices")};
+      .symbol = ParseJsonElement<finance::Symbol>(json, "symbol"),
+      .prices =
+          ParseJsonElement<std::vector<finance::TimeDouble>>(json, "prices")};
 }
 
 auto ConvertToJson(const finance::SymbolPrices& data) -> web::json::value {
@@ -362,10 +248,10 @@ auto ConvertToJson(const finance::SymbolPrices& data) -> web::json::value {
 template <>
 auto ParseFromJson(const web::json::value& json) -> finance::SymbolPriceTick {
   return finance::SymbolPriceTick{
-      .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
-      .time = GetInt64PropertyAsMilliseconds(json, "time"),
-      .buy_price = GetDoublePropertyAsDouble(json, "buy_price"),
-      .sell_price = GetDoublePropertyAsDouble(json, "sell_price")};
+      .symbol = ParseJsonElement<finance::Symbol>(json, "symbol"),
+      .time = ParseJsonElement<std::chrono::milliseconds>(json, "time"),
+      .buy_price = ParseJsonElement<double>(json, "buy_price"),
+      .sell_price = ParseJsonElement<double>(json, "sell_price")};
 }
 
 auto ConvertToJson(const finance::SymbolPriceTick& data) -> web::json::value {
@@ -379,15 +265,16 @@ auto ConvertToJson(const finance::SymbolPriceTick& data) -> web::json::value {
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> finance::StrategyData {
-  const auto type = GetStringPropertyAsString(json, "typename");
+  const auto type = ParseJsonElement<std::string>(json, "typename");
 
   if (type == "BreakoutStrategyData") {
     return finance::StrategyData{
         .strategy_data = finance::BreakoutStrategyData{
             .last_candle_close_time =
-                GetInt64PropertyAsMilliseconds(json, "last_candle_close_time"),
+                ParseJsonElement<std::chrono::milliseconds>(
+                    json, "last_candle_close_time"),
             .expected_price =
-                GetDoublePropertyAsDouble(json, "expected_price")}};
+                ParseJsonElement<double>(json, "expected_price")}};
   }
 
   if (type == "MeanAverageStrategyData") {
@@ -425,7 +312,7 @@ auto ConvertToJson(const finance::StrategyData& data) -> web::json::value {
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> finance::OrderType {
-  const auto type = GetStringPropertyAsString(json, "typename");
+  const auto type = ParseJsonElement<std::string>(json, "typename");
 
   if (type == "MarketOrderType") {
     return finance::OrderType{.order_type = finance::MarketOrderType{}};
@@ -434,7 +321,7 @@ auto ParseFromJson(const web::json::value& json) -> finance::OrderType {
   if (type == "LimitOrderType") {
     return finance::OrderType{
         .order_type = finance::LimitOrderType{
-            .price = GetDoublePropertyAsDouble(json, "price")}};
+            .price = ParseJsonElement<double>(json, "price")}};
   }
 
   throw std::runtime_error{"Unknown typename"};
@@ -465,26 +352,26 @@ auto ConvertToJson(const finance::OrderType& data) -> web::json::value {
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> finance::OrderUpdate {
-  const auto type = GetStringPropertyAsString(json, "typename");
+  const auto type = ParseJsonElement<std::string>(json, "typename");
 
   if (type == "OrderError") {
     return finance::OrderUpdate{
         .order_update = finance::OrderError{
-            .message = GetStringPropertyAsString(json, "message")}};
+            .message = ParseJsonElement<std::string>(json, "message")}};
   }
 
   if (type == "OrderInfo") {
     return finance::OrderUpdate{
         .order_update = finance::OrderInfo{
-            .order_status = GetStringPropertyAsEnum<finance::OrderStatus>(
-                json, "order_status"),
+            .order_status =
+                ParseJsonElement<finance::OrderStatus>(json, "order_status"),
             .requested_amount =
-                GetDoublePropertyAsDouble(json, "requested_amount"),
+                ParseJsonElement<double>(json, "requested_amount"),
             .executed_amount =
-                GetDoublePropertyAsDouble(json, "executed_amount"),
-            .price = GetDoublePropertyAsDouble(json, "price"),
+                ParseJsonElement<double>(json, "executed_amount"),
+            .price = ParseJsonElement<double>(json, "price"),
             .executed_quote_amount =
-                GetDoublePropertyAsDouble(json, "executed_quote_amount")}};
+                ParseJsonElement<double>(json, "executed_quote_amount")}};
   }
 
   throw std::runtime_error{"Unknown typename"};
@@ -523,9 +410,10 @@ template <>
 auto ParseFromJson(const web::json::value& json)
     -> finance::OrderProxyOrderUpdate {
   return finance::OrderProxyOrderUpdate{
-      .received_time = GetInt64PropertyAsMilliseconds(json, "received_time"),
-      .order_update = GetObjectPropertyAsObject<finance::OrderUpdate>(
-          json, "last_order_update")};
+      .received_time =
+          ParseJsonElement<std::chrono::milliseconds>(json, "received_time"),
+      .order_update =
+          ParseJsonElement<finance::OrderUpdate>(json, "last_order_update")};
 }
 
 auto ConvertToJson(const finance::OrderProxyOrderUpdate& data)
@@ -538,7 +426,7 @@ auto ConvertToJson(const finance::OrderProxyOrderUpdate& data)
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> finance::Amount {
-  const auto type = GetStringPropertyAsString(json, "typename");
+  const auto type = ParseJsonElement<std::string>(json, "typename");
 
   if (type == "UnspecifiedAmount") {
     return finance::Amount{.amount = finance::UnspecifiedAmount{}};
@@ -547,13 +435,13 @@ auto ParseFromJson(const web::json::value& json) -> finance::Amount {
   if (type == "BaseAmount") {
     return finance::Amount{
         .amount = finance::BaseAmount{
-            .base_amount = GetDoublePropertyAsDouble(json, "base_amount")}};
+            .base_amount = ParseJsonElement<double>(json, "base_amount")}};
   }
 
   if (type == "QuoteAmount") {
     return finance::Amount{
         .amount = finance::QuoteAmount{
-            .quote_amount = GetDoublePropertyAsDouble(json, "quote_amount")}};
+            .quote_amount = ParseJsonElement<double>(json, "quote_amount")}};
   }
 
   throw std::runtime_error{"Unknown typename"};
@@ -592,15 +480,13 @@ template <>
 auto ParseFromJson(const web::json::value& json)
     -> finance::StrategyOrderRequest {
   return finance::StrategyOrderRequest{
-      .order_uuid = GetStringPropertyAsUuid(json, "order_uuid"),
-      .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
-      .buy_or_sell =
-          GetStringPropertyAsEnum<finance::BuyOrSell>(json, "buy_or_sell"),
-      .amount = GetObjectPropertyAsObject<finance::Amount>(json, "amount"),
-      .order_type =
-          GetObjectPropertyAsObject<finance::OrderType>(json, "order_type"),
-      .strategy_data = GetObjectPropertyAsObject<finance::StrategyData>(
-          json, "strategy_data")};
+      .order_uuid = ParseJsonElement<boost::uuids::uuid>(json, "order_uuid"),
+      .symbol = ParseJsonElement<finance::Symbol>(json, "symbol"),
+      .buy_or_sell = ParseJsonElement<finance::BuyOrSell>(json, "buy_or_sell"),
+      .amount = ParseJsonElement<finance::Amount>(json, "amount"),
+      .order_type = ParseJsonElement<finance::OrderType>(json, "order_type"),
+      .strategy_data =
+          ParseJsonElement<finance::StrategyData>(json, "strategy_data")};
 }
 
 auto ConvertToJson(const finance::StrategyOrderRequest& data)
@@ -619,13 +505,11 @@ template <>
 auto ParseFromJson(const web::json::value& json)
     -> finance::OrderProxyOrderRequest {
   return finance::OrderProxyOrderRequest{
-      .order_uuid = GetStringPropertyAsUuid(json, "order_uuid"),
-      .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
-      .buy_or_sell =
-          GetStringPropertyAsEnum<finance::BuyOrSell>(json, "buy_or_sell"),
-      .amount = GetObjectPropertyAsObject<finance::Amount>(json, "amount"),
-      .order_type =
-          GetObjectPropertyAsObject<finance::OrderType>(json, "order_type")};
+      .order_uuid = ParseJsonElement<boost::uuids::uuid>(json, "order_uuid"),
+      .symbol = ParseJsonElement<finance::Symbol>(json, "symbol"),
+      .buy_or_sell = ParseJsonElement<finance::BuyOrSell>(json, "buy_or_sell"),
+      .amount = ParseJsonElement<finance::Amount>(json, "amount"),
+      .order_type = ParseJsonElement<finance::OrderType>(json, "order_type")};
 }
 
 auto ConvertToJson(const finance::OrderProxyOrderRequest& data)
@@ -643,8 +527,8 @@ template <>
 auto ParseFromJson(const web::json::value& json)
     -> finance::StrategySubscribeToOrderUpdatesRequest {
   return finance::StrategySubscribeToOrderUpdatesRequest{
-      .order_uuid = GetStringPropertyAsUuid(json, "order_uuid"),
-      .subscriber_uri = GetStringPropertyAsString(json, "subscriber_uri")};
+      .order_uuid = ParseJsonElement<boost::uuids::uuid>(json, "order_uuid"),
+      .subscriber_uri = ParseJsonElement<std::string>(json, "subscriber_uri")};
 }
 
 auto ConvertToJson(const finance::StrategySubscribeToOrderUpdatesRequest& data)
@@ -659,7 +543,7 @@ template <>
 auto ParseFromJson(const web::json::value& json)
     -> finance::PriceTicksServiceSubscribeRequest {
   return finance::PriceTicksServiceSubscribeRequest{
-      .subscriber_uri = GetStringPropertyAsString(json, "subscriber_uri")};
+      .subscriber_uri = ParseJsonElement<std::string>(json, "subscriber_uri")};
 }
 
 auto ConvertToJson(const finance::PriceTicksServiceSubscribeRequest& data)
@@ -673,11 +557,10 @@ template <>
 auto ParseFromJson(const web::json::value& json)
     -> finance::OrderProxyMonitorRequest {
   return finance::OrderProxyMonitorRequest{
-      .order_uuid = GetStringPropertyAsUuid(json, "order_uuid"),
-      .symbol = GetObjectPropertyAsObject<finance::Symbol>(json, "symbol"),
-      .last_order_update =
-          GetObjectPropertyAsOptionalObject<finance::OrderUpdate>(
-              json, "last_order_update")};
+      .order_uuid = ParseJsonElement<boost::uuids::uuid>(json, "order_uuid"),
+      .symbol = ParseJsonElement<finance::Symbol>(json, "symbol"),
+      .last_order_update = ParseJsonElementNoThrow<finance::OrderUpdate>(
+          json, "last_order_update")};
 }
 
 auto ConvertToJson(const finance::OrderProxyMonitorRequest& data)
@@ -697,9 +580,9 @@ template <>
 auto ParseFromJson(const web::json::value& json)
     -> finance::OrderMonitorOrderUpdate {
   return finance::OrderMonitorOrderUpdate{
-      .order_uuid = GetStringPropertyAsUuid(json, "order_uuid"),
-      .order_update = GetObjectPropertyAsObject<finance::OrderUpdate>(
-          json, "order_update")};
+      .order_uuid = ParseJsonElement<boost::uuids::uuid>(json, "order_uuid"),
+      .order_update =
+          ParseJsonElement<finance::OrderUpdate>(json, "order_update")};
 }
 
 auto ConvertToJson(const finance::OrderMonitorOrderUpdate& data)
@@ -712,10 +595,10 @@ auto ConvertToJson(const finance::OrderMonitorOrderUpdate& data)
 
 template <>
 auto ParseFromJson(const web::json::value& json) -> std::runtime_error {
-  const auto type = GetStringPropertyAsString(json, "typename");
+  const auto type = ParseJsonElement<std::string>(json, "typename");
 
   if (type == "runtime_error") {
-    return std::runtime_error{GetStringPropertyAsString(json, "message")};
+    return std::runtime_error{ParseJsonElement<std::string>(json, "message")};
   }
 
   throw std::runtime_error{"Unknown typename"};
@@ -731,8 +614,10 @@ auto ConvertToJson(const std::runtime_error& data) -> web::json::value {
 template <>
 auto ParseFromJson(const web::json::value& json) -> finance::Period {
   return finance::Period{
-      .start_time = GetInt64PropertyAsOptionalMilliseconds(json, "start_time"),
-      .end_time = GetInt64PropertyAsOptionalMilliseconds(json, "end_time")};
+      .start_time = ParseJsonElementNoThrow<std::chrono::milliseconds>(
+          json, "start_time"),
+      .end_time =
+          ParseJsonElementNoThrow<std::chrono::milliseconds>(json, "end_time")};
 }
 
 auto ConvertToJson(const finance::Period& data) -> web::json::value {
