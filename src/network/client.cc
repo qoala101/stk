@@ -9,7 +9,6 @@
 #include <gsl/assert>
 #include <stdexcept>
 
-#include "json_conversions.h"
 #include "rest_request.h"
 
 namespace stonks::network {
@@ -32,40 +31,28 @@ class Client::Impl {
   }
 
   static void AddParamsToRequest(
-      const std::map<std::string, json::Any> &params,
-      const std::map<std::string, json::AnyDesc> &endpoint_params,
+      const std::map<std::string, json::TypedAny> &params,
+      const std::map<std::string, json::TypeVariant> &endpoint_params,
       network::RestRequest &request) {
     for (const auto &endpoint_param : endpoint_params) {
-      const auto &[param_name, param_desc] = endpoint_param;
+      const auto &[param_name, param_type] = endpoint_param;
       const auto param = params.find(param_name);
 
       if (const auto no_param = param == params.end()) {
-        const auto param_is_mandatory =
-            param_desc.optional == json::OptionalFlag::kMandatory;
-        ABSL_ASSERT(!param_is_mandatory &&
+        ABSL_ASSERT(param_type.IsOptional() &&
                     "Request misses mandatory parameter");
 
         continue;
       }
 
       const auto &value = param->second;
-      auto value_json = std::visit(
-          [&value](const auto &variant) -> std::optional<web::json::value> {
-            try {
-              return variant.ConvertAnyToJson(value.value);
-            } catch (const std::exception &) {
-            }
-
-            return std::nullopt;
-          },
-          param_desc.converter);
+      const auto value_json = param_type.ConvertAnyToJson(value.GetAny());
 
       const auto not_converted = !value_json.has_value();
       ABSL_ASSERT(!not_converted && "Parameter {} has wrong type");
 
       if (const auto no_value_for_optional_param =
-              value_json->is_null() &&
-              (param_desc.optional == json::OptionalFlag::kOptional)) {
+              value_json->is_null() && param_type.IsOptional()) {
         continue;
       }
 
@@ -74,35 +61,23 @@ class Client::Impl {
   }
 
   [[nodiscard]] static auto ConvertRequestBodyToJson(
-      const json::Any &request_body,
-      const std::optional<json::AnyDesc> &endpoint_request_body)
+      const json::TypedAny &request_body,
+      const std::optional<json::TypeVariant> &endpoint_request_body)
       -> web::json::value {
     if (!endpoint_request_body.has_value()) {
       return web::json::value{};
     }
 
-    const auto no_mandatory_body =
-        !request_body.value.has_value() &&
-        (endpoint_request_body->optional == json::OptionalFlag::kMandatory);
+    const auto no_mandatory_body = !request_body.GetAny().has_value() &&
+                                   !endpoint_request_body->IsOptional();
     ABSL_ASSERT(!no_mandatory_body && "Request misses mandatory body");
 
-    auto json = std::visit(
-        [&value = request_body.value](
-            const auto &variant) -> std::optional<web::json::value> {
-          try {
-            return variant.ConvertAnyToJson(value);
-          } catch (const std::exception &) {
-          }
-
-          return std::nullopt;
-        },
-        endpoint_request_body->converter);
+    auto json = endpoint_request_body->ConvertAnyToJson(request_body.GetAny());
 
     const auto not_converted = !json.has_value();
     ABSL_ASSERT(!not_converted && "Request has wrong body type");
 
-    // TODO(vh): should I add std::move here?
-    return *json;
+    return std::move(*json);
   }
 
   /**
@@ -110,31 +85,22 @@ class Client::Impl {
    */
   [[nodiscard]] static auto ParseResponseBody(
       const web::json::value &response_json,
-      const std::optional<json::AnyDesc> &endpoint_response_body) -> std::any {
+      const std::optional<json::TypeVariant> &endpoint_response_body)
+      -> std::any {
     if (response_json.is_null()) {
-      if (const auto no_mandatory_result = endpoint_response_body.has_value() &&
-                                           (endpoint_response_body->optional ==
-                                            json::OptionalFlag::kMandatory)) {
+      if (const auto no_mandatory_result =
+              endpoint_response_body.has_value() &&
+              !endpoint_response_body->IsOptional()) {
         Logger().error("Response misses mandatory body");
         throw std::runtime_error{"Response misses mandatory body"};
       }
 
-      return std::visit(
-          [](const auto &variant) { return variant.MakeNulloptAny(); },
-          endpoint_response_body->converter);
+      return endpoint_response_body->MakeNulloptAny();
     }
 
     if (endpoint_response_body.has_value()) {
-      auto response_body = std::visit(
-          [&response_json](const auto &variant) {
-            try {
-              return variant.ParseAnyFromJson(response_json);
-            } catch (const std::exception &) {
-            }
-
-            return std::any{};
-          },
-          endpoint_response_body->converter);
+      auto response_body =
+          endpoint_response_body->ParseAnyFromJson(response_json);
 
       if (const auto response_body_parsed = response_body.has_value()) {
         return response_body;
@@ -142,7 +108,7 @@ class Client::Impl {
     }
 
     const auto exception =
-        json::ParseFromJson<std::runtime_error>(response_json);
+        json::Type<std::runtime_error>{}.ParseFromJson(response_json);
 
     if (const auto exception_parsed = exception.has_value()) {
       Logger().error("Received exception {}", exception->what());
@@ -158,9 +124,10 @@ class Client::Impl {
    * @throws If response doesn't match endpoint description or response is an
    * exception itself.
    */
-  [[nodiscard]] auto Execute(const EndpointDesc &endpoint,
-                             const std::map<std::string, json::Any> &params,
-                             const json::Any &request_body) const -> std::any {
+  [[nodiscard]] auto Execute(
+      const EndpointDesc &endpoint,
+      const std::map<std::string, json::TypedAny> &params,
+      const json::TypedAny &request_body) const -> std::any {
     auto request = network::RestRequest{endpoint.method, base_uri_}.AppendUri(
         endpoint.relative_uri);
 
@@ -191,16 +158,35 @@ class Client::Impl {
   const std::string base_uri_{};
 };
 
-Client::~Client() = default;
-
 Client::Client(std::string_view base_uri)
     : impl_{std::make_unique<Impl>(base_uri)} {
   Expects(!base_uri.empty());
 }
 
+Client::Client(Client &&) noexcept = default;
+
+auto Client::operator=(Client &&) noexcept -> Client & = default;
+
+Client::~Client() = default;
+
+auto Client::Execute(const EndpointDesc &endpoint) const -> std::any {
+  return impl_->Execute(endpoint, {}, {});
+}
+
 auto Client::Execute(const EndpointDesc &endpoint,
-                     const std::map<std::string, json::Any> &params,
-                     const json::Any &request_body) const -> std::any {
+                     const std::map<std::string, json::TypedAny> &params) const
+    -> std::any {
+  return impl_->Execute(endpoint, params, {});
+}
+
+auto Client::Execute(const EndpointDesc &endpoint,
+                     const json::TypedAny &request_body) const -> std::any {
+  return impl_->Execute(endpoint, {}, request_body);
+}
+
+auto Client::Execute(const EndpointDesc &endpoint,
+                     const std::map<std::string, json::TypedAny> &params,
+                     const json::TypedAny &request_body) const -> std::any {
   return impl_->Execute(endpoint, params, request_body);
 }
 }  // namespace stonks::network

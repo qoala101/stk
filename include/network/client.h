@@ -6,7 +6,8 @@
 #include <string>
 #include <string_view>
 
-#include "client_server_types.h"
+#include "endpoint.h"
+#include "typed_any.h"
 
 namespace stonks::network {
 /**
@@ -15,19 +16,18 @@ namespace stonks::network {
  */
 class Client {
  public:
-  virtual ~Client();
-
-  Client(const Client &) = delete;
-  auto operator=(const Client &) -> Client & = delete;
-
-  Client(Client &&) = default;
-  auto operator=(Client &&) -> Client & = default;
-
- protected:
   /**
    * @param base_uri Base server URI to which requests are sent.
    */
   explicit Client(std::string_view base_uri);
+
+  Client(const Client &) = delete;
+  Client(Client &&) noexcept;
+
+  auto operator=(const Client &) -> Client & = delete;
+  auto operator=(Client &&) noexcept -> Client &;
+
+  ~Client();
 
   /**
    * @brief Sends rest request to the server on specified endpoint.
@@ -37,9 +37,21 @@ class Client {
    * exception itself.
    */
   // NOLINTNEXTLINE(*-use-nodiscard)
+  auto Execute(const EndpointDesc &endpoint) const -> std::any;
+
+  // NOLINTNEXTLINE(*-use-nodiscard)
   auto Execute(const EndpointDesc &endpoint,
-               const std::map<std::string, json::Any> &params = {},
-               const stonks::json::Any &request_body = {}) const -> std::any;
+               const std::map<std::string, json::TypedAny> &params) const
+      -> std::any;
+
+  // NOLINTNEXTLINE(*-use-nodiscard)
+  auto Execute(const EndpointDesc &endpoint,
+               const json::TypedAny &request_body) const -> std::any;
+
+  // NOLINTNEXTLINE(*-use-nodiscard)
+  auto Execute(const EndpointDesc &endpoint,
+               const std::map<std::string, json::TypedAny> &params,
+               const json::TypedAny &request_body) const -> std::any;
 
  private:
   class Impl;

@@ -564,6 +564,10 @@ FinanceDb::FinanceDb(std::string_view uri)
   }
 }
 
+FinanceDb::FinanceDb(FinanceDb &&) noexcept = default;
+
+auto FinanceDb::operator=(FinanceDb &&) noexcept -> FinanceDb & = default;
+
 FinanceDb::~FinanceDb() = default;
 
 auto FinanceDb::SelectAssets() const

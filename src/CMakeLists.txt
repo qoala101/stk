@@ -16,7 +16,10 @@ add_library(libstonks
   finance_db/finance_db.cc
   google_charts/google_charts_conversions.cc
   json/json_conversions.cc
+  json/type_variant.cc
+  json/typed_any.cc
   network/client.cc
+  network/endpoint.cc
   network/rest_request.cc
   network/server.cc
   network/web_socket.cc
@@ -29,9 +32,7 @@ add_library(libstonks
   services/order_monitor_service.cc
   services/order_proxy_service.cc
   services/price_ticks_service.cc
-  services_v2/finance_db_client.cc
-  services_v2/finance_db_endpoints.cc
-  services_v2/finance_db_server.cc
+  services_v2/finance_db_client_server.cc
   stonks/order_proxy.cc
   stonks/order_monitor.cc
   strategies/breakout_strategy.cc
@@ -70,7 +71,7 @@ add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)
 target_link_libraries(stonks PRIVATE spdlog::spdlog)
 
-add_executable(finance_db_server services_v2/finance_db_server.cc)
+add_executable(finance_db_server services_v2/finance_db_client_server.cc)
 target_link_libraries(finance_db_server PRIVATE libstonks)
 
 add_subdirectory(db)

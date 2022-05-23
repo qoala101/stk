@@ -10,39 +10,6 @@
 #include "finance_types.h"
 
 namespace stonks::finance {
-template <typename T>
-concept FinanceDbConcept = requires(const T &t) {
-  /**
-   * @brief Selects all assets.
-   * @return Nullopt if operation failed.
-   */
-  { t.SelectAssets() } -> std::same_as<std::optional<std::vector<std::string>>>;
-}
-&&requires(const T &t) {
-  /**
-   * @brief Selects all symbols.
-   * @return Nullopt if operation failed.
-   */
-  { t.SelectSymbols() } -> std::same_as<std::optional<std::vector<Symbol>>>;
-}
-&&requires(T &t, const SymbolPriceTick &symbol_price_tick) {
-  /**
-   * @brief Inserts value into the table.
-   * @return False if operation failed.
-   */
-  { t.InsertSymbolPriceTick(symbol_price_tick) } -> std::same_as<bool>;
-}
-&&requires(T &t, std::optional<int> limit, const std::optional<Period> &period,
-           const std::optional<std::vector<Symbol>> &symbols) {
-  /**
-   * @brief Selects all price ticks for symbols in period.
-   * @return Nullopt if operation failed.
-   */
-  {
-    t.SelectSymbolPriceTicks(limit, period, symbols)
-    } -> std::same_as<std::optional<std::vector<SymbolPriceTick>>>;
-};
-
 // TODO(vh): make finance db methods throw instead of optional return?
 class FinanceDb {
  public:
@@ -54,11 +21,11 @@ class FinanceDb {
    */
   explicit FinanceDb(std::string_view uri = "stonks.db");
 
-  explicit FinanceDb(const FinanceDb &) = delete;
-  auto operator=(const FinanceDb &) -> FinanceDb & = delete;
+  FinanceDb(const FinanceDb &) = delete;
+  FinanceDb(FinanceDb &&) noexcept;
 
-  FinanceDb(FinanceDb &&) = default;
-  auto operator=(FinanceDb &&) -> FinanceDb & = default;
+  auto operator=(const FinanceDb &) -> FinanceDb & = delete;
+  auto operator=(FinanceDb &&) noexcept -> FinanceDb &;
 
   /**
    * @brief Releases DB handle.
@@ -66,25 +33,29 @@ class FinanceDb {
   ~FinanceDb();
 
   /**
-   * @see FinanceDbConcept
+   * @brief Selects all assets.
+   * @return Nullopt if operation failed.
    */
   [[nodiscard]] auto SelectAssets() const
       -> std::optional<std::vector<std::string>>;
 
   /**
-   * @see FinanceDbConcept
+   * @brief Selects all symbols.
+   * @return Nullopt if operation failed.
    */
   [[nodiscard]] auto SelectSymbols() const
       -> std::optional<std::vector<Symbol>>;
 
   /**
-   * @see FinanceDbConcept
+   * @brief Inserts value into the table.
+   * @return False if operation failed.
    */
   [[nodiscard]] auto InsertSymbolPriceTick(
       const SymbolPriceTick &symbol_price_tick) -> bool;
 
   /**
-   * @see FinanceDbConcept
+   * @brief Selects all price ticks for symbols in period.
+   * @return Nullopt if operation failed.
    */
   [[nodiscard]] auto SelectSymbolPriceTicks(
       std::optional<int> limit = std::nullopt,
@@ -104,6 +75,23 @@ class FinanceDb {
  private:
   struct Impl;
   std::unique_ptr<Impl> impl_{};
+};
+
+template <typename T>
+concept FinanceDbConcept = requires(const T &t) {
+  { t.SelectAssets() } -> std::same_as<std::optional<std::vector<std::string>>>;
+}
+&&requires(const T &t) {
+  { t.SelectSymbols() } -> std::same_as<std::optional<std::vector<Symbol>>>;
+}
+&&requires(T &t, const SymbolPriceTick &symbol_price_tick) {
+  { t.InsertSymbolPriceTick(symbol_price_tick) } -> std::same_as<bool>;
+}
+&&requires(T &t, std::optional<int> limit, const std::optional<Period> &period,
+           const std::optional<std::vector<Symbol>> &symbols) {
+  {
+    t.SelectSymbolPriceTicks(limit, period, symbols)
+    } -> std::same_as<std::optional<std::vector<SymbolPriceTick>>>;
 };
 
 static_assert(FinanceDbConcept<FinanceDb>);

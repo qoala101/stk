@@ -5,7 +5,7 @@
 #include <string_view>
 #include <vector>
 
-#include "client_server_types.h"
+#include "endpoint.h"
 
 namespace stonks::network {
 /**
@@ -15,22 +15,21 @@ namespace stonks::network {
 class Server {
  public:
   /**
-   * @brief Stops the HTTP server.
-   */
-  virtual ~Server();
-
-  Server(const Server &) = delete;
-  auto operator=(const Server &) -> Server & = delete;
-
-  Server(Server &&) = default;
-  auto operator=(Server &&) -> Server & = default;
-
- protected:
-  /**
    * @brief Creates and starts HTTP server on the specified URI which would
    * expose the endpoints and redirect the requests to them.
    */
   explicit Server(std::string_view base_uri, std::vector<Endpoint> endpoints);
+
+  Server(const Server &) = delete;
+  Server(Server &&) noexcept;
+
+  auto operator=(const Server &) -> Server & = delete;
+  auto operator=(Server &&) noexcept -> Server &;
+
+  /**
+   * @brief Stops the HTTP server.
+   */
+  ~Server();
 
  private:
   class Impl;

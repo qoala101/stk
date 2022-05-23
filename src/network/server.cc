@@ -10,7 +10,7 @@
 #include <gsl/assert>
 #include <range/v3/algorithm/find_if.hpp>
 
-#include "any_types.h"
+#include "endpoint.h"
 
 namespace stonks::network {
 namespace {
@@ -55,11 +55,11 @@ class Server::Impl {
     http_listener_.open();
   }
 
-  Impl(Impl &&) = default;
-  auto operator=(Impl &&) -> Impl & = default;
-
   Impl(const Impl &) = delete;
   auto operator=(const Impl &) -> Impl & = delete;
+
+  Impl(Impl &&) noexcept = default;
+  auto operator=(Impl &&) noexcept -> Impl & = default;
 
   ~Impl() { http_listener_.close().wait(); }
 
@@ -97,49 +97,34 @@ class Server::Impl {
    */
   [[nodiscard]] static auto ParseParams(
       const std::map<std::string, std::string> &raw_params,
-      const std::map<std::string, json::AnyDesc> &endpoint_params)
-      -> std::map<std::string, json::Any> {
-    auto parsed_params = std::map<std::string, json::Any>{};
+      const std::map<std::string, json::TypeVariant> &endpoint_params)
+      -> std::map<std::string, std::any> {
+    auto parsed_params = std::map<std::string, std::any>{};
 
     for (const auto &endpoint_param : endpoint_params) {
-      const auto &[param_name, param_desc] = endpoint_param;
+      const auto &[param_name, param_type] = endpoint_param;
       const auto raw_param = raw_params.find(param_name);
 
       if (const auto no_param = raw_param == raw_params.end()) {
-        if (const auto param_is_mandatory =
-                param_desc.optional == json::OptionalFlag::kMandatory) {
+        if (!param_type.IsOptional()) {
           throw std::runtime_error{"Request misses mandatory parameter " +
                                    param_name};
         }
 
-        parsed_params[param_name] = json::Any{
-            .value = std::visit(
-                [](const auto &variant) { return variant.MakeNulloptAny(); },
-                param_desc.converter),
-            .converter = param_desc.converter};
+        parsed_params[param_name] = param_type.MakeNulloptAny();
 
         continue;
       }
 
       const auto &raw_value = raw_param->second;
-      auto parsed_value = std::visit(
-          [&raw_value](const auto &variant) {
-            try {
-              return variant.ParseAnyFromJson(
-                  web::json::value::parse(raw_value));
-            } catch (const std::exception &) {
-            }
-
-            return std::any{};
-          },
-          param_desc.converter);
+      auto parsed_value =
+          param_type.ParseAnyFromJson(web::json::value::parse(raw_value));
 
       if (const auto not_parsed = !parsed_value.has_value()) {
         throw std::runtime_error{"Cannot parse parameter " + param_name};
       }
 
-      parsed_params[param_name] = json::Any{.value = std::move(parsed_value),
-                                            .converter = param_desc.converter};
+      parsed_params[param_name] = std::move(parsed_value);
     }
 
     return parsed_params;
@@ -150,66 +135,42 @@ class Server::Impl {
    */
   [[nodiscard]] static auto ParseRequestBody(
       const web::http::http_request &request,
-      const std::optional<json::AnyDesc> &endpoint_request_body) -> json::Any {
+      const std::optional<json::TypeVariant> &endpoint_request_body)
+      -> std::any {
     if (!endpoint_request_body.has_value()) {
-      return json::Any{};
+      return std::any{};
     }
 
     const auto json = request.extract_json().get();
-    auto request_body = json::Any{};
-
-    request_body.value = std::visit(
-        [&json](const auto &variant) {
-          try {
-            return variant.ParseAnyFromJson(json);
-          } catch (const std::exception &) {
-          }
-
-          return std::any{};
-        },
-        endpoint_request_body->converter);
+    auto request_body = endpoint_request_body->ParseAnyFromJson(json);
 
     if (const auto missing_mandatory_object =
-            !request_body.value.has_value() &&
-            (endpoint_request_body->optional ==
-             json::OptionalFlag::kMandatory)) {
+            !request_body.has_value() && !endpoint_request_body->IsOptional()) {
       throw std::runtime_error{"Request misses mandatory body " +
                                json.serialize()};
     }
 
-    request_body.converter = endpoint_request_body->converter;
     return request_body;
   }
 
   [[nodiscard]] static auto ConvertResponseBodyToJson(
       const std::any &response_body,
-      const std::optional<json::AnyDesc> &endpoint_response_body)
+      const std::optional<json::TypeVariant> &endpoint_response_body)
       -> web::json::value {
     if (!endpoint_response_body.has_value()) {
       return web::json::value{};
     }
 
     const auto no_mandatory_result =
-        !response_body.has_value() &&
-        (endpoint_response_body->optional == json::OptionalFlag::kMandatory);
+        !response_body.has_value() && !endpoint_response_body->IsOptional();
     ABSL_ASSERT(!no_mandatory_result && "Response misses mandatory body");
 
-    auto json = std::visit(
-        [&response_body](
-            const auto &variant) -> std::optional<web::json::value> {
-          try {
-            return variant.ConvertAnyToJson(response_body);
-          } catch (const std::exception &) {
-          }
-
-          return std::nullopt;
-        },
-        endpoint_response_body->converter);
+    auto json = endpoint_response_body->ConvertAnyToJson(response_body);
 
     const auto not_converted = !json.has_value();
     ABSL_ASSERT(!not_converted && "Response body has wrong type");
 
-    return *json;
+    return std::move(*json);
   }
 
   [[nodiscard]] auto RequestHandler(
@@ -218,8 +179,8 @@ class Server::Impl {
                    request.request_uri().path());
 
     const auto *endpoint = (const Endpoint *){};
-    auto parsed_params = std::map<std::string, json::Any>{};
-    auto parsed_request_body = json::Any{};
+    auto parsed_params = std::map<std::string, std::any>{};
+    auto parsed_request_body = std::any{};
 
     try {
       endpoint = &FindEndpoint(request);
@@ -262,10 +223,14 @@ class Server::Impl {
   std::vector<Endpoint> endpoints_{};
 };
 
-Server::~Server() = default;
-
 Server::Server(std::string_view base_uri, std::vector<Endpoint> endpoints)
     : impl_{std::make_unique<Impl>(base_uri, std::move(endpoints))} {
   Expects(!base_uri.empty());
 }
+
+Server::Server(Server &&) noexcept = default;
+
+auto Server::operator=(Server &&) noexcept -> Server & = default;
+
+Server::~Server() = default;
 }  // namespace stonks::network

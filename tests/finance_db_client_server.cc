@@ -1,10 +1,10 @@
+#include "finance_db_client_server.h"
+
 #include <gtest/gtest.h>
 
 #include <limits>
 
 #include "finance_db.h"
-#include "finance_db_client.h"
-#include "finance_db_server.h"
 #include "finance_types.h"
 
 namespace {
@@ -77,8 +77,8 @@ void Compare(const L &l, const R &r) {
 TEST(FinanceDbClientServer, Requests) {
   auto finance_db = stonks::finance::FinanceDb{":memory:"};
 
-  const auto finance_db_server =
-      stonks::finance::FinanceDbServer{kBaseUri, ":memory:"};
+  const auto finance_db_server = stonks::finance::FinanceDbServer{
+      kBaseUri, stonks::finance::FinanceDb{":memory:"}};
   auto finance_db_client = stonks::finance::FinanceDbClient{kBaseUri};
 
   SetupDb(finance_db);

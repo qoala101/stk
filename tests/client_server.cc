@@ -7,15 +7,15 @@
 #include <any>
 #include <cstdio>
 #include <exception>
+#include <functional>
 #include <stdexcept>
 #include <thread>
 
 #include "client.h"
-#include "client_server_types.h"
+#include "endpoint.h"
 #include "finance_types.h"
-#include "json_conversions.h"
-#include "rest_request.h"
 #include "server.h"
+#include "typed_any.h"
 
 namespace {
 const auto kBaseUri = "http://localhost:6506/Entity";
@@ -63,9 +63,7 @@ class EntityServer : public stonks::network::Server {
     return stonks::network::EndpointDesc{
         .method = web::http::methods::POST,
         .relative_uri = "/PushSymbol",
-        .request_body = stonks::json::AnyDesc{
-            .converter = stonks::json::JsonConverter<stonks::finance::Symbol>{},
-            .optional = stonks::json::OptionalFlag::kMandatory}};
+        .request_body = stonks::json::Type<stonks::finance::Symbol>{}};
   }
 
   [[nodiscard]] static auto GetSymbolEndpointDesc()
@@ -73,13 +71,8 @@ class EntityServer : public stonks::network::Server {
     return stonks::network::EndpointDesc{
         .method = web::http::methods::GET,
         .relative_uri = "/GetSymbol",
-        .params = {{"index",
-                    stonks::json::AnyDesc{
-                        .converter = stonks::json::JsonConverter<int>{},
-                        .optional = stonks::json::OptionalFlag::kMandatory}}},
-        .response_body = stonks::json::AnyDesc{
-            .converter = stonks::json::JsonConverter<stonks::finance::Symbol>{},
-            .optional = stonks::json::OptionalFlag::kOptional}};
+        .params = {{"index", stonks::json::Type<int>{}}},
+        .response_body = stonks::json::Type<stonks::finance::Symbol>{}};
   }
 
   [[nodiscard]] static auto GetSizeEndpointDesc()
@@ -87,9 +80,7 @@ class EntityServer : public stonks::network::Server {
     return stonks::network::EndpointDesc{
         .method = web::http::methods::GET,
         .relative_uri = "/GetSize",
-        .response_body = stonks::json::AnyDesc{
-            .converter = stonks::json::JsonConverter<int>{},
-            .optional = stonks::json::OptionalFlag::kMandatory}};
+        .response_body = stonks::json::Type<int>{}};
   }
 
   explicit EntityServer(std::string_view base_uri)
@@ -104,38 +95,23 @@ class EntityServer : public stonks::network::Server {
 
  private:
   [[nodiscard]] auto PushSymbolEndpointHandler()
-      -> stonks::network::EndpointHandler {
-    return [this](const std::map<std::string, stonks::json::Any>& /*params*/,
-                  stonks::json::Any request_body) {
-      spdlog::info("PushSymbol!!");
+      -> std::function<void(std::any)> {
+    return [this](std::any request_body) {
       entity_.PushSymbol(
-          // TODO(vh): if object is optional, cast should be to std::optional
-          // and function should take optional object
-          std::any_cast<stonks::finance::Symbol>(
-              std::move(request_body.value)));
-      return std::any{};
+          std::any_cast<stonks::finance::Symbol>(std::move(request_body)));
     };
   }
 
   [[nodiscard]] auto GetSymbolEndpointHandler()
-      -> stonks::network::EndpointHandler {
-    return [this](std::map<std::string, stonks::json::Any> params,
-                  const stonks::json::Any& /*request_body*/) {
-      spdlog::info("GetSymbol!!");
+      -> std::function<std::any(std::map<std::string, std::any>)> {
+    return [this](std::map<std::string, std::any> params) {
       return entity_.GetSymbol(
-          // TODO(vh): if param is optional, cast should be to std::optional and
-          // function should take optional param
-          std::any_cast<int>(std::move(params.at("index").value)));
+          std::any_cast<int>(std::move(params.at("index"))));
     };
   }
 
-  [[nodiscard]] auto GetSizeEndpointHandler()
-      -> stonks::network::EndpointHandler {
-    return [this](const std::map<std::string, stonks::json::Any>& /*params*/,
-                  const stonks::json::Any& /*request_body*/) {
-      spdlog::info("GetSize!!");
-      return entity_.GetSize();
-    };
+  [[nodiscard]] auto GetSizeEndpointHandler() -> std::function<std::any()> {
+    return [this]() { return entity_.GetSize(); };
   }
 
   Entity entity_{};
@@ -147,20 +123,13 @@ class EntityClient : public stonks::network::Client, public EntityInterface {
       : stonks::network::Client{base_uri} {}
 
   void PushSymbol(stonks::finance::Symbol symbol) override {
-    Execute(EntityServer::PushSymbolEndpointDesc(), {},
-            stonks::json::Any{
-                .value = symbol,
-                .converter =
-                    stonks::json::JsonConverter<stonks::finance::Symbol>{}});
+    Execute(EntityServer::PushSymbolEndpointDesc(), {}, symbol);
   }
 
   [[nodiscard]] auto GetSymbol(int index) const
       -> stonks::finance::Symbol override {
-    return std::any_cast<stonks::finance::Symbol>(Execute(
-        EntityServer::GetSymbolEndpointDesc(),
-        {{{"index", stonks::json::Any{
-                        .value = index,
-                        .converter = stonks::json::JsonConverter<int>{}}}}}));
+    return std::any_cast<stonks::finance::Symbol>(
+        Execute(EntityServer::GetSymbolEndpointDesc(), {{{"index", index}}}));
   }
 
   [[nodiscard]] auto GetSize() const -> int override {
@@ -221,23 +190,13 @@ TEST(ClientServerDeathTest, ExceptionTest) {
       EXPECT_ANY_THROW(Execute(endpoint));
 
       endpoint = EntityServer::PushSymbolEndpointDesc();
-      EXPECT_NO_THROW(Execute(
-          endpoint, {},
-          stonks::json::Any{
-              .value = stonks::finance::Symbol{},
-              .converter =
-                  stonks::json::JsonConverter<stonks::finance::Symbol>{}}));
+      EXPECT_NO_THROW(Execute(endpoint, {}, stonks::finance::Symbol{}));
 
       endpoint = EntityServer::PushSymbolEndpointDesc();
       EXPECT_DEATH(Execute(endpoint), "");
 
       endpoint = EntityServer::PushSymbolEndpointDesc();
-      EXPECT_DEATH(
-          Execute(endpoint, {},
-                  stonks::json::Any{
-                      .value = 33,
-                      .converter = stonks::json::JsonConverter<int>{}}),
-          "");
+      EXPECT_DEATH(Execute(endpoint, {}, 33), "");
     }
   } client;
 
