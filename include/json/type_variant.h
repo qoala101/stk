@@ -5,6 +5,7 @@
 #include <optional>
 #include <string>
 
+#include "binance_types.h"
 #include "finance_types.h"
 #include "type.h"
 
@@ -34,19 +35,19 @@ class TypeVariant {
   [[nodiscard]] auto MakeNulloptAny() const -> std::any;
 
  private:
-  std::variant<Type<bool>, Type<int>, Type<int64_t>, Type<double>,
-               Type<std::string>, Type<std::chrono::milliseconds>,
-               Type<std::runtime_error>, Type<finance::Symbol>,
-               Type<finance::SymbolPriceTick>, Type<finance::Period>,
+  std::variant<
+      Type<bool>, Type<int>, Type<int64_t>, Type<double>, Type<std::string>,
+      Type<std::chrono::milliseconds>, Type<std::runtime_error>,
+      Type<finance::Symbol>, Type<binance::ExchangeInfo>,
+      Type<finance::SymbolPriceTick>, Type<finance::Period>,
 
-               Type<std::vector<std::string>>,
-               Type<std::vector<finance::Symbol>>,
-               Type<std::vector<finance::SymbolPriceTick>>,
+      Type<std::vector<std::string>>, Type<std::vector<finance::Symbol>>,
+      Type<std::vector<finance::SymbolPriceTick>>,
 
-               Type<std::optional<int>>, Type<std::optional<finance::Period>>,
-               Type<std::optional<std::vector<std::string>>>,
-               Type<std::optional<std::vector<finance::Symbol>>>,
-               Type<std::optional<std::vector<finance::SymbolPriceTick>>>>
+      Type<std::optional<int>>, Type<std::optional<finance::Period>>,
+      Type<std::optional<std::vector<std::string>>>,
+      Type<std::optional<std::vector<finance::Symbol>>>,
+      Type<std::optional<std::vector<finance::SymbolPriceTick>>>>
       type_{};
 };
 }  // namespace stonks::json

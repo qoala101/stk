@@ -191,6 +191,11 @@ auto ParseFromJson(const web::json::value& json) -> binance::ExchangeInfo {
           json, "symbols")};
 }
 
+auto ConvertToJson(const binance::ExchangeInfo& /*unused*/)
+    -> web::json::value {
+  throw std::runtime_error{"Not implemented"};
+}
+
 template <>
 auto ParseFromJson(const web::json::value& json) -> binance::SymbolBookTicker {
   return binance::SymbolBookTicker{

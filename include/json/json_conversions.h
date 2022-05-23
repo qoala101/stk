@@ -93,6 +93,8 @@ template <>
 template <>
 [[nodiscard]] auto ParseFromJson(const web::json::value &json)
     -> binance::ExchangeInfo;
+[[nodiscard]] auto ConvertToJson(const binance::ExchangeInfo &)
+    -> web::json::value;
 
 template <>
 [[nodiscard]] auto ParseFromJson(const web::json::value &json)
