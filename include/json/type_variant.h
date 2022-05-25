@@ -43,6 +43,7 @@ class TypeVariant {
 
       Type<std::vector<std::string>>, Type<std::vector<finance::Symbol>>,
       Type<std::vector<finance::SymbolPriceTick>>,
+      Type<std::vector<finance::SymbolInfo>>,
 
       Type<std::optional<int>>, Type<std::optional<finance::Period>>,
       Type<std::optional<std::vector<std::string>>>,

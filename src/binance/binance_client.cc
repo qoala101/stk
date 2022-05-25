@@ -5,7 +5,7 @@
 namespace stonks::binance {
 BinanceClient::BinanceClient() : client_{settings::GetBaseRestUri()} {}
 
-[[nodiscard]] auto BinanceClient::GetExchangeInfo() -> ExchangeInfo {
+[[nodiscard]] auto BinanceClient::GetExchangeInfo() const -> ExchangeInfo {
   return std::any_cast<ExchangeInfo>(client_.Execute(
       network::EndpointDesc{.method = web::http::methods::GET,
                             .relative_uri = "/api/v3/exchangeInfo",

@@ -6,18 +6,16 @@
 #include <vector>
 
 #include "binance_types.h"
-#include "finance_db.h"
 #include "finance_types.h"
 
 namespace stonks::finance {
-Symbol ParseSymbolFromBinanceSymbol(std::string_view symbol,
-                                    const FinanceDb &finance_db);
+[[deprecated]] auto ParseSymbolFromBinanceSymbol(std::string_view symbol)
+    -> Symbol;
 
 Candle ParseCandleFromBinanceKline(const binance::Kline &kline);
 
-SymbolPriceTick ParseSymbolPriceTickFromBinanceSymbolBookTicker(
-    const binance::SymbolBookTicker &symbol_book_ticker,
-    const FinanceDb &finance_db);
+auto ParseSymbolPriceTickFromBinanceSymbolBookTicker(
+    const binance::SymbolBookTicker &symbol_book_ticker) -> SymbolPriceTick;
 
 OrderInfo ParseOrderInfoFromBinanceOrderInfo(
     const binance::OrderInfo &order_info);

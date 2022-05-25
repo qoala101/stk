@@ -9,6 +9,7 @@
 #include <optional>
 #include <stdexcept>
 
+#include "finance_types.h"
 #include "utils.h"
 
 namespace stonks::json {
@@ -179,9 +180,34 @@ auto ParseFromJson(const web::json::value& json) -> binance::SymbolPrice {
 template <>
 auto ParseFromJson(const web::json::value& json)
     -> binance::SymbolExchangeInfo {
-  return binance::SymbolExchangeInfo{
+  auto data = binance::SymbolExchangeInfo{
+      .symbol = ParseJsonElement<std::string>(json, "symbol"),
       .base_asset = ParseJsonElement<std::string>(json, "baseAsset"),
       .quote_asset = ParseJsonElement<std::string>(json, "quoteAsset")};
+
+  const auto& filters = json.at("filters").as_array();
+
+  for (const auto& filter : filters) {
+    const auto type = ParseJsonElement<std::string>(filter, "filterType");
+
+    if (type == "LOT_SIZE") {
+      data.min_quantity = ParseJsonElement<double>(filter, "minQty");
+      data.step_size = ParseJsonElement<double>(filter, "stepSize");
+      continue;
+    }
+
+    if (type == "MIN_NOTIONAL") {
+      data.min_notional = ParseJsonElement<double>(filter, "minNotional");
+      continue;
+    }
+
+    if (type == "PRICE_FILTER") {
+      data.tick_size = ParseJsonElement<double>(filter, "tickSize");
+      continue;
+    }
+  }
+
+  return data;
 }
 
 template <>
@@ -253,7 +279,7 @@ auto ConvertToJson(const finance::SymbolPrices& data) -> web::json::value {
 template <>
 auto ParseFromJson(const web::json::value& json) -> finance::SymbolPriceTick {
   return finance::SymbolPriceTick{
-      .symbol = ParseJsonElement<finance::Symbol>(json, "symbol"),
+      .symbol = ParseJsonElement<finance::SymbolName>(json, "symbol"),
       .time = ParseJsonElement<std::chrono::milliseconds>(json, "time"),
       .buy_price = ParseJsonElement<double>(json, "buy_price"),
       .sell_price = ParseJsonElement<double>(json, "sell_price")};
@@ -629,6 +655,30 @@ auto ConvertToJson(const finance::Period& data) -> web::json::value {
   auto json = web::json::value{};
   json["start_time"] = ConvertToJson(data.start_time);
   json["end_time"] = ConvertToJson(data.end_time);
+  return json;
+}
+
+template <>
+auto ParseFromJson(const web::json::value& json) -> finance::SymbolInfo {
+  return finance::SymbolInfo{
+      .symbol = ParseJsonElement<std::string>(json, "symbol"),
+      .base_asset = ParseJsonElement<std::string>(json, "base_asset"),
+      .quote_asset = ParseJsonElement<std::string>(json, "quote_asset"),
+      .min_base_amount = ParseJsonElement<double>(json, "min_base_amount"),
+      .min_quote_amount = ParseJsonElement<double>(json, "min_quote_amount"),
+      .base_step = ParseJsonElement<double>(json, "base_step"),
+      .quote_step = ParseJsonElement<double>(json, "quote_step")};
+}
+
+auto ConvertToJson(const finance::SymbolInfo& data) -> web::json::value {
+  auto json = web::json::value{};
+  json["symbol"] = ConvertToJson(data.symbol);
+  json["base_asset"] = ConvertToJson(data.base_asset);
+  json["quote_asset"] = ConvertToJson(data.quote_asset);
+  json["min_base_amount"] = ConvertToJson(data.min_base_amount);
+  json["min_quote_amount"] = ConvertToJson(data.min_quote_amount);
+  json["base_step"] = ConvertToJson(data.base_step);
+  json["quote_step"] = ConvertToJson(data.quote_step);
   return json;
 }
 }  // namespace stonks::json

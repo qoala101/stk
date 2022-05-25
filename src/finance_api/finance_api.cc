@@ -10,6 +10,7 @@
 #include "binance_api.h"
 #include "finance_conversions.h"
 #include "finance_enum_conversions.h"
+#include "finance_types.h"
 #include "utils.h"
 
 namespace stonks::finance {
@@ -187,8 +188,7 @@ std::optional<double> GetSymbolPrice(const Symbol &symbol) {
   return result->price;
 }
 
-std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices(
-    const FinanceDb &finance_db) {
+std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices() {
   const auto result = binance::GetAllSymbolsPrices();
 
   if (!result.has_value()) {
@@ -197,11 +197,11 @@ std::optional<std::vector<SymbolPrice>> GetAllSymbolsPrices(
   }
 
   const auto binance_symbol_price_to_symbol_price =
-      [&finance_db](const binance::SymbolPrice &symbol_price) {
-        return SymbolPrice{.symbol = ParseSymbolFromBinanceSymbol(
-                               symbol_price.symbol, finance_db),
-                           .price = TimeDouble{.time = utils::GetUnixTime(),
-                                               .value = symbol_price.price}};
+      [](const binance::SymbolPrice &symbol_price) {
+        return SymbolPrice{
+            .symbol = ParseSymbolFromBinanceSymbol(symbol_price.symbol),
+            .price = TimeDouble{.time = utils::GetUnixTime(),
+                                .value = symbol_price.price}};
       };
   return *result |
          ranges::views::transform(binance_symbol_price_to_symbol_price) |
@@ -222,6 +222,24 @@ std::optional<std::vector<Symbol>> GetAllSymbols() {
                       .quote_asset = symbol_info.quote_asset};
       };
   return result->symbols | ranges::views::transform(symbol_from_symbol_info) |
+         ranges::to_vector;
+}
+
+auto GetSymbolsInfo() -> std::optional<std::vector<SymbolInfo>> {
+  const auto result = binance::GetExchangeInfo();
+
+  if (!result.has_value()) {
+    spdlog::error("Cannot get all symbols");
+    return std::nullopt;
+  }
+
+  const auto symbol_info_from_binance_symbol_info =
+      [](const binance::SymbolExchangeInfo &symbol_info) {
+        return SymbolInfo{.base_asset = symbol_info.base_asset,
+                          .quote_asset = symbol_info.quote_asset};
+      };
+  return result->symbols |
+         ranges::views::transform(symbol_info_from_binance_symbol_info) |
          ranges::to_vector;
 }
 }  // namespace stonks::finance

@@ -8,7 +8,7 @@ class BinanceClient {
  public:
   explicit BinanceClient();
 
-  [[nodiscard]] auto GetExchangeInfo() -> ExchangeInfo;
+  [[nodiscard]] auto GetExchangeInfo() const -> ExchangeInfo;
 
  private:
   network::Client client_;

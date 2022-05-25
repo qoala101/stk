@@ -203,6 +203,12 @@ template <>
 [[nodiscard]] auto ConvertToJson(const finance::Period &data)
     -> web::json::value;
 
+template <>
+[[nodiscard]] auto ParseFromJson(const web::json::value &json)
+    -> finance::SymbolInfo;
+[[nodiscard]] auto ConvertToJson(const finance::SymbolInfo &data)
+    -> web::json::value;
+
 template <Vector T>
 [[nodiscard]] auto ParseFromJson(const web::json::value &json) -> T {
   if (!json.is_array()) {

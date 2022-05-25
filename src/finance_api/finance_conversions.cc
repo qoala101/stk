@@ -4,9 +4,13 @@
 #include "utils.h"
 
 namespace stonks::finance {
-Symbol ParseSymbolFromBinanceSymbol(std::string_view symbol,
-                                    const FinanceDb &finance_db) {
-  return *finance_db.SelectSymbolByName(symbol);
+Symbol ParseSymbolFromBinanceSymbol(std::string_view symbol) {
+  if (symbol.size() > 3) {
+    return Symbol{.base_asset = std::string{symbol.substr(0, 3)},
+                  .quote_asset = std::string{symbol.substr(3)}};
+  }
+
+  return {};
 }
 
 Candle ParseCandleFromBinanceKline(const binance::Kline &kline) {
@@ -19,11 +23,9 @@ Candle ParseCandleFromBinanceKline(const binance::Kline &kline) {
                                      .volume = kline.volume}};
 }
 
-SymbolPriceTick ParseSymbolPriceTickFromBinanceSymbolBookTicker(
-    const binance::SymbolBookTicker &symbol_book_ticker,
-    const FinanceDb &finance_db) {
-  return SymbolPriceTick{.symbol = ParseSymbolFromBinanceSymbol(
-                             symbol_book_ticker.symbol, finance_db),
+auto ParseSymbolPriceTickFromBinanceSymbolBookTicker(
+    const binance::SymbolBookTicker &symbol_book_ticker) -> SymbolPriceTick {
+  return SymbolPriceTick{.symbol = symbol_book_ticker.symbol,
                          .time = utils::GetUnixTime(),
                          .buy_price = symbol_book_ticker.best_ask_price,
                          .sell_price = symbol_book_ticker.best_bid_price};

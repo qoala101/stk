@@ -23,6 +23,25 @@ struct Symbol {
                                            const Symbol &right) = default;
 };
 
+using SymbolName = std::string;
+
+struct SymbolInfo {
+  SymbolName symbol;
+  std::string base_asset{};
+  std::string quote_asset{};
+  double min_base_amount{};
+  double min_quote_amount{};
+  double base_step{};
+  double quote_step{};
+
+ private:
+  [[nodiscard]] friend auto operator==(const SymbolInfo &, const SymbolInfo &)
+      -> bool = default;
+  [[nodiscard]] friend auto operator<=>(const SymbolInfo &left,
+                                        const SymbolInfo &right)
+      -> std::partial_ordering = default;
+} __attribute__((aligned(128)));  // NOLINT(*-magic-numbers)
+
 struct TimeDouble {
   std::chrono::milliseconds time{};
   double value{};
@@ -71,9 +90,7 @@ struct Candle {
 };
 
 struct SymbolPriceTick {
-  static const auto kAlignment = 128;
-
-  Symbol symbol{};
+  SymbolName symbol{};
   std::chrono::milliseconds time{};
   double buy_price{};
   double sell_price{};
@@ -84,7 +101,7 @@ struct SymbolPriceTick {
   friend auto operator<=>(const SymbolPriceTick &left,
                           const SymbolPriceTick &right)
       -> std::partial_ordering = default;
-} __attribute__((aligned(kAlignment)));
+} __attribute__((aligned(64)));  // NOLINT(*-magic-numbers)
 
 struct BreakoutStrategyData {
   std::chrono::milliseconds last_candle_close_time{};
