@@ -27,10 +27,10 @@ TEST(SqliteDb, CreateAndDropTable) {  // NOLINT(*)
                              .unique = true},
           stonks::db::Column{.name = "TextFalse",
                              .data_type = stonks::db::DataType::kText}}};
-  auto success = db.CreateTable(table_definition);
+  auto success = db.CreateTableIfNotExists(table_definition);
   EXPECT_TRUE(success);
 
-  success = db.CreateTable(table_definition);
+  success = db.CreateTableIfNotExists(table_definition);
   EXPECT_FALSE(success);
 
   success = db.DropTable(table);
@@ -54,7 +54,7 @@ const auto kAssetTableDefinition = stonks::db::TableDefinition{
     }};
 
 TEST(SqliteDb, InsertAndSelect) {  // NOLINT(*)
-  auto success = db.CreateTable(kAssetTableDefinition);
+  auto success = db.CreateTableIfNotExists(kAssetTableDefinition);
   EXPECT_TRUE(success);
   success =
       db.Insert(kAssetTableDefinition.table,
@@ -139,7 +139,7 @@ const auto kSymbolPriceTableDefinition = stonks::db::TableDefinition{
                            .data_type = stonks::db::DataType::kReal}}};
 
 TEST(SqliteDb, ForeignKey) {  // NOLINT(*)
-  auto success = db.CreateTable(kSymbolTableDefinition);
+  auto success = db.CreateTableIfNotExists(kSymbolTableDefinition);
   EXPECT_TRUE(success);
   success = db.Insert(
       kSymbolTableDefinition.table,
@@ -167,7 +167,7 @@ TEST(SqliteDb, ForeignKey) {  // NOLINT(*)
                                .value = {6}}}});  // NOLINT(*-magic-numbers)
   EXPECT_FALSE(success);
 
-  success = db.CreateTable(kSymbolPriceTableDefinition);
+  success = db.CreateTableIfNotExists(kSymbolPriceTableDefinition);
   EXPECT_TRUE(success);
   success = db.Insert(
       kSymbolPriceTableDefinition.table,

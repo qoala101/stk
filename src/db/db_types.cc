@@ -140,6 +140,8 @@ std::optional<double> Row::GetCellValueDouble(
 }
 
 const std::string* Row::GetCellValueString(std::string_view column_name) const {
+  // TODO(vh): put ABSL assert inside GetCellValueString if row dont
+  // have the cell
   const auto value = GetCellValue(column_name);
 
   if (value == nullptr) {

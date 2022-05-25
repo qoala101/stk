@@ -3,6 +3,7 @@
 #include <spdlog/spdlog.h>
 #include <sqlite3.h>
 
+#include <gsl/assert>
 #include <gsl/util>
 #include <range/v3/all.hpp>
 
@@ -101,7 +102,7 @@ std::optional<std::string> ExecuteQuery(sqlite3 &sqlite_db_handle,
 }
 }  // namespace
 
-bool SqliteDb::CreateTable(const TableDefinition &table_definition) {
+bool SqliteDb::CreateTableIfNotExists(const TableDefinition &table_definition) {
   const auto column_is_primary_key = [](const Column &column) {
     return column.primary_key == true;
   };
@@ -253,6 +254,34 @@ bool SqliteDb::Delete(const Table &table, std::string_view where) {
   return true;
 }
 
+auto SqliteDb::Update(const Table &table, const Row &row,
+                      std::string_view where) -> bool {
+  Expects(!row.cells.empty());
+
+  auto query = std::string{"UPDATE \"" + table.name + "\" SET "};
+
+  for (const auto &cell : row.cells) {
+    query += "\"" + cell.column_name + "\" = " + cell.value.ToString();
+
+    const auto last_cell = &cell == &row.cells.back();
+
+    if (!last_cell) {
+      query += ", ";
+    }
+  }
+
+  query += " " + std::string{where};
+
+  const auto error_message = ExecuteQuery(*sqlite_db_handle_, query);
+
+  if (error_message.has_value()) {
+    spdlog::error("Cannot update table: {}", *error_message);
+    return false;
+  }
+
+  return true;
+}
+
 namespace {
 struct SelectData {
   const std::vector<Column> &columns{};
@@ -297,7 +326,7 @@ int SelectCallback(void *data, int num_cells, char **cells_data,
 }  // namespace
 
 std::optional<std::vector<Row>> SqliteDb::Select(
-    const TableDefinition &table_definition) {
+    const TableDefinition &table_definition) const {
   const auto query =
       std::string{"SELECT * from \"" + table_definition.table.name + "\";"};
   auto select_data = SelectData{.columns = table_definition.columns};
@@ -313,7 +342,8 @@ std::optional<std::vector<Row>> SqliteDb::Select(
 }
 
 std::optional<std::vector<Row>> SqliteDb::Select(
-    std::string_view query, const std::vector<Column> &columns) {
+    // TODO(vh): make columns array, prepared statement etc.
+    std::string_view query, const std::vector<Column> &columns) const {
   auto select_data = SelectData{.columns = columns};
   const auto error_message =
       ExecuteQuery(*sqlite_db_handle_, query, SelectCallback, &select_data);

@@ -22,7 +22,7 @@ class SqliteDb : public Db {
   SqliteDb &operator=(const SqliteDb &) = delete;
   ~SqliteDb() override;
 
-  bool CreateTable(const TableDefinition &table_definition) override;
+  bool CreateTableIfNotExists(const TableDefinition &table_definition) override;
 
   bool DropTable(const Table &table) override;
 
@@ -30,11 +30,15 @@ class SqliteDb : public Db {
 
   bool Delete(const Table &table, std::string_view where) override;
 
-  std::optional<std::vector<Row>> Select(
-      const TableDefinition &table_definition) override;
+  auto Update(const Table &table, const Row &row, std::string_view where)
+      -> bool override;
 
   std::optional<std::vector<Row>> Select(
-      std::string_view query, const std::vector<Column> &columns) override;
+      const TableDefinition &table_definition) const override;
+
+  std::optional<std::vector<Row>> Select(
+      std::string_view query,
+      const std::vector<Column> &columns) const override;
 
  private:
   friend void swap(SqliteDb &left, SqliteDb &right);
