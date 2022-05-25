@@ -8,11 +8,13 @@ find_package(absl REQUIRED)
 
 add_library(libstonks
   binance/binance_api.cc
+  binance/binance_client.cc
   binance/binance_settings.cc
   finance_api/finance_api.cc
   finance_api/finance_conversions.cc
   finance_api/finance_enum_conversions.cc
   finance_api/finance_types.cc
+  finance_db/finance_db_table_definitions.cc
   finance_db/finance_db.cc
   google_charts/google_charts_conversions.cc
   json/json_conversions.cc
@@ -70,8 +72,5 @@ target_link_libraries(libstonks PRIVATE libdb)
 add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)
 target_link_libraries(stonks PRIVATE spdlog::spdlog)
-
-add_executable(finance_db_server services_v2/finance_db_client_server.cc)
-target_link_libraries(finance_db_server PRIVATE libstonks)
 
 add_subdirectory(db)

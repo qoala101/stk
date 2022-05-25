@@ -56,16 +56,11 @@ void HandleGetRequest(const web::http::http_request &request,
     }
 
     const auto price_ticks = finance_db.SelectSymbolPriceTicks(
-        limit, finance::Period{.start_time = start_time, .end_time = end_time});
-
-    if (!price_ticks.has_value()) {
-      spdlog::error("Cannot get price ticks from DB");
-      request.reply(web::http::status_codes::InternalError);
-      return;
-    }
+        limit, finance::Period{.start_time = start_time, .end_time = end_time},
+        std::nullopt);
 
     request.reply(web::http::status_codes::OK,
-                  json::ConvertToJson(*price_ticks));
+                  json::ConvertToJson(price_ticks));
     return;
   }
 
@@ -92,9 +87,7 @@ void HandlePostRequest(const web::http::http_request &request,
 
     request.reply(web::http::status_codes::OK);
 
-    if (const auto failure = !finance_db.InsertSymbolPriceTick(*price_tick)) {
-      spdlog::error("Cannot insert price tick to DB");
-    }
+    finance_db.InsertSymbolPriceTick(*price_tick);
   }
 
   request.reply(web::http::status_codes::NotFound);

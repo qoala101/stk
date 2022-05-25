@@ -1,55 +1,68 @@
 #ifndef STONKS_SERVICES_V2_FINANCE_DB_CLIENT_SERVER_H_
 #define STONKS_SERVICES_V2_FINANCE_DB_CLIENT_SERVER_H_
 
+#include <memory>
+
 #include "client.h"
-#include "finance_db.h"
 #include "server.h"
+#include "stonks_db.h"
 
 namespace stonks::finance {
-class FinanceDbClient {
+class FinanceDbClient : public StonksDb {
  public:
   explicit FinanceDbClient(std::string_view base_uri);
 
   /**
-   * @copydoc FinanceDb::SelectAssets
+   * @copydoc StonksDb::SelectAssets
    */
-  [[nodiscard]] auto SelectAssets() const
-      -> std::optional<std::vector<std::string>>;
+  [[nodiscard]] auto SelectAssets() const -> std::vector<std::string> override;
 
   /**
-   * @copydoc FinanceDb::SelectSymbols
+   * @copydoc StonksDb::UpdateAssets
    */
-  [[nodiscard]] auto SelectSymbols() const
-      -> std::optional<std::vector<Symbol>>;
+  void UpdateAssets(std::vector<std::string> assets) override;
 
   /**
-   * @copydoc FinanceDb::InsertSymbolPriceTick
+   * @copydoc StonksDb::SelectSymbols
    */
-  [[nodiscard]] auto InsertSymbolPriceTick(
-      const SymbolPriceTick &symbol_price_tick) -> bool;
+  [[nodiscard]] auto SelectSymbols() const -> std::vector<SymbolName> override;
 
   /**
-   * @copydoc FinanceDb::SelectSymbolPriceTicks
+   * @copydoc StonksDb::SelectSymbolsInfo
+   */
+  [[nodiscard]] auto SelectSymbolsInfo() const
+      -> std::vector<finance::SymbolInfo> override;
+
+  /**
+   * @copydoc StonksDb::UpdateSymbolsInfo
+   */
+  void UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) override;
+
+  /**
+   * @copydoc StonksDb::SelectSymbolPriceTicks
    */
   [[nodiscard]] auto SelectSymbolPriceTicks(
-      std::optional<int> limit = std::nullopt,
-      const std::optional<Period> &period = std::nullopt,
-      const std::optional<std::vector<Symbol>> &symbols = std::nullopt) const
-      -> std::optional<std::vector<SymbolPriceTick>>;
+      std::optional<int> limit, const std::optional<Period> &period,
+      const std::optional<std::vector<SymbolName>> &symbols) const
+      -> std::vector<SymbolPriceTick> override;
+
+  /**
+   * @copydoc StonksDb::SelectAssets
+   */
+  void InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick) override;
 
  private:
   network::Client client_;
 };
 
-static_assert(FinanceDbConcept<FinanceDbClient>);
-
-class FinanceDbServer {
+class StonksDbServer {
  public:
-  explicit FinanceDbServer(std::string_view base_uri, FinanceDb finance_db);
+  explicit StonksDbServer(std::string_view base_uri,
+                          std::shared_ptr<StonksDb> stonks_db);
 
  private:
   network::Server server_;
-  FinanceDb finance_db_{};
+  std::shared_ptr<StonksDb> stonks_db_{};
 };
 }  // namespace stonks::finance
 

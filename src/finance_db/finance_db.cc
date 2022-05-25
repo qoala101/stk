@@ -1,376 +1,264 @@
 #include "finance_db.h"
 
 #include <absl/base/macros.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
+#include <array>
+#include <exception>
+#include <map>
 #include <range/v3/action/sort.hpp>
 #include <range/v3/action/unique.hpp>
+#include <range/v3/algorithm/contains.hpp>
 #include <range/v3/algorithm/find_if.hpp>
+#include <range/v3/range/conversion.hpp>
 #include <range/v3/to_container.hpp>
-#include <range/v3/view/concat.hpp>
+#include <range/v3/view/filter.hpp>
 #include <range/v3/view/set_algorithm.hpp>
+#include <range/v3/view/take.hpp>
 #include <range/v3/view/transform.hpp>
 
 #include "db_types.h"
-#include "finance_api.h"
 #include "finance_db_table_definitions.h"
-#include "finance_types.h"
-#include "null_db.h"
 #include "sqlite_db.h"
 
 namespace stonks::finance {
 namespace {
-struct AssetRecord {
-  int64_t id{};
-  std::string name{};
-} __attribute__((aligned(64)));  // NOLINT(*-magic-numbers)
+auto Logger() -> spdlog::logger & {
+  static auto logger = []() {
+    auto logger = spdlog::stdout_color_mt("Db");
+    logger->set_level(spdlog::level::debug);
+    return logger;
+  }();
 
-struct SymbolRecord {
-  int64_t id{};
-  int64_t base_asset_id{};
-  int64_t quote_asset_id{};
-  std::string base_asset_name{};
-  std::string quote_asset_name{};
-} __attribute__((aligned(128)));  // NOLINT(*-magic-numbers)
+  return *logger;
+}
 }  // namespace
 
-struct FinanceDb::Impl {
+class FinanceDb::Impl {
+ public:
   explicit Impl(std::string_view uri)
-      : sqlite_db{db::sqlite::SqliteDb::OpenOrCreateDbFromFile(uri)} {}
+      : sqlite_db_{*db::sqlite::SqliteDb::OpenOrCreateDbFromFile(uri)} {
+    sqlite_db_.CreateTableIfNotExists(table_definition::Asset());
+    sqlite_db_.CreateTableIfNotExists(table_definition::Symbol());
+    sqlite_db_.CreateTableIfNotExists(table_definition::SymbolPriceTick());
 
-  auto GetDb() -> db::Db & {
-    if (!sqlite_db.has_value()) {
-      return db::NullDb::Instance();
-    }
-
-    return *sqlite_db;
+    cache_.UpdateFromDb(sqlite_db_);
   }
 
-  auto SelectAssets() -> std::optional<std::vector<std::string>> {
-    const auto rows =
-        GetDb().Select("SELECT * FROM Asset", kAssetTableDefinition.columns);
+  [[nodiscard]] auto SelectAssets() -> std::vector<std::string> {
+    static constinit auto kColumnNames = std::array{"name"};
 
-    if (!rows.has_value()) {
-      spdlog::error("Cannot get assets from DB");
-      return std::nullopt;
-    }
+    const auto columns = table_definition::Asset().columns |
+                         ranges::views::filter([](const auto &column) {
+                           return ranges::contains(kColumnNames, column.name);
+                         }) |
+                         ranges::to_vector;
+    const auto rows = *sqlite_db_.Select("SELECT name FROM Asset", columns);
 
-    auto result = std::vector<std::string>{};
-    result.reserve(rows->size());
-
-    for (const auto &row : *rows) {
-      const auto *const name = row.GetCellValueString("name");
-
-      if (name == nullptr) {
-        spdlog::error("Select result doesn't have expected cell");
-        return std::nullopt;
-      }
-
-      result.emplace_back(*name);
-    }
-
-    return result;
+    return rows | ranges::views::transform([](const auto &row) {
+             return *row.GetCellValueString("name");
+           }) |
+           ranges::to_vector;
   }
 
-  auto CreateAssetTable() -> bool {
-    return GetDb().CreateTable(kAssetTableDefinition);
-  }
-
-  auto DeleteAssetFromTable(std::string_view asset) -> bool {
-    return GetDb().Delete(kAssetTableDefinition.table,
-                          "Asset.name = " + std::string{asset});
-  }
-
-  auto InsertAssetIntoTable(std::string_view asset) -> bool {
-    return GetDb().Insert(kAssetTableDefinition.table,
-                          stonks::db::Row{.cells = {stonks::db::Cell{
-                                              .column_name = "name",
-                                              .value = {std::string{asset}}}}});
-  }
-
-  auto UpdateAssetTable(const std::vector<Symbol> &new_symbols) -> bool {
-    auto old_assets = SelectAssets();
-
-    if (!old_assets.has_value()) {
-      spdlog::error("Cannot get existing assets");
-      return false;
-    }
-
-    *old_assets |= ranges::actions::sort | ranges::actions::unique;
-
-    const auto get_base_asset = [](const Symbol &symbol) {
-      return symbol.base_asset;
-    };
-    const auto get_quote_asset = [](const Symbol &symbol) {
-      return symbol.quote_asset;
-    };
-    const auto new_assets =
-        ranges::views::concat(
-            new_symbols | ranges::views::transform(get_base_asset),
-            new_symbols | ranges::views::transform(get_quote_asset)) |
-        ranges::to_vector | ranges::actions::sort | ranges::actions::unique;
-
-    auto &db = GetDb();
+  void UpdateAssets(std::vector<std::string> assets) {
+    assets |= ranges::actions::sort | ranges::actions::unique;
+    const auto old_assets =
+        SelectAssets() | ranges::actions::sort | ranges::actions::unique;
+    const auto &new_assets = assets;
 
     const auto removed_assets =
-        ranges::views::set_difference(*old_assets, new_assets);
+        ranges::views::set_difference(old_assets, new_assets);
 
     for (const auto &removed_asset : removed_assets) {
-      if (const auto failure = !DeleteAssetFromTable(removed_asset)) {
-        spdlog::error("Cannot delete asset");
-        return false;
-      }
+      sqlite_db_.Delete(table_definition::Asset().table,
+                        "WHERE Asset.name = \"" + removed_asset + "\"");
     }
 
     const auto added_assets =
-        ranges::views::set_difference(new_assets, *old_assets);
+        ranges::views::set_difference(new_assets, old_assets);
 
-    for (const auto &added_asset : added_assets) {  // NOLINT(*-use-anyofallof)
-      if (const auto failure = !InsertAssetIntoTable(added_asset)) {
-        spdlog::error("Cannot insert asset");
-        return false;
-      }
+    for (const auto &added_asset : added_assets) {
+      sqlite_db_.Insert(
+          table_definition::Asset().table,
+          stonks::db::Row{.cells = {stonks::db::Cell{.column_name = "name",
+                                                     .value = {added_asset}}}});
     }
 
-    return true;
+    cache_.UpdateFromDb(sqlite_db_);
   }
 
-  auto UpdateAssetRecords() -> bool {
-    const auto rows =
-        GetDb().Select("SELECT * FROM Asset", kAssetTableDefinition.columns);
+  [[nodiscard]] auto SelectSymbols() -> std::vector<SymbolName> {
+    static constinit auto kColumnNames = std::array{"name"};
 
-    if (!rows.has_value()) {
-      spdlog::error("Cannot get assets from DB");
-      return false;
-    }
+    const auto columns = table_definition::Symbol().columns |
+                         ranges::views::filter([](const auto &column) {
+                           return ranges::contains(kColumnNames, column.name);
+                         }) |
+                         ranges::to_vector;
+    const auto rows = *sqlite_db_.Select("SELECT name FROM Symbol", {columns});
 
-    asset_records.reserve(rows->size());
-
-    for (const auto &row : *rows) {  // NOLINT(*-use-anyofallof)
-      const auto id = row.GetCellValueInt64("id");
-      const auto *const name = row.GetCellValueString("name");
-
-      if (!id.has_value() || (name == nullptr)) {
-        spdlog::error("Select result doesn't have expected cell");
-        return false;
-      }
-
-      asset_records.emplace_back(AssetRecord{.id = *id, .name = *name});
-    }
-
-    return true;
+    return rows | ranges::views::transform([](const auto &row) {
+             return SymbolName{*row.GetCellValueString("name")};
+           }) |
+           ranges::to_vector;
   }
 
-  auto SelectSymbols() -> std::optional<std::vector<Symbol>> {
-    const auto columns = std::vector<db::Column>{
-        db::Column{.name = "base_asset", .data_type = db::DataType::kText},
-        db::Column{.name = "quote_asset", .data_type = db::DataType::kText}};
-    const auto rows = GetDb().Select(
-        "SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS quote_asset "
-        "FROM Symbol "
-        "JOIN Asset AS BaseAsset ON Symbol.base_asset_id = BaseAsset.id "
-        "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id = QuoteAsset.id;",
-        columns);
+  [[nodiscard]] auto SelectSymbolsInfo() -> std::vector<SymbolInfo> {
+    static constinit auto kColumnNames =
+        std::array{"name", "min_base_amount", "min_quote_amount", "base_step",
+                   "quote_step"};
 
-    if (!rows.has_value()) {
-      spdlog::error("Cannot get symbols from DB");
-      return std::nullopt;
-    }
-
-    auto result = std::vector<Symbol>{};
-    result.reserve(rows->size());
-
-    for (const auto &row : *rows) {
-      const auto *const base_asset = row.GetCellValueString("base_asset");
-      const auto *const quote_asset = row.GetCellValueString("quote_asset");
-
-      if ((base_asset == nullptr) || (quote_asset == nullptr)) {
-        spdlog::error("Select result doesn't have expected cell");
-        return std::nullopt;
-      }
-
-      result.emplace_back(
-          Symbol{.base_asset = *base_asset, .quote_asset = *quote_asset});
-    }
-
-    return result;
-  }
-
-  auto CreateSymbolTable() -> bool {
-    return GetDb().CreateTable(kSymbolTableDefinition);
-  }
-
-  auto DeleteSymbolFromTable(const Symbol &symbol) -> bool {
-    return GetDb().Delete(
-        kSymbolTableDefinition.table,
-        "WHERE Symbol.id = ("
-        "SELECT Symbol.id "
-        "FROM Symbol "
-        "JOIN Asset AS BaseAsset ON Symbol.base_asset_id = BaseAsset.id "
-        "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id = QuoteAsset.id "
-        "WHERE BaseAsset.name = \"" +
-            symbol.base_asset + "\" AND QuoteAsset.name = \"" +
-            symbol.quote_asset + "\")");
-  }
-
-  auto InsertSymbolIntoTable(const Symbol &symbol) -> bool {
-    const auto base_asset = ranges::find_if(
-        asset_records, [&symbol](const AssetRecord &asset_record) {
-          return asset_record.name == symbol.base_asset;
-        });
-    ABSL_ASSERT(base_asset != asset_records.end());
-
-    const auto quote_asset = ranges::find_if(
-        asset_records, [&symbol](const AssetRecord &asset_record) {
-          return asset_record.name == symbol.quote_asset;
-        });
-    ABSL_ASSERT(quote_asset != asset_records.end());
-
-    return GetDb().Insert(
-        kSymbolTableDefinition.table,
-        stonks::db::Row{
-            .cells = {stonks::db::Cell{.column_name = "base_asset_id",
-                                       .value = {base_asset->id}},
-                      stonks::db::Cell{.column_name = "quote_asset_id",
-                                       .value = {quote_asset->id}}}});
-  }
-
-  auto UpdateSymbolTable(std::vector<Symbol> new_symbols) -> bool {
-    auto old_symbols = SelectSymbols();
-
-    if (!old_symbols.has_value()) {
-      spdlog::error("Cannot get existing symbols");
-      return false;
-    }
-
-    *old_symbols |= ranges::actions::sort | ranges::actions::unique;
-    new_symbols |= ranges::actions::sort | ranges::actions::unique;
-
-    auto &db = GetDb();
-    const auto removed_symbols =
-        ranges::views::set_difference(*old_symbols, new_symbols);
-
-    for (const auto &removed_symbol : removed_symbols) {
-      if (const auto failure = !DeleteSymbolFromTable(removed_symbol)) {
-        spdlog::error("Cannot delete asset");
-        return false;
-      }
-    }
-
-    const auto added_symbols =
-        ranges::views::set_difference(new_symbols, *old_symbols);
-
-    // NOLINTNEXTLINE(*-use-anyofallof)
-    for (const auto &added_symbol : added_symbols) {
-      if (const auto failure = !InsertSymbolIntoTable(added_symbol)) {
-        spdlog::error("Cannot insert symbol");
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  auto UpdateSymbolRecords() -> bool {
-    const auto columns = std::vector<db::Column>{
-        db::Column{.name = "id", .data_type = db::DataType::kInteger},
-        db::Column{.name = "base_asset_id",
-                   .data_type = db::DataType::kInteger},
-        db::Column{.name = "quote_asset_id",
-                   .data_type = db::DataType::kInteger},
-        db::Column{.name = "base_asset", .data_type = db::DataType::kText},
-        db::Column{.name = "quote_asset", .data_type = db::DataType::kText}};
-    const auto rows = GetDb().Select(
-        "SELECT Symbol.id, Symbol.base_asset_id, Symbol.quote_asset_id, "
-        "BaseAsset.name AS base_asset, QuoteAsset.name AS quote_asset "
+    auto columns = table_definition::Symbol().columns |
+                   ranges::views::filter([](const auto &column) {
+                     return ranges::contains(kColumnNames, column.name);
+                   }) |
+                   ranges::to_vector;
+    columns.emplace_back(
+        db::Column{.name = "base_asset", .data_type = db::DataType::kText});
+    columns.emplace_back(
+        db::Column{.name = "quote_asset", .data_type = db::DataType::kText});
+    const auto rows = *sqlite_db_.Select(
+        "SELECT Symbol.name, BaseAsset.name AS base_asset, QuoteAsset.name AS "
+        "quote_asset, Symbol.min_base_amount, Symbol.min_quote_amount, "
+        "Symbol.base_step, Symbol.quote_step "
         "FROM Symbol "
         "JOIN Asset AS BaseAsset ON Symbol.base_asset_id = BaseAsset.id "
         "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id = QuoteAsset.id",
         columns);
 
-    if (!rows.has_value()) {
-      spdlog::error("Cannot get symbols from DB");
-      return false;
-    }
-
-    symbol_records.reserve(rows->size());
-
-    for (const auto &row : *rows) {  // NOLINT(*-use-anyofallof)
-      const auto id = row.GetCellValueInt64("id");
-      const auto base_asset_id = row.GetCellValueInt64("base_asset_id");
-      const auto quote_asset_id = row.GetCellValueInt64("quote_asset_id");
-      const auto *const base_asset = row.GetCellValueString("base_asset");
-      const auto *const quote_asset = row.GetCellValueString("quote_asset");
-
-      if (!id.has_value() || !base_asset_id.has_value() ||
-          !quote_asset_id.has_value() || (base_asset == nullptr) ||
-          (quote_asset == nullptr)) {
-        spdlog::error("Select result doesn't have expected cell");
-        return false;
-      }
-
-      symbol_records.emplace_back(
-          SymbolRecord{.id = *id,
-                       .base_asset_id = *base_asset_id,
-                       .quote_asset_id = *quote_asset_id,
-                       .base_asset_name = *base_asset,
-                       .quote_asset_name = *quote_asset});
-    }
-
-    return true;
+    return rows | ranges::views::transform([](const auto &row) {
+             return SymbolInfo{
+                 .symbol = *row.GetCellValueString("name"),
+                 .base_asset = *row.GetCellValueString("base_asset"),
+                 .quote_asset = *row.GetCellValueString("quote_asset"),
+                 .min_base_amount = *row.GetCellValueDouble("min_base_amount"),
+                 .min_quote_amount =
+                     *row.GetCellValueDouble("min_quote_amount"),
+                 .base_step = *row.GetCellValueDouble("base_step"),
+                 .quote_step = *row.GetCellValueDouble("quote_step")};
+           }) |
+           ranges::to_vector;
   }
 
-  auto GetSymbolIdBySymbol(const Symbol &symbol) -> std::optional<int64_t> {
-    const auto symbol_record =
-        ranges::find_if(symbol_records, [&symbol](const SymbolRecord &record) {
-          return (record.base_asset_name == symbol.base_asset) &&
-                 (record.quote_asset_name == symbol.quote_asset);
-        });
+  void InsertSymbolInfo(const SymbolInfo &symbol_info) {
+    const auto base_asset_id = cache_.GetAssetIdByAsset(symbol_info.base_asset);
 
-    if (symbol_record == symbol_records.end()) {
-      spdlog::error("Cannot find symbol record");
-      return std::nullopt;
+    if (!base_asset_id.has_value()) {
+      Logger().error("Asset not found in DB {}", symbol_info.base_asset);
+      return;
     }
 
-    return symbol_record->id;
-  }
+    const auto quote_asset_id =
+        cache_.GetAssetIdByAsset(symbol_info.quote_asset);
 
-  auto GetSymbolById(int64_t symbol_id) -> std::optional<Symbol> {
-    const auto symbol_record = ranges::find_if(
-        symbol_records, [symbol_id](const SymbolRecord &record) {
-          return record.id == symbol_id;
-        });
-
-    if (symbol_record == symbol_records.end()) {
-      spdlog::error("Cannot find symbol record");
-      return std::nullopt;
+    if (!quote_asset_id.has_value()) {
+      Logger().error("Asset not found in DB {}", symbol_info.quote_asset);
+      return;
     }
 
-    return Symbol{.base_asset = symbol_record->base_asset_name,
-                  .quote_asset = symbol_record->quote_asset_name};
+    sqlite_db_.Insert(
+        table_definition::Symbol().table,
+        stonks::db::Row{
+            .cells = {stonks::db::Cell{.column_name = "name",
+                                       .value = {symbol_info.symbol}},
+                      stonks::db::Cell{.column_name = "base_asset_id",
+                                       .value = {*base_asset_id}},
+                      stonks::db::Cell{.column_name = "quote_asset_id",
+                                       .value = {*quote_asset_id}},
+                      stonks::db::Cell{.column_name = "min_base_amount",
+                                       .value = {symbol_info.min_base_amount}},
+                      stonks::db::Cell{.column_name = "min_quote_amount",
+                                       .value = {symbol_info.min_quote_amount}},
+                      stonks::db::Cell{.column_name = "base_step",
+                                       .value = {symbol_info.base_step}},
+                      stonks::db::Cell{.column_name = "quote_step",
+                                       .value = {symbol_info.quote_step}}}});
   }
 
-  auto GetSymbolByName(std::string_view symbol_name) -> std::optional<Symbol> {
-    const auto symbol_record = ranges::find_if(
-        symbol_records, [symbol_name](const SymbolRecord &record) {
-          return (record.base_asset_name + record.quote_asset_name) ==
-                 symbol_name;
-        });
+  void UpdateSymbolInfoInTable(const SymbolInfo &symbol_info) {
+    const auto base_asset_id = cache_.GetAssetIdByAsset(symbol_info.base_asset);
 
-    if (symbol_record == symbol_records.end()) {
-      spdlog::error("Cannot find symbol record");
-      return std::nullopt;
+    if (!base_asset_id.has_value()) {
+      Logger().error("Asset not found in DB {}", symbol_info.base_asset);
+      return;
     }
 
-    return Symbol{.base_asset = symbol_record->base_asset_name,
-                  .quote_asset = symbol_record->quote_asset_name};
+    const auto quote_asset_id =
+        cache_.GetAssetIdByAsset(symbol_info.quote_asset);
+
+    if (!quote_asset_id.has_value()) {
+      Logger().error("Asset not found in DB {}", symbol_info.quote_asset);
+      return;
+    }
+
+    sqlite_db_.Update(
+        table_definition::Symbol().table,
+        stonks::db::Row{
+            .cells = {stonks::db::Cell{.column_name = "base_asset_id",
+                                       .value = {*base_asset_id}},
+                      stonks::db::Cell{.column_name = "quote_asset_id",
+                                       .value = {*quote_asset_id}},
+                      stonks::db::Cell{.column_name = "min_base_amount",
+                                       .value = {symbol_info.min_base_amount}},
+                      stonks::db::Cell{.column_name = "min_quote_amount",
+                                       .value = {symbol_info.min_quote_amount}},
+                      stonks::db::Cell{.column_name = "base_step",
+                                       .value = {symbol_info.base_step}},
+                      stonks::db::Cell{.column_name = "quote_step",
+                                       .value = {symbol_info.quote_step}}}},
+        "WHERE Symbol.name = \"" + symbol_info.symbol + "\"");
   }
 
-  auto SelectSymbolPriceTicks(
+  void UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) {
+    const auto symbol_less = [](const auto &left, const auto &right) {
+      return left.symbol < right.symbol;
+    };
+    const auto symbol_equal = [](const auto &left, const auto &right) {
+      return left.symbol == right.symbol;
+    };
+
+    symbols_info |= ranges::actions::sort(symbol_less) |
+                    ranges::actions::unique(symbol_equal);
+    const auto old_symbols_info = SelectSymbolsInfo() |
+                                  ranges::actions::sort(symbol_less) |
+                                  ranges::actions::unique(symbol_equal);
+    const auto &new_symbols_info = symbols_info;
+
+    const auto removed_symbols = ranges::views::set_difference(
+        old_symbols_info, new_symbols_info, symbol_less);
+
+    for (const auto &removed_symbol : removed_symbols) {
+      sqlite_db_.Delete(
+          table_definition::Symbol().table,
+          "WHERE Symbol.name = \"" + removed_symbol.symbol + "\"");
+    }
+
+    const auto added_symbols = ranges::views::set_difference(
+        new_symbols_info, old_symbols_info, symbol_less);
+
+    for (const auto &added_symbol : added_symbols) {
+      InsertSymbolInfo(added_symbol);
+    }
+
+    const auto existing_symbols = ranges::views::set_intersection(
+        new_symbols_info, old_symbols_info, symbol_less);
+    const auto updated_symbols =
+        ranges::views::set_difference(existing_symbols, old_symbols_info);
+
+    for (const auto &updated_symbol : updated_symbols) {
+      UpdateSymbolInfoInTable(updated_symbol);
+    }
+
+    cache_.UpdateFromDb(sqlite_db_);
+  }
+
+  [[nodiscard]] auto SelectSymbolPriceTicks(
       std::optional<int> limit = std::nullopt,
       const std::optional<Period> &period = std::nullopt,
-      const std::optional<std::vector<Symbol>> &symbols = std::nullopt)
-      -> std::optional<std::vector<SymbolPriceTick>> {
+      const std::optional<std::vector<SymbolName>> &symbols = std::nullopt)
+      -> std::vector<SymbolPriceTick> {
     auto query = std::string{"SELECT * FROM SymbolPriceTick"};
     auto condition = std::string{};
 
@@ -400,15 +288,19 @@ struct FinanceDb::Impl {
       }
     }
 
-    if (symbols.has_value()) {
+    if (symbols.has_value() && !symbols->empty()) {
+      if (add_and) {
+        condition += " AND ";
+      }
+
       auto symbol_ids = std::string{};
 
       for (const auto &symbol : *symbols) {
-        const auto symbol_id = GetSymbolIdBySymbol(symbol);
+        const auto symbol_id = cache_.GetSymbolIdBySymbol(symbol);
 
         if (!symbol_id.has_value()) {
-          spdlog::error("Symbol not found in DB");
-          return std::nullopt;
+          Logger().error("Symbol not found in DB {}", symbol);
+          continue;
         }
 
         symbol_ids += std::to_string(*symbol_id);
@@ -418,15 +310,9 @@ struct FinanceDb::Impl {
         }
       }
 
-      if (!symbol_ids.empty()) {
-        if (add_and) {
-          condition += " AND ";
-        }
+      condition += "SymbolPriceTick.symbol_id IN (" + symbol_ids + ")";
 
-        condition += "SymbolPriceTick.symbol_id IN (" + symbol_ids + ")";
-
-        add_and = true;
-      }
+      add_and = true;
     }
 
     if (!condition.empty()) {
@@ -438,59 +324,33 @@ struct FinanceDb::Impl {
     }
 
     const auto rows =
-        GetDb().Select(query, kSymbolPriceTickTableDefinition.columns);
+        *sqlite_db_.Select(query, table_definition::SymbolPriceTick().columns);
 
-    if (!rows.has_value()) {
-      spdlog::error("Cannot get symbol price ticks from DB");
-      return std::nullopt;
-    }
+    return rows | ranges::views::transform([this](const auto &row) {
+             const auto symbol = cache_.GetSymbolBySymbolId(
+                 *row.GetCellValueInt64("symbol_id"));
+             ABSL_ASSERT(symbol.has_value() && "Logic error");
 
-    auto result = std::vector<SymbolPriceTick>{};
-    result.reserve(rows->size());
-
-    for (const auto &row : *rows) {
-      const auto symbol_id = row.GetCellValueInt64("symbol_id");
-      const auto time = row.GetCellValueInt64("time");
-      const auto buy_price = row.GetCellValueDouble("buy_price");
-      const auto sell_price = row.GetCellValueDouble("sell_price");
-
-      if (!symbol_id.has_value() || !time.has_value() ||
-          !buy_price.has_value() || !sell_price.has_value()) {
-        spdlog::error("Select result doesn't have expected cell");
-        return std::nullopt;
-      }
-
-      const auto symbol = GetSymbolById(*symbol_id);
-
-      if (!symbol.has_value()) {
-        spdlog::error("No symbol with ID {}", *symbol_id);
-        return std::nullopt;
-      }
-
-      result.emplace_back(
-          SymbolPriceTick{.symbol = *symbol,
-                          .time = std::chrono::milliseconds{*time},
-                          .buy_price = *buy_price,
-                          .sell_price = *sell_price});
-    }
-
-    return result;
+             return SymbolPriceTick{
+                 .symbol = *symbol,
+                 .time =
+                     std::chrono::milliseconds{*row.GetCellValueInt64("time")},
+                 .buy_price = *row.GetCellValueDouble("buy_price"),
+                 .sell_price = *row.GetCellValueDouble("sell_price")};
+           }) |
+           ranges::to_vector;
   }
 
-  auto CreateSymbolPriceTickTable() -> bool {
-    return GetDb().CreateTable(kSymbolPriceTickTableDefinition);
-  }
-
-  auto InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick) -> bool {
-    const auto symbol_id = GetSymbolIdBySymbol(symbol_price_tick.symbol);
+  void InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick) {
+    const auto symbol_id = cache_.GetSymbolIdBySymbol(symbol_price_tick.symbol);
 
     if (!symbol_id.has_value()) {
-      spdlog::error("Symbol not found in DB");
-      return false;
+      Logger().error("Symbol not found in DB {}", symbol_price_tick.symbol);
+      return;
     }
 
-    const auto success = GetDb().Insert(
-        kSymbolPriceTickTableDefinition.table,
+    sqlite_db_.Insert(
+        table_definition::SymbolPriceTick().table,
         db::Row{.cells = {
                     db::Cell{.column_name = "symbol_id", .value = {*symbol_id}},
                     db::Cell{.column_name = "time",
@@ -499,70 +359,92 @@ struct FinanceDb::Impl {
                              .value = {symbol_price_tick.buy_price}},
                     db::Cell{.column_name = "sell_price",
                              .value = {symbol_price_tick.sell_price}}}});
-
-    if (!success) {
-      spdlog::error("Cannot insert symbol price tick");
-      return false;
-    }
-
-    return true;
   }
 
-  // TODO(vh): Change Impl to class and implement all methods as just forwards
-  // to Impl
+ private:
+  class Cache {
+   public:
+    [[nodiscard]] auto GetAssetIdByAsset(const std::string &asset) const
+        -> std::optional<int64_t> {
+      return GetValue(asset_to_asset_id_map_, asset);
+    }
 
-  // NOLINTNEXTLINE(*-non-private-member-variables-in-classes)
-  std::optional<db::sqlite::SqliteDb> sqlite_db{};
-  // NOLINTNEXTLINE(*-non-private-member-variables-in-classes)
-  std::vector<AssetRecord> asset_records{};
-  // NOLINTNEXTLINE(*-non-private-member-variables-in-classes)
-  std::vector<SymbolRecord> symbol_records{};
+    [[nodiscard]] auto GetSymbolIdBySymbol(const SymbolName &symbol) const
+        -> std::optional<int64_t> {
+      return GetValue(symbol_to_symbol_id_map_, symbol);
+    }
+
+    [[nodiscard]] auto GetSymbolBySymbolId(int64_t symbol_id) const
+        -> std::optional<SymbolName> {
+      return GetValue(symbol_id_to_symbol_map_, symbol_id);
+    }
+
+    void UpdateFromDb(const db::Db &db) {
+      UpdateAssetMapsFromDb(db);
+      UpdateSymbolMapsFromDb(db);
+    }
+
+   private:
+    void UpdateAssetMapsFromDb(const db::Db &db) {
+      const auto rows =
+          *db.Select("SELECT * FROM Asset", table_definition::Symbol().columns);
+
+      asset_to_asset_id_map_.clear();
+
+      for (const auto &row : rows) {
+        const auto id = *row.GetCellValueInt64("id");
+        const auto name = *row.GetCellValueString("name");
+
+        asset_to_asset_id_map_[name] = id;
+      }
+    }
+
+    void UpdateSymbolMapsFromDb(const db::Db &db) {
+      static constinit auto kColumnNames = std::array{"id", "name"};
+
+      const auto columns = table_definition::Symbol().columns |
+                           ranges::views::filter([](const auto &column) {
+                             return ranges::contains(kColumnNames, column.name);
+                           }) |
+                           ranges::to_vector;
+      const auto rows =
+          *db.Select("SELECT Symbol.id, Symbol.name FROM Symbol", {columns});
+
+      symbol_to_symbol_id_map_.clear();
+      symbol_id_to_symbol_map_.clear();
+
+      for (const auto &row : rows) {
+        const auto id = *row.GetCellValueInt64("id");
+        const auto name = *row.GetCellValueString("name");
+
+        symbol_to_symbol_id_map_[name] = id;
+        symbol_id_to_symbol_map_[id] = name;
+      }
+    }
+
+    template <typename Key, typename Value>
+    [[nodiscard]] static auto GetValue(const std::map<Key, Value> &map,
+                                       const Key &key) -> std::optional<Value> {
+      auto value = map.find(key);
+
+      if (value == map.end()) {
+        return std::nullopt;
+      }
+
+      return std::move(value->second);
+    }
+
+    std::map<std::string, int64_t> asset_to_asset_id_map_{};
+    std::map<SymbolName, int64_t> symbol_to_symbol_id_map_{};
+    std::map<int64_t, SymbolName> symbol_id_to_symbol_map_{};
+  };
+
+  db::sqlite::SqliteDb sqlite_db_;
+  Cache cache_{};
 } __attribute__((aligned(128)));  // NOLINT(*-magic-numbers)
 
 FinanceDb::FinanceDb(std::string_view uri)
-    : impl_{std::make_unique<Impl>(uri)} {
-  if (!impl_->CreateAssetTable()) {
-    spdlog::error("Cannot create Asset table");
-    return;
-  }
-
-  if (!impl_->CreateSymbolTable()) {
-    spdlog::error("Cannot create Asset table");
-    return;
-  }
-
-  if (!impl_->CreateSymbolPriceTickTable()) {
-    spdlog::error("Cannot create SymbolPrice table");
-    return;
-  }
-
-  auto symbols = GetAllSymbols();
-
-  if (!symbols.has_value()) {
-    spdlog::error("Cannot get all symbols to update DB");
-    return;
-  }
-
-  if (!impl_->UpdateAssetTable(*symbols)) {
-    spdlog::error("Cannot update Asset table");
-    return;
-  }
-
-  if (!impl_->UpdateAssetRecords()) {
-    spdlog::error("Cannot update asset records");
-    return;
-  }
-
-  if (!impl_->UpdateSymbolTable(std::move(*symbols))) {
-    spdlog::error("Cannot update Symbol table");
-    return;
-  }
-
-  if (!impl_->UpdateSymbolRecords()) {
-    spdlog::error("Cannot update symbol records");
-    return;
-  }
-}
+    : impl_{std::make_unique<Impl>(uri)} {}
 
 FinanceDb::FinanceDb(FinanceDb &&) noexcept = default;
 
@@ -570,61 +452,35 @@ auto FinanceDb::operator=(FinanceDb &&) noexcept -> FinanceDb & = default;
 
 FinanceDb::~FinanceDb() = default;
 
-auto FinanceDb::SelectAssets() const
-    -> std::optional<std::vector<std::string>> {
-  const auto rows = impl_->GetDb().Select("SELECT name FROM Asset;",
-                                          kAssetTableDefinition.columns);
-
-  if (!rows.has_value()) {
-    spdlog::error("Cannot get assets from DB");
-    return std::nullopt;
-  }
-
-  auto result = std::vector<std::string>{};
-  result.reserve(rows->size());
-
-  for (const auto &row : *rows) {
-    const auto *const asset = row.GetCellValueString("name");
-
-    if (asset == nullptr) {
-      spdlog::error("Select result doesn't have expected cell");
-      return std::nullopt;
-    }
-
-    result.emplace_back(*asset);
-  }
-
-  return result;
+auto FinanceDb::SelectAssets() const -> std::vector<std::string> {
+  return impl_->SelectAssets();
 }
 
-auto FinanceDb::SelectSymbols() const -> std::optional<std::vector<Symbol>> {
+void FinanceDb::UpdateAssets(std::vector<std::string> assets) {
+  impl_->UpdateAssets(std::move(assets));
+}
+
+auto FinanceDb::SelectSymbols() const -> std::vector<SymbolName> {
   return impl_->SelectSymbols();
 }
 
-auto FinanceDb::InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick)
-    -> bool {
-  return impl_->InsertSymbolPriceTick(symbol_price_tick);
+auto FinanceDb::SelectSymbolsInfo() const -> std::vector<SymbolInfo> {
+  return impl_->SelectSymbolsInfo();
+}
+
+void FinanceDb::UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) {
+  impl_->UpdateSymbolsInfo(std::move(symbols_info));
 }
 
 auto FinanceDb::SelectSymbolPriceTicks(
     std::optional<int> limit, const std::optional<Period> &period,
-    const std::optional<std::vector<Symbol>> &symbols) const
-    -> std::optional<std::vector<SymbolPriceTick>> {
+    const std::optional<std::vector<SymbolName>> &symbols) const
+    -> std::vector<SymbolPriceTick> {
   return impl_->SelectSymbolPriceTicks(limit, period, symbols);
 }
 
-auto FinanceDb::SelectSymbolById(int64_t symbol_id) const
-    -> std::optional<Symbol> {
-  return impl_->GetSymbolById(symbol_id);
-}
-
-auto FinanceDb::SelectSymbolByName(std::string_view symbol_name) const
-    -> std::optional<Symbol> {
-  return impl_->GetSymbolByName(symbol_name);
-}
-
-auto FinanceDb::SelectSymbolIdBySymbol(const Symbol &symbol) const
-    -> std::optional<int64_t> {
-  return impl_->GetSymbolIdBySymbol(symbol);
+void FinanceDb::InsertSymbolPriceTick(
+    const SymbolPriceTick &symbol_price_tick) {
+  impl_->InsertSymbolPriceTick(symbol_price_tick);
 }
 }  // namespace stonks::finance

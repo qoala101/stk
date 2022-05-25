@@ -3,86 +3,90 @@
 #include <gtest/gtest.h>
 
 #include <limits>
+#include <memory>
 
+#include "db_updater_symbols_info.h"
 #include "finance_db.h"
 #include "finance_types.h"
+#include "stonks_db.h"
 
 namespace {
 const auto kBaseUri = "http://localhost:6506/Entity";
 
-template <stonks::finance::FinanceDbConcept T>
-void SetupDb(T &t) {
+void SetupDb(const std::shared_ptr<stonks::StonksDb> &stonks_db) {
+  static_cast<void>(stonks::DbUpdaterSymbolsInfo{stonks_db});
   const auto eth_price_ticks = std::vector<stonks::finance::SymbolPriceTick>{
-      stonks::finance::SymbolPriceTick{
-          .symbol = stonks::finance::Symbol{.base_asset = "ETH",
-                                            .quote_asset = "USDT"},
-          .time = std::chrono::milliseconds{1000},
-          .buy_price = 0.1,
-          .sell_price = 0.01},
-      stonks::finance::SymbolPriceTick{
-          .symbol = stonks::finance::Symbol{.base_asset = "ETH",
-                                            .quote_asset = "USDT"},
-          .time = std::chrono::milliseconds{2000},
-          .buy_price = 0.2,
-          .sell_price = 0.02},
-      stonks::finance::SymbolPriceTick{
-          .symbol = stonks::finance::Symbol{.base_asset = "ETH",
-                                            .quote_asset = "USDT"},
-          .time = std::chrono::milliseconds{3000},
-          .buy_price = 0.3,
-          .sell_price = 0.03}};
+      stonks::finance::SymbolPriceTick{.symbol = "ETHUSDT",
+                                       .time = std::chrono::milliseconds{1000},
+                                       .buy_price = 0.1,
+                                       .sell_price = 0.01},
+      stonks::finance::SymbolPriceTick{.symbol = "ETHUSDT",
+                                       .time = std::chrono::milliseconds{2000},
+                                       .buy_price = 0.2,
+                                       .sell_price = 0.02},
+      stonks::finance::SymbolPriceTick{.symbol = "ETHUSDT",
+                                       .time = std::chrono::milliseconds{3000},
+                                       .buy_price = 0.3,
+                                       .sell_price = 0.03}};
 
   for (const auto &price_tick : eth_price_ticks) {
-    EXPECT_TRUE(t.InsertSymbolPriceTick(price_tick));
+    stonks_db->InsertSymbolPriceTick(price_tick);
   }
 }
 
-template <stonks::finance::FinanceDbConcept L,
-          stonks::finance::FinanceDbConcept R>
-void Compare(const L &l, const R &r) {
-  EXPECT_EQ(l.SelectAssets(), r.SelectAssets());
-  EXPECT_EQ(l.SelectSymbols(), r.SelectSymbols());
-  EXPECT_EQ(l.SelectSymbolPriceTicks(), r.SelectSymbolPriceTicks());
-  EXPECT_EQ(l.SelectSymbolPriceTicks(10), r.SelectSymbolPriceTicks(10));
-  EXPECT_EQ(l.SelectSymbolPriceTicks(
-                10, stonks::finance::Period{.start_time =
-                                                std::chrono::milliseconds{0}}),
-            r.SelectSymbolPriceTicks(
-                10, stonks::finance::Period{.start_time =
-                                                std::chrono::milliseconds{0}}));
+void Compare(const stonks::StonksDb &left, const stonks::StonksDb &right) {
+  EXPECT_EQ(left.SelectAssets(), right.SelectAssets());
+  EXPECT_EQ(left.SelectSymbols(), right.SelectSymbols());
   EXPECT_EQ(
-      l.SelectSymbolPriceTicks(
+      left.SelectSymbolPriceTicks(std::nullopt, std::nullopt, std::nullopt),
+      right.SelectSymbolPriceTicks(std::nullopt, std::nullopt, std::nullopt));
+  EXPECT_EQ(left.SelectSymbolPriceTicks(10, std::nullopt, std::nullopt),
+            right.SelectSymbolPriceTicks(10, std::nullopt, std::nullopt));
+  EXPECT_EQ(
+      left.SelectSymbolPriceTicks(
           10,
-          stonks::finance::Period{.end_time = std::chrono::milliseconds{2999}}),
-      r.SelectSymbolPriceTicks(
-          10, stonks::finance::Period{.end_time =
-                                          std::chrono::milliseconds{2999}}));
+          stonks::finance::Period{.start_time = std::chrono::milliseconds{0}},
+          std::nullopt),
+      right.SelectSymbolPriceTicks(
+          10,
+          stonks::finance::Period{.start_time = std::chrono::milliseconds{0}},
+          std::nullopt));
   EXPECT_EQ(
-      l.SelectSymbolPriceTicks(10, std::nullopt,
-                               std::vector<stonks::finance::Symbol>{
-                                   stonks::finance::Symbol{"ETH", "USDT"}}),
-      r.SelectSymbolPriceTicks(10, std::nullopt,
-                               std::vector<stonks::finance::Symbol>{
-                                   stonks::finance::Symbol{"ETH", "USDT"}}));
-  EXPECT_EQ(l.SelectSymbolPriceTicks(
+      left.SelectSymbolPriceTicks(
+          10,
+          stonks::finance::Period{.end_time = std::chrono::milliseconds{2999}},
+          std::nullopt),
+      right.SelectSymbolPriceTicks(
+          10,
+          stonks::finance::Period{.end_time = std::chrono::milliseconds{2999}},
+          std::nullopt));
+  EXPECT_EQ(left.SelectSymbolPriceTicks(
                 10, std::nullopt,
-                std::vector<stonks::finance::Symbol>{
-                    stonks::finance::Symbol{"BAD_ASSET", "USDT"}}),
-            r.SelectSymbolPriceTicks(
+                std::vector<stonks::finance::SymbolName>{"ETHUSDT"}),
+            right.SelectSymbolPriceTicks(
                 10, std::nullopt,
-                std::vector<stonks::finance::Symbol>{
-                    stonks::finance::Symbol{"BAD_ASSET", "USDT"}}));
+                std::vector<stonks::finance::SymbolName>{"ETHUSDT"}));
+  EXPECT_EQ(left.SelectSymbolPriceTicks(
+                10, std::nullopt,
+                std::vector<stonks::finance::SymbolName>{"BAD_ASSETUSDT"}),
+            right.SelectSymbolPriceTicks(
+                10, std::nullopt,
+                std::vector<stonks::finance::SymbolName>{"BAD_ASSETUSDT"}));
 }
 
 TEST(FinanceDbClientServer, Requests) {
-  auto finance_db = stonks::finance::FinanceDb{":memory:"};
+  auto local_finance_db =
+      std::make_shared<stonks::finance::FinanceDb>(":memory:");
+  auto server_finance_db =
+      std::make_shared<stonks::finance::FinanceDb>(":memory:");
 
-  const auto finance_db_server = stonks::finance::FinanceDbServer{
-      kBaseUri, stonks::finance::FinanceDb{":memory:"}};
-  auto finance_db_client = stonks::finance::FinanceDbClient{kBaseUri};
+  const auto server_db =
+      stonks::finance::StonksDbServer{kBaseUri, server_finance_db};
+  auto finance_db_client =
+      std::make_shared<stonks::finance::FinanceDbClient>(kBaseUri);
 
-  SetupDb(finance_db);
+  SetupDb(local_finance_db);
   SetupDb(finance_db_client);
-  Compare(finance_db, finance_db_client);
+  Compare(*local_finance_db, *finance_db_client);
 }
 }  // namespace

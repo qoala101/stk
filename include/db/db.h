@@ -8,7 +8,8 @@ class Db {
  public:
   virtual ~Db() = default;
 
-  virtual bool CreateTable(const TableDefinition &table_definition) = 0;
+  virtual bool CreateTableIfNotExists(
+      const TableDefinition &table_definition) = 0;
 
   virtual bool DropTable(const Table &table) = 0;
 
@@ -16,11 +17,14 @@ class Db {
 
   virtual bool Delete(const Table &table, std::string_view where) = 0;
 
-  virtual std::optional<std::vector<Row>> Select(
-      const TableDefinition &table_definition) = 0;
+  virtual auto Update(const Table &table, const Row &row,
+                      std::string_view where) -> bool = 0;
 
   virtual std::optional<std::vector<Row>> Select(
-      std::string_view query, const std::vector<Column> &columns) = 0;
+      const TableDefinition &table_definition) const = 0;
+
+  virtual std::optional<std::vector<Row>> Select(
+      std::string_view query, const std::vector<Column> &columns) const = 0;
 };
 }  // namespace stonks::db
 

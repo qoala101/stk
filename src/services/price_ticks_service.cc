@@ -109,8 +109,8 @@ auto PriceTicksService::Start() -> pplx::task<void> {
     auto last_symbol_prices_map = std::map<std::string, Prices>{};
 
     auto handler = [&subscribers, &subscribers_mutex, &last_symbol_prices_map,
-                    &finance_db, &keep_alive,
-                    num_messages = 0](const web::json::value &json) mutable {
+                    &finance_db,
+                    &keep_alive](const web::json::value &json) mutable {
       {
         const auto lock = std::lock_guard{subscribers_mutex};
 
@@ -152,7 +152,7 @@ auto PriceTicksService::Start() -> pplx::task<void> {
 
             const auto symbol_price_tick =
                 finance::ParseSymbolPriceTickFromBinanceSymbolBookTicker(
-                    *symbol_book_ticker, finance_db);
+                    *symbol_book_ticker);
 
             for (const auto &subscriber : subscribers) {
               SendPriceTickToUri(symbol_price_tick, subscriber.subscriber_uri);
