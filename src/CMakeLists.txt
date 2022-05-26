@@ -35,8 +35,10 @@ add_library(libstonks
   services/order_proxy_service.cc
   services/price_ticks_service.cc
   services_v2/finance_db_client_server.cc
-  stonks/order_proxy.cc
-  stonks/order_monitor.cc
+  stonks/stonks_db_updater_price_ticks.cc
+  stonks/stonks_db_updater_symbols_info.cc
+  stonks/stonks_order_proxy.cc
+  stonks/stonks_order_monitor.cc
   strategies/breakout_strategy.cc
   strategies/mean_average_strategy.cc
   streams/buffered_candles_stream.cc
@@ -72,5 +74,14 @@ target_link_libraries(libstonks PRIVATE libdb)
 add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)
 target_link_libraries(stonks PRIVATE spdlog::spdlog)
+
+add_executable(app_db apps/app_db.cc)
+target_link_libraries(app_db PRIVATE libstonks)
+
+add_executable(app_db_updater_price_ticks apps/app_db_updater_price_ticks.cc)
+target_link_libraries(app_db_updater_price_ticks PRIVATE libstonks)
+
+add_executable(app_db_updater_symbols_info apps/app_db_updater_symbols_info.cc)
+target_link_libraries(app_db_updater_symbols_info PRIVATE libstonks)
 
 add_subdirectory(db)

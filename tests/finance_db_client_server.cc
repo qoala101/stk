@@ -5,7 +5,7 @@
 #include <limits>
 #include <memory>
 
-#include "db_updater_symbols_info.h"
+#include "stonks_db_updater_symbols_info.h"
 #include "finance_db.h"
 #include "finance_types.h"
 #include "stonks_db.h"

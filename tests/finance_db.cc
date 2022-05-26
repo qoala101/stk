@@ -6,7 +6,7 @@
 #include <memory>
 #include <optional>
 
-#include "db_updater_symbols_info.h"
+#include "stonks_db_updater_symbols_info.h"
 #include "finance_types.h"
 
 namespace {

@@ -1,5 +1,5 @@
-#ifndef STONKS_STONKS_ORDER_MONITOR_H_
-#define STONKS_STONKS_ORDER_MONITOR_H_
+#ifndef STONKS_STONKS_STONKS_ORDER_MONITOR_H_
+#define STONKS_STONKS_STONKS_ORDER_MONITOR_H_
 
 #include <atomic>
 #include <condition_variable>
@@ -60,4 +60,4 @@ class OrderMonitor {
 };
 }  // namespace stonks::finance
 
-#endif  // STONKS_STONKS_ORDER_MONITOR_H_
+#endif  // STONKS_STONKS_STONKS_ORDER_MONITOR_H_

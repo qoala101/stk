@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "finance_types.h"
-#include "order_proxy.h"
+#include "stonks_order_proxy.h"
 
 namespace stonks {
 class OrderProxyService {
