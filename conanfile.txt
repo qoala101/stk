@@ -9,10 +9,33 @@ date/3.0.1
 boost/1.78.0
 sqlite3/3.38.1
 abseil/20211102.0
+aws-sdk-cpp/1.9.234
+
+# Added to fix clashes between dependencies
+openssl/1.1.1n
+zlib/1.2.12
+libcurl/7.80.0
 
 [options]
 cpprestsdk:shared=False
 date:header_only=True
+# Turned off all the options which are True by default
+aws-sdk-cpp:access-management=False
+aws-sdk-cpp:cognito-identity=False
+aws-sdk-cpp:iam=False
+aws-sdk-cpp:identity-management=False
+aws-sdk-cpp:kms=False
+aws-sdk-cpp:monitoring=False
+aws-sdk-cpp:polly=False
+aws-sdk-cpp:queues=False
+aws-sdk-cpp:s3=False
+aws-sdk-cpp:s3-encryption=False
+aws-sdk-cpp:shared=False
+aws-sdk-cpp:sqs=False
+aws-sdk-cpp:sts=False
+aws-sdk-cpp:text-to-speech=False
+aws-sdk-cpp:transfer=False
+aws-sdk-cpp:dynamodb=True
 
 [generators]
 cmake_find_package

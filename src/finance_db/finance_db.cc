@@ -47,7 +47,7 @@ class FinanceDb::Impl {
   }
 
   [[nodiscard]] auto SelectAssets() -> std::vector<std::string> {
-    static constinit auto kColumnNames = std::array{"name"};
+    static constinit const auto kColumnNames = std::array{"name"};
 
     const auto columns = table_definition::Asset().columns |
                          ranges::views::filter([](const auto &column) {
@@ -90,7 +90,7 @@ class FinanceDb::Impl {
   }
 
   [[nodiscard]] auto SelectSymbols() -> std::vector<SymbolName> {
-    static constinit auto kColumnNames = std::array{"name"};
+    static constinit const auto kColumnNames = std::array{"name"};
 
     const auto columns = table_definition::Symbol().columns |
                          ranges::views::filter([](const auto &column) {
@@ -106,7 +106,7 @@ class FinanceDb::Impl {
   }
 
   [[nodiscard]] auto SelectSymbolsInfo() -> std::vector<SymbolInfo> {
-    static constinit auto kColumnNames =
+    static constinit const auto kColumnNames =
         std::array{"name", "min_base_amount", "min_quote_amount", "base_step",
                    "quote_step"};
 
@@ -400,7 +400,7 @@ class FinanceDb::Impl {
     }
 
     void UpdateSymbolMapsFromDb(const db::Db &db) {
-      static constinit auto kColumnNames = std::array{"id", "name"};
+      static constinit const auto kColumnNames = std::array{"id", "name"};
 
       const auto columns = table_definition::Symbol().columns |
                            ranges::views::filter([](const auto &column) {

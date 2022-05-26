@@ -1,12 +1,11 @@
 #include "stonks_db_updater_symbols_info.h"
 
+#include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/spdlog.h>
 
 #include <gsl/assert>
 #include <range/v3/all.hpp>
 
-#include "binance_api.h"
 #include "binance_client.h"
 #include "finance_types.h"
 

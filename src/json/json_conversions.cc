@@ -681,4 +681,19 @@ auto ConvertToJson(const finance::SymbolInfo& data) -> web::json::value {
   json["quote_step"] = ConvertToJson(data.quote_step);
   return json;
 }
+
+template <>
+[[nodiscard]] auto ParseFromJson(const web::json::value& json)
+    -> ngrok::Tunnel {
+  const auto& tunnels = json.at("tunnels").as_array();
+  const auto& tunnel = tunnels.at(0);
+
+  return ngrok::Tunnel{.public_url =
+                           ParseJsonElement<std::string>(tunnel, "public_url")};
+}
+
+[[nodiscard]] auto ConvertToJson(const ngrok::Tunnel& /*unused*/)
+    -> web::json::value {
+  throw std::runtime_error{"Not implemented"};
+}
 }  // namespace stonks::json

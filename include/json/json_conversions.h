@@ -15,6 +15,7 @@
 #include "binance_types.h"
 #include "concepts.h"
 #include "finance_types.h"
+#include "ngrok_types.h"
 
 namespace stonks::json {
 template <NotVectorAndNotEnumeration T>
@@ -208,6 +209,10 @@ template <>
     -> finance::SymbolInfo;
 [[nodiscard]] auto ConvertToJson(const finance::SymbolInfo &data)
     -> web::json::value;
+
+template <>
+[[nodiscard]] auto ParseFromJson(const web::json::value &json) -> ngrok::Tunnel;
+[[nodiscard]] auto ConvertToJson(const ngrok::Tunnel &data) -> web::json::value;
 
 template <Vector T>
 [[nodiscard]] auto ParseFromJson(const web::json::value &json) -> T {

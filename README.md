@@ -1,5 +1,19 @@
 # stonks
 
+## Install required apps
+```bash
+sudo apt install cmake
+sudo apt install pip
+sudo pip install conan
+sudo apt install snap
+sudo snap install ngrok
+
+```
+
+## AWS
+Create and set AWS credentials following the guide
+https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/credentials.html
+
 ## How to build
 
 ## Setup conan profile if not already
@@ -10,6 +24,7 @@ conan profile update settings.arch=x86_64 vhcpp
 conan profile update settings.compiler=clang vhcpp
 conan profile update settings.compiler.libcxx=libstdc++11 vhcpp
 conan profile update settings.compiler.version=11 vhcpp
+conan profile update settings.build_type=Debug vhcpp
 conan profile update env.CC=/usr/bin/clang-11 vhcpp
 conan profile update env.CXX=/usr/bin/clang++-11 vhcpp
 

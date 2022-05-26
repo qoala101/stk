@@ -1,7 +1,7 @@
 #include "stonks_db_updater_price_ticks.h"
 
+#include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/spdlog.h>
 
 #include <exception>
 #include <functional>
@@ -12,7 +12,7 @@
 
 #include "binance_settings.h"
 #include "finance_conversions.h"
-#include "finance_db_client_server.h"
+#include "json_conversions.h"
 #include "web_socket.h"
 
 namespace stonks {
@@ -136,10 +136,10 @@ class DbUpdaterPriceTicks::Impl {
     double best_bid_price{};
   } __attribute__((aligned(16)));  // NOLINT(*-magic-numbers)
 
-  std::jthread thread_{};
   network::WebSocket web_socket_;
   std::shared_ptr<StonksDb> stonks_db_{};
   std::map<std::string, Prices> last_symbol_prices_map_{};
+  std::jthread thread_{};
 };
 
 DbUpdaterPriceTicks::DbUpdaterPriceTicks(std::shared_ptr<StonksDb> stonks_db)
