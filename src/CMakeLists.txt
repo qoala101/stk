@@ -5,8 +5,11 @@ find_package(magic_enum REQUIRED)
 find_package(date REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
 find_package(absl REQUIRED)
+find_package(AWSSDK REQUIRED)
 
 add_library(libstonks
+  aws/aws_api.cc
+  aws/aws_dynamo_db.cc
   binance/binance_api.cc
   binance/binance_client.cc
   binance/binance_settings.cc
@@ -25,6 +28,7 @@ add_library(libstonks
   network/rest_request.cc
   network/server.cc
   network/web_socket.cc
+  ngrok/ngrok_client.cc
   services/breakout_strategy_service.cc
   services/finance_db_service.cc
   services/get_candle_chart_data_service.cc
@@ -35,8 +39,11 @@ add_library(libstonks
   services/order_proxy_service.cc
   services/price_ticks_service.cc
   services_v2/finance_db_client_server.cc
+  services_v2/info_server.cc
   stonks/stonks_db_updater_price_ticks.cc
   stonks/stonks_db_updater_symbols_info.cc
+  stonks/stonks_info.cc
+  stonks/stonks_ngrok_aws_db_updater.cc
   stonks/stonks_order_proxy.cc
   stonks/stonks_order_monitor.cc
   strategies/breakout_strategy.cc
@@ -49,12 +56,14 @@ add_library(libstonks
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/aws)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/binance)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/finance_api)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/finance_db)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/google_charts)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/json)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/network)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/ngrok)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/services)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/services_v2)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/stonks)
@@ -70,18 +79,25 @@ target_link_libraries(libstonks PUBLIC Microsoft.GSL::GSL)
 target_link_libraries(libstonks PRIVATE Boost::boost)
 target_link_libraries(libstonks PRIVATE absl::absl)
 target_link_libraries(libstonks PRIVATE libdb)
+target_link_libraries(libstonks PRIVATE AWS::dynamodb)
 
 add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)
 target_link_libraries(stonks PRIVATE spdlog::spdlog)
-
-add_executable(app_db apps/app_db.cc)
-target_link_libraries(app_db PRIVATE libstonks)
 
 add_executable(app_db_updater_price_ticks apps/app_db_updater_price_ticks.cc)
 target_link_libraries(app_db_updater_price_ticks PRIVATE libstonks)
 
 add_executable(app_db_updater_symbols_info apps/app_db_updater_symbols_info.cc)
 target_link_libraries(app_db_updater_symbols_info PRIVATE libstonks)
+
+add_executable(app_db apps/app_db.cc)
+target_link_libraries(app_db PRIVATE libstonks)
+
+add_executable(app_info apps/app_info.cc)
+target_link_libraries(app_info PRIVATE libstonks)
+
+add_executable(app_ngrok_aws_db_updater apps/app_ngrok_aws_db_updater.cc)
+target_link_libraries(app_ngrok_aws_db_updater PRIVATE libstonks)
 
 add_subdirectory(db)

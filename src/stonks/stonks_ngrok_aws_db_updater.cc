@@ -60,13 +60,13 @@ class NgrokAwsDbUpdater::Impl {
   }
 
   void Execute(const std::stop_token &stop_token) {
-    const auto table = aws::DynamoDb::KeyValueTable{"Ngrok"};
+    const auto table = aws::DynamoDb::KeyValueTable{"stonks"};
     dynamo_db_.CreateTableIfNotExists(table);
 
     while (true) {
       if (const auto not_running = !ngrok_process_.running()) {
         ngrok_process_ =
-            boost::process::child{"ngrok http " + std::string{"6506"},
+            boost::process::child{"ngrok http " + std::string{"6505"},
                                   boost::process::std_out.null()};
         ngrok_process_.wait_for(kReattemptDuration);
 
