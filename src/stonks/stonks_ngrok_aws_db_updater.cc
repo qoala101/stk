@@ -36,7 +36,10 @@ class NgrokAwsDbUpdater::Impl {
   auto operator=(const Impl &) -> Impl & = delete;
   auto operator=(Impl &&) noexcept -> Impl & = default;
 
-  ~Impl() = default;
+  ~Impl() {
+    ngrok_process_.terminate();
+    ngrok_process_.join();
+  }
 
   static auto CheckIfStopRequested(const std::stop_token &stop_token) -> bool {
     return stop_token.stop_requested();
@@ -65,9 +68,8 @@ class NgrokAwsDbUpdater::Impl {
 
     while (true) {
       if (const auto not_running = !ngrok_process_.running()) {
-        ngrok_process_ =
-            boost::process::child{"ngrok http " + std::string{"6505"},
-                                  boost::process::std_out.null()};
+        ngrok_process_ = boost::process::child{"ngrok http 6507",
+                                               boost::process::std_out.null()};
         ngrok_process_.wait_for(kReattemptDuration);
 
         if (!ngrok_process_.running()) {

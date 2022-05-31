@@ -3,6 +3,7 @@
 #include <absl/base/macros.h>
 #include <cpprest/base_uri.h>
 #include <cpprest/http_listener.h>
+#include <cpprest/http_msg.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
@@ -42,15 +43,16 @@ class Server::Impl {
 
     http_listener_.support([this](const web::http::http_request &request) {
       const auto result = RequestHandler(request);
+      
+      auto response = web::http::http_response{result.status_code};
+      response.headers().add("Access-Control-Allow-Origin", "*");
 
-      if (result.response_body.is_null()) {
-        Logger().debug("Replying {} without body", result.status_code);
-        request.reply(result.status_code);
-        return;
+      if (!result.response_body.is_null()) {
+        response.set_body(result.response_body);
       }
 
-      Logger().debug("Replying {} with body", result.status_code);
-      request.reply(result.status_code, result.response_body);
+      Logger().debug("Replying {}", result.status_code);
+      request.reply(response);
     });
     http_listener_.open();
   }
