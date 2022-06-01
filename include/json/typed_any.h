@@ -2,6 +2,8 @@
 #define STONKS_JSON_TYPED_ANY_H_
 
 #include <any>
+#include <string>
+#include <string_view>
 #include <type_traits>
 
 #include "type_variant.h"
@@ -18,6 +20,9 @@ class TypedAny : public TypeVariant {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   TypedAny(T value)
       : TypeVariant{Type<std::decay_t<T>>{}}, value_{std::move(value)} {}
+
+  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
+  TypedAny(std::string_view value) : TypedAny{std::string{value}} {}
 
   [[nodiscard]] auto GetAny() const -> const std::any&;
 

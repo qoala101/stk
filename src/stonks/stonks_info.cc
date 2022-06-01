@@ -1,7 +1,18 @@
 #include "stonks_info.h"
 
+#include "proxy_client_server.h"
+
 namespace stonks {
-Info::Info() : finance_db_{"http://localhost:6506/Db"} {}
+namespace {
+[[nodiscard]] auto GetDbEndpoint() -> std::string {
+  const auto proxy = stonks::ProxyClient();
+  constexpr auto endpoint = stonks::finance::StonksDbServer::kEndpoint;
+  const auto port = proxy.GetEndpointPort(endpoint);
+  return "http://localhost:" + std::to_string(*port) + endpoint;
+}
+}  // namespace
+
+Info::Info() : finance_db_{GetDbEndpoint()} {}
 
 [[nodiscard]] auto Info::GetSymbols() const
     -> std::vector<finance::SymbolName> {

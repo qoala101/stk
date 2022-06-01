@@ -6,6 +6,8 @@
 namespace stonks {
 class InfoServer {
  public:
+  static constexpr auto kEndpoint = "/Info";
+
   explicit InfoServer(std::string_view base_uri);
 
  private:

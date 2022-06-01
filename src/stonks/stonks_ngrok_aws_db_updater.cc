@@ -9,6 +9,7 @@
 #include "aws_dynamo_db.h"
 #include "ngrok_client.h"
 #include "ngrok_types.h"
+#include "proxy.h"
 
 namespace stonks {
 namespace {
@@ -68,8 +69,9 @@ class NgrokAwsDbUpdater::Impl {
 
     while (true) {
       if (const auto not_running = !ngrok_process_.running()) {
-        ngrok_process_ = boost::process::child{"ngrok http 6507",
-                                               boost::process::std_out.null()};
+        ngrok_process_ = boost::process::child{
+            "ngrok http " + std::to_string(network::Proxy::kPort),
+            boost::process::std_out.null()};
         ngrok_process_.wait_for(kReattemptDuration);
 
         if (!ngrok_process_.running()) {

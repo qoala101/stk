@@ -42,10 +42,8 @@ class Server::Impl {
     PrependBaseUriToEndpoints();
 
     http_listener_.support([this](const web::http::http_request &request) {
-      const auto result = RequestHandler(request);
-      
+      const auto result = RequestHandler(request);      
       auto response = web::http::http_response{result.status_code};
-      response.headers().add("Access-Control-Allow-Origin", "*");
 
       if (!result.response_body.is_null()) {
         response.set_body(result.response_body);

@@ -57,6 +57,8 @@ class FinanceDbClient : public StonksDb {
 
 class StonksDbServer {
  public:
+  static constexpr auto kEndpoint = "/Db";
+
   explicit StonksDbServer(std::string_view base_uri,
                           std::shared_ptr<StonksDb> stonks_db);
 

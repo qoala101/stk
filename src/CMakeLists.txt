@@ -25,6 +25,7 @@ add_library(libstonks
   json/typed_any.cc
   network/client.cc
   network/endpoint.cc
+  network/proxy.cc
   network/rest_request.cc
   network/server.cc
   network/web_socket.cc
@@ -40,6 +41,7 @@ add_library(libstonks
   services/price_ticks_service.cc
   services_v2/finance_db_client_server.cc
   services_v2/info_server.cc
+  services_v2/proxy_client_server.cc
   stonks/stonks_db_updater_price_ticks.cc
   stonks/stonks_db_updater_symbols_info.cc
   stonks/stonks_info.cc
@@ -99,5 +101,8 @@ target_link_libraries(app_info PRIVATE libstonks)
 
 add_executable(app_ngrok_aws_db_updater apps/app_ngrok_aws_db_updater.cc)
 target_link_libraries(app_ngrok_aws_db_updater PRIVATE libstonks)
+
+add_executable(app_proxy apps/app_proxy.cc)
+target_link_libraries(app_proxy PRIVATE libstonks)
 
 add_subdirectory(db)
