@@ -1,5 +1,5 @@
-#include "info_server.h"
-#include "proxy_client_server.h"
+#include "client_proxy.h"
+#include "server_info.h"
 
 auto main(int /*unused*/, const char* /*unused*/[]) -> int {
   auto proxy = stonks::ProxyClient{};

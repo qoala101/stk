@@ -37,21 +37,21 @@ class Client {
    * exception itself.
    */
   // NOLINTNEXTLINE(*-use-nodiscard)
-  auto Execute(const EndpointDesc &endpoint) const -> std::any;
+  auto Execute(const EndpointDesc &endpoint) const -> Result;
 
   // NOLINTNEXTLINE(*-use-nodiscard)
   auto Execute(const EndpointDesc &endpoint,
                const std::map<std::string, json::TypedAny> &params) const
-      -> std::any;
+      -> Result;
 
   // NOLINTNEXTLINE(*-use-nodiscard)
   auto Execute(const EndpointDesc &endpoint,
-               const json::TypedAny &request_body) const -> std::any;
+               const json::TypedAny &request_body) const -> Result;
 
   // NOLINTNEXTLINE(*-use-nodiscard)
   auto Execute(const EndpointDesc &endpoint,
                const std::map<std::string, json::TypedAny> &params,
-               const json::TypedAny &request_body) const -> std::any;
+               const json::TypedAny &request_body) const -> Result;
 
  private:
   class Impl;

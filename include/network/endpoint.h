@@ -8,6 +8,8 @@
 #include <string>
 #include <variant>
 
+#include "any.h"
+#include "any_map.h"
 #include "type_variant.h"
 
 namespace stonks::network {
@@ -51,6 +53,20 @@ struct EndpointDesc {
   std::optional<json::TypeVariant> response_body{};
 } __attribute__((aligned(128)));  // NOLINT(*-magic-numbers)
 
+using Result = json::Any;
+using Params = json::AnyMap;
+using Body = json::Any;
+
+using NoResult = std::function<void()>;
+using NoResultTakesParams = std::function<void(Params)>;
+using NoResultTakesBody = std::function<void(Body)>;
+using NoResultTakesParamsAndBody = std::function<void(Params, Body)>;
+
+using HasResult = std::function<Result()>;
+using HasResultTakesParams = std::function<Result(Params)>;
+using HasResultTakesBody = std::function<Result(Body)>;
+using HasResultTakesParamsAndBody = std::function<Result(Params, Body)>;
+
 /**
  * @brief Request handler.
  * Server would only call it if all the endpoint description checks pass.
@@ -65,16 +81,9 @@ class EndpointHandler {
                   std::any request_body) const -> std::any;
 
  private:
-  std::variant<
-      std::function<void()>,
-      std::function<void(std::map<std::string, std::any>)>,
-      std::function<void(std::any)>,
-      std::function<void(std::map<std::string, std::any>, std::any)>,
-
-      std::function<std::any()>,
-      std::function<std::any(std::map<std::string, std::any>)>,
-      std::function<std::any(std::any)>,
-      std::function<std::any(std::map<std::string, std::any>, std::any)>>
+  std::variant<NoResult, NoResultTakesParams, NoResultTakesBody,
+               NoResultTakesParamsAndBody, HasResult, HasResultTakesParams,
+               HasResultTakesBody, HasResultTakesParamsAndBody>
       handler_{};
 };
 

@@ -1,12 +1,13 @@
 #include "stonks_info.h"
 
-#include "proxy_client_server.h"
+#include "client_proxy.h"
+#include "server_finance_db.h"
 
 namespace stonks {
 namespace {
 [[nodiscard]] auto GetDbEndpoint() -> std::string {
   const auto proxy = stonks::ProxyClient();
-  constexpr auto endpoint = stonks::finance::StonksDbServer::kEndpoint;
+  constexpr auto endpoint = stonks::StonksDbServer::kEndpoint;
   const auto port = proxy.GetEndpointPort(endpoint);
   return "http://localhost:" + std::to_string(*port) + endpoint;
 }

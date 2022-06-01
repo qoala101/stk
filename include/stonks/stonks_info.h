@@ -1,7 +1,7 @@
 #ifndef STONKS_STONKS_STONKS_INFO_H_
 #define STONKS_STONKS_STONKS_INFO_H_
 
-#include "finance_db_client_server.h"
+#include "client_finance_db.h"
 #include "finance_types.h"
 
 namespace stonks {
@@ -15,7 +15,7 @@ class Info {
       -> std::vector<finance::SymbolPriceTick>;
 
  private:
-  finance::FinanceDbClient finance_db_;
+  FinanceDbClient finance_db_;
 };
 }  // namespace stonks
 

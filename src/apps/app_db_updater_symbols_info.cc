@@ -1,14 +1,15 @@
-#include "finance_db_client_server.h"
-#include "proxy_client_server.h"
+#include "client_finance_db.h"
+#include "client_proxy.h"
+#include "server_finance_db.h"
 #include "stonks_db_updater_symbols_info.h"
 
 auto main(int /*unused*/, const char* /*unused*/[]) -> int {
   const auto proxy = stonks::ProxyClient();
-  constexpr auto endpoint = stonks::finance::StonksDbServer::kEndpoint;
+  constexpr auto endpoint = stonks::StonksDbServer::kEndpoint;
   const auto port = proxy.GetEndpointPort(endpoint);
 
-  const auto app = stonks::DbUpdaterSymbolsInfo{
-      std::make_shared<stonks::finance::FinanceDbClient>(
+  const auto app =
+      stonks::DbUpdaterSymbolsInfo{std::make_shared<stonks::FinanceDbClient>(
           "http://localhost:" + std::to_string(*port) + endpoint)};
   static_cast<void>(getchar());
 }

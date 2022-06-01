@@ -11,8 +11,15 @@ add_library(libstonks
   aws/aws_api.cc
   aws/aws_dynamo_db.cc
   binance/binance_api.cc
-  binance/binance_client.cc
   binance/binance_settings.cc
+  clients/client_binance.cc
+  clients/client_finance_db.cc
+  clients/client_proxy.cc
+  endpoints/endpoints_binance.cc
+  endpoints/endpoints_finance_db.cc
+  endpoints/endpoints_info.cc
+  endpoints/endpoints_proxy.cc
+  endpoints/endpoints_v1_strategy.cc
   finance_api/finance_api.cc
   finance_api/finance_conversions.cc
   finance_api/finance_enum_conversions.cc
@@ -30,6 +37,10 @@ add_library(libstonks
   network/server.cc
   network/web_socket.cc
   ngrok/ngrok_client.cc
+  servers/server_finance_db.cc
+  servers/server_info.cc
+  servers/server_proxy.cc
+  servers/server_v1_strategy.cc
   services/breakout_strategy_service.cc
   services/finance_db_service.cc
   services/get_candle_chart_data_service.cc
@@ -39,9 +50,6 @@ add_library(libstonks
   services/order_monitor_service.cc
   services/order_proxy_service.cc
   services/price_ticks_service.cc
-  services_v2/finance_db_client_server.cc
-  services_v2/info_server.cc
-  services_v2/proxy_client_server.cc
   stonks/stonks_db_updater_price_ticks.cc
   stonks/stonks_db_updater_symbols_info.cc
   stonks/stonks_info.cc
@@ -50,6 +58,8 @@ add_library(libstonks
   stonks/stonks_order_monitor.cc
   strategies/breakout_strategy.cc
   strategies/mean_average_strategy.cc
+  strategies/strategy.cc
+  strategies/v1_strategy.cc
   streams/buffered_candles_stream.cc
   streams/candles_stream.cc
   streams/price_ticks_db_stream.cc
@@ -60,14 +70,16 @@ set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/aws)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/binance)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/clients)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/endpoints)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/finance_api)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/finance_db)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/google_charts)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/json)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/network)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/ngrok)
+target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/servers)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/services)
-target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/services_v2)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/stonks)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/strategies)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/streams)
@@ -101,6 +113,9 @@ target_link_libraries(app_info PRIVATE libstonks)
 
 add_executable(app_ngrok_aws_db_updater apps/app_ngrok_aws_db_updater.cc)
 target_link_libraries(app_ngrok_aws_db_updater PRIVATE libstonks)
+
+add_executable(app_v1_strategy apps/app_v1_strategy.cc)
+target_link_libraries(app_v1_strategy PRIVATE libstonks)
 
 add_executable(app_proxy apps/app_proxy.cc)
 target_link_libraries(app_proxy PRIVATE libstonks)

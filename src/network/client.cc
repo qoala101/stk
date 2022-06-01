@@ -86,7 +86,7 @@ class Client::Impl {
   [[nodiscard]] static auto ParseResponseBody(
       const web::json::value &response_json,
       const std::optional<json::TypeVariant> &endpoint_response_body)
-      -> std::any {
+      -> Result {
     if (response_json.is_null()) {
       if (const auto no_mandatory_result =
               endpoint_response_body.has_value() &&
@@ -127,7 +127,7 @@ class Client::Impl {
   [[nodiscard]] auto Execute(
       const EndpointDesc &endpoint,
       const std::map<std::string, json::TypedAny> &params,
-      const json::TypedAny &request_body) const -> std::any {
+      const json::TypedAny &request_body) const -> Result {
     auto request = network::RestRequest{endpoint.method, base_uri_}.AppendUri(
         endpoint.relative_uri);
 
@@ -169,24 +169,24 @@ auto Client::operator=(Client &&) noexcept -> Client & = default;
 
 Client::~Client() = default;
 
-auto Client::Execute(const EndpointDesc &endpoint) const -> std::any {
+auto Client::Execute(const EndpointDesc &endpoint) const -> Result {
   return impl_->Execute(endpoint, {}, {});
 }
 
 auto Client::Execute(const EndpointDesc &endpoint,
                      const std::map<std::string, json::TypedAny> &params) const
-    -> std::any {
+    -> Result {
   return impl_->Execute(endpoint, params, {});
 }
 
 auto Client::Execute(const EndpointDesc &endpoint,
-                     const json::TypedAny &request_body) const -> std::any {
+                     const json::TypedAny &request_body) const -> Result {
   return impl_->Execute(endpoint, {}, request_body);
 }
 
 auto Client::Execute(const EndpointDesc &endpoint,
                      const std::map<std::string, json::TypedAny> &params,
-                     const json::TypedAny &request_body) const -> std::any {
+                     const json::TypedAny &request_body) const -> Result {
   return impl_->Execute(endpoint, params, request_body);
 }
 }  // namespace stonks::network

@@ -95,22 +95,20 @@ class EntityServer : public stonks::network::Server {
 
  private:
   [[nodiscard]] auto PushSymbolEndpointHandler()
-      -> std::function<void(std::any)> {
-    return [this](std::any request_body) {
-      entity_.PushSymbol(
-          std::any_cast<stonks::finance::Symbol>(std::move(request_body)));
+      -> stonks::network::NoResultTakesBody {
+    return [this](stonks::network::Body request_body) {
+      entity_.PushSymbol(request_body.Get<stonks::finance::Symbol>());
     };
   }
 
   [[nodiscard]] auto GetSymbolEndpointHandler()
-      -> std::function<std::any(std::map<std::string, std::any>)> {
-    return [this](std::map<std::string, std::any> params) {
-      return entity_.GetSymbol(
-          std::any_cast<int>(std::move(params.at("index"))));
+      -> stonks::network::HasResultTakesParams {
+    return [this](stonks::network::Params params) {
+      return entity_.GetSymbol(params.Get<int>("index"));
     };
   }
 
-  [[nodiscard]] auto GetSizeEndpointHandler() -> std::function<std::any()> {
+  [[nodiscard]] auto GetSizeEndpointHandler() -> stonks::network::HasResult {
     return [this]() { return entity_.GetSize(); };
   }
 

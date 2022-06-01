@@ -1,16 +1,16 @@
 #include <string>
 
+#include "client_proxy.h"
 #include "finance_db.h"
-#include "finance_db_client_server.h"
-#include "proxy_client_server.h"
+#include "server_finance_db.h"
 
 auto main(int /*unused*/, const char* /*unused*/[]) -> int {
   auto proxy = stonks::ProxyClient{};
-  constexpr auto endpoint = stonks::finance::StonksDbServer::kEndpoint;
+  constexpr auto endpoint = stonks::StonksDbServer::kEndpoint;
   proxy.RegisterEndpoint(endpoint);
   const auto port = proxy.GetEndpointPort(endpoint);
 
-  const auto app = stonks::finance::StonksDbServer{
+  const auto app = stonks::StonksDbServer{
       "http://localhost:" + std::to_string(*port) + endpoint,
       std::make_shared<stonks::finance::FinanceDb>("StrategyTestingDb.db")};
   static_cast<void>(getchar());
