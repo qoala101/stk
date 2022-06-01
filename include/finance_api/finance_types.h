@@ -25,6 +25,13 @@ struct Symbol {
 
 using SymbolName = std::string;
 
+struct SymbolBalanceTick {
+  SymbolName symbol{};
+  std::chrono::milliseconds time{};
+  double base_balance{};
+  double quote_balance{};
+};
+
 struct SymbolInfo {
   SymbolName symbol;
   std::string base_asset{};

@@ -696,4 +696,24 @@ template <>
     -> web::json::value {
   throw std::runtime_error{"Not implemented"};
 }
+
+template <>
+[[nodiscard]] auto ParseFromJson(const web::json::value& json)
+    -> finance::SymbolBalanceTick {
+  return finance::SymbolBalanceTick{
+      .symbol = ParseJsonElement<finance::SymbolName>(json, "symbol"),
+      .time = ParseJsonElement<std::chrono::milliseconds>(json, "time"),
+      .base_balance = ParseJsonElement<double>(json, "base_balance"),
+      .quote_balance = ParseJsonElement<double>(json, "quote_balance")};
+}
+
+[[nodiscard]] auto ConvertToJson(const finance::SymbolBalanceTick& data)
+    -> web::json::value {
+  auto json = web::json::value{};
+  json["symbol"] = ConvertToJson(data.symbol);
+  json["time"] = ConvertToJson(data.time);
+  json["base_balance"] = ConvertToJson(data.base_balance);
+  json["quote_balance"] = ConvertToJson(data.quote_balance);
+  return json;
+}
 }  // namespace stonks::json

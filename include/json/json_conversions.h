@@ -214,6 +214,12 @@ template <>
 [[nodiscard]] auto ParseFromJson(const web::json::value &json) -> ngrok::Tunnel;
 [[nodiscard]] auto ConvertToJson(const ngrok::Tunnel &data) -> web::json::value;
 
+template <>
+[[nodiscard]] auto ParseFromJson(const web::json::value &json)
+    -> finance::SymbolBalanceTick;
+[[nodiscard]] auto ConvertToJson(const finance::SymbolBalanceTick &data)
+    -> web::json::value;
+
 template <Vector T>
 [[nodiscard]] auto ParseFromJson(const web::json::value &json) -> T {
   if (!json.is_array()) {
