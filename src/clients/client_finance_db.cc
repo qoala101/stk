@@ -1,10 +1,11 @@
 #include "client_finance_db.h"
 
 #include "endpoints_finance_db.h"
+#include "server_finance_db.h"
 
 namespace stonks {
-FinanceDbClient::FinanceDbClient(std::string_view base_uri)
-    : client_{base_uri} {}
+FinanceDbClient::FinanceDbClient(int port)
+    : client_{network::LocalUri{port, StonksDbServer::kEndpoint}} {}
 
 auto FinanceDbClient::SelectAssets() const -> std::vector<std::string> {
   return client_.Execute(FinanceDbEndpoints::SelectAssets())

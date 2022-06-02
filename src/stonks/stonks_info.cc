@@ -5,15 +5,15 @@
 
 namespace stonks {
 namespace {
-[[nodiscard]] auto GetDbEndpoint() -> std::string {
+[[nodiscard]] auto GetDbPort() -> int {
   const auto proxy = stonks::ProxyClient();
   constexpr auto endpoint = stonks::StonksDbServer::kEndpoint;
   const auto port = proxy.GetEndpointPort(endpoint);
-  return "http://localhost:" + std::to_string(*port) + endpoint;
+  return *port;
 }
 }  // namespace
 
-Info::Info() : finance_db_{GetDbEndpoint()} {}
+Info::Info() : finance_db_{GetDbPort()} {}
 
 [[nodiscard]] auto Info::GetSymbols() const
     -> std::vector<finance::SymbolName> {

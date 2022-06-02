@@ -11,7 +11,7 @@
 #include "stonks_db_updater_symbols_info.h"
 
 namespace {
-const auto kBaseUri = "http://localhost:6506/Entity";
+const auto kBaseUri = stonks::network::LocalUri{6506, "/Entity"};
 
 void SetupDb(const std::shared_ptr<stonks::StonksDb> &stonks_db) {
   static_cast<void>(stonks::DbUpdaterSymbolsInfo{stonks_db});
@@ -80,8 +80,8 @@ TEST(FinanceDbClientServer, Requests) {
   auto server_finance_db =
       std::make_shared<stonks::finance::FinanceDb>(":memory:");
 
-  const auto server_db = stonks::StonksDbServer{kBaseUri, server_finance_db};
-  auto finance_db_client = std::make_shared<stonks::FinanceDbClient>(kBaseUri);
+  const auto server_db = stonks::StonksDbServer{6506, server_finance_db};
+  auto finance_db_client = std::make_shared<stonks::FinanceDbClient>(6506);
 
   SetupDb(local_finance_db);
   SetupDb(finance_db_client);

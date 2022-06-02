@@ -11,7 +11,7 @@ auto main(int /*unused*/, const char* /*unused*/[]) -> int {
   const auto port = proxy.GetEndpointPort(endpoint);
 
   const auto app = stonks::StonksDbServer{
-      "http://localhost:" + std::to_string(*port) + endpoint,
+      *port,
       std::make_shared<stonks::finance::FinanceDb>("StrategyTestingDb.db")};
   static_cast<void>(getchar());
 }

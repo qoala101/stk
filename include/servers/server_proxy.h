@@ -1,7 +1,8 @@
 #ifndef STONKS_SERVERS_SERVER_PROXY_H_
 #define STONKS_SERVERS_SERVER_PROXY_H_
 
-#include "endpoint.h"
+#include <memory>
+
 #include "proxy.h"
 #include "server.h"
 
@@ -11,14 +12,14 @@ class ProxyServer {
   static constexpr auto kPort = 6506;
   static constexpr auto kEndpoint = "/Proxy";
 
-  explicit ProxyServer();
+  explicit ProxyServer(std::shared_ptr<network::Proxy> entity);
 
  private:
   [[nodiscard]] auto GetEndpointPort() -> network::Endpoint;
   [[nodiscard]] auto RegisterEndpoint() -> network::Endpoint;
 
   network::Server server_;
-  network::Proxy proxy_;
+  std::shared_ptr<network::Proxy> entity_{};
 };
 }  // namespace stonks
 

@@ -26,9 +26,7 @@ auto Logger() -> spdlog::logger & {
 
 class Client::Impl {
  public:
-  explicit Impl(std::string_view base_uri) : base_uri_{base_uri} {
-    Expects(!base_uri.empty());
-  }
+  explicit Impl(const Uri &uri) : base_uri_{uri.GetFullUri()} {}
 
   static void AddParamsToRequest(
       const std::map<std::string, json::TypedAny> &params,
@@ -158,10 +156,7 @@ class Client::Impl {
   const std::string base_uri_{};
 };
 
-Client::Client(std::string_view base_uri)
-    : impl_{std::make_unique<Impl>(base_uri)} {
-  Expects(!base_uri.empty());
-}
+Client::Client(const Uri &uri) : impl_{std::make_unique<Impl>(uri)} {}
 
 Client::Client(Client &&) noexcept = default;
 

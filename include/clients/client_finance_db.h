@@ -7,7 +7,7 @@
 namespace stonks {
 class FinanceDbClient : public StonksDb {
  public:
-  explicit FinanceDbClient(std::string_view base_uri);
+  explicit FinanceDbClient(int port);
 
   [[nodiscard]] auto SelectAssets() const -> std::vector<std::string> override;
   void UpdateAssets(std::vector<std::string> assets) override;

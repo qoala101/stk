@@ -8,6 +8,7 @@
 
 #include "endpoint.h"
 #include "typed_any.h"
+#include "uri.h"
 
 namespace stonks::network {
 /**
@@ -17,9 +18,9 @@ namespace stonks::network {
 class Client {
  public:
   /**
-   * @param base_uri Base server URI to which requests are sent.
+   * @param uri Server URI to which requests are sent.
    */
-  explicit Client(std::string_view base_uri);
+  explicit Client(const Uri &uri);
 
   Client(const Client &) = delete;
   Client(Client &&) noexcept;

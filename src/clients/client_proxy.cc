@@ -5,8 +5,7 @@
 
 namespace stonks {
 ProxyClient::ProxyClient()
-    : client_{"http://localhost:" + std::to_string(ProxyServer::kPort) +
-              ProxyServer::kEndpoint} {}
+    : client_{network::LocalUri{ProxyServer::kPort, ProxyServer::kEndpoint}} {}
 
 auto ProxyClient::GetEndpointPort(std::string_view endpoint) const
     -> std::optional<int> {

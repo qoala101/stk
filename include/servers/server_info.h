@@ -1,7 +1,8 @@
 #ifndef STONKS_SERVERS_SERVER_INFO_H_
 #define STONKS_SERVERS_SERVER_INFO_H_
 
-#include "endpoint.h"
+#include <memory>
+
 #include "server.h"
 #include "stonks_info.h"
 
@@ -10,7 +11,7 @@ class InfoServer {
  public:
   static constexpr auto kEndpoint = "/Info";
 
-  explicit InfoServer(std::string_view base_uri);
+  explicit InfoServer(int port, std::shared_ptr<Info> entity);
 
  private:
   [[nodiscard]] auto GetSymbols() -> network::Endpoint;
@@ -18,7 +19,7 @@ class InfoServer {
   [[nodiscard]] auto GetPriceTicks() -> network::Endpoint;
 
   network::Server server_;
-  Info info_{};
+  std::shared_ptr<Info> entity_{};
 };
 }  // namespace stonks
 

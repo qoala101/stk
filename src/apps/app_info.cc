@@ -7,7 +7,6 @@ auto main(int /*unused*/, const char* /*unused*/[]) -> int {
   proxy.RegisterEndpoint(endpoint);
   const auto port = proxy.GetEndpointPort(endpoint);
 
-  const auto app = stonks::InfoServer{
-      "http://localhost:" + std::to_string(*port) + endpoint};
+  const auto app = stonks::InfoServer{*port, std::make_shared<stonks::Info>()};
   static_cast<void>(getchar());
 }

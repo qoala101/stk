@@ -35,6 +35,7 @@ add_library(libstonks
   network/proxy.cc
   network/rest_request.cc
   network/server.cc
+  network/uri.cc
   network/web_socket.cc
   ngrok/ngrok_client.cc
   servers/server_finance_db.cc

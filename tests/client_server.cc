@@ -16,9 +16,10 @@
 #include "finance_types.h"
 #include "server.h"
 #include "typed_any.h"
+#include "uri.h"
 
 namespace {
-const auto kBaseUri = "http://localhost:6506/Entity";
+const auto kBaseUri = stonks::network::LocalUri{6506, "/Entity"};
 
 class EntityInterface {
  public:
@@ -83,7 +84,7 @@ class EntityServer : public stonks::network::Server {
         .response_body = stonks::json::Type<int>{}};
   }
 
-  explicit EntityServer(std::string_view base_uri)
+  explicit EntityServer(const stonks::network::LocalUri& base_uri)
       : stonks::network::Server{
             base_uri,
             {stonks::network::Endpoint{.desc = PushSymbolEndpointDesc(),
@@ -117,7 +118,7 @@ class EntityServer : public stonks::network::Server {
 
 class EntityClient : public stonks::network::Client, public EntityInterface {
  public:
-  explicit EntityClient(std::string_view base_uri)
+  explicit EntityClient(const stonks::network::Uri& base_uri)
       : stonks::network::Client{base_uri} {}
 
   void PushSymbol(stonks::finance::Symbol symbol) override {

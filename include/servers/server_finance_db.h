@@ -2,9 +2,7 @@
 #define STONKS_SERVERS_SERVER_FINANCE_DB_H_
 
 #include <memory>
-#include <string_view>
 
-#include "endpoint.h"
 #include "server.h"
 #include "stonks_db.h"
 
@@ -13,8 +11,7 @@ class StonksDbServer {
  public:
   static constexpr auto kEndpoint = "/Db";
 
-  explicit StonksDbServer(std::string_view base_uri,
-                          std::shared_ptr<StonksDb> stonks_db);
+  explicit StonksDbServer(int port, std::shared_ptr<StonksDb> entity);
 
  private:
   [[nodiscard]] auto SelectAssets() const -> network::Endpoint;
@@ -26,7 +23,7 @@ class StonksDbServer {
   [[nodiscard]] auto InsertSymbolPriceTick() const -> network::Endpoint;
 
   network::Server server_;
-  std::shared_ptr<StonksDb> stonks_db_{};
+  std::shared_ptr<StonksDb> entity_{};
 };
 }  // namespace stonks
 

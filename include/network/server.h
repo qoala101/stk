@@ -6,11 +6,12 @@
 #include <vector>
 
 #include "endpoint.h"
+#include "uri.h"
 
 namespace stonks::network {
 /**
- * @brief HTTP server wrapper which handles type safety of prams,
- * requests, and responses.
+ * @brief HTTP server wrapper which handles type safety of params, requests, and
+ * responses.
  */
 class Server {
  public:
@@ -18,7 +19,7 @@ class Server {
    * @brief Creates and starts HTTP server on the specified URI which would
    * expose the endpoints and redirect the requests to them.
    */
-  explicit Server(std::string_view base_uri, std::vector<Endpoint> endpoints);
+  explicit Server(const LocalUri &uri, std::vector<Endpoint> endpoints);
 
   Server(const Server &) = delete;
   Server(Server &&) noexcept;

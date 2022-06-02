@@ -1,7 +1,7 @@
 #include "ngrok_client.h"
 
 namespace stonks::ngrok {
-NgrokClient::NgrokClient() : client_{"http://localhost:4040/api"} {}
+NgrokClient::NgrokClient() : client_{network::LocalUri{4040, "/api"}} {}
 
 [[nodiscard]] auto NgrokClient::GetTunnel() const -> Tunnel {
   return std::any_cast<Tunnel>(client_.Execute(

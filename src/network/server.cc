@@ -33,16 +33,12 @@ struct RequestHandlerResult {
 
 class Server::Impl {
  public:
-  explicit Impl(std::string_view base_uri, std::vector<Endpoint> endpoints)
-      : endpoints_{std::move(endpoints)},
-        http_listener_{std::string{base_uri}} {
-    Expects(!base_uri.empty());
-    Expects(!endpoints_.empty());
-
+  explicit Impl(const LocalUri &uri, std::vector<Endpoint> endpoints)
+      : endpoints_{std::move(endpoints)}, http_listener_{uri.GetFullUri()} {
     PrependBaseUriToEndpoints();
 
     http_listener_.support([this](const web::http::http_request &request) {
-      const auto result = RequestHandler(request);      
+      const auto result = RequestHandler(request);
       auto response = web::http::http_response{result.status_code};
 
       if (!result.response_body.is_null()) {
@@ -223,10 +219,8 @@ class Server::Impl {
   std::vector<Endpoint> endpoints_{};
 };
 
-Server::Server(std::string_view base_uri, std::vector<Endpoint> endpoints)
-    : impl_{std::make_unique<Impl>(base_uri, std::move(endpoints))} {
-  Expects(!base_uri.empty());
-}
+Server::Server(const LocalUri &uri, std::vector<Endpoint> endpoints)
+    : impl_{std::make_unique<Impl>(uri, std::move(endpoints))} {}
 
 Server::Server(Server &&) noexcept = default;
 

@@ -1,7 +1,5 @@
 #include "endpoints_finance_db.h"
 
-#include "finance_types.h"
-
 namespace stonks {
 auto FinanceDbEndpoints::SelectAssets() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,

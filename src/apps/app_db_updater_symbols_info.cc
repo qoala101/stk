@@ -8,8 +8,7 @@ auto main(int /*unused*/, const char* /*unused*/[]) -> int {
   constexpr auto endpoint = stonks::StonksDbServer::kEndpoint;
   const auto port = proxy.GetEndpointPort(endpoint);
 
-  const auto app =
-      stonks::DbUpdaterSymbolsInfo{std::make_shared<stonks::FinanceDbClient>(
-          "http://localhost:" + std::to_string(*port) + endpoint)};
+  const auto app = stonks::DbUpdaterSymbolsInfo{
+      std::make_shared<stonks::FinanceDbClient>(*port)};
   static_cast<void>(getchar());
 }

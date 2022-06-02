@@ -5,7 +5,8 @@
 #include "endpoints_binance.h"
 
 namespace stonks {
-BinanceClient::BinanceClient() : client_{binance::settings::GetBaseRestUri()} {}
+BinanceClient::BinanceClient()
+    : client_{network::ExternalUri{binance::settings::GetBaseRestUri()}} {}
 
 auto BinanceClient::GetExchangeInfo() const -> binance::ExchangeInfo {
   return client_.Execute(BinanceEndpoints::GetExchangeInfo())
