@@ -31,7 +31,7 @@ class DynamoDb {
    private:
     friend auto operator==(const KeyValueTable &, const KeyValueTable &)
         -> bool = default;
-  } __attribute__((aligned(32)));  // NOLINT(*-magic-numbers)
+  };
 
   /**
    * @throws If action didn't succeeded.
@@ -41,7 +41,7 @@ class DynamoDb {
   struct KeyValue {
     std::string key{};
     std::string value{};
-  } __attribute__((aligned(64)));  // NOLINT(*-magic-numbers)
+  };
 
   /**
    * @throws If action didn't succeeded.

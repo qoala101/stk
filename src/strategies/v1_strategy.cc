@@ -182,9 +182,9 @@ void V1Strategy::ProcessEvent(const Event &event) {
     const auto sell_order_amount = base_amount_to_sell;
 
     // spdlog::info(
-    //     "MEAN: buy_order_price {}, buy_order_amount {}, sell_order_price {}, "
-    //     "sell_order_amount {}",
-    //     buy_order_price, buy_order_amount, sell_order_price, sell_order_amount);
+    //     "MEAN: buy_order_price {}, buy_order_amount {}, sell_order_price {},
+    //     " "sell_order_amount {}", buy_order_price, buy_order_amount,
+    //     sell_order_price, sell_order_amount);
 
     if (const auto max_price_is_small = max_price < sell_order_price) {
       // spdlog::info("MEAN: max_price_is_small");

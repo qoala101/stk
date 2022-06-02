@@ -441,7 +441,7 @@ class FinanceDb::Impl {
 
   db::sqlite::SqliteDb sqlite_db_;
   Cache cache_{};
-} __attribute__((aligned(128)));  // NOLINT(*-magic-numbers)
+};
 
 FinanceDb::FinanceDb(std::string_view uri)
     : impl_{std::make_unique<Impl>(uri)} {}

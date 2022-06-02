@@ -134,7 +134,7 @@ class DbUpdaterPriceTicks::Impl {
   struct Prices {
     double best_ask_price{};
     double best_bid_price{};
-  } __attribute__((aligned(16)));  // NOLINT(*-magic-numbers)
+  };
 
   network::WebSocket web_socket_;
   std::shared_ptr<StonksDb> stonks_db_{};

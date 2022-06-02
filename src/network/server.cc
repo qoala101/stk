@@ -29,7 +29,7 @@ auto Logger() -> spdlog::logger & {
 struct RequestHandlerResult {
   web::http::status_code status_code{};
   web::json::value response_body{};
-} __attribute__((aligned(16)));  // NOLINT(*-magic-numbers)
+};
 
 class Server::Impl {
  public:

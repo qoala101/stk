@@ -105,7 +105,7 @@ auto PriceTicksService::Start() -> pplx::task<void> {
     struct Prices {
       double best_ask_price{};
       double best_bid_price{};
-    } __attribute__((aligned(16)));  // NOLINT(*-magic-numbers)
+    };
     auto last_symbol_prices_map = std::map<std::string, Prices>{};
 
     auto handler = [&subscribers, &subscribers_mutex, &last_symbol_prices_map,

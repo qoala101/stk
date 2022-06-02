@@ -47,7 +47,7 @@ struct SymbolInfo {
   [[nodiscard]] friend auto operator<=>(const SymbolInfo &left,
                                         const SymbolInfo &right)
       -> std::partial_ordering = default;
-} __attribute__((aligned(128)));  // NOLINT(*-magic-numbers)
+};
 
 struct TimeDouble {
   std::chrono::milliseconds time{};
@@ -60,7 +60,7 @@ struct TimeDouble {
 struct Period {
   std::optional<std::chrono::milliseconds> start_time{};
   std::optional<std::chrono::milliseconds> end_time{};
-} __attribute__((aligned(32)));  // NOLINT(*-magic-numbers)
+};
 
 struct SymbolPrice {
   Symbol symbol{};
@@ -108,7 +108,7 @@ struct SymbolPriceTick {
   friend auto operator<=>(const SymbolPriceTick &left,
                           const SymbolPriceTick &right)
       -> std::partial_ordering = default;
-} __attribute__((aligned(64)));  // NOLINT(*-magic-numbers)
+};
 
 struct BreakoutStrategyData {
   std::chrono::milliseconds last_candle_close_time{};
@@ -262,7 +262,7 @@ struct StrategySubscribeToOrderUpdatesRequest {
  */
 struct PriceTicksServiceSubscribeRequest {
   std::string subscriber_uri{};
-} __attribute__((aligned(32)));  // NOLINT(*-magic-numbers)
+};
 
 /**
  * @brief Data sent by the order proxy to the order monitor to tell that order

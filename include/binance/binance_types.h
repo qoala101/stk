@@ -99,7 +99,7 @@ struct SymbolExchangeInfo {
   double min_notional{};
   double tick_size{};
   //  std::string permissions{};
-} __attribute__((aligned(128)));  // NOLINT(*-magic-numbers)
+};
 
 struct ExchangeInfo {
   // std::string timezone{};

@@ -51,7 +51,7 @@ struct EndpointDesc {
    * Server uses it to verify the body of response before sending it.
    */
   std::optional<json::TypeVariant> response_body{};
-} __attribute__((aligned(128)));  // NOLINT(*-magic-numbers)
+};
 
 using Result = json::Any;
 using Params = json::AnyMap;
@@ -93,7 +93,7 @@ class EndpointHandler {
 struct Endpoint {
   EndpointDesc desc{};
   EndpointHandler handler;
-} __attribute__((aligned(128)));  // NOLINT(*-magic-numbers)
+};
 }  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_CLIENT_SERVER_TYPES_H_
