@@ -4,12 +4,12 @@
 #include "binance_types.h"
 #include "endpoints_binance.h"
 
-namespace stonks {
-BinanceClient::BinanceClient()
+namespace stonks::client {
+Binance::Binance()
     : client_{network::ExternalUri{binance::settings::GetBaseRestUri()}} {}
 
-auto BinanceClient::GetExchangeInfo() const -> binance::ExchangeInfo {
-  return client_.Execute(BinanceEndpoints::GetExchangeInfo())
+auto Binance::GetExchangeInfo() const -> binance::ExchangeInfo {
+  return client_.Execute(endpoints::Binance::GetExchangeInfo())
       .Get<binance::ExchangeInfo>();
 }
-}  // namespace stonks
+}  // namespace stonks::client

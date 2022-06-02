@@ -3,11 +3,11 @@
 
 #include "endpoint.h"
 
-namespace stonks {
-class V1StrategyEndpoints {
+namespace stonks::endpoints {
+class V1Strategy {
  public:
   [[nodiscard]] static auto Run() -> network::EndpointDesc;
 };
-}  // namespace stonks
+}  // namespace stonks::endpoints
 
 #endif  // STONKS_ENDPOINTS_ENDPOINTS_V1_STRATEGY_H_

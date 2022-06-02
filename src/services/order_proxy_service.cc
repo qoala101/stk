@@ -115,9 +115,8 @@ void HandlePostRequest(
   }
 
   if (relative_uri == "/update_orders") {
-    auto order_updates =
-        json::ParseFromJsonNoThrow<std::vector<finance::OrderMonitorOrderUpdate>>(
-            json);
+    auto order_updates = json::ParseFromJsonNoThrow<
+        std::vector<finance::OrderMonitorOrderUpdate>>(json);
 
     if (!order_updates.has_value()) {
       spdlog::error("Cannot parse order update");
@@ -132,9 +131,8 @@ void HandlePostRequest(
   }
 
   if (relative_uri == "/subscribe") {
-    auto subscribe_request =
-        json::ParseFromJsonNoThrow<finance::StrategySubscribeToOrderUpdatesRequest>(
-            json);
+    auto subscribe_request = json::ParseFromJsonNoThrow<
+        finance::StrategySubscribeToOrderUpdatesRequest>(json);
 
     if (!subscribe_request.has_value()) {
       spdlog::error("Cannot parse order subscribe request");

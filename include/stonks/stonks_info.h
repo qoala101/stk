@@ -15,7 +15,7 @@ class Info {
       -> std::vector<finance::SymbolPriceTick>;
 
  private:
-  FinanceDbClient finance_db_;
+  client::FinanceDb finance_db_;
 };
 }  // namespace stonks
 

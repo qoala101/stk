@@ -4,29 +4,29 @@
 
 #include "endpoints_info.h"
 
-namespace stonks {
-InfoServer::InfoServer(int port, std::shared_ptr<Info> entity)
+namespace stonks::server {
+Info::Info(int port, std::shared_ptr<stonks::Info> entity)
     : server_{network::LocalUri{port, kEndpoint},
               {GetSymbols(), GetStrategyNames(), GetPriceTicks()}},
       entity_{std::move(entity)} {
   Expects(entity_ != nullptr);
 }
 
-auto InfoServer::GetSymbols() -> network::Endpoint {
-  return {InfoEndpoints::GetSymbols(),
+auto Info::GetSymbols() -> network::Endpoint {
+  return {endpoints::Info::GetSymbols(),
           network::HasResult{[this]() { return entity_->GetSymbols(); }}};
 }
 
-auto InfoServer::GetStrategyNames() -> network::Endpoint {
-  return {InfoEndpoints::GetStrategyNames(),
+auto Info::GetStrategyNames() -> network::Endpoint {
+  return {endpoints::Info::GetStrategyNames(),
           network::HasResult{[this]() { return entity_->GetStrategyNames(); }}};
 }
 
-auto InfoServer::GetPriceTicks() -> network::Endpoint {
-  return {InfoEndpoints::GetPriceTicks(),
+auto Info::GetPriceTicks() -> network::Endpoint {
+  return {endpoints::Info::GetPriceTicks(),
           network::HasResultTakesParams{[this](network::Params params) {
             return entity_->GetPriceTicks(
                 params.Get<finance::SymbolName>("symbol"));
           }}};
 }
-}  // namespace stonks
+}  // namespace stonks::server

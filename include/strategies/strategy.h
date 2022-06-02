@@ -72,8 +72,7 @@ class Strategy {
 
   void PostOrder(OrderRequest order_request);
 
-  [[nodiscard]] auto GetSymbolInfo() const
-      -> const finance::SymbolInfo &;
+  [[nodiscard]] auto GetSymbolInfo() const -> const finance::SymbolInfo &;
 
  private:
   virtual void ProcessEvent(const Event &event);

@@ -80,8 +80,8 @@ TEST(FinanceDbClientServer, Requests) {
   auto server_finance_db =
       std::make_shared<stonks::finance::FinanceDb>(":memory:");
 
-  const auto server_db = stonks::StonksDbServer{6506, server_finance_db};
-  auto finance_db_client = std::make_shared<stonks::FinanceDbClient>(6506);
+  const auto server_db = stonks::server::StonksDb{6506, server_finance_db};
+  auto finance_db_client = std::make_shared<stonks::client::FinanceDb>(6506);
 
   SetupDb(local_finance_db);
   SetupDb(finance_db_client);

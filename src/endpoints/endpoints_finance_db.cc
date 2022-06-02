@@ -1,37 +1,37 @@
 #include "endpoints_finance_db.h"
 
 namespace stonks {
-auto FinanceDbEndpoints::SelectAssets() -> network::EndpointDesc {
+auto endpoints::FinanceDb::SelectAssets() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,
           .relative_uri = "/SelectAssets",
           .response_body = json::Type<std::vector<std::string>>{}};
 }
 
-auto FinanceDbEndpoints::UpdateAssets() -> network::EndpointDesc {
+auto endpoints::FinanceDb::UpdateAssets() -> network::EndpointDesc {
   return {.method = web::http::methods::POST,
           .relative_uri = "/UpdateAssets",
           .request_body = json::Type<std::vector<std::string>>{}};
 }
 
-auto FinanceDbEndpoints::SelectSymbols() -> network::EndpointDesc {
+auto endpoints::FinanceDb::SelectSymbols() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,
           .relative_uri = "/SelectSymbols",
           .response_body = json::Type<std::vector<finance::SymbolName>>{}};
 }
 
-auto FinanceDbEndpoints::SelectSymbolsInfo() -> network::EndpointDesc {
+auto endpoints::FinanceDb::SelectSymbolsInfo() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,
           .relative_uri = "/SelectSymbolsInfo",
           .response_body = json::Type<std::vector<finance::SymbolInfo>>{}};
 }
 
-auto FinanceDbEndpoints::UpdateSymbolsInfo() -> network::EndpointDesc {
+auto endpoints::FinanceDb::UpdateSymbolsInfo() -> network::EndpointDesc {
   return {.method = web::http::methods::POST,
           .relative_uri = "/UpdateSymbolsInfo",
           .request_body = json::Type<std::vector<finance::SymbolInfo>>{}};
 }
 
-auto FinanceDbEndpoints::SelectSymbolPriceTicks() -> network::EndpointDesc {
+auto endpoints::FinanceDb::SelectSymbolPriceTicks() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,
           .relative_uri = "/SelectSymbolPriceTicks",
           .params =
@@ -42,7 +42,7 @@ auto FinanceDbEndpoints::SelectSymbolPriceTicks() -> network::EndpointDesc {
           .response_body = json::Type<std::vector<finance::SymbolPriceTick>>{}};
 }
 
-auto FinanceDbEndpoints::InsertSymbolPriceTick() -> network::EndpointDesc {
+auto endpoints::FinanceDb::InsertSymbolPriceTick() -> network::EndpointDesc {
   return {.method = web::http::methods::POST,
           .relative_uri = "/InsertSymbolPriceTick",
           .request_body = json::Type<finance::SymbolPriceTick>{}};

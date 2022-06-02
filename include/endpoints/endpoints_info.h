@@ -3,13 +3,13 @@
 
 #include "endpoint.h"
 
-namespace stonks {
-class InfoEndpoints {
+namespace stonks::endpoints {
+class Info {
  public:
   [[nodiscard]] static auto GetSymbols() -> network::EndpointDesc;
   [[nodiscard]] static auto GetStrategyNames() -> network::EndpointDesc;
   [[nodiscard]] static auto GetPriceTicks() -> network::EndpointDesc;
 };
-}  // namespace stonks
+}  // namespace stonks::endpoints
 
 #endif  // STONKS_ENDPOINTS_ENDPOINTS_INFO_H_

@@ -1,19 +1,19 @@
 #include "endpoints_info.h"
 
 namespace stonks {
-auto InfoEndpoints::GetSymbols() -> network::EndpointDesc {
+auto endpoints::Info::GetSymbols() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,
           .relative_uri = "/GetSymbols",
           .response_body = json::Type<std::vector<finance::SymbolName>>{}};
 }
 
-auto InfoEndpoints::GetStrategyNames() -> network::EndpointDesc {
+auto endpoints::Info::GetStrategyNames() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,
           .relative_uri = "/GetStrategyNames",
           .response_body = json::Type<std::vector<std::string>>{}};
 }
 
-auto InfoEndpoints::GetPriceTicks() -> network::EndpointDesc {
+auto endpoints::Info::GetPriceTicks() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,
           .relative_uri = "/GetPriceTicks",
           .params = {{"symbol", json::Type<finance::SymbolName>{}}},

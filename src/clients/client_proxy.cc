@@ -3,18 +3,20 @@
 #include "endpoints_proxy.h"
 #include "server_proxy.h"
 
-namespace stonks {
-ProxyClient::ProxyClient()
-    : client_{network::LocalUri{ProxyServer::kPort, ProxyServer::kEndpoint}} {}
+namespace stonks::client {
+Proxy::Proxy()
+    : client_{
+          network::LocalUri{server::Proxy::kPort, server::Proxy::kEndpoint}} {}
 
-auto ProxyClient::GetEndpointPort(std::string_view endpoint) const
+auto Proxy::GetEndpointPort(std::string_view endpoint) const
     -> std::optional<int> {
   return client_
-      .Execute(ProxyEndpoints::GetEndpointPort(), {{"endpoint", endpoint}})
+      .Execute(endpoints::Proxy::GetEndpointPort(), {{"endpoint", endpoint}})
       .Get<std::optional<int>>();
 }
 
-void ProxyClient::RegisterEndpoint(std::string_view endpoint) {
-  client_.Execute(ProxyEndpoints::RegisterEndpoint(), {{"endpoint", endpoint}});
+void Proxy::RegisterEndpoint(std::string_view endpoint) {
+  client_.Execute(endpoints::Proxy::RegisterEndpoint(),
+                  {{"endpoint", endpoint}});
 }
-}  // namespace stonks
+}  // namespace stonks::client

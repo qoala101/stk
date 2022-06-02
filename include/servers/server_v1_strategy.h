@@ -6,19 +6,19 @@
 #include "server.h"
 #include "v1_strategy.h"
 
-namespace stonks {
-class V1StrategyServer {
+namespace stonks::server {
+class V1Strategy {
  public:
   static constexpr auto kEndpoint = "/V1Strategy";
 
-  explicit V1StrategyServer(int port, std::shared_ptr<V1Strategy> entity);
+  explicit V1Strategy(int port, std::shared_ptr<stonks::V1Strategy> entity);
 
  private:
   [[nodiscard]] auto Run() -> network::Endpoint;
 
   network::Server server_;
-  std::shared_ptr<V1Strategy> entity_{};
+  std::shared_ptr<stonks::V1Strategy> entity_{};
 };
-}  // namespace stonks
+}  // namespace stonks::server
 
 #endif  // STONKS_SERVERS_SERVER_V1_STRATEGY_H_

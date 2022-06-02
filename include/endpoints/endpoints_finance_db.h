@@ -3,8 +3,8 @@
 
 #include "endpoint.h"
 
-namespace stonks {
-class FinanceDbEndpoints {
+namespace stonks::endpoints {
+class FinanceDb {
  public:
   [[nodiscard]] static auto SelectAssets() -> network::EndpointDesc;
   [[nodiscard]] static auto UpdateAssets() -> network::EndpointDesc;
@@ -14,6 +14,6 @@ class FinanceDbEndpoints {
   [[nodiscard]] static auto SelectSymbolPriceTicks() -> network::EndpointDesc;
   [[nodiscard]] static auto InsertSymbolPriceTick() -> network::EndpointDesc;
 };
-}  // namespace stonks
+}  // namespace stonks::endpoints
 
 #endif  // STONKS_ENDPOINTS_ENDPOINTS_FINANCE_DB_H_

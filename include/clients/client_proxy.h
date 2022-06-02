@@ -4,10 +4,10 @@
 #include "client.h"
 #include "proxy.h"
 
-namespace stonks {
-class ProxyClient : public network::ProxyInterface {
+namespace stonks::client {
+class Proxy : public network::ProxyInterface {
  public:
-  explicit ProxyClient();
+  explicit Proxy();
 
   [[nodiscard]] auto GetEndpointPort(std::string_view endpoint) const
       -> std::optional<int> override;
@@ -16,6 +16,6 @@ class ProxyClient : public network::ProxyInterface {
  private:
   network::Client client_;
 };
-}  // namespace stonks
+}  // namespace stonks::client
 
 #endif  // STONKS_CLIENTS_CLIENT_PROXY_H_

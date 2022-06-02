@@ -4,17 +4,17 @@
 
 #include "endpoints_v1_strategy.h"
 
-namespace stonks {
-V1StrategyServer::V1StrategyServer(int port, std::shared_ptr<V1Strategy> entity)
+namespace stonks::server {
+V1Strategy::V1Strategy(int port, std::shared_ptr<stonks::V1Strategy> entity)
     : server_{network::LocalUri{port, kEndpoint}, {Run()}},
       entity_{std::move(entity)} {
   Expects(entity_ != nullptr);
 }
 
-auto V1StrategyServer::Run() -> network::Endpoint {
-  return {V1StrategyEndpoints::Run(),
+auto V1Strategy::Run() -> network::Endpoint {
+  return {endpoints::V1Strategy::Run(),
           network::HasResultTakesParams{[this](network::Params params) {
             return entity_->Run(params.Get<finance::SymbolName>("symbol"));
           }}};
 }
-}  // namespace stonks
+}  // namespace stonks::server

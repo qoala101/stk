@@ -28,7 +28,7 @@ class DbUpdaterSymbolsInfo::Impl {
       : stonks_db_{std::move(stonks_db)} {
     Expects(stonks_db_ != nullptr);
 
-    const auto binance_client = BinanceClient{};
+    const auto binance_client = client::Binance{};
     const auto exchange_info = binance_client.GetExchangeInfo();
 
     const auto get_base_asset = [](const auto &symbol_info) {

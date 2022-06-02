@@ -6,12 +6,12 @@
 #include "server.h"
 #include "stonks_db.h"
 
-namespace stonks {
-class StonksDbServer {
+namespace stonks::server {
+class StonksDb {
  public:
   static constexpr auto kEndpoint = "/Db";
 
-  explicit StonksDbServer(int port, std::shared_ptr<StonksDb> entity);
+  explicit StonksDb(int port, std::shared_ptr<stonks::StonksDb> entity);
 
  private:
   [[nodiscard]] auto SelectAssets() const -> network::Endpoint;
@@ -23,8 +23,8 @@ class StonksDbServer {
   [[nodiscard]] auto InsertSymbolPriceTick() const -> network::Endpoint;
 
   network::Server server_;
-  std::shared_ptr<StonksDb> entity_{};
+  std::shared_ptr<stonks::StonksDb> entity_{};
 };
-}  // namespace stonks
+}  // namespace stonks::server
 
 #endif  // STONKS_SERVERS_SERVER_FINANCE_DB_H_

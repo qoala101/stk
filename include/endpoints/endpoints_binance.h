@@ -3,11 +3,11 @@
 
 #include "endpoint.h"
 
-namespace stonks {
-class BinanceEndpoints {
+namespace stonks::endpoints {
+class Binance {
  public:
   [[nodiscard]] static auto GetExchangeInfo() -> network::EndpointDesc;
 };
-}  // namespace stonks
+}  // namespace stonks::endpoints
 
 #endif  // STONKS_ENDPOINTS_ENDPOINTS_BINANCE_H_

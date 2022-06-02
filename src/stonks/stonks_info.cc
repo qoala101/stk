@@ -6,8 +6,8 @@
 namespace stonks {
 namespace {
 [[nodiscard]] auto GetDbPort() -> int {
-  const auto proxy = stonks::ProxyClient();
-  constexpr auto endpoint = stonks::StonksDbServer::kEndpoint;
+  const auto proxy = stonks::client::Proxy();
+  constexpr auto endpoint = stonks::server::StonksDb::kEndpoint;
   const auto port = proxy.GetEndpointPort(endpoint);
   return *port;
 }

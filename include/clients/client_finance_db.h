@@ -4,10 +4,10 @@
 #include "client.h"
 #include "stonks_db.h"
 
-namespace stonks {
-class FinanceDbClient : public StonksDb {
+namespace stonks::client {
+class FinanceDb : public StonksDb {
  public:
-  explicit FinanceDbClient(int port);
+  explicit FinanceDb(int port);
 
   [[nodiscard]] auto SelectAssets() const -> std::vector<std::string> override;
   void UpdateAssets(std::vector<std::string> assets) override;
@@ -27,6 +27,6 @@ class FinanceDbClient : public StonksDb {
  private:
   network::Client client_;
 };
-}  // namespace stonks
+}  // namespace stonks::client
 
 #endif  // STONKS_CLIENTS_CLIENT_FINANCE_DB_H_

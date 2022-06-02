@@ -1,7 +1,7 @@
 #include "endpoints_v1_strategy.h"
 
 namespace stonks {
-auto V1StrategyEndpoints::Run() -> network::EndpointDesc {
+auto endpoints::V1Strategy::Run() -> network::EndpointDesc {
   return {
       .method = web::http::methods::GET,
       .relative_uri = "/Run",

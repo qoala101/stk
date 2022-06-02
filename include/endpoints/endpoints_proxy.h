@@ -3,12 +3,12 @@
 
 #include "endpoint.h"
 
-namespace stonks {
-class ProxyEndpoints {
+namespace stonks::endpoints {
+class Proxy {
  public:
   [[nodiscard]] static auto GetEndpointPort() -> network::EndpointDesc;
   [[nodiscard]] static auto RegisterEndpoint() -> network::EndpointDesc;
 };
-}  // namespace stonks
+}  // namespace stonks::endpoints
 
 #endif  // STONKS_ENDPOINTS_ENDPOINTS_PROXY_H_

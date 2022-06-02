@@ -3,16 +3,16 @@
 
 #include "client.h"
 
-namespace stonks {
-class BinanceClient {
+namespace stonks::client {
+class Binance {
  public:
-  explicit BinanceClient();
+  explicit Binance();
 
   [[nodiscard]] auto GetExchangeInfo() const -> binance::ExchangeInfo;
 
  private:
   network::Client client_;
 };
-}  // namespace stonks
+}  // namespace stonks::client
 
 #endif  // STONKS_CLIENTS_CLIENT_BINANCE_H_

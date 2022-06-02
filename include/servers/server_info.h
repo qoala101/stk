@@ -6,12 +6,12 @@
 #include "server.h"
 #include "stonks_info.h"
 
-namespace stonks {
-class InfoServer {
+namespace stonks::server {
+class Info {
  public:
   static constexpr auto kEndpoint = "/Info";
 
-  explicit InfoServer(int port, std::shared_ptr<Info> entity);
+  explicit Info(int port, std::shared_ptr<stonks::Info> entity);
 
  private:
   [[nodiscard]] auto GetSymbols() -> network::Endpoint;
@@ -19,8 +19,8 @@ class InfoServer {
   [[nodiscard]] auto GetPriceTicks() -> network::Endpoint;
 
   network::Server server_;
-  std::shared_ptr<Info> entity_{};
+  std::shared_ptr<stonks::Info> entity_{};
 };
-}  // namespace stonks
+}  // namespace stonks::server
 
 #endif  // STONKS_SERVERS_SERVER_INFO_H_

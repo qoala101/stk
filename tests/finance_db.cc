@@ -6,8 +6,8 @@
 #include <memory>
 #include <optional>
 
-#include "stonks_db_updater_symbols_info.h"
 #include "finance_types.h"
+#include "stonks_db_updater_symbols_info.h"
 
 namespace {
 const auto kTestDbFileName = "finance_db_test.db";
