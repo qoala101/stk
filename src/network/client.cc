@@ -1,15 +1,23 @@
 #include "client.h"
 
 #include <absl/base/macros.h>
+#include <bits/exception.h>
+#include <cpprest/details/basic_types.h>
+#include <cpprest/json.h>
+#include <fmt/format.h>
 #include <spdlog/common.h>
+#include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/spdlog.h>
 
-#include <exception>
-#include <gsl/assert>
+#include <any>
+#include <optional>
 #include <stdexcept>
+#include <type_traits>
+#include <utility>
 
 #include "rest_request.h"
+#include "type.h"
+#include "type_variant.h"
 
 namespace stonks::network {
 namespace {

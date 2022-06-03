@@ -1,9 +1,24 @@
 #include "proxy.h"
 
+#include <bits/exception.h>
+#include <cpprest/base_uri.h>
+#include <cpprest/http_headers.h>
+#include <fmt/format.h>
+#include <pplx/pplxtasks.h>
+#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
+#include <ext/alloc_traits.h>
+#include <functional>
 #include <gsl/assert>
+#include <memory>
+#include <utility>
+#include <vector>
+
+#include "cpprest/http_msg.h"
+#include "pplx/pplx.h"
+#include "uri.h"
 
 namespace stonks::network {
 namespace {
@@ -21,10 +36,16 @@ constexpr auto kFirstAvailablePort = 49152;
 }  // namespace
 
 Proxy::Proxy()
-    : http_listener_{"http://localhost:" + std::to_string(kPort)},
+    : http_listener_{LocalUri{kPort, ""}.GetFullUri()},
       last_available_port_{kFirstAvailablePort} {
   http_listener_.support(std::bind_front(&Proxy::HandleRequest, this));
   http_listener_.open();
+  Logger().info("Started proxy on {}", http_listener_.uri().path());
+}
+
+Proxy::~Proxy() {
+  Logger().info("Shutting down proxy on {}", http_listener_.uri().path());
+  http_listener_.close().wait();
 }
 
 auto Proxy::GetEndpointPort(std::string_view endpoint) const
@@ -79,7 +100,8 @@ void Proxy::HandleRequest(const web::http::http_request &request) {
     const auto endpoint = endpoints_.find(slash_endpoint);
 
     if (const auto endpoint_not_registered = endpoint == endpoints_.end()) {
-      Logger().debug("Endpoint not registered {}", slash_endpoint);
+      Logger().debug("Got request on not registered endpoint {}",
+                     slash_endpoint);
       request.reply(web::http::status_codes::NotFound);
       return;
     }

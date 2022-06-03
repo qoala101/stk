@@ -1,8 +1,12 @@
 #include "server_v1_strategy.h"
 
 #include <gsl/assert>
+#include <string_view>
+#include <utility>
 
 #include "endpoints_v1_strategy.h"
+#include "finance_types.h"
+#include "uri.h"
 
 namespace stonks::server {
 V1Strategy::V1Strategy(int port, std::shared_ptr<stonks::V1Strategy> entity)

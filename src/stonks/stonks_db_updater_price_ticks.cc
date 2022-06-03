@@ -1,16 +1,22 @@
 #include "stonks_db_updater_price_ticks.h"
 
+#include <bits/exception.h>
+#include <cpprest/json.h>
+#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-#include <exception>
 #include <functional>
+#include <future>
+#include <map>
 #include <memory>
 #include <stop_token>
-#include <string_view>
+#include <string>
 #include <thread>
+#include <utility>
 
 #include "binance_settings.h"
+#include "binance_types.h"
 #include "finance_conversions.h"
 #include "json_conversions.h"
 #include "web_socket.h"

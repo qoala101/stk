@@ -1,8 +1,12 @@
 #include "server_proxy.h"
 
 #include <gsl/assert>
+#include <string>
+#include <string_view>
+#include <utility>
 
 #include "endpoints_proxy.h"
+#include "uri.h"
 
 namespace stonks::server {
 Proxy::Proxy(std::shared_ptr<network::Proxy> entity)

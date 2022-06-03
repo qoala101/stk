@@ -1,3 +1,8 @@
+#include <stdio.h>
+
+#include <memory>
+#include <optional>
+
 #include "client_finance_db.h"
 #include "client_proxy.h"
 #include "server_finance_db.h"

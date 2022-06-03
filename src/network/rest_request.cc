@@ -1,6 +1,12 @@
 #include "rest_request.h"
 
+#include <bits/exception.h>
+#include <cpprest/asyncrt_utils.h>
+#include <cpprest/base_uri.h>
 #include <cpprest/http_client.h>
+#include <cpprest/http_headers.h>
+#include <fmt/format.h>
+#include <pplx/pplxtasks.h>
 #include <spdlog/spdlog.h>
 
 #include <magic_enum.hpp>

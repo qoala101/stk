@@ -1,5 +1,11 @@
+#include <stdio.h>
+
+#include <memory>
+#include <optional>
+
 #include "client_proxy.h"
 #include "server_v1_strategy.h"
+#include "v1_strategy.h"
 
 auto main(int /*unused*/, const char* /*unused*/[]) -> int {
   auto proxy = stonks::client::Proxy{};

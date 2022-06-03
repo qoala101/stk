@@ -1,5 +1,10 @@
 #include "type_variant.h"
 
+#include <bits/exception.h>
+
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/view/view.hpp>
+
 namespace stonks::json {
 auto TypeVariant::ParseAnyFromJson(const web::json::value &json) const
     -> std::any {

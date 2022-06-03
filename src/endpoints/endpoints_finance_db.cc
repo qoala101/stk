@@ -1,5 +1,15 @@
 #include "endpoints_finance_db.h"
 
+#include <cpprest/http_msg.h>
+
+#include <optional>
+#include <string>
+#include <vector>
+
+#include "finance_types.h"
+#include "type.h"
+#include "type_variant.h"
+
 namespace stonks {
 auto endpoints::FinanceDb::SelectAssets() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,

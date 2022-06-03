@@ -1,7 +1,12 @@
 #include "client_proxy.h"
 
+#include <string>
+
+#include "endpoint.h"
 #include "endpoints_proxy.h"
 #include "server_proxy.h"
+#include "typed_any.h"
+#include "uri.h"
 
 namespace stonks::client {
 Proxy::Proxy()

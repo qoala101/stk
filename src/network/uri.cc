@@ -1,5 +1,8 @@
 #include "uri.h"
 
+#include <type_traits>
+#include <utility>
+
 namespace stonks::network {
 PlainUri::PlainUri(std::string_view full_uri) : full_uri_{full_uri} {}
 

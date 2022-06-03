@@ -1,8 +1,12 @@
 #include "server_info.h"
 
 #include <gsl/assert>
+#include <string_view>
+#include <utility>
 
 #include "endpoints_info.h"
+#include "finance_types.h"
+#include "uri.h"
 
 namespace stonks::server {
 Info::Info(int port, std::shared_ptr<stonks::Info> entity)

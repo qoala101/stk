@@ -1,8 +1,14 @@
 #include "server_finance_db.h"
 
 #include <gsl/assert>
+#include <optional>
+#include <string>
+#include <string_view>
+#include <utility>
+#include <vector>
 
 #include "endpoints_finance_db.h"
+#include "finance_types.h"
 #include "uri.h"
 
 namespace stonks::server {

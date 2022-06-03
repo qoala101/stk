@@ -1,17 +1,31 @@
 #include "server.h"
 
 #include <absl/base/macros.h>
+#include <bits/exception.h>
 #include <cpprest/base_uri.h>
+#include <cpprest/details/basic_types.h>
 #include <cpprest/http_listener.h>
 #include <cpprest/http_msg.h>
+#include <cpprest/json.h>
+#include <fmt/format.h>
+#include <pplx/pplxtasks.h>
+#include <spdlog/common.h>
+#include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/spdlog.h>
 
-#include <exception>
-#include <gsl/assert>
+#include <any>
+#include <map>
+#include <optional>
 #include <range/v3/algorithm/find_if.hpp>
+#include <range/v3/functional/identity.hpp>
+#include <stdexcept>
+#include <string>
+#include <type_traits>
+#include <utility>
 
 #include "endpoint.h"
+#include "json_conversions.h"
+#include "type_variant.h"
 
 namespace stonks::network {
 namespace {

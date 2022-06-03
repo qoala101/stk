@@ -1,5 +1,13 @@
 #include "endpoints_proxy.h"
 
+#include <cpprest/http_msg.h>
+
+#include <optional>
+#include <string>
+
+#include "type.h"
+#include "type_variant.h"
+
 namespace stonks {
 auto endpoints::Proxy::GetEndpointPort() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,

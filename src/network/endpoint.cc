@@ -1,5 +1,8 @@
 #include "endpoint.h"
 
+#include <type_traits>
+#include <utility>
+
 namespace stonks::network {
 auto EndpointHandler::operator()(std::map<std::string, std::any> params,
                                  std::any request_body) const -> std::any {

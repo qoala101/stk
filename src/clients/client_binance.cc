@@ -1,8 +1,12 @@
 #include "client_binance.h"
 
+#include <string>
+
 #include "binance_settings.h"
 #include "binance_types.h"
+#include "endpoint.h"
 #include "endpoints_binance.h"
+#include "uri.h"
 
 namespace stonks::client {
 Binance::Binance()

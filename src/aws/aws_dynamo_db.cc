@@ -1,13 +1,30 @@
 #include "aws_dynamo_db.h"
 
+#include <aws/core/utils/Outcome.h>
+#include <aws/core/utils/memory/stl/AWSString.h>
+#include <aws/core/utils/memory/stl/AWSVector.h>
 #include <aws/dynamodb/DynamoDBClient.h>
+#include <aws/dynamodb/DynamoDBErrors.h>
+#include <aws/dynamodb/model/AttributeDefinition.h>
+#include <aws/dynamodb/model/AttributeValue.h>
 #include <aws/dynamodb/model/CreateTableRequest.h>
+#include <aws/dynamodb/model/KeySchemaElement.h>
+#include <aws/dynamodb/model/KeyType.h>
 #include <aws/dynamodb/model/ListTablesRequest.h>
+#include <aws/dynamodb/model/ListTablesResult.h>
+#include <aws/dynamodb/model/ProvisionedThroughput.h>
+#include <aws/dynamodb/model/ScalarAttributeType.h>
 #include <aws/dynamodb/model/UpdateItemRequest.h>
+#include <bits/exception.h>
+#include <fmt/format.h>
+#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <range/v3/algorithm/contains.hpp>
+#include <range/v3/functional/identity.hpp>
+#include <stdexcept>
+#include <vector>
 
 #include "aws_api.h"
 

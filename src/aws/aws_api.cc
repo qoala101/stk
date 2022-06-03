@@ -1,6 +1,8 @@
 #include "aws_api.h"
 
 #include <aws/core/Aws.h>
+#include <aws/core/monitoring/MonitoringManager.h>
+#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 

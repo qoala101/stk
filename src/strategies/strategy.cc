@@ -1,9 +1,12 @@
 #include "strategy.h"
 
-#include <cstdlib>
-#include <range/v3/algorithm/find.hpp>
+#include <memory>
+#include <optional>
 #include <range/v3/algorithm/find_if.hpp>
-#include <stdexcept>
+#include <range/v3/functional/identity.hpp>
+#include <string>
+#include <string_view>
+#include <utility>
 #include <vector>
 
 #include "finance_db.h"

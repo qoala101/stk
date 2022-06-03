@@ -1,14 +1,19 @@
 #include "json_conversions.h"
 
+#include <cpprest/details/basic_types.h>
 #include <cpprest/json.h>
-#include <spdlog/spdlog.h>
 
 #include <boost/uuid/uuid.hpp>
 #include <chrono>
-#include <magic_enum.hpp>
 #include <optional>
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/view/view.hpp>
 #include <stdexcept>
+#include <type_traits>
+#include <variant>
 
+#include "binance_enums.h"
+#include "finance_enums.h"
 #include "finance_types.h"
 #include "utils.h"
 

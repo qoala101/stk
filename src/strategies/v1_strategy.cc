@@ -1,11 +1,25 @@
 #include "v1_strategy.h"
 
 #include <absl/base/macros.h>
+#include <bits/exception.h>
+#include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
+#include <boost/uuid/detail/uuid_x86.ipp>
 #include <chrono>
 #include <cmath>
-#include <range/v3/all.hpp>
+#include <compare>
+#include <iterator>
+#include <memory>
+#include <optional>
+#include <range/v3/algorithm/max_element.hpp>
+#include <range/v3/algorithm/min_element.hpp>
+#include <range/v3/functional/identity.hpp>
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/view/drop_while.hpp>
+#include <range/v3/view/view.hpp>
+#include <ratio>
+#include <utility>
 
 #include "finance_enums.h"
 #include "strategy.h"

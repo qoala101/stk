@@ -1,15 +1,26 @@
 #include "stonks_order_proxy.h"
 
+#include <bits/exception.h>
+#include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
+#include <boost/uuid/detail/uuid_x86.ipp>
+#include <chrono>
+#include <memory>
 #include <range/v3/algorithm/find_if.hpp>
 #include <range/v3/algorithm/for_each.hpp>
-#include <range/v3/to_container.hpp>
+#include <range/v3/functional/identity.hpp>
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/range/conversion.hpp>
 #include <range/v3/view/drop.hpp>
 #include <range/v3/view/filter.hpp>
-#include <range/v3/view/transform.hpp>
+#include <range/v3/view/subrange.hpp>
+#include <range/v3/view/view.hpp>
+#include <string>
+#include <utility>
 
-#include "finance_api.h"
+#include "finance_enums.h"
 #include "utils.h"
 
 namespace stonks::finance {

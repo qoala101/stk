@@ -1,8 +1,17 @@
 #include "web_socket.h"
 
+#include <bits/exception.h>
+#include <cpprest/base_uri.h>
+#include <cpprest/ws_msg.h>
+#include <cxxabi.h>
+#include <fmt/format.h>
+#include <pplx/pplxtasks.h>
 #include <spdlog/spdlog.h>
 
 #include <gsl/assert>
+#include <string>
+#include <system_error>
+#include <utility>
 
 namespace stonks::network {
 WebSocket::WebSocket(std::string_view uri) : uri_builder_{std::string{uri}} {}

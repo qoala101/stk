@@ -23,6 +23,16 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
+find_program(iwyu NAMES iwyu include-what-you-use REQUIRED)
+set(iwyu ${iwyu}
+    -Xiwyu
+    --no_comments
+    -Xiwyu
+    --no_fwd_decls
+    -Xiwyu
+    --cxx17ns)
+set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu})
+
 # Removes the clash of U macro between cpprestsdk and gtest libs
 add_compile_definitions(_TURN_OFF_PLATFORM_STRING)
 

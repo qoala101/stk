@@ -1,13 +1,20 @@
 #include "stonks_order_monitor.h"
 
+#include <bits/exception.h>
+#include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
-#include <future>
+#include <algorithm>
+#include <boost/uuid/uuid.hpp>
+#include <chrono>
 #include <gsl/pointers>
 #include <gsl/util>
+#include <optional>
 #include <thread>
+#include <utility>
 
 #include "finance_api.h"
+#include "utils.h"
 
 namespace stonks::finance {
 OrderMonitor::OrderMonitor(OrdersUpdatedCallback orders_updated_callback)

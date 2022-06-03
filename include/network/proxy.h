@@ -41,10 +41,21 @@ class Proxy : public ProxyInterface {
   static constexpr auto kPort = 6507;
 
   /**
-   * @brief Sets up the proxy at predefined port which is expected to be exposed
-   * to the stonks users.
+   * @brief Starts HTTP server and sets up the proxy at predefined port which is
+   * expected to be exposed to the stonks users.
    */
   explicit Proxy();
+
+  Proxy(const Proxy &) = delete;
+  Proxy(Proxy &&) noexcept = delete;
+
+  auto operator=(const Proxy &) -> Proxy & = delete;
+  auto operator=(Proxy &&) noexcept -> Proxy & = delete;
+
+  /**
+   * @brief Stops the HTTP server.
+   */
+  ~Proxy() override;
 
   /**
    * @copydoc ProxyInterface::GetEndpointPort

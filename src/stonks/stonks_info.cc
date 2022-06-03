@@ -1,5 +1,7 @@
 #include "stonks_info.h"
 
+#include <optional>
+
 #include "client_proxy.h"
 #include "server_finance_db.h"
 

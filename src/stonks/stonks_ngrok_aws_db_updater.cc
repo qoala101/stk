@@ -1,10 +1,22 @@
 #include "stonks_ngrok_aws_db_updater.h"
 
+#include <bits/exception.h>
+#include <fmt/format.h>
+#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
+#include <boost/fusion/sequence/intrinsic/at_key.hpp>
 #include <boost/process/child.hpp>
+#include <boost/process/detail/child_decl.hpp>
 #include <boost/process/io.hpp>
+#include <chrono>
+#include <functional>
+#include <ratio>
+#include <stop_token>
+#include <string>
+#include <thread>
+#include <vector>
 
 #include "aws_dynamo_db.h"
 #include "ngrok_client.h"

@@ -1,3 +1,8 @@
+#include <stdio.h>
+
+#include <memory>
+
+#include "proxy.h"
 #include "server_proxy.h"
 
 auto main(int /*unused*/, const char* /*unused*/[]) -> int {

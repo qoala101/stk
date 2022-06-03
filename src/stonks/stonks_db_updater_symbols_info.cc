@@ -1,11 +1,27 @@
 #include "stonks_db_updater_symbols_info.h"
 
+#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
+#include <functional>
 #include <gsl/assert>
-#include <range/v3/all.hpp>
+#include <range/v3/action/action.hpp>
+#include <range/v3/action/sort.hpp>
+#include <range/v3/action/unique.hpp>
+#include <range/v3/detail/variant.hpp>
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/utility/get.hpp>
+#include <range/v3/view/all.hpp>
+#include <range/v3/view/concat.hpp>
+#include <range/v3/view/transform.hpp>
+#include <range/v3/view/view.hpp>
+#include <string>
+#include <utility>
+#include <vector>
 
+#include "binance_types.h"
 #include "client_binance.h"
 #include "finance_types.h"
 
