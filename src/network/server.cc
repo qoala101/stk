@@ -12,12 +12,10 @@
 #include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-
-#include <any>
-#include <map>
-#include <optional>
 #include <range/v3/algorithm/find_if.hpp>
 #include <range/v3/functional/identity.hpp>
+#include <map>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
@@ -26,6 +24,8 @@
 #include "endpoint.h"
 #include "json_conversions.h"
 #include "type_variant.h"
+#include "any.h"
+#include "any_map.h"
 
 namespace stonks::network {
 namespace {
@@ -108,8 +108,8 @@ class Server::Impl {
   [[nodiscard]] static auto ParseParams(
       const std::map<std::string, std::string> &raw_params,
       const std::map<std::string, json::TypeVariant> &endpoint_params)
-      -> std::map<std::string, std::any> {
-    auto parsed_params = std::map<std::string, std::any>{};
+      -> Params {
+    auto parsed_params = Params{};
 
     for (const auto &endpoint_param : endpoint_params) {
       const auto &[param_name, param_type] = endpoint_param;
@@ -121,7 +121,7 @@ class Server::Impl {
                                    param_name};
         }
 
-        parsed_params[param_name] = param_type.MakeNulloptAny();
+        parsed_params.Set(param_name, param_type.MakeNulloptAny());
 
         continue;
       }
@@ -130,11 +130,11 @@ class Server::Impl {
       auto parsed_value =
           param_type.ParseAnyFromJson(web::json::value::parse(raw_value));
 
-      if (const auto not_parsed = !parsed_value.has_value()) {
+      if (const auto not_parsed = !parsed_value.HasValue()) {
         throw std::runtime_error{"Cannot parse parameter " + param_name};
       }
 
-      parsed_params[param_name] = std::move(parsed_value);
+      parsed_params.Set(param_name, std::move(parsed_value));
     }
 
     return parsed_params;
@@ -146,16 +146,16 @@ class Server::Impl {
   [[nodiscard]] static auto ParseRequestBody(
       const web::http::http_request &request,
       const std::optional<json::TypeVariant> &endpoint_request_body)
-      -> std::any {
+      -> Body {
     if (!endpoint_request_body.has_value()) {
-      return std::any{};
+      return Body{};
     }
 
     const auto json = request.extract_json().get();
     auto request_body = endpoint_request_body->ParseAnyFromJson(json);
 
     if (const auto missing_mandatory_object =
-            !request_body.has_value() && !endpoint_request_body->IsOptional()) {
+            !request_body.HasValue() && !endpoint_request_body->IsOptional()) {
       throw std::runtime_error{"Request misses mandatory body " +
                                json.serialize()};
     }
@@ -164,7 +164,7 @@ class Server::Impl {
   }
 
   [[nodiscard]] static auto ConvertResponseBodyToJson(
-      const std::any &response_body,
+      const Result &response_body,
       const std::optional<json::TypeVariant> &endpoint_response_body)
       -> web::json::value {
     if (!endpoint_response_body.has_value()) {
@@ -172,7 +172,7 @@ class Server::Impl {
     }
 
     const auto no_mandatory_result =
-        !response_body.has_value() && !endpoint_response_body->IsOptional();
+        !response_body.HasValue() && !endpoint_response_body->IsOptional();
     ABSL_ASSERT(!no_mandatory_result && "Response misses mandatory body");
 
     auto json = endpoint_response_body->ConvertAnyToJson(response_body);
@@ -189,8 +189,8 @@ class Server::Impl {
                    request.request_uri().path());
 
     const auto *endpoint = (const Endpoint *){};
-    auto parsed_params = std::map<std::string, std::any>{};
-    auto parsed_request_body = std::any{};
+    auto parsed_params = Params{};
+    auto parsed_request_body = Body{};
 
     try {
       endpoint = &FindEndpoint(request);
@@ -209,7 +209,7 @@ class Server::Impl {
               json::ConvertToJson(std::runtime_error{exception.what()})};
     }
 
-    auto response_body = std::any{};
+    auto response_body = Result{};
 
     try {
       response_body = endpoint->handler(std::move(parsed_params),

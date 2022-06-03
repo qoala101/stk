@@ -1,12 +1,12 @@
 #ifndef STONKS_JSON_TYPED_ANY_H_
 #define STONKS_JSON_TYPED_ANY_H_
 
-#include <any>
 #include <string>
 #include <string_view>
 #include <type_traits>
 
 #include "type_variant.h"
+#include "any.h"
 
 /**
  * @brief Stores any value, knows its type and how to convert it.
@@ -24,10 +24,10 @@ class TypedAny : public TypeVariant {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   TypedAny(std::string_view value) : TypedAny{std::string{value}} {}
 
-  [[nodiscard]] auto GetAny() const -> const std::any&;
+  [[nodiscard]] auto GetAny() const -> const json::Any&;
 
  private:
-  std::any value_{};
+  json::Any value_{};
 };
 }  // namespace stonks::json
 

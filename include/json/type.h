@@ -8,6 +8,7 @@
 #include <optional>
 #include <stdexcept>
 
+#include "any.h"
 #include "json_conversions.h"
 
 namespace stonks::json {
@@ -25,7 +26,7 @@ class Type {
   }
 
   [[nodiscard]] auto ParseAnyFromJson(const web::json::value &json) const
-      -> std::any {
+      -> json::Any {
     auto object = ParseFromJson(json);
 
     if (!object.has_value()) {
@@ -35,17 +36,17 @@ class Type {
     return std::move(*object);
   }
 
-  [[nodiscard]] auto ConvertAnyToJson(const std::any &data) const
+  [[nodiscard]] auto ConvertAnyToJson(const json::Any &data) const
       -> std::optional<web::json::value> {
     try {
-      return ::stonks::json::ConvertToJson(std::any_cast<T>(data));
+      return ::stonks::json::ConvertToJson(data.Get<T>());
     } catch (const std::exception &) {
     }
 
     return std::nullopt;
   }
 
-  [[nodiscard]] auto MakeNulloptAny() const -> std::any {
+  [[nodiscard]] auto MakeNulloptAny() const -> json::Any {
     return std::optional<T>{std::nullopt};
   }
 };
@@ -59,7 +60,7 @@ class Type<std::optional<T>> {
   [[nodiscard]] constexpr auto IsOptional() const -> bool { return true; }
 
   [[nodiscard]] auto ParseAnyFromJson(const web::json::value &json) const
-      -> std::any {
+      -> json::Any {
     if (json.is_null()) {
       return {};
     }
@@ -73,14 +74,14 @@ class Type<std::optional<T>> {
     return std::optional<T>{std::move(*object)};
   }
 
-  [[nodiscard]] auto ConvertAnyToJson(const std::any &data) const
+  [[nodiscard]] auto ConvertAnyToJson(const json::Any &data) const
       -> std::optional<web::json::value> {
-    if (!data.has_value()) {
+    if (!data.HasValue()) {
       return web::json::value::null();
     }
 
     try {
-      const auto &optional_data = std::any_cast<std::optional<T>>(data);
+      const auto &optional_data = data.Get<std::optional<T>>();
 
       if (!optional_data.has_value()) {
         return web::json::value::null();
@@ -93,7 +94,7 @@ class Type<std::optional<T>> {
     return std::nullopt;
   }
 
-  [[nodiscard]] auto MakeNulloptAny() const -> std::any {
+  [[nodiscard]] auto MakeNulloptAny() const -> json::Any {
     return Type<T>{}.MakeNulloptAny();
   }
 };

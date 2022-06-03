@@ -1,10 +1,11 @@
 #ifndef STONKS_JSON_ANY_MAP_H_
 #define STONKS_JSON_ANY_MAP_H_
 
-#include <any>
 #include <map>
 #include <string>
 #include <string_view>
+
+#include "any.h"
 
 namespace stonks::json {
 /**
@@ -18,14 +19,28 @@ class AnyMap {
 
   /**
    * @remark Presence of key in the map is not checked.
+   * @remark Correctness of type is not checked.
    */
   template <typename T>
-  [[nodiscard]] auto Get(std::string_view key) -> T {
-    return std::any_cast<T>(std::move(params_.at(key.data())));
+  [[nodiscard]] auto Get(std::string_view key) -> const T & {
+    return params_.at(key.data()).Get<T>();
+  }
+
+  /**
+   * @remark Presence of key in the map is not checked.
+   * @remark Correctness of type is not checked.
+   */
+  template <typename T>
+  [[nodiscard]] auto Take(std::string_view key) -> T && {
+    return params_.at(key.data()).Take<T>();
+  }
+
+  void Set(std::string_view key, json::Any value) {
+    params_[key.data()] = std::move(value);
   }
 
  private:
-  std::map<std::string, std::any> params_{};
+  std::map<std::string, json::Any> params_{};
 };
 }  // namespace stonks::json
 

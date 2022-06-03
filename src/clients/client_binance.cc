@@ -14,6 +14,6 @@ Binance::Binance()
 
 auto Binance::GetExchangeInfo() const -> binance::ExchangeInfo {
   return client_.Execute(endpoints::Binance::GetExchangeInfo())
-      .Get<binance::ExchangeInfo>();
+      .Take<binance::ExchangeInfo>();
 }
 }  // namespace stonks::client

@@ -5,6 +5,7 @@
 #include <optional>
 #include <string>
 
+#include "any.h"
 #include "binance_types.h"
 #include "finance_types.h"
 #include "ngrok_types.h"
@@ -28,12 +29,12 @@ class TypeVariant {
   }
 
   [[nodiscard]] auto ParseAnyFromJson(const web::json::value &json) const
-      -> std::any;
+      -> json::Any;
 
-  [[nodiscard]] auto ConvertAnyToJson(const std::any &data) const
+  [[nodiscard]] auto ConvertAnyToJson(const json::Any &data) const
       -> std::optional<web::json::value>;
 
-  [[nodiscard]] auto MakeNulloptAny() const -> std::any;
+  [[nodiscard]] auto MakeNulloptAny() const -> json::Any;
 
  private:
   std::variant<

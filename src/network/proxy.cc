@@ -36,7 +36,7 @@ constexpr auto kFirstAvailablePort = 49152;
 }  // namespace
 
 Proxy::Proxy()
-    : http_listener_{LocalUri{kPort, ""}.GetFullUri()},
+    : http_listener_{LocalUri{kPort}.GetFullUri()},
       last_available_port_{kFirstAvailablePort} {
   http_listener_.support(std::bind_front(&Proxy::HandleRequest, this));
   http_listener_.open();
@@ -75,9 +75,7 @@ void Proxy::RegisterEndpoint(std::string_view endpoint) {
     const auto writer_lock = std::unique_lock{mutex_};
 
     available_port = last_available_port_++;
-    const auto endpoint_uri =
-        "http://localhost:" + std::to_string(available_port);
-    endpoints_.emplace(endpoint, endpoint_uri);
+    endpoints_.emplace(endpoint, LocalUri{available_port}.GetFullUri());
   }
 
   Logger().debug("Registered {} on port {}", endpoint, available_port);

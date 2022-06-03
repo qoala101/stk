@@ -7,6 +7,7 @@ sudo apt install pip
 sudo pip install conan
 sudo apt install snap
 sudo snap install ngrok
+sudo apt install iwyu
 
 ```
 
@@ -68,6 +69,17 @@ cmake --build .
   "C/C++ Include Guard.Insert Blank Line": true,
   "C/C++ Include Guard.Remove Extension": false,
   "C/C++ Include Guard.Suffix": "_",
-  "C/C++ Include Guard.Spaces After Endif": 2
+  "C/C++ Include Guard.Spaces After Endif": 2,
+  "iwyu.reorder": false,
+  "iwyu.safe": false,
+  "iwyu.no_fwd_decls": true,
+  "iwyu.comments": false
 }
+```
+
+# Things to do before commit
+```bash
+iwyu_tool -p . -- -Xiwyu --no_fwd_decls -Xiwyu --cxx17ns > iwyu.out
+python ../fix_includes.py --nocomments < iwyu.out
+
 ```

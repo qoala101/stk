@@ -20,14 +20,14 @@ auto Proxy::GetEndpointPort() -> network::Endpoint {
   return {
       endpoints::Proxy::GetEndpointPort(),
       network::HasResultTakesParams{[this](network::Params params) {
-        return entity_->GetEndpointPort(params.Get<std::string>("endpoint"));
+        return entity_->GetEndpointPort(params.Take<std::string>("endpoint"));
       }}};
 }
 
 auto Proxy::RegisterEndpoint() -> network::Endpoint {
   return {endpoints::Proxy::RegisterEndpoint(),
           network::NoResultTakesParams{[this](network::Params params) {
-            entity_->RegisterEndpoint(params.Get<std::string>("endpoint"));
+            entity_->RegisterEndpoint(params.Take<std::string>("endpoint"));
           }}};
 }
 }  // namespace stonks::server

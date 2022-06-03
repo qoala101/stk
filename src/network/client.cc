@@ -8,8 +8,6 @@
 #include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-
-#include <any>
 #include <optional>
 #include <stdexcept>
 #include <type_traits>
@@ -18,6 +16,7 @@
 #include "rest_request.h"
 #include "type.h"
 #include "type_variant.h"
+#include "any.h"
 
 namespace stonks::network {
 namespace {
@@ -74,7 +73,7 @@ class Client::Impl {
       return web::json::value{};
     }
 
-    const auto no_mandatory_body = !request_body.GetAny().has_value() &&
+    const auto no_mandatory_body = !request_body.GetAny().HasValue() &&
                                    !endpoint_request_body->IsOptional();
     ABSL_ASSERT(!no_mandatory_body && "Request misses mandatory body");
 
@@ -108,7 +107,7 @@ class Client::Impl {
       auto response_body =
           endpoint_response_body->ParseAnyFromJson(response_json);
 
-      if (const auto response_body_parsed = response_body.has_value()) {
+      if (const auto response_body_parsed = response_body.HasValue()) {
         return response_body;
       }
     }

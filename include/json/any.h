@@ -2,6 +2,7 @@
 #define STONKS_JSON_ANY_H_
 
 #include <any>
+#include <utility>
 
 namespace stonks::json {
 /**
@@ -17,9 +18,19 @@ class Any {
    * @remark Correctness of type is not checked.
    */
   template <typename T>
-  [[nodiscard]] auto Get() -> T {
-    return std::any_cast<T>(std::move(value_));
+  [[nodiscard]] auto Get() const -> const T & {
+    return std::any_cast<const T &>(value_);
   }
+
+  /**
+   * @remark Correctness of type is not checked.
+   */
+  template <typename T>
+  [[nodiscard]] auto Take() -> T && {
+    return std::any_cast<T &&>(std::move(value_));
+  }
+
+  [[nodiscard]] auto HasValue() const -> bool;
 
  private:
   std::any value_{};

@@ -1,10 +1,10 @@
-#ifndef STONKS_NETWORK_CLIENT_SERVER_TYPES_H_
-#define STONKS_NETWORK_CLIENT_SERVER_TYPES_H_
+#ifndef STONKS_NETWORK_ENDPOINT_H_
+#define STONKS_NETWORK_ENDPOINT_H_
 
 #include <cpprest/http_msg.h>
-
 #include <functional>
 #include <map>
+#include <optional>
 #include <string>
 #include <variant>
 
@@ -77,8 +77,8 @@ class EndpointHandler {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   EndpointHandler(T handler) : handler_{std::move(handler)} {}
 
-  auto operator()(std::map<std::string, std::any> params,
-                  std::any request_body) const -> std::any;
+  auto operator()(Params params,
+                  Body request_body) const -> Result;
 
  private:
   std::variant<NoResult, NoResultTakesParams, NoResultTakesBody,
@@ -96,4 +96,4 @@ struct Endpoint {
 };
 }  // namespace stonks::network
 
-#endif  // STONKS_NETWORK_CLIENT_SERVER_TYPES_H_
+#endif  // STONKS_NETWORK_ENDPOINT_H_

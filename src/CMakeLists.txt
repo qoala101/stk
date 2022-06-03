@@ -27,6 +27,7 @@ add_library(libstonks
   finance_db/finance_db_table_definitions.cc
   finance_db/finance_db.cc
   google_charts/google_charts_conversions.cc
+  json/any.cc
   json/json_conversions.cc
   json/type_variant.cc
   json/typed_any.cc

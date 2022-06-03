@@ -1,8 +1,6 @@
 #include "ngrok_client.h"
 
 #include <cpprest/http_msg.h>
-
-#include <any>
 #include <memory>
 #include <string_view>
 
@@ -15,9 +13,10 @@ namespace stonks::ngrok {
 NgrokClient::NgrokClient() : client_{network::LocalUri{4040, "/api"}} {}
 
 [[nodiscard]] auto NgrokClient::GetTunnel() const -> Tunnel {
-  return std::any_cast<Tunnel>(client_.Execute(
-      network::EndpointDesc{.method = web::http::methods::GET,
-                            .relative_uri = "/tunnels",
-                            .response_body = json::Type<Tunnel>{}}));
+  return client_
+      .Execute(network::EndpointDesc{.method = web::http::methods::GET,
+                                     .relative_uri = "/tunnels",
+                                     .response_body = json::Type<Tunnel>{}})
+      .Take<Tunnel>();
 }
 }  // namespace stonks::ngrok
