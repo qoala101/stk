@@ -2,12 +2,24 @@
 
 #include <spdlog/spdlog.h>
 
-#include <gsl/gsl>
-#include <range/v3/to_container.hpp>
+#include <compare>
+#include <cstdint>
+#include <gsl/assert>
+#include <limits>
+#include <memory>
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
+#include <range/v3/view/view.hpp>
+#include <ratio>
+#include <string>
+#include <string_view>
 #include <thread>
+#include <variant>
 
 #include "binance_api.h"
+#include "binance_enums.h"
+#include "binance_types.h"
 #include "finance_conversions.h"
 #include "finance_enum_conversions.h"
 #include "finance_types.h"

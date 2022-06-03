@@ -22,6 +22,7 @@ add_executable(unittests
   finance_db_client_server.cc
   # TODO(vh): make_optional!
 )
+set_property(TARGET unittests PROPERTY CXX_INCLUDE_WHAT_YOU_USE)
 target_link_libraries(unittests PRIVATE libstonks)
 target_link_libraries(unittests PRIVATE libdb)
 target_link_libraries(unittests PRIVATE spdlog::spdlog)

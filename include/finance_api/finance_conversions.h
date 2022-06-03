@@ -1,10 +1,9 @@
 #ifndef STONKS_FINANCE_API_FINANCE_CONVERSIONS_H_
 #define STONKS_FINANCE_API_FINANCE_CONVERSIONS_H_
 
-#include <span>
 #include <string_view>
-#include <vector>
 
+#include "binance_enums.h"
 #include "binance_types.h"
 #include "finance_types.h"
 

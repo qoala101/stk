@@ -18,7 +18,7 @@ class PlainUri {
 
 class LocalUri : public PlainUri {
  public:
-  explicit LocalUri(int port, std::string_view base_uri);
+  explicit LocalUri(int port, std::string_view base_uri = "");
 };
 
 class ExternalUri : public PlainUri {

@@ -3,8 +3,8 @@
 
 #include <boost/uuid/uuid.hpp>
 #include <chrono>
-#include <optional>
 #include <string>
+#include <string_view>
 
 namespace stonks::utils {
 /**

@@ -4,7 +4,6 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <string_view>
 
 #include "endpoint.h"
 #include "typed_any.h"
@@ -56,6 +55,7 @@ class Client {
 
  private:
   class Impl;
+
   std::unique_ptr<Impl> impl_{};
 };
 }  // namespace stonks::network

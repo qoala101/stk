@@ -1,6 +1,7 @@
 #ifndef STONKS_CLIENTS_CLIENT_BINANCE_H_
 #define STONKS_CLIENTS_CLIENT_BINANCE_H_
 
+#include "binance_types.h"
 #include "client.h"
 
 namespace stonks::client {

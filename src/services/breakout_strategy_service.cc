@@ -1,13 +1,18 @@
 #include "breakout_strategy_service.h"
 
+#include <cpprest/http_msg.h>
+#include <pplx/pplx.h>
 #include <spdlog/spdlog.h>
 
+#include <chrono>
 #include <gsl/util>
+#include <optional>
+#include <utility>
+#include <vector>
 
 #include "breakout_strategy.h"
 #include "buffered_candles_stream.h"
 #include "candles_stream.h"
-#include "finance_api.h"
 #include "finance_enums.h"
 #include "finance_types.h"
 #include "json_conversions.h"

@@ -1,6 +1,7 @@
 #include "ngrok_client.h"
 
 #include <cpprest/http_msg.h>
+
 #include <memory>
 #include <string_view>
 

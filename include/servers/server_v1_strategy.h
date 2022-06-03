@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "endpoint.h"
 #include "server.h"
 #include "v1_strategy.h"
 

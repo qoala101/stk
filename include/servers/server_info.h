@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "endpoint.h"
 #include "server.h"
 #include "stonks_info.h"
 

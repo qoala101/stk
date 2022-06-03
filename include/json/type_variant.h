@@ -1,9 +1,15 @@
 #ifndef STONKS_JSON_TYPE_VARIANT_H_
 #define STONKS_JSON_TYPE_VARIANT_H_
 
+#include <cpprest/json.h>
+
 #include <chrono>
+#include <cstdint>
 #include <optional>
+#include <stdexcept>
 #include <string>
+#include <variant>
+#include <vector>
 
 #include "any.h"
 #include "binance_types.h"

@@ -8,15 +8,16 @@
 #include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+
 #include <optional>
 #include <stdexcept>
 #include <type_traits>
 #include <utility>
 
+#include "any.h"
 #include "rest_request.h"
 #include "type.h"
 #include "type_variant.h"
-#include "any.h"
 
 namespace stonks::network {
 namespace {

@@ -2,8 +2,6 @@
 
 #include <chrono>
 
-#include "utils.h"
-
 namespace stonks::finance {
 namespace {
 template <typename T>

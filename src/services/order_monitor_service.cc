@@ -1,9 +1,19 @@
 #include "order_monitor_service.h"
 
-#include <cpprest/http_client.h>
+#include <bits/exception.h>
+#include <cpprest/base_uri.h>
+#include <cpprest/http_msg.h>
+#include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
-#include "finance_api.h"
+#include <optional>
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/view/view.hpp>
+#include <string>
+#include <utility>
+#include <vector>
+
+#include "finance_types.h"
 #include "json_conversions.h"
 #include "rest_request.h"
 

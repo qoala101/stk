@@ -1,7 +1,10 @@
 #include "breakout_strategy.h"
 
 #include <gsl/assert>
+#include <iterator>
+#include <memory>
 
+#include "finance_enums.h"
 #include "utils.h"
 
 namespace stonks::finance {

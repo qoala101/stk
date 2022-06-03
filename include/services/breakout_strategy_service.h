@@ -3,6 +3,7 @@
 
 #include <pplx/pplxtasks.h>
 
+#include <atomic>
 #include <thread>
 
 #include "finance_types.h"

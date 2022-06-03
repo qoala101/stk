@@ -77,9 +77,5 @@ cmake --build .
 }
 ```
 
-# Things to do before commit
-```bash
-iwyu_tool -p . -- -Xiwyu --no_fwd_decls -Xiwyu --cxx17ns > iwyu.out
-python ../fix_includes.py --nocomments < iwyu.out
-
-```
+## Things to do before commit
+Fix includes in changed files via VS Code Include What You Use command in sources and manually in headers

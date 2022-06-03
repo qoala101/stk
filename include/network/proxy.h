@@ -6,7 +6,9 @@
 #include <cpprest/http_msg.h>
 
 #include <map>
+#include <optional>
 #include <shared_mutex>
+#include <string>
 #include <string_view>
 
 namespace stonks::network {

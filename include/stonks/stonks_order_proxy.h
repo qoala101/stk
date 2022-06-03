@@ -1,9 +1,11 @@
 #ifndef STONKS_STONKS_STONKS_ORDER_PROXY_H_
 #define STONKS_STONKS_STONKS_ORDER_PROXY_H_
 
+#include <boost/uuid/uuid.hpp>
 #include <condition_variable>
 #include <functional>
 #include <mutex>
+#include <optional>
 #include <string_view>
 #include <vector>
 

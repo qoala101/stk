@@ -1,9 +1,13 @@
 #include "candles_stream.h"
 
-#include <spdlog/spdlog.h>
+#include <assert.h>
 
+#include <compare>
 #include <gsl/assert>
+#include <memory>
+#include <ratio>
 #include <thread>
+#include <utility>
 
 #include "finance_api.h"
 #include "finance_enum_conversions.h"

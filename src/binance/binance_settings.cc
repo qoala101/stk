@@ -1,8 +1,12 @@
 #include "binance_settings.h"
 
+#include <bits/exception.h>
+#include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
 #include <fstream>
+#include <optional>
+#include <string_view>
 
 namespace stonks::binance::settings {
 namespace {

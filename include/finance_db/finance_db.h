@@ -1,11 +1,11 @@
 #ifndef STONKS_FINANCE_DB_FINANCE_DB_H_
 #define STONKS_FINANCE_DB_FINANCE_DB_H_
 
-#include <concepts>
 #include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include "finance_types.h"
 #include "stonks_db.h"
@@ -73,6 +73,7 @@ class FinanceDb : public StonksDb {
 
  private:
   class Impl;
+
   std::unique_ptr<Impl> impl_{};
 };
 }  // namespace stonks::finance

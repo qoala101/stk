@@ -1,12 +1,19 @@
 #include "binance_api.h"
 
+#include <bits/exception.h>
+#include <cpprest/details/basic_types.h>
+#include <cpprest/http_msg.h>
+#include <cpprest/json.h>
 #include <spdlog/spdlog.h>
 
-#include <range/v3/to_container.hpp>
+#include <cstdint>
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/range/conversion.hpp>
 #include <range/v3/view/filter.hpp>
 #include <range/v3/view/transform.hpp>
+#include <range/v3/view/view.hpp>
+#include <utility>
 
-#include "binance_enum_conversions.h"
 #include "binance_settings.h"
 #include "json_conversions.h"
 #include "rest_request.h"

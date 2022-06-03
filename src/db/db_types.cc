@@ -1,6 +1,9 @@
 #include "db_types.h"
 
+#include <cstdint>
 #include <range/v3/algorithm/find_if.hpp>
+#include <range/v3/functional/identity.hpp>
+#include <type_traits>
 
 namespace stonks::db {
 std::optional<int> Value::GetInt() const {

@@ -2,11 +2,14 @@
 #define STONKS_BINANCE_BINANCE_API_H_
 
 #include <chrono>
+#include <cstdint>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <variant>
 #include <vector>
 
+#include "binance_enums.h"
 #include "binance_types.h"
 #include "utils.h"
 

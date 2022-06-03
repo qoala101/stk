@@ -2,7 +2,6 @@
 #define STONKS_STONKS_STONKS_DB_UPDATER_SYMBOLS_INFO_H_
 
 #include <memory>
-#include <string_view>
 
 #include "stonks_db.h"
 

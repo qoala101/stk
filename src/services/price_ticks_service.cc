@@ -1,11 +1,22 @@
 #include "price_ticks_service.h"
 
-#include <cpprest/http_client.h>
+#include <bits/exception.h>
+#include <cpprest/base_uri.h>
+#include <cpprest/http_msg.h>
+#include <cpprest/json.h>
+#include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
 #include <atomic>
+#include <future>
+#include <map>
+#include <optional>
+#include <string>
+#include <string_view>
+#include <utility>
 
 #include "binance_settings.h"
+#include "binance_types.h"
 #include "finance_conversions.h"
 #include "finance_db.h"
 #include "finance_types.h"

@@ -9,9 +9,10 @@
 #include <magic_enum.hpp>
 #include <optional>
 #include <sstream>
+#include <string>
 #include <string_view>
 
-#include "concepts.h"
+#include "concepts.h"  // IWYU pragma: keep
 
 namespace stonks::network {
 class RestRequest {

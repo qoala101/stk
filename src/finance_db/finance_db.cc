@@ -1,23 +1,37 @@
 #include "finance_db.h"
 
 #include <absl/base/macros.h>
+#include <bits/exception.h>
+#include <fmt/format.h>
+#include <spdlog/common.h>
+#include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/spdlog.h>
 
-#include <array>
-#include <exception>
+#include <chrono>
+#include <compare>
+#include <concepts/concepts.hpp>
+#include <cstdint>
+#include <functional>
 #include <map>
+#include <range/v3/action/action.hpp>
 #include <range/v3/action/sort.hpp>
 #include <range/v3/action/unique.hpp>
 #include <range/v3/algorithm/contains.hpp>
-#include <range/v3/algorithm/find_if.hpp>
+#include <range/v3/functional/bind_back.hpp>
+#include <range/v3/functional/comparisons.hpp>
+#include <range/v3/functional/compose.hpp>
+#include <range/v3/functional/identity.hpp>
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/iterator/default_sentinel.hpp>
 #include <range/v3/range/conversion.hpp>
-#include <range/v3/to_container.hpp>
 #include <range/v3/view/filter.hpp>
 #include <range/v3/view/set_algorithm.hpp>
-#include <range/v3/view/take.hpp>
 #include <range/v3/view/transform.hpp>
+#include <range/v3/view/view.hpp>
+#include <utility>
 
+#include "db.h"
+#include "db_enums.h"
 #include "db_types.h"
 #include "finance_db_table_definitions.h"
 #include "sqlite_db.h"

@@ -1,8 +1,17 @@
 #include "mean_average_strategy_service.h"
 
+#include <bits/exception.h>
+#include <cpprest/base_uri.h>
+#include <cpprest/http_msg.h>
+#include <fmt/format.h>
+#include <pplx/pplx.h>
 #include <spdlog/spdlog.h>
 
-#include <gsl/util>
+#include <boost/uuid/uuid.hpp>
+#include <optional>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "finance_types.h"
 #include "google_charts_conversions.h"

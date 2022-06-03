@@ -1,12 +1,25 @@
 #include "finance_db_service.h"
 
+#include <bits/exception.h>
+#include <cpprest/base_uri.h>
+#include <cpprest/http_msg.h>
+#include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
 #include <chrono>
+#include <map>
+#include <optional>
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/view/view.hpp>
+#include <string>
+#include <string_view>
+#include <utility>
+#include <vector>
 
 #include "finance_db.h"
 #include "finance_types.h"
 #include "json_conversions.h"
+#include "pplx/pplx.h"
 #include "rest_request.h"
 
 namespace stonks {

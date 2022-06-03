@@ -1,7 +1,14 @@
 #include "get_file_service.h"
 
+#include <bits/exception.h>
+#include <cpprest/base_uri.h>
 #include <cpprest/filestream.h>
+#include <cpprest/http_msg.h>
+#include <fmt/format.h>
 #include <spdlog/spdlog.h>
+
+#include <string>
+#include <string_view>
 
 namespace stonks {
 namespace {

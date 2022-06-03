@@ -1,9 +1,17 @@
 #include "google_charts_conversions.h"
 
-#include <range/v3/to_container.hpp>
-#include <range/v3/view/transform.hpp>
+#include <cpprest/details/basic_types.h>
 
-#include "concepts.h"
+#include <chrono>
+#include <optional>
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/view/transform.hpp>
+#include <range/v3/view/view.hpp>
+#include <string>
+#include <string_view>
+#include <utility>
+
 #include "json_conversions.h"
 
 namespace stonks::google_charts {

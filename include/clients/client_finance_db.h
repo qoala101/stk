@@ -1,7 +1,12 @@
 #ifndef STONKS_CLIENTS_CLIENT_FINANCE_DB_H_
 #define STONKS_CLIENTS_CLIENT_FINANCE_DB_H_
 
+#include <optional>
+#include <string>
+#include <vector>
+
 #include "client.h"
+#include "finance_types.h"
 #include "stonks_db.h"
 
 namespace stonks::client {

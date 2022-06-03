@@ -1,11 +1,28 @@
 #include "mean_average_strategy.h"
 
+#include <assert.h>
+#include <bits/exception.h>
+#include <fmt/format.h>
+#include <math.h>
 #include <spdlog/spdlog.h>
 
+#include <boost/uuid/detail/uuid_x86.ipp>
+#include <chrono>
+#include <compare>
+#include <iterator>
+#include <memory>
+#include <range/v3/action/action.hpp>
 #include <range/v3/action/push_back.hpp>
-#include <range/v3/algorithm/minmax_element.hpp>
-#include <range/v3/all.hpp>
+#include <range/v3/algorithm/max_element.hpp>
+#include <range/v3/algorithm/min_element.hpp>
+#include <range/v3/functional/identity.hpp>
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/view/drop_while.hpp>
+#include <range/v3/view/view.hpp>
+#include <ratio>
+#include <utility>
 
+#include "finance_enums.h"
 #include "utils.h"
 
 namespace stonks::finance {

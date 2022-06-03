@@ -1,7 +1,21 @@
 #include "order_proxy_service.h"
 
-#include <cpprest/http_client.h>
+#include <bits/exception.h>
+#include <cpprest/base_uri.h>
+#include <cpprest/http_msg.h>
+#include <fmt/format.h>
 #include <spdlog/spdlog.h>
+
+#include <boost/uuid/detail/uuid_x86.ipp>
+#include <boost/uuid/uuid.hpp>
+#include <map>
+#include <memory>
+#include <optional>
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/view/view.hpp>
+#include <string>
+#include <string_view>
+#include <utility>
 
 #include "google_charts_conversions.h"
 #include "json_conversions.h"

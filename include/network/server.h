@@ -2,7 +2,6 @@
 #define STONKS_NETWORK_SERVER_H_
 
 #include <memory>
-#include <string_view>
 #include <vector>
 
 #include "endpoint.h"
@@ -34,6 +33,7 @@ class Server {
 
  private:
   class Impl;
+
   std::unique_ptr<Impl> impl_{};
 };
 }  // namespace stonks::network

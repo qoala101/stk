@@ -1,12 +1,23 @@
 #include "get_symbols_service.h"
 
-#include <cpprest/http_client.h>
+#include <bits/exception.h>
+#include <cpprest/base_uri.h>
+#include <cpprest/http_msg.h>
+#include <cpprest/json.h>
+#include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
-#include <range/v3/to_container.hpp>
+#include <optional>
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
+#include <range/v3/view/view.hpp>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "binance_api.h"
+#include "binance_types.h"
 
 namespace stonks {
 namespace {

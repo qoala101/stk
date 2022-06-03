@@ -1,9 +1,12 @@
 #include "buffered_candles_stream.h"
 
 #include <gsl/assert>
-#include <range/v3/to_container.hpp>
+#include <range/v3/range/conversion.hpp>
 #include <range/v3/view/drop.hpp>
+#include <range/v3/view/subrange.hpp>
 #include <range/v3/view/take.hpp>
+#include <range/v3/view/view.hpp>
+#include <utility>
 
 namespace stonks::finance {
 BufferedCandlesStream::BufferedCandlesStream(CandlesStream stream,

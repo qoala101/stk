@@ -66,6 +66,7 @@ add_library(libstonks
   streams/candles_stream.cc
   streams/price_ticks_db_stream.cc
   streams/price_ticks_stream.cc
+  streams/prices_stream.cc
   utility/utils.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)

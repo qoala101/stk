@@ -1,6 +1,7 @@
 #ifndef STONKS_STRATEGIES_MEAN_AVERAGE_STRATEGY_H_
 #define STONKS_STRATEGIES_MEAN_AVERAGE_STRATEGY_H_
 
+#include <boost/uuid/uuid.hpp>
 #include <mutex>
 #include <optional>
 #include <vector>

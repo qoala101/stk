@@ -3,6 +3,7 @@
 
 #include <boost/uuid/uuid.hpp>
 #include <chrono>
+#include <compare>
 #include <optional>
 #include <string>
 #include <variant>

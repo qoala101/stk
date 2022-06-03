@@ -1,6 +1,10 @@
 #include "finance_types.h"
 
+#include <algorithm>
 #include <tuple>
+#include <type_traits>
+
+#include "binance_enums.h"
 
 namespace stonks::finance {
 std::string Symbol::GetName() const { return base_asset + quote_asset; }

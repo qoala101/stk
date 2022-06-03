@@ -1,5 +1,10 @@
 #include "finance_db_table_definitions.h"
 
+#include <optional>
+#include <string>
+
+#include "db_enums.h"
+
 namespace stonks::finance::table_definition {
 auto Asset() -> const stonks::db::TableDefinition& {
   static const auto table_definition = stonks::db::TableDefinition{

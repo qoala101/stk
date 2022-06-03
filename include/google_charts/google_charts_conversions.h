@@ -3,6 +3,8 @@
 
 #include <cpprest/json.h>
 
+#include <vector>
+
 #include "finance_types.h"
 
 namespace stonks::google_charts {

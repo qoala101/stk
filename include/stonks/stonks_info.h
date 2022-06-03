@@ -1,6 +1,9 @@
 #ifndef STONKS_STONKS_STONKS_INFO_H_
 #define STONKS_STONKS_STONKS_INFO_H_
 
+#include <string>
+#include <vector>
+
 #include "client_finance_db.h"
 #include "finance_types.h"
 

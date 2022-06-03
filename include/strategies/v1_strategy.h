@@ -1,7 +1,9 @@
 #ifndef STONKS_STRATEGIES_V1_STRATEGY_H_
 #define STONKS_STRATEGIES_V1_STRATEGY_H_
 
+#include <boost/uuid/uuid.hpp>
 #include <mutex>
+#include <vector>
 
 #include "finance_types.h"
 #include "strategy.h"

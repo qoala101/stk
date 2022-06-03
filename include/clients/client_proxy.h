@@ -1,6 +1,9 @@
 #ifndef STONKS_CLIENTS_CLIENT_PROXY_H_
 #define STONKS_CLIENTS_CLIENT_PROXY_H_
 
+#include <optional>
+#include <string_view>
+
 #include "client.h"
 #include "proxy.h"
 

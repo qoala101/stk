@@ -4,8 +4,8 @@
 #include <utility>
 
 namespace stonks::network {
-auto EndpointHandler::operator()(Params params,
-                                 Body request_body) const -> Result {
+auto EndpointHandler::operator()(Params params, Body request_body) const
+    -> Result {
   return std::visit(
       [&params, &request_body](const auto &variant) -> Result {
         using T = std::decay_t<decltype(variant)>;

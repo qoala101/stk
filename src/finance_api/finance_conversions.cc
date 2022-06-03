@@ -1,5 +1,10 @@
 #include "finance_conversions.h"
 
+#include <optional>
+#include <string>
+#include <type_traits>
+#include <variant>
+
 #include "finance_types.h"
 #include "utils.h"
 

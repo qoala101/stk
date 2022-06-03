@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "endpoint.h"
 #include "proxy.h"
 #include "server.h"
 

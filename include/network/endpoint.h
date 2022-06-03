@@ -2,6 +2,7 @@
 #define STONKS_NETWORK_ENDPOINT_H_
 
 #include <cpprest/http_msg.h>
+
 #include <functional>
 #include <map>
 #include <optional>
@@ -77,8 +78,7 @@ class EndpointHandler {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   EndpointHandler(T handler) : handler_{std::move(handler)} {}
 
-  auto operator()(Params params,
-                  Body request_body) const -> Result;
+  auto operator()(Params params, Body request_body) const -> Result;
 
  private:
   std::variant<NoResult, NoResultTakesParams, NoResultTakesBody,

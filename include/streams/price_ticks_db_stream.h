@@ -1,8 +1,6 @@
 #ifndef STONKS_STREAMS_PRICE_TICKS_DB_STREAM_H_
 #define STONKS_STREAMS_PRICE_TICKS_DB_STREAM_H_
 
-#include <cpprest/http_listener.h>
-
 #include <chrono>
 #include <optional>
 #include <vector>

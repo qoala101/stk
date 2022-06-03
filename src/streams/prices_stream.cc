@@ -3,11 +3,12 @@
 #include <spdlog/spdlog.h>
 
 #include <gsl/util>
-#include <range/v3/to_container.hpp>
-#include <range/v3/view/drop.hpp>
+#include <optional>
 #include <thread>
+#include <utility>
 
 #include "finance_api.h"
+#include "utils.h"
 
 namespace stonks::finance {
 PricesStream::PricesStream(Symbol symbol, std::chrono::milliseconds interval)

@@ -1,6 +1,15 @@
 #include "price_ticks_stream.h"
 
+#include <bits/exception.h>
+#include <cpprest/base_uri.h>
+#include <cpprest/http_msg.h>
+#include <fmt/format.h>
+#include <pplx/pplxtasks.h>
 #include <spdlog/spdlog.h>
+
+#include <optional>
+#include <string>
+#include <utility>
 
 #include "finance_types.h"
 #include "json_conversions.h"

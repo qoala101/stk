@@ -1,9 +1,18 @@
 #include "get_candle_chart_data_service.h"
 
-#include <cpprest/http_client.h>
+#include <bits/exception.h>
+#include <cpprest/base_uri.h>
+#include <cpprest/http_msg.h>
+#include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
+#include <chrono>
+#include <memory>
+#include <optional>
+
 #include "finance_api.h"
+#include "finance_enums.h"
+#include "finance_types.h"
 #include "google_charts_conversions.h"
 #include "utils.h"
 

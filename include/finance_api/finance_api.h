@@ -4,7 +4,6 @@
 #include <boost/uuid/uuid.hpp>
 #include <chrono>
 #include <optional>
-#include <string_view>
 #include <vector>
 
 #include "finance_enums.h"

@@ -12,20 +12,21 @@
 #include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <range/v3/algorithm/find_if.hpp>
-#include <range/v3/functional/identity.hpp>
+
 #include <map>
 #include <optional>
+#include <range/v3/algorithm/find_if.hpp>
+#include <range/v3/functional/identity.hpp>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
 #include <utility>
 
+#include "any.h"
+#include "any_map.h"
 #include "endpoint.h"
 #include "json_conversions.h"
 #include "type_variant.h"
-#include "any.h"
-#include "any_map.h"
 
 namespace stonks::network {
 namespace {
@@ -145,8 +146,7 @@ class Server::Impl {
    */
   [[nodiscard]] static auto ParseRequestBody(
       const web::http::http_request &request,
-      const std::optional<json::TypeVariant> &endpoint_request_body)
-      -> Body {
+      const std::optional<json::TypeVariant> &endpoint_request_body) -> Body {
     if (!endpoint_request_body.has_value()) {
       return Body{};
     }
