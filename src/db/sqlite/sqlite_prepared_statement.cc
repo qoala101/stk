@@ -55,15 +55,16 @@ auto GetValue(sqlite3_stmt &statement, int index, DataType type) -> Value {
   }
 }
 
-auto GetValues(sqlite3_stmt &statement, const RowDefinition &result_definition)
+auto GetValues(sqlite3_stmt &statement,
+               const std::vector<CellDefinition> &cell_definitions)
     -> std::vector<Value> {
-  const auto num_columns = result_definition.size();
+  const auto num_columns = cell_definitions.size();
 
   auto values = std::vector<Value>{};
   values.reserve(num_columns);
 
   for (auto i = 0; i < num_columns; ++i) {
-    values.emplace_back(GetValue(statement, i, result_definition[i].data_type));
+    values.emplace_back(GetValue(statement, i, cell_definitions[i].data_type));
   }
 
   return values;
@@ -108,8 +109,9 @@ class SqlitePreparedStatement::Impl {
       BindParam(*statement_ptr, i + 1, params[i]);
     }
 
+    const auto &cell_definitions = result_definition.GetCellDefinitions();
     auto columns =
-        ranges::views::transform(result_definition,
+        ranges::views::transform(cell_definitions,
                                  [](const auto &cell) { return cell.column; }) |
         ranges::to_vector;
     auto rows = Rows{std::move(columns)};
@@ -124,13 +126,13 @@ class SqlitePreparedStatement::Impl {
                   num_received_columns < 0) {
             num_received_columns = sqlite3_column_count(statement_ptr);
 
-            if (num_received_columns != result_definition.size()) {
+            if (num_received_columns != cell_definitions.size()) {
               throw std::runtime_error{
                   "Statement result has wrong amount of columns"};
             }
           }
 
-          rows.Push(GetValues(*statement_ptr, result_definition));
+          rows.Push(GetValues(*statement_ptr, cell_definitions));
         } break;
 
         case SQLITE_DONE:

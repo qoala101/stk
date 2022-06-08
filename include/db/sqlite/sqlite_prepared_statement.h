@@ -9,6 +9,7 @@
 
 #include "db_prepared_statement.h"
 #include "db_row.h"
+#include "db_row_definition.h"
 #include "db_value.h"
 
 namespace stonks::db::sqlite {

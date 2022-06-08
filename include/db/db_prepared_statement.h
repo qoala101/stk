@@ -3,6 +3,7 @@
 
 #include "db_row.h"
 #include "db_types.h"
+#include "db_row_definition.h"
 
 namespace stonks::db {
 /**

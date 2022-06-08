@@ -64,14 +64,7 @@ TEST(SqliteDb, InsertAndSelect) {
   auto select_statement = db.PrepareStatement(
       "SELECT * FROM \"" + kAssetTableDefinition.table + "\"");
 
-  const auto rows = select_statement->Execute(
-      {}, ranges::views::transform(kAssetTableDefinition.columns,
-                                   [](const auto &column_definition) {
-                                     return stonks::db::CellDefinition{
-                                         column_definition.column,
-                                         column_definition.data_type};
-                                   }) |
-              ranges::to_vector);
+  const auto rows = select_statement->Execute({}, kAssetTableDefinition);
   EXPECT_EQ(rows.GetSize(), 3);
   EXPECT_EQ(rows.GetValues("id")[0].GetInt64(), 1);
   EXPECT_EQ(rows.GetValues("name")[0].GetString(), "BTC");
@@ -141,7 +134,7 @@ TEST(SqliteDb, ForeignKey) {
 }
 
 TEST(SqliteDb, SelectJoin) {
-  const auto columns = std::vector<stonks::db::CellDefinition>{
+  const auto cell_definitions = std::vector<stonks::db::CellDefinition>{
       stonks::db::CellDefinition{.column = "base_asset",
                                  .data_type = stonks::db::DataType::kString},
       stonks::db::CellDefinition{.column = "quote_asset",
@@ -152,7 +145,7 @@ TEST(SqliteDb, SelectJoin) {
       "FROM Symbol "
       "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
       "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id=QuoteAsset.id;");
-  const auto rows = select_statement->Execute({}, columns);
+  const auto rows = select_statement->Execute({}, cell_definitions);
   EXPECT_EQ(rows.GetSize(), 2);
   EXPECT_EQ(rows.GetValues("base_asset")[0].GetString(), "BTC");
   EXPECT_EQ(rows.GetValues("quote_asset")[0].GetString(), "USDT");
@@ -165,38 +158,17 @@ TEST(SqliteDb, CascadeForeignKeyDelete) {
 
   auto select_statement = db.PrepareStatement(
       "SELECT * FROM \"" + kAssetTableDefinition.table + "\"");
-  auto rows = select_statement->Execute(
-      {}, ranges::views::transform(kAssetTableDefinition.columns,
-                                   [](const auto &column_definition) {
-                                     return stonks::db::CellDefinition{
-                                         column_definition.column,
-                                         column_definition.data_type};
-                                   }) |
-              ranges::to_vector);
+  auto rows = select_statement->Execute({}, kAssetTableDefinition);
   EXPECT_EQ(rows.GetSize(), 2);
 
   select_statement = db.PrepareStatement("SELECT * FROM \"" +
                                          kSymbolTableDefinition.table + "\"");
-  rows = select_statement->Execute(
-      {}, ranges::views::transform(kSymbolTableDefinition.columns,
-                                   [](const auto &column_definition) {
-                                     return stonks::db::CellDefinition{
-                                         column_definition.column,
-                                         column_definition.data_type};
-                                   }) |
-              ranges::to_vector);
+  rows = select_statement->Execute({}, kSymbolTableDefinition);
   EXPECT_EQ(rows.GetSize(), 0);
 
   select_statement = db.PrepareStatement(
       "SELECT * FROM \"" + kSymbolPriceTableDefinition.table + "\"");
-  rows = select_statement->Execute(
-      {}, ranges::views::transform(kSymbolPriceTableDefinition.columns,
-                                   [](const auto &column_definition) {
-                                     return stonks::db::CellDefinition{
-                                         column_definition.column,
-                                         column_definition.data_type};
-                                   }) |
-              ranges::to_vector);
+  rows = select_statement->Execute({}, kSymbolPriceTableDefinition);
   EXPECT_EQ(rows.GetSize(), 0);
 }
 }  // namespace

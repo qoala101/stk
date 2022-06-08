@@ -10,11 +10,6 @@
 
 namespace stonks::db {
 /**
- * @brief Types of row cells.
- */
-using RowDefinition = std::vector<CellDefinition>;
-
-/**
  * @brief Single DB row.
  */
 class Row {
