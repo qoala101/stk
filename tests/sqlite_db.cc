@@ -54,15 +54,14 @@ const auto kAssetTableDefinition = stonks::db::TableDefinition{
 TEST(SqliteDb, InsertAndSelect) {
   db.CreateTableIfNotExists(kAssetTableDefinition);
 
-  auto insert_statement =
-      db.PrepareStatement(db.CreateQueryBuilder()->BuildInsertQuery(
-          kAssetTableDefinition.table, {"name"}));
-  insert_statement->Execute({std::string_view{"BTC"}});
-  insert_statement->Execute({std::string_view{"ETH"}});
-  insert_statement->Execute({std::string_view{"USDT"}});
+  auto insert_statement = db.PrepareStatement(
+      db.CreateQueryBuilder()->BuildInsertQuery(kAssetTableDefinition));
+  insert_statement->Execute({{}, std::string_view{"BTC"}});
+  insert_statement->Execute({{}, std::string_view{"ETH"}});
+  insert_statement->Execute({{}, std::string_view{"USDT"}});
 
   auto select_statement = db.PrepareStatement(
-      "SELECT * FROM \"" + kAssetTableDefinition.table + "\"");
+      db.CreateQueryBuilder()->BuildSelectQuery(kAssetTableDefinition.table));
 
   const auto rows = select_statement->Execute({}, kAssetTableDefinition);
   EXPECT_EQ(rows.GetSize(), 3);

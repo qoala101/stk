@@ -19,6 +19,11 @@ class Value {
    */
   explicit Value(std::string_view value, DataType data_type);
 
+  /**
+   * @brief Constructs NULL value.
+   */
+  Value() = default;
+
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   Value(int value);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
@@ -34,7 +39,12 @@ class Value {
   [[nodiscard]] auto GetString() const & -> const std::string &;
   [[nodiscard]] auto GetString() && -> std::string &&;
 
+  /**
+   * @remark Should not be called on NULL value.
+   */
   [[nodiscard]] auto GetType() const -> DataType;
+
+  [[nodiscard]] auto IsNull() const -> bool;
 
   /**
    * @brief Converts value of any type to string.
@@ -43,7 +53,7 @@ class Value {
   [[nodiscard]] auto ToString() const -> std::string;
 
  private:
-  std::variant<int, int64_t, double, std::string> value_{};
+  std::variant<std::monostate, int, int64_t, double, std::string> value_{};
 };
 }  // namespace stonks::db
 

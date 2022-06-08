@@ -21,6 +21,10 @@
 namespace stonks::db::sqlite {
 namespace {
 void BindParam(sqlite3_stmt &statement, int index, const Value &value) {
+  if (value.IsNull()) {
+    return;
+  }
+
   switch (value.GetType()) {
     case DataType::kInt:
       sqlite3_bind_int(&statement, index, value.GetInt());
@@ -33,14 +37,18 @@ void BindParam(sqlite3_stmt &statement, int index, const Value &value) {
       return;
     case DataType::kString: {
       const auto &string = value.GetString();
-      auto a =
-          sqlite3_bind_text(&statement, index, string.c_str(), -1, nullptr);
+      sqlite3_bind_text(&statement, index, string.c_str(),
+                        static_cast<int>(string.length()), nullptr);
       return;
     }
   }
 }
 
 auto GetValue(sqlite3_stmt &statement, int index, DataType type) -> Value {
+  if (sqlite3_column_type(&statement, index) == SQLITE_NULL) {
+    return {};
+  }
+
   switch (type) {
     case DataType::kInt:
       return Value{sqlite3_column_int(&statement, index)};

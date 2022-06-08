@@ -4,6 +4,7 @@
 
 #include <type_traits>
 #include <utility>
+#include <variant>
 
 #include "db_enums.h"
 
@@ -47,8 +48,13 @@ auto Value::GetString() && -> std::string&& {
 
 auto Value::GetType() const -> DataType {
   return std::visit(
-      [](const auto& variant) {
+      [](const auto& variant) -> DataType {
         using T = std::decay_t<decltype(variant)>;
+
+        if constexpr (std::is_same_v<T, std::monostate>) {
+          ABSL_ASSERT(false && "Trying to get type on NULL value");
+          return {};
+        }
 
         if constexpr (std::is_same_v<T, int>) {
           return DataType::kInt;
@@ -65,16 +71,22 @@ auto Value::GetType() const -> DataType {
         if constexpr (std::is_same_v<T, std::string>) {
           return DataType::kString;
         }
-
-        ABSL_ASSERT(false && "Unknown type");
       },
       value_);
+}
+
+[[nodiscard]] auto Value::IsNull() const -> bool {
+  return std::holds_alternative<std::monostate>(value_);
 }
 
 auto Value::ToString() const -> std::string {
   return std::visit(
       [](const auto& variant) -> std::string {
         using T = std::decay_t<decltype(variant)>;
+
+        if constexpr (std::is_same_v<T, std::monostate>) {
+          return {};
+        }
 
         if constexpr (std::is_same_v<T, int> || std::is_same_v<T, int64_t> ||
                       std::is_same_v<T, double>) {
@@ -84,8 +96,6 @@ auto Value::ToString() const -> std::string {
         if constexpr (std::is_same_v<T, std::string>) {
           return "\"" + variant + "\"";
         }
-
-        return {};
       },
       value_);
 }
