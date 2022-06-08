@@ -6,6 +6,7 @@
 
 #include "db.h"
 #include "db_prepared_statement.h"
+#include "db_query_builder.h"
 #include "db_row.h"
 #include "db_types.h"
 
@@ -63,6 +64,12 @@ class SqliteDb : public Db, public std::enable_shared_from_this<SqliteDb> {
    */
   [[nodiscard]] auto PrepareStatement(std::string_view query)
       -> std::unique_ptr<PreparedStatement> override;
+
+  /**
+   * @copydoc Db::CreateQueryBuilder
+   */
+  [[nodiscard]] auto CreateQueryBuilder()
+      -> std::unique_ptr<QueryBuilder> override;
 
   /**
    * @brief Stores DB to the file specified at the creation time.

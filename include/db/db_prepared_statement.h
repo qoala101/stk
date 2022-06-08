@@ -2,8 +2,8 @@
 #define STONKS_DB_DB_PREPARED_STATEMENT_H_
 
 #include "db_row.h"
-#include "db_types.h"
 #include "db_row_definition.h"
+#include "db_types.h"
 
 namespace stonks::db {
 /**

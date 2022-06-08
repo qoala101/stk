@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "db_prepared_statement.h"
+#include "db_query_builder.h"
 #include "db_types.h"
 
 namespace stonks::db {
@@ -49,6 +50,12 @@ class Db {
    */
   [[nodiscard]] virtual auto PrepareStatement(std::string_view query)
       -> std::unique_ptr<PreparedStatement> = 0;
+
+  /**
+   * @brief Creates query builder which knows how to build queries for this DB.
+   */
+  [[nodiscard]] virtual auto CreateQueryBuilder()
+      -> std::unique_ptr<QueryBuilder> = 0;
 };
 }  // namespace stonks::db
 

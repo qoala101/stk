@@ -55,8 +55,8 @@ TEST(SqliteDb, InsertAndSelect) {
   db.CreateTableIfNotExists(kAssetTableDefinition);
 
   auto insert_statement =
-      db.PrepareStatement("INSERT INTO \"" + kAssetTableDefinition.table +
-                          "\"(\"name\") VALUES(?1)");
+      db.PrepareStatement(db.CreateQueryBuilder()->BuildInsertQuery(
+          kAssetTableDefinition.table, {"name"}));
   insert_statement->Execute({std::string_view{"BTC"}});
   insert_statement->Execute({std::string_view{"ETH"}});
   insert_statement->Execute({std::string_view{"USDT"}});
@@ -75,9 +75,8 @@ TEST(SqliteDb, InsertAndSelect) {
 }
 
 TEST(SqliteDb, InsertNull) {
-  auto insert_statement =
-      db.PrepareStatement("INSERT INTO \"" + kAssetTableDefinition.table +
-                          "\"(\"name\") VALUES(?1)");
+  auto insert_statement = db.PrepareStatement(
+      db.CreateQueryBuilder()->BuildInsertQuery(kAssetTableDefinition));
   EXPECT_ANY_THROW(insert_statement->Execute({}));
 }
 
@@ -115,9 +114,9 @@ const auto kSymbolPriceTableDefinition = stonks::db::TableDefinition{
 TEST(SqliteDb, ForeignKey) {
   db.CreateTableIfNotExists(kSymbolTableDefinition);
 
-  auto insert_symbol_statement = db.PrepareStatement(
-      "INSERT INTO \"" + kSymbolTableDefinition.table +
-      "\"(\"base_asset_id\", \"quote_asset_id\") VALUES(?1, ?2)");
+  auto insert_symbol_statement =
+      db.PrepareStatement(db.CreateQueryBuilder()->BuildInsertQuery(
+          kSymbolTableDefinition.table, {"base_asset_id", "quote_asset_id"}));
   insert_symbol_statement->Execute({1, 3});
   insert_symbol_statement->Execute({2, 3});
   EXPECT_ANY_THROW(insert_symbol_statement->Execute({5, 6}));
@@ -125,8 +124,7 @@ TEST(SqliteDb, ForeignKey) {
   db.CreateTableIfNotExists(kSymbolPriceTableDefinition);
 
   auto insert_symbol_price_statement = db.PrepareStatement(
-      "INSERT INTO \"" + kSymbolPriceTableDefinition.table +
-      "\"(\"symbol_id\", \"time\", \"price\") VALUES(?1, ?2, ?3)");
+      db.CreateQueryBuilder()->BuildInsertQuery(kSymbolPriceTableDefinition));
   insert_symbol_price_statement->Execute(
       {1, stonks::utils::GetUnixTime().count(), 12345});
   insert_symbol_price_statement->Execute(
@@ -157,17 +155,18 @@ TEST(SqliteDb, CascadeForeignKeyDelete) {
   db.DeleteFrom("Asset", "WHERE Asset.name = \"USDT\"");
 
   auto select_statement = db.PrepareStatement(
-      "SELECT * FROM \"" + kAssetTableDefinition.table + "\"");
+      db.CreateQueryBuilder()->BuildSelectQuery(kAssetTableDefinition.table));
   auto rows = select_statement->Execute({}, kAssetTableDefinition);
   EXPECT_EQ(rows.GetSize(), 2);
 
-  select_statement = db.PrepareStatement("SELECT * FROM \"" +
-                                         kSymbolTableDefinition.table + "\"");
+  select_statement = db.PrepareStatement(
+      db.CreateQueryBuilder()->BuildSelectQuery(kSymbolTableDefinition.table));
   rows = select_statement->Execute({}, kSymbolTableDefinition);
   EXPECT_EQ(rows.GetSize(), 0);
 
-  select_statement = db.PrepareStatement(
-      "SELECT * FROM \"" + kSymbolPriceTableDefinition.table + "\"");
+  select_statement =
+      db.PrepareStatement(db.CreateQueryBuilder()->BuildSelectQuery(
+          kSymbolPriceTableDefinition.table));
   rows = select_statement->Execute({}, kSymbolPriceTableDefinition);
   EXPECT_EQ(rows.GetSize(), 0);
 }

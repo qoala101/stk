@@ -33,6 +33,7 @@
 #include "db_prepared_statement.h"
 #include "db_types.h"
 #include "sqlite_prepared_statement.h"
+#include "sqlite_query_builder.h"
 
 namespace stonks::db::sqlite {
 namespace {
@@ -287,6 +288,11 @@ class SqliteDb::Impl {
         std::bind_front(&RemoveStatement, prepared_statements_));
   }
 
+  [[nodiscard]] static auto CreateQueryBuilder()
+      -> std::unique_ptr<QueryBuilder> {
+    return std::make_unique<SqliteQueryBuilder>();
+  }
+
  private:
   gsl::not_null<sqlite3 *> sqlite_db_;
   std::vector<std::shared_ptr<sqlite3_stmt>> prepared_statements_{};
@@ -312,9 +318,13 @@ void SqliteDb::UpdateRow(const Table &table, const Row &new_row_values,
   impl_->UpdateRow(table, new_row_values, where_clause);
 }
 
-[[nodiscard]] auto SqliteDb::PrepareStatement(std::string_view query)
+auto SqliteDb::PrepareStatement(std::string_view query)
     -> std::unique_ptr<PreparedStatement> {
   return impl_->PrepareStatement(query);
+}
+
+auto SqliteDb::CreateQueryBuilder() -> std::unique_ptr<QueryBuilder> {
+  return impl_->CreateQueryBuilder();
 }
 
 // /*
