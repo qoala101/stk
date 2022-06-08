@@ -22,10 +22,10 @@ class Client {
   explicit Client(const Uri &uri);
 
   Client(const Client &) = delete;
-  Client(Client &&) noexcept;
+  Client(Client &&) noexcept = default;
 
   auto operator=(const Client &) -> Client & = delete;
-  auto operator=(Client &&) noexcept -> Client &;
+  auto operator=(Client &&) noexcept -> Client & = default;
 
   ~Client();
 

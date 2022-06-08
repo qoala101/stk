@@ -30,106 +30,116 @@ auto Logger() -> spdlog::logger & {
 
   return *logger;
 }
+
+void AddParamsToRequest(
+    const std::map<std::string, json::TypedAny> &params,
+    const std::map<std::string, json::TypeVariant> &endpoint_params,
+    network::RestRequest &request) {
+  for (const auto &endpoint_param : endpoint_params) {
+    const auto &[param_name, param_type] = endpoint_param;
+    const auto param = params.find(param_name);
+
+    if (const auto no_param = param == params.end()) {
+      ABSL_ASSERT(param_type.IsOptional() &&
+                  "Request misses mandatory parameter");
+
+      continue;
+    }
+
+    const auto &value = param->second;
+    const auto value_json = param_type.ConvertAnyToJson(value.GetAny());
+
+    const auto not_converted = !value_json.has_value();
+    ABSL_ASSERT(!not_converted && "Parameter {} has wrong type");
+
+    if (const auto no_value_for_optional_param =
+            value_json->is_null() && param_type.IsOptional()) {
+      continue;
+    }
+
+    request.AddParameter(param_name, value_json->serialize());
+  }
+}
+
+[[nodiscard]] auto ConvertRequestBodyToJson(
+    const json::TypedAny &request_body,
+    const std::optional<json::TypeVariant> &endpoint_request_body)
+    -> web::json::value {
+  if (!endpoint_request_body.has_value()) {
+    return web::json::value{};
+  }
+
+  const auto no_mandatory_body =
+      !request_body.GetAny().HasValue() && !endpoint_request_body->IsOptional();
+  ABSL_ASSERT(!no_mandatory_body && "Request misses mandatory body");
+
+  auto json = endpoint_request_body->ConvertAnyToJson(request_body.GetAny());
+
+  const auto not_converted = !json.has_value();
+  ABSL_ASSERT(!not_converted && "Request has wrong body type");
+
+  return std::move(*json);
+}
+
+/**
+ * @throws If response misses mandatory body or body represents an exception.
+ */
+[[nodiscard]] auto ParseResponseBody(
+    const web::json::value &response_json,
+    const std::optional<json::TypeVariant> &endpoint_response_body) -> Result {
+  if (response_json.is_null()) {
+    if (const auto no_mandatory_result =
+            endpoint_response_body.has_value() &&
+            !endpoint_response_body->IsOptional()) {
+      Logger().error("Response misses mandatory body");
+      throw std::runtime_error{"Response misses mandatory body"};
+    }
+
+    return endpoint_response_body->MakeNulloptAny();
+  }
+
+  if (endpoint_response_body.has_value()) {
+    auto response_body =
+        endpoint_response_body->ParseAnyFromJson(response_json);
+
+    if (const auto response_body_parsed = response_body.HasValue()) {
+      return response_body;
+    }
+  }
+
+  const auto exception =
+      json::Type<std::runtime_error>{}.ParseFromJson(response_json);
+
+  if (const auto exception_parsed = exception.has_value()) {
+    Logger().error("Received exception {}", exception->what());
+    throw std::runtime_error{*exception};
+  }
+
+  Logger().error("Received wrong response type {}", response_json.serialize());
+  throw std::runtime_error{"Received wrong response type"};
+}
 }  // namespace
 
 class Client::Impl {
  public:
   explicit Impl(const Uri &uri) : base_uri_{uri.GetFullUri()} {}
 
-  static void AddParamsToRequest(
-      const std::map<std::string, json::TypedAny> &params,
-      const std::map<std::string, json::TypeVariant> &endpoint_params,
-      network::RestRequest &request) {
-    for (const auto &endpoint_param : endpoint_params) {
-      const auto &[param_name, param_type] = endpoint_param;
-      const auto param = params.find(param_name);
-
-      if (const auto no_param = param == params.end()) {
-        ABSL_ASSERT(param_type.IsOptional() &&
-                    "Request misses mandatory parameter");
-
-        continue;
-      }
-
-      const auto &value = param->second;
-      const auto value_json = param_type.ConvertAnyToJson(value.GetAny());
-
-      const auto not_converted = !value_json.has_value();
-      ABSL_ASSERT(!not_converted && "Parameter {} has wrong type");
-
-      if (const auto no_value_for_optional_param =
-              value_json->is_null() && param_type.IsOptional()) {
-        continue;
-      }
-
-      request.AddParameter(param_name, value_json->serialize());
-    }
+  [[nodiscard]] auto Execute(const EndpointDesc &endpoint) const -> Result {
+    return Execute(endpoint, {}, {});
   }
 
-  [[nodiscard]] static auto ConvertRequestBodyToJson(
-      const json::TypedAny &request_body,
-      const std::optional<json::TypeVariant> &endpoint_request_body)
-      -> web::json::value {
-    if (!endpoint_request_body.has_value()) {
-      return web::json::value{};
-    }
-
-    const auto no_mandatory_body = !request_body.GetAny().HasValue() &&
-                                   !endpoint_request_body->IsOptional();
-    ABSL_ASSERT(!no_mandatory_body && "Request misses mandatory body");
-
-    auto json = endpoint_request_body->ConvertAnyToJson(request_body.GetAny());
-
-    const auto not_converted = !json.has_value();
-    ABSL_ASSERT(!not_converted && "Request has wrong body type");
-
-    return std::move(*json);
+  [[nodiscard]] auto Execute(
+      const EndpointDesc &endpoint,
+      const std::map<std::string, json::TypedAny> &params) const -> Result {
+    return Execute(endpoint, params, {});
   }
 
-  /**
-   * @throws If response misses mandatory body or body represents an exception.
-   */
-  [[nodiscard]] static auto ParseResponseBody(
-      const web::json::value &response_json,
-      const std::optional<json::TypeVariant> &endpoint_response_body)
+  [[nodiscard]] auto Execute(const EndpointDesc &endpoint,
+                             const json::TypedAny &request_body) const
       -> Result {
-    if (response_json.is_null()) {
-      if (const auto no_mandatory_result =
-              endpoint_response_body.has_value() &&
-              !endpoint_response_body->IsOptional()) {
-        Logger().error("Response misses mandatory body");
-        throw std::runtime_error{"Response misses mandatory body"};
-      }
-
-      return endpoint_response_body->MakeNulloptAny();
-    }
-
-    if (endpoint_response_body.has_value()) {
-      auto response_body =
-          endpoint_response_body->ParseAnyFromJson(response_json);
-
-      if (const auto response_body_parsed = response_body.HasValue()) {
-        return response_body;
-      }
-    }
-
-    const auto exception =
-        json::Type<std::runtime_error>{}.ParseFromJson(response_json);
-
-    if (const auto exception_parsed = exception.has_value()) {
-      Logger().error("Received exception {}", exception->what());
-      throw std::runtime_error{*exception};
-    }
-
-    Logger().error("Received wrong response type {}",
-                   response_json.serialize());
-    throw std::runtime_error{"Received wrong response type"};
+    return Execute(endpoint, {}, request_body);
   }
 
-  /**
-   * @throws If response doesn't match endpoint description or response is an
-   * exception itself.
-   */
   [[nodiscard]] auto Execute(
       const EndpointDesc &endpoint,
       const std::map<std::string, json::TypedAny> &params,
@@ -166,25 +176,21 @@ class Client::Impl {
 
 Client::Client(const Uri &uri) : impl_{std::make_unique<Impl>(uri)} {}
 
-Client::Client(Client &&) noexcept = default;
-
-auto Client::operator=(Client &&) noexcept -> Client & = default;
-
 Client::~Client() = default;
 
 auto Client::Execute(const EndpointDesc &endpoint) const -> Result {
-  return Execute(endpoint, {}, {});
+  return impl_->Execute(endpoint);
 }
 
 auto Client::Execute(const EndpointDesc &endpoint,
                      const std::map<std::string, json::TypedAny> &params) const
     -> Result {
-  return Execute(endpoint, params, {});
+  return impl_->Execute(endpoint, params);
 }
 
 auto Client::Execute(const EndpointDesc &endpoint,
                      const json::TypedAny &request_body) const -> Result {
-  return Execute(endpoint, {}, request_body);
+  return impl_->Execute(endpoint, request_body);
 }
 
 auto Client::Execute(const EndpointDesc &endpoint,
