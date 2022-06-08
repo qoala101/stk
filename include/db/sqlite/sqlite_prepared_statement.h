@@ -52,8 +52,8 @@ class SqlitePreparedStatement : public PreparedStatement {
       -> Rows override;
 
  private:
-  std::weak_ptr<sqlite3_stmt> statement_{};
-  std::function<void(sqlite3_stmt &)> finalize_statement_callback_{};
+  class Impl;
+  std::unique_ptr<Impl> impl_{};
 };
 }  // namespace stonks::db::sqlite
 

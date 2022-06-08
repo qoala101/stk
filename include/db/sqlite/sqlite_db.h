@@ -25,10 +25,10 @@ class SqliteDb : public Db, public std::enable_shared_from_this<SqliteDb> {
   explicit SqliteDb(std::string_view file_name);
 
   SqliteDb(const SqliteDb &) = delete;
-  SqliteDb(SqliteDb &&) = default;
+  SqliteDb(SqliteDb &&) noexcept = default;
 
   auto operator=(const SqliteDb &) -> SqliteDb & = delete;
-  auto operator=(SqliteDb &&) -> SqliteDb & = default;
+  auto operator=(SqliteDb &&) noexcept -> SqliteDb & = default;
 
   /**
    * @brief Does backup to the file specified at the time of creation and closes

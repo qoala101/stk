@@ -2,8 +2,8 @@
 
 #include <absl/base/macros.h>
 #include <sqlite3.h>
-#include <stdint.h>
 
+#include <cstdint>
 #include <gsl/assert>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
@@ -70,70 +70,100 @@ auto GetValues(sqlite3_stmt &statement, const RowDefinition &result_definition)
 }
 }  // namespace
 
+class SqlitePreparedStatement::Impl {
+ public:
+  explicit Impl(std::weak_ptr<sqlite3_stmt> statement,
+                std::function<void(sqlite3_stmt &)> finalize_statement_callback)
+      : statement_{std::move(statement)},
+        finalize_statement_callback_{std::move(finalize_statement_callback)} {
+    Expects(finalize_statement_callback_);
+  }
+
+  Impl(const Impl &) = delete;
+  Impl(Impl &&) noexcept = default;
+
+  auto operator=(const Impl &) -> Impl & = delete;
+  auto operator=(Impl &&) noexcept -> Impl & = default;
+
+  ~Impl() {
+    if (const auto statement = statement_.lock()) {
+      finalize_statement_callback_(*statement);
+    }
+  }
+
+  void Execute(const std::vector<Value> &params) {
+    static_cast<void>(Execute(params, {}));
+  }
+
+  auto Execute(const std::vector<Value> &params,
+               const RowDefinition &result_definition) -> Rows {
+    const auto statement = statement_.lock();
+    ABSL_ASSERT((statement != nullptr) &&
+                "Trying to execute finalized statement");
+
+    auto *const statement_ptr = statement.get();
+    const auto reset_result = sqlite3_reset(statement_ptr);
+
+    for (auto i = 0; i < params.size(); ++i) {
+      BindParam(*statement_ptr, i + 1, params[i]);
+    }
+
+    auto columns =
+        ranges::views::transform(result_definition,
+                                 [](const auto &cell) { return cell.column; }) |
+        ranges::to_vector;
+    auto rows = Rows{std::move(columns)};
+    auto num_received_columns = -1;
+
+    while (true) {
+      const auto result_code = sqlite3_step(statement_ptr);
+
+      switch (result_code) {
+        case SQLITE_ROW: {
+          if (const auto num_received_columns_not_set =
+                  num_received_columns < 0) {
+            num_received_columns = sqlite3_column_count(statement_ptr);
+
+            if (num_received_columns != result_definition.size()) {
+              throw std::runtime_error{
+                  "Statement result has wrong amount of columns"};
+            }
+          }
+
+          rows.Push(GetValues(*statement_ptr, result_definition));
+        } break;
+
+        case SQLITE_DONE:
+          return rows;
+
+        default:
+          throw std::runtime_error{
+              "Unexpected prepared statement step result: " +
+              std::to_string(result_code)};
+      }
+    }
+  }
+
+ private:
+  std::weak_ptr<sqlite3_stmt> statement_{};
+  std::function<void(sqlite3_stmt &)> finalize_statement_callback_{};
+};
+
 SqlitePreparedStatement::SqlitePreparedStatement(
     std::weak_ptr<sqlite3_stmt> statement,
     std::function<void(sqlite3_stmt &)> finalize_statement_callback)
-    : statement_{std::move(statement)},
-      finalize_statement_callback_{std::move(finalize_statement_callback)} {
-  Expects(finalize_statement_callback_);
-}
+    : impl_{std::make_unique<Impl>(std::move(statement),
+                                   std::move(finalize_statement_callback))} {}
 
-SqlitePreparedStatement::~SqlitePreparedStatement() {
-  if (const auto statement = statement_.lock()) {
-    finalize_statement_callback_(*statement);
-  }
-}
+SqlitePreparedStatement::~SqlitePreparedStatement() = default;
 
 void SqlitePreparedStatement::Execute(const std::vector<Value> &params) {
-  static_cast<void>(Execute(params, {}));
+  impl_->Execute(params);
 }
 
 auto SqlitePreparedStatement::Execute(const std::vector<Value> &params,
                                       const RowDefinition &result_definition)
     -> Rows {
-  const auto statement = statement_.lock();
-  ABSL_ASSERT((statement != nullptr) &&
-              "Trying to execute finalized statement");
-
-  auto *const statement_ptr = statement.get();
-  const auto reset_result = sqlite3_reset(statement_ptr);
-
-  for (auto i = 0; i < params.size(); ++i) {
-    BindParam(*statement_ptr, i + 1, params[i]);
-  }
-
-  auto columns =
-      ranges::views::transform(result_definition,
-                               [](const auto &cell) { return cell.column; }) |
-      ranges::to_vector;
-  auto rows = Rows{std::move(columns)};
-  auto num_received_columns = -1;
-
-  while (true) {
-    const auto result_code = sqlite3_step(statement_ptr);
-
-    switch (result_code) {
-      case SQLITE_ROW: {
-        if (const auto num_received_columns_not_set =
-                num_received_columns < 0) {
-          num_received_columns = sqlite3_column_count(statement_ptr);
-
-          if (num_received_columns != result_definition.size()) {
-            throw std::runtime_error{
-                "Statement result has wrong amount of columns"};
-          }
-        }
-
-        rows.Push(GetValues(*statement_ptr, result_definition));
-      } break;
-
-      case SQLITE_DONE:
-        return rows;
-
-      default:
-        throw std::runtime_error{"Unexpected prepared statement step result: " +
-                                 std::to_string(result_code)};
-    }
-  }
+  return impl_->Execute(params, result_definition);
 }
 }  // namespace stonks::db::sqlite
