@@ -173,18 +173,18 @@ auto Client::operator=(Client &&) noexcept -> Client & = default;
 Client::~Client() = default;
 
 auto Client::Execute(const EndpointDesc &endpoint) const -> Result {
-  return impl_->Execute(endpoint, {}, {});
+  return Execute(endpoint, {}, {});
 }
 
 auto Client::Execute(const EndpointDesc &endpoint,
                      const std::map<std::string, json::TypedAny> &params) const
     -> Result {
-  return impl_->Execute(endpoint, params, {});
+  return Execute(endpoint, params, {});
 }
 
 auto Client::Execute(const EndpointDesc &endpoint,
                      const json::TypedAny &request_body) const -> Result {
-  return impl_->Execute(endpoint, {}, request_body);
+  return Execute(endpoint, {}, request_body);
 }
 
 auto Client::Execute(const EndpointDesc &endpoint,

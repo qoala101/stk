@@ -1,30 +1,54 @@
 #ifndef STONKS_DB_DB_H_
 #define STONKS_DB_DB_H_
 
+#include <memory>
+#include <optional>
+#include <string_view>
+#include <vector>
+
+#include "db_prepared_statement.h"
 #include "db_types.h"
 
 namespace stonks::db {
+/**
+ * @brief Generic DB interface.
+ */
+// NOLINTNEXTLINE(*-special-member-functions)
 class Db {
  public:
   virtual ~Db() = default;
 
-  virtual bool CreateTableIfNotExists(
+  /**
+   * @brief Creates a table if no tables with the same name exist.
+   */
+  virtual void CreateTableIfNotExists(
       const TableDefinition &table_definition) = 0;
 
-  virtual bool DropTable(const Table &table) = 0;
+  /**
+   * @brief Deletes a table.
+   */
+  virtual void DropTable(const Table &table) = 0;
 
-  virtual bool Insert(const Table &table, const Row &row) = 0;
+  /**
+   * @brief Deletes all the rows in the table found by the WHERE clause.
+   * @param where_clause Should start from "WHERE " or be empty.
+   */
+  virtual void DeleteFrom(const Table &table,
+                          std::string_view where_clause) = 0;
 
-  virtual bool Delete(const Table &table, std::string_view where) = 0;
+  /**
+   * @brief Updates single row determined by where.
+   * @param where_clause Should start from "WHERE" and point at a single row.
+   */
+  virtual void UpdateRow(const Table &table, const Row &new_row_values,
+                         std::string_view where_clause) = 0;
 
-  virtual auto Update(const Table &table, const Row &row,
-                      std::string_view where) -> bool = 0;
-
-  virtual std::optional<std::vector<Row>> Select(
-      const TableDefinition &table_definition) const = 0;
-
-  virtual std::optional<std::vector<Row>> Select(
-      std::string_view query, const std::vector<Column> &columns) const = 0;
+  /**
+   * @brief Creates prepared statement which can then be called to execute the
+   * query on DB.
+   */
+  [[nodiscard]] virtual auto PrepareStatement(std::string_view query)
+      -> std::unique_ptr<PreparedStatement> = 0;
 };
 }  // namespace stonks::db
 

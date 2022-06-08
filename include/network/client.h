@@ -55,7 +55,6 @@ class Client {
 
  private:
   class Impl;
-
   std::unique_ptr<Impl> impl_{};
 };
 }  // namespace stonks::network

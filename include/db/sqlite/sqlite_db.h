@@ -1,51 +1,82 @@
 #ifndef STONKS_DB_SQLITE_SQLITE_DB_H_
 #define STONKS_DB_SQLITE_SQLITE_DB_H_
 
-#include <optional>
+#include <memory>
 #include <string_view>
-#include <vector>
 
 #include "db.h"
+#include "db_prepared_statement.h"
+#include "db_row.h"
 #include "db_types.h"
 
-class sqlite3;
-
 namespace stonks::db::sqlite {
-class SqliteDb : public Db {
+class SqliteDb : public Db, public std::enable_shared_from_this<SqliteDb> {
  public:
-  static std::optional<SqliteDb> OpenOrCreateDbFromFile(
-      std::string_view file_name);
+  /**
+   * @brief Creates in memory Sqlite DB.
+   * @remark DB can be saved to file via SqliteDb::Backup.
+   */
+  explicit SqliteDb() = default;
 
-  explicit SqliteDb(SqliteDb &&other);
-  explicit SqliteDb(const SqliteDb &) = delete;
-  SqliteDb &operator=(SqliteDb &&other);
-  SqliteDb &operator=(const SqliteDb &) = delete;
+  /**
+   * @brief Opens or creates new Sqlite DB from file.
+   * @remark File is created if it doesn't exist.
+   */
+  explicit SqliteDb(std::string_view file_name);
+
+  SqliteDb(const SqliteDb &) = delete;
+  SqliteDb(SqliteDb &&) = default;
+
+  auto operator=(const SqliteDb &) -> SqliteDb & = delete;
+  auto operator=(SqliteDb &&) -> SqliteDb & = default;
+
+  /**
+   * @brief Does backup to the file specified at the time of creation and closes
+   * DB handle.
+   * @remark All prepared statements become invalid after this.
+   */
   ~SqliteDb() override;
 
-  bool CreateTableIfNotExists(const TableDefinition &table_definition) override;
+  /**
+   * @copydoc Db::CreateTableIfNotExists
+   */
+  void CreateTableIfNotExists(const TableDefinition &table_definition) override;
 
-  bool DropTable(const Table &table) override;
+  /**
+   * @copydoc Db::DropTable
+   */
+  void DropTable(const Table &table) override;
 
-  bool Insert(const Table &table, const Row &row) override;
+  /**
+   * @copydoc Db::Delete
+   */
+  void DeleteFrom(const Table &table, std::string_view where_clause) override;
 
-  bool Delete(const Table &table, std::string_view where) override;
+  /**
+   * @copydoc Db::UpdateRow
+   */
+  void UpdateRow(const Table &table, const Row &new_row_values,
+                 std::string_view where_clause) override;
 
-  auto Update(const Table &table, const Row &row, std::string_view where)
-      -> bool override;
+  /**
+   * @copydoc Db::PrepareStatement
+   */
+  [[nodiscard]] auto PrepareStatement(std::string_view query)
+      -> std::unique_ptr<PreparedStatement> override;
 
-  std::optional<std::vector<Row>> Select(
-      const TableDefinition &table_definition) const override;
+  /**
+   * @brief Stores DB to the file specified at the creation time.
+   */
+  void Backup() const;
 
-  std::optional<std::vector<Row>> Select(
-      std::string_view query,
-      const std::vector<Column> &columns) const override;
+  /**
+   * @brief Stores DB to the specified file.
+   */
+  void Backup(std::string_view file_name) const;
 
  private:
-  friend void swap(SqliteDb &left, SqliteDb &right);
-
-  explicit SqliteDb(sqlite3 *sqlite_db_handle = nullptr);
-
-  sqlite3 *sqlite_db_handle_{};
+  class Impl;
+  std::unique_ptr<Impl> impl_{};
 };
 }  // namespace stonks::db::sqlite
 

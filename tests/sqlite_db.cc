@@ -2,7 +2,12 @@
 
 #include <gtest/gtest.h>
 
+#include <cstdint>
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/view/transform.hpp>
+
 #include "db_types.h"
+#include "db_value.h"
 #include "utils.h"
 
 namespace {
@@ -11,230 +16,187 @@ const auto kTestDbFileName = "sqlite_db_test.db";
 auto sqlite_db = std::optional<stonks::db::sqlite::SqliteDb>{};
 auto &db = static_cast<stonks::db::Db &>(*sqlite_db);
 
-TEST(SqliteDb, CreateAndDropTable) {  // NOLINT(*)
+TEST(SqliteDb, CreateAndDropTable) {
   static_cast<void>(std::remove(kTestDbFileName));
-  sqlite_db =
-      stonks::db::sqlite::SqliteDb::OpenOrCreateDbFromFile(kTestDbFileName);
+  sqlite_db.emplace(kTestDbFileName);
 
-  const auto table = stonks::db::Table{.name = "TestTable"};
+  const auto table = stonks::db::Table{"TestTable"};
   const auto table_definition = stonks::db::TableDefinition{
       .table = table,
       .columns = {
-          stonks::db::Column{.name = "IntTrue",
-                             .data_type = stonks::db::DataType::kInteger,
-                             .primary_key = true,
-                             .auto_increment = true,
-                             .unique = true},
-          stonks::db::Column{.name = "TextFalse",
-                             .data_type = stonks::db::DataType::kText}}};
-  auto success = db.CreateTableIfNotExists(table_definition);
-  EXPECT_TRUE(success);
-
-  success = db.CreateTableIfNotExists(table_definition);
-  EXPECT_FALSE(success);
-
-  success = db.DropTable(table);
-  EXPECT_TRUE(success);
-
-  success = db.DropTable(table);
-  EXPECT_FALSE(success);
+          stonks::db::ColumnDefinition{.column = "IntTrue",
+                                       .data_type = stonks::db::DataType::kInt,
+                                       .primary_key = true,
+                                       .auto_increment = true,
+                                       .unique = true},
+          stonks::db::ColumnDefinition{
+              .column = "TextFalse",
+              .data_type = stonks::db::DataType::kString}}};
+  db.CreateTableIfNotExists(table_definition);
+  db.CreateTableIfNotExists(table_definition);
+  db.DropTable(table);
+  EXPECT_ANY_THROW(db.DropTable(table));
 }
 
 const auto kAssetTableDefinition = stonks::db::TableDefinition{
-    .table = stonks::db::Table{.name = "Asset"},
+    .table = stonks::db::Table{"Asset"},
     .columns = {
-        stonks::db::Column{.name = "id",
-                           .data_type = stonks::db::DataType::kInteger,
-                           .primary_key = true,
-                           .auto_increment = true,
-                           .unique = true},
-        stonks::db::Column{.name = "name",
-                           .data_type = stonks::db::DataType::kText,
-                           .unique = true},
+        stonks::db::ColumnDefinition{.column = "id",
+                                     .data_type = stonks::db::DataType::kInt64,
+                                     .primary_key = true,
+                                     .auto_increment = true,
+                                     .unique = true},
+        stonks::db::ColumnDefinition{.column = "name",
+                                     .data_type = stonks::db::DataType::kString,
+                                     .unique = true},
     }};
 
-TEST(SqliteDb, InsertAndSelect) {  // NOLINT(*)
-  auto success = db.CreateTableIfNotExists(kAssetTableDefinition);
-  EXPECT_TRUE(success);
-  success =
-      db.Insert(kAssetTableDefinition.table,
-                stonks::db::Row{.cells = {stonks::db::Cell{
-                                    .column_name = "name", .value = {"BTC"}}}});
-  EXPECT_TRUE(success);
-  success =
-      db.Insert(kAssetTableDefinition.table,
-                stonks::db::Row{.cells = {stonks::db::Cell{
-                                    .column_name = "name", .value = {"ETH"}}}});
-  EXPECT_TRUE(success);
-  success = db.Insert(
-      kAssetTableDefinition.table,
-      stonks::db::Row{.cells = {stonks::db::Cell{.column_name = "name",
-                                                 .value = {"USDT"}}}});
-  EXPECT_TRUE(success);
+TEST(SqliteDb, InsertAndSelect) {
+  db.CreateTableIfNotExists(kAssetTableDefinition);
 
-  const auto rows = db.Select(kAssetTableDefinition);
-  ASSERT_TRUE(rows.has_value());
-  EXPECT_EQ(rows->size(), 3);
+  auto insert_statement =
+      db.PrepareStatement("INSERT INTO \"" + kAssetTableDefinition.table +
+                          "\"(\"name\") VALUES(?1)");
+  insert_statement->Execute({std::string_view{"BTC"}});
+  insert_statement->Execute({std::string_view{"ETH"}});
+  insert_statement->Execute({std::string_view{"USDT"}});
 
-  EXPECT_EQ((*rows)[0].cells.size(), 2);
-  EXPECT_EQ((*rows)[0].cells[0].column_name, "id");
-  ASSERT_TRUE((*rows)[0].cells[0].value.GetInt64().has_value());
-  EXPECT_EQ(*(*rows)[0].cells[0].value.GetInt64(), 1);
-  EXPECT_EQ((*rows)[0].cells[1].column_name, "name");
-  ASSERT_TRUE((*rows)[0].cells[1].value.GetString() != nullptr);
-  EXPECT_EQ(*(*rows)[0].cells[1].value.GetString(), "BTC");
+  auto select_statement = db.PrepareStatement(
+      "SELECT * FROM \"" + kAssetTableDefinition.table + "\"");
 
-  EXPECT_EQ((*rows)[1].cells.size(), 2);
-  EXPECT_EQ((*rows)[1].cells[0].column_name, "id");
-  ASSERT_TRUE((*rows)[1].cells[0].value.GetInt64().has_value());
-  EXPECT_EQ(*(*rows)[1].cells[0].value.GetInt64(), 2);
-  EXPECT_EQ((*rows)[1].cells[1].column_name, "name");
-  ASSERT_TRUE((*rows)[1].cells[1].value.GetString() != nullptr);
-  EXPECT_EQ(*(*rows)[1].cells[1].value.GetString(), "ETH");
-
-  EXPECT_EQ((*rows)[2].cells.size(), 2);
-  EXPECT_EQ((*rows)[2].cells[0].column_name, "id");
-  ASSERT_TRUE((*rows)[2].cells[0].value.GetInt64().has_value());
-  EXPECT_EQ(*(*rows)[2].cells[0].value.GetInt64(), 3);
-  EXPECT_EQ((*rows)[2].cells[1].column_name, "name");
-  ASSERT_TRUE((*rows)[2].cells[1].value.GetString() != nullptr);
-  EXPECT_EQ(*(*rows)[2].cells[1].value.GetString(), "USDT");
+  const auto rows = select_statement->Execute(
+      {}, ranges::views::transform(kAssetTableDefinition.columns,
+                                   [](const auto &column_definition) {
+                                     return stonks::db::CellDefinition{
+                                         column_definition.column,
+                                         column_definition.data_type};
+                                   }) |
+              ranges::to_vector);
+  EXPECT_EQ(rows.GetSize(), 3);
+  EXPECT_EQ(rows.GetValues("id")[0].GetInt64(), 1);
+  EXPECT_EQ(rows.GetValues("name")[0].GetString(), "BTC");
+  EXPECT_EQ(rows.GetValues("id")[1].GetInt64(), 2);
+  EXPECT_EQ(rows.GetValues("name")[1].GetString(), "ETH");
+  EXPECT_EQ(rows.GetValues("id")[2].GetInt64(), 3);
+  EXPECT_EQ(rows.GetValues("name")[2].GetString(), "USDT");
 }
 
-TEST(SqliteDb, InsertNull) {  // NOLINT(*)
-  const auto success =
-      db.Insert(stonks::db::Table{.name = "Asset"}, stonks::db::Row{});
-  EXPECT_FALSE(success);
+TEST(SqliteDb, InsertNull) {
+  auto insert_statement =
+      db.PrepareStatement("INSERT INTO \"" + kAssetTableDefinition.table +
+                          "\"(\"name\") VALUES(?1)");
+  EXPECT_ANY_THROW(insert_statement->Execute({}));
 }
 
 const auto kSymbolTableDefinition = stonks::db::TableDefinition{
-    .table = stonks::db::Table{.name = "Symbol"},
+    .table = "Symbol",
     .columns = {
-        stonks::db::Column{.name = "id",
-                           .data_type = stonks::db::DataType::kInteger,
-                           .primary_key = true,
-                           .auto_increment = true,
-                           .unique = true},
-        stonks::db::Column{
-            .name = "base_asset_id",
-            .data_type = stonks::db::DataType::kInteger,
-            .foreign_key = stonks::db::ForeignKey{.table_name = "Asset",
-                                                  .column_name = "id"}},
-        stonks::db::Column{.name = "quote_asset_id",
-                           .data_type = stonks::db::DataType::kInteger,
-                           .foreign_key = stonks::db::ForeignKey{
-                               .table_name = "Asset", .column_name = "id"}}}};
+        stonks::db::ColumnDefinition{.column = "id",
+                                     .data_type = stonks::db::DataType::kInt64,
+                                     .primary_key = true,
+                                     .auto_increment = true,
+                                     .unique = true},
+        stonks::db::ColumnDefinition{
+            .column = "base_asset_id",
+            .data_type = stonks::db::DataType::kInt64,
+            .foreign_key =
+                stonks::db::ForeignKey{.table = "Asset", .column = "id"}},
+        stonks::db::ColumnDefinition{.column = "quote_asset_id",
+                                     .data_type = stonks::db::DataType::kInt64,
+                                     .foreign_key = stonks::db::ForeignKey{
+                                         .table = "Asset", .column = "id"}}}};
 
 const auto kSymbolPriceTableDefinition = stonks::db::TableDefinition{
-    .table = stonks::db::Table{.name = "SymbolPrice"},
+    .table = "SymbolPrice",
     .columns = {
-        stonks::db::Column{
-            .name = "symbol_id",
-            .data_type = stonks::db::DataType::kInteger,
-            .foreign_key = stonks::db::ForeignKey{.table_name = "Symbol",
-                                                  .column_name = "id"}},
-        stonks::db::Column{.name = "time",
-                           .data_type = stonks::db::DataType::kInteger},
-        stonks::db::Column{.name = "price",
-                           .data_type = stonks::db::DataType::kReal}}};
+        stonks::db::ColumnDefinition{
+            .column = "symbol_id",
+            .data_type = stonks::db::DataType::kInt64,
+            .foreign_key =
+                stonks::db::ForeignKey{.table = "Symbol", .column = "id"}},
+        stonks::db::ColumnDefinition{.column = "time",
+                                     .data_type = stonks::db::DataType::kInt64},
+        stonks::db::ColumnDefinition{
+            .column = "price", .data_type = stonks::db::DataType::kDouble}}};
 
-TEST(SqliteDb, ForeignKey) {  // NOLINT(*)
-  auto success = db.CreateTableIfNotExists(kSymbolTableDefinition);
-  EXPECT_TRUE(success);
-  success = db.Insert(
-      kSymbolTableDefinition.table,
-      stonks::db::Row{
-          .cells = {
-              stonks::db::Cell{.column_name = "base_asset_id", .value = {1}},
-              stonks::db::Cell{.column_name = "quote_asset_id",
-                               .value = {3}}}});
-  EXPECT_TRUE(success);
-  success = db.Insert(
-      kSymbolTableDefinition.table,
-      stonks::db::Row{
-          .cells = {
-              stonks::db::Cell{.column_name = "base_asset_id", .value = {2}},
-              stonks::db::Cell{.column_name = "quote_asset_id",
-                               .value = {3}}}});
-  EXPECT_TRUE(success);
-  success = db.Insert(
-      kSymbolTableDefinition.table,
-      stonks::db::Row{
-          .cells = {
-              // NOLINTNEXTLINE(*-magic-numbers)
-              stonks::db::Cell{.column_name = "base_asset_id", .value = {5}},
-              stonks::db::Cell{.column_name = "quote_asset_id",
-                               .value = {6}}}});  // NOLINT(*-magic-numbers)
-  EXPECT_FALSE(success);
+TEST(SqliteDb, ForeignKey) {
+  db.CreateTableIfNotExists(kSymbolTableDefinition);
 
-  success = db.CreateTableIfNotExists(kSymbolPriceTableDefinition);
-  EXPECT_TRUE(success);
-  success = db.Insert(
-      kSymbolPriceTableDefinition.table,
-      stonks::db::Row{
-          .cells = {
-              stonks::db::Cell{.column_name = "symbol_id", .value = {1}},
-              stonks::db::Cell{.column_name = "time",
-                               .value = {stonks::utils::GetUnixTime().count()}},
-              stonks::db::Cell{
-                  .column_name = "price",
-                  .value = {double{12345}}}}});  // NOLINT(*-magic-numbers)
-  EXPECT_TRUE(success);
-  success = db.Insert(
-      kSymbolPriceTableDefinition.table,
-      stonks::db::Row{
-          .cells = {
-              stonks::db::Cell{.column_name = "symbol_id", .value = {2}},
-              stonks::db::Cell{.column_name = "time",
-                               .value = {stonks::utils::GetUnixTime().count()}},
-              // NOLINTNEXTLINE(*-magic-numbers)
-              stonks::db::Cell{.column_name = "price", .value = {0.12345}}}});
-  EXPECT_TRUE(success);
+  auto insert_symbol_statement = db.PrepareStatement(
+      "INSERT INTO \"" + kSymbolTableDefinition.table +
+      "\"(\"base_asset_id\", \"quote_asset_id\") VALUES(?1, ?2)");
+  insert_symbol_statement->Execute({1, 3});
+  insert_symbol_statement->Execute({2, 3});
+  EXPECT_ANY_THROW(insert_symbol_statement->Execute({5, 6}));
+
+  db.CreateTableIfNotExists(kSymbolPriceTableDefinition);
+
+  auto insert_symbol_price_statement = db.PrepareStatement(
+      "INSERT INTO \"" + kSymbolPriceTableDefinition.table +
+      "\"(\"symbol_id\", \"time\", \"price\") VALUES(?1, ?2, ?3)");
+  insert_symbol_price_statement->Execute(
+      {1, stonks::utils::GetUnixTime().count(), 12345});
+  insert_symbol_price_statement->Execute(
+      {2, stonks::utils::GetUnixTime().count(), 0.12345});
 }
 
-TEST(SqliteDb, SelectJoin) {  // NOLINT(*)
-  const auto columns = std::vector<stonks::db::Column>{
-      stonks::db::Column{.name = "base_asset",
-                         .data_type = stonks::db::DataType::kText},
-      stonks::db::Column{.name = "quote_asset",
-                         .data_type = stonks::db::DataType::kText}};
-  const auto rows = db.Select(
+TEST(SqliteDb, SelectJoin) {
+  const auto columns = std::vector<stonks::db::CellDefinition>{
+      stonks::db::CellDefinition{.column = "base_asset",
+                                 .data_type = stonks::db::DataType::kString},
+      stonks::db::CellDefinition{.column = "quote_asset",
+                                 .data_type = stonks::db::DataType::kString}};
+
+  auto select_statement = db.PrepareStatement(
       "SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS quote_asset "
       "FROM Symbol "
       "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
-      "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id=QuoteAsset.id;",
-      columns);
-  ASSERT_TRUE(rows.has_value());
-  EXPECT_EQ(rows->size(), 2);
-
-  EXPECT_EQ((*rows)[0].cells.size(), 2);
-  ASSERT_NE((*rows)[0].GetCellValueString("base_asset"), nullptr);
-  EXPECT_EQ(*(*rows)[0].GetCellValueString("base_asset"), "BTC");
-  ASSERT_NE((*rows)[0].GetCellValueString("quote_asset"), nullptr);
-  EXPECT_EQ(*(*rows)[0].GetCellValueString("quote_asset"), "USDT");
-
-  EXPECT_EQ((*rows)[1].cells.size(), 2);
-  ASSERT_NE((*rows)[1].GetCellValueString("base_asset"), nullptr);
-  EXPECT_EQ(*(*rows)[1].GetCellValueString("base_asset"), "ETH");
-  ASSERT_NE((*rows)[1].GetCellValueString("quote_asset"), nullptr);
-  EXPECT_EQ(*(*rows)[1].GetCellValueString("quote_asset"), "USDT");
+      "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id=QuoteAsset.id;");
+  const auto rows = select_statement->Execute({}, columns);
+  EXPECT_EQ(rows.GetSize(), 2);
+  EXPECT_EQ(rows.GetValues("base_asset")[0].GetString(), "BTC");
+  EXPECT_EQ(rows.GetValues("quote_asset")[0].GetString(), "USDT");
+  EXPECT_EQ(rows.GetValues("base_asset")[1].GetString(), "ETH");
+  EXPECT_EQ(rows.GetValues("quote_asset")[1].GetString(), "USDT");
 }
 
-TEST(SqliteDb, CascadeForeignKeyDelete) {  // NOLINT(*)
-  const auto success = db.Delete(stonks::db::Table{.name = "Asset"},
-                                 "WHERE Asset.name = \"USDT\"");
-  EXPECT_TRUE(success);
+TEST(SqliteDb, CascadeForeignKeyDelete) {
+  db.DeleteFrom("Asset", "WHERE Asset.name = \"USDT\"");
 
-  auto rows = db.Select(kAssetTableDefinition);
-  ASSERT_TRUE(rows.has_value());
-  EXPECT_EQ(rows->size(), 2);
+  auto select_statement = db.PrepareStatement(
+      "SELECT * FROM \"" + kAssetTableDefinition.table + "\"");
+  auto rows = select_statement->Execute(
+      {}, ranges::views::transform(kAssetTableDefinition.columns,
+                                   [](const auto &column_definition) {
+                                     return stonks::db::CellDefinition{
+                                         column_definition.column,
+                                         column_definition.data_type};
+                                   }) |
+              ranges::to_vector);
+  EXPECT_EQ(rows.GetSize(), 2);
 
-  rows = db.Select(kSymbolTableDefinition);
-  ASSERT_TRUE(rows.has_value());
-  EXPECT_EQ(rows->size(), 0);
+  select_statement = db.PrepareStatement("SELECT * FROM \"" +
+                                         kSymbolTableDefinition.table + "\"");
+  rows = select_statement->Execute(
+      {}, ranges::views::transform(kSymbolTableDefinition.columns,
+                                   [](const auto &column_definition) {
+                                     return stonks::db::CellDefinition{
+                                         column_definition.column,
+                                         column_definition.data_type};
+                                   }) |
+              ranges::to_vector);
+  EXPECT_EQ(rows.GetSize(), 0);
 
-  rows = db.Select(kSymbolPriceTableDefinition);
-  ASSERT_TRUE(rows.has_value());
-  EXPECT_EQ(rows->size(), 0);
+  select_statement = db.PrepareStatement(
+      "SELECT * FROM \"" + kSymbolPriceTableDefinition.table + "\"");
+  rows = select_statement->Execute(
+      {}, ranges::views::transform(kSymbolPriceTableDefinition.columns,
+                                   [](const auto &column_definition) {
+                                     return stonks::db::CellDefinition{
+                                         column_definition.column,
+                                         column_definition.data_type};
+                                   }) |
+              ranges::to_vector);
+  EXPECT_EQ(rows.GetSize(), 0);
 }
 }  // namespace

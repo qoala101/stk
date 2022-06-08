@@ -7,16 +7,16 @@
 #include "db_enums.h"
 
 template <>
-constexpr std::string_view
-magic_enum::customize::enum_name<stonks::db::DataType>(
-    stonks::db::DataType value) noexcept {
+constexpr auto magic_enum::customize::enum_name<stonks::db::DataType>(
+    stonks::db::DataType value) noexcept -> std::string_view {
   switch (value) {
-    case stonks::db::DataType::kInteger:
+    case stonks::db::DataType::kInt:
+    case stonks::db::DataType::kInt64:
       return "INTEGER";
-    case stonks::db::DataType::kText:
-      return "TEXT";
-    case stonks::db::DataType::kReal:
+    case stonks::db::DataType::kDouble:
       return "REAL";
+    case stonks::db::DataType::kString:
+      return "TEXT";
     default:
       break;
   }
