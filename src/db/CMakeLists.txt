@@ -9,6 +9,8 @@ add_library(libdb
   sqlite/sqlite_db.cc
   sqlite/sqlite_prepared_statement.cc
   sqlite/sqlite_query_builder.cc
+  db_prepared_statement.cc
+  db_query_builder.cc
   db_row_definition.cc
   db_row.cc
   db_value.cc

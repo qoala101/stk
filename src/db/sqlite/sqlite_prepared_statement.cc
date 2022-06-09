@@ -100,10 +100,6 @@ class SqlitePreparedStatement::Impl {
     }
   }
 
-  void Execute(const std::vector<Value> &params) {
-    static_cast<void>(Execute(params, {}));
-  }
-
   auto Execute(const std::vector<Value> &params,
                const RowDefinition &result_definition) -> Rows {
     const auto statement = statement_.lock();
@@ -166,10 +162,6 @@ SqlitePreparedStatement::SqlitePreparedStatement(
                                    std::move(finalize_statement_callback))} {}
 
 SqlitePreparedStatement::~SqlitePreparedStatement() = default;
-
-void SqlitePreparedStatement::Execute(const std::vector<Value> &params) {
-  impl_->Execute(params);
-}
 
 auto SqlitePreparedStatement::Execute(const std::vector<Value> &params,
                                       const RowDefinition &result_definition)

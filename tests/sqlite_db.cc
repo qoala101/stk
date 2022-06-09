@@ -32,10 +32,17 @@ TEST(SqliteDb, CreateAndDropTable) {
           stonks::db::ColumnDefinition{
               .column = "TextFalse",
               .data_type = stonks::db::DataType::kString}}};
-  db.CreateTableIfNotExists(table_definition);
-  db.CreateTableIfNotExists(table_definition);
-  db.DropTable(table);
-  EXPECT_ANY_THROW(db.DropTable(table));
+  db.PrepareStatement(db.CreateQueryBuilder()->BuildCreateTableIfNotExistsQuery(
+                          table_definition))
+      ->Execute();
+  db.PrepareStatement(db.CreateQueryBuilder()->BuildCreateTableIfNotExistsQuery(
+                          table_definition))
+      ->Execute();
+  db.PrepareStatement(db.CreateQueryBuilder()->BuildDropTableQuery(table))
+      ->Execute();
+  EXPECT_ANY_THROW(
+      db.PrepareStatement(db.CreateQueryBuilder()->BuildDropTableQuery(table))
+          ->Execute());
 }
 
 const auto kAssetTableDefinition = stonks::db::TableDefinition{
@@ -52,7 +59,9 @@ const auto kAssetTableDefinition = stonks::db::TableDefinition{
     }};
 
 TEST(SqliteDb, InsertAndSelect) {
-  db.CreateTableIfNotExists(kAssetTableDefinition);
+  db.PrepareStatement(db.CreateQueryBuilder()->BuildCreateTableIfNotExistsQuery(
+                          kAssetTableDefinition))
+      ->Execute();
 
   auto insert_statement = db.PrepareStatement(
       db.CreateQueryBuilder()->BuildInsertQuery(kAssetTableDefinition));
@@ -76,7 +85,7 @@ TEST(SqliteDb, InsertAndSelect) {
 TEST(SqliteDb, InsertNull) {
   auto insert_statement = db.PrepareStatement(
       db.CreateQueryBuilder()->BuildInsertQuery(kAssetTableDefinition));
-  EXPECT_ANY_THROW(insert_statement->Execute({}));
+  EXPECT_ANY_THROW(insert_statement->Execute());
 }
 
 const auto kSymbolTableDefinition = stonks::db::TableDefinition{
@@ -111,7 +120,9 @@ const auto kSymbolPriceTableDefinition = stonks::db::TableDefinition{
             .column = "price", .data_type = stonks::db::DataType::kDouble}}};
 
 TEST(SqliteDb, ForeignKey) {
-  db.CreateTableIfNotExists(kSymbolTableDefinition);
+  db.PrepareStatement(db.CreateQueryBuilder()->BuildCreateTableIfNotExistsQuery(
+                          kSymbolTableDefinition))
+      ->Execute();
 
   auto insert_symbol_statement =
       db.PrepareStatement(db.CreateQueryBuilder()->BuildInsertQuery(
@@ -120,7 +131,9 @@ TEST(SqliteDb, ForeignKey) {
   insert_symbol_statement->Execute({2, 3});
   EXPECT_ANY_THROW(insert_symbol_statement->Execute({5, 6}));
 
-  db.CreateTableIfNotExists(kSymbolPriceTableDefinition);
+  db.PrepareStatement(db.CreateQueryBuilder()->BuildCreateTableIfNotExistsQuery(
+                          kSymbolPriceTableDefinition))
+      ->Execute();
 
   auto insert_symbol_price_statement = db.PrepareStatement(
       db.CreateQueryBuilder()->BuildInsertQuery(kSymbolPriceTableDefinition));
@@ -151,7 +164,10 @@ TEST(SqliteDb, SelectJoin) {
 }
 
 TEST(SqliteDb, CascadeForeignKeyDelete) {
-  db.DeleteFrom("Asset", "WHERE Asset.name = \"USDT\"");
+  db
+      .PrepareStatement(db.CreateQueryBuilder()->BuildDeleteQuery(
+          kAssetTableDefinition.table, "WHERE Asset.name = \"USDT\""))
+      ->Execute();
 
   auto select_statement = db.PrepareStatement(
       db.CreateQueryBuilder()->BuildSelectQuery(kAssetTableDefinition.table));
