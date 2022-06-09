@@ -7,8 +7,6 @@
 #include "db.h"
 #include "db_prepared_statement.h"
 #include "db_query_builder.h"
-#include "db_row.h"
-#include "db_types.h"
 
 namespace stonks::db::sqlite {
 class SqliteDb : public Db, public std::enable_shared_from_this<SqliteDb> {
@@ -37,27 +35,6 @@ class SqliteDb : public Db, public std::enable_shared_from_this<SqliteDb> {
    * @remark All prepared statements become invalid after this.
    */
   ~SqliteDb() override;
-
-  /**
-   * @copydoc Db::CreateTableIfNotExists
-   */
-  void CreateTableIfNotExists(const TableDefinition &table_definition) override;
-
-  /**
-   * @copydoc Db::DropTable
-   */
-  void DropTable(const Table &table) override;
-
-  /**
-   * @copydoc Db::Delete
-   */
-  void DeleteFrom(const Table &table, std::string_view where_clause) override;
-
-  /**
-   * @copydoc Db::UpdateRow
-   */
-  void UpdateRow(const Table &table, const Row &new_row_values,
-                 std::string_view where_clause) override;
 
   /**
    * @copydoc Db::PrepareStatement

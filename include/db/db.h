@@ -20,31 +20,6 @@ class Db {
   virtual ~Db() = default;
 
   /**
-   * @brief Creates a table if no tables with the same name exist.
-   */
-  virtual void CreateTableIfNotExists(
-      const TableDefinition &table_definition) = 0;
-
-  /**
-   * @brief Deletes a table.
-   */
-  virtual void DropTable(const Table &table) = 0;
-
-  /**
-   * @brief Deletes all the rows in the table found by the WHERE clause.
-   * @param where_clause Should start from "WHERE " or be empty.
-   */
-  virtual void DeleteFrom(const Table &table,
-                          std::string_view where_clause) = 0;
-
-  /**
-   * @brief Updates single row determined by where.
-   * @param where_clause Should start from "WHERE" and point at a single row.
-   */
-  virtual void UpdateRow(const Table &table, const Row &new_row_values,
-                         std::string_view where_clause) = 0;
-
-  /**
    * @brief Creates prepared statement which can then be called to execute the
    * query on DB.
    */

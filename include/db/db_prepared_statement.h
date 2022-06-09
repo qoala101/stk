@@ -1,9 +1,11 @@
 #ifndef STONKS_DB_DB_PREPARED_STATEMENT_H_
 #define STONKS_DB_DB_PREPARED_STATEMENT_H_
 
+#include <vector>
+
 #include "db_row.h"
 #include "db_row_definition.h"
-#include "db_types.h"
+#include "db_value.h"
 
 namespace stonks::db {
 /**
@@ -17,9 +19,20 @@ class PreparedStatement {
 
   /**
    * @brief Executes statement which doesn't return result.
+   */
+  void Execute();
+
+  /**
+   * @brief Executes statement which doesn't return result.
    * @param params Values to be injected into the query.
    */
-  virtual void Execute(const std::vector<Value> &params) = 0;
+  void Execute(const std::vector<Value> &params);
+
+  /**
+   * @brief Executes statement which returns rows.
+   * @param result_definition Description of expected result rows.
+   */
+  auto Execute(const RowDefinition &result_definition) -> Rows;
 
   /**
    * @brief Executes statement which returns rows.

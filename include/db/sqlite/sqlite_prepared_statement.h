@@ -43,11 +43,6 @@ class SqlitePreparedStatement : public PreparedStatement {
   /**
    * @copydoc PreparedStatement::Execute
    */
-  void Execute(const std::vector<Value> &params) override;
-
-  /**
-   * @copydoc PreparedStatement::Execute
-   */
   [[nodiscard]] auto Execute(const std::vector<Value> &params,
                              const RowDefinition &result_definition)
       -> Rows override;
