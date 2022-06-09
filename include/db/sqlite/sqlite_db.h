@@ -1,27 +1,22 @@
 #ifndef STONKS_DB_SQLITE_SQLITE_DB_H_
 #define STONKS_DB_SQLITE_SQLITE_DB_H_
 
+#include <sqlite3.h>
+
+#include <gsl/pointers>
 #include <memory>
 #include <string_view>
 
 #include "db.h"
 #include "db_prepared_statement.h"
-#include "db_query_builder.h"
 
 namespace stonks::db::sqlite {
-class SqliteDb : public Db, public std::enable_shared_from_this<SqliteDb> {
+class SqliteDb : public Db {
  public:
   /**
-   * @brief Creates in memory Sqlite DB.
-   * @remark DB can be saved to file via SqliteDb::Backup.
+   * @brief Creates DB wrapper for SQLite DB.
    */
-  explicit SqliteDb() = default;
-
-  /**
-   * @brief Opens or creates new Sqlite DB from file.
-   * @remark File is created if it doesn't exist.
-   */
-  explicit SqliteDb(std::string_view file_name);
+  explicit SqliteDb(gsl::not_null<sqlite3 *> sqlite_db);
 
   SqliteDb(const SqliteDb &) = delete;
   SqliteDb(SqliteDb &&) noexcept = default;
@@ -30,8 +25,8 @@ class SqliteDb : public Db, public std::enable_shared_from_this<SqliteDb> {
   auto operator=(SqliteDb &&) noexcept -> SqliteDb & = default;
 
   /**
-   * @brief Does backup to the file specified at the time of creation and closes
-   * DB handle.
+   * @brief Closes SQLite DB.
+   * @remark Doesn't write DB to file. It should be done manually.
    * @remark All prepared statements become invalid after this.
    */
   ~SqliteDb() override;
@@ -43,20 +38,9 @@ class SqliteDb : public Db, public std::enable_shared_from_this<SqliteDb> {
       -> std::unique_ptr<PreparedStatement> override;
 
   /**
-   * @copydoc Db::CreateQueryBuilder
+   * @copydoc Db::WriteToFile
    */
-  [[nodiscard]] auto CreateQueryBuilder()
-      -> std::unique_ptr<QueryBuilder> override;
-
-  /**
-   * @brief Stores DB to the file specified at the creation time.
-   */
-  void Backup() const;
-
-  /**
-   * @brief Stores DB to the specified file.
-   */
-  void Backup(std::string_view file_name) const;
+  void WriteToFile(std::string_view file_path) override;
 
  private:
   class Impl;

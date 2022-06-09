@@ -27,10 +27,9 @@ class Db {
       -> std::unique_ptr<PreparedStatement> = 0;
 
   /**
-   * @brief Creates query builder which knows how to build queries for this DB.
+   * @brief Stores this DB to the specified file.
    */
-  [[nodiscard]] virtual auto CreateQueryBuilder()
-      -> std::unique_ptr<QueryBuilder> = 0;
+  virtual void WriteToFile(std::string_view file_path) = 0;
 };
 }  // namespace stonks::db
 

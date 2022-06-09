@@ -6,9 +6,11 @@ find_package(range-v3 REQUIRED)
 find_package(absl REQUIRED)
 
 add_library(libdb
+  sqlite/sqlite_db_factory.cc
   sqlite/sqlite_db.cc
   sqlite/sqlite_prepared_statement.cc
   sqlite/sqlite_query_builder.cc
+  sqlite/sqlite_utils.cc
   db_prepared_statement.cc
   db_query_builder.cc
   db_row_definition.cc

@@ -22,13 +22,13 @@
 #include "db_enum_conversions.h"  // IWYU pragma: keep
 #include "db_prepared_statement.h"
 #include "sqlite_prepared_statement.h"
-#include "sqlite_query_builder.h"
+#include "sqlite_utils.h"
 
 namespace stonks::db::sqlite {
 namespace {
 [[nodiscard]] auto Logger() -> spdlog::logger & {
   static auto logger = []() {
-    auto logger = spdlog::stdout_color_mt("Client");
+    auto logger = spdlog::stdout_color_mt("SqliteDb");
     logger->set_level(spdlog::level::debug);
     return logger;
   }();
@@ -44,29 +44,6 @@ namespace {
   }
 
   return file_name;
-}
-
-[[nodiscard]] auto OpenSqliteDb(std::string_view file_name)
-    -> gsl::not_null<sqlite3 *> {
-  auto *sqlite_db = (sqlite3 *){};
-  sqlite3_open(file_name.data(), &sqlite_db);
-
-  if (sqlite_db == nullptr) {
-    throw std::runtime_error{std::string{"Cannot open DB from "} +
-                             file_name.data() + ": " +
-                             sqlite3_errmsg(sqlite_db)};
-  }
-
-  return sqlite_db;
-}
-
-void SetPragmas(sqlite3 &sqlite_db) {
-  const auto result_code = sqlite3_exec(&sqlite_db, "PRAGMA foreign_keys = ON",
-                                        nullptr, nullptr, nullptr);
-
-  if (result_code != SQLITE_OK) {
-    Logger().error("Failed to enable foreign key checks");
-  }
 }
 
 [[nodiscard]] auto PrepareSqliteStatement(sqlite3 &sqlite_db,
@@ -101,8 +78,7 @@ void CloseSqliteDb(sqlite3 &sqlite_db) {
   const auto result_code = sqlite3_close(&sqlite_db);
 
   if (result_code != SQLITE_OK) {
-    Logger().error("Cannot close DB from {}", file_name);
-    return;
+    throw std::runtime_error{"Cannot close DB from " + file_name};
   }
 
   Logger().info("Closed DB from {}", file_name);
@@ -111,13 +87,7 @@ void CloseSqliteDb(sqlite3 &sqlite_db) {
 
 class SqliteDb::Impl {
  public:
-  Impl() : Impl(":memory:") {}
-
-  explicit Impl(std::string_view file_name)
-      : sqlite_db_{OpenSqliteDb(file_name)} {
-    SetPragmas(*sqlite_db_);
-    Logger().info("Opened DB from {}", GetDbFileName(*sqlite_db_));
-  }
+  explicit Impl(gsl::not_null<sqlite3 *> sqlite_db) : sqlite_db_{sqlite_db} {}
 
   Impl(const Impl &) = delete;
   Impl(Impl &&) = default;
@@ -125,9 +95,11 @@ class SqliteDb::Impl {
   auto operator=(const Impl &) -> Impl & = delete;
   auto operator=(Impl &&) -> Impl & = default;
 
-  ~Impl() {
+  ~Impl() try {
     prepared_statements_.clear();
     CloseSqliteDb(*sqlite_db_);
+  } catch (const std::exception &exception) {
+    Logger().error(exception.what());
   }
 
   [[nodiscard]] auto PrepareStatement(std::string_view query)
@@ -144,9 +116,8 @@ class SqliteDb::Impl {
         std::bind_front(&RemoveStatement, prepared_statements_));
   }
 
-  [[nodiscard]] static auto CreateQueryBuilder()
-      -> std::unique_ptr<QueryBuilder> {
-    return std::make_unique<SqliteQueryBuilder>();
+  void WriteToFile(std::string_view file_path) {
+    utils::WriteSqliteDbToFile(*sqlite_db_, file_path);
   }
 
  private:
@@ -154,8 +125,8 @@ class SqliteDb::Impl {
   std::vector<std::shared_ptr<sqlite3_stmt>> prepared_statements_{};
 };
 
-SqliteDb::SqliteDb(std::string_view file_name)
-    : impl_{std::make_unique<Impl>(file_name)} {}
+SqliteDb::SqliteDb(gsl::not_null<sqlite3 *> sqlite_db)
+    : impl_{std::make_unique<Impl>(sqlite_db)} {}
 
 SqliteDb::~SqliteDb() = default;
 
@@ -164,7 +135,7 @@ auto SqliteDb::PrepareStatement(std::string_view query)
   return impl_->PrepareStatement(query);
 }
 
-auto SqliteDb::CreateQueryBuilder() -> std::unique_ptr<QueryBuilder> {
-  return impl_->CreateQueryBuilder();
+void SqliteDb::WriteToFile(std::string_view file_path) {
+  impl_->WriteToFile(file_path);
 }
 }  // namespace stonks::db::sqlite
