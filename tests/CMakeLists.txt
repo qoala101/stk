@@ -25,6 +25,7 @@ add_executable(unittests
 set_property(TARGET unittests PROPERTY CXX_INCLUDE_WHAT_YOU_USE)
 target_link_libraries(unittests PRIVATE libstonks)
 target_link_libraries(unittests PRIVATE libdb)
+target_link_libraries(unittests PRIVATE libsqlite)
 target_link_libraries(unittests PRIVATE spdlog::spdlog)
 target_link_libraries(unittests PRIVATE GTest::gtest GTest::gtest_main)
 target_link_libraries(unittests PRIVATE range-v3::range-v3)

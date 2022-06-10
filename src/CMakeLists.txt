@@ -124,3 +124,4 @@ add_executable(app_proxy apps/app_proxy.cc)
 target_link_libraries(app_proxy PRIVATE libstonks)
 
 add_subdirectory(db)
+add_subdirectory(sqlite)
