@@ -21,13 +21,8 @@
 
 namespace stonks::network {
 namespace {
-auto Logger() -> spdlog::logger & {
-  static auto logger = []() {
-    auto logger = spdlog::stdout_color_mt("Client");
-    logger->set_level(spdlog::level::debug);
-    return logger;
-  }();
-
+[[nodiscard]] auto Logger() -> spdlog::logger & {
+  static auto logger = spdlog::stdout_color_mt("Client");
   return *logger;
 }
 
@@ -156,8 +151,8 @@ class Client::Impl {
       request.SetJson(request_json);
     }
 
-    Logger().debug("Sending request {} {}", endpoint.method,
-                   endpoint.relative_uri);
+    Logger().info("Sending request {} {}", endpoint.method,
+                  endpoint.relative_uri);
 
     const auto response_json = request.SendAndGetResponse();
 

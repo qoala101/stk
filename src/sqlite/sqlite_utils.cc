@@ -14,12 +14,7 @@
 namespace stonks::db::sqlite::utils {
 namespace {
 [[nodiscard]] auto Logger() -> spdlog::logger & {
-  static auto logger = []() {
-    auto logger = spdlog::stdout_color_mt("Sqlite");
-    logger->set_level(spdlog::level::debug);
-    return logger;
-  }();
-
+  static auto logger = spdlog::stdout_color_mt("SqliteUtils");
   return *logger;
 }
 

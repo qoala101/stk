@@ -23,13 +23,8 @@
 
 namespace stonks {
 namespace {
-auto Logger() -> spdlog::logger & {
-  static auto logger = []() {
-    auto logger = spdlog::stdout_color_mt("DbUpdaterPriceTicks");
-    logger->set_level(spdlog::level::debug);
-    return logger;
-  }();
-
+[[nodiscard]] auto Logger() -> spdlog::logger & {
+  static auto logger = spdlog::stdout_color_mt("DbUpdaterPriceTicks");
   return *logger;
 }
 }  // namespace

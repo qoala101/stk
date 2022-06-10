@@ -30,13 +30,8 @@
 
 namespace stonks::network {
 namespace {
-auto Logger() -> spdlog::logger & {
-  static auto logger = []() {
-    auto logger = spdlog::stdout_color_mt("Server");
-    logger->set_level(spdlog::level::debug);
-    return logger;
-  }();
-
+[[nodiscard]] auto Logger() -> spdlog::logger & {
+  static auto logger = spdlog::stdout_color_mt("Server");
   return *logger;
 }
 }  // namespace
@@ -60,7 +55,7 @@ class Server::Impl {
         response.set_body(result.response_body);
       }
 
-      Logger().debug("Replying {}", result.status_code);
+      Logger().info("Replying {}", result.status_code);
       request.reply(response);
     });
     http_listener_.open();
@@ -185,8 +180,8 @@ class Server::Impl {
 
   [[nodiscard]] auto RequestHandler(
       const web::http::http_request &request) const -> RequestHandlerResult {
-    Logger().debug("Got {} request on {}", request.method(),
-                   request.request_uri().path());
+    Logger().info("Got {} request on {}", request.method(),
+                  request.request_uri().path());
 
     const auto *endpoint = (const Endpoint *){};
     auto parsed_params = Params{};

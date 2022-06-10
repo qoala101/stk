@@ -27,12 +27,7 @@
 namespace stonks::db::sqlite {
 namespace {
 [[nodiscard]] auto Logger() -> spdlog::logger & {
-  static auto logger = []() {
-    auto logger = spdlog::stdout_color_mt("SqliteDb");
-    logger->set_level(spdlog::level::debug);
-    return logger;
-  }();
-
+  static auto logger = spdlog::stdout_color_mt("SqliteDb");
   return *logger;
 }
 
@@ -110,7 +105,7 @@ class SqliteDb::Impl {
         sqlite_statement.get(),
         [](auto &sqlite_statement) { sqlite3_finalize(sqlite_statement); });
 
-    Logger().debug("Prepared statement: {}", query);
+    Logger().info("Prepared statement: {}", query);
     return std::make_unique<SqlitePreparedStatement>(
         shared_sqlite_statement,
         std::bind_front(&RemoveStatement, prepared_statements_));

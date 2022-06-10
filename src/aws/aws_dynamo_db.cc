@@ -30,13 +30,8 @@
 
 namespace stonks::aws {
 namespace {
-auto Logger() -> spdlog::logger & {
-  static auto logger = []() {
-    auto logger = spdlog::stdout_color_mt("DynamoDb");
-    logger->set_level(spdlog::level::debug);
-    return logger;
-  }();
-
+[[nodiscard]] auto Logger() -> spdlog::logger & {
+  static auto logger = spdlog::stdout_color_mt("DynamoDb");
   return *logger;
 }
 }  // namespace
@@ -76,7 +71,7 @@ class DynamoDb::Impl {
                                outcome.GetError().GetMessage()};
     }
 
-    Logger().debug("Table created {}", table.name);
+    Logger().info("Table created {}", table.name);
   }
 
   void AddOrUpdateItem(const KeyValueTable &table, const KeyValue &key_value) {

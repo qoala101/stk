@@ -25,13 +25,8 @@
 
 namespace stonks {
 namespace {
-auto Logger() -> spdlog::logger & {
-  static auto logger = []() {
-    auto logger = spdlog::stdout_color_mt("NgrokAwsDbUpdater");
-    logger->set_level(spdlog::level::debug);
-    return logger;
-  }();
-
+[[nodiscard]] auto Logger() -> spdlog::logger & {
+  static auto logger = spdlog::stdout_color_mt("NgrokAwsDbUpdater");
   return *logger;
 }
 
@@ -137,7 +132,7 @@ class NgrokAwsDbUpdater::Impl {
         }
 
         last_public_url_ = tunnel.public_url;
-        Logger().debug("Updated public URL in Dynamo DB {}", last_public_url_);
+        Logger().info("Updated public URL in Dynamo DB {}", last_public_url_);
       }
 
       if (CheckIfStopRequestedFor(stop_token, kUpdateInterval)) {

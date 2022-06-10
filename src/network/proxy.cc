@@ -3,7 +3,9 @@
 #include <bits/exception.h>
 #include <cpprest/base_uri.h>
 #include <cpprest/http_headers.h>
+#include <cpprest/http_msg.h>
 #include <fmt/format.h>
+#include <pplx/pplx.h>
 #include <pplx/pplxtasks.h>
 #include <spdlog/common.h>
 #include <spdlog/logger.h>
@@ -16,19 +18,12 @@
 #include <utility>
 #include <vector>
 
-#include "cpprest/http_msg.h"
-#include "pplx/pplx.h"
 #include "uri.h"
 
 namespace stonks::network {
 namespace {
-auto Logger() -> spdlog::logger & {
-  static auto logger = []() {
-    auto logger = spdlog::stdout_color_mt("Proxy");
-    logger->set_level(spdlog::level::debug);
-    return logger;
-  }();
-
+[[nodiscard]] auto Logger() -> spdlog::logger & {
+  static auto logger = spdlog::stdout_color_mt("Proxy");
   return *logger;
 }
 
@@ -78,7 +73,7 @@ void Proxy::RegisterEndpoint(std::string_view endpoint) {
     endpoints_.emplace(endpoint, LocalUri{available_port}.GetFullUri());
   }
 
-  Logger().debug("Registered {} on port {}", endpoint, available_port);
+  Logger().info("Registered {} on port {}", endpoint, available_port);
 }
 
 void Proxy::HandleRequest(const web::http::http_request &request) {
@@ -98,8 +93,8 @@ void Proxy::HandleRequest(const web::http::http_request &request) {
     const auto endpoint = endpoints_.find(slash_endpoint);
 
     if (const auto endpoint_not_registered = endpoint == endpoints_.end()) {
-      Logger().debug("Got request on not registered endpoint {}",
-                     slash_endpoint);
+      Logger().info("Got request on not registered endpoint {}",
+                    slash_endpoint);
       request.reply(web::http::status_codes::NotFound);
       return;
     }
