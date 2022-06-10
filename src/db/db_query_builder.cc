@@ -5,7 +5,14 @@
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
 
+#include "db_types.h"
+
 namespace stonks::db {
+auto QueryBuilder::BuildSelectQuery(
+    const TableDefinition &table_definition) const -> std::string {
+  return BuildSelectQuery(table_definition.table);
+}
+
 auto QueryBuilder::BuildSelectQuery(const Table &table) const -> std::string {
   return BuildSelectQuery(table, {});
 }

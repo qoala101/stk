@@ -53,6 +53,8 @@ class Value {
   [[nodiscard]] auto ToString() const -> std::string;
 
  private:
+  friend auto operator==(const Value &, const Value &) -> bool = default;
+
   std::variant<std::monostate, int, int64_t, double, std::string> value_{};
 };
 }  // namespace stonks::db

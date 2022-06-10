@@ -46,7 +46,13 @@ class Rows {
   struct ColumnValues {
     Column column{};
     std::vector<Value> values{};
+
+   private:
+    friend auto operator==(const ColumnValues &, const ColumnValues &)
+        -> bool = default;
   };
+
+  friend auto operator==(const Rows &, const Rows &) -> bool = default;
 
   std::vector<ColumnValues> columns_{};
 };

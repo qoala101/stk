@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <cstdint>
+#include <filesystem>
 #include <memory>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
@@ -19,7 +20,7 @@ auto db_factory = std::unique_ptr<stonks::db::DbFactory>{};
 auto db = std::unique_ptr<stonks::db::Db>{};
 
 TEST(SqliteDb, CreateAndDropTable) {
-  static_cast<void>(std::remove(kTestDbFileName));
+  static_cast<void>(std::filesystem::remove(kTestDbFileName));
   db_factory = std::make_unique<stonks::db::sqlite::SqliteDbFactory>();
   db = db_factory->LoadDbFromFile(kTestDbFileName);
 
@@ -175,6 +176,26 @@ TEST(SqliteDb, SelectJoin) {
   EXPECT_EQ(rows.GetValues("quote_asset")[0].GetString(), "USDT");
   EXPECT_EQ(rows.GetValues("base_asset")[1].GetString(), "ETH");
   EXPECT_EQ(rows.GetValues("quote_asset")[1].GetString(), "USDT");
+}
+
+TEST(SqliteDb, FileWriteAndRead) {
+  EXPECT_FALSE(std::filesystem::exists(kTestDbFileName));
+  db->WriteToFile(kTestDbFileName);
+  EXPECT_TRUE(std::filesystem::exists(kTestDbFileName));
+
+  auto db_copy = db_factory->LoadDbFromFile(kTestDbFileName);
+
+  const auto select_query = db_factory->CreateQueryBuilder()->BuildSelectQuery(
+      kSymbolPriceTableDefinition);
+  const auto db_rows = db_copy->PrepareStatement(select_query)
+                           ->Execute(kSymbolPriceTableDefinition);
+  const auto db_copy_rows = db_copy->PrepareStatement(select_query)
+                                ->Execute(kSymbolPriceTableDefinition);
+  EXPECT_GT(db_rows.GetSize(), 0);
+  EXPECT_EQ(db_rows, db_copy_rows);
+
+  db_copy.reset();
+  EXPECT_TRUE(std::filesystem::exists(kTestDbFileName));
 }
 
 TEST(SqliteDb, CascadeForeignKeyDelete) {

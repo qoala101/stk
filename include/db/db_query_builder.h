@@ -23,6 +23,9 @@ class QueryBuilder {
   [[nodiscard]] virtual auto BuildDropTableQuery(const Table &table)
       -> std::string = 0;
 
+  [[nodiscard]] auto BuildSelectQuery(
+      const TableDefinition &table_definition) const -> std::string;
+
   [[nodiscard]] auto BuildSelectQuery(const Table &table) const -> std::string;
 
   [[nodiscard]] virtual auto BuildSelectQuery(
