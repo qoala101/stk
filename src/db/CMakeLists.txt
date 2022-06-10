@@ -15,6 +15,7 @@ add_library(libdb
   db_query_builder.cc
   db_row_definition.cc
   db_row.cc
+  db_rows.cc
   db_value.cc
 )
 set_target_properties(libdb PROPERTIES OUTPUT_NAME db)

@@ -1,4 +1,5 @@
 #include "db_prepared_statement.h"
+#include "db_rows.h"
 
 namespace stonks::db {
 void PreparedStatement::Execute() { static_cast<void>(Execute({}, {})); }

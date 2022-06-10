@@ -15,7 +15,6 @@
 #include <utility>
 
 #include "db_enums.h"
-#include "db_row.h"
 #include "db_types.h"
 
 namespace stonks::db::sqlite {

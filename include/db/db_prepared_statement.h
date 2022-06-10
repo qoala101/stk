@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "db_row.h"
+#include "db_rows.h"
 #include "db_row_definition.h"
 #include "db_value.h"
 

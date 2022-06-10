@@ -2,7 +2,6 @@
 #define STONKS_DB_DB_ROW_H_
 
 #include <map>
-#include <string>
 #include <vector>
 
 #include "db_types.h"
@@ -24,37 +23,6 @@ class Row {
 
  private:
   std::map<Column, Value> cells_{};
-};
-
-/**
- * @brief Many DB rows.
- */
-class Rows {
- public:
-  explicit Rows(std::vector<Column> columns);
-
-  [[nodiscard]] auto GetValues(const Column &column) const
-      -> const std::vector<Value> &;
-  [[nodiscard]] auto GetValues(const Column &column) -> std::vector<Value> &;
-
-  [[nodiscard]] auto GetSize() const -> int;
-
-  void Push(Row row);
-  void Push(std::vector<Value> values);
-
- private:
-  struct ColumnValues {
-    Column column{};
-    std::vector<Value> values{};
-
-   private:
-    friend auto operator==(const ColumnValues &, const ColumnValues &)
-        -> bool = default;
-  };
-
-  friend auto operator==(const Rows &, const Rows &) -> bool = default;
-
-  std::vector<ColumnValues> columns_{};
 };
 }  // namespace stonks::db
 
