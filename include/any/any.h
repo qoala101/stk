@@ -1,10 +1,10 @@
-#ifndef STONKS_JSON_ANY_H_
-#define STONKS_JSON_ANY_H_
+#ifndef STONKS_ANY_ANY_H_
+#define STONKS_ANY_ANY_H_
 
 #include <any>
 #include <utility>
 
-namespace stonks::json {
+namespace stonks::any {
 /**
  * @brief Any value with convenient member interface.
  */
@@ -26,8 +26,9 @@ class Any {
    * @remark Correctness of type is not checked.
    */
   template <typename T>
-  [[nodiscard]] auto Take() -> T && {
-    return std::any_cast<T &&>(std::move(value_));
+  [[nodiscard]] auto Take() && -> T && {
+    // NOLINTNEXTLINE(*-const-cast)
+    return std::move(const_cast<T &>(const_cast<const Any *>(this)->Get<T>()));
   }
 
   [[nodiscard]] auto HasValue() const -> bool;
@@ -35,6 +36,6 @@ class Any {
  private:
   std::any value_{};
 };
-}  // namespace stonks::json
+}  // namespace stonks::any
 
-#endif  // STONKS_JSON_ANY_H_
+#endif  // STONKS_ANY_ANY_H_

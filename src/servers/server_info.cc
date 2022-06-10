@@ -2,6 +2,7 @@
 
 #include <gsl/assert>
 #include <string_view>
+#include <type_traits>
 #include <utility>
 
 #include "endpoints_info.h"
@@ -30,7 +31,7 @@ auto Info::GetPriceTicks() -> network::Endpoint {
   return {endpoints::Info::GetPriceTicks(),
           network::HasResultTakesParams{[this](network::Params params) {
             return entity_->GetPriceTicks(
-                params.Take<finance::SymbolName>("symbol"));
+                std::move(params).Take<finance::SymbolName>("symbol"));
           }}};
 }
 }  // namespace stonks::server

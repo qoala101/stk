@@ -4,6 +4,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -27,10 +28,11 @@ auto StonksDb::SelectAssets() const -> network::Endpoint {
 }
 
 auto StonksDb::UpdateAssets() const -> network::Endpoint {
-  return {endpoints::FinanceDb::UpdateAssets(),
-          network::NoResultTakesBody{[this](network::Body body) {
-            entity_->UpdateAssets(body.Take<std::vector<std::string>>());
-          }}};
+  return {
+      endpoints::FinanceDb::UpdateAssets(),
+      network::NoResultTakesBody{[this](network::Body body) {
+        entity_->UpdateAssets(std::move(body).Take<std::vector<std::string>>());
+      }}};
 }
 
 auto StonksDb::SelectSymbols() const -> network::Endpoint {
@@ -48,26 +50,28 @@ auto StonksDb::UpdateSymbolsInfo() const -> network::Endpoint {
   return {endpoints::FinanceDb::UpdateSymbolsInfo(),
           network::NoResultTakesBody{[this](network::Body body) {
             entity_->UpdateSymbolsInfo(
-                body.Take<std::vector<finance::SymbolInfo>>());
+                std::move(body).Take<std::vector<finance::SymbolInfo>>());
           }}};
 }
 
 auto StonksDb::SelectSymbolPriceTicks() const -> network::Endpoint {
-  return {endpoints::FinanceDb::SelectSymbolPriceTicks(),
-          network::HasResultTakesParams{[this](network::Params params) {
-            return entity_->SelectSymbolPriceTicks(
-                params.Take<std::optional<int>>("limit"),
-                params.Take<std::optional<finance::Period>>("period"),
-                params.Take<std::optional<std::vector<finance::SymbolName>>>(
+  return {
+      endpoints::FinanceDb::SelectSymbolPriceTicks(),
+      network::HasResultTakesParams{[this](network::Params params) {
+        return entity_->SelectSymbolPriceTicks(
+            std::move(params).Take<std::optional<int>>("limit"),
+            std::move(params).Take<std::optional<finance::Period>>("period"),
+            std::move(params)
+                .Take<std::optional<std::vector<finance::SymbolName>>>(
                     "symbols"));
-          }}};
+      }}};
 }
 
 auto StonksDb::InsertSymbolPriceTick() const -> network::Endpoint {
-  return {
-      endpoints::FinanceDb::InsertSymbolPriceTick(),
-      network::NoResultTakesBody{[this](network::Body body) {
-        entity_->InsertSymbolPriceTick(body.Take<finance::SymbolPriceTick>());
-      }}};
+  return {endpoints::FinanceDb::InsertSymbolPriceTick(),
+          network::NoResultTakesBody{[this](network::Body body) {
+            entity_->InsertSymbolPriceTick(
+                std::move(body).Take<finance::SymbolPriceTick>());
+          }}};
 }
 }  // namespace stonks::server

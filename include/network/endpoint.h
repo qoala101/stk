@@ -54,9 +54,9 @@ struct EndpointDesc {
   std::optional<json::TypeVariant> response_body{};
 };
 
-using Result = json::Any;
-using Params = json::AnyMap;
-using Body = json::Any;
+using Result = any::Any;
+using Params = any::AnyMap;
+using Body = any::Any;
 
 using NoResult = std::function<void()>;
 using NoResultTakesParams = std::function<void(Params)>;

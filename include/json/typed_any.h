@@ -26,10 +26,10 @@ class TypedAny : public TypeVariant {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   TypedAny(std::string_view value) : TypedAny{std::string{value}} {}
 
-  [[nodiscard]] auto GetAny() const -> const json::Any&;
+  [[nodiscard]] auto GetAny() const -> const any::Any&;
 
  private:
-  json::Any value_{};
+  any::Any value_{};
 };
 }  // namespace stonks::json
 

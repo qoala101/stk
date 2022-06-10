@@ -26,7 +26,7 @@ class Type {
   }
 
   [[nodiscard]] auto ParseAnyFromJson(const web::json::value &json) const
-      -> json::Any {
+      -> any::Any {
     auto object = ParseFromJson(json);
 
     if (!object.has_value()) {
@@ -36,7 +36,7 @@ class Type {
     return std::move(*object);
   }
 
-  [[nodiscard]] auto ConvertAnyToJson(const json::Any &data) const
+  [[nodiscard]] auto ConvertAnyToJson(const any::Any &data) const
       -> std::optional<web::json::value> {
     try {
       return ::stonks::json::ConvertToJson(data.Get<T>());
@@ -46,7 +46,7 @@ class Type {
     return std::nullopt;
   }
 
-  [[nodiscard]] auto MakeNulloptAny() const -> json::Any {
+  [[nodiscard]] auto MakeNulloptAny() const -> any::Any {
     return std::optional<T>{std::nullopt};
   }
 };
@@ -60,7 +60,7 @@ class Type<std::optional<T>> {
   [[nodiscard]] constexpr auto IsOptional() const -> bool { return true; }
 
   [[nodiscard]] auto ParseAnyFromJson(const web::json::value &json) const
-      -> json::Any {
+      -> any::Any {
     if (json.is_null()) {
       return {};
     }
@@ -74,7 +74,7 @@ class Type<std::optional<T>> {
     return std::optional<T>{std::move(*object)};
   }
 
-  [[nodiscard]] auto ConvertAnyToJson(const json::Any &data) const
+  [[nodiscard]] auto ConvertAnyToJson(const any::Any &data) const
       -> std::optional<web::json::value> {
     if (!data.HasValue()) {
       return web::json::value::null();
@@ -94,7 +94,7 @@ class Type<std::optional<T>> {
     return std::nullopt;
   }
 
-  [[nodiscard]] auto MakeNulloptAny() const -> json::Any {
+  [[nodiscard]] auto MakeNulloptAny() const -> any::Any {
     return Type<T>{}.MakeNulloptAny();
   }
 };

@@ -35,12 +35,12 @@ class TypeVariant {
   }
 
   [[nodiscard]] auto ParseAnyFromJson(const web::json::value &json) const
-      -> json::Any;
+      -> any::Any;
 
-  [[nodiscard]] auto ConvertAnyToJson(const json::Any &data) const
+  [[nodiscard]] auto ConvertAnyToJson(const any::Any &data) const
       -> std::optional<web::json::value>;
 
-  [[nodiscard]] auto MakeNulloptAny() const -> json::Any;
+  [[nodiscard]] auto MakeNulloptAny() const -> any::Any;
 
  private:
   std::variant<

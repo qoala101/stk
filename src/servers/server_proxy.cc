@@ -3,6 +3,7 @@
 #include <gsl/assert>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include <utility>
 
 #include "endpoints_proxy.h"
@@ -17,17 +18,18 @@ Proxy::Proxy(std::shared_ptr<network::Proxy> entity)
 }
 
 auto Proxy::GetEndpointPort() -> network::Endpoint {
-  return {
-      endpoints::Proxy::GetEndpointPort(),
-      network::HasResultTakesParams{[this](network::Params params) {
-        return entity_->GetEndpointPort(params.Take<std::string>("endpoint"));
-      }}};
+  return {endpoints::Proxy::GetEndpointPort(),
+          network::HasResultTakesParams{[this](network::Params params) {
+            return entity_->GetEndpointPort(
+                std::move(params).Take<std::string>("endpoint"));
+          }}};
 }
 
 auto Proxy::RegisterEndpoint() -> network::Endpoint {
   return {endpoints::Proxy::RegisterEndpoint(),
           network::NoResultTakesParams{[this](network::Params params) {
-            entity_->RegisterEndpoint(params.Take<std::string>("endpoint"));
+            entity_->RegisterEndpoint(
+                std::move(params).Take<std::string>("endpoint"));
           }}};
 }
 }  // namespace stonks::server

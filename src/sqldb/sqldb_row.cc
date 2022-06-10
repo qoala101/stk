@@ -17,7 +17,7 @@ auto Row::GetValue(const Column &column) const & -> const Value & {
   return cells_.at(column);
 }
 
-auto Row::GetValue(const Column &column) && -> Value && {
+auto Row::TakeValue(const Column &column) && -> Value && {
   return std::move(
       // NOLINTNEXTLINE(*-const-cast)
       const_cast<Value &>(const_cast<const Row *>(this)->GetValue(column)));
@@ -27,7 +27,7 @@ auto Row::GetCells() const & -> const std::map<Column, Value> & {
   return cells_;
 }
 
-auto Row::GetCells() && -> std::map<Column, Value> && {
+auto Row::TakeCells() && -> std::map<Column, Value> && {
   return std::move(
       // NOLINTNEXTLINE(*-const-cast)
       const_cast<std::map<Column, Value> &>(

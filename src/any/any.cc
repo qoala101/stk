@@ -1,5 +1,5 @@
 #include "any.h"
 
-namespace stonks::json {
+namespace stonks::any {
 auto Any::HasValue() const -> bool { return value_.has_value(); }
-}  // namespace stonks::json
+}  // namespace stonks::any
