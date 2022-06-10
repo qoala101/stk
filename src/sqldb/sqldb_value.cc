@@ -1,4 +1,4 @@
-#include "db_value.h"
+#include "sqldb_value.h"
 
 #include <absl/base/macros.h>
 
@@ -6,9 +6,9 @@
 #include <utility>
 #include <variant>
 
-#include "db_enums.h"
+#include "sqldb_enums.h"
 
-namespace stonks::db {
+namespace stonks::sqldb {
 Value::Value(std::string_view value, DataType data_type) {
   switch (data_type) {
     case DataType::kInt:
@@ -99,4 +99,4 @@ auto Value::ToString() const -> std::string {
       },
       value_);
 }
-}  // namespace stonks::db
+}  // namespace stonks::sqldb

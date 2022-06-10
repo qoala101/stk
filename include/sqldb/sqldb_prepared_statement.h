@@ -3,11 +3,11 @@
 
 #include <vector>
 
-#include "db_rows.h"
-#include "db_row_definition.h"
-#include "db_value.h"
+#include "sqldb_row_definition.h"
+#include "sqldb_rows.h"
+#include "sqldb_value.h"
 
-namespace stonks::db {
+namespace stonks::sqldb {
 /**
  * @brief Statement which is expected to be prepared by DB once and later be
  * called many times.
@@ -43,6 +43,6 @@ class PreparedStatement {
                                      const RowDefinition &result_definition)
       -> Rows = 0;
 };
-}  // namespace stonks::db
+}  // namespace stonks::sqldb
 
 #endif  // STONKS_DB_DB_PREPARED_STATEMENT_H_

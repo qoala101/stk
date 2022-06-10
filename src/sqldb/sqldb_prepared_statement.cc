@@ -1,7 +1,8 @@
-#include "db_prepared_statement.h"
-#include "db_rows.h"
+#include "sqldb_prepared_statement.h"
 
-namespace stonks::db {
+#include "sqldb_rows.h"
+
+namespace stonks::sqldb {
 void PreparedStatement::Execute() { static_cast<void>(Execute({}, {})); }
 
 void PreparedStatement::Execute(const std::vector<Value> &params) {
@@ -12,4 +13,4 @@ auto PreparedStatement::Execute(const RowDefinition &result_definition)
     -> Rows {
   return Execute({}, result_definition);
 }
-}  // namespace stonks::db
+}  // namespace stonks::sqldb

@@ -4,10 +4,10 @@
 #include <map>
 #include <vector>
 
-#include "db_types.h"
-#include "db_value.h"
+#include "sqldb_types.h"
+#include "sqldb_value.h"
 
-namespace stonks::db {
+namespace stonks::sqldb {
 /**
  * @brief Single DB row.
  */
@@ -24,6 +24,6 @@ class Row {
  private:
   std::map<Column, Value> cells_{};
 };
-}  // namespace stonks::db
+}  // namespace stonks::sqldb
 
 #endif  // STONKS_DB_DB_ROW_H_

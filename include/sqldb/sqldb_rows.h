@@ -4,10 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "db_types.h"
-#include "db_value.h"
+#include "sqldb_types.h"
+#include "sqldb_value.h"
 
-namespace stonks::db {
+namespace stonks::sqldb {
 /**
  * @brief Many DB rows.
  */
@@ -37,6 +37,6 @@ class Rows {
 
   std::vector<ColumnValues> columns_{};
 };
-}  // namespace stonks::db
+}  // namespace stonks::sqldb
 
 #endif  // STONKS_DB_DB_ROWS_H_

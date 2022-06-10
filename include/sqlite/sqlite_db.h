@@ -7,11 +7,11 @@
 #include <memory>
 #include <string_view>
 
-#include "db.h"
-#include "db_prepared_statement.h"
+#include "sqldb_db.h"
+#include "sqldb_prepared_statement.h"
 
-namespace stonks::db::sqlite {
-class SqliteDb : public Db {
+namespace stonks::sqlite {
+class SqliteDb : public sqldb::Db {
  public:
   /**
    * @brief Creates DB wrapper for SQLite DB.
@@ -35,7 +35,7 @@ class SqliteDb : public Db {
    * @copydoc Db::PrepareStatement
    */
   [[nodiscard]] auto PrepareStatement(std::string_view query)
-      -> std::unique_ptr<PreparedStatement> override;
+      -> std::unique_ptr<sqldb::PreparedStatement> override;
 
   /**
    * @copydoc Db::WriteToFile
@@ -46,6 +46,6 @@ class SqliteDb : public Db {
   class Impl;
   std::unique_ptr<Impl> impl_{};
 };
-}  // namespace stonks::db::sqlite
+}  // namespace stonks::sqlite
 
 #endif  // STONKS_DB_SQLITE_SQLITE_DB_H_

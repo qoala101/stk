@@ -14,27 +14,27 @@
 #include <string_view>
 #include <utility>
 
-#include "db_enums.h"
-#include "db_types.h"
+#include "sqldb_enums.h"
+#include "sqldb_types.h"
 
-namespace stonks::db::sqlite {
+namespace stonks::sqlite {
 namespace {
-void BindParam(sqlite3_stmt &statement, int index, const Value &value) {
+void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
   if (value.IsNull()) {
     return;
   }
 
   switch (value.GetType()) {
-    case DataType::kInt:
+    case sqldb::DataType::kInt:
       sqlite3_bind_int(&statement, index, value.GetInt());
       return;
-    case DataType::kInt64:
+    case sqldb::DataType::kInt64:
       sqlite3_bind_int64(&statement, index, value.GetInt64());
       return;
-    case DataType::kDouble:
+    case sqldb::DataType::kDouble:
       sqlite3_bind_double(&statement, index, value.GetDouble());
       return;
-    case DataType::kString: {
+    case sqldb::DataType::kString: {
       const auto &string = value.GetString();
       sqlite3_bind_text(&statement, index, string.c_str(),
                         static_cast<int>(string.length()), nullptr);
@@ -43,31 +43,32 @@ void BindParam(sqlite3_stmt &statement, int index, const Value &value) {
   }
 }
 
-auto GetValue(sqlite3_stmt &statement, int index, DataType type) -> Value {
+auto GetValue(sqlite3_stmt &statement, int index, sqldb::DataType type)
+    -> sqldb::Value {
   if (sqlite3_column_type(&statement, index) == SQLITE_NULL) {
     return {};
   }
 
   switch (type) {
-    case DataType::kInt:
-      return Value{sqlite3_column_int(&statement, index)};
-    case DataType::kInt64:
-      return Value{int64_t{sqlite3_column_int64(&statement, index)}};
-    case DataType::kDouble:
-      return Value{sqlite3_column_double(&statement, index)};
-    case DataType::kString:
+    case sqldb::DataType::kInt:
+      return sqldb::Value{sqlite3_column_int(&statement, index)};
+    case sqldb::DataType::kInt64:
+      return sqldb::Value{int64_t{sqlite3_column_int64(&statement, index)}};
+    case sqldb::DataType::kDouble:
+      return sqldb::Value{sqlite3_column_double(&statement, index)};
+    case sqldb::DataType::kString:
       // NOLINTNEXTLINE(*-reinterpret-cast)
-      return Value{reinterpret_cast<const char *>(
+      return sqldb::Value{reinterpret_cast<const char *>(
           sqlite3_column_text(&statement, index))};
   }
 }
 
 auto GetValues(sqlite3_stmt &statement,
-               const std::vector<CellDefinition> &cell_definitions)
-    -> std::vector<Value> {
+               const std::vector<sqldb::CellDefinition> &cell_definitions)
+    -> std::vector<sqldb::Value> {
   const auto num_columns = cell_definitions.size();
 
-  auto values = std::vector<Value>{};
+  auto values = std::vector<sqldb::Value>{};
   values.reserve(num_columns);
 
   for (auto i = 0; i < num_columns; ++i) {
@@ -99,8 +100,8 @@ class SqlitePreparedStatement::Impl {
     }
   }
 
-  auto Execute(const std::vector<Value> &params,
-               const RowDefinition &result_definition) -> Rows {
+  auto Execute(const std::vector<sqldb::Value> &params,
+               const sqldb::RowDefinition &result_definition) -> sqldb::Rows {
     const auto statement = statement_.lock();
     ABSL_ASSERT((statement != nullptr) &&
                 "Trying to execute finalized statement");
@@ -117,7 +118,7 @@ class SqlitePreparedStatement::Impl {
         ranges::views::transform(cell_definitions,
                                  [](const auto &cell) { return cell.column; }) |
         ranges::to_vector;
-    auto rows = Rows{std::move(columns)};
+    auto rows = sqldb::Rows{std::move(columns)};
     auto num_received_columns = -1;
 
     while (true) {
@@ -162,9 +163,9 @@ SqlitePreparedStatement::SqlitePreparedStatement(
 
 SqlitePreparedStatement::~SqlitePreparedStatement() = default;
 
-auto SqlitePreparedStatement::Execute(const std::vector<Value> &params,
-                                      const RowDefinition &result_definition)
-    -> Rows {
+auto SqlitePreparedStatement::Execute(
+    const std::vector<sqldb::Value> &params,
+    const sqldb::RowDefinition &result_definition) -> sqldb::Rows {
   return impl_->Execute(params, result_definition);
 }
-}  // namespace stonks::db::sqlite
+}  // namespace stonks::sqlite

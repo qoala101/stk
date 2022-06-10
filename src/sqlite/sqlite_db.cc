@@ -2,7 +2,6 @@
 
 #include <bits/exception.h>
 #include <fmt/format.h>
-#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <sqlite3.h>
@@ -19,12 +18,12 @@
 #include <utility>
 #include <vector>
 
-#include "db_enum_conversions.h"  // IWYU pragma: keep
-#include "db_prepared_statement.h"
+#include "sqldb_enum_conversions.h"  // IWYU pragma: keep
+#include "sqldb_prepared_statement.h"
 #include "sqlite_prepared_statement.h"
 #include "sqlite_utils.h"
 
-namespace stonks::db::sqlite {
+namespace stonks::sqlite {
 namespace {
 [[nodiscard]] auto Logger() -> spdlog::logger & {
   static auto logger = spdlog::stdout_color_mt("SqliteDb");
@@ -98,7 +97,7 @@ class SqliteDb::Impl {
   }
 
   [[nodiscard]] auto PrepareStatement(std::string_view query)
-      -> std::unique_ptr<PreparedStatement> {
+      -> std::unique_ptr<sqldb::PreparedStatement> {
     auto sqlite_statement = PrepareSqliteStatement(*sqlite_db_, query);
 
     const auto &shared_sqlite_statement = prepared_statements_.emplace_back(
@@ -126,11 +125,11 @@ SqliteDb::SqliteDb(gsl::not_null<sqlite3 *> sqlite_db)
 SqliteDb::~SqliteDb() = default;
 
 auto SqliteDb::PrepareStatement(std::string_view query)
-    -> std::unique_ptr<PreparedStatement> {
+    -> std::unique_ptr<sqldb::PreparedStatement> {
   return impl_->PrepareStatement(query);
 }
 
 void SqliteDb::WriteToFile(std::string_view file_path) {
   impl_->WriteToFile(file_path);
 }
-}  // namespace stonks::db::sqlite
+}  // namespace stonks::sqlite

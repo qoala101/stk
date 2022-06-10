@@ -7,16 +7,16 @@
 #include <memory>
 #include <vector>
 
-#include "db_prepared_statement.h"
-#include "db_rows.h"
-#include "db_row_definition.h"
-#include "db_value.h"
+#include "sqldb_prepared_statement.h"
+#include "sqldb_row_definition.h"
+#include "sqldb_rows.h"
+#include "sqldb_value.h"
 
-namespace stonks::db::sqlite {
+namespace stonks::sqlite {
 /**
  * @copydoc PreparedStatement
  */
-class SqlitePreparedStatement : public PreparedStatement {
+class SqlitePreparedStatement : public sqldb::PreparedStatement {
  public:
   /**
    * @param statement Statement owned by DB.
@@ -43,14 +43,14 @@ class SqlitePreparedStatement : public PreparedStatement {
   /**
    * @copydoc PreparedStatement::Execute
    */
-  [[nodiscard]] auto Execute(const std::vector<Value> &params,
-                             const RowDefinition &result_definition)
-      -> Rows override;
+  [[nodiscard]] auto Execute(const std::vector<sqldb::Value> &params,
+                             const sqldb::RowDefinition &result_definition)
+      -> sqldb::Rows override;
 
  private:
   class Impl;
   std::unique_ptr<Impl> impl_{};
 };
-}  // namespace stonks::db::sqlite
+}  // namespace stonks::sqlite
 
 #endif  // STONKS_DB_SQLITE_SQLITE_PREPARED_STATEMENT_H_

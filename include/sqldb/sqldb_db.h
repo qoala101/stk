@@ -1,16 +1,16 @@
-#ifndef STONKS_DB_DB_H_
-#define STONKS_DB_DB_H_
+#ifndef STONKS_SQLDB_SQLDB_H_
+#define STONKS_SQLDB_SQLDB_H_
 
 #include <memory>
 #include <optional>
 #include <string_view>
 #include <vector>
 
-#include "db_prepared_statement.h"
-#include "db_query_builder.h"
-#include "db_types.h"
+#include "sqldb_prepared_statement.h"
+#include "sqldb_query_builder.h"
+#include "sqldb_types.h"
 
-namespace stonks::db {
+namespace stonks::sqldb {
 /**
  * @brief Generic DB interface.
  */
@@ -31,6 +31,6 @@ class Db {
    */
   virtual void WriteToFile(std::string_view file_path) = 0;
 };
-}  // namespace stonks::db
+}  // namespace stonks::sqldb
 
-#endif  // STONKS_DB_DB_H_
+#endif  // STONKS_SQLDB_SQLDB_H_

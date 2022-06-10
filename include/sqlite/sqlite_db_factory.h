@@ -4,29 +4,29 @@
 #include <memory>
 #include <string_view>
 
-#include "db.h"
-#include "db_factory.h"
-#include "db_query_builder.h"
+#include "sqldb_db.h"
+#include "sqldb_factory.h"
+#include "sqldb_query_builder.h"
 
-namespace stonks::db::sqlite {
+namespace stonks::sqlite {
 /**
  * @brief Abstract factory for DB related entities.
  */
 // NOLINTNEXTLINE(*-special-member-functions)
-class SqliteDbFactory : public DbFactory {
+class SqliteDbFactory : public sqldb::DbFactory {
  public:
   /**
    * @copydoc Db::LoadDbFromFile
    */
   [[nodiscard]] auto LoadDbFromFile(std::string_view file_path)
-      -> std::unique_ptr<Db> override;
+      -> std::unique_ptr<sqldb::Db> override;
 
   /**
    * @copydoc Db::CreateQueryBuilder
    */
   [[nodiscard]] auto CreateQueryBuilder()
-      -> std::unique_ptr<QueryBuilder> override;
+      -> std::unique_ptr<sqldb::QueryBuilder> override;
 };
-}  // namespace stonks::db::sqlite
+}  // namespace stonks::sqlite
 
 #endif  // STONKS_DB_SQLITE_SQLITE_DB_FACTORY_H_

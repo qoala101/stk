@@ -1,11 +1,11 @@
-#include "db_row.h"
+#include "sqldb_row.h"
 
 #include <absl/base/macros.h>
 
 #include <string>
 #include <utility>
 
-namespace stonks::db {
+namespace stonks::sqldb {
 Row::Row(std::vector<Cell> cells) {
   for (auto &cell : cells) {
     cells_.emplace(std::move(cell.column), std::move(cell.value));
@@ -34,4 +34,4 @@ auto Row::GetCells() && -> std::map<Column, Value> && {
           // NOLINTNEXTLINE(*-const-cast)
           const_cast<const Row *>(this)->GetCells()));
 }
-}  // namespace stonks::db
+}  // namespace stonks::sqldb

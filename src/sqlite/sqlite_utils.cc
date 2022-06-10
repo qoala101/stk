@@ -2,7 +2,6 @@
 
 #include <bits/exception.h>
 #include <fmt/format.h>
-#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
@@ -11,7 +10,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace stonks::db::sqlite::utils {
+namespace stonks::sqlite::utils {
 namespace {
 [[nodiscard]] auto Logger() -> spdlog::logger & {
   static auto logger = spdlog::stdout_color_mt("SqliteUtils");
@@ -76,4 +75,4 @@ void WriteSqliteDbToFile(sqlite3 &sqlite_db, std::string_view file_path) {
   CopyData({.from = sqlite_db, .to = *file_db});
   Logger().info("Stored DB to {}", file_path.data());
 }
-}  // namespace stonks::db::sqlite::utils
+}  // namespace stonks::sqlite::utils

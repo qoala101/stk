@@ -6,9 +6,9 @@
 #include <string_view>
 #include <variant>
 
-#include "db_enums.h"
+#include "sqldb_enums.h"
 
-namespace stonks::db {
+namespace stonks::sqldb {
 /**
  * @brief Value which can be stored or retrieved from DB.
  */
@@ -57,6 +57,6 @@ class Value {
 
   std::variant<std::monostate, int, int64_t, double, std::string> value_{};
 };
-}  // namespace stonks::db
+}  // namespace stonks::sqldb
 
 #endif  // STONKS_DB_DB_VALUE_H_

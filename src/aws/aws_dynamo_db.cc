@@ -17,7 +17,6 @@
 #include <aws/dynamodb/model/UpdateItemRequest.h>
 #include <bits/exception.h>
 #include <fmt/format.h>
-#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 

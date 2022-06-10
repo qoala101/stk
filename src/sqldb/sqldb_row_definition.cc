@@ -1,4 +1,4 @@
-#include "db_row_definition.h"
+#include "sqldb_row_definition.h"
 
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
@@ -6,9 +6,9 @@
 #include <range/v3/view/transform.hpp>
 #include <utility>
 
-#include "db_types.h"
+#include "sqldb_types.h"
 
-namespace stonks::db {
+namespace stonks::sqldb {
 RowDefinition::RowDefinition(const TableDefinition &table_definition)
     : RowDefinition{table_definition.columns} {}
 
@@ -29,4 +29,4 @@ auto RowDefinition::GetCellDefinitions() const
     -> const std::vector<CellDefinition> & {
   return cell_definitions_;
 }
-}  // namespace stonks::db
+}  // namespace stonks::sqldb

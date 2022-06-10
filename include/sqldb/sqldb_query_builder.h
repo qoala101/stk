@@ -1,13 +1,13 @@
-#ifndef STONKS_DB_DB_QUERY_BUILDER_H_
-#define STONKS_DB_DB_QUERY_BUILDER_H_
+#ifndef STONKS_SQL_DB_SQL_DB_QUERY_BUILDER_H_
+#define STONKS_SQL_DB_SQL_DB_QUERY_BUILDER_H_
 
 #include <string>
 #include <string_view>
 #include <vector>
 
-#include "db_types.h"
+#include "sqldb_types.h"
 
-namespace stonks::db {
+namespace stonks::sqldb {
 /**
  * @brief Generic builder of queries for DB. Each DB implementation provides its
  * own query builder.
@@ -51,6 +51,6 @@ class QueryBuilder {
                                               std::string_view where_clause)
       -> std::string = 0;
 };
-}  // namespace stonks::db
+}  // namespace stonks::sqldb
 
-#endif  // STONKS_DB_DB_QUERY_BUILDER_H_
+#endif  // STONKS_SQL_DB_SQL_DB_QUERY_BUILDER_H_

@@ -10,10 +10,10 @@
 #include <variant>
 #include <vector>
 
-#include "db_enums.h"
-#include "db_value.h"
+#include "sqldb_enums.h"
+#include "sqldb_value.h"
 
-namespace stonks::db {
+namespace stonks::sqldb {
 using Table = std::string;
 using Column = std::string;
 
@@ -45,6 +45,6 @@ struct CellDefinition {
   Column column{};
   DataType data_type{};
 };
-}  // namespace stonks::db
+}  // namespace stonks::sqldb
 
 #endif  // STONKS_DB_DB_TYPES_H_

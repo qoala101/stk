@@ -1,13 +1,13 @@
-#include "db_query_builder.h"
+#include "sqldb_query_builder.h"
 
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
 
-#include "db_types.h"
+#include "sqldb_types.h"
 
-namespace stonks::db {
+namespace stonks::sqldb {
 auto QueryBuilder::BuildSelectQuery(
     const TableDefinition &table_definition) const -> std::string {
   return BuildSelectQuery(table_definition.table);
@@ -40,4 +40,4 @@ auto QueryBuilder::BuildUpdateQuery(const TableDefinition &table_definition,
           ranges::to_vector,
       where_clause);
 }
-}  // namespace stonks::db
+}  // namespace stonks::sqldb

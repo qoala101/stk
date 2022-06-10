@@ -13,9 +13,8 @@ add_library(libsqlite
   sqlite_utils.cc
 )
 set_target_properties(libsqlite PROPERTIES OUTPUT_NAME sqlite)
-target_include_directories(libdb PUBLIC ${PROJECT_SOURCE_DIR}/include/db)
-target_include_directories(libdb PUBLIC ${PROJECT_SOURCE_DIR}/include/sqlite)
-target_link_libraries(libsqlite PUBLIC libdb)
+target_include_directories(libsqlite PUBLIC ${PROJECT_SOURCE_DIR}/include/sqlite)
+target_link_libraries(libsqlite PUBLIC libsqldb)
 target_link_libraries(libsqlite PRIVATE SQLite::SQLite3)
 target_link_libraries(libsqlite PRIVATE Microsoft.GSL::GSL)
 target_link_libraries(libsqlite PRIVATE spdlog::spdlog)

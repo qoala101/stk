@@ -6,7 +6,7 @@
 #include <gsl/pointers>
 #include <string_view>
 
-namespace stonks::db::sqlite::utils {
+namespace stonks::sqlite::utils {
 /**
  * @brief Read SQLite DB from file.
  */
@@ -17,6 +17,6 @@ namespace stonks::db::sqlite::utils {
  * @brief Write SQLite DB to file.
  */
 void WriteSqliteDbToFile(sqlite3 &sqlite_db, std::string_view file_path);
-}  // namespace stonks::db::sqlite::utils
+}  // namespace stonks::sqlite::utils
 
 #endif  // STONKS_DB_SQLITE_SQLITE_UTILS_H_

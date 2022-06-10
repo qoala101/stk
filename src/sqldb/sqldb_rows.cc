@@ -1,4 +1,4 @@
-#include "db_rows.h"
+#include "sqldb_rows.h"
 
 #include <absl/base/macros.h>
 
@@ -11,7 +11,7 @@
 #include <range/v3/view/transform.hpp>
 #include <utility>
 
-namespace stonks::db {
+namespace stonks::sqldb {
 Rows::Rows(std::vector<Column> columns)
     : columns_{
           ranges::views::transform(
@@ -52,4 +52,4 @@ void Rows::Push(std::vector<Value> values) {
     columns_[i].values.emplace_back(std::move(values[i]));
   }
 }
-}  // namespace stonks::db
+}  // namespace stonks::sqldb

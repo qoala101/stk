@@ -1,6 +1,5 @@
 #include "stonks_db_updater_symbols_info.h"
 
-#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 

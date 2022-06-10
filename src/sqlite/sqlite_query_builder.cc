@@ -12,18 +12,18 @@
 #include <string>
 #include <utility>
 
-#include "db_enum_conversions.h"  // IWYU pragma: keep
+#include "sqldb_enum_conversions.h"  // IWYU pragma: keep
 
-namespace stonks::db::sqlite {
+namespace stonks::sqlite {
 auto SqliteQueryBuilder::BuildCreateTableIfNotExistsQuery(
-    const TableDefinition &table_definition) const -> std::string {
-  const auto column_is_primary_key = [](const ColumnDefinition &column) {
+    const sqldb::TableDefinition &table_definition) const -> std::string {
+  const auto column_is_primary_key = [](const sqldb::ColumnDefinition &column) {
     return column.primary_key;
   };
   const auto has_primary_keys =
       ranges::any_of(table_definition.columns, column_is_primary_key);
 
-  const auto column_is_foreign_key = [](const ColumnDefinition &column) {
+  const auto column_is_foreign_key = [](const sqldb::ColumnDefinition &column) {
     return column.foreign_key.has_value();
   };
   const auto has_foreign_keys =
@@ -96,12 +96,12 @@ auto SqliteQueryBuilder::BuildCreateTableIfNotExistsQuery(
   return query;
 }
 
-auto SqliteQueryBuilder::BuildDropTableQuery(const Table &table)
+auto SqliteQueryBuilder::BuildDropTableQuery(const sqldb::Table &table)
     -> std::string {
   return "DROP TABLE \"" + table + "\";";
 }
 
-auto SqliteQueryBuilder::BuildSelectQuery(const Table &table,
+auto SqliteQueryBuilder::BuildSelectQuery(const sqldb::Table &table,
                                           std::string_view where_clause) const
     -> std::string {
   auto query = "SELECT * FROM \"" + table + "\"";
@@ -114,7 +114,7 @@ auto SqliteQueryBuilder::BuildSelectQuery(const Table &table,
 }
 
 auto SqliteQueryBuilder::BuildInsertQuery(
-    const Table &table, const std::vector<Column> &columns) const
+    const sqldb::Table &table, const std::vector<sqldb::Column> &columns) const
     -> std::string {
   auto column_names = std::string{};
   auto placeholders = std::string{};
@@ -135,10 +135,9 @@ auto SqliteQueryBuilder::BuildInsertQuery(
          placeholders + ")";
 }
 
-auto SqliteQueryBuilder::BuildUpdateQuery(const Table &table,
-                                          const std::vector<Column> &columns,
-                                          std::string_view where_clause)
-    -> std::string {
+auto SqliteQueryBuilder::BuildUpdateQuery(
+    const sqldb::Table &table, const std::vector<sqldb::Column> &columns,
+    std::string_view where_clause) -> std::string {
   auto query = "UPDATE \"" + table + "\" SET ";
 
   const auto num_columns = columns.size();
@@ -158,9 +157,9 @@ auto SqliteQueryBuilder::BuildUpdateQuery(const Table &table,
   return query;
 }
 
-auto SqliteQueryBuilder::BuildDeleteQuery(const Table &table,
+auto SqliteQueryBuilder::BuildDeleteQuery(const sqldb::Table &table,
                                           std::string_view where_clause)
     -> std::string {
   return "DELETE FROM \"" + table + "\" " + where_clause.data();
 }
-}  // namespace stonks::db::sqlite
+}  // namespace stonks::sqlite

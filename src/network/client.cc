@@ -5,7 +5,6 @@
 #include <cpprest/details/basic_types.h>
 #include <cpprest/json.h>
 #include <fmt/format.h>
-#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 

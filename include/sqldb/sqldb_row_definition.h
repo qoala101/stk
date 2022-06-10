@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include "db_types.h"
+#include "sqldb_types.h"
 
-namespace stonks::db {
+namespace stonks::sqldb {
 /**
  * @brief Types of row cells.
  */
@@ -25,6 +25,6 @@ class RowDefinition {
  private:
   std::vector<CellDefinition> cell_definitions_{};
 };
-}  // namespace stonks::db
+}  // namespace stonks::sqldb
 
 #endif  // STONKS_DB_DB_ROW_DEFINITION_H_

@@ -3,10 +3,10 @@
 
 #include <memory>
 
-#include "db.h"
-#include "db_query_builder.h"
+#include "sqldb_db.h"
+#include "sqldb_query_builder.h"
 
-namespace stonks::db {
+namespace stonks::sqldb {
 /**
  * @brief Abstract factory for DB related entities.
  */
@@ -27,6 +27,6 @@ class DbFactory {
   [[nodiscard]] virtual auto CreateQueryBuilder()
       -> std::unique_ptr<QueryBuilder> = 0;
 };
-}  // namespace stonks::db
+}  // namespace stonks::sqldb
 
 #endif  // STONKS_DB_SQLITE_DB_FACTORY_H_

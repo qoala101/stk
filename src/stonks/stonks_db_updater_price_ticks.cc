@@ -2,7 +2,6 @@
 
 #include <bits/exception.h>
 #include <cpprest/json.h>
-#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
