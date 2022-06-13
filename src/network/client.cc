@@ -14,6 +14,7 @@
 #include <utility>
 
 #include "any.h"
+#include "endpoint.h"
 #include "rest_request.h"
 #include "type.h"
 #include "type_variant.h"
@@ -191,5 +192,26 @@ auto Client::Execute(const EndpointDesc &endpoint,
                      const std::map<std::string, json::TypedAny> &params,
                      const json::TypedAny &request_body) const -> Result {
   return impl_->Execute(endpoint, params, request_body);
+}
+
+auto Client::v2_Execute(const EndpointDesc &endpoint) const -> v2_Result {
+  return v2_Execute(endpoint, {}, {{}});
+}
+
+auto Client::v2_Execute(const EndpointDesc &endpoint,
+                        const v2_Params &params) const -> v2_Result {
+  return v2_Execute(endpoint, params, {{}});
+}
+
+auto Client::v2_Execute(const EndpointDesc &endpoint,
+                        const v2_Body &request_body) const -> v2_Result {
+  return v2_Execute(endpoint, {}, request_body);
+}
+
+auto Client::v2_Execute(const EndpointDesc &endpoint, const v2_Params &params,
+                        const v2_Body &request_body) const -> v2_Result {
+  // spdlog::info("Execute with params {} {} {}", endpoint.relative_uri,
+  // params.size(), body.serialize());
+  return {{}};
 }
 }  // namespace stonks::network

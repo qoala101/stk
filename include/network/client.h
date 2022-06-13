@@ -53,6 +53,21 @@ class Client {
                const std::map<std::string, json::TypedAny> &params,
                const json::TypedAny &request_body) const -> Result;
 
+  // NOLINTNEXTLINE(*-use-nodiscard)
+  auto v2_Execute(const EndpointDesc &endpoint) const -> v2_Result;
+
+  // NOLINTNEXTLINE(*-use-nodiscard)
+  auto v2_Execute(const EndpointDesc &endpoint, const v2_Params &params) const
+      -> v2_Result;
+
+  // NOLINTNEXTLINE(*-use-nodiscard)
+  auto v2_Execute(const EndpointDesc &endpoint,
+                  const v2_Body &request_body) const -> v2_Result;
+
+  // NOLINTNEXTLINE(*-use-nodiscard)
+  auto v2_Execute(const EndpointDesc &endpoint, const v2_Params &params,
+                  const v2_Body &request_body) const -> v2_Result;
+
  private:
   class Impl;
   std::unique_ptr<Impl> impl_{};

@@ -11,6 +11,7 @@
 
 #include "any.h"
 #include "any_map.h"
+#include "json.h"
 #include "type_variant.h"
 
 namespace stonks::network {
@@ -52,11 +53,21 @@ struct EndpointDesc {
    * Server uses it to verify the body of response before sending it.
    */
   std::optional<json::TypeVariant> response_body{};
+
+  enum class Optional { kOptional, kMandatory };
+
+  std::map<std::string, Optional> v2_params{};
+  Optional v2_request_body{};
+  Optional v2_response_body{};
 };
 
 using Result = any::Any;
 using Params = any::AnyMap;
 using Body = any::Any;
+
+using v2_Result = Json;
+using v2_Params = std::map<std::string, Json>;
+using v2_Body = Json;
 
 using NoResult = std::function<void()>;
 using NoResultTakesParams = std::function<void(Params)>;
