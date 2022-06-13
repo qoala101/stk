@@ -21,6 +21,18 @@ class Client {
    */
   explicit Client(const Uri &uri);
 
+  struct ExecuteArgs {
+    /**
+     * @brief Parameters to be added to request.
+     */
+    const std::map<std::string, Json> &params{};
+
+    /**
+     * @brief Object sent in the body of request.
+     */
+    const Json &body{};
+  };
+
   /**
    * @brief Sends rest request to the server on specified endpoint.
    * Before sending the request, and after receiving the response, verifies
@@ -29,19 +41,9 @@ class Client {
    * response is an exception itself.
    */
   // NOLINTNEXTLINE(*-use-nodiscard)
-  auto Execute(const EndpointDesc &endpoint) const -> v2_Result;
-
-  // NOLINTNEXTLINE(*-use-nodiscard)
-  auto Execute(const EndpointDesc &endpoint, const params &params) const
-      -> v2_Result;
-
-  // NOLINTNEXTLINE(*-use-nodiscard)
   auto Execute(const EndpointDesc &endpoint,
-                  const v2_Body &request_body) const -> v2_Result;
-
-  // NOLINTNEXTLINE(*-use-nodiscard)
-  auto Execute(const EndpointDesc &endpoint, const params &params,
-                  const v2_Body &request_body) const -> v2_Result;
+               const ExecuteArgs &args = {.params = {}, .body = {}}) const
+      -> Result;
 
  private:
   std::string base_uri_{};

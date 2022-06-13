@@ -15,6 +15,7 @@
 #include "type_variant.h"
 
 namespace stonks::network {
+
 /**
  * @brief Description of REST endpoint.
  * Used by Client to send the request, and by Server to handle it.
@@ -32,42 +33,11 @@ struct EndpointDesc {
    * handler.
    */
   std::string relative_uri{};
-
-  /**
-   * @brief List of request parameter descriptions.
-   * Client uses it to verify the params before sending the request.
-   * Server uses it to verify the params before handling the request.
-   */
-  // std::map<std::string, json::TypeVariant> params{};
-
-  /**
-   * @brief Request body description.
-   * Client uses it to verify the body of request before sending it.
-   * Server uses it to verify the body of request before handling it.
-   */
-  // std::optional<json::TypeVariant> request_body{};
-
-  /**
-   * @brief Response body description.
-   * Client uses it to verify the body of response when receiving it.
-   * Server uses it to verify the body of response before sending it.
-   */
-  // std::optional<json::TypeVariant> response_body{};
-
-  enum class Optional { kOptional, kMandatory };
-
-  std::map<std::string, Optional> v2_params{};
-  Optional v2_request_body{};
-  Optional v2_response_body{};
 };
 
 using Result = Json;
 using Params = std::map<std::string, Json>;
 using Body = Json;
-
-using v2_Result = Json;
-using v2_Params = std::map<std::string, Json>;
-using v2_Body = Json;
 
 using NoResult = std::function<void()>;
 using NoResultTakesParams = std::function<void(Params)>;
