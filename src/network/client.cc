@@ -27,15 +27,15 @@ namespace {
 }
 
 void AddParamsToRequest(
-    const v2_Params &params,
-    const std::map<std::string, EndpointDesc::Optional> &endpoint_params,
+    const params &params,
+    const std::map<std::string, Optional> &endpoint_params,
     RestRequest &request) {
   for (const auto &endpoint_param : endpoint_params) {
     const auto &[param_name, param_type] = endpoint_param;
     const auto param = params.find(param_name);
 
     if (const auto no_param = param == params.end()) {
-      ABSL_ASSERT((param_type == EndpointDesc::Optional::kOptional) &&
+      ABSL_ASSERT((param_type == Optional::kOptional) &&
                   "Request misses mandatory parameter");
 
       continue;
@@ -46,7 +46,7 @@ void AddParamsToRequest(
 
     if (const auto no_value_for_optional_param =
             value_json.is_null() &&
-            (param_type == EndpointDesc::Optional::kOptional)) {
+            (param_type == Optional::kOptional)) {
       continue;
     }
 
@@ -55,8 +55,8 @@ void AddParamsToRequest(
 }
 
 void AddBodyToRequest(const v2_Body &request_body,
-                         EndpointDesc::Optional endpoint_request_body,
-                         RestRequest &request) {
+                      Optional endpoint_request_body,
+                      RestRequest &request) {
   const auto &request_json = request_body.GetJson();
 
   if (!request_json.is_null()) {
@@ -64,7 +64,7 @@ void AddBodyToRequest(const v2_Body &request_body,
     return;
   }
 
-  ABSL_ASSERT((endpoint_request_body == EndpointDesc::Optional::kOptional) &&
+  ABSL_ASSERT((endpoint_request_body == Optional::kOptional) &&
               "Request misses mandatory body");
 }
 
@@ -89,47 +89,42 @@ auto SendRequest(const EndpointDesc &endpoint, RestRequest &request)
  */
 [[nodiscard]] auto ParseResponseBody(
     const web::json::value &response_json,
-    EndpointDesc::Optional endpoint_request_body) -> v2_Result {
-  if (response_json.is_null()) {
-    if (const auto no_mandatory_result =
-            endpoint_request_body == EndpointDesc::Optional::kMandatory) {
-      Logger().error("Response misses mandatory body");
-      throw std::runtime_error{"Response misses mandatory body"};
-    }
-
-    return response_json;
+    Optional endpoint_request_body) -> v2_Result {
+  if (const auto no_mandatory_result =
+          response_json.is_null() &&
+          (endpoint_request_body == Optional::kMandatory)) {
+    Logger().error("Response misses mandatory body");
+    throw std::runtime_error{"Response misses mandatory body"};
   }
 
   return response_json;
 }
 }  // namespace
 
-Client::Client(const Uri &uri)
-    : base_uri_{uri.GetFullUri()} {}
-
+Client::Client(const Uri &uri) : base_uri_{uri.GetFullUri()} {}
 
 auto Client::Execute(const EndpointDesc &endpoint) const -> v2_Result {
   return Execute(endpoint, {}, {{}});
 }
 
 auto Client::Execute(const EndpointDesc &endpoint,
-                        const v2_Params &params) const -> v2_Result {
+                     const params &params) const -> v2_Result {
   return Execute(endpoint, params, {{}});
 }
 
 auto Client::Execute(const EndpointDesc &endpoint,
-                        const v2_Body &request_body) const -> v2_Result {
+                     const v2_Body &request_body) const -> v2_Result {
   return Execute(endpoint, {}, request_body);
 }
 
-auto Client::Execute(const EndpointDesc &endpoint, const v2_Params &params,
-                        const v2_Body &request_body) const -> v2_Result {
+auto Client::Execute(const EndpointDesc &endpoint, const params &params,
+                     const v2_Body &request_body) const -> v2_Result {
   auto request =
       RestRequest{endpoint.method, base_uri_}.AppendUri(endpoint.relative_uri);
 
-  AddParamsToRequest(params, endpoint.v2_params, request);
-  AddBodyToRequest(request_body, endpoint.v2_request_body, request);
+  AddParamsToRequest(params, endpoint.params, request);
+  AddBodyToRequest(request_body, endpoint.request_body, request);
   auto response_json = SendRequest(endpoint, request);
-  return ParseResponseBody(response_json, endpoint.v2_response_body);
+  return ParseResponseBody(response_json, endpoint.response_body);
 }
 }  // namespace stonks::network

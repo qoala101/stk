@@ -38,21 +38,21 @@ struct EndpointDesc {
    * Client uses it to verify the params before sending the request.
    * Server uses it to verify the params before handling the request.
    */
-  std::map<std::string, json::TypeVariant> params{};
+  // std::map<std::string, json::TypeVariant> params{};
 
   /**
    * @brief Request body description.
    * Client uses it to verify the body of request before sending it.
    * Server uses it to verify the body of request before handling it.
    */
-  std::optional<json::TypeVariant> request_body{};
+  // std::optional<json::TypeVariant> request_body{};
 
   /**
    * @brief Response body description.
    * Client uses it to verify the body of response when receiving it.
    * Server uses it to verify the body of response before sending it.
    */
-  std::optional<json::TypeVariant> response_body{};
+  // std::optional<json::TypeVariant> response_body{};
 
   enum class Optional { kOptional, kMandatory };
 
@@ -61,9 +61,9 @@ struct EndpointDesc {
   Optional v2_response_body{};
 };
 
-using Result = any::Any;
-using Params = any::AnyMap;
-using Body = any::Any;
+using Result = Json;
+using Params = std::map<std::string, Json>;
+using Body = Json;
 
 using v2_Result = Json;
 using v2_Params = std::map<std::string, Json>;

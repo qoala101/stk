@@ -32,7 +32,7 @@ class Client {
   auto Execute(const EndpointDesc &endpoint) const -> v2_Result;
 
   // NOLINTNEXTLINE(*-use-nodiscard)
-  auto Execute(const EndpointDesc &endpoint, const v2_Params &params) const
+  auto Execute(const EndpointDesc &endpoint, const params &params) const
       -> v2_Result;
 
   // NOLINTNEXTLINE(*-use-nodiscard)
@@ -40,7 +40,7 @@ class Client {
                   const v2_Body &request_body) const -> v2_Result;
 
   // NOLINTNEXTLINE(*-use-nodiscard)
-  auto Execute(const EndpointDesc &endpoint, const v2_Params &params,
+  auto Execute(const EndpointDesc &endpoint, const params &params,
                   const v2_Body &request_body) const -> v2_Result;
 
  private:
