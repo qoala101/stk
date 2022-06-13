@@ -11,8 +11,8 @@
 
 namespace stonks::network {
 /**
- * @brief Represents HTTP server client which handles type safety of prams,
- * requests, and responses.
+ * @brief Represents HTTP server client which handles checking of mandatory
+ * params and request and response bodies.
  */
 class Client {
  public:
@@ -21,56 +21,29 @@ class Client {
    */
   explicit Client(const Uri &uri);
 
-  Client(const Client &) = delete;
-  Client(Client &&) noexcept = default;
-
-  auto operator=(const Client &) -> Client & = delete;
-  auto operator=(Client &&) noexcept -> Client & = default;
-
-  ~Client();
-
   /**
    * @brief Sends rest request to the server on specified endpoint.
    * Before sending the request, and after receiving the response, verifies
    * params, body, and response.
-   * @throws If response doesn't match endpoint description or response is an
-   * exception itself.
+   * @throws If response doesn't match endpoint description or rethrows if
+   * response is an exception itself.
    */
   // NOLINTNEXTLINE(*-use-nodiscard)
-  auto Execute(const EndpointDesc &endpoint) const -> Result;
+  auto Execute(const EndpointDesc &endpoint) const -> v2_Result;
 
   // NOLINTNEXTLINE(*-use-nodiscard)
-  auto Execute(const EndpointDesc &endpoint,
-               const std::map<std::string, json::TypedAny> &params) const
-      -> Result;
-
-  // NOLINTNEXTLINE(*-use-nodiscard)
-  auto Execute(const EndpointDesc &endpoint,
-               const json::TypedAny &request_body) const -> Result;
-
-  // NOLINTNEXTLINE(*-use-nodiscard)
-  auto Execute(const EndpointDesc &endpoint,
-               const std::map<std::string, json::TypedAny> &params,
-               const json::TypedAny &request_body) const -> Result;
-
-  // NOLINTNEXTLINE(*-use-nodiscard)
-  auto v2_Execute(const EndpointDesc &endpoint) const -> v2_Result;
-
-  // NOLINTNEXTLINE(*-use-nodiscard)
-  auto v2_Execute(const EndpointDesc &endpoint, const v2_Params &params) const
+  auto Execute(const EndpointDesc &endpoint, const v2_Params &params) const
       -> v2_Result;
 
   // NOLINTNEXTLINE(*-use-nodiscard)
-  auto v2_Execute(const EndpointDesc &endpoint,
+  auto Execute(const EndpointDesc &endpoint,
                   const v2_Body &request_body) const -> v2_Result;
 
   // NOLINTNEXTLINE(*-use-nodiscard)
-  auto v2_Execute(const EndpointDesc &endpoint, const v2_Params &params,
+  auto Execute(const EndpointDesc &endpoint, const v2_Params &params,
                   const v2_Body &request_body) const -> v2_Result;
 
  private:
-  class Impl;
-  std::unique_ptr<Impl> impl_{};
   std::string base_uri_{};
 };
 }  // namespace stonks::network

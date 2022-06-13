@@ -17,7 +17,7 @@ auto Proxy::GetEndpointPort(std::string_view endpoint) const
     -> std::optional<int> {
   return client_
       .Execute(endpoints::Proxy::GetEndpointPort(), {{"endpoint", endpoint}})
-      .Take<std::optional<int>>();
+      .Parse<std::optional<int>>();
 }
 
 void Proxy::RegisterEndpoint(std::string_view endpoint) {

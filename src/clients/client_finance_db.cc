@@ -15,27 +15,26 @@ FinanceDb::FinanceDb(int port)
 
 auto FinanceDb::SelectAssets() const -> std::vector<std::string> {
   return client_.Execute(endpoints::FinanceDb::SelectAssets())
-      .Take<std::vector<std::string>>();
+      .Parse<std::vector<std::string>>();
 }
 
 void FinanceDb::UpdateAssets(std::vector<std::string> assets) {
-  client_.Execute(endpoints::FinanceDb::UpdateAssets(), std::move(assets));
+  client_.Execute(endpoints::FinanceDb::UpdateAssets(), assets);
 }
 
 auto FinanceDb::SelectSymbols() const -> std::vector<finance::SymbolName> {
   return client_.Execute(endpoints::FinanceDb::SelectSymbols())
-      .Take<std::vector<finance::SymbolName>>();
+      .Parse<std::vector<finance::SymbolName>>();
 }
 
 auto FinanceDb::SelectSymbolsInfo() const -> std::vector<finance::SymbolInfo> {
   return client_.Execute(endpoints::FinanceDb::SelectSymbolsInfo())
-      .Take<std::vector<finance::SymbolInfo>>();
+      .Parse<std::vector<finance::SymbolInfo>>();
 }
 
 void FinanceDb::UpdateSymbolsInfo(
     std::vector<finance::SymbolInfo> symbols_info) {
-  client_.Execute(endpoints::FinanceDb::UpdateSymbolsInfo(),
-                  std::move(symbols_info));
+  client_.Execute(endpoints::FinanceDb::UpdateSymbolsInfo(), symbols_info);
 }
 
 auto FinanceDb::SelectSymbolPriceTicks(
@@ -45,7 +44,7 @@ auto FinanceDb::SelectSymbolPriceTicks(
   return client_
       .Execute(endpoints::FinanceDb::SelectSymbolPriceTicks(),
                {{"limit", limit}, {"period", period}, {"symbols", symbols}})
-      .Take<std::vector<finance::SymbolPriceTick>>();
+      .Parse<std::vector<finance::SymbolPriceTick>>();
 }
 
 void FinanceDb::InsertSymbolPriceTick(

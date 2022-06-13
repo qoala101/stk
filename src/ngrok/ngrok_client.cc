@@ -18,6 +18,6 @@ NgrokClient::NgrokClient() : client_{network::LocalUri{4040, "/api"}} {}
       .Execute(network::EndpointDesc{.method = web::http::methods::GET,
                                      .relative_uri = "/tunnels",
                                      .response_body = json::Type<Tunnel>{}})
-      .Take<Tunnel>();
+      .Parse<Tunnel>();
 }
 }  // namespace stonks::ngrok
