@@ -1,6 +1,10 @@
 #ifndef STONKS_NETWORK_JSON_H_
 #define STONKS_NETWORK_JSON_H_
 
+#include <cpprest/json.h>
+
+#include <exception>
+
 #include "json_conversions.h"
 
 namespace stonks::network {
@@ -19,6 +23,10 @@ class Json {
   template <typename T>
   explicit operator T() {
     return json::ParseFromJson<T>(json_);
+  }
+
+  [[nodiscard]] auto GetJson() const -> const web::json::value & {
+    return json_;
   }
 
  private:

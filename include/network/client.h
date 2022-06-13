@@ -71,6 +71,7 @@ class Client {
  private:
   class Impl;
   std::unique_ptr<Impl> impl_{};
+  std::string base_uri_{};
 };
 }  // namespace stonks::network
 
