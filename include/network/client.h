@@ -6,7 +6,7 @@
 #include <string>
 
 #include "endpoint.h"
-#include "typed_any.h"
+
 #include "uri.h"
 
 namespace stonks::network {

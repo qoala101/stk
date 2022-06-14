@@ -6,8 +6,8 @@
 #include <string>
 
 #include "binance_types.h"
-#include "type.h"
-#include "type_variant.h"
+
+
 
 namespace stonks {
 auto endpoints::Binance::GetExchangeInfo() -> network::EndpointDesc {

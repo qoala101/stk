@@ -6,7 +6,7 @@
 #include "endpoint.h"
 #include "endpoints_finance_db.h"
 #include "server_finance_db.h"
-#include "typed_any.h"
+
 #include "uri.h"
 
 namespace stonks::client {

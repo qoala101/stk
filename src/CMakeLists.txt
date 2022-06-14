@@ -28,8 +28,6 @@ add_library(libstonks
   finance_db/finance_db.cc
   google_charts/google_charts_conversions.cc
   json/json_conversions.cc
-  json/type_variant.cc
-  json/typed_any.cc
   network/client.cc
   network/endpoint.cc
   network/proxy.cc
@@ -86,7 +84,6 @@ target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/stonks
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/strategies)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/streams)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/utility)
-target_link_libraries(libstonks PRIVATE libany)
 target_link_libraries(libstonks PRIVATE libsqldb)
 target_link_libraries(libstonks PRIVATE libsqlite)
 target_link_libraries(libstonks PUBLIC cpprestsdk::cpprest)
@@ -124,7 +121,6 @@ target_link_libraries(app_v1_strategy PRIVATE libstonks)
 add_executable(app_proxy apps/app_proxy.cc)
 target_link_libraries(app_proxy PRIVATE libstonks)
 
-add_subdirectory(any)
 add_subdirectory(sqldb)
 add_subdirectory(sqlite)
 add_subdirectory(network)

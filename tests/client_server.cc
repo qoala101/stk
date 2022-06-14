@@ -15,7 +15,7 @@
 #include "endpoint.h"
 #include "finance_types.h"
 #include "server.h"
-#include "typed_any.h"
+
 #include "uri.h"
 
 namespace {

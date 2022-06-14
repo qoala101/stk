@@ -7,8 +7,8 @@
 #include <vector>
 
 #include "finance_types.h"
-#include "type.h"
-#include "type_variant.h"
+
+
 
 namespace stonks {
 auto endpoints::FinanceDb::SelectAssets() -> network::EndpointDesc {
