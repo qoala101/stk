@@ -9,8 +9,10 @@
 
 namespace stonks::network {
 /**
- * @brief HTTP server wrapper which handles type safety of params, requests, and
- * responses.
+ * @brief Wrapper of HTTP server which simplifies exposing of C++ methods
+ * as REST endpoints.
+ * Client provides list of supported endpoints and their handlers
+ * and Server redirects corresponding requests there.
  */
 class Server {
  public:

@@ -40,65 +40,17 @@ struct RequestHandlerResult {
   web::json::value response_body{};
 };
 
-/**
- * @throws If parameters are wrong.
- */
-[[nodiscard]] auto ParseParams(
-    const std::map<std::string, std::string> &raw_params,
-    const std::map<std::string, Optional> &endpoint_params)
-    -> params {
-  auto parsed_params = params{};
+[[nodiscard]] auto ParseParams(const web::http::http_request &request)
+    -> Params {
+  const auto &query = request.request_uri().query();
+  const auto raw_params = web::uri::split_query(web::uri::decode(query));
+  auto parsed_params = Params{};
 
-  for (const auto &endpoint_param : endpoint_params) {
-    const auto &[param_name, param_type] = endpoint_param;
-    const auto raw_param = raw_params.find(param_name);
-
-    if (const auto no_param = raw_param == raw_params.end()) {
-      if (param_type == Optional::kMandatory) {
-        throw std::runtime_error{"Request misses mandatory parameter " +
-                                 param_name};
-      }
-
-      parsed_params[param_name] = {};
-
-      continue;
-    }
-
-    const auto &raw_value = raw_param->second;
-    parsed_params[param_name] = web::json::value::parse(raw_value);
+  for (const auto &[name, value] : raw_params) {
+    parsed_params[name] = web::json::value::parse(value);
   }
 
   return parsed_params;
-}
-
-/**
- * @throws If request body is wrong.
- */
-[[nodiscard]] auto ParseRequestBody(
-    const web::http::http_request &request,
-    Optional endpoint_request_body) -> Body {
-  const auto request_json = request.extract_json().get();
-
-  if (const auto no_mandatory_body =
-          request_json.is_null() &&
-          (endpoint_request_body == Optional::kMandatory)) {
-    throw std::runtime_error{"Request doesn't have mandatory body"};
-  }
-
-  return request_json;
-}
-
-[[nodiscard]] auto ConvertResponseBodyToJson(
-    const Result &response_body, Optional endpoint_response_body)
-    -> const web::json::value & {
-  const auto &response_json = response_body.GetJson();
-
-  const auto no_mandatory_result =
-      response_json.is_null() &&
-      (endpoint_response_body == Optional::kMandatory);
-  ABSL_ASSERT(!no_mandatory_result && "Response doesn't have mandatory body");
-
-  return response_json;
 }
 }  // namespace
 
@@ -116,16 +68,15 @@ class Server::Impl {
         response.set_body(result.response_body);
       }
 
-      Logger().info("Replying {}", result.status_code);
       request.reply(response);
     });
     http_listener_.open();
   }
 
   Impl(const Impl &) = delete;
-  auto operator=(const Impl &) -> Impl & = delete;
-
   Impl(Impl &&) noexcept = default;
+
+  auto operator=(const Impl &) -> Impl & = delete;
   auto operator=(Impl &&) noexcept -> Impl & = default;
 
   ~Impl() { http_listener_.close().wait(); }
@@ -139,11 +90,8 @@ class Server::Impl {
     }
   }
 
-  /**
-   * @throws If endpoint is not registered.
-   */
   [[nodiscard]] auto FindEndpoint(const web::http::http_request &request) const
-      -> const Endpoint & {
+      -> const Endpoint * {
     const auto endpoint = ranges::find_if(
         endpoints_, [&request_method = request.method(),
                      &request_relative_uri = request.request_uri().path()](
@@ -153,11 +101,10 @@ class Server::Impl {
         });
 
     if (const auto no_such_endpoint = endpoint == endpoints_.end()) {
-      throw std::runtime_error{"Unknown endpoint " +
-                               request.request_uri().path()};
+      return nullptr;
     }
 
-    return *endpoint;
+    return endpoint.base();
   }
 
   [[nodiscard]] auto RequestHandler(
@@ -165,44 +112,32 @@ class Server::Impl {
     Logger().info("Got {} request on {}", request.method(),
                   request.request_uri().path());
 
-    const auto *endpoint = (const Endpoint *){};
-    auto parsed_params = Params{};
-    auto parsed_request_body = Body{};
+    const auto *endpoint = FindEndpoint(request);
 
-    try {
-      endpoint = &FindEndpoint(request);
-
-      const auto raw_params = web::uri::split_query(
-          web::uri::decode(request.request_uri().query()));
-      parsed_params = ParseParams(raw_params, endpoint->desc.params);
-
-      parsed_request_body =
-          ParseRequestBody(request, endpoint->desc.request_body);
-    } catch (const std::exception &exception) {
-      Logger().error("Bad request {}", exception.what());
-      return RequestHandlerResult{
-          .status_code = web::http::status_codes::BadRequest,
-          .response_body =
-              json::ConvertToJson(std::runtime_error{exception.what()})};
+    if (const auto endpoint_not_found = endpoint == nullptr) {
+      Logger().info("Endpoint not found {}", request.request_uri().path());
+      return {.status_code = web::http::status_codes::BadRequest};
     }
 
+    auto request_params = ParseParams(request);
+    auto request_body = Body{request};
     auto response_body = Result{};
 
     try {
-      response_body = endpoint->handler(std::move(parsed_params),
-                                        std::move(parsed_request_body));
+      response_body =
+          endpoint->handler(std::move(request_params), std::move(request_body));
     } catch (const std::exception &exception) {
       Logger().error("Request handler thrown exception {}", exception.what());
+
       return RequestHandlerResult{
           .status_code = web::http::status_codes::InternalError,
           .response_body =
               json::ConvertToJson(std::runtime_error{exception.what()})};
     }
 
-    auto response_json = ConvertResponseBodyToJson(
-        response_body, endpoint->desc.response_body);
-    return RequestHandlerResult{.status_code = web::http::status_codes::OK,
-                                .response_body = std::move(response_json)};
+    return RequestHandlerResult{
+        .status_code = web::http::status_codes::OK,
+        .response_body = std::move(response_body).GetJson()};
   }
 
   web::http::experimental::listener::http_listener http_listener_{};
