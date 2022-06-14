@@ -21,8 +21,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "any.h"
-#include "any_map.h"
 #include "endpoint.h"
 #include "json.h"
 #include "json_conversions.h"

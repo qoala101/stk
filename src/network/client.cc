@@ -13,7 +13,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "any.h"
 #include "endpoint.h"
 #include "rest_request.h"
 
