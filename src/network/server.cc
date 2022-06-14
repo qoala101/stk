@@ -47,10 +47,14 @@ struct RequestHandlerResult {
   auto parsed_params = Params{};
 
   for (const auto &[name, value] : raw_params) {
-    parsed_params[name] = web::json::value::parse(value);
+    parsed_params[name] = Json{web::json::value::parse(value)};
   }
 
   return parsed_params;
+}
+
+[[nodiscard]] auto ParseBody(const web::http::http_request &request) -> Body {
+  return Body{request.extract_json().get()};
 }
 }  // namespace
 
@@ -120,7 +124,7 @@ class Server::Impl {
     }
 
     auto request_params = ParseParams(request);
-    auto request_body = Body{request};
+    auto request_body = ParseBody(request);
     auto response_body = Result{};
 
     try {

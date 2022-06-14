@@ -16,12 +16,13 @@ Proxy::Proxy()
 auto Proxy::GetEndpointPort(std::string_view endpoint) const
     -> std::optional<int> {
   return client_
-      .Execute(endpoints::Proxy::GetEndpointPort(), {{"endpoint", endpoint}})
+      .Execute(endpoints::Proxy::GetEndpointPort(),
+               {.params = {{"endpoint", endpoint}}})
       .Parse<std::optional<int>>();
 }
 
 void Proxy::RegisterEndpoint(std::string_view endpoint) {
   client_.Execute(endpoints::Proxy::RegisterEndpoint(),
-                  {{"endpoint", endpoint}});
+                  {.params = {{"endpoint", endpoint}}});
 }
 }  // namespace stonks::client

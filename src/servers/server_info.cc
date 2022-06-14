@@ -31,7 +31,7 @@ auto Info::GetPriceTicks() -> network::Endpoint {
   return {endpoints::Info::GetPriceTicks(),
           network::HasResultTakesParams{[this](network::Params params) {
             return entity_->GetPriceTicks(
-                std::move(params).Take<finance::SymbolName>("symbol"));
+                params["symbol"].Parse<finance::SymbolName>());
           }}};
 }
 }  // namespace stonks::server

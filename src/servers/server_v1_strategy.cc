@@ -19,8 +19,7 @@ V1Strategy::V1Strategy(int port, std::shared_ptr<stonks::V1Strategy> entity)
 auto V1Strategy::Run() -> network::Endpoint {
   return {endpoints::V1Strategy::Run(),
           network::HasResultTakesParams{[this](network::Params params) {
-            return entity_->Run(
-                std::move(params).Take<finance::SymbolName>("symbol"));
+            return entity_->Run(params["symbol"].Parse<finance::SymbolName>());
           }}};
 }
 }  // namespace stonks::server

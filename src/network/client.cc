@@ -41,7 +41,7 @@ void AddBodyToRequest(const Body &request_body, RestRequest &request) {
 }
 
 auto SendRequestAndGetResponse(const EndpointDesc &endpoint,
-                               RestRequest &request) -> web::json::value {
+                               RestRequest &request) -> Result {
   Logger().info("Sending {} request to {}", endpoint.method,
                 endpoint.relative_uri);
 
@@ -51,7 +51,7 @@ auto SendRequestAndGetResponse(const EndpointDesc &endpoint,
     throw std::runtime_error{"Request failed"};
   }
 
-  return std::move(*response_json);
+  return Result{*std::move(response_json)};
 }
 }  // namespace
 

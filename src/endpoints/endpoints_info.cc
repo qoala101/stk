@@ -13,20 +13,16 @@
 namespace stonks {
 auto endpoints::Info::GetSymbols() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,
-          .relative_uri = "/GetSymbols",
-          .response_body = json::Type<std::vector<finance::SymbolName>>{}};
+          .relative_uri = "/GetSymbols"};
 }
 
 auto endpoints::Info::GetStrategyNames() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,
-          .relative_uri = "/GetStrategyNames",
-          .response_body = json::Type<std::vector<std::string>>{}};
+          .relative_uri = "/GetStrategyNames"};
 }
 
 auto endpoints::Info::GetPriceTicks() -> network::EndpointDesc {
   return {.method = web::http::methods::GET,
-          .relative_uri = "/GetPriceTicks",
-          .params = {{"symbol", json::Type<finance::SymbolName>{}}},
-          .response_body = json::Type<std::vector<finance::SymbolPriceTick>>{}};
+          .relative_uri = "/GetPriceTicks"};
 }
 }  // namespace stonks

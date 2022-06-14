@@ -28,16 +28,14 @@ class Client {
     const std::map<std::string, Json> &params{};
 
     /**
-     * @brief Object sent in the body of request.
+     * @brief Object sent as the body of request.
      */
     const Json &body{};
   };
 
   /**
-   * @brief Sends rest request to the server on specified endpoint.
-   * Before sending the request, and after receiving the response, verifies
-   * params, body, and response.
-   * @throws If response doesn't match endpoint description or rethrows if
+   * @brief Sends rest request to the specified endpoint.
+   * @throws If response doesn't match endpoint description or Rethrows if
    * response is an exception itself.
    */
   // NOLINTNEXTLINE(*-use-nodiscard)

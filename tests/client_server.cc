@@ -61,27 +61,20 @@ class EntityServer : public stonks::network::Server {
  public:
   [[nodiscard]] static auto PushSymbolEndpointDesc()
       -> stonks::network::EndpointDesc {
-    return stonks::network::EndpointDesc{
-        .method = web::http::methods::POST,
-        .relative_uri = "/PushSymbol",
-        .request_body = stonks::json::Type<stonks::finance::Symbol>{}};
+    return stonks::network::EndpointDesc{.method = web::http::methods::POST,
+                                         .relative_uri = "/PushSymbol"};
   }
 
   [[nodiscard]] static auto GetSymbolEndpointDesc()
       -> stonks::network::EndpointDesc {
-    return stonks::network::EndpointDesc{
-        .method = web::http::methods::GET,
-        .relative_uri = "/GetSymbol",
-        .params = {{"index", stonks::json::Type<int>{}}},
-        .response_body = stonks::json::Type<stonks::finance::Symbol>{}};
+    return stonks::network::EndpointDesc{.method = web::http::methods::GET,
+                                         .relative_uri = "/GetSymbol"};
   }
 
   [[nodiscard]] static auto GetSizeEndpointDesc()
       -> stonks::network::EndpointDesc {
-    return stonks::network::EndpointDesc{
-        .method = web::http::methods::GET,
-        .relative_uri = "/GetSize",
-        .response_body = stonks::json::Type<int>{}};
+    return stonks::network::EndpointDesc{.method = web::http::methods::GET,
+                                         .relative_uri = "/GetSize"};
   }
 
   explicit EntityServer(const stonks::network::LocalUri& base_uri)
@@ -98,14 +91,14 @@ class EntityServer : public stonks::network::Server {
   [[nodiscard]] auto PushSymbolEndpointHandler()
       -> stonks::network::NoResultTakesBody {
     return [this](stonks::network::Body request_body) {
-      entity_.PushSymbol(request_body.Get<stonks::finance::Symbol>());
+      entity_.PushSymbol(request_body.Parse<stonks::finance::Symbol>());
     };
   }
 
   [[nodiscard]] auto GetSymbolEndpointHandler()
       -> stonks::network::HasResultTakesParams {
     return [this](stonks::network::Params params) {
-      return entity_.GetSymbol(params.Get<int>("index"));
+      return entity_.GetSymbol(params["index"].Parse<int>());
     };
   }
 
@@ -122,13 +115,13 @@ class EntityClient : public stonks::network::Client, public EntityInterface {
       : stonks::network::Client{base_uri} {}
 
   void PushSymbol(stonks::finance::Symbol symbol) override {
-    Execute(EntityServer::PushSymbolEndpointDesc(), {}, symbol);
+    Execute(EntityServer::PushSymbolEndpointDesc(), {.body = symbol});
   }
 
   [[nodiscard]] auto GetSymbol(int index) const
       -> stonks::finance::Symbol override {
-    return std::any_cast<stonks::finance::Symbol>(
-        Execute(EntityServer::GetSymbolEndpointDesc(), {{{"index", index}}}));
+    return std::any_cast<stonks::finance::Symbol>(Execute(
+        EntityServer::GetSymbolEndpointDesc(), {.params = {{"index", index}}}));
   }
 
   [[nodiscard]] auto GetSize() const -> int override {
@@ -189,13 +182,13 @@ TEST(ClientServerDeathTest, ExceptionTest) {
       EXPECT_ANY_THROW(Execute(endpoint));
 
       endpoint = EntityServer::PushSymbolEndpointDesc();
-      EXPECT_NO_THROW(Execute(endpoint, {}, stonks::finance::Symbol{}));
+      EXPECT_NO_THROW(Execute(endpoint, {.body = stonks::finance::Symbol{}}));
 
       endpoint = EntityServer::PushSymbolEndpointDesc();
       EXPECT_DEATH(Execute(endpoint), "");
 
       endpoint = EntityServer::PushSymbolEndpointDesc();
-      EXPECT_DEATH(Execute(endpoint, {}, 33), "");
+      EXPECT_DEATH(Execute(endpoint, {.body = 33}), "");
     }
   } client;
 
