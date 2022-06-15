@@ -1,5 +1,5 @@
-#ifndef STONKS_DB_DB_ROW_DEFINITION_H_
-#define STONKS_DB_DB_ROW_DEFINITION_H_
+#ifndef STONKS_SQLDB_SQLDB_ROW_DEFINITION_H_
+#define STONKS_SQLDB_SQLDB_ROW_DEFINITION_H_
 
 #include <vector>
 
@@ -27,4 +27,4 @@ class RowDefinition {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_DB_DB_ROW_DEFINITION_H_
+#endif  // STONKS_SQLDB_SQLDB_ROW_DEFINITION_H_

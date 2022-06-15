@@ -1,5 +1,5 @@
-#ifndef STONKS_DB_SQLITE_SQLITE_UTILS_H_
-#define STONKS_DB_SQLITE_SQLITE_UTILS_H_
+#ifndef STONKS_SQLITE_SQLITE_UTILS_H_
+#define STONKS_SQLITE_SQLITE_UTILS_H_
 
 #include <sqlite3.h>
 
@@ -19,4 +19,4 @@ namespace stonks::sqlite::utils {
 void WriteSqliteDbToFile(sqlite3 &sqlite_db, std::string_view file_path);
 }  // namespace stonks::sqlite::utils
 
-#endif  // STONKS_DB_SQLITE_SQLITE_UTILS_H_
+#endif  // STONKS_SQLITE_SQLITE_UTILS_H_

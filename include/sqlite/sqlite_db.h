@@ -1,5 +1,5 @@
-#ifndef STONKS_DB_SQLITE_SQLITE_DB_H_
-#define STONKS_DB_SQLITE_SQLITE_DB_H_
+#ifndef STONKS_SQLITE_SQLITE_DB_H_
+#define STONKS_SQLITE_SQLITE_DB_H_
 
 #include <sqlite3.h>
 
@@ -48,4 +48,4 @@ class SqliteDb : public sqldb::Db {
 };
 }  // namespace stonks::sqlite
 
-#endif  // STONKS_DB_SQLITE_SQLITE_DB_H_
+#endif  // STONKS_SQLITE_SQLITE_DB_H_

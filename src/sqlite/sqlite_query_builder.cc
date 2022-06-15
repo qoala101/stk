@@ -6,6 +6,7 @@
 #include <range/v3/algorithm/any_of.hpp>
 #include <range/v3/functional/identity.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/numeric/accumulate.hpp>
 #include <range/v3/view/adaptor.hpp>
 #include <range/v3/view/filter.hpp>
 #include <range/v3/view/view.hpp>
@@ -101,10 +102,20 @@ auto SqliteQueryBuilder::BuildDropTableQuery(const sqldb::Table &table)
   return "DROP TABLE \"" + table + "\";";
 }
 
-auto SqliteQueryBuilder::BuildSelectQuery(const sqldb::Table &table,
-                                          std::string_view where_clause) const
-    -> std::string {
-  auto query = "SELECT * FROM \"" + table + "\"";
+auto SqliteQueryBuilder::BuildSelectQuery(
+    const sqldb::Table &table, const std::vector<sqldb::Column> *columns,
+    std::string_view where_clause) const -> std::string {
+  auto query = std::string{"SELECT "};
+
+  if (const auto select_all_columns = columns == nullptr) {
+    query += "*";
+  } else {
+    query += ranges::accumulate(
+        *columns, query,
+        [](auto &query, const auto &column) { return query + column; });
+  }
+
+  query += " FROM \"" + table + "\"";
 
   if (!where_clause.empty()) {
     query += std::string{" "} + where_clause.data();

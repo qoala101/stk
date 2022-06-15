@@ -1,5 +1,5 @@
-#ifndef STONKS_DB_DB_PREPARED_STATEMENT_H_
-#define STONKS_DB_DB_PREPARED_STATEMENT_H_
+#ifndef STONKS_SQLDB_SQLDB_PREPARED_STATEMENT_H_
+#define STONKS_SQLDB_SQLDB_PREPARED_STATEMENT_H_
 
 #include <vector>
 
@@ -45,4 +45,4 @@ class PreparedStatement {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_DB_DB_PREPARED_STATEMENT_H_
+#endif  // STONKS_SQLDB_SQLDB_PREPARED_STATEMENT_H_

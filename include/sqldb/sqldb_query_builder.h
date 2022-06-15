@@ -1,5 +1,5 @@
-#ifndef STONKS_SQL_DB_SQL_DB_QUERY_BUILDER_H_
-#define STONKS_SQL_DB_SQL_DB_QUERY_BUILDER_H_
+#ifndef STONKS_SQLDB_SQLDB_QUERY_BUILDER_H_
+#define STONKS_SQLDB_SQLDB_QUERY_BUILDER_H_
 
 #include <string>
 #include <string_view>
@@ -24,13 +24,16 @@ class QueryBuilder {
       -> std::string = 0;
 
   [[nodiscard]] auto BuildSelectQuery(
-      const TableDefinition &table_definition) const -> std::string;
+      const TableDefinition &table_definition,
+      const std::vector<Column> *columns = {}) const -> std::string;
 
-  [[nodiscard]] auto BuildSelectQuery(const Table &table) const -> std::string;
+  [[nodiscard]] auto BuildSelectQuery(
+      const Table &table, const std::vector<Column> *columns = {}) const
+      -> std::string;
 
   [[nodiscard]] virtual auto BuildSelectQuery(
-      const Table &table, std::string_view where_clause) const
-      -> std::string = 0;
+      const Table &table, const std::vector<Column> *columns,
+      std::string_view where_clause) const -> std::string = 0;
 
   [[nodiscard]] auto BuildInsertQuery(
       const TableDefinition &table_definition) const -> std::string;
@@ -53,4 +56,4 @@ class QueryBuilder {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_SQL_DB_SQL_DB_QUERY_BUILDER_H_
+#endif  // STONKS_SQLDB_SQLDB_QUERY_BUILDER_H_

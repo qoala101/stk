@@ -1,5 +1,5 @@
-#ifndef STONKS_DB_SQLITE_SQLITE_DB_FACTORY_H_
-#define STONKS_DB_SQLITE_SQLITE_DB_FACTORY_H_
+#ifndef STONKS_SQLITE_SQLITE_DB_FACTORY_H_
+#define STONKS_SQLITE_SQLITE_DB_FACTORY_H_
 
 #include <memory>
 #include <string_view>
@@ -29,4 +29,4 @@ class SqliteDbFactory : public sqldb::DbFactory {
 };
 }  // namespace stonks::sqlite
 
-#endif  // STONKS_DB_SQLITE_SQLITE_DB_FACTORY_H_
+#endif  // STONKS_SQLITE_SQLITE_DB_FACTORY_H_

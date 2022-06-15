@@ -1,5 +1,5 @@
-#ifndef STONKS_DB_DB_VALUE_H_
-#define STONKS_DB_DB_VALUE_H_
+#ifndef STONKS_SQLDB_SQLDB_VALUE_H_
+#define STONKS_SQLDB_SQLDB_VALUE_H_
 
 #include <cstdint>
 #include <string>
@@ -59,4 +59,4 @@ class Value {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_DB_DB_VALUE_H_
+#endif  // STONKS_SQLDB_SQLDB_VALUE_H_

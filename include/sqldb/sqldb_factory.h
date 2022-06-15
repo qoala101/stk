@@ -1,5 +1,5 @@
-#ifndef STONKS_DB_SQLITE_DB_FACTORY_H_
-#define STONKS_DB_SQLITE_DB_FACTORY_H_
+#ifndef STONKS_SQLDB_SQLDB_FACTORY_H_
+#define STONKS_SQLDB_SQLDB_FACTORY_H_
 
 #include <memory>
 
@@ -29,4 +29,4 @@ class DbFactory {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_DB_SQLITE_DB_FACTORY_H_
+#endif  // STONKS_SQLDB_SQLDB_FACTORY_H_

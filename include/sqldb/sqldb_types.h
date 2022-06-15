@@ -1,5 +1,5 @@
-#ifndef STONKS_DB_DB_TYPES_H_
-#define STONKS_DB_DB_TYPES_H_
+#ifndef STONKS_SQLDB_SQLDB_TYPES_H_
+#define STONKS_SQLDB_SQLDB_TYPES_H_
 
 #include <any>
 #include <cstdint>
@@ -47,4 +47,4 @@ struct CellDefinition {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_DB_DB_TYPES_H_
+#endif  // STONKS_SQLDB_SQLDB_TYPES_H_

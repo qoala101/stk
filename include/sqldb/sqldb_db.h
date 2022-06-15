@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_H_
-#define STONKS_SQLDB_SQLDB_H_
+#ifndef STONKS_SQLDB_SQLDB_DB_H_
+#define STONKS_SQLDB_SQLDB_DB_H_
 
 #include <memory>
 #include <optional>
@@ -33,4 +33,4 @@ class Db {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_H_
+#endif  // STONKS_SQLDB_SQLDB_DB_H_

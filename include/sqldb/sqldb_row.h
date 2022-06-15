@@ -1,5 +1,5 @@
-#ifndef STONKS_DB_DB_ROW_H_
-#define STONKS_DB_DB_ROW_H_
+#ifndef STONKS_SQLDB_SQLDB_ROW_H_
+#define STONKS_SQLDB_SQLDB_ROW_H_
 
 #include <map>
 #include <vector>
@@ -26,4 +26,4 @@ class Row {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_DB_DB_ROW_H_
+#endif  // STONKS_SQLDB_SQLDB_ROW_H_
