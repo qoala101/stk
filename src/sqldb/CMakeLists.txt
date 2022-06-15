@@ -1,5 +1,6 @@
 find_package(range-v3 REQUIRED)
 find_package(absl REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
 
 add_library(libsqldb
   sqldb_prepared_statement.cc
@@ -13,3 +14,4 @@ set_target_properties(libsqldb PROPERTIES OUTPUT_NAME sqldb)
 target_include_directories(libsqldb PUBLIC ${PROJECT_SOURCE_DIR}/include/sqldb)
 target_link_libraries(libsqldb PRIVATE range-v3::range-v3)
 target_link_libraries(libsqldb PRIVATE absl::absl)
+target_link_libraries(libsqldb PUBLIC Microsoft.GSL::GSL)

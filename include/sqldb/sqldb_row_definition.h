@@ -1,6 +1,7 @@
 #ifndef STONKS_SQLDB_SQLDB_ROW_DEFINITION_H_
 #define STONKS_SQLDB_SQLDB_ROW_DEFINITION_H_
 
+#include <gsl/pointers>
 #include <vector>
 
 #include "sqldb_types.h"
@@ -18,6 +19,9 @@ class RowDefinition {
   RowDefinition(std::vector<CellDefinition> cell_definitions);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   RowDefinition(const std::vector<ColumnDefinition> &column_definitions);
+  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
+  RowDefinition(
+      const std::vector<gsl::not_null<ColumnDefinition *>> &column_definitions);
 
   [[nodiscard]] auto GetCellDefinitions() const
       -> const std::vector<CellDefinition> &;

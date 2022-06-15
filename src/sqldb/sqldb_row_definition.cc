@@ -25,6 +25,16 @@ RowDefinition::RowDefinition(
                                              }) |
                     ranges::to_vector} {}
 
+RowDefinition::RowDefinition(
+    const std::vector<gsl::not_null<ColumnDefinition *>> &column_definitions)
+    : RowDefinition{ranges::views::transform(
+                        column_definitions,
+                        [](const auto &column_definition) {
+                          return CellDefinition{column_definition->column,
+                                                column_definition->data_type};
+                        }) |
+                    ranges::to_vector} {}
+
 auto RowDefinition::GetCellDefinitions() const
     -> const std::vector<CellDefinition> & {
   return cell_definitions_;
