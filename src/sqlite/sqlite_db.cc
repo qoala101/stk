@@ -1,19 +1,15 @@
 #include "sqlite_db.h"
 
-#include <bits/exception.h>
-#include <fmt/format.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <sqlite3.h>
 
 #include <functional>
 #include <gsl/assert>
-#include <gsl/pointers>
 #include <memory>
 #include <range/v3/action/erase.hpp>
 #include <range/v3/algorithm/remove_if.hpp>
 #include <range/v3/functional/identity.hpp>
-#include <range/v3/range/dangling.hpp>
 #include <stdexcept>
 #include <string>
 #include <utility>

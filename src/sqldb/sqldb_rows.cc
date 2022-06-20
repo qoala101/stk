@@ -1,7 +1,5 @@
 #include "sqldb_rows.h"
 
-#include <absl/base/macros.h>
-
 #include <gsl/assert>
 #include <memory>
 #include <range/v3/algorithm/find_if.hpp>

@@ -6,14 +6,12 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <filesystem>
+#include <functional>
 #include <gsl/assert>
 #include <gsl/pointers>
 #include <memory>
 #include <stdexcept>
 #include <string>
-#include <utility>
-
-#include "sqldb_value.h"
 
 namespace stonks::sqlite {
 namespace {
@@ -52,7 +50,7 @@ auto OpenSqliteInMemoryDb() -> SqliteDbHandle {
   }
 
   auto handle = SqliteDbHandle{in_memory_db, &CloseDb};
-  
+
   Ensures(handle != nullptr);
   return handle;
 }

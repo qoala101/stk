@@ -1,13 +1,11 @@
 #ifndef STONKS_SQLITE_SQLITE_DB_H_
 #define STONKS_SQLITE_SQLITE_DB_H_
 
-#include <sqlite3.h>
-
-#include <gsl/pointers>
 #include <memory>
 #include <string_view>
 
 #include "sqldb_db.h"
+#include "sqldb_row_definition.h"
 #include "sqldb_select_statement.h"
 #include "sqldb_update_statement.h"
 #include "sqlite_types.h"

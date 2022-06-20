@@ -9,13 +9,13 @@
 
 namespace stonks::sqldb {
 auto IQueryBuilder::BuildSelectQuery(const TableDefinition &table_definition,
-                                    const std::vector<Column> *columns) const
+                                     const std::vector<Column> *columns) const
     -> std::string {
   return BuildSelectQuery(table_definition.table, columns);
 }
 
 auto IQueryBuilder::BuildSelectQuery(const Table &table,
-                                    const std::vector<Column> *columns) const
+                                     const std::vector<Column> *columns) const
     -> std::string {
   return BuildSelectQuery(table, columns, {});
 }
@@ -32,7 +32,7 @@ auto IQueryBuilder::BuildInsertQuery(
 }
 
 auto IQueryBuilder::BuildUpdateQuery(const TableDefinition &table_definition,
-                                    std::string_view where_clause)
+                                     std::string_view where_clause)
     -> std::string {
   return BuildUpdateQuery(
       table_definition.table,

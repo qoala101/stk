@@ -1,7 +1,5 @@
 #include "sqldb_row.h"
 
-#include <absl/base/macros.h>
-
 #include <gsl/assert>
 #include <string>
 #include <utility>

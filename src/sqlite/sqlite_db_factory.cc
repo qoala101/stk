@@ -19,7 +19,7 @@ auto SqliteDbFactory::LoadDbFromFile(std::string_view file_path)
 auto SqliteDbFactory::CreateQueryBuilder()
     -> std::unique_ptr<sqldb::IQueryBuilder> {
   auto query_builder = std::make_unique<SqliteQueryBuilder>();
-  
+
   Ensures(query_builder != nullptr);
   return query_builder;
 }

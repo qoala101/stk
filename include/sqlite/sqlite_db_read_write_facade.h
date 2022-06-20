@@ -3,7 +3,6 @@
 
 #include <sqlite3.h>
 
-#include <gsl/pointers>
 #include <string_view>
 
 #include "sqlite_types.h"

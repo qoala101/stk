@@ -1,7 +1,5 @@
 #include "sqlite_update_statement.h"
 
-#include <spdlog/logger.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <sqlite3.h>
 
 #include <gsl/assert>
