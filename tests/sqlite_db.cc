@@ -7,16 +7,16 @@
 #include <range/v3/view/transform.hpp>
 
 #include "sqldb_db.h"
-#include "sqlite_db_factory.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
+#include "sqlite_db_factory.h"
 #include "utils.h"
 
 namespace {
 const auto kTestDbFileName = "sqlite_db_test.db";
 
-auto db_factory = std::unique_ptr<stonks::sqldb::DbFactory>{};
-auto db = std::unique_ptr<stonks::sqldb::Db>{};
+auto db_factory = std::unique_ptr<stonks::sqldb::IDbFactory>{};
+auto db = std::unique_ptr<stonks::sqldb::IDb>{};
 
 TEST(SqliteDb, CreateAndDropTable) {
   static_cast<void>(std::filesystem::remove(kTestDbFileName));
@@ -82,9 +82,10 @@ TEST(SqliteDb, InsertAndSelect) {
 
   auto select_statement =
       db->PrepareStatement(db_factory->CreateQueryBuilder()->BuildSelectQuery(
-          kAssetTableDefinition.table));
+                               kAssetTableDefinition.table),
+                           kAssetTableDefinition);
 
-  const auto rows = select_statement->Execute({}, kAssetTableDefinition);
+  const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 3);
   EXPECT_EQ(rows.GetValues("id")[0].GetInt64(), 1);
   EXPECT_EQ(rows.GetValues("name")[0].GetString(), "BTC");
@@ -113,12 +114,12 @@ const auto kSymbolTableDefinition = stonks::sqldb::TableDefinition{
                     .column = "base_asset_id",
                     .data_type = stonks::sqldb::DataType::kInt64,
                     .foreign_key = stonks::sqldb::ForeignKey{.table = "Asset",
-                                                              .column = "id"}},
+                                                             .column = "id"}},
                 stonks::sqldb::ColumnDefinition{
                     .column = "quote_asset_id",
                     .data_type = stonks::sqldb::DataType::kInt64,
-                    .foreign_key = stonks::sqldb::ForeignKey{
-                        .table = "Asset", .column = "id"}}}};
+                    .foreign_key = stonks::sqldb::ForeignKey{.table = "Asset",
+                                                             .column = "id"}}}};
 
 const auto kSymbolPriceTableDefinition = stonks::sqldb::TableDefinition{
     .table = "SymbolPrice",
@@ -131,8 +132,7 @@ const auto kSymbolPriceTableDefinition = stonks::sqldb::TableDefinition{
         stonks::sqldb::ColumnDefinition{
             .column = "time", .data_type = stonks::sqldb::DataType::kInt64},
         stonks::sqldb::ColumnDefinition{
-            .column = "price",
-            .data_type = stonks::sqldb::DataType::kDouble}}};
+            .column = "price", .data_type = stonks::sqldb::DataType::kDouble}}};
 
 TEST(SqliteDb, ForeignKey) {
   db->PrepareStatement(
@@ -174,8 +174,9 @@ TEST(SqliteDb, SelectJoin) {
       "SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS quote_asset "
       "FROM Symbol "
       "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
-      "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id=QuoteAsset.id;");
-  const auto rows = select_statement->Execute({}, cell_definitions);
+      "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id=QuoteAsset.id;",
+      cell_definitions);
+  const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
   EXPECT_EQ(rows.GetValues("base_asset")[0].GetString(), "BTC");
   EXPECT_EQ(rows.GetValues("quote_asset")[0].GetString(), "USDT");
@@ -192,10 +193,12 @@ TEST(SqliteDb, FileWriteAndRead) {
 
   const auto select_query = db_factory->CreateQueryBuilder()->BuildSelectQuery(
       kSymbolPriceTableDefinition);
-  const auto db_rows = db_copy->PrepareStatement(select_query)
-                           ->Execute(kSymbolPriceTableDefinition);
-  const auto db_copy_rows = db_copy->PrepareStatement(select_query)
-                                ->Execute(kSymbolPriceTableDefinition);
+  const auto db_rows =
+      db_copy->PrepareStatement(select_query, kSymbolPriceTableDefinition)
+          ->Execute();
+  const auto db_copy_rows =
+      db_copy->PrepareStatement(select_query, kSymbolPriceTableDefinition)
+          ->Execute();
   EXPECT_GT(db_rows.GetSize(), 0);
   EXPECT_EQ(db_rows, db_copy_rows);
 
@@ -211,20 +214,23 @@ TEST(SqliteDb, CascadeForeignKeyDelete) {
 
   auto select_statement =
       db->PrepareStatement(db_factory->CreateQueryBuilder()->BuildSelectQuery(
-          kAssetTableDefinition.table));
-  auto rows = select_statement->Execute({}, kAssetTableDefinition);
+                               kAssetTableDefinition.table),
+                           kAssetTableDefinition);
+  auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
 
   select_statement =
       db->PrepareStatement(db_factory->CreateQueryBuilder()->BuildSelectQuery(
-          kSymbolTableDefinition.table));
-  rows = select_statement->Execute({}, kSymbolTableDefinition);
+                               kSymbolTableDefinition.table),
+                           kSymbolTableDefinition);
+  rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 0);
 
   select_statement =
       db->PrepareStatement(db_factory->CreateQueryBuilder()->BuildSelectQuery(
-          kSymbolPriceTableDefinition.table));
-  rows = select_statement->Execute({}, kSymbolPriceTableDefinition);
+                               kSymbolPriceTableDefinition.table),
+                           kSymbolPriceTableDefinition);
+  rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 0);
 }
 }  // namespace
