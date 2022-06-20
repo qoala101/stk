@@ -22,10 +22,10 @@
 #include "sqldb_enum_conversions.h"  // IWYU pragma: keep
 #include "sqldb_select_statement.h"
 #include "sqldb_update_statement.h"
+#include "sqlite_db_read_write_facade.h"
 #include "sqlite_prepared_statement_handle.h"
 #include "sqlite_select_statement.h"
 #include "sqlite_update_statement.h"
-#include "sqlite_utils.h"
 
 namespace stonks::sqlite {
 namespace {
@@ -76,7 +76,7 @@ class SqliteDb::Impl {
 
   void WriteToFile(std::string_view file_path) {
     Expects(sqlite_db_handle_ != nullptr);
-    WriteSqliteDbToFile(*sqlite_db_handle_, file_path);
+    SqliteDbReadWriteFacade::WriteSqliteDbToFile(*sqlite_db_handle_, file_path);
   }
 
  private:
@@ -97,7 +97,7 @@ class SqliteDb::Impl {
     const auto &statement = prepared_statements_.emplace_back(
         sqlite_statement,
         [](auto &sqlite_statement) { sqlite3_finalize(sqlite_statement); });
-        
+
     Ensures(statement != nullptr);
     return statement;
   }

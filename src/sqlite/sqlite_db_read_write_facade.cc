@@ -1,4 +1,4 @@
-#include "sqlite_utils.h"
+#include "sqlite_db_read_write_facade.h"
 
 #include <bits/exception.h>
 #include <fmt/format.h>
@@ -52,6 +52,7 @@ auto OpenSqliteInMemoryDb() -> SqliteDbHandle {
   }
 
   auto handle = SqliteDbHandle{in_memory_db, &CloseDb};
+  
   Ensures(handle != nullptr);
   return handle;
 }
@@ -66,6 +67,7 @@ auto OpenSqliteDbFromFile(std::string_view file_path) -> SqliteDbHandle {
   }
 
   auto handle = SqliteDbHandle{file_db, &CloseDb};
+
   Ensures(handle != nullptr);
   return handle;
 }
@@ -91,29 +93,30 @@ void UpdateNewDb(sqlite3 &sqlite_db) {
 }
 }  // namespace
 
-auto ReadSqliteDbFromFile(std::string_view file_path) -> SqliteDbHandle {
+auto SqliteDbReadWriteFacade::ReadSqliteDbFromFile(std::string_view file_path)
+    -> SqliteDbHandle {
   auto in_memory_db = OpenSqliteInMemoryDb();
 
   if (const auto db_is_new = !std::filesystem::exists(file_path)) {
     UpdateNewDb(*in_memory_db);
-
     Logger().info("Created new DB for {}", file_path.data());
+
     Ensures(in_memory_db != nullptr);
     return in_memory_db;
   }
 
   auto file_db = OpenSqliteDbFromFile(file_path);
   CopyData({.from = *file_db, .to = *in_memory_db});
-
   Logger().info("Loaded DB from {}", file_path.data());
+
   Ensures(in_memory_db != nullptr);
   return in_memory_db;
 }
 
-void WriteSqliteDbToFile(sqlite3 &sqlite_db, std::string_view file_path) {
+void SqliteDbReadWriteFacade::WriteSqliteDbToFile(sqlite3 &sqlite_db,
+                                                  std::string_view file_path) {
   auto file_db = OpenSqliteDbFromFile(file_path);
   CopyData({.from = sqlite_db, .to = *file_db});
-
   Logger().info("Stored DB to {}", file_path.data());
 }
 }  // namespace stonks::sqlite
