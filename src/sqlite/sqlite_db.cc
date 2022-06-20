@@ -19,7 +19,7 @@
 #include <utility>
 #include <vector>
 
-#include "sqldb_enum_conversions.h"  // IWYU pragma: keep
+#include "sqldb_enums_to_string.h"  // IWYU pragma: keep
 #include "sqldb_select_statement.h"
 #include "sqldb_update_statement.h"
 #include "sqlite_db_read_write_facade.h"

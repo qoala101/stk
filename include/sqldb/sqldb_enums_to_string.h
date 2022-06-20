@@ -17,8 +17,6 @@ constexpr auto magic_enum::customize::enum_name<stonks::sqldb::DataType>(
       return "REAL";
     case stonks::sqldb::DataType::kString:
       return "TEXT";
-    default:
-      break;
   }
 
   return {};

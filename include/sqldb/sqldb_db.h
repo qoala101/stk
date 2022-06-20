@@ -17,9 +17,9 @@ namespace stonks::sqldb {
  * @brief Generic DB interface.
  */
 // NOLINTNEXTLINE(*-special-member-functions)
-class Db {
+class IDb {
  public:
-  virtual ~Db() = default;
+  virtual ~IDb() = default;
 
   /**
    * @brief Creates prepared statement which can then be called to execute the

@@ -8,19 +8,19 @@
 #include "sqldb_types.h"
 
 namespace stonks::sqldb {
-auto QueryBuilder::BuildSelectQuery(const TableDefinition &table_definition,
+auto IQueryBuilder::BuildSelectQuery(const TableDefinition &table_definition,
                                     const std::vector<Column> *columns) const
     -> std::string {
   return BuildSelectQuery(table_definition.table, columns);
 }
 
-auto QueryBuilder::BuildSelectQuery(const Table &table,
+auto IQueryBuilder::BuildSelectQuery(const Table &table,
                                     const std::vector<Column> *columns) const
     -> std::string {
   return BuildSelectQuery(table, columns, {});
 }
 
-auto QueryBuilder::BuildInsertQuery(
+auto IQueryBuilder::BuildInsertQuery(
     const TableDefinition &table_definition) const -> std::string {
   return BuildInsertQuery(
       table_definition.table,
@@ -31,7 +31,7 @@ auto QueryBuilder::BuildInsertQuery(
           ranges::to_vector);
 }
 
-auto QueryBuilder::BuildUpdateQuery(const TableDefinition &table_definition,
+auto IQueryBuilder::BuildUpdateQuery(const TableDefinition &table_definition,
                                     std::string_view where_clause)
     -> std::string {
   return BuildUpdateQuery(

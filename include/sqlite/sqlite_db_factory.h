@@ -5,27 +5,27 @@
 #include <string_view>
 
 #include "sqldb_db.h"
-#include "sqldb_factory.h"
+#include "sqldb_db_factory.h"
 #include "sqldb_query_builder.h"
 
 namespace stonks::sqlite {
 /**
- * @brief sqldb::DbFactory
+ * @brief sqldb::IDbFactory
  */
 // NOLINTNEXTLINE(*-special-member-functions)
-class SqliteDbFactory : public sqldb::DbFactory {
+class SqliteDbFactory : public sqldb::IDbFactory {
  public:
   /**
-   * @copydoc sqldb::Db::LoadDbFromFile
+   * @copydoc sqldb::IDb::LoadDbFromFile
    */
   [[nodiscard]] auto LoadDbFromFile(std::string_view file_path)
-      -> std::unique_ptr<sqldb::Db> override;
+      -> std::unique_ptr<sqldb::IDb> override;
 
   /**
-   * @copydoc sqldb::Db::CreateQueryBuilder
+   * @copydoc sqldb::IDb::CreateQueryBuilder
    */
   [[nodiscard]] auto CreateQueryBuilder()
-      -> std::unique_ptr<sqldb::QueryBuilder> override;
+      -> std::unique_ptr<sqldb::IQueryBuilder> override;
 };
 }  // namespace stonks::sqlite
 

@@ -14,7 +14,7 @@
 #include <string>
 #include <utility>
 
-#include "sqldb_enum_conversions.h"  // IWYU pragma: keep
+#include "sqldb_enums_to_string.h"  // IWYU pragma: keep
 
 namespace stonks::sqlite {
 auto SqliteQueryBuilder::BuildCreateTableIfNotExistsQuery(

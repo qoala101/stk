@@ -9,17 +9,17 @@
 
 namespace stonks::sqldb {
 /**
- * @brief Single DB row.
+ * @brief Values for single DB row.
  */
 class Row {
  public:
   explicit Row(std::vector<Cell> cells);
 
-  [[nodiscard]] auto GetValue(const Column &column) const & -> const Value &;
-  [[nodiscard]] auto TakeValue(const Column &column) && -> Value &&;
+  [[nodiscard]] auto GetValue(const Column &column) const -> const Value &;
+  [[nodiscard]] auto GetValue(const Column &column) -> Value &;
 
-  [[nodiscard]] auto GetCells() const & -> const std::map<Column, Value> &;
-  [[nodiscard]] auto TakeCells() && -> std::map<Column, Value> &&;
+  [[nodiscard]] auto GetCells() const -> const std::map<Column, Value> &;
+  [[nodiscard]] auto GetCells() -> std::map<Column, Value> &;
 
  private:
   std::map<Column, Value> cells_{};

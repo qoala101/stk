@@ -13,9 +13,9 @@ namespace stonks::sqldb {
  * own query builder.
  */
 // NOLINTNEXTLINE(*-special-member-functions)
-class QueryBuilder {
+class IQueryBuilder {
  public:
-  virtual ~QueryBuilder() = default;
+  virtual ~IQueryBuilder() = default;
 
   [[nodiscard]] virtual auto BuildCreateTableIfNotExistsQuery(
       const TableDefinition &table_definition) const -> std::string = 0;

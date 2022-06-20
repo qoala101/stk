@@ -36,8 +36,8 @@ class Value {
   [[nodiscard]] auto GetInt() const -> int;
   [[nodiscard]] auto GetInt64() const -> int64_t;
   [[nodiscard]] auto GetDouble() const -> double;
-  [[nodiscard]] auto GetString() const & -> const std::string &;
-  [[nodiscard]] auto GetString() && -> std::string &&;
+  [[nodiscard]] auto GetString() const -> const std::string &;
+  [[nodiscard]] auto GetString() -> std::string &;
 
   /**
    * @remark Should not be called on NULL value.
@@ -45,12 +45,6 @@ class Value {
   [[nodiscard]] auto GetType() const -> DataType;
 
   [[nodiscard]] auto IsNull() const -> bool;
-
-  /**
-   * @brief Converts value of any type to string.
-   */
-  // TODO(vh): needed only for Insert
-  [[nodiscard]] auto ToString() const -> std::string;
 
  private:
   friend auto operator==(const Value &, const Value &) -> bool = default;

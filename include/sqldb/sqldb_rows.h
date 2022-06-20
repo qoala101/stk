@@ -9,7 +9,7 @@
 
 namespace stonks::sqldb {
 /**
- * @brief Many DB rows.
+ * @brief Values for many DB rows.
  */
 class Rows {
  public:

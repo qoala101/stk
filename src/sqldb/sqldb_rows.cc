@@ -2,6 +2,7 @@
 
 #include <absl/base/macros.h>
 
+#include <gsl/assert>
 #include <memory>
 #include <range/v3/algorithm/find_if.hpp>
 #include <range/v3/functional/identity.hpp>
@@ -24,8 +25,7 @@ auto Rows::GetValues(const Column &column) const -> const std::vector<Value> & {
       ranges::find_if(columns_, [&column](const auto &other_column) {
         return other_column.column == column;
       });
-  ABSL_ASSERT((iter != columns_.end()) &&
-              "Requesting values for non existing column");
+  Expects(iter != columns_.end());
   return iter->values;
 }
 
@@ -45,8 +45,7 @@ auto Rows::GetSize() const -> int {
 }
 
 void Rows::Push(std::vector<Value> values) {
-  ABSL_ASSERT((values.size() == columns_.size()) &&
-              "Pushing wrong amount of values");
+  Expects(values.size() == columns_.size());
 
   for (auto i = 0; i < values.size(); ++i) {
     columns_[i].values.emplace_back(std::move(values[i]));

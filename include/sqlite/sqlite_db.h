@@ -14,9 +14,9 @@
 
 namespace stonks::sqlite {
 /**
- * @copydoc sqldb::Db
+ * @copydoc sqldb::IDb
  */
-class SqliteDb : public sqldb::Db {
+class SqliteDb : public sqldb::IDb {
  public:
   /**
    * @brief Creates wrapper for SQLite DB.
@@ -37,20 +37,20 @@ class SqliteDb : public sqldb::Db {
   ~SqliteDb() override;
 
   /**
-   * @copydoc sqldb::Db::PrepareStatement
+   * @copydoc sqldb::IDb::PrepareStatement
    */
   [[nodiscard]] auto PrepareStatement(
       std::string_view query, const sqldb::RowDefinition &result_definition)
       -> std::unique_ptr<sqldb::ISelectStatement> override;
 
   /**
-   * @copydoc sqldb::Db::PrepareStatement
+   * @copydoc sqldb::IDb::PrepareStatement
    */
   [[nodiscard]] auto PrepareStatement(std::string_view query)
       -> std::unique_ptr<sqldb::IUpdateStatement> override;
 
   /**
-   * @copydoc sqldb::Db::WriteToFile
+   * @copydoc sqldb::IDb::WriteToFile
    */
   void WriteToFile(std::string_view file_path) override;
 

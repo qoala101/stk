@@ -10,25 +10,25 @@
 
 namespace stonks::sqlite {
 /**
- * @copydoc sqldb::QueryBuilder
+ * @copydoc sqldb::IQueryBuilder
  */
-class SqliteQueryBuilder : public sqldb::QueryBuilder {
+class SqliteQueryBuilder : public sqldb::IQueryBuilder {
  public:
   /**
-   * @copydoc sqldb::QueryBuilder::BuildCreateTableIfNotExistsQuery
+   * @copydoc sqldb::IQueryBuilder::BuildCreateTableIfNotExistsQuery
    */
   [[nodiscard]] auto BuildCreateTableIfNotExistsQuery(
       const sqldb::TableDefinition &table_definition) const
       -> std::string override;
 
   /**
-   * @copydoc sqldb::QueryBuilder::BuildDropTableQuery
+   * @copydoc sqldb::IQueryBuilder::BuildDropTableQuery
    */
   [[nodiscard]] auto BuildDropTableQuery(const sqldb::Table &table)
       -> std::string override;
 
   /**
-   * @copydoc sqldb::QueryBuilder::BuildSelectQuery
+   * @copydoc sqldb::IQueryBuilder::BuildSelectQuery
    */
   [[nodiscard]] auto BuildSelectQuery(const sqldb::Table &table,
                                       const std::vector<sqldb::Column> *columns,
@@ -36,14 +36,14 @@ class SqliteQueryBuilder : public sqldb::QueryBuilder {
       -> std::string override;
 
   /**
-   * @copydoc sqldb::QueryBuilder::BuildInsertQuery
+   * @copydoc sqldb::IQueryBuilder::BuildInsertQuery
    */
   [[nodiscard]] auto BuildInsertQuery(
       const sqldb::Table &table,
       const std::vector<sqldb::Column> &columns) const -> std::string override;
 
   /**
-   * @copydoc sqldb::QueryBuilder::BuildUpdateQuery
+   * @copydoc sqldb::IQueryBuilder::BuildUpdateQuery
    */
   [[nodiscard]] auto BuildUpdateQuery(const sqldb::Table &table,
                                       const std::vector<sqldb::Column> &columns,
@@ -51,7 +51,7 @@ class SqliteQueryBuilder : public sqldb::QueryBuilder {
       -> std::string override;
 
   /**
-   * @copydoc sqldb::QueryBuilder::BuildDeleteQuery
+   * @copydoc sqldb::IQueryBuilder::BuildDeleteQuery
    */
   [[nodiscard]] auto BuildDeleteQuery(const sqldb::Table &table,
                                       std::string_view where_clause)
