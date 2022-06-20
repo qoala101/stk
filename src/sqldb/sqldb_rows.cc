@@ -18,7 +18,8 @@ Rows::Rows(std::vector<Column> columns)
               [](auto &column) { return ColumnValues{std::move(column)}; }) |
           ranges::to_vector} {}
 
-auto Rows::GetValues(const Column &column) const -> const std::vector<Value> & {
+auto Rows::GetColumnValues(const Column &column) const
+    -> const std::vector<Value> & {
   const auto iter =
       ranges::find_if(columns_, [&column](const auto &other_column) {
         return other_column.column == column;
@@ -27,11 +28,11 @@ auto Rows::GetValues(const Column &column) const -> const std::vector<Value> & {
   return iter->values;
 }
 
-auto Rows::GetValues(const Column &column) -> std::vector<Value> & {
+auto Rows::GetColumnValues(const Column &column) -> std::vector<Value> & {
   // NOLINTNEXTLINE(*-const-cast)
   return const_cast<std::vector<Value> &>(
       // NOLINTNEXTLINE(*-const-cast)
-      const_cast<const Rows *>(this)->GetValues(column));
+      const_cast<const Rows *>(this)->GetColumnValues(column));
 }
 
 auto Rows::GetSize() const -> int {

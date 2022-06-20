@@ -15,9 +15,10 @@ class Rows {
  public:
   explicit Rows(std::vector<Column> columns);
 
-  [[nodiscard]] auto GetValues(const Column &column) const
+  [[nodiscard]] auto GetColumnValues(const Column &column) const
       -> const std::vector<Value> &;
-  [[nodiscard]] auto GetValues(const Column &column) -> std::vector<Value> &;
+  [[nodiscard]] auto GetColumnValues(const Column &column)
+      -> std::vector<Value> &;
 
   [[nodiscard]] auto GetSize() const -> int;
 

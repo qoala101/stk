@@ -87,12 +87,12 @@ TEST(SqliteDb, InsertAndSelect) {
 
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 3);
-  EXPECT_EQ(rows.GetValues("id")[0].GetInt64(), 1);
-  EXPECT_EQ(rows.GetValues("name")[0].GetString(), "BTC");
-  EXPECT_EQ(rows.GetValues("id")[1].GetInt64(), 2);
-  EXPECT_EQ(rows.GetValues("name")[1].GetString(), "ETH");
-  EXPECT_EQ(rows.GetValues("id")[2].GetInt64(), 3);
-  EXPECT_EQ(rows.GetValues("name")[2].GetString(), "USDT");
+  EXPECT_EQ(rows.GetColumnValues("id")[0].GetInt64(), 1);
+  EXPECT_EQ(rows.GetColumnValues("name")[0].GetString(), "BTC");
+  EXPECT_EQ(rows.GetColumnValues("id")[1].GetInt64(), 2);
+  EXPECT_EQ(rows.GetColumnValues("name")[1].GetString(), "ETH");
+  EXPECT_EQ(rows.GetColumnValues("id")[2].GetInt64(), 3);
+  EXPECT_EQ(rows.GetColumnValues("name")[2].GetString(), "USDT");
 }
 
 TEST(SqliteDb, InsertNull) {
@@ -178,10 +178,10 @@ TEST(SqliteDb, SelectJoin) {
       cell_definitions);
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
-  EXPECT_EQ(rows.GetValues("base_asset")[0].GetString(), "BTC");
-  EXPECT_EQ(rows.GetValues("quote_asset")[0].GetString(), "USDT");
-  EXPECT_EQ(rows.GetValues("base_asset")[1].GetString(), "ETH");
-  EXPECT_EQ(rows.GetValues("quote_asset")[1].GetString(), "USDT");
+  EXPECT_EQ(rows.GetColumnValues("base_asset")[0].GetString(), "BTC");
+  EXPECT_EQ(rows.GetColumnValues("quote_asset")[0].GetString(), "USDT");
+  EXPECT_EQ(rows.GetColumnValues("base_asset")[1].GetString(), "ETH");
+  EXPECT_EQ(rows.GetColumnValues("quote_asset")[1].GetString(), "USDT");
 }
 
 TEST(SqliteDb, FileWriteAndRead) {

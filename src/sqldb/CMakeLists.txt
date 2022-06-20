@@ -7,6 +7,7 @@ add_library(libsqldb
   sqldb_row.cc
   sqldb_rows.cc
   sqldb_select_statement.cc
+  sqldb_types.cc
   sqldb_update_statement.cc
   sqldb_value.cc
 )

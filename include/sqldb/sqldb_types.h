@@ -32,6 +32,9 @@ struct ColumnDefinition {
 };
 
 struct TableDefinition {
+  [[nodiscard]] auto GetColumnDefinition(const Column &column) const
+      -> const ColumnDefinition &;
+
   Table table{};
   std::vector<ColumnDefinition> columns{};
 };
