@@ -1,6 +1,7 @@
 #include "sqlite_query_builder.h"
 
 #include <ext/alloc_traits.h>
+#include <gsl/assert>
 #include <magic_enum.hpp>
 #include <optional>
 #include <range/v3/algorithm/any_of.hpp>
@@ -18,6 +19,9 @@
 namespace stonks::sqlite {
 auto SqliteQueryBuilder::BuildCreateTableIfNotExistsQuery(
     const sqldb::TableDefinition &table_definition) const -> std::string {
+  Expects(!table_definition.table.empty());
+  Expects(!table_definition.columns.empty());
+
   const auto column_is_primary_key = [](const sqldb::ColumnDefinition &column) {
     return column.primary_key;
   };
@@ -94,17 +98,25 @@ auto SqliteQueryBuilder::BuildCreateTableIfNotExistsQuery(
 
   query += "\n)";
 
+  Ensures(!query.empty());
   return query;
 }
 
 auto SqliteQueryBuilder::BuildDropTableQuery(const sqldb::Table &table)
     -> std::string {
-  return "DROP TABLE \"" + table + "\";";
+  Expects(!table.empty());
+
+  auto query = "DROP TABLE \"" + table + "\";";
+
+  Ensures(!query.empty());
+  return query;
 }
 
 auto SqliteQueryBuilder::BuildSelectQuery(
     const sqldb::Table &table, const std::vector<sqldb::Column> *columns,
     std::string_view where_clause) const -> std::string {
+  Expects(!table.empty());
+
   auto query = std::string{"SELECT "};
 
   if (const auto select_all_columns = columns == nullptr) {
@@ -121,12 +133,16 @@ auto SqliteQueryBuilder::BuildSelectQuery(
     query += std::string{" "} + where_clause.data();
   }
 
+  Ensures(!query.empty());
   return query;
 }
 
 auto SqliteQueryBuilder::BuildInsertQuery(
     const sqldb::Table &table, const std::vector<sqldb::Column> &columns) const
     -> std::string {
+  Expects(!table.empty());
+  Expects(!columns.empty());
+
   auto column_names = std::string{};
   auto placeholders = std::string{};
 
@@ -142,13 +158,19 @@ auto SqliteQueryBuilder::BuildInsertQuery(
     }
   }
 
-  return "INSERT INTO \"" + table + "\"(" + column_names + ") VALUES (" +
-         placeholders + ")";
+  auto query = "INSERT INTO \"" + table + "\"(" + column_names + ") VALUES (" +
+               placeholders + ")";
+
+  Ensures(!query.empty());
+  return query;
 }
 
 auto SqliteQueryBuilder::BuildUpdateQuery(
     const sqldb::Table &table, const std::vector<sqldb::Column> &columns,
     std::string_view where_clause) -> std::string {
+  Expects(!table.empty());
+  Expects(!columns.empty());
+
   auto query = "UPDATE \"" + table + "\" SET ";
 
   const auto num_columns = columns.size();
@@ -165,12 +187,22 @@ auto SqliteQueryBuilder::BuildUpdateQuery(
     query += std::string{" "} + where_clause.data();
   }
 
+  Ensures(!query.empty());
   return query;
 }
 
 auto SqliteQueryBuilder::BuildDeleteQuery(const sqldb::Table &table,
                                           std::string_view where_clause)
     -> std::string {
-  return "DELETE FROM \"" + table + "\" " + where_clause.data();
+  Expects(!table.empty());
+
+  auto query = "DELETE FROM \"" + table + "\"";
+
+  if (!where_clause.empty()) {
+    query += std::string{" "} + where_clause.data();
+  }
+
+  Ensures(!query.empty());
+  return query;
 }
 }  // namespace stonks::sqlite

@@ -10,25 +10,25 @@
 
 namespace stonks::sqlite {
 /**
- * @copydoc QueryBuilder
+ * @copydoc sqldb::QueryBuilder
  */
 class SqliteQueryBuilder : public sqldb::QueryBuilder {
  public:
   /**
-   * @copydoc QueryBuilder::BuildCreateTableIfNotExistsQuery
+   * @copydoc sqldb::QueryBuilder::BuildCreateTableIfNotExistsQuery
    */
   [[nodiscard]] auto BuildCreateTableIfNotExistsQuery(
       const sqldb::TableDefinition &table_definition) const
       -> std::string override;
 
   /**
-   * @copydoc QueryBuilder::BuildCreateTableIfNotExistsQuery
+   * @copydoc sqldb::QueryBuilder::BuildDropTableQuery
    */
   [[nodiscard]] auto BuildDropTableQuery(const sqldb::Table &table)
       -> std::string override;
 
   /**
-   * @copydoc QueryBuilder::BuildSelectQuery
+   * @copydoc sqldb::QueryBuilder::BuildSelectQuery
    */
   [[nodiscard]] auto BuildSelectQuery(const sqldb::Table &table,
                                       const std::vector<sqldb::Column> *columns,
@@ -36,14 +36,14 @@ class SqliteQueryBuilder : public sqldb::QueryBuilder {
       -> std::string override;
 
   /**
-   * @copydoc QueryBuilder::BuildInsertQuery
+   * @copydoc sqldb::QueryBuilder::BuildInsertQuery
    */
   [[nodiscard]] auto BuildInsertQuery(
       const sqldb::Table &table,
       const std::vector<sqldb::Column> &columns) const -> std::string override;
 
   /**
-   * @copydoc QueryBuilder::BuildCreateTableIfNotExistsQuery
+   * @copydoc sqldb::QueryBuilder::BuildUpdateQuery
    */
   [[nodiscard]] auto BuildUpdateQuery(const sqldb::Table &table,
                                       const std::vector<sqldb::Column> &columns,
@@ -51,7 +51,7 @@ class SqliteQueryBuilder : public sqldb::QueryBuilder {
       -> std::string override;
 
   /**
-   * @copydoc QueryBuilder::BuildCreateTableIfNotExistsQuery
+   * @copydoc sqldb::QueryBuilder::BuildDeleteQuery
    */
   [[nodiscard]] auto BuildDeleteQuery(const sqldb::Table &table,
                                       std::string_view where_clause)

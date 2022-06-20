@@ -13,7 +13,7 @@
 
 namespace stonks::sqlite {
 /**
- * @copydoc ISelectStatement
+ * @copydoc sqldb::ISelectStatement
  */
 class SqliteSelectStatement : public sqldb::ISelectStatement {
  public:
@@ -28,7 +28,7 @@ class SqliteSelectStatement : public sqldb::ISelectStatement {
       const sqldb::RowDefinition &result_definition);
 
   /**
-   * @copydoc ISelectStatement::Execute
+   * @copydoc sqldb::ISelectStatement::Execute
    */
   [[nodiscard]] auto Execute(const std::vector<sqldb::Value> &params)
       -> sqldb::Rows override;

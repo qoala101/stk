@@ -9,7 +9,7 @@
 
 namespace stonks::sqlite {
 /**
- * @copydoc IUpdateStatement
+ * @copydoc sqldb::IUpdateStatement
  */
 class SqliteUpdateStatement : public sqldb::IUpdateStatement {
  public:
@@ -21,7 +21,7 @@ class SqliteUpdateStatement : public sqldb::IUpdateStatement {
       SqlitePreparedStatementHandle &&prepared_statement_handle);
 
   /**
-   * @copydoc IUpdateStatement::Execute
+   * @copydoc sqldb::IUpdateStatement::Execute
    */
   void Execute(const std::vector<sqldb::Value> &params) override;
 

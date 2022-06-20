@@ -58,6 +58,7 @@ class SqliteDb::Impl {
             CreateSqliteStatement(query),
             std::bind_front(&Impl::RemoveSqliteStatement, this)},
         result_definition);
+
     Ensures(statement != nullptr);
     return statement;
   }
@@ -68,6 +69,7 @@ class SqliteDb::Impl {
         std::make_unique<SqliteUpdateStatement>(SqlitePreparedStatementHandle{
             CreateSqliteStatement(query),
             std::bind_front(&Impl::RemoveSqliteStatement, this)});
+
     Ensures(statement != nullptr);
     return statement;
   }
@@ -95,6 +97,7 @@ class SqliteDb::Impl {
     const auto &statement = prepared_statements_.emplace_back(
         sqlite_statement,
         [](auto &sqlite_statement) { sqlite3_finalize(sqlite_statement); });
+        
     Ensures(statement != nullptr);
     return statement;
   }

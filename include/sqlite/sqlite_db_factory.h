@@ -10,19 +10,19 @@
 
 namespace stonks::sqlite {
 /**
- * @brief Abstract factory for DB related entities.
+ * @brief sqldb::DbFactory
  */
 // NOLINTNEXTLINE(*-special-member-functions)
 class SqliteDbFactory : public sqldb::DbFactory {
  public:
   /**
-   * @copydoc Db::LoadDbFromFile
+   * @copydoc sqldb::Db::LoadDbFromFile
    */
   [[nodiscard]] auto LoadDbFromFile(std::string_view file_path)
       -> std::unique_ptr<sqldb::Db> override;
 
   /**
-   * @copydoc Db::CreateQueryBuilder
+   * @copydoc sqldb::Db::CreateQueryBuilder
    */
   [[nodiscard]] auto CreateQueryBuilder()
       -> std::unique_ptr<sqldb::QueryBuilder> override;
