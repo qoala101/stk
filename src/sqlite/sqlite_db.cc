@@ -7,6 +7,7 @@
 #include <sqlite3.h>
 
 #include <functional>
+#include <gsl/assert>
 #include <gsl/pointers>
 #include <memory>
 #include <range/v3/action/erase.hpp>
@@ -19,8 +20,11 @@
 #include <vector>
 
 #include "sqldb_enum_conversions.h"  // IWYU pragma: keep
-#include "sqldb_prepared_statement.h"
-#include "sqlite_prepared_statement.h"
+#include "sqldb_select_statement.h"
+#include "sqldb_update_statement.h"
+#include "sqlite_prepared_statement_handle.h"
+#include "sqlite_select_statement.h"
+#include "sqlite_update_statement.h"
 #include "sqlite_utils.h"
 
 namespace stonks::sqlite {
@@ -29,103 +33,99 @@ namespace {
   static auto logger = spdlog::stdout_color_mt("SqliteDb");
   return *logger;
 }
-
-[[nodiscard]] auto GetDbFileName(sqlite3 &sqlite_db) -> std::string {
-  const auto *const file_name = sqlite3_db_filename(&sqlite_db, nullptr);
-
-  if (file_name == nullptr) {
-    return {};
-  }
-
-  return file_name;
-}
-
-[[nodiscard]] auto PrepareSqliteStatement(sqlite3 &sqlite_db,
-                                          std::string_view query)
-    -> gsl::not_null<sqlite3_stmt *> {
-  auto *sqlite_statement = (sqlite3_stmt *){};
-  sqlite3_prepare_v3(&sqlite_db, query.data(),
-                     static_cast<int>(query.length()) + 1,
-                     SQLITE_PREPARE_PERSISTENT, &sqlite_statement, nullptr);
-
-  if (sqlite_statement == nullptr) {
-    throw std::runtime_error{
-        std::string{"Cannot prepare statement for query: "} + query.data()};
-  }
-
-  return sqlite_statement;
-}
-
-void RemoveStatement(std::vector<std::shared_ptr<sqlite3_stmt>> &statements,
-                     sqlite3_stmt &sqlite_statement) {
-  ranges::erase(
-      statements,
-      ranges::remove_if(statements,
-                        [&sqlite_statement](const auto &prepared_statement) {
-                          return &(*prepared_statement) == &sqlite_statement;
-                        }),
-      statements.end());
-}
-
-void CloseSqliteDb(sqlite3 &sqlite_db) {
-  const auto file_name = GetDbFileName(sqlite_db);
-  const auto result_code = sqlite3_close(&sqlite_db);
-
-  if (result_code != SQLITE_OK) {
-    throw std::runtime_error{"Cannot close DB from " + file_name};
-  }
-
-  Logger().info("Closed DB from {}", file_name);
-}
 }  // namespace
 
 class SqliteDb::Impl {
  public:
-  explicit Impl(gsl::not_null<sqlite3 *> sqlite_db) : sqlite_db_{sqlite_db} {}
+  explicit Impl(SqliteDbHandle &&sqlite_db_handle)
+      : sqlite_db_handle_{std::move(sqlite_db_handle)} {
+    Expects(sqlite_db_handle_ != nullptr);
+  }
 
   Impl(const Impl &) = delete;
-  Impl(Impl &&) = default;
+  Impl(Impl &&) noexcept = default;
 
   auto operator=(const Impl &) -> Impl & = delete;
-  auto operator=(Impl &&) -> Impl & = default;
+  auto operator=(Impl &&) noexcept -> Impl & = default;
 
-  ~Impl() try {
-    prepared_statements_.clear();
-    CloseSqliteDb(*sqlite_db_);
-  } catch (const std::exception &exception) {
-    Logger().error(exception.what());
+  ~Impl() = default;
+
+  [[nodiscard]] auto PrepareStatement(
+      std::string_view query, const sqldb::RowDefinition &result_definition)
+      -> std::unique_ptr<sqldb::ISelectStatement> {
+    auto statement = std::make_unique<SqliteSelectStatement>(
+        SqlitePreparedStatementHandle{
+            CreateSqliteStatement(query),
+            std::bind_front(&Impl::RemoveSqliteStatement, this)},
+        result_definition);
+    Ensures(statement != nullptr);
+    return statement;
   }
 
   [[nodiscard]] auto PrepareStatement(std::string_view query)
-      -> std::unique_ptr<sqldb::PreparedStatement> {
-    auto sqlite_statement = PrepareSqliteStatement(*sqlite_db_, query);
-
-    const auto &shared_sqlite_statement = prepared_statements_.emplace_back(
-        sqlite_statement.get(),
-        [](auto &sqlite_statement) { sqlite3_finalize(sqlite_statement); });
-
-    Logger().info("Prepared statement: {}", query);
-    return std::make_unique<SqlitePreparedStatement>(
-        shared_sqlite_statement,
-        std::bind_front(&RemoveStatement, prepared_statements_));
+      -> std::unique_ptr<sqldb::IUpdateStatement> {
+    auto statement =
+        std::make_unique<SqliteUpdateStatement>(SqlitePreparedStatementHandle{
+            CreateSqliteStatement(query),
+            std::bind_front(&Impl::RemoveSqliteStatement, this)});
+    Ensures(statement != nullptr);
+    return statement;
   }
 
   void WriteToFile(std::string_view file_path) {
-    utils::WriteSqliteDbToFile(*sqlite_db_, file_path);
+    Expects(sqlite_db_handle_ != nullptr);
+    WriteSqliteDbToFile(*sqlite_db_handle_, file_path);
   }
 
  private:
-  gsl::not_null<sqlite3 *> sqlite_db_;
+  [[nodiscard]] auto CreateSqliteStatement(std::string_view query)
+      -> const std::shared_ptr<sqlite3_stmt> & {
+    Expects(sqlite_db_handle_ != nullptr);
+
+    auto *sqlite_statement = (sqlite3_stmt *){};
+    sqlite3_prepare_v3(sqlite_db_handle_.get(), query.data(),
+                       static_cast<int>(query.length()) + 1,
+                       SQLITE_PREPARE_PERSISTENT, &sqlite_statement, nullptr);
+
+    if (sqlite_statement == nullptr) {
+      throw std::runtime_error{
+          std::string{"Couldn't prepare statement for query: "} + query.data()};
+    }
+
+    const auto &statement = prepared_statements_.emplace_back(
+        sqlite_statement,
+        [](auto &sqlite_statement) { sqlite3_finalize(sqlite_statement); });
+    Ensures(statement != nullptr);
+    return statement;
+  }
+
+  void RemoveSqliteStatement(sqlite3_stmt &sqlite_statement) {
+    ranges::erase(
+        prepared_statements_,
+        ranges::remove_if(prepared_statements_,
+                          [&sqlite_statement](const auto &prepared_statement) {
+                            return &(*prepared_statement) == &sqlite_statement;
+                          }),
+        prepared_statements_.end());
+  }
+
+  SqliteDbHandle sqlite_db_handle_{};
   std::vector<std::shared_ptr<sqlite3_stmt>> prepared_statements_{};
 };
 
-SqliteDb::SqliteDb(gsl::not_null<sqlite3 *> sqlite_db)
-    : impl_{std::make_unique<Impl>(sqlite_db)} {}
+SqliteDb::SqliteDb(SqliteDbHandle &&sqlite_db_handle)
+    : impl_{std::make_unique<Impl>(std::move(sqlite_db_handle))} {}
 
 SqliteDb::~SqliteDb() = default;
 
+auto SqliteDb::PrepareStatement(std::string_view query,
+                                const sqldb::RowDefinition &result_definition)
+    -> std::unique_ptr<sqldb::ISelectStatement> {
+  return impl_->PrepareStatement(query, result_definition);
+}
+
 auto SqliteDb::PrepareStatement(std::string_view query)
-    -> std::unique_ptr<sqldb::PreparedStatement> {
+    -> std::unique_ptr<sqldb::IUpdateStatement> {
   return impl_->PrepareStatement(query);
 }
 

@@ -44,6 +44,10 @@ struct Cell {
 struct CellDefinition {
   Column column{};
   DataType data_type{};
+
+ private:
+  friend auto operator==(const CellDefinition &, const CellDefinition &)
+      -> bool = default;
 };
 }  // namespace stonks::sqldb
 

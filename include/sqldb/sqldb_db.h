@@ -6,9 +6,11 @@
 #include <string_view>
 #include <vector>
 
-#include "sqldb_prepared_statement.h"
 #include "sqldb_query_builder.h"
+#include "sqldb_row_definition.h"
+#include "sqldb_select_statement.h"
 #include "sqldb_types.h"
+#include "sqldb_update_statement.h"
 
 namespace stonks::sqldb {
 /**
@@ -21,10 +23,18 @@ class Db {
 
   /**
    * @brief Creates prepared statement which can then be called to execute the
-   * query on DB.
+   * select query on DB.
+   */
+  [[nodiscard]] virtual auto PrepareStatement(
+      std::string_view query, const RowDefinition &result_definition)
+      -> std::unique_ptr<ISelectStatement> = 0;
+
+  /**
+   * @brief Creates prepared statement which can then be called to execute the
+   * update query on DB.
    */
   [[nodiscard]] virtual auto PrepareStatement(std::string_view query)
-      -> std::unique_ptr<PreparedStatement> = 0;
+      -> std::unique_ptr<IUpdateStatement> = 0;
 
   /**
    * @brief Stores this DB to the specified file.

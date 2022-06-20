@@ -6,17 +6,19 @@
 #include <gsl/pointers>
 #include <string_view>
 
-namespace stonks::sqlite::utils {
+#include "sqlite_types.h"
+
+namespace stonks::sqlite {
 /**
  * @brief Read SQLite DB from file.
  */
 [[nodiscard]] auto ReadSqliteDbFromFile(std::string_view file_path)
-    -> gsl::not_null<sqlite3 *>;
+    -> SqliteDbHandle;
 
 /**
  * @brief Write SQLite DB to file.
  */
 void WriteSqliteDbToFile(sqlite3 &sqlite_db, std::string_view file_path);
-}  // namespace stonks::sqlite::utils
+}  // namespace stonks::sqlite
 
 #endif  // STONKS_SQLITE_SQLITE_UTILS_H_

@@ -8,15 +8,20 @@
 #include <string_view>
 
 #include "sqldb_db.h"
-#include "sqldb_prepared_statement.h"
+#include "sqldb_select_statement.h"
+#include "sqldb_update_statement.h"
+#include "sqlite_types.h"
 
 namespace stonks::sqlite {
+/**
+ * @copydoc sqldb::Db
+ */
 class SqliteDb : public sqldb::Db {
  public:
   /**
-   * @brief Creates DB wrapper for SQLite DB.
+   * @brief Creates wrapper for SQLite DB.
    */
-  explicit SqliteDb(gsl::not_null<sqlite3 *> sqlite_db);
+  explicit SqliteDb(SqliteDbHandle &&sqlite_db);
 
   SqliteDb(const SqliteDb &) = delete;
   SqliteDb(SqliteDb &&) noexcept = default;
@@ -26,19 +31,26 @@ class SqliteDb : public sqldb::Db {
 
   /**
    * @brief Closes SQLite DB.
-   * @remark Doesn't write DB to file. It should be done manually.
    * @remark All prepared statements become invalid after this.
+   * @remark Doesn't write DB to file. It should be done manually.
    */
   ~SqliteDb() override;
 
   /**
-   * @copydoc Db::PrepareStatement
+   * @copydoc sqldb::Db::PrepareStatement
    */
-  [[nodiscard]] auto PrepareStatement(std::string_view query)
-      -> std::unique_ptr<sqldb::PreparedStatement> override;
+  [[nodiscard]] auto PrepareStatement(
+      std::string_view query, const sqldb::RowDefinition &result_definition)
+      -> std::unique_ptr<sqldb::ISelectStatement> override;
 
   /**
-   * @copydoc Db::WriteToFile
+   * @copydoc sqldb::Db::PrepareStatement
+   */
+  [[nodiscard]] auto PrepareStatement(std::string_view query)
+      -> std::unique_ptr<sqldb::IUpdateStatement> override;
+
+  /**
+   * @copydoc sqldb::Db::WriteToFile
    */
   void WriteToFile(std::string_view file_path) override;
 
