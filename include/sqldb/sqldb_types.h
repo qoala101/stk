@@ -1,13 +1,8 @@
 #ifndef STONKS_SQLDB_SQLDB_TYPES_H_
 #define STONKS_SQLDB_SQLDB_TYPES_H_
 
-#include <any>
-#include <cstdint>
-#include <map>
 #include <optional>
 #include <string>
-#include <string_view>
-#include <variant>
 #include <vector>
 
 #include "sqldb_enums.h"

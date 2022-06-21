@@ -2,6 +2,7 @@
 
 #include <gsl/assert>
 #include <range/v3/algorithm/find_if.hpp>
+#include <range/v3/functional/identity.hpp>
 
 namespace stonks::sqldb {
 auto TableDefinition::GetColumnDefinition(const Column &column) const

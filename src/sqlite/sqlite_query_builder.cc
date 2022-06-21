@@ -106,7 +106,7 @@ auto SqliteQueryBuilder::BuildDropTableQuery(const sqldb::Table &table)
     -> std::string {
   Expects(!table.empty());
 
-  auto query = "DROP TABLE \"" + table + "\";";
+  auto query = "DROP TABLE \"" + table + "\"";
 
   Ensures(!query.empty());
   return query;

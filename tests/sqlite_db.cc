@@ -7,6 +7,8 @@
 #include <range/v3/view/transform.hpp>
 
 #include "sqldb_db.h"
+#include "sqldb_query_builder.h"
+#include "sqldb_query_builder_facade.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 #include "sqlite_db_factory.h"
@@ -17,11 +19,15 @@ const auto kTestDbFileName = "sqlite_db_test.db";
 
 auto db_factory = std::unique_ptr<stonks::sqldb::IDbFactory>{};
 auto db = std::unique_ptr<stonks::sqldb::IDb>{};
+auto query_builder = std::shared_ptr<stonks::sqldb::IQueryBuilder>{};
+auto query_builder_facade = std::optional<stonks::sqldb::QueryBuilderFacade>{};
 
 TEST(SqliteDb, CreateAndDropTable) {
   static_cast<void>(std::filesystem::remove(kTestDbFileName));
   db_factory = std::make_unique<stonks::sqlite::SqliteDbFactory>();
   db = db_factory->LoadDbFromFile(kTestDbFileName);
+  query_builder = db_factory->CreateQueryBuilder();
+  query_builder_facade.emplace(query_builder);
 
   const auto table = stonks::sqldb::Table{"TestTable"};
   const auto table_definition = stonks::sqldb::TableDefinition{
@@ -36,19 +42,14 @@ TEST(SqliteDb, CreateAndDropTable) {
                       .column = "TextFalse",
                       .data_type = stonks::sqldb::DataType::kString}}};
   db->PrepareStatement(
-        db_factory->CreateQueryBuilder()->BuildCreateTableIfNotExistsQuery(
-            table_definition))
+        query_builder->BuildCreateTableIfNotExistsQuery(table_definition))
       ->Execute();
   db->PrepareStatement(
-        db_factory->CreateQueryBuilder()->BuildCreateTableIfNotExistsQuery(
-            table_definition))
+        query_builder->BuildCreateTableIfNotExistsQuery(table_definition))
       ->Execute();
-  db->PrepareStatement(
-        db_factory->CreateQueryBuilder()->BuildDropTableQuery(table))
-      ->Execute();
+  db->PrepareStatement(query_builder->BuildDropTableQuery(table))->Execute();
   EXPECT_ANY_THROW(
-      db->PrepareStatement(
-            db_factory->CreateQueryBuilder()->BuildDropTableQuery(table))
+      db->PrepareStatement(query_builder->BuildDropTableQuery(table))
           ->Execute());
 }
 
@@ -69,20 +70,23 @@ const auto kAssetTableDefinition = stonks::sqldb::TableDefinition{
 
 TEST(SqliteDb, InsertAndSelect) {
   db->PrepareStatement(
-        db_factory->CreateQueryBuilder()->BuildCreateTableIfNotExistsQuery(
-            kAssetTableDefinition))
+        query_builder->BuildCreateTableIfNotExistsQuery(kAssetTableDefinition))
       ->Execute();
 
   auto insert_statement =
-      db->PrepareStatement(db_factory->CreateQueryBuilder()->BuildInsertQuery(
-          kAssetTableDefinition));
-  insert_statement->Execute({{}, std::string_view{"BTC"}});
-  insert_statement->Execute({{}, std::string_view{"ETH"}});
-  insert_statement->Execute({{}, std::string_view{"USDT"}});
+      db->PrepareStatement(query_builder_facade->Insert()
+                               .IntoTable(kAssetTableDefinition)
+                               .IntoColumns({"name"})
+                               .Build());
+  insert_statement->Execute({std::string_view{"BTC"}});
+  insert_statement->Execute({std::string_view{"ETH"}});
+  insert_statement->Execute({std::string_view{"USDT"}});
 
   auto select_statement =
-      db->PrepareStatement(db_factory->CreateQueryBuilder()->BuildSelectQuery(
-                               kAssetTableDefinition.table),
+      db->PrepareStatement(query_builder_facade->Select()
+                               .AllColumns()
+                               .FromTable(kAssetTableDefinition.table)
+                               .Build(),
                            kAssetTableDefinition);
 
   const auto rows = select_statement->Execute();
@@ -96,9 +100,8 @@ TEST(SqliteDb, InsertAndSelect) {
 }
 
 TEST(SqliteDb, InsertNull) {
-  auto insert_statement =
-      db->PrepareStatement(db_factory->CreateQueryBuilder()->BuildInsertQuery(
-          kAssetTableDefinition));
+  auto insert_statement = db->PrepareStatement(
+      query_builder_facade->Insert().IntoTable(kAssetTableDefinition).Build());
   EXPECT_ANY_THROW(insert_statement->Execute());
 }
 
@@ -136,25 +139,26 @@ const auto kSymbolPriceTableDefinition = stonks::sqldb::TableDefinition{
 
 TEST(SqliteDb, ForeignKey) {
   db->PrepareStatement(
-        db_factory->CreateQueryBuilder()->BuildCreateTableIfNotExistsQuery(
-            kSymbolTableDefinition))
+        query_builder->BuildCreateTableIfNotExistsQuery(kSymbolTableDefinition))
       ->Execute();
 
   auto insert_symbol_statement =
-      db->PrepareStatement(db_factory->CreateQueryBuilder()->BuildInsertQuery(
-          kSymbolTableDefinition.table, {"base_asset_id", "quote_asset_id"}));
+      db->PrepareStatement(query_builder_facade->Insert()
+                               .IntoTable(kSymbolTableDefinition.table)
+                               .IntoColumns({"base_asset_id", "quote_asset_id"})
+                               .Build());
   insert_symbol_statement->Execute({1, 3});
   insert_symbol_statement->Execute({2, 3});
   EXPECT_ANY_THROW(insert_symbol_statement->Execute({5, 6}));
 
-  db->PrepareStatement(
-        db_factory->CreateQueryBuilder()->BuildCreateTableIfNotExistsQuery(
-            kSymbolPriceTableDefinition))
+  db->PrepareStatement(query_builder->BuildCreateTableIfNotExistsQuery(
+                           kSymbolPriceTableDefinition))
       ->Execute();
 
   auto insert_symbol_price_statement =
-      db->PrepareStatement(db_factory->CreateQueryBuilder()->BuildInsertQuery(
-          kSymbolPriceTableDefinition));
+      db->PrepareStatement(query_builder_facade->Insert()
+                               .IntoTable(kSymbolPriceTableDefinition)
+                               .Build());
   insert_symbol_price_statement->Execute(
       {1, stonks::utils::GetUnixTime().count(), 12345});
   insert_symbol_price_statement->Execute(
@@ -191,8 +195,10 @@ TEST(SqliteDb, FileWriteAndRead) {
 
   auto db_copy = db_factory->LoadDbFromFile(kTestDbFileName);
 
-  const auto select_query = db_factory->CreateQueryBuilder()->BuildSelectQuery(
-      kSymbolPriceTableDefinition);
+  const auto select_query = query_builder_facade->Select()
+                                .AllColumns()
+                                .FromTable(kSymbolPriceTableDefinition.table)
+                                .Build();
   const auto db_rows =
       db_copy->PrepareStatement(select_query, kSymbolPriceTableDefinition)
           ->Execute();
@@ -207,28 +213,35 @@ TEST(SqliteDb, FileWriteAndRead) {
 }
 
 TEST(SqliteDb, CascadeForeignKeyDelete) {
-  db
-      ->PrepareStatement(db_factory->CreateQueryBuilder()->BuildDeleteQuery(
-          kAssetTableDefinition.table, "WHERE Asset.name = \"USDT\""))
+  db->PrepareStatement(query_builder_facade->Delete()
+                           .FromTable(kAssetTableDefinition.table)
+                           .Where("Asset.name = \"USDT\"")
+                           .Build())
       ->Execute();
 
   auto select_statement =
-      db->PrepareStatement(db_factory->CreateQueryBuilder()->BuildSelectQuery(
-                               kAssetTableDefinition.table),
+      db->PrepareStatement(query_builder_facade->Select()
+                               .AllColumns()
+                               .FromTable(kAssetTableDefinition.table)
+                               .Build(),
                            kAssetTableDefinition);
   auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
 
   select_statement =
-      db->PrepareStatement(db_factory->CreateQueryBuilder()->BuildSelectQuery(
-                               kSymbolTableDefinition.table),
+      db->PrepareStatement(query_builder_facade->Select()
+                               .AllColumns()
+                               .FromTable(kSymbolTableDefinition.table)
+                               .Build(),
                            kSymbolTableDefinition);
   rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 0);
 
   select_statement =
-      db->PrepareStatement(db_factory->CreateQueryBuilder()->BuildSelectQuery(
-                               kSymbolPriceTableDefinition.table),
+      db->PrepareStatement(query_builder_facade->Select()
+                               .AllColumns()
+                               .FromTable(kSymbolPriceTableDefinition.table)
+                               .Build(),
                            kSymbolPriceTableDefinition);
   rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 0);
