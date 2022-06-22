@@ -24,7 +24,7 @@ class SqliteQueryBuilder : public sqldb::IQueryBuilder {
   /**
    * @copydoc sqldb::IQueryBuilder::BuildDropTableQuery
    */
-  [[nodiscard]] auto BuildDropTableQuery(const sqldb::Table &table)
+  [[nodiscard]] auto BuildDropTableQuery(const sqldb::Table &table) const
       -> std::string override;
 
   /**
@@ -47,14 +47,14 @@ class SqliteQueryBuilder : public sqldb::IQueryBuilder {
    */
   [[nodiscard]] auto BuildUpdateQuery(const sqldb::Table &table,
                                       const std::vector<sqldb::Column> &columns,
-                                      std::string_view where_clause)
+                                      std::string_view where_clause) const
       -> std::string override;
 
   /**
    * @copydoc sqldb::IQueryBuilder::BuildDeleteQuery
    */
   [[nodiscard]] auto BuildDeleteQuery(const sqldb::Table &table,
-                                      std::string_view where_clause)
+                                      std::string_view where_clause) const
       -> std::string override;
 };
 }  // namespace stonks::sqlite

@@ -12,14 +12,13 @@ UpdateQueryBuilder::UpdateQueryBuilder(
   Expects(query_builder_ != nullptr);
 }
 
-auto UpdateQueryBuilder::Table(::stonks::sqldb::Table table)
-    -> UpdateQueryBuilder& {
+auto UpdateQueryBuilder::OfTable(Table table) -> UpdateQueryBuilder& {
   Expects(std::holds_alternative<std::monostate>(table_));
   table_ = {std::move(table)};
   return *this;
 }
 
-auto UpdateQueryBuilder::Table(TableDefinition table_definition)
+auto UpdateQueryBuilder::OfTable(TableDefinition table_definition)
     -> UpdateQueryBuilder& {
   Expects(std::holds_alternative<std::monostate>(table_));
   table_ = {std::move(table_definition)};

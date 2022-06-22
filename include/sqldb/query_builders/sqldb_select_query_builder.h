@@ -22,8 +22,10 @@ class SelectQueryBuilder {
   auto Columns(std::vector<Column> columns) -> SelectQueryBuilder &;
   auto AllColumns() -> SelectQueryBuilder &;
   auto FromTable(Table table) -> SelectQueryBuilder &;
+  auto FromTable(const TableDefinition &table_definition)
+      -> SelectQueryBuilder &;
   auto Where(std::string_view where_clause) -> SelectQueryBuilder &;
-  
+
   [[nodiscard]] auto Build() const -> std::string;
 
  private:

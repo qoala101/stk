@@ -102,7 +102,7 @@ auto SqliteQueryBuilder::BuildCreateTableIfNotExistsQuery(
   return query;
 }
 
-auto SqliteQueryBuilder::BuildDropTableQuery(const sqldb::Table &table)
+auto SqliteQueryBuilder::BuildDropTableQuery(const sqldb::Table &table) const
     -> std::string {
   Expects(!table.empty());
 
@@ -167,7 +167,7 @@ auto SqliteQueryBuilder::BuildInsertQuery(
 
 auto SqliteQueryBuilder::BuildUpdateQuery(
     const sqldb::Table &table, const std::vector<sqldb::Column> &columns,
-    std::string_view where_clause) -> std::string {
+    std::string_view where_clause) const -> std::string {
   Expects(!table.empty());
   Expects(!columns.empty());
 
@@ -192,7 +192,7 @@ auto SqliteQueryBuilder::BuildUpdateQuery(
 }
 
 auto SqliteQueryBuilder::BuildDeleteQuery(const sqldb::Table &table,
-                                          std::string_view where_clause)
+                                          std::string_view where_clause) const
     -> std::string {
   Expects(!table.empty());
 

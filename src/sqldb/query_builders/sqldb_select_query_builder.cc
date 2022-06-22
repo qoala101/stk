@@ -33,6 +33,12 @@ auto SelectQueryBuilder::FromTable(Table table) -> SelectQueryBuilder & {
   return *this;
 }
 
+auto SelectQueryBuilder::FromTable(const TableDefinition &table_definition)
+    -> SelectQueryBuilder & {
+  table_.emplace(table_definition.table);
+  return *this;
+}
+
 auto SelectQueryBuilder::Where(std::string_view where_clause)
     -> SelectQueryBuilder & {
   Expects(!where_clause_.has_value());

@@ -32,7 +32,7 @@ class IQueryBuilder {
   /**
    * @brief Builds a query which drops the table.
    */
-  [[nodiscard]] virtual auto BuildDropTableQuery(const Table &table)
+  [[nodiscard]] virtual auto BuildDropTableQuery(const Table &table) const
       -> std::string = 0;
 
   /**
@@ -61,7 +61,7 @@ class IQueryBuilder {
    */
   [[nodiscard]] virtual auto BuildUpdateQuery(
       const Table &table, const std::vector<Column> &columns,
-      std::string_view where_clause) -> std::string = 0;
+      std::string_view where_clause) const -> std::string = 0;
 
   /**
    * @brief Builds a query which would delete the rows determined by where
@@ -69,8 +69,8 @@ class IQueryBuilder {
    * @param where_clause Appended to the query. Should start with "WHERE ".
    * All rows would be deleted if empty.
    */
-  [[nodiscard]] virtual auto BuildDeleteQuery(const Table &table,
-                                              std::string_view where_clause)
+  [[nodiscard]] virtual auto BuildDeleteQuery(
+      const Table &table, std::string_view where_clause) const
       -> std::string = 0;
 };
 }  // namespace stonks::sqldb

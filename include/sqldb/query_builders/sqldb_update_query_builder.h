@@ -19,12 +19,12 @@ class UpdateQueryBuilder {
  public:
   explicit UpdateQueryBuilder(std::shared_ptr<IQueryBuilder> query_builder);
 
-  auto Table(Table table) -> UpdateQueryBuilder &;
-  auto Table(TableDefinition table_definition) -> UpdateQueryBuilder &;
+  auto OfTable(Table table) -> UpdateQueryBuilder &;
+  auto OfTable(TableDefinition table_definition) -> UpdateQueryBuilder &;
   auto Columns(std::vector<Column> columns) -> UpdateQueryBuilder &;
   auto AllColumns() -> UpdateQueryBuilder &;
   auto Where(std::string_view where_clause) -> UpdateQueryBuilder &;
-  
+
   [[nodiscard]] auto Build() const -> std::string;
 
  private:

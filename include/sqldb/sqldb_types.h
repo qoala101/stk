@@ -1,6 +1,7 @@
 #ifndef STONKS_SQLDB_SQLDB_TYPES_H_
 #define STONKS_SQLDB_SQLDB_TYPES_H_
 
+#include <gsl/pointers>
 #include <optional>
 #include <string>
 #include <vector>
@@ -29,6 +30,8 @@ struct ColumnDefinition {
 struct TableDefinition {
   [[nodiscard]] auto GetColumnDefinition(const Column &column) const
       -> const ColumnDefinition &;
+  [[nodiscard]] auto GetColumnDefinitions(const std::vector<Column> &columns)
+      const -> std::vector<gsl::not_null<const ColumnDefinition *>>;
 
   Table table{};
   std::vector<ColumnDefinition> columns{};

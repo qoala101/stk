@@ -71,15 +71,12 @@ class SqliteDb::Impl {
   }
 
   void WriteToFile(std::string_view file_path) {
-    Expects(sqlite_db_handle_ != nullptr);
     SqliteDbReadWriteFacade::WriteSqliteDbToFile(*sqlite_db_handle_, file_path);
   }
 
  private:
   [[nodiscard]] auto CreateSqliteStatement(std::string_view query)
       -> const std::shared_ptr<sqlite3_stmt> & {
-    Expects(sqlite_db_handle_ != nullptr);
-
     auto *sqlite_statement = (sqlite3_stmt *){};
     sqlite3_prepare_v3(sqlite_db_handle_.get(), query.data(),
                        static_cast<int>(query.length()) + 1,
