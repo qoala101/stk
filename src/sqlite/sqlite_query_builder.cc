@@ -146,13 +146,11 @@ auto SqliteQueryBuilder::BuildInsertQuery(
   auto column_names = std::string{};
   auto placeholders = std::string{};
 
-  const auto num_columns = columns.size();
+  for (const auto &column : columns) {
+    column_names += "\"" + column + "\"";
+    placeholders += "?";
 
-  for (auto i = 0; i < num_columns; ++i) {
-    column_names += "\"" + columns[i] + "\"";
-    placeholders += "?" + std::to_string(i + 1);
-
-    if (const auto not_last_column = i < (num_columns - 1)) {
+    if (const auto not_last_column = &column != &columns.back()) {
       column_names += ", ";
       placeholders += ", ";
     }
@@ -173,12 +171,10 @@ auto SqliteQueryBuilder::BuildUpdateQuery(
 
   auto query = "UPDATE \"" + table + "\" SET ";
 
-  const auto num_columns = columns.size();
+  for (const auto &column : columns) {
+    query += "\"" + column + "\" = ?";
 
-  for (auto i = 0; i < num_columns; ++i) {
-    query += "\"" + columns[i] + "\" = ?" + std::to_string(i + 1);
-
-    if (const auto not_last_column = i < (num_columns - 1)) {
+    if (const auto not_last_column = &column != &columns.back()) {
       query += ", ";
     }
   }
