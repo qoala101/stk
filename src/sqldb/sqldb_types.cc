@@ -4,6 +4,7 @@
 #include <range/v3/algorithm/find_if.hpp>
 #include <range/v3/functional/identity.hpp>
 #include <range/v3/range/conversion.hpp>
+#include <range/v3/view/filter.hpp>
 #include <range/v3/view/transform.hpp>
 
 namespace stonks::sqldb {
@@ -18,8 +19,7 @@ auto TableDefinition::GetColumnDefinition(const Column &column) const
 }
 
 [[nodiscard]] auto TableDefinition::GetColumnDefinitions(
-    const std::vector<Column> &columns) const
-    -> std::vector<gsl::not_null<const ColumnDefinition *>> {
+    const std::vector<Column> &columns) const -> ConstView<ColumnDefinition> {
   auto column_definitions =
       columns | ranges::views::transform([this](const auto &column) {
         return gsl::not_null<const ColumnDefinition *>{

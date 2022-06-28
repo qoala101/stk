@@ -13,7 +13,7 @@ namespace stonks::sqldb {
  */
 class Rows {
  public:
-  explicit Rows(std::vector<Column> columns);
+  explicit Rows(std::vector<Column> columns = {});
 
   [[nodiscard]] auto GetColumnValues(const Column &column) const
       -> const std::vector<Value> &;

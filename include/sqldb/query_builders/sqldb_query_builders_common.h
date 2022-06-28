@@ -10,9 +10,19 @@
  * @file Symbols used by query builders.
  */
 namespace stonks::sqldb {
+/**
+ * @brief Variant of columns specification.
+ */
 struct AllColumnsType {};
 
+/**
+ * @brief Stores table value in query builders.
+ */
 using TableVariant = std::variant<std::monostate, Table, TableDefinition>;
+
+/**
+ * @brief Stores columns value in query builders.
+ */
 using ColumnsVariant =
     std::variant<std::monostate, std::vector<Column>, AllColumnsType>;
 
@@ -26,6 +36,13 @@ using ColumnsVariant =
  */
 [[nodiscard]] auto GetColumns(const TableVariant &table,
                               const ColumnsVariant &columns)
+    -> std::vector<Column>;
+
+/**
+ * @brief Get columns from their definitions.
+ */
+[[nodiscard]] auto GetColumns(
+    const ConstView<ColumnDefinition> &column_definitions)
     -> std::vector<Column>;
 }  // namespace stonks::sqldb
 

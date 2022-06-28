@@ -17,10 +17,13 @@ class InsertQueryBuilder {
  public:
   explicit InsertQueryBuilder(std::shared_ptr<IQueryBuilder> query_builder);
 
+  auto WholeRow() -> InsertQueryBuilder &;
   auto IntoTable(Table table) -> InsertQueryBuilder &;
   auto IntoTable(TableDefinition table_definition) -> InsertQueryBuilder &;
   auto IntoColumns(std::vector<Column> columns) -> InsertQueryBuilder &;
-  
+  auto IntoColumns(const ConstView<ColumnDefinition> &column_definitions)
+      -> InsertQueryBuilder &;
+
   [[nodiscard]] auto Build() const -> std::string;
 
  private:

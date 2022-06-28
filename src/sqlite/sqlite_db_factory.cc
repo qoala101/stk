@@ -7,7 +7,7 @@
 #include "sqlite_query_builder.h"
 
 namespace stonks::sqlite {
-auto SqliteDbFactory::LoadDbFromFile(std::string_view file_path)
+auto SqliteDbFactory::LoadDbFromFile(std::string_view file_path) const
     -> std::unique_ptr<sqldb::IDb> {
   auto db = std::make_unique<SqliteDb>(
       SqliteDbReadWriteFacade::ReadSqliteDbFromFile(file_path));
@@ -16,7 +16,7 @@ auto SqliteDbFactory::LoadDbFromFile(std::string_view file_path)
   return db;
 }
 
-auto SqliteDbFactory::CreateQueryBuilder()
+auto SqliteDbFactory::CreateQueryBuilder() const
     -> std::unique_ptr<sqldb::IQueryBuilder> {
   auto query_builder = std::make_unique<SqliteQueryBuilder>();
 

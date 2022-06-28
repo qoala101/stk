@@ -18,6 +18,8 @@ class DeleteQueryBuilder {
   explicit DeleteQueryBuilder(std::shared_ptr<IQueryBuilder> query_builder);
 
   auto FromTable(Table table) -> DeleteQueryBuilder &;
+  auto FromTable(const TableDefinition &table_definition)
+      -> DeleteQueryBuilder &;
   auto Where(std::string_view where_clause) -> DeleteQueryBuilder &;
 
   [[nodiscard]] auto Build() const -> std::string;

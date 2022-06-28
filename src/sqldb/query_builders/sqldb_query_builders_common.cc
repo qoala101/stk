@@ -42,10 +42,24 @@ auto GetColumns(const TableVariant &table, const ColumnsVariant &columns)
   Expects(std::holds_alternative<TableDefinition>(table));
   const auto &table_definition = std::get<TableDefinition>(table);
 
-  return table_definition.columns |
-         ranges::views::transform([](const auto &column_definition) {
-           return column_definition.column;
-         }) |
-         ranges::to_vector;
+  auto table_columns =
+      table_definition.columns |
+      ranges::views::transform([](const auto &column_definition) {
+        return column_definition.column;
+      }) |
+      ranges::to_vector;
+  Expects(table_columns.size() == table_definition.columns.size());
+  return table_columns;
+}
+
+auto GetColumns(const ConstView<ColumnDefinition> &column_definitions)
+    -> std::vector<Column> {
+  auto columns = column_definitions |
+                 ranges::views::transform([](const auto &column_definition) {
+                   return column_definition->column;
+                 }) |
+                 ranges::to_vector;
+  Expects(columns.size() == column_definitions.size());
+  return columns;
 }
 }  // namespace stonks::sqldb

@@ -5,6 +5,8 @@
 #include <utility>
 #include <variant>
 
+#include "sqldb_query_builders_common.h"
+
 namespace stonks::sqldb {
 UpdateQueryBuilder::UpdateQueryBuilder(
     std::shared_ptr<IQueryBuilder> query_builder)
@@ -30,6 +32,12 @@ auto UpdateQueryBuilder::Columns(std::vector<Column> columns)
   Expects(std::holds_alternative<std::monostate>(columns_));
   columns_.emplace<std::vector<Column>>(std::move(columns));
   return *this;
+}
+
+auto UpdateQueryBuilder::Columns(
+    const ConstView<ColumnDefinition>& column_definitions)
+    -> UpdateQueryBuilder& {
+  return Columns(GetColumns(column_definitions));
 }
 
 auto UpdateQueryBuilder::AllColumns() -> UpdateQueryBuilder& {

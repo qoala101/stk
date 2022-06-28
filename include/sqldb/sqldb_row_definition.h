@@ -20,8 +20,7 @@ class RowDefinition {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   RowDefinition(const std::vector<ColumnDefinition> &column_definitions);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  RowDefinition(const std::vector<gsl::not_null<const ColumnDefinition *>>
-                    &column_definitions);
+  RowDefinition(const ConstView<ColumnDefinition> &column_definitions);
 
   [[nodiscard]] auto GetCellDefinitions() const
       -> const std::vector<CellDefinition> &;

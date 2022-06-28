@@ -3,6 +3,10 @@
 
 #include <gsl/pointers>
 #include <optional>
+#include <range/v3/view/all.hpp>
+#include <range/v3/view/any_view.hpp>
+#include <range/v3/view/filter.hpp>
+#include <range/v3/view/ref.hpp>
 #include <string>
 #include <vector>
 
@@ -12,6 +16,12 @@
 namespace stonks::sqldb {
 using Table = std::string;
 using Column = std::string;
+
+template <typename T>
+using View = std::vector<gsl::not_null<T *>>;
+
+template <typename T>
+using ConstView = std::vector<gsl::not_null<const T *>>;
 
 struct ForeignKey {
   Table table{};
@@ -30,8 +40,8 @@ struct ColumnDefinition {
 struct TableDefinition {
   [[nodiscard]] auto GetColumnDefinition(const Column &column) const
       -> const ColumnDefinition &;
-  [[nodiscard]] auto GetColumnDefinitions(const std::vector<Column> &columns)
-      const -> std::vector<gsl::not_null<const ColumnDefinition *>>;
+  [[nodiscard]] auto GetColumnDefinitions(
+      const std::vector<Column> &columns) const -> ConstView<ColumnDefinition>;
 
   Table table{};
   std::vector<ColumnDefinition> columns{};

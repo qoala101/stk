@@ -18,13 +18,13 @@ class SqliteDbFactory : public sqldb::IDbFactory {
   /**
    * @copydoc sqldb::IDb::LoadDbFromFile
    */
-  [[nodiscard]] auto LoadDbFromFile(std::string_view file_path)
+  [[nodiscard]] auto LoadDbFromFile(std::string_view file_path) const
       -> std::unique_ptr<sqldb::IDb> override;
 
   /**
    * @copydoc sqldb::IDb::CreateQueryBuilder
    */
-  [[nodiscard]] auto CreateQueryBuilder()
+  [[nodiscard]] auto CreateQueryBuilder() const
       -> std::unique_ptr<sqldb::IQueryBuilder> override;
 };
 }  // namespace stonks::sqlite

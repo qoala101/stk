@@ -17,6 +17,11 @@ auto DeleteQueryBuilder::FromTable(Table table) -> DeleteQueryBuilder& {
   return *this;
 }
 
+auto DeleteQueryBuilder::FromTable(const TableDefinition& table_definition)
+    -> DeleteQueryBuilder& {
+  return FromTable(table_definition.table);
+}
+
 auto DeleteQueryBuilder::Where(std::string_view where_clause)
     -> DeleteQueryBuilder& {
   Expects(!where_clause_.has_value());

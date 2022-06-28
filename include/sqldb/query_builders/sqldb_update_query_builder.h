@@ -22,6 +22,8 @@ class UpdateQueryBuilder {
   auto OfTable(Table table) -> UpdateQueryBuilder &;
   auto OfTable(TableDefinition table_definition) -> UpdateQueryBuilder &;
   auto Columns(std::vector<Column> columns) -> UpdateQueryBuilder &;
+  auto Columns(const ConstView<ColumnDefinition> &column_definitions)
+      -> UpdateQueryBuilder &;
   auto AllColumns() -> UpdateQueryBuilder &;
   auto Where(std::string_view where_clause) -> UpdateQueryBuilder &;
 
