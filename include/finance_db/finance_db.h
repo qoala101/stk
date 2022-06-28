@@ -7,19 +7,26 @@
 #include <string_view>
 #include <vector>
 
+#include "cache.h"
 #include "finance_types.h"
+#include "prepared_statements.h"
+#include "sqldb_db_factory.h"
 #include "stonks_db.h"
 
 namespace stonks::finance {
+/**
+ * @copydoc StonksDb
+ */
 class FinanceDb : public StonksDb {
  public:
   /**
-   * @brief Creates handle to the DB on specified URI.
-   * @remark Would create URI if it doesn't exist.
-   * @remark If DB cannot be instantiated with such URI, it would use null-DB
-   * on which all the calls fail.
+   * @brief Reads DB from the specified file.
+   * @param db_factory SQL DB implementation.
    */
-  explicit FinanceDb(std::string_view uri = "stonks.db");
+  explicit FinanceDb(const sqldb::IDbFactory &db_factory,
+                     std::string_view file_path);
+
+  [[deprecated]] explicit FinanceDb(std::string_view uri = "stonks.db");
 
   FinanceDb(const FinanceDb &) = delete;
   FinanceDb(FinanceDb &&) noexcept;
@@ -28,7 +35,7 @@ class FinanceDb : public StonksDb {
   auto operator=(FinanceDb &&) noexcept -> FinanceDb &;
 
   /**
-   * @brief Releases DB handle.
+   * @brief Writes DB to the file specified at construction.
    */
   ~FinanceDb() override;
 
@@ -61,9 +68,9 @@ class FinanceDb : public StonksDb {
   /**
    * @copydoc StonksDb::SelectSymbolPriceTicks
    */
-  [[nodiscard]] auto SelectSymbolPriceTicks(
-      std::optional<int> limit, const std::optional<Period> &period,
-      const std::optional<std::vector<SymbolName>> &symbols) const
+  [[nodiscard]] auto SelectSymbolPriceTicks(const SymbolName *symbol,
+                                            const Period *period,
+                                            const int *limit) const
       -> std::vector<SymbolPriceTick> override;
 
   /**
@@ -72,9 +79,14 @@ class FinanceDb : public StonksDb {
   void InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick) override;
 
  private:
-  class Impl;
+  void CreateTablesIfNotExist();
+  void InsertSymbolInfo(const SymbolInfo &symbol_info);
+  void UpdateSymbolInfo(const SymbolInfo &symbol_info);
 
-  std::unique_ptr<Impl> impl_{};
+  std::shared_ptr<sqldb::IDb> db_{};
+  std::shared_ptr<sqldb::IQueryBuilder> query_builder_{};
+  std::shared_ptr<PreparedStatements> prepared_statements_{};
+  Cache cache_;
 };
 }  // namespace stonks::finance
 

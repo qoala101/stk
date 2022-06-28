@@ -22,9 +22,9 @@ class FinanceDb : public StonksDb {
       -> std::vector<finance::SymbolInfo> override;
   void UpdateSymbolsInfo(
       std::vector<finance::SymbolInfo> symbols_info) override;
-  [[nodiscard]] auto SelectSymbolPriceTicks(
-      std::optional<int> limit, const std::optional<finance::Period> &period,
-      const std::optional<std::vector<finance::SymbolName>> &symbols) const
+  [[nodiscard]] auto SelectSymbolPriceTicks(const finance::SymbolName *symbol,
+                                            const finance::Period *period,
+                                            const int *limit) const
       -> std::vector<finance::SymbolPriceTick> override;
   void InsertSymbolPriceTick(
       const finance::SymbolPriceTick &symbol_price_tick) override;

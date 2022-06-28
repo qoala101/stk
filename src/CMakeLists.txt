@@ -24,8 +24,10 @@ add_library(libstonks
   finance_api/finance_conversions.cc
   finance_api/finance_enum_conversions.cc
   finance_api/finance_types.cc
-  finance_db/finance_db_table_definitions.cc
+  finance_db/cache.cc
+  finance_db/table_definitions.cc
   finance_db/finance_db.cc
+  finance_db/prepared_statements.cc
   google_charts/google_charts_conversions.cc
   json/json_conversions.cc
   json/type_variant.cc
