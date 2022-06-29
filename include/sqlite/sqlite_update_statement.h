@@ -18,7 +18,7 @@ class SqliteUpdateStatement : public sqldb::IUpdateStatement {
    * produced by parent DB.
    */
   explicit SqliteUpdateStatement(
-      SqlitePreparedStatementHandle &&prepared_statement_handle);
+      SqlitePreparedStatementHandle prepared_statement_handle);
 
   /**
    * @copydoc sqldb::IUpdateStatement::Execute

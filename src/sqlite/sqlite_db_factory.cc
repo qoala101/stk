@@ -3,14 +3,14 @@
 #include <gsl/assert>
 
 #include "sqlite_db.h"
-#include "sqlite_db_read_write_facade.h"
 #include "sqlite_query_builder.h"
+#include "sqlite_utils.h"
 
 namespace stonks::sqlite {
 auto SqliteDbFactory::LoadDbFromFile(std::string_view file_path) const
     -> std::unique_ptr<sqldb::IDb> {
   auto db = std::make_unique<SqliteDb>(
-      SqliteDbReadWriteFacade::ReadSqliteDbFromFile(file_path));
+      utils::LoadSqliteDbFromFileToMemory(file_path));
 
   Ensures(db != nullptr);
   return db;

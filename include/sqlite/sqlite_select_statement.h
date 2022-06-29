@@ -24,7 +24,7 @@ class SqliteSelectStatement : public sqldb::ISelectStatement {
    * statement result.
    */
   explicit SqliteSelectStatement(
-      SqlitePreparedStatementHandle &&prepared_statement_handle,
+      SqlitePreparedStatementHandle prepared_statement_handle,
       const sqldb::RowDefinition &result_definition);
 
   /**

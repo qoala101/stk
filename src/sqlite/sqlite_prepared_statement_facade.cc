@@ -1,5 +1,8 @@
 #include "sqlite_prepared_statement_facade.h"
 
+#include <bits/exception.h>
+#include <fmt/format.h>
+#include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <cstdint>
@@ -74,11 +77,15 @@ auto GetValue(sqlite3_stmt &statement, int index, sqldb::DataType type)
 }  // namespace
 
 SqlitePreparedStatementFacade::SqlitePreparedStatementFacade(
-    sqlite3_stmt &sqlite_statement)
-    : sqlite_statement_{sqlite_statement} {}
+    gsl::strict_not_null<sqlite3_stmt *> sqlite_statement)
+    : sqlite_statement_{sqlite_statement} {
+  Ensures(sqlite_statement_ != nullptr);
+}
 
 void SqlitePreparedStatementFacade::Reset() {
-  const auto result_code = sqlite3_reset(&sqlite_statement_);
+  Expects(sqlite_statement_ != nullptr);
+
+  const auto result_code = sqlite3_reset(sqlite_statement_);
 
   if (result_code != SQLITE_OK) {
     throw std::runtime_error{"Couldn't reset prepared statement: " +
@@ -88,28 +95,46 @@ void SqlitePreparedStatementFacade::Reset() {
 
 void SqlitePreparedStatementFacade::BindParams(
     const std::vector<sqldb::Value> &params) {
+  Expects(sqlite_statement_ != nullptr);
+
   for (auto i = 0; i < params.size(); ++i) {
-    BindParam(sqlite_statement_, i + 1, params[i]);
+    BindParam(*sqlite_statement_, i + 1, params[i]);
   }
 }
 
 auto SqlitePreparedStatementFacade::Step() -> ResultCode {
-  return sqlite3_step(&sqlite_statement_);
+  Expects(sqlite_statement_ != nullptr);
+  return sqlite3_step(sqlite_statement_);
 }
 
 auto SqlitePreparedStatementFacade::GetStepValues(
-    const std::vector<sqldb::DataType> &value_types)
+    const std::vector<sqldb::DataType> &value_types) const
     -> std::vector<sqldb::Value> {
+  Expects(sqlite_statement_ != nullptr);
+
   const auto num_values = value_types.size();
 
   auto values = std::vector<sqldb::Value>{};
   values.reserve(num_values);
 
   for (auto i = 0; i < num_values; ++i) {
-    values.emplace_back(GetValue(sqlite_statement_, i, value_types[i]));
+    values.emplace_back(GetValue(*sqlite_statement_, i, value_types[i]));
   }
 
   Ensures(values.size() == value_types.size());
   return values;
+}
+
+void SqlitePreparedStatementFacade::Finalize() {
+  Expects(sqlite_statement_ != nullptr);
+
+  const auto result_code = sqlite3_finalize(sqlite_statement_);
+
+  if (result_code != SQLITE_OK) {
+    Logger().error("Prepared statement finalized with error: {}", result_code);
+  }
+
+  sqlite_statement_ = nullptr;
+  Ensures(sqlite_statement_ == nullptr);
 }
 }  // namespace stonks::sqlite

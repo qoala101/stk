@@ -3,6 +3,7 @@
 
 #include <sqlite3.h>
 
+#include <gsl/pointers>
 #include <vector>
 
 #include "sqldb_enums.h"
@@ -19,7 +20,8 @@ class SqlitePreparedStatementFacade {
    */
   using ResultCode = int;
 
-  explicit SqlitePreparedStatementFacade(sqlite3_stmt &sqlite_statement);
+  explicit SqlitePreparedStatementFacade(
+      gsl::strict_not_null<sqlite3_stmt *> sqlite_statement);
 
   /**
    * @brief Resets prepared statement.
@@ -42,11 +44,18 @@ class SqlitePreparedStatementFacade {
    * @brief Gets the values of provided types from the current step in the order
    * they are refined in the statement.
    */
-  auto GetStepValues(const std::vector<sqldb::DataType> &value_types)
+  [[nodiscard]] auto GetStepValues(
+      const std::vector<sqldb::DataType> &value_types) const
       -> std::vector<sqldb::Value>;
 
+  /**
+   * @brief Finalizes the statement.
+   * @remark Other methods should not be called after this.
+   */
+  void Finalize();
+
  private:
-  sqlite3_stmt &sqlite_statement_;
+  sqlite3_stmt *sqlite_statement_;
 };
 }  // namespace stonks::sqlite
 

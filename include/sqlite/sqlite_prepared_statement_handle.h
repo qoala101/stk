@@ -3,25 +3,20 @@
 
 #include <sqlite3.h>
 
-#include <functional>
 #include <memory>
+
+#include "sqlite_types.h"
 
 namespace stonks::sqlite {
 /**
- * @brief Weak handle for SQLite prepared statement.
- * @remark DB would keep the statement alive while handle is alive.
+ * @brief Handle for SQLite prepared statement.
+ * @remark Keeps DB alive while handle is alive.
  */
 class SqlitePreparedStatementHandle {
  public:
-  /**
-   * @param sqlite_statement Statement owned by DB.
-   * @param sqlite_statement_handle_deleted_callback Callback to parent DB
-   * which informs it that handle is destroyed and DB can delete the statement.
-   */
   explicit SqlitePreparedStatementHandle(
-      std::weak_ptr<sqlite3_stmt> sqlite_statement,
-      std::function<void(sqlite3_stmt &)>
-          sqlite_statement_handle_deleted_callback);
+      std::shared_ptr<sqlite3> sqlite_db_handle,
+      SqliteStatementHandle sqlite_statement_handle);
 
   SqlitePreparedStatementHandle(const SqlitePreparedStatementHandle &) = delete;
   SqlitePreparedStatementHandle(SqlitePreparedStatementHandle &&) noexcept =
@@ -32,27 +27,13 @@ class SqlitePreparedStatementHandle {
   auto operator=(SqlitePreparedStatementHandle &&) noexcept
       -> SqlitePreparedStatementHandle & = default;
 
-  /**
-   * @brief Executes handle deleted callback.
-   */
-  ~SqlitePreparedStatementHandle();
+  ~SqlitePreparedStatementHandle() noexcept = default;
 
-  /**
-   * @brief Get the statement.
-   * @return Null if parent DB was destroyed.
-   */
-  [[nodiscard]] auto GetSqliteStatement() const
-      -> std::shared_ptr<sqlite3_stmt>;
-
-  /**
-   * @brief Checks whether handle points to the existing statement.
-   */
-  [[nodiscard]] auto IsValid() const -> bool;
+  [[nodiscard]] auto GetSqliteStatement() const -> sqlite3_stmt &;
 
  private:
-  std::weak_ptr<sqlite3_stmt> sqlite_statement_{};
-  std::function<void(sqlite3_stmt &)>
-      sqlite_statement_handle_deleted_callback_{};
+  std::shared_ptr<sqlite3> sqlite_db_handle_{};
+  SqliteStatementHandle sqlite_statement_handle_{};
 };
 }  // namespace stonks::sqlite
 

@@ -1,7 +1,6 @@
 #ifndef STONKS_SQLDB_SQLDB_ROW_DEFINITION_H_
 #define STONKS_SQLDB_SQLDB_ROW_DEFINITION_H_
 
-#include <gsl/pointers>
 #include <vector>
 
 #include "sqldb_types.h"

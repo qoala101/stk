@@ -3,10 +3,6 @@
 
 #include <gsl/pointers>
 #include <optional>
-#include <range/v3/view/all.hpp>
-#include <range/v3/view/any_view.hpp>
-#include <range/v3/view/filter.hpp>
-#include <range/v3/view/ref.hpp>
 #include <string>
 #include <vector>
 

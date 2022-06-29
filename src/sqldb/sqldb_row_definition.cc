@@ -1,5 +1,6 @@
 #include "sqldb_row_definition.h"
 
+#include <gsl/pointers>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/all.hpp>

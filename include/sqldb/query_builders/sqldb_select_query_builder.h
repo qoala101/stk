@@ -1,7 +1,6 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDERS_SQLDB_SELECT_QUERY_BUILDER_H_
 #define STONKS_SQLDB_QUERY_BUILDERS_SQLDB_SELECT_QUERY_BUILDER_H_
 
-#include <gsl/pointers>
 #include <memory>
 #include <optional>
 #include <string>

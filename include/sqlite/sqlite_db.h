@@ -19,7 +19,7 @@ class SqliteDb : public sqldb::IDb {
   /**
    * @brief Creates wrapper for SQLite DB.
    */
-  explicit SqliteDb(SqliteDbHandle &&sqlite_db);
+  explicit SqliteDb(SqliteDbHandle sqlite_db);
 
   SqliteDb(const SqliteDb &) = delete;
   SqliteDb(SqliteDb &&) noexcept = default;
@@ -29,10 +29,9 @@ class SqliteDb : public sqldb::IDb {
 
   /**
    * @brief Closes SQLite DB.
-   * @remark All prepared statements become invalid after this.
    * @remark Doesn't write DB to file. It should be done manually.
    */
-  ~SqliteDb() override;
+  ~SqliteDb() noexcept override;
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement

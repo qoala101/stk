@@ -7,28 +7,16 @@
 
 namespace stonks::sqlite {
 SqlitePreparedStatementHandle::SqlitePreparedStatementHandle(
-    std::weak_ptr<sqlite3_stmt> sqlite_statement,
-    std::function<void(sqlite3_stmt &)>
-        sqlite_statement_handle_deleted_callback)
-    : sqlite_statement_{std::move(sqlite_statement)},
-      sqlite_statement_handle_deleted_callback_{
-          std::move(sqlite_statement_handle_deleted_callback)} {
-  Expects(!sqlite_statement_.expired());
-  Expects(sqlite_statement_handle_deleted_callback_);
-}
-
-SqlitePreparedStatementHandle::~SqlitePreparedStatementHandle() {
-  if (const auto sqlite_statement = sqlite_statement_.lock()) {
-    sqlite_statement_handle_deleted_callback_(*sqlite_statement);
-  }
+    std::shared_ptr<sqlite3> sqlite_db_handle,
+    SqliteStatementHandle sqlite_statement_handle)
+    : sqlite_db_handle_{std::move(sqlite_db_handle)},
+      sqlite_statement_handle_{std::move(sqlite_statement_handle)} {
+  Ensures(sqlite_db_handle_ != nullptr);
+  Ensures(sqlite_statement_handle_ != nullptr);
 }
 
 auto SqlitePreparedStatementHandle::GetSqliteStatement() const
-    -> std::shared_ptr<sqlite3_stmt> {
-  return sqlite_statement_.lock();
-}
-
-auto SqlitePreparedStatementHandle::IsValid() const -> bool {
-  return !sqlite_statement_.expired();
+    -> sqlite3_stmt& {
+  return *sqlite_statement_handle_.get();
 }
 }  // namespace stonks::sqlite

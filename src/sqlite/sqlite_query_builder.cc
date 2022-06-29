@@ -1,6 +1,5 @@
 #include "sqlite_query_builder.h"
 
-#include <ext/alloc_traits.h>
 #include <gsl/assert>
 #include <magic_enum.hpp>
 #include <optional>

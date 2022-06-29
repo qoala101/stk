@@ -142,11 +142,11 @@ TEST(SqliteDb, ForeignKey) {
         query_builder->BuildCreateTableIfNotExistsQuery(kSymbolTableDefinition))
       ->Execute();
 
-  auto insert_symbol_statement =
-      db->PrepareStatement(query_builder_facade->Insert()
-                               .IntoTable(kSymbolTableDefinition.table)
-                               .IntoColumns({"base_asset_id", "quote_asset_id"})
-                               .Build());
+  auto insert_symbol_statement = db->PrepareStatement(
+      query_builder_facade->Insert()
+          .IntoTable(kSymbolTableDefinition.table)
+          .IntoColumns({{"base_asset_id"}, {"quote_asset_id"}})
+          .Build());
   insert_symbol_statement->Execute({1, 3});
   insert_symbol_statement->Execute({2, 3});
   EXPECT_ANY_THROW(insert_symbol_statement->Execute({5, 6}));
@@ -200,7 +200,7 @@ TEST(SqliteDb, FileWriteAndRead) {
                                 .FromTable(kSymbolPriceTableDefinition.table)
                                 .Build();
   const auto db_rows =
-      db_copy->PrepareStatement(select_query, kSymbolPriceTableDefinition)
+      db->PrepareStatement(select_query, kSymbolPriceTableDefinition)
           ->Execute();
   const auto db_copy_rows =
       db_copy->PrepareStatement(select_query, kSymbolPriceTableDefinition)

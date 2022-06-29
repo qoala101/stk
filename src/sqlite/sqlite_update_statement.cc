@@ -2,8 +2,7 @@
 
 #include <sqlite3.h>
 
-#include <gsl/assert>
-#include <memory>
+#include <gsl/pointers>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -13,17 +12,13 @@
 
 namespace stonks::sqlite {
 SqliteUpdateStatement::SqliteUpdateStatement(
-    SqlitePreparedStatementHandle &&prepared_statement_handle)
-    : prepared_statement_handle_{std::move(prepared_statement_handle)} {
-  Expects(prepared_statement_handle_.IsValid());
-}
+    SqlitePreparedStatementHandle prepared_statement_handle)
+    : prepared_statement_handle_{std::move(prepared_statement_handle)} {}
 
 void SqliteUpdateStatement::Execute(const std::vector<sqldb::Value> &params) {
-  auto sqlite_statement = prepared_statement_handle_.GetSqliteStatement();
-  Expects(sqlite_statement != nullptr);
-
-  auto prepared_statement_facade =
-      SqlitePreparedStatementFacade{*sqlite_statement};
+  auto &sqlite_statement = prepared_statement_handle_.GetSqliteStatement();
+  auto prepared_statement_facade = SqlitePreparedStatementFacade{
+      gsl::make_strict_not_null(&sqlite_statement)};
   prepared_statement_facade.Reset();
   prepared_statement_facade.BindParams(params);
 
