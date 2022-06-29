@@ -14,10 +14,10 @@ using Table = std::string;
 using Column = std::string;
 
 template <typename T>
-using View = std::vector<gsl::not_null<T *>>;
+using View = std::vector<gsl::strict_not_null<T *>>;
 
 template <typename T>
-using ConstView = std::vector<gsl::not_null<const T *>>;
+using ConstView = std::vector<gsl::strict_not_null<const T *>>;
 
 struct ForeignKey {
   Table table{};
