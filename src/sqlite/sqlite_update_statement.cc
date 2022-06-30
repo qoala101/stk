@@ -2,11 +2,11 @@
 
 #include <sqlite3.h>
 
-#include <gsl/pointers>
 #include <stdexcept>
 #include <string>
 #include <utility>
 
+#include "not_null.hpp"
 #include "sqlite_prepared_statement_facade.h"
 #include "sqlite_prepared_statement_handle.h"
 
@@ -17,8 +17,8 @@ SqliteUpdateStatement::SqliteUpdateStatement(
 
 void SqliteUpdateStatement::Execute(const std::vector<sqldb::Value> &params) {
   auto &sqlite_statement = prepared_statement_handle_.GetSqliteStatement();
-  auto prepared_statement_facade = SqlitePreparedStatementFacade{
-      gsl::make_strict_not_null(&sqlite_statement)};
+  auto prepared_statement_facade =
+      SqlitePreparedStatementFacade{cpp::assume_not_null(&sqlite_statement)};
   prepared_statement_facade.Reset();
   prepared_statement_facade.BindParams(params);
 

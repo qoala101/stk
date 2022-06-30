@@ -5,7 +5,6 @@
 #include <sqlite3.h>
 
 #include <gsl/assert>
-#include <gsl/pointers>
 #include <memory>
 #include <utility>
 
@@ -31,7 +30,7 @@ class SqliteDb::Impl {
  public:
   explicit Impl(SqliteDbHandle sqlite_db_handle)
       : sqlite_db_handle_{std::move(sqlite_db_handle)},
-        sqlite_db_facade_{gsl::make_strict_not_null(sqlite_db_handle_.get())} {}
+        sqlite_db_facade_{cpp::assume_not_null(sqlite_db_handle_.get())} {}
 
   Impl(const Impl &) = delete;
   Impl(Impl &&) noexcept = default;

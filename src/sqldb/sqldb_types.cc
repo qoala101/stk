@@ -8,6 +8,8 @@
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
 
+#include "not_null.hpp"
+
 namespace stonks::sqldb {
 auto TableDefinition::GetColumnDefinition(const Column &column) const
     -> const ColumnDefinition & {
@@ -23,8 +25,7 @@ auto TableDefinition::GetColumnDefinition(const Column &column) const
     const std::vector<Column> &columns) const -> ConstView<ColumnDefinition> {
   auto column_definitions =
       columns | ranges::views::transform([this](const auto &column) {
-        return gsl::make_strict_not_null<const ColumnDefinition *>(
-            &GetColumnDefinition(column));
+        return cpp::assume_not_null(&GetColumnDefinition(column));
       }) |
       ranges::to_vector;
   Ensures(column_definitions.size() == columns.size());

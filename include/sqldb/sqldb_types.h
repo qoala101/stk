@@ -1,11 +1,11 @@
 #ifndef STONKS_SQLDB_SQLDB_TYPES_H_
 #define STONKS_SQLDB_SQLDB_TYPES_H_
 
-#include <gsl/pointers>
 #include <optional>
 #include <string>
 #include <vector>
 
+#include "not_null.hpp"
 #include "sqldb_enums.h"
 #include "sqldb_value.h"
 
@@ -14,10 +14,10 @@ using Table = std::string;
 using Column = std::string;
 
 template <typename T>
-using View = std::vector<gsl::strict_not_null<T *>>;
+using View = std::vector<cpp::not_null<T *>>;
 
 template <typename T>
-using ConstView = std::vector<gsl::strict_not_null<const T *>>;
+using ConstView = std::vector<cpp::not_null<const T *>>;
 
 struct ForeignKey {
   Table table{};

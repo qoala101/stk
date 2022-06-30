@@ -3,9 +3,9 @@
 
 #include <sqlite3.h>
 
-#include <gsl/pointers>
 #include <vector>
 
+#include "not_null.hpp"
 #include "sqldb_enums.h"
 #include "sqldb_value.h"
 
@@ -21,7 +21,7 @@ class SqlitePreparedStatementFacade {
   using ResultCode = int;
 
   explicit SqlitePreparedStatementFacade(
-      gsl::strict_not_null<sqlite3_stmt *> sqlite_statement);
+      cpp::not_null<sqlite3_stmt *> sqlite_statement);
 
   /**
    * @brief Resets prepared statement.

@@ -77,8 +77,8 @@ auto GetValue(sqlite3_stmt &statement, int index, sqldb::DataType type)
 }  // namespace
 
 SqlitePreparedStatementFacade::SqlitePreparedStatementFacade(
-    gsl::strict_not_null<sqlite3_stmt *> sqlite_statement)
-    : sqlite_statement_{sqlite_statement} {
+    cpp::not_null<sqlite3_stmt *> sqlite_statement)
+    : sqlite_statement_{sqlite_statement.as_nullable()} {
   Ensures(sqlite_statement_ != nullptr);
 }
 

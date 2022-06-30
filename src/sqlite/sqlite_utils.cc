@@ -7,8 +7,6 @@
 #include <sqlite3.h>
 
 #include <filesystem>
-#include <gsl/assert>
-#include <gsl/pointers>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -61,24 +59,18 @@ auto OpenSqliteDbFromFile(std::string_view file_path) -> SqliteDbHandle {
 auto LoadSqliteDbFromFileToMemory(std::string_view file_path)
     -> SqliteDbHandle {
   auto in_memory_db = OpenSqliteInMemoryDb();
-  Expects(in_memory_db != nullptr);
 
   if (const auto db_is_new = !std::filesystem::exists(file_path)) {
     UpdateNewDb(*in_memory_db);
     Logger().info("Created new DB for {}", file_path.data());
-
-    Ensures(in_memory_db != nullptr);
     return in_memory_db;
   }
 
   auto file_db = OpenSqliteDbFromFile(file_path);
-  Expects(file_db != nullptr);
-
-  SqliteDbFacade{gsl::make_strict_not_null(in_memory_db.get())}.CopyDataFrom(
+  SqliteDbFacade{cpp::assume_not_null(in_memory_db.get())}.CopyDataFrom(
       *file_db);
-  Logger().info("Loaded DB from {}", file_path.data());
 
-  Ensures(in_memory_db != nullptr);
+  Logger().info("Loaded DB from {}", file_path.data());
   return in_memory_db;
 }
 }  // namespace stonks::sqlite::utils

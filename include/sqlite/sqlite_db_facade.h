@@ -3,10 +3,10 @@
 
 #include <sqlite3.h>
 
-#include <gsl/pointers>
 #include <string>
 #include <string_view>
 
+#include "not_null.hpp"
 #include "sqlite_types.h"
 
 namespace stonks::sqlite {
@@ -15,7 +15,7 @@ namespace stonks::sqlite {
  */
 class SqliteDbFacade {
  public:
-  explicit SqliteDbFacade(gsl::strict_not_null<sqlite3 *> sqlite_db);
+  explicit SqliteDbFacade(cpp::not_null<sqlite3 *> sqlite_db);
 
   /**
    * @brief Gets the file from which DB was read.

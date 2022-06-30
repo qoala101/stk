@@ -6,7 +6,6 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <gsl/assert>
-#include <gsl/pointers>
 #include <memory>
 #include <stdexcept>
 
@@ -21,8 +20,8 @@ namespace {
 }
 }  // namespace
 
-SqliteDbFacade::SqliteDbFacade(gsl::strict_not_null<sqlite3 *> sqlite_db)
-    : sqlite_db_{sqlite_db} {
+SqliteDbFacade::SqliteDbFacade(cpp::not_null<sqlite3 *> sqlite_db)
+    : sqlite_db_{sqlite_db.as_nullable()} {
   Ensures(sqlite_db_ != nullptr);
 }
 
@@ -42,10 +41,8 @@ void SqliteDbFacade::WriteToFile(std::string_view file_path) const {
   Expects(sqlite_db_ != nullptr);
 
   auto file_db = utils::OpenSqliteDbFromFile(file_path);
-  Expects(file_db != nullptr);
+  SqliteDbFacade(cpp::assume_not_null(file_db.get())).CopyDataFrom(*sqlite_db_);
 
-  SqliteDbFacade(gsl::make_strict_not_null(file_db.get()))
-      .CopyDataFrom(*sqlite_db_);
   Logger().info("Stored DB to {}", file_path.data());
 }
 

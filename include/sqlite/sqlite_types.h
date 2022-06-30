@@ -3,7 +3,6 @@
 
 #include <sqlite3.h>
 
-#include <gsl/pointers>
 #include <memory>
 
 #include "not_null.hpp"
@@ -13,11 +12,11 @@
  */
 namespace stonks::sqlite {
 struct SqliteDbCloser {
-  void operator()(gsl::not_null<sqlite3*> sqlite_db) noexcept;
+  void operator()(sqlite3* sqlite_db) noexcept;
 };
 
 struct SqliteStatementFinalizer {
-  void operator()(gsl::not_null<sqlite3_stmt*> sqlite_statement) noexcept;
+  void operator()(sqlite3_stmt* sqlite_statement) noexcept;
 };
 
 /**
