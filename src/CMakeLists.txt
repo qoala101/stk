@@ -1,3 +1,11 @@
+include(FetchContent)
+
+FetchContent_Declare(
+  NotNull
+  GIT_REPOSITORY https://github.com/bitwizeshift/not_null
+  GIT_TAG c839cb1bb4cf988bd17a4c363263997275f508b8)
+FetchContent_MakeAvailable(NotNull)
+
 find_package(cpprestsdk REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(range-v3 REQUIRED)
@@ -129,4 +137,3 @@ target_link_libraries(app_proxy PRIVATE libstonks)
 add_subdirectory(any)
 add_subdirectory(sqldb)
 add_subdirectory(sqlite)
-add_subdirectory(network)

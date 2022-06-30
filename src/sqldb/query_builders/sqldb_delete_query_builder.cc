@@ -6,10 +6,8 @@
 
 namespace stonks::sqldb {
 DeleteQueryBuilder::DeleteQueryBuilder(
-    std::shared_ptr<IQueryBuilder> query_builder)
-    : query_builder_{std::move(query_builder)} {
-  Expects(query_builder_ != nullptr);
-}
+    cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder)
+    : query_builder_{std::move(query_builder)} {}
 
 auto DeleteQueryBuilder::FromTable(Table table) -> DeleteQueryBuilder& {
   Expects(!table_.has_value());

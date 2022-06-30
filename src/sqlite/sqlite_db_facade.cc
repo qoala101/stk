@@ -10,6 +10,7 @@
 #include <memory>
 #include <stdexcept>
 
+#include "not_null.hpp"
 #include "sqlite_utils.h"
 
 namespace stonks::sqlite {
@@ -71,9 +72,9 @@ auto SqliteDbFacade::CreatePreparedStatement(std::string_view query)
         query.data()};
   }
 
-  auto statement_handle = SqliteStatementHandle{sqlite_statement};
-  Ensures(statement_handle != nullptr);
-  return statement_handle;
+  return cpp::assume_not_null(
+      std::unique_ptr<sqlite3_stmt, SqliteStatementFinalizer>{
+          sqlite_statement});
 }
 
 void SqliteDbFacade::Close() {

@@ -6,6 +6,8 @@
 #include <gsl/pointers>
 #include <memory>
 
+#include "not_null.hpp"
+
 /**
  * @file Common SQLite types.
  */
@@ -21,13 +23,13 @@ struct SqliteStatementFinalizer {
 /**
  * @brief Closes DB connection when destroyed.
  */
-using SqliteDbHandle = std::unique_ptr<sqlite3, SqliteDbCloser>;
+using SqliteDbHandle = cpp::not_null<std::unique_ptr<sqlite3, SqliteDbCloser>>;
 
 /**
  * @brief Finalizes statement when destroyed.
  */
 using SqliteStatementHandle =
-    std::unique_ptr<sqlite3_stmt, SqliteStatementFinalizer>;
+    cpp::not_null<std::unique_ptr<sqlite3_stmt, SqliteStatementFinalizer>>;
 }  // namespace stonks::sqlite
 
 #endif  // STONKS_SQLITE_SQLITE_TYPES_H_

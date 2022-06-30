@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "not_null.hpp"
 #include "sqldb_query_builder.h"
 #include "sqldb_query_builders_common.h"
 #include "sqldb_types.h"
@@ -15,7 +16,8 @@ namespace stonks::sqldb {
  */
 class InsertQueryBuilder {
  public:
-  explicit InsertQueryBuilder(std::shared_ptr<IQueryBuilder> query_builder);
+  explicit InsertQueryBuilder(
+      cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder);
 
   auto WholeRow() -> InsertQueryBuilder &;
   auto IntoTable(Table table) -> InsertQueryBuilder &;
@@ -27,7 +29,8 @@ class InsertQueryBuilder {
   [[nodiscard]] auto Build() const -> std::string;
 
  private:
-  std::shared_ptr<IQueryBuilder> query_builder_{};
+  cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder_;
+
   TableVariant table_{};
   ColumnsVariant columns_{};
 };

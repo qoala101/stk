@@ -9,6 +9,7 @@
 #include <memory>
 #include <utility>
 
+#include "not_null.hpp"
 #include "sqldb_enums_to_string.h"  // IWYU pragma: keep
 #include "sqldb_select_statement.h"
 #include "sqldb_update_statement.h"
@@ -30,9 +31,7 @@ class SqliteDb::Impl {
  public:
   explicit Impl(SqliteDbHandle sqlite_db_handle)
       : sqlite_db_handle_{std::move(sqlite_db_handle)},
-        sqlite_db_facade_{gsl::make_strict_not_null(sqlite_db_handle_.get())} {
-    Ensures(sqlite_db_handle_ != nullptr);
-  }
+        sqlite_db_facade_{gsl::make_strict_not_null(sqlite_db_handle_.get())} {}
 
   Impl(const Impl &) = delete;
   Impl(Impl &&) noexcept = default;
@@ -69,12 +68,13 @@ class SqliteDb::Impl {
   }
 
  private:
-  std::shared_ptr<sqlite3> sqlite_db_handle_{};
+  cpp::not_null<std::shared_ptr<sqlite3>> sqlite_db_handle_;
   SqliteDbFacade sqlite_db_facade_;
 };
 
 SqliteDb::SqliteDb(SqliteDbHandle sqlite_db_handle)
-    : impl_{std::make_unique<Impl>(std::move(sqlite_db_handle))} {}
+    : impl_{cpp::assume_not_null(
+          std::make_unique<Impl>(std::move(sqlite_db_handle)))} {}
 
 SqliteDb::~SqliteDb() noexcept = default;
 

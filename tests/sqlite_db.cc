@@ -6,6 +6,7 @@
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 
+#include "not_null.hpp"
 #include "sqldb_db.h"
 #include "sqldb_query_builder.h"
 #include "sqldb_query_builder_facade.h"
@@ -27,7 +28,7 @@ TEST(SqliteDb, CreateAndDropTable) {
   db_factory = std::make_unique<stonks::sqlite::SqliteDbFactory>();
   db = db_factory->LoadDbFromFile(kTestDbFileName);
   query_builder = db_factory->CreateQueryBuilder();
-  query_builder_facade.emplace(query_builder);
+  query_builder_facade.emplace(cpp::assume_not_null(query_builder));
 
   const auto table = stonks::sqldb::Table{"TestTable"};
   const auto table_definition = stonks::sqldb::TableDefinition{

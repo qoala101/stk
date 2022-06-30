@@ -4,6 +4,7 @@
 #include <memory>
 #include <string_view>
 
+#include "not_null.hpp"
 #include "sqldb_db.h"
 #include "sqldb_row_definition.h"
 #include "sqldb_select_statement.h"
@@ -53,7 +54,7 @@ class SqliteDb : public sqldb::IDb {
 
  private:
   class Impl;
-  std::unique_ptr<Impl> impl_{};
+  cpp::not_null<std::unique_ptr<Impl>> impl_;
 };
 }  // namespace stonks::sqlite
 

@@ -11,10 +11,8 @@
 
 namespace stonks::sqldb {
 SelectQueryBuilder::SelectQueryBuilder(
-    std::shared_ptr<IQueryBuilder> query_builder)
-    : query_builder_{std::move(query_builder)} {
-  Expects(query_builder_ != nullptr);
-}
+    cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder)
+    : query_builder_{std::move(query_builder)} {}
 
 auto SelectQueryBuilder::Columns(std::vector<Column> columns)
     -> SelectQueryBuilder & {

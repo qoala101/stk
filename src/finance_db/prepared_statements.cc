@@ -8,6 +8,7 @@
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/concat.hpp>
 
+#include "not_null.hpp"
 #include "sqldb_query_builder.h"
 #include "sqldb_query_builder_facade.h"
 #include "sqldb_row_definition.h"
@@ -33,8 +34,8 @@ PreparedStatements::PreparedStatements(
     std::shared_ptr<sqldb::IQueryBuilder> query_builder)
     : db_{std::move(db)},
       query_builder_{std::move(query_builder)},
-      query_builder_facade_{
-          std::make_unique<sqldb::QueryBuilderFacade>(query_builder_)} {
+      query_builder_facade_{std::make_unique<sqldb::QueryBuilderFacade>(
+          cpp::assume_not_null(query_builder_))} {
   Ensures(db_ != nullptr);
   Ensures(query_builder_ != nullptr);
   Ensures(query_builder_facade_ != nullptr);

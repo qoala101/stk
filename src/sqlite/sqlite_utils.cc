@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "not_null.hpp"
 #include "sqlite_db_facade.h"
 
 namespace stonks::sqlite::utils {
@@ -30,10 +31,8 @@ auto OpenSqliteInMemoryDb() -> SqliteDbHandle {
     throw std::runtime_error{"Couldn't create in memory DB"};
   }
 
-  auto handle = SqliteDbHandle{in_memory_db};
-
-  Ensures(handle != nullptr);
-  return handle;
+  return cpp::assume_not_null(
+      std::unique_ptr<sqlite3, SqliteDbCloser>{in_memory_db});
 }
 
 void UpdateNewDb(sqlite3 &sqlite_db) {
@@ -55,10 +54,8 @@ auto OpenSqliteDbFromFile(std::string_view file_path) -> SqliteDbHandle {
                              file_path.data() + ": " + sqlite3_errmsg(file_db)};
   }
 
-  auto handle = SqliteDbHandle{file_db};
-
-  Ensures(handle != nullptr);
-  return handle;
+  return cpp::assume_not_null(
+      std::unique_ptr<sqlite3, SqliteDbCloser>{file_db});
 }
 
 auto LoadSqliteDbFromFileToMemory(std::string_view file_path)

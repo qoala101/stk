@@ -9,10 +9,8 @@
 
 namespace stonks::sqldb {
 UpdateQueryBuilder::UpdateQueryBuilder(
-    std::shared_ptr<IQueryBuilder> query_builder)
-    : query_builder_{std::move(query_builder)} {
-  Expects(query_builder_ != nullptr);
-}
+    cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder)
+    : query_builder_{std::move(query_builder)} {}
 
 auto UpdateQueryBuilder::OfTable(Table table) -> UpdateQueryBuilder& {
   Expects(std::holds_alternative<std::monostate>(table_));
