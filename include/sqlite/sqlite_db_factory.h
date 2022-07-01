@@ -4,6 +4,7 @@
 #include <memory>
 #include <string_view>
 
+#include "not_null.hpp"
 #include "sqldb_db.h"
 #include "sqldb_db_factory.h"
 #include "sqldb_query_builder.h"
@@ -19,13 +20,13 @@ class SqliteDbFactory : public sqldb::IDbFactory {
    * @copydoc sqldb::IDb::LoadDbFromFile
    */
   [[nodiscard]] auto LoadDbFromFile(std::string_view file_path) const
-      -> std::unique_ptr<sqldb::IDb> override;
+      -> cpp::not_null<std::unique_ptr<sqldb::IDb>> override;
 
   /**
    * @copydoc sqldb::IDb::CreateQueryBuilder
    */
   [[nodiscard]] auto CreateQueryBuilder() const
-      -> std::unique_ptr<sqldb::IQueryBuilder> override;
+      -> cpp::not_null<std::unique_ptr<sqldb::IQueryBuilder>> override;
 };
 }  // namespace stonks::sqlite
 

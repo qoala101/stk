@@ -4,7 +4,6 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <sqlite3.h>
 
-#include <gsl/assert>
 #include <memory>
 #include <utility>
 
@@ -42,24 +41,20 @@ class SqliteDb::Impl {
 
   [[nodiscard]] auto PrepareStatement(
       std::string_view query, const sqldb::RowDefinition &result_definition)
-      -> std::unique_ptr<sqldb::ISelectStatement> {
-    auto statement = std::make_unique<SqliteSelectStatement>(
+      -> cpp::not_null<std::unique_ptr<sqldb::ISelectStatement>> {
+    return cpp::assume_not_null(std::make_unique<SqliteSelectStatement>(
         SqlitePreparedStatementHandle{
             sqlite_db_handle_,
             sqlite_db_facade_.CreatePreparedStatement(query)},
-        result_definition);
-    Ensures(statement != nullptr);
-    return statement;
+        result_definition));
   }
 
   [[nodiscard]] auto PrepareStatement(std::string_view query)
-      -> std::unique_ptr<sqldb::IUpdateStatement> {
-    auto statement =
+      -> cpp::not_null<std::unique_ptr<sqldb::IUpdateStatement>> {
+    return cpp::assume_not_null(
         std::make_unique<SqliteUpdateStatement>(SqlitePreparedStatementHandle{
             sqlite_db_handle_,
-            sqlite_db_facade_.CreatePreparedStatement(query)});
-    Ensures(statement != nullptr);
-    return statement;
+            sqlite_db_facade_.CreatePreparedStatement(query)}));
   }
 
   void WriteToFile(std::string_view file_path) {
@@ -79,12 +74,12 @@ SqliteDb::~SqliteDb() noexcept = default;
 
 auto SqliteDb::PrepareStatement(std::string_view query,
                                 const sqldb::RowDefinition &result_definition)
-    -> std::unique_ptr<sqldb::ISelectStatement> {
+    -> cpp::not_null<std::unique_ptr<sqldb::ISelectStatement>> {
   return impl_->PrepareStatement(query, result_definition);
 }
 
 auto SqliteDb::PrepareStatement(std::string_view query)
-    -> std::unique_ptr<sqldb::IUpdateStatement> {
+    -> cpp::not_null<std::unique_ptr<sqldb::IUpdateStatement>> {
   return impl_->PrepareStatement(query);
 }
 

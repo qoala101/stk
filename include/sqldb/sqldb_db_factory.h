@@ -19,13 +19,13 @@ class IDbFactory {
    * @brief Loads DB from specified file.
    */
   [[nodiscard]] virtual auto LoadDbFromFile(std::string_view file_path) const
-      -> std::unique_ptr<IDb> = 0;
+      -> cpp::not_null<std::unique_ptr<IDb>> = 0;
 
   /**
    * @brief Creates query builder which knows how to build queries for DB.
    */
   [[nodiscard]] virtual auto CreateQueryBuilder() const
-      -> std::unique_ptr<IQueryBuilder> = 0;
+      -> cpp::not_null<std::unique_ptr<IQueryBuilder>> = 0;
 };
 }  // namespace stonks::sqldb
 

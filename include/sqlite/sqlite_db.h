@@ -39,13 +39,13 @@ class SqliteDb : public sqldb::IDb {
    */
   [[nodiscard]] auto PrepareStatement(
       std::string_view query, const sqldb::RowDefinition &result_definition)
-      -> std::unique_ptr<sqldb::ISelectStatement> override;
+      -> cpp::not_null<std::unique_ptr<sqldb::ISelectStatement>> override;
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement
    */
   [[nodiscard]] auto PrepareStatement(std::string_view query)
-      -> std::unique_ptr<sqldb::IUpdateStatement> override;
+      -> cpp::not_null<std::unique_ptr<sqldb::IUpdateStatement>> override;
 
   /**
    * @copydoc sqldb::IDb::WriteToFile
