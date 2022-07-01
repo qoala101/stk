@@ -1,18 +1,20 @@
 #include "prepared_statements.h"
 
 #include <gsl/assert>
-#include <iterator>
 #include <memory>
-#include <range/v3/action/insert.hpp>
-#include <range/v3/all.hpp>
-#include <range/v3/range/conversion.hpp>
-#include <range/v3/view/concat.hpp>
+#include <string>
+#include <type_traits>
+#include <utility>
+#include <vector>
 
 #include "not_null.hpp"
+#include "sqldb_delete_query_builder.h"
+#include "sqldb_insert_query_builder.h"
 #include "sqldb_query_builder.h"
 #include "sqldb_query_builder_facade.h"
-#include "sqldb_row_definition.h"
 #include "sqldb_select_query_builder.h"
+#include "sqldb_types.h"
+#include "sqldb_update_query_builder.h"
 #include "table_definitions.h"
 
 namespace stonks::finance {
@@ -30,16 +32,12 @@ auto InitSelectPriceTicksQuery(
 }  // namespace
 
 PreparedStatements::PreparedStatements(
-    std::shared_ptr<sqldb::IDb> db,
-    std::shared_ptr<sqldb::IQueryBuilder> query_builder)
+    cpp::not_null<std::shared_ptr<sqldb::IDb>> db,
+    cpp::not_null<std::shared_ptr<sqldb::IQueryBuilder>> query_builder)
     : db_{std::move(db)},
       query_builder_{std::move(query_builder)},
-      query_builder_facade_{std::make_unique<sqldb::QueryBuilderFacade>(
-          cpp::assume_not_null(query_builder_))} {
-  Ensures(db_ != nullptr);
-  Ensures(query_builder_ != nullptr);
-  Ensures(query_builder_facade_ != nullptr);
-}
+      query_builder_facade_{cpp::assume_not_null(
+          std::make_unique<sqldb::QueryBuilderFacade>(query_builder_))} {}
 
 auto PreparedStatements::SelectAssets() -> sqldb::ISelectStatement& {
   if (select_assets_ == nullptr) {
@@ -49,7 +47,7 @@ auto PreparedStatements::SelectAssets() -> sqldb::ISelectStatement& {
                      .Columns(columns)
                      .FromTable(table)
                      .Build();
-    select_assets_ = db_->PrepareStatement(query, columns);
+    select_assets_ = db_->PrepareStatement(query, columns).as_nullable();
   }
 
   Ensures(select_assets_ != nullptr);
@@ -61,7 +59,7 @@ auto PreparedStatements::SelectAssetsWithIds() -> sqldb::ISelectStatement& {
     const auto& table = table_definitions::Asset();
     auto query =
         query_builder_facade_->Select().AllColumns().FromTable(table).Build();
-    select_assets_with_ids_ = db_->PrepareStatement(query, table);
+    select_assets_with_ids_ = db_->PrepareStatement(query, table).as_nullable();
   }
 
   Ensures(select_assets_with_ids_ != nullptr);
@@ -74,7 +72,7 @@ auto PreparedStatements::DeleteAsset() -> sqldb::IUpdateStatement& {
                      .FromTable(table_definitions::Asset())
                      .Where("Asset.name = ?")
                      .Build();
-    delete_asset_ = db_->PrepareStatement(std::move(query));
+    delete_asset_ = db_->PrepareStatement(std::move(query)).as_nullable();
   }
 
   Ensures(delete_asset_ != nullptr);
@@ -87,7 +85,7 @@ auto PreparedStatements::InsertAsset() -> sqldb::IUpdateStatement& {
                      .IntoTable(table_definitions::Asset())
                      .IntoColumns({"name"})
                      .Build();
-    insert_asset_ = db_->PrepareStatement(std::move(query));
+    insert_asset_ = db_->PrepareStatement(std::move(query)).as_nullable();
   }
 
   Ensures(insert_asset_ != nullptr);
@@ -102,7 +100,8 @@ auto PreparedStatements::SelectSymbols() -> sqldb::ISelectStatement& {
                      .Columns(columns)
                      .FromTable(table)
                      .Build();
-    select_symbols_ = db_->PrepareStatement(std::move(query), columns);
+    select_symbols_ =
+        db_->PrepareStatement(std::move(query), columns).as_nullable();
   }
 
   Ensures(select_symbols_ != nullptr);
@@ -117,7 +116,8 @@ auto PreparedStatements::SelectSymbolsWithIds() -> sqldb::ISelectStatement& {
                      .Columns(columns)
                      .FromTable(table)
                      .Build();
-    select_symbols_with_ids_ = db_->PrepareStatement(std::move(query), columns);
+    select_symbols_with_ids_ =
+        db_->PrepareStatement(std::move(query), columns).as_nullable();
   }
 
   Ensures(select_symbols_with_ids_ != nullptr);
@@ -149,7 +149,7 @@ auto PreparedStatements::SelectSymbolsInfo() -> sqldb::ISelectStatement& {
         "FROM Symbol "
         "JOIN Asset AS BaseAsset ON Symbol.base_asset_id = BaseAsset.id "
         "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id = QuoteAsset.id";
-    select_symbols_info_ = db_->PrepareStatement(query, columns);
+    select_symbols_info_ = db_->PrepareStatement(query, columns).as_nullable();
   }
 
   Ensures(select_symbols_info_ != nullptr);
@@ -162,7 +162,7 @@ auto PreparedStatements::InsertSymbolInfo() -> sqldb::IUpdateStatement& {
                      .WholeRow()
                      .IntoTable(table_definitions::Symbol())
                      .Build();
-    insert_symbol_info_ = db_->PrepareStatement(std::move(query));
+    insert_symbol_info_ = db_->PrepareStatement(std::move(query)).as_nullable();
   }
 
   Ensures(insert_symbol_info_ != nullptr);
@@ -178,7 +178,7 @@ auto PreparedStatements::UpdateSymbolInfo() -> sqldb::IUpdateStatement& {
             .OfTable(table_definitions::Symbol())
             .Where("Symbol.name = ?")
             .Build();
-    update_symbol_info_ = db_->PrepareStatement(std::move(query));
+    update_symbol_info_ = db_->PrepareStatement(std::move(query)).as_nullable();
   }
 
   Ensures(update_symbol_info_ != nullptr);
@@ -191,7 +191,7 @@ auto PreparedStatements::DeleteSymbolInfo() -> sqldb::IUpdateStatement& {
                      .FromTable(table_definitions::Symbol())
                      .Where("Symbol.name = ?")
                      .Build();
-    delete_symbol_info_ = db_->PrepareStatement(std::move(query));
+    delete_symbol_info_ = db_->PrepareStatement(std::move(query)).as_nullable();
   }
 
   Ensures(delete_symbol_info_ != nullptr);
@@ -201,8 +201,10 @@ auto PreparedStatements::DeleteSymbolInfo() -> sqldb::IUpdateStatement& {
 auto PreparedStatements::SelectPriceTicks() -> sqldb::ISelectStatement& {
   if (select_price_ticks_ == nullptr) {
     auto query = InitSelectPriceTicksQuery(*query_builder_facade_).Build();
-    select_price_ticks_ = db_->PrepareStatement(
-        std::move(query), table_definitions::SymbolPriceTick());
+    select_price_ticks_ =
+        db_->PrepareStatement(std::move(query),
+                              table_definitions::SymbolPriceTick())
+            .as_nullable();
   }
 
   Ensures(select_price_ticks_ != nullptr);
@@ -214,8 +216,10 @@ auto PreparedStatements::SelectSymbolPriceTicks() -> sqldb::ISelectStatement& {
     auto query = InitSelectPriceTicksQuery(*query_builder_facade_)
                      .And("SymbolPriceTick.symbol_id = ?")
                      .Build();
-    select_symbol_price_ticks_ = db_->PrepareStatement(
-        std::move(query), table_definitions::SymbolPriceTick());
+    select_symbol_price_ticks_ =
+        db_->PrepareStatement(std::move(query),
+                              table_definitions::SymbolPriceTick())
+            .as_nullable();
   }
 
   Ensures(select_symbol_price_ticks_ != nullptr);
@@ -228,7 +232,7 @@ auto PreparedStatements::InsertPriceTick() -> sqldb::IUpdateStatement& {
                      .WholeRow()
                      .IntoTable(table_definitions::SymbolPriceTick())
                      .Build();
-    insert_price_tick_ = db_->PrepareStatement(std::move(query));
+    insert_price_tick_ = db_->PrepareStatement(std::move(query)).as_nullable();
   }
 
   Ensures(insert_price_tick_ != nullptr);

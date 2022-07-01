@@ -1,27 +1,15 @@
 #include "finance_db.h"
 
-#include <absl/base/macros.h>
-#include <bits/exception.h>
-#include <fmt/format.h>
-#include <spdlog/common.h>
-#include <spdlog/logger.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
-
 #include <chrono>
 #include <compare>
 #include <concepts/concepts.hpp>
-#include <cstdint>
 #include <functional>
-#include <gsl/assert>
-#include <gsl/pointers>
 #include <limits>
-#include <map>
 #include <memory>
+#include <optional>
 #include <range/v3/action/action.hpp>
 #include <range/v3/action/sort.hpp>
 #include <range/v3/action/unique.hpp>
-#include <range/v3/algorithm/contains.hpp>
-#include <range/v3/algorithm/find_if.hpp>
 #include <range/v3/functional/bind_back.hpp>
 #include <range/v3/functional/comparisons.hpp>
 #include <range/v3/functional/compose.hpp>
@@ -29,26 +17,21 @@
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/iterator/default_sentinel.hpp>
 #include <range/v3/range/conversion.hpp>
-#include <range/v3/view/filter.hpp>
 #include <range/v3/view/set_algorithm.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
 #include <utility>
 #include <vector>
 
-// #include "db_cache.h"
 #include "cache.h"
 #include "finance_types.h"
+#include "not_null.hpp"
 #include "prepared_statements.h"
 #include "sqldb_db.h"
 #include "sqldb_db_factory.h"
-#include "sqldb_enums.h"
 #include "sqldb_query_builder.h"
-#include "sqldb_query_builder_facade.h"
-#include "sqldb_row_definition.h"
 #include "sqldb_rows.h"
 #include "sqldb_select_statement.h"
-#include "sqldb_types.h"
 #include "sqldb_update_statement.h"
 #include "sqldb_value.h"
 #include "table_definitions.h"
@@ -70,27 +53,17 @@ auto GetEndTime(const Period *period) -> std::chrono::milliseconds {
 
   return std::chrono::milliseconds::max();
 }
-
-template <typename T>
-auto ExpectsNotNull(T &&t) -> T && {
-  Expects(t != nullptr);
-  return std::forward<T>(t);
-}
 }  // namespace
 
 FinanceDb::FinanceDb(const sqldb::IDbFactory &db_factory,
                      std::string_view file_path)
-    : db_{ExpectsNotNull(db_factory.LoadDbFromFile(file_path))},
-      query_builder_{ExpectsNotNull(db_factory.CreateQueryBuilder())},
-      prepared_statements_{
-          std::make_shared<PreparedStatements>(db_, query_builder_)},
+    : db_{db_factory.LoadDbFromFile(file_path)},
+      query_builder_{db_factory.CreateQueryBuilder()},
+      prepared_statements_{cpp::assume_not_null(
+          std::make_shared<PreparedStatements>(db_, query_builder_))},
       cache_{prepared_statements_} {
   CreateTablesIfNotExist();
   cache_.Update();
-
-  Ensures(db_ != nullptr);
-  Ensures(query_builder_ != nullptr);
-  Ensures(prepared_statements_ != nullptr);
 }
 
 FinanceDb::FinanceDb(FinanceDb &&) noexcept = default;

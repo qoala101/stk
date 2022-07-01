@@ -2,15 +2,17 @@
 #define STONKS_FINANCE_DB_FINANCE_DB_H_
 
 #include <memory>
-#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
 
 #include "cache.h"
 #include "finance_types.h"
+#include "not_null.hpp"
 #include "prepared_statements.h"
+#include "sqldb_db.h"
 #include "sqldb_db_factory.h"
+#include "sqldb_query_builder.h"
 #include "stonks_db.h"
 
 namespace stonks::finance {
@@ -83,9 +85,9 @@ class FinanceDb : public StonksDb {
   void InsertSymbolInfo(const SymbolInfo &symbol_info);
   void UpdateSymbolInfo(const SymbolInfo &symbol_info);
 
-  std::shared_ptr<sqldb::IDb> db_{};
-  std::shared_ptr<sqldb::IQueryBuilder> query_builder_{};
-  std::shared_ptr<PreparedStatements> prepared_statements_{};
+  cpp::not_null<std::shared_ptr<sqldb::IDb>> db_;
+  cpp::not_null<std::shared_ptr<sqldb::IQueryBuilder>> query_builder_;
+  cpp::not_null<std::shared_ptr<PreparedStatements>> prepared_statements_;
   Cache cache_;
 };
 }  // namespace stonks::finance

@@ -1,13 +1,14 @@
 #ifndef STONKS_FINANCE_DB_CACHE_H_
 #define STONKS_FINANCE_DB_CACHE_H_
 
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <string>
 
 #include "finance_types.h"
+#include "not_null.hpp"
 #include "prepared_statements.h"
-#include "stonks_db.h"
 
 namespace stonks::finance {
 /**
@@ -15,7 +16,8 @@ namespace stonks::finance {
  */
 class Cache {
  public:
-  explicit Cache(std::shared_ptr<PreparedStatements> prepared_statements);
+  explicit Cache(
+      cpp::not_null<std::shared_ptr<PreparedStatements>> prepared_statements);
 
   [[nodiscard]] auto GetAssetIdByAsset(const std::string &asset) const
       -> int64_t;
@@ -31,7 +33,8 @@ class Cache {
   void UpdateAssetMap();
   void UpdateSymbolMaps();
 
-  std::shared_ptr<PreparedStatements> prepared_statements_;
+  cpp::not_null<std::shared_ptr<PreparedStatements>> prepared_statements_;
+
   std::map<std::string, int64_t> asset_to_asset_id_map_{};
   std::map<SymbolName, int64_t> symbol_to_symbol_id_map_{};
   std::map<int64_t, SymbolName> symbol_id_to_symbol_map_{};

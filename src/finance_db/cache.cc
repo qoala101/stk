@@ -1,8 +1,12 @@
 #include "cache.h"
 
 #include <gsl/assert>
+#include <utility>
+#include <vector>
 
 #include "prepared_statements.h"
+#include "sqldb_rows.h"
+#include "sqldb_select_statement.h"
 
 namespace stonks::finance {
 namespace {
@@ -15,10 +19,9 @@ template <typename Key, typename Value>
 }
 }  // namespace
 
-Cache::Cache(std::shared_ptr<PreparedStatements> prepared_statements)
-    : prepared_statements_{std::move(prepared_statements)} {
-  Ensures(prepared_statements_ != nullptr);
-}
+Cache::Cache(
+    cpp::not_null<std::shared_ptr<PreparedStatements>> prepared_statements)
+    : prepared_statements_{std::move(prepared_statements)} {}
 
 [[nodiscard]] auto Cache::GetAssetIdByAsset(const std::string &asset) const
     -> int64_t {
