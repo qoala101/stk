@@ -100,11 +100,11 @@ auto SelectQueryBuilder::Build() const -> std::string {
       [](const auto &variant) -> std::string {
         using T = std::decay_t<decltype(variant)>;
 
-        if constexpr (std::is_same_v<T, std::vector<Column>>) {
+        if constexpr (std::is_same_v<T, int>) {
           return " LIMIT " + std::to_string(variant);
         }
 
-        if constexpr (std::is_same_v<T, AllColumnsType>) {
+        if constexpr (std::is_same_v<T, LimitedType>) {
           return " LIMIT ?";
         }
 

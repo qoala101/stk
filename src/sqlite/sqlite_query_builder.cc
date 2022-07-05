@@ -1,6 +1,7 @@
 #include "sqlite_query_builder.h"
 
 #include <gsl/assert>
+#include <iterator>
 #include <magic_enum.hpp>
 #include <optional>
 #include <range/v3/algorithm/any_of.hpp>
@@ -121,9 +122,12 @@ auto SqliteQueryBuilder::BuildSelectQuery(
   if (const auto select_all_columns = columns == nullptr) {
     query += "*";
   } else {
-    query += ranges::accumulate(
-        *columns, query,
-        [](auto &query, const auto &column) { return query + column; });
+    Expects(!columns->empty());
+    query += ranges::accumulate(std::next(columns->begin()), columns->end(),
+                                columns->front(),
+                                [](const auto &query, const auto &column) {
+                                  return query + ", " + column;
+                                });
   }
 
   query += " FROM \"" + table + "\"";

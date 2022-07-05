@@ -108,6 +108,7 @@ target_link_libraries(libstonks PUBLIC Microsoft.GSL::GSL)
 target_link_libraries(libstonks PRIVATE Boost::boost)
 target_link_libraries(libstonks PRIVATE absl::absl)
 target_link_libraries(libstonks PRIVATE AWS::dynamodb)
+target_link_libraries(libstonks PUBLIC NotNull)
 
 add_executable(stonks main.cc)
 target_link_libraries(stonks PRIVATE libstonks)

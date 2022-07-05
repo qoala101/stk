@@ -69,6 +69,7 @@ auto SqliteDbFacade::CreatePreparedStatement(std::string_view query)
         query.data()};
   }
 
+  Logger().info("Prepared statement for query: {}", query.data());
   return cpp::assume_not_null(
       std::unique_ptr<sqlite3_stmt, SqliteStatementFinalizer>{
           sqlite_statement});

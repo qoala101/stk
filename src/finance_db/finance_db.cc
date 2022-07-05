@@ -53,6 +53,14 @@ auto GetEndTime(const Period *period) -> std::chrono::milliseconds {
 
   return std::chrono::milliseconds::max();
 }
+
+auto SymbolLess(const SymbolInfo &left, const SymbolInfo &right) -> bool {
+  return left.symbol < right.symbol;
+}
+
+auto SymbolEqual(const SymbolInfo &left, const SymbolInfo &right) -> bool {
+  return left.symbol == right.symbol;
+}
 }  // namespace
 
 FinanceDb::FinanceDb(const sqldb::IDbFactory &db_factory,
@@ -143,22 +151,15 @@ auto FinanceDb::SelectSymbolsInfo() const -> std::vector<SymbolInfo> {
 }
 
 void FinanceDb::UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) {
-  const auto symbol_less = [](const auto &left, const auto &right) {
-    return left.symbol < right.symbol;
-  };
-  const auto symbol_equal = [](const auto &left, const auto &right) {
-    return left.symbol == right.symbol;
-  };
-
-  symbols_info |= ranges::actions::sort(symbol_less) |
-                  ranges::actions::unique(symbol_equal);
+  symbols_info |=
+      ranges::actions::sort(SymbolLess) | ranges::actions::unique(SymbolEqual);
   const auto old_symbols_info = SelectSymbolsInfo() |
-                                ranges::actions::sort(symbol_less) |
-                                ranges::actions::unique(symbol_equal);
+                                ranges::actions::sort(SymbolLess) |
+                                ranges::actions::unique(SymbolEqual);
   const auto &new_symbols_info = symbols_info;
 
   const auto removed_symbols = ranges::views::set_difference(
-      old_symbols_info, new_symbols_info, symbol_less);
+      old_symbols_info, new_symbols_info, SymbolLess);
 
   for (const auto &removed_symbol : removed_symbols) {
     prepared_statements_->DeleteSymbolInfo().Execute(
@@ -166,14 +167,14 @@ void FinanceDb::UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) {
   }
 
   const auto added_symbols = ranges::views::set_difference(
-      new_symbols_info, old_symbols_info, symbol_less);
+      new_symbols_info, old_symbols_info, SymbolLess);
 
   for (const auto &added_symbol : added_symbols) {
     InsertSymbolInfo(added_symbol);
   }
 
   const auto existing_symbols = ranges::views::set_intersection(
-      new_symbols_info, old_symbols_info, symbol_less);
+      new_symbols_info, old_symbols_info, SymbolLess);
   const auto updated_symbols =
       ranges::views::set_difference(existing_symbols, old_symbols_info);
 
@@ -189,9 +190,8 @@ auto FinanceDb::SelectSymbolPriceTicks(const SymbolName *symbol,
                                        const int *limit) const
     -> std::vector<SymbolPriceTick> {
   auto *statement = (sqldb::ISelectStatement *){};
-  auto values = std::vector<sqldb::Value>{
-      GetStartTime(period).count(), GetEndTime(period).count(),
-      (limit != nullptr) ? *limit : std::numeric_limits<int>::max()};
+  auto values = std::vector<sqldb::Value>{GetStartTime(period).count(),
+                                          GetEndTime(period).count()};
 
   if (symbol != nullptr) {
     statement = &prepared_statements_->SelectSymbolPriceTicks();
@@ -199,6 +199,9 @@ auto FinanceDb::SelectSymbolPriceTicks(const SymbolName *symbol,
   } else {
     statement = &prepared_statements_->SelectPriceTicks();
   }
+
+  values.emplace_back((limit != nullptr) ? *limit
+                                         : std::numeric_limits<int>::max());
 
   auto rows = statement->Execute(values);
 

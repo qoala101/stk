@@ -129,12 +129,16 @@ auto PreparedStatements::SelectSymbolsInfo() -> sqldb::ISelectStatement& {
     auto symbol_columns = table_definitions::Symbol().GetColumnDefinitions(
         {"name", "min_base_amount", "min_quote_amount", "base_step",
          "quote_step"});
-    auto asset_columns =
-        table_definitions::Asset().GetColumnDefinitions({"name", "name"});
 
-    symbol_columns.insert(symbol_columns.end(),
-                          std::move_iterator(asset_columns.begin()),
-                          std::move_iterator(asset_columns.end()));
+    auto base_asset_column =
+        table_definitions::Asset().GetColumnDefinition("name");
+    base_asset_column.column = "base_asset";
+    symbol_columns.emplace_back(cpp::assume_not_null(&base_asset_column));
+
+    auto quote_asset_column =
+        table_definitions::Asset().GetColumnDefinition("name");
+    quote_asset_column.column = "quote_asset";
+    symbol_columns.emplace_back(cpp::assume_not_null(&quote_asset_column));
 
     const auto& columns = symbol_columns;
     const auto* query =
@@ -143,12 +147,13 @@ auto PreparedStatements::SelectSymbolsInfo() -> sqldb::ISelectStatement& {
         "Symbol.min_base_amount, "
         "Symbol.min_quote_amount, "
         "Symbol.base_step, "
-        "Symbol.quote_step "
+        "Symbol.quote_step, "
         "BaseAsset.name AS base_asset, "
-        "QuoteAsset.name AS quote_asset, "
+        "QuoteAsset.name AS quote_asset "
         "FROM Symbol "
         "JOIN Asset AS BaseAsset ON Symbol.base_asset_id = BaseAsset.id "
         "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id = QuoteAsset.id";
+
     select_symbols_info_ = db_->PrepareStatement(query, columns).as_nullable();
   }
 
@@ -158,9 +163,13 @@ auto PreparedStatements::SelectSymbolsInfo() -> sqldb::ISelectStatement& {
 
 auto PreparedStatements::InsertSymbolInfo() -> sqldb::IUpdateStatement& {
   if (insert_symbol_info_ == nullptr) {
+    const auto& table = table_definitions::Symbol();
+    const auto columns = table.GetColumnDefinitions(
+        {"name", "base_asset_id", "quote_asset_id", "min_base_amount",
+         "min_quote_amount", "base_step", "quote_step"});
     auto query = query_builder_facade_->Insert()
-                     .WholeRow()
-                     .IntoTable(table_definitions::Symbol())
+                     .IntoTable(table)
+                     .IntoColumns(columns)
                      .Build();
     insert_symbol_info_ = db_->PrepareStatement(std::move(query)).as_nullable();
   }

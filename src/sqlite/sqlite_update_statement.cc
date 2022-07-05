@@ -25,7 +25,7 @@ void SqliteUpdateStatement::Execute(const std::vector<sqldb::Value> &params) {
   const auto result_code = prepared_statement_facade.Step();
 
   if (result_code != SQLITE_DONE) {
-    throw std::runtime_error{"Unexpected update statement result: {}" +
+    throw std::runtime_error{"Unexpected update statement result: " +
                              std::to_string(result_code)};
   }
 }
