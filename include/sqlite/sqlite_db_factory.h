@@ -1,32 +1,33 @@
-#ifndef STONKS_DB_SQLITE_SQLITE_DB_FACTORY_H_
-#define STONKS_DB_SQLITE_SQLITE_DB_FACTORY_H_
+#ifndef STONKS_SQLITE_SQLITE_DB_FACTORY_H_
+#define STONKS_SQLITE_SQLITE_DB_FACTORY_H_
 
 #include <memory>
 #include <string_view>
 
+#include "not_null.hpp"
 #include "sqldb_db.h"
-#include "sqldb_factory.h"
+#include "sqldb_db_factory.h"
 #include "sqldb_query_builder.h"
 
 namespace stonks::sqlite {
 /**
- * @brief Abstract factory for DB related entities.
+ * @brief sqldb::IDbFactory
  */
 // NOLINTNEXTLINE(*-special-member-functions)
-class SqliteDbFactory : public sqldb::DbFactory {
+class SqliteDbFactory : public sqldb::IDbFactory {
  public:
   /**
-   * @copydoc Db::LoadDbFromFile
+   * @copydoc sqldb::IDb::LoadDbFromFile
    */
-  [[nodiscard]] auto LoadDbFromFile(std::string_view file_path)
-      -> std::unique_ptr<sqldb::Db> override;
+  [[nodiscard]] auto LoadDbFromFile(std::string_view file_path) const
+      -> cpp::not_null<std::unique_ptr<sqldb::IDb>> override;
 
   /**
-   * @copydoc Db::CreateQueryBuilder
+   * @copydoc sqldb::IDb::CreateQueryBuilder
    */
-  [[nodiscard]] auto CreateQueryBuilder()
-      -> std::unique_ptr<sqldb::QueryBuilder> override;
+  [[nodiscard]] auto CreateQueryBuilder() const
+      -> cpp::not_null<std::unique_ptr<sqldb::IQueryBuilder>> override;
 };
 }  // namespace stonks::sqlite
 
-#endif  // STONKS_DB_SQLITE_SQLITE_DB_FACTORY_H_
+#endif  // STONKS_SQLITE_SQLITE_DB_FACTORY_H_

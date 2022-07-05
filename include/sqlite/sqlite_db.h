@@ -1,22 +1,26 @@
-#ifndef STONKS_DB_SQLITE_SQLITE_DB_H_
-#define STONKS_DB_SQLITE_SQLITE_DB_H_
+#ifndef STONKS_SQLITE_SQLITE_DB_H_
+#define STONKS_SQLITE_SQLITE_DB_H_
 
-#include <sqlite3.h>
-
-#include <gsl/pointers>
 #include <memory>
 #include <string_view>
 
+#include "not_null.hpp"
 #include "sqldb_db.h"
-#include "sqldb_prepared_statement.h"
+#include "sqldb_row_definition.h"
+#include "sqldb_select_statement.h"
+#include "sqldb_update_statement.h"
+#include "sqlite_types.h"
 
 namespace stonks::sqlite {
-class SqliteDb : public sqldb::Db {
+/**
+ * @copydoc sqldb::IDb
+ */
+class SqliteDb : public sqldb::IDb {
  public:
   /**
-   * @brief Creates DB wrapper for SQLite DB.
+   * @brief Creates wrapper for SQLite DB.
    */
-  explicit SqliteDb(gsl::not_null<sqlite3 *> sqlite_db);
+  explicit SqliteDb(SqliteDbHandle sqlite_db);
 
   SqliteDb(const SqliteDb &) = delete;
   SqliteDb(SqliteDb &&) noexcept = default;
@@ -27,25 +31,31 @@ class SqliteDb : public sqldb::Db {
   /**
    * @brief Closes SQLite DB.
    * @remark Doesn't write DB to file. It should be done manually.
-   * @remark All prepared statements become invalid after this.
    */
-  ~SqliteDb() override;
+  ~SqliteDb() noexcept override;
 
   /**
-   * @copydoc Db::PrepareStatement
+   * @copydoc sqldb::IDb::PrepareStatement
+   */
+  [[nodiscard]] auto PrepareStatement(
+      std::string_view query, const sqldb::RowDefinition &result_definition)
+      -> cpp::not_null<std::unique_ptr<sqldb::ISelectStatement>> override;
+
+  /**
+   * @copydoc sqldb::IDb::PrepareStatement
    */
   [[nodiscard]] auto PrepareStatement(std::string_view query)
-      -> std::unique_ptr<sqldb::PreparedStatement> override;
+      -> cpp::not_null<std::unique_ptr<sqldb::IUpdateStatement>> override;
 
   /**
-   * @copydoc Db::WriteToFile
+   * @copydoc sqldb::IDb::WriteToFile
    */
   void WriteToFile(std::string_view file_path) override;
 
  private:
   class Impl;
-  std::unique_ptr<Impl> impl_{};
+  cpp::not_null<std::unique_ptr<Impl>> impl_;
 };
 }  // namespace stonks::sqlite
 
-#endif  // STONKS_DB_SQLITE_SQLITE_DB_H_
+#endif  // STONKS_SQLITE_SQLITE_DB_H_

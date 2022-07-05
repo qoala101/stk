@@ -1,30 +1,41 @@
-#ifndef STONKS_SQLDB_SQLDB_H_
-#define STONKS_SQLDB_SQLDB_H_
+#ifndef STONKS_SQLDB_SQLDB_DB_H_
+#define STONKS_SQLDB_SQLDB_DB_H_
 
 #include <memory>
 #include <optional>
 #include <string_view>
 #include <vector>
 
-#include "sqldb_prepared_statement.h"
+#include "not_null.hpp"
 #include "sqldb_query_builder.h"
+#include "sqldb_row_definition.h"
+#include "sqldb_select_statement.h"
 #include "sqldb_types.h"
+#include "sqldb_update_statement.h"
 
 namespace stonks::sqldb {
 /**
  * @brief Generic DB interface.
  */
 // NOLINTNEXTLINE(*-special-member-functions)
-class Db {
+class IDb {
  public:
-  virtual ~Db() = default;
+  virtual ~IDb() = default;
 
   /**
    * @brief Creates prepared statement which can then be called to execute the
-   * query on DB.
+   * select query on DB.
+   */
+  [[nodiscard]] virtual auto PrepareStatement(
+      std::string_view query, const RowDefinition &result_definition)
+      -> cpp::not_null<std::unique_ptr<ISelectStatement>> = 0;
+
+  /**
+   * @brief Creates prepared statement which can then be called to execute the
+   * update query on DB.
    */
   [[nodiscard]] virtual auto PrepareStatement(std::string_view query)
-      -> std::unique_ptr<PreparedStatement> = 0;
+      -> cpp::not_null<std::unique_ptr<IUpdateStatement>> = 0;
 
   /**
    * @brief Stores this DB to the specified file.
@@ -33,4 +44,4 @@ class Db {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_H_
+#endif  // STONKS_SQLDB_SQLDB_DB_H_

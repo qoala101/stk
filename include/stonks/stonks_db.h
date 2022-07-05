@@ -50,9 +50,8 @@ class StonksDb {  // NOLINT(*-special-member-functions)
    * @throws If operation failed.
    */
   [[nodiscard]] virtual auto SelectSymbolPriceTicks(
-      std::optional<int> limit, const std::optional<finance::Period> &period,
-      const std::optional<std::vector<finance::SymbolName>> &symbols) const
-      -> std::vector<finance::SymbolPriceTick> = 0;
+      const finance::SymbolName *symbol, const finance::Period *period,
+      const int *limit) const -> std::vector<finance::SymbolPriceTick> = 0;
 
   /**
    * @brief Inserts value into the table.

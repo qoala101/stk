@@ -1,5 +1,5 @@
-#ifndef STONKS_DB_SQLITE_SQLITE_QUERY_BUILDER_H_
-#define STONKS_DB_SQLITE_SQLITE_QUERY_BUILDER_H_
+#ifndef STONKS_SQLITE_SQLITE_QUERY_BUILDER_H_
+#define STONKS_SQLITE_SQLITE_QUERY_BUILDER_H_
 
 #include <string>
 #include <string_view>
@@ -10,52 +10,53 @@
 
 namespace stonks::sqlite {
 /**
- * @copydoc QueryBuilder
+ * @copydoc sqldb::IQueryBuilder
  */
-class SqliteQueryBuilder : public sqldb::QueryBuilder {
+class SqliteQueryBuilder : public sqldb::IQueryBuilder {
  public:
   /**
-   * @copydoc QueryBuilder::BuildCreateTableIfNotExistsQuery
+   * @copydoc sqldb::IQueryBuilder::BuildCreateTableIfNotExistsQuery
    */
   [[nodiscard]] auto BuildCreateTableIfNotExistsQuery(
       const sqldb::TableDefinition &table_definition) const
       -> std::string override;
 
   /**
-   * @copydoc QueryBuilder::BuildCreateTableIfNotExistsQuery
+   * @copydoc sqldb::IQueryBuilder::BuildDropTableQuery
    */
-  [[nodiscard]] auto BuildDropTableQuery(const sqldb::Table &table)
+  [[nodiscard]] auto BuildDropTableQuery(const sqldb::Table &table) const
       -> std::string override;
 
   /**
-   * @copydoc QueryBuilder::BuildSelectQuery
+   * @copydoc sqldb::IQueryBuilder::BuildSelectQuery
    */
   [[nodiscard]] auto BuildSelectQuery(const sqldb::Table &table,
+                                      const std::vector<sqldb::Column> *columns,
                                       std::string_view where_clause) const
       -> std::string override;
 
   /**
-   * @copydoc QueryBuilder::BuildInsertQuery
+   * @copydoc sqldb::IQueryBuilder::BuildInsertQuery
    */
   [[nodiscard]] auto BuildInsertQuery(
       const sqldb::Table &table,
       const std::vector<sqldb::Column> &columns) const -> std::string override;
 
   /**
-   * @copydoc QueryBuilder::BuildCreateTableIfNotExistsQuery
+   * @copydoc sqldb::IQueryBuilder::BuildUpdateQuery
    */
   [[nodiscard]] auto BuildUpdateQuery(const sqldb::Table &table,
                                       const std::vector<sqldb::Column> &columns,
-                                      std::string_view where_clause)
+                                      std::string_view where_clause) const
       -> std::string override;
 
   /**
-   * @copydoc QueryBuilder::BuildCreateTableIfNotExistsQuery
+   * @copydoc sqldb::IQueryBuilder::BuildDeleteQuery
    */
   [[nodiscard]] auto BuildDeleteQuery(const sqldb::Table &table,
-                                      std::string_view where_clause)
+                                      std::string_view where_clause) const
       -> std::string override;
 };
 }  // namespace stonks::sqlite
 
-#endif  // STONKS_DB_SQLITE_SQLITE_QUERY_BUILDER_H_
+#endif  // STONKS_SQLITE_SQLITE_QUERY_BUILDER_H_

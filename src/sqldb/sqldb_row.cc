@@ -1,7 +1,6 @@
 #include "sqldb_row.h"
 
-#include <absl/base/macros.h>
-
+#include <gsl/assert>
 #include <string>
 #include <utility>
 
@@ -12,26 +11,22 @@ Row::Row(std::vector<Cell> cells) {
   }
 }
 
-auto Row::GetValue(const Column &column) const & -> const Value & {
-  ABSL_ASSERT((cells_.find(column) != cells_.end()) && "No cell in row");
+auto Row::GetValue(const Column &column) const -> const Value & {
+  Expects(cells_.find(column) != cells_.end());
   return cells_.at(column);
 }
 
-auto Row::TakeValue(const Column &column) && -> Value && {
-  return std::move(
-      // NOLINTNEXTLINE(*-const-cast)
-      const_cast<Value &>(const_cast<const Row *>(this)->GetValue(column)));
+auto Row::GetValue(const Column &column) -> Value & {
+  // NOLINTNEXTLINE(*-const-cast)
+  return const_cast<Value &>(const_cast<const Row *>(this)->GetValue(column));
 }
 
-auto Row::GetCells() const & -> const std::map<Column, Value> & {
-  return cells_;
-}
+auto Row::GetCells() const -> const std::map<Column, Value> & { return cells_; }
 
-auto Row::TakeCells() && -> std::map<Column, Value> && {
-  return std::move(
+auto Row::GetCells() -> std::map<Column, Value> & {
+  // NOLINTNEXTLINE(*-const-cast)
+  return const_cast<std::map<Column, Value> &>(
       // NOLINTNEXTLINE(*-const-cast)
-      const_cast<std::map<Column, Value> &>(
-          // NOLINTNEXTLINE(*-const-cast)
-          const_cast<const Row *>(this)->GetCells()));
+      const_cast<const Row *>(this)->GetCells());
 }
 }  // namespace stonks::sqldb

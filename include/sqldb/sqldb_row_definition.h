@@ -1,5 +1,5 @@
-#ifndef STONKS_DB_DB_ROW_DEFINITION_H_
-#define STONKS_DB_DB_ROW_DEFINITION_H_
+#ifndef STONKS_SQLDB_SQLDB_ROW_DEFINITION_H_
+#define STONKS_SQLDB_SQLDB_ROW_DEFINITION_H_
 
 #include <vector>
 
@@ -18,6 +18,8 @@ class RowDefinition {
   RowDefinition(std::vector<CellDefinition> cell_definitions);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   RowDefinition(const std::vector<ColumnDefinition> &column_definitions);
+  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
+  RowDefinition(const ConstView<ColumnDefinition> &column_definitions);
 
   [[nodiscard]] auto GetCellDefinitions() const
       -> const std::vector<CellDefinition> &;
@@ -27,4 +29,4 @@ class RowDefinition {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_DB_DB_ROW_DEFINITION_H_
+#endif  // STONKS_SQLDB_SQLDB_ROW_DEFINITION_H_

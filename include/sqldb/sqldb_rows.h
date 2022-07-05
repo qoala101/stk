@@ -1,5 +1,5 @@
-#ifndef STONKS_DB_DB_ROWS_H_
-#define STONKS_DB_DB_ROWS_H_
+#ifndef STONKS_SQLDB_SQLDB_ROWS_H_
+#define STONKS_SQLDB_SQLDB_ROWS_H_
 
 #include <string>
 #include <vector>
@@ -9,15 +9,16 @@
 
 namespace stonks::sqldb {
 /**
- * @brief Many DB rows.
+ * @brief Values for many DB rows.
  */
 class Rows {
  public:
-  explicit Rows(std::vector<Column> columns);
+  explicit Rows(std::vector<Column> columns = {});
 
-  [[nodiscard]] auto GetValues(const Column &column) const
+  [[nodiscard]] auto GetColumnValues(const Column &column) const
       -> const std::vector<Value> &;
-  [[nodiscard]] auto GetValues(const Column &column) -> std::vector<Value> &;
+  [[nodiscard]] auto GetColumnValues(const Column &column)
+      -> std::vector<Value> &;
 
   [[nodiscard]] auto GetSize() const -> int;
 
@@ -39,4 +40,4 @@ class Rows {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_DB_DB_ROWS_H_
+#endif  // STONKS_SQLDB_SQLDB_ROWS_H_

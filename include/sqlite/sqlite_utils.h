@@ -1,22 +1,27 @@
-#ifndef STONKS_DB_SQLITE_SQLITE_UTILS_H_
-#define STONKS_DB_SQLITE_SQLITE_UTILS_H_
+#ifndef STONKS_SQLITE_SQLITE_UTILS_H_
+#define STONKS_SQLITE_SQLITE_UTILS_H_
 
-#include <sqlite3.h>
-
-#include <gsl/pointers>
 #include <string_view>
 
+#include "sqlite_types.h"
+
+/**
+ * @file Common SQLite utils.
+ */
 namespace stonks::sqlite::utils {
 /**
- * @brief Read SQLite DB from file.
+ * @brief Reads SQLite DB from file.
+ * @return Handle to file DB.
  */
-[[nodiscard]] auto ReadSqliteDbFromFile(std::string_view file_path)
-    -> gsl::not_null<sqlite3 *>;
+[[nodiscard]] auto OpenSqliteDbFromFile(std::string_view file_path)
+    -> SqliteDbHandle;
 
 /**
- * @brief Write SQLite DB to file.
+ * @brief Reads SQLite DB from file and copies the contents to the in-memory DB.
+ * @return In-memory DB.
  */
-void WriteSqliteDbToFile(sqlite3 &sqlite_db, std::string_view file_path);
+[[nodiscard]] auto LoadSqliteDbFromFileToMemory(std::string_view file_path)
+    -> SqliteDbHandle;
 }  // namespace stonks::sqlite::utils
 
-#endif  // STONKS_DB_SQLITE_SQLITE_UTILS_H_
+#endif  // STONKS_SQLITE_SQLITE_UTILS_H_
