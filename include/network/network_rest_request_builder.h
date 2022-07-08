@@ -28,13 +28,12 @@ class RestRequestBuilder {
   auto WithMethod(Method method) -> RestRequestBuilder &;
 
   /**
-   * @param base_uri Should start with http.
+   * @brief Set beginning of URI which usually starts with http://.
    */
   auto WithBaseUri(std::string_view base_uri) -> RestRequestBuilder &;
 
   /**
-   * @brief Appends one more string to the base URI.
-   * @param uri Should start with /.
+   * @brief Appends one more string to the base URI separated with /.
    */
   auto AppendUri(std::string_view uri) -> RestRequestBuilder &;
 

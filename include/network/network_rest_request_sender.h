@@ -15,10 +15,10 @@ class IRestRequestSender {
 
   /**
    * @brief Executes the request and returns response JSON.
+   * @remark Destination is specified during construction.
    */
   // NOLINTNEXTLINE(*-use-nodiscard)
-  virtual auto SendRequestAndGetResponse(const Endpoint &endpoint,
-                                         const RestRequestData &data) const
+  virtual auto SendRequestAndGetResponse(const RestRequestData &data) const
       -> Json = 0;
 };
 }  // namespace stonks::network

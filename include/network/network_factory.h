@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORK_NETWORK_FACTORY_H_
 #define STONKS_NETWORK_NETWORK_FACTORY_H_
 
+#include "network_rest_request_handler.h"
 #include "network_rest_request_sender.h"
 #include "not_null.hpp"
 
@@ -15,9 +16,19 @@ class IFactory {
 
   /**
    * @brief Creates executor of REST request.
+   * @param endpoint Request destination.
    */
-  [[nodiscard]] virtual auto CreateRestRequestSender() const
+  [[nodiscard]] virtual auto CreateRestRequestSender(Endpoint endpoint) const
       -> cpp::not_null<std::unique_ptr<IRestRequestSender>> = 0;
+
+  /**
+   * @brief Creates the handler of REST requests on the specified URI.
+   * @param local_uri Request handler would handle REST requests which come to
+   * this URI.
+   */
+  [[nodiscard]] virtual auto CreateRestRequestHandler(
+      std::string_view local_uri) const
+      -> cpp::not_null<std::unique_ptr<IRestRequestHandler>> = 0;
 };
 }  // namespace stonks::network
 
