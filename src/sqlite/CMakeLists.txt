@@ -6,7 +6,7 @@ find_package(range-v3 REQUIRED)
 
 add_library(libsqlite
   sqlite_db_facade.cc
-  sqlite_db_factory.cc
+  sqlite_factory.cc
   sqlite_db.cc
   sqlite_prepared_statement_facade.cc
   sqlite_prepared_statement_handle.cc

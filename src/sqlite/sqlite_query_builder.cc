@@ -9,6 +9,7 @@
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/numeric/accumulate.hpp>
 #include <range/v3/view/adaptor.hpp>
+#include <range/v3/view/drop.hpp>
 #include <range/v3/view/filter.hpp>
 #include <range/v3/view/view.hpp>
 #include <string>
@@ -123,11 +124,11 @@ auto SqliteQueryBuilder::BuildSelectQuery(
     query += "*";
   } else {
     Expects(!columns->empty());
-    query += ranges::accumulate(std::next(columns->begin()), columns->end(),
-                                columns->front(),
-                                [](const auto &query, const auto &column) {
-                                  return query + ", " + column;
-                                });
+    query +=
+        ranges::accumulate(*columns | ranges::views::drop(1), columns->front(),
+                           [](const auto &query, const auto &column) {
+                             return query + ", " + column;
+                           });
   }
 
   query += " FROM \"" + table + "\"";

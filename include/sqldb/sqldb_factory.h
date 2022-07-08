@@ -11,9 +11,9 @@ namespace stonks::sqldb {
  * @brief Abstract factory for DB related entities.
  */
 // NOLINTNEXTLINE(*-special-member-functions)
-class IDbFactory {
+class IFactory {
  public:
-  virtual ~IDbFactory() = default;
+  virtual ~IFactory() = default;
 
   /**
    * @brief Loads DB from specified file.

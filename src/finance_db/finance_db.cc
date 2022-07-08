@@ -28,7 +28,7 @@
 #include "not_null.hpp"
 #include "prepared_statements.h"
 #include "sqldb_db.h"
-#include "sqldb_db_factory.h"
+#include "sqldb_factory.h"
 #include "sqldb_query_builder.h"
 #include "sqldb_rows.h"
 #include "sqldb_select_statement.h"
@@ -63,10 +63,9 @@ auto SymbolEqual(const SymbolInfo &left, const SymbolInfo &right) -> bool {
 }
 }  // namespace
 
-FinanceDb::FinanceDb(const sqldb::IDbFactory &db_factory,
-                     std::string_view file_path)
-    : db_{db_factory.LoadDbFromFile(file_path)},
-      query_builder_{db_factory.CreateQueryBuilder()},
+FinanceDb::FinanceDb(const sqldb::IFactory &factory, std::string_view file_path)
+    : db_{factory.LoadDbFromFile(file_path)},
+      query_builder_{factory.CreateQueryBuilder()},
       prepared_statements_{cpp::assume_not_null(
           std::make_shared<PreparedStatements>(db_, query_builder_))},
       cache_{prepared_statements_} {

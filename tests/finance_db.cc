@@ -7,7 +7,7 @@
 #include <optional>
 
 #include "finance_types.h"
-#include "sqlite_db_factory.h"
+#include "sqlite_factory.h"
 #include "stonks_db_updater_symbols_info.h"
 
 namespace {

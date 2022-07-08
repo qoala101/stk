@@ -12,13 +12,13 @@
 #include "sqldb_query_builder_facade.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
-#include "sqlite_db_factory.h"
+#include "sqlite_factory.h"
 #include "utils.h"
 
 namespace {
 const auto kTestDbFileName = "sqlite_db_test.db";
 
-auto db_factory = std::unique_ptr<stonks::sqldb::IDbFactory>{};
+auto db_factory = std::unique_ptr<stonks::sqldb::IFactory>{};
 auto db = std::unique_ptr<stonks::sqldb::IDb>{};
 auto query_builder = std::shared_ptr<stonks::sqldb::IQueryBuilder>{};
 auto query_builder_facade = std::optional<stonks::sqldb::QueryBuilderFacade>{};

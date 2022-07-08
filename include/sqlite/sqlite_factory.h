@@ -6,15 +6,15 @@
 
 #include "not_null.hpp"
 #include "sqldb_db.h"
-#include "sqldb_db_factory.h"
+#include "sqldb_factory.h"
 #include "sqldb_query_builder.h"
 
 namespace stonks::sqlite {
 /**
- * @brief sqldb::IDbFactory
+ * @brief sqldb::IFactory
  */
 // NOLINTNEXTLINE(*-special-member-functions)
-class SqliteDbFactory : public sqldb::IDbFactory {
+class SqliteDbFactory : public sqldb::IFactory {
  public:
   /**
    * @copydoc sqldb::IDb::LoadDbFromFile

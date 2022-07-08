@@ -1,4 +1,4 @@
-#include "sqlite_db_factory.h"
+#include "sqlite_factory.h"
 
 #include "not_null.hpp"
 #include "sqlite_db.h"

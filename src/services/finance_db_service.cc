@@ -5,16 +5,12 @@
 #include <cpprest/http_msg.h>
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
-
 #include <chrono>
 #include <map>
 #include <optional>
-#include <range/v3/iterator/basic_iterator.hpp>
-#include <range/v3/view/view.hpp>
 #include <string>
 #include <string_view>
 #include <utility>
-#include <vector>
 
 #include "finance_db.h"
 #include "finance_types.h"
@@ -30,7 +26,7 @@ void SendSubscribeToPriceTicksRequest() {
 
   network::RestRequest{web::http::methods::POST, "http://localhost:6506"}
       .AppendUri("/api/price_ticks/subscribe")
-      .SetJson(json)
+      .SetBody(json)
       .SendAndGetResponse();
 }
 
@@ -68,12 +64,12 @@ void HandleGetRequest(const web::http::http_request &request,
       end_time = std::chrono::milliseconds{std::stoll(end_time_iter->second)};
     }
 
-    const auto price_ticks = finance_db.SelectSymbolPriceTicks(
-        limit, finance::Period{.start_time = start_time, .end_time = end_time},
-        std::nullopt);
+    // const auto price_ticks = finance_db.SelectSymbolPriceTicks(
+    //     limit, finance::Period{.start_time = start_time, .end_time =
+    //     end_time}, std::nullopt);
 
-    request.reply(web::http::status_codes::OK,
-                  json::ConvertToJson(price_ticks));
+    // request.reply(web::http::status_codes::OK,
+    //               json::ConvertToJson(price_ticks));
     return;
   }
 

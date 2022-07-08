@@ -11,7 +11,7 @@
 #include "not_null.hpp"
 #include "prepared_statements.h"
 #include "sqldb_db.h"
-#include "sqldb_db_factory.h"
+#include "sqldb_factory.h"
 #include "sqldb_query_builder.h"
 #include "stonks_db.h"
 
@@ -23,9 +23,9 @@ class FinanceDb : public StonksDb {
  public:
   /**
    * @brief Reads DB from the specified file.
-   * @param db_factory SQL DB implementation.
+   * @param factory SQL DB implementation.
    */
-  explicit FinanceDb(const sqldb::IDbFactory &db_factory,
+  explicit FinanceDb(const sqldb::IFactory &factory,
                      std::string_view file_path);
 
   [[deprecated]] explicit FinanceDb(std::string_view uri = "stonks.db");
