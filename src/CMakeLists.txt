@@ -16,64 +16,57 @@ find_package(absl REQUIRED)
 find_package(AWSSDK REQUIRED)
 
 add_library(libstonks
-  aws/aws_api.cc
-  aws/aws_dynamo_db.cc
-  binance/binance_api.cc
-  binance/binance_settings.cc
-  clients/client_binance.cc
-  clients/client_finance_db.cc
-  clients/client_proxy.cc
-  endpoints/endpoints_binance.cc
-  endpoints/endpoints_finance_db.cc
-  endpoints/endpoints_info.cc
-  endpoints/endpoints_proxy.cc
-  endpoints/endpoints_v1_strategy.cc
-  finance_api/finance_api.cc
-  finance_api/finance_conversions.cc
-  finance_api/finance_enum_conversions.cc
-  finance_api/finance_types.cc
+  # aws/aws_api.cc
+  # aws/aws_dynamo_db.cc
+  # binance/binance_api.cc
+  # binance/binance_settings.cc
+  # clients/client_binance.cc
+  # clients/client_finance_db.cc
+  # clients/client_proxy.cc
+  # endpoints/endpoints_binance.cc
+  # endpoints/endpoints_finance_db.cc
+  # endpoints/endpoints_info.cc
+  # endpoints/endpoints_proxy.cc
+  # endpoints/endpoints_v1_strategy.cc
+  # finance_api/finance_api.cc
+  # finance_api/finance_conversions.cc
+  # finance_api/finance_enum_conversions.cc
+  # finance_api/finance_types.cc
   finance_db/cache.cc
   finance_db/table_definitions.cc
   finance_db/finance_db.cc
   finance_db/prepared_statements.cc
-  google_charts/google_charts_conversions.cc
-  json/json_conversions.cc
-  network/client.cc
-  network/endpoint.cc
-  network/proxy.cc
-  network/rest_request.cc
-  network/server.cc
-  network/uri.cc
-  network/web_socket.cc
-  ngrok/ngrok_client.cc
-  servers/server_finance_db.cc
-  servers/server_info.cc
-  servers/server_proxy.cc
-  servers/server_v1_strategy.cc
-  services/breakout_strategy_service.cc
-  services/finance_db_service.cc
-  services/get_candle_chart_data_service.cc
-  services/get_file_service.cc
-  services/get_symbols_service.cc
-  services/mean_average_strategy_service.cc
-  services/order_monitor_service.cc
-  services/order_proxy_service.cc
-  services/price_ticks_service.cc
-  stonks/stonks_db_updater_price_ticks.cc
-  stonks/stonks_db_updater_symbols_info.cc
-  stonks/stonks_info.cc
-  stonks/stonks_ngrok_aws_db_updater.cc
-  stonks/stonks_order_proxy.cc
-  stonks/stonks_order_monitor.cc
-  strategies/breakout_strategy.cc
-  strategies/mean_average_strategy.cc
-  strategies/strategy.cc
-  strategies/v1_strategy.cc
-  streams/buffered_candles_stream.cc
-  streams/candles_stream.cc
-  streams/price_ticks_db_stream.cc
-  streams/price_ticks_stream.cc
-  streams/prices_stream.cc
+  # google_charts/google_charts_conversions.cc
+  # json/json_conversions.cc
+  # ngrok/ngrok_client.cc
+  # servers/server_finance_db.cc
+  # servers/server_info.cc
+  # servers/server_proxy.cc
+  # servers/server_v1_strategy.cc
+  # services/breakout_strategy_service.cc
+  # services/finance_db_service.cc
+  # services/get_candle_chart_data_service.cc
+  # services/get_file_service.cc
+  # services/get_symbols_service.cc
+  # services/mean_average_strategy_service.cc
+  # services/order_monitor_service.cc
+  # services/order_proxy_service.cc
+  # services/price_ticks_service.cc
+  # stonks/stonks_db_updater_price_ticks.cc
+  # stonks/stonks_db_updater_symbols_info.cc
+  # stonks/stonks_info.cc
+  # stonks/stonks_ngrok_aws_db_updater.cc
+  # stonks/stonks_order_proxy.cc
+  # stonks/stonks_order_monitor.cc
+  # strategies/breakout_strategy.cc
+  # strategies/mean_average_strategy.cc
+  # strategies/strategy.cc
+  # strategies/v1_strategy.cc
+  # streams/buffered_candles_stream.cc
+  # streams/candles_stream.cc
+  # streams/price_ticks_db_stream.cc
+  # streams/price_ticks_stream.cc
+  # streams/prices_stream.cc
   utility/utils.cc
 )
 set_target_properties(libstonks PROPERTIES OUTPUT_NAME stonks)
@@ -86,7 +79,6 @@ target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/financ
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/finance_db)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/google_charts)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/json)
-target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/network)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/ngrok)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/servers)
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/services)
@@ -96,6 +88,7 @@ target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/stream
 target_include_directories(libstonks PUBLIC ${PROJECT_SOURCE_DIR}/include/utility)
 target_link_libraries(libstonks PRIVATE libsqldb)
 target_link_libraries(libstonks PRIVATE libsqlite)
+target_link_libraries(libstonks PRIVATE libnetwork)
 target_link_libraries(libstonks PUBLIC cpprestsdk::cpprest)
 target_link_libraries(libstonks PRIVATE spdlog::spdlog)
 target_link_libraries(libstonks PUBLIC range-v3::range-v3)
@@ -134,3 +127,4 @@ target_link_libraries(app_proxy PRIVATE libstonks)
 
 add_subdirectory(sqldb)
 add_subdirectory(sqlite)
+add_subdirectory(network)

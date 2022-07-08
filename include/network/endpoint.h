@@ -11,9 +11,7 @@
 
 #include "json.h"
 
-
 namespace stonks::network {
-
 /**
  * @brief Description of REST endpoint.
  * Used by Client to send the request, and by Server to handle it.
@@ -69,7 +67,7 @@ class EndpointHandler {
 /**
  * @brief Data used by server to verify and handle request.
  */
-struct Endpoint {
+struct Endpoint1 {
   EndpointDesc desc{};
   EndpointHandler handler;
 };

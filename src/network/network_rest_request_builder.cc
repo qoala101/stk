@@ -1,11 +1,33 @@
 #include "network_rest_request_builder.h"
 
 #include <gsl/assert>
-#include <stdexcept>
+#include <range/v3/functional/identity.hpp>
+#include <range/v3/numeric/accumulate.hpp>
+#include <range/v3/view/drop.hpp>
+#include <range/v3/view/subrange.hpp>
+#include <range/v3/view/view.hpp>
+#include <string>
+#include <type_traits>
+#include <utility>
 
 #include "network_types.h"
 
 namespace stonks::network {
+namespace {
+auto AccumulateUriParts(const std::vector<std::string>& uri_parts)
+    -> std::string {
+  if (uri_parts.empty()) {
+    return {};
+  }
+
+  return ranges::accumulate(uri_parts | ranges::views::drop(1),
+                            uri_parts.front(),
+                            [](const auto& result, const auto& uri_part) {
+                              return result + "/" + uri_part;
+                            });
+};
+}  // namespace
+
 auto RestRequestBuilder::WithMethod(Method method) -> RestRequestBuilder& {
   method_ = method;
   return *this;
@@ -50,6 +72,10 @@ auto RestRequestBuilder::WithBody(Json body) -> RestRequestBuilder& {
 }
 
 auto RestRequestBuilder::Build() const -> std::pair<Endpoint, RestRequestData> {
-  throw std::runtime_error{"NOT IMPLEMENTED"};
+  auto endpoint =
+      Endpoint{.method = method_, .uri = AccumulateUriParts(uri_parts_)};
+  auto data =
+      RestRequestData{.params = params_, .headers = headers_, .body = body_};
+  return std::make_pair(std::move(endpoint), std::move(data));
 }
 }  // namespace stonks::network
