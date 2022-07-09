@@ -6,6 +6,7 @@
 #include <cpprest/http_client.h>
 #include <cpprest/http_headers.h>
 #include <cpprest/http_msg.h>
+#include <cpprest/json.h>
 #include <cpprest/uri_builder.h>
 #include <fmt/format.h>
 #include <pplx/pplxtasks.h>
@@ -15,12 +16,15 @@
 #include <magic_enum.hpp>
 #include <map>
 #include <memory>
-#include <optional>
 #include <string>
 #include <utility>
 
 #include "network_enums.h"
+#include "network_json.h"
 #include "network_types.h"
+#include "not_null.hpp"
+#include "restsdk_json.h"
+#include "restsdk_json_impl.h"
 #include "restsdk_utils.h"
 
 namespace stonks::restsdk {
@@ -35,7 +39,8 @@ RestRequestSender::RestRequestSender(network::Endpoint endpoint)
     : endpoint_{std::move(endpoint)} {}
 
 auto RestRequestSender::SendRequestAndGetResponse(
-    const network::RestRequestData &data) const -> network::Json {
+    const network::RestRequestData &data) const
+    -> cpp::not_null<std::unique_ptr<network::IJson>> {
   auto uri_builder = [this, &data]() {
     auto uri_builder = web::http::uri_builder{endpoint_.uri};
 
@@ -54,8 +59,8 @@ auto RestRequestSender::SendRequestAndGetResponse(
       http_request.headers().add(std::string{key}, std::string{value});
     }
 
-    if (data.body.has_value()) {
-      // http_request.set_body(data.body);
+    if (data.body) {
+      http_request.set_body(data.body->GetImpl().GetJson());
     }
 
     return http_request;
@@ -70,8 +75,9 @@ auto RestRequestSender::SendRequestAndGetResponse(
 
   try {
     const auto response = http_client.request(http_request).get();
-    return network::Json{};
-    // return network::Json{response.extract_json().get()};
+    auto json = response.extract_json().get();
+    return cpp::assume_not_null(
+        std::make_unique<Json>(network::IJson::Impl{std::move(json)}));
   } catch (const std::exception &exception) {
     Logger().error("Request failed: {}", exception.what());
     throw;

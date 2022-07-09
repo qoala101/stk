@@ -2,6 +2,7 @@
 #define STONKS_NETWORK_NETWORK_TYPES_H_
 
 #include <map>
+#include <memory>
 #include <string>
 
 #include "network_enums.h"
@@ -22,7 +23,7 @@ struct Endpoint {
 struct RestRequestData {
   std::map<std::string, std::string> params{};
   std::map<std::string, std::string> headers{};
-  std::optional<Json> body{};
+  std::unique_ptr<IJson> body{};
 };
 }  // namespace stonks::network
 

@@ -1,8 +1,11 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_REQUEST_SENDER_H_
 #define STONKS_NETWORK_NETWORK_REST_REQUEST_SENDER_H_
 
+#include <memory>
+
 #include "network_json.h"
 #include "network_types.h"
+#include "not_null.hpp"
 
 namespace stonks::network {
 /**
@@ -19,7 +22,7 @@ class IRestRequestSender {
    */
   // NOLINTNEXTLINE(*-use-nodiscard)
   virtual auto SendRequestAndGetResponse(const RestRequestData &data) const
-      -> Json = 0;
+      -> cpp::not_null<std::unique_ptr<IJson>> = 0;
 };
 }  // namespace stonks::network
 

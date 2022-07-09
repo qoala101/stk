@@ -1,9 +1,12 @@
 #ifndef STONKS_RESTSDK_RESTSDK_REST_REQUEST_SENDER_H_
 #define STONKS_RESTSDK_RESTSDK_REST_REQUEST_SENDER_H_
 
+#include <memory>
+
 #include "network_json.h"
 #include "network_rest_request_sender.h"
 #include "network_types.h"
+#include "not_null.hpp"
 
 namespace stonks::restsdk {
 /**
@@ -21,7 +24,7 @@ class RestRequestSender : public network::IRestRequestSender {
    */
   // NOLINTNEXTLINE(*-use-nodiscard)
   auto SendRequestAndGetResponse(const network::RestRequestData &data) const
-      -> network::Json override;
+      -> cpp::not_null<std::unique_ptr<network::IJson>> override;
 
  private:
   network::Endpoint endpoint_{};

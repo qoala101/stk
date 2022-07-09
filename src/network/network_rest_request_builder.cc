@@ -53,6 +53,11 @@ auto RestRequestBuilder::AddParam(std::string_view key, std::string_view value)
   return *this;
 }
 
+auto RestRequestBuilder::AddParam(std::string_view key, const char* value)
+    -> RestRequestBuilder& {
+  return AddParam(key, std::string_view{value});
+}
+
 auto RestRequestBuilder::AddParam(std::string_view key,
                                   std::chrono::milliseconds value)
     -> RestRequestBuilder& {
@@ -65,9 +70,10 @@ auto RestRequestBuilder::AddHeader(std::string_view key, std::string_view value)
   return *this;
 }
 
-auto RestRequestBuilder::WithBody(Json body) -> RestRequestBuilder& {
-  Expects(!body_.has_value());
-  body_.emplace(std::move(body));
+auto RestRequestBuilder::WithBody(cpp::not_null<std::unique_ptr<IJson>> body)
+    -> RestRequestBuilder& {
+  Expects(!body_);
+  body_ = std::move(body).as_nullable();
   return *this;
 }
 
@@ -75,7 +81,9 @@ auto RestRequestBuilder::Build() const -> std::pair<Endpoint, RestRequestData> {
   auto endpoint =
       Endpoint{.method = method_, .uri = AccumulateUriParts(uri_parts_)};
   auto data =
-      RestRequestData{.params = params_, .headers = headers_, .body = body_};
+      RestRequestData{.params = params_,
+                      .headers = headers_,
+                      .body = body_ ? body_->Clone().as_nullable() : nullptr};
   return std::make_pair(std::move(endpoint), std::move(data));
 }
 }  // namespace stonks::network

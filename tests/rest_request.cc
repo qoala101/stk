@@ -1,8 +1,12 @@
+#include <cpprest/json.h>
 #include <gtest/gtest.h>
 
 #include <magic_enum.hpp>
+#include <memory>
 
 #include "network_rest_request_builder.h"
+#include "restsdk/restsdk_rest_request_sender.h"
+#include "restsdk_json_impl.h"
 
 TEST(RestRequest, AppendUri) {
   const auto [endpoint, data] = stonks::network::RestRequestBuilder{}
@@ -78,4 +82,18 @@ TEST(RestRequest, ParameterTypesToString) {
       {"optional_custom_enum_name", "CUSTOM_ENUM_NAME"},
   };
   EXPECT_EQ(data.params, expected_params);
+}
+
+TEST(RestRequest, SendRequest) {
+  const auto [endpoint, data] =
+      stonks::network::RestRequestBuilder{}
+          .WithBaseUri("https://api.binance.com/api/v3")
+          .AppendUri("avgPrice")
+          .AddParam("symbol", "BTCUSDT")
+          .Build();
+  const auto sender =
+      std::make_unique<stonks::restsdk::RestRequestSender>(endpoint);
+  const auto response = sender->SendRequestAndGetResponse(data);
+  const auto &a = response->GetImpl();
+  EXPECT_FALSE(a.GetJson().is_null());
 }

@@ -5,6 +5,8 @@ find_package(range-v3 REQUIRED)
 
 add_library(librestsdk
   restsdk_factory.cc
+  restsdk_json_impl.cc
+  restsdk_json.cc
   restsdk_rest_request_sender.cc
   restsdk_utils.cc
 )

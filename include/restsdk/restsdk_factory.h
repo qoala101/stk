@@ -5,6 +5,7 @@
 #include <string_view>
 
 #include "network_factory.h"
+#include "network_json.h"
 #include "network_rest_request_handler.h"
 #include "network_rest_request_sender.h"
 #include "network_types.h"
@@ -27,6 +28,12 @@ class Factory : public network::IFactory {
    */
   [[nodiscard]] auto CreateRestRequestHandler(std::string_view local_uri) const
       -> cpp::not_null<std::unique_ptr<network::IRestRequestHandler>> override;
+
+  /**
+   * @copydoc network::IFactory::CreateJson
+   */
+  [[nodiscard]] auto CreateJson() const
+      -> cpp::not_null<std::unique_ptr<network::IJson>> override;
 };
 }  // namespace stonks::restsdk
 

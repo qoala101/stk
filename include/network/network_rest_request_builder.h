@@ -4,6 +4,7 @@
 #include <chrono>
 #include <magic_enum.hpp>
 #include <map>
+#include <memory>
 #include <optional>
 #include <sstream>
 #include <string>
@@ -15,6 +16,7 @@
 #include "network_enums.h"
 #include "network_json.h"
 #include "network_types.h"
+#include "not_null.hpp"
 
 namespace stonks::network {
 /**
@@ -42,6 +44,12 @@ class RestRequestBuilder {
    * @remark Would override existing value with the same key.
    */
   auto AddParam(std::string_view key, std::string_view value)
+      -> RestRequestBuilder &;
+
+  /**
+   * @copydoc RestRequestBuilder::AddParam
+   */
+  auto AddParam(std::string_view key, const char *value)
       -> RestRequestBuilder &;
 
   /**
@@ -107,7 +115,8 @@ class RestRequestBuilder {
    * @brief Sets the JSON body of the request.
    * @remark Should be called once.
    */
-  auto WithBody(Json body) -> RestRequestBuilder &;
+  auto WithBody(cpp::not_null<std::unique_ptr<IJson>> body)
+      -> RestRequestBuilder &;
 
   /**
    * @brief Build REST request parts from inputs.
@@ -119,7 +128,7 @@ class RestRequestBuilder {
   std::vector<std::string> uri_parts_{};
   std::map<std::string, std::string> params_{};
   std::map<std::string, std::string> headers_{};
-  std::optional<Json> body_{};
+  std::unique_ptr<IJson> body_{};
 };
 }  // namespace stonks::network
 
