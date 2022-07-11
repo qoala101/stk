@@ -39,40 +39,6 @@ class IJson {
    */
   [[nodiscard]] virtual auto GetImpl() const -> const Impl & = 0;
 };
-
-template <typename T>
-auto ParseFromJson(const IJson &json) -> T;
-
-template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> int;
-
-template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> int64_t;
-
-template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> double;
-
-template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> std::string;
-
-template <typename T>
-auto ConvertToJson(const T &value) -> cpp::not_null<std::unique_ptr<IJson>>;
-
-template <>
-auto ConvertToJson(const int &value)
-    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
-
-template <>
-auto ConvertToJson(const int64_t &value)
-    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
-
-template <>
-auto ConvertToJson(const double &value)
-    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
-
-template <>
-auto ConvertToJson(const std::string &value)
-    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
 }  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_NETWORK_JSON_H_
