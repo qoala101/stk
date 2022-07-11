@@ -21,7 +21,7 @@ struct Endpoint {
  * @brief Data to be sent with request.
  */
 struct RestRequestData {
-  std::map<std::string, std::string> params{};
+  std::map<std::string, isocpp_p0201::polymorphic_value<IJson>> params{};
   std::map<std::string, std::string> headers{};
   std::optional<isocpp_p0201::polymorphic_value<IJson>> body{};
 };

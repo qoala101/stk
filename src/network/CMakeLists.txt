@@ -3,6 +3,7 @@ find_package(spdlog REQUIRED)
 find_package(magic_enum REQUIRED)
 find_package(range-v3 REQUIRED)
 find_package(polymorphic_value REQUIRED)
+find_package(Boost REQUIRED)
 
 add_library(libnetwork
   # client.cc
@@ -19,9 +20,8 @@ target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/utili
 target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/json)
 target_link_libraries(libnetwork PRIVATE spdlog::spdlog)
 target_link_libraries(libnetwork PRIVATE range-v3::range-v3)
-target_link_libraries(libnetwork PRIVATE magic_enum::magic_enum)
 target_link_libraries(libnetwork PRIVATE Microsoft.GSL::GSL)
 target_link_libraries(libnetwork PRIVATE Boost::boost)
-target_link_libraries(libnetwork PRIVATE absl::absl)
+target_link_libraries(libnetwork PUBLIC magic_enum::magic_enum)
 target_link_libraries(libnetwork PUBLIC NotNull)
 target_link_libraries(libnetwork PUBLIC polymorphic_value::polymorphic_value)

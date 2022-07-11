@@ -44,30 +44,30 @@ TEST(RestRequest, ParameterTypesToString) {
   const auto [endpoint, data] =
       stonks::network::RestRequestBuilder{}
           .AddParam("string", "abc")
-          .AddParam("milliseconds", std::chrono::milliseconds{123456789})
+          // .AddParam("milliseconds", std::chrono::milliseconds{123456789})
           .AddParam("int", 123456789)
           .AddParam("int64_t", int64_t{123456789})
           .AddParam("float", float{123456789.123456789})
           .AddParam("double", double{123456789.123456789})
           .AddParam("default_enum_name", DefaultNameEnum::kDefaultEnumName)
           .AddParam("custom_enum_name", CustomNameEnum::kCustomEnumName)
-          .AddParam("optional_string", std::optional<std::string>{"abc"})
-          .AddParam("optional_milliseconds",
-                    std::optional<std::chrono::milliseconds>{123456789})
-          .AddParam("optional_int", std::optional<int>{123456789})
-          .AddParam("optional_int64_t",
-                    std::optional<int64_t>{int64_t{123456789}})
-          .AddParam("optional_float",
-                    std::optional<float>{float{123456789.123456789}})
-          .AddParam("optional_double",
-                    std::optional<double>{double{123456789.123456789}})
-          .AddParam(
-              "optional_default_enum_name",
-              std::optional<DefaultNameEnum>{DefaultNameEnum::kDefaultEnumName})
-          .AddParam(
-              "optional_custom_enum_name",
-              std::optional<CustomNameEnum>{CustomNameEnum::kCustomEnumName})
-          .AddParam("no_option", std::optional<int>{std::nullopt})
+          // .AddParam("optional_string", std::optional<std::string>{"abc"})
+          // .AddParam("optional_milliseconds",
+          //           std::optional<std::chrono::milliseconds>{123456789})
+          // .AddParam("optional_int", std::optional<int>{123456789})
+          // .AddParam("optional_int64_t",
+          //           std::optional<int64_t>{int64_t{123456789}})
+          // .AddParam("optional_float",
+          //           std::optional<float>{float{123456789.123456789}})
+          // .AddParam("optional_double",
+          //           std::optional<double>{double{123456789.123456789}})
+          // .AddParam(
+          //     "optional_default_enum_name",
+          //     std::optional<DefaultNameEnum>{DefaultNameEnum::kDefaultEnumName})
+          // .AddParam(
+          //     "optional_custom_enum_name",
+          //     std::optional<CustomNameEnum>{CustomNameEnum::kCustomEnumName})
+          // .AddParam("no_option", std::optional<int>{std::nullopt})
           .Build();
   const auto expected_params = std::map<std::string, std::string>{
       {"string", "abc"},

@@ -16,6 +16,7 @@
 #include "concepts.h"  // IWYU pragma: keep
 #include "network_enums.h"
 #include "network_json.h"
+#include "network_json_basic_conversions.h"
 #include "network_types.h"
 
 namespace stonks::network {
@@ -43,65 +44,16 @@ class RestRequestBuilder {
    * @brief Adds parameter to be send by request.
    * @remark Would override existing value with the same key.
    */
-  auto AddParam(std::string_view key, std::string_view value)
+  auto AddParam(std::string_view key,
+                isocpp_p0201::polymorphic_value<IJson> value)
       -> RestRequestBuilder &;
 
   /**
    * @copydoc RestRequestBuilder::AddParam
-   */
-  auto AddParam(std::string_view key, const char *value)
-      -> RestRequestBuilder &;
-
-  /**
-   * @copydoc RestRequestBuilder::AddParam
-   */
-  auto AddParam(std::string_view key, std::chrono::milliseconds value)
-      -> RestRequestBuilder &;
-
-  /**
-   * @copydoc RestRequestBuilder::AddParam
-   */
-  template <Number T>
-  auto AddParam(std::string_view key, T value) -> RestRequestBuilder & {
-    auto stream = std::ostringstream{};
-    stream << value;
-    return AddParam(key, stream.str());
-  }
-
-  /**
-   * @copydoc RestRequestBuilder::AddParam
-   */
-  template <Enumeration T>
-  auto AddParam(std::string_view key, T value) -> RestRequestBuilder & {
-    return AddParam(key, magic_enum::enum_name<T>(value));
-  }
-
-  /**
-   * @copydoc RestRequestBuilder::AddParam
-   * @remark Parameter is not added if value is missing.
    */
   template <typename T>
-  auto AddParam(std::string_view key, const std::optional<T> &optional_value)
-      -> RestRequestBuilder & {
-    if (optional_value.has_value()) {
-      return AddParam(key, *optional_value);
-    }
-
-    return *this;
-  }
-
-  /**
-   * @copydoc RestRequestBuilder::AddParam
-   * @remark Parameter is not added if value is missing.
-   */
-  template <typename T>
-  auto AddParam(std::string_view key, const T *optional_value)
-      -> RestRequestBuilder & {
-    if (optional_value != nullptr) {
-      return AddParam(key, *optional_value);
-    }
-
-    return *this;
+  auto AddParam(std::string_view key, T &&value) -> RestRequestBuilder & {
+    return AddParam(key, ConvertToJson(std::forward<T>(value)));
   }
 
   /**
@@ -126,7 +78,7 @@ class RestRequestBuilder {
  private:
   Method method_{};
   std::vector<std::string> uri_parts_{};
-  std::map<std::string, std::string> params_{};
+  std::map<std::string, isocpp_p0201::polymorphic_value<IJson>> params_{};
   std::map<std::string, std::string> headers_{};
   std::optional<isocpp_p0201::polymorphic_value<IJson>> body_{};
 };

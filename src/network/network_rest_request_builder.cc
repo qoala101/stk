@@ -46,21 +46,11 @@ auto RestRequestBuilder::AppendUri(std::string_view uri)
   return *this;
 }
 
-auto RestRequestBuilder::AddParam(std::string_view key, std::string_view value)
-    -> RestRequestBuilder& {
-  params_.emplace(key.data(), value.data());
-  return *this;
-}
-
-auto RestRequestBuilder::AddParam(std::string_view key, const char* value)
-    -> RestRequestBuilder& {
-  return AddParam(key, std::string_view{value});
-}
-
 auto RestRequestBuilder::AddParam(std::string_view key,
-                                  std::chrono::milliseconds value)
+                                  isocpp_p0201::polymorphic_value<IJson> value)
     -> RestRequestBuilder& {
-  return AddParam(key, value.count());
+  params_.emplace(key.data(), std::move(value));
+  return *this;
 }
 
 auto RestRequestBuilder::AddHeader(std::string_view key, std::string_view value)

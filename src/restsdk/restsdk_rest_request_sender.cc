@@ -57,6 +57,16 @@ auto HttpMethodFromNetworkMethod(network::Method method) -> web::http::method {
       return web::http::methods::PATCH;
   }
 }
+
+auto ConvertToRequestParam(const network::IJson &json) -> std::string {
+  const auto &rest_json = json.GetImpl().GetJson();
+
+  if (rest_json.is_string()) {
+    return rest_json.as_string();
+  }
+
+  return rest_json.serialize();
+}
 }  // namespace
 
 RestRequestSender::RestRequestSender(network::Endpoint endpoint)
@@ -69,7 +79,7 @@ auto RestRequestSender::SendRequestAndGetResponse(
     auto uri_builder = web::http::uri_builder{endpoint_.uri};
 
     for (const auto &[key, value] : data.params) {
-      uri_builder.append_query(key, value);
+      uri_builder.append_query(key, ConvertToRequestParam(*value));
     }
 
     return uri_builder;
