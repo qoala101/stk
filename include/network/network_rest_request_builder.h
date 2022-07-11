@@ -73,11 +73,16 @@ class RestRequestBuilder {
   /**
    * @brief Build REST request parts from inputs.
    */
-  [[nodiscard]] auto Build() const -> std::pair<Endpoint, RestRequestData>;
+  [[nodiscard]] auto Build() const & -> std::pair<Endpoint, RestRequestData>;
+
+  /**
+   * @copydoc Build
+   */
+  [[nodiscard]] auto Build() && -> std::pair<Endpoint, RestRequestData>;
 
  private:
   Method method_{};
-  std::vector<std::string> uri_parts_{};
+  std::optional<std::string> uri_{};
   std::map<std::string, isocpp_p0201::polymorphic_value<IJson>> params_{};
   std::map<std::string, std::string> headers_{};
   std::optional<isocpp_p0201::polymorphic_value<IJson>> body_{};

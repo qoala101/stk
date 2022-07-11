@@ -34,15 +34,15 @@ auto RestRequestBuilder::WithMethod(Method method) -> RestRequestBuilder& {
 
 auto RestRequestBuilder::WithBaseUri(std::string_view base_uri)
     -> RestRequestBuilder& {
-  Expects(uri_parts_.empty());
-  uri_parts_.emplace_back(base_uri.data());
+  Expects(!uri_.has_value());
+  uri_.emplace(base_uri.data());
   return *this;
 }
 
 auto RestRequestBuilder::AppendUri(std::string_view uri)
     -> RestRequestBuilder& {
-  Expects(!uri_parts_.empty());
-  uri_parts_.emplace_back(uri.data());
+  Expects(uri_.has_value());
+  (*uri_) += std::string{"/"} + uri.data();
   return *this;
 }
 
@@ -66,11 +66,21 @@ auto RestRequestBuilder::WithBody(isocpp_p0201::polymorphic_value<IJson> body)
   return *this;
 }
 
-auto RestRequestBuilder::Build() const -> std::pair<Endpoint, RestRequestData> {
-  auto endpoint =
-      Endpoint{.method = method_, .uri = AccumulateUriParts(uri_parts_)};
+auto RestRequestBuilder::Build()
+    const& -> std::pair<Endpoint, RestRequestData> {
+  Expects(uri_.has_value());
+  auto endpoint = Endpoint{.method = method_, .uri = *uri_};
   auto data =
       RestRequestData{.params = params_, .headers = headers_, .body = body_};
+  return std::make_pair(std::move(endpoint), std::move(data));
+}
+
+auto RestRequestBuilder::Build() && -> std::pair<Endpoint, RestRequestData> {
+  Expects(uri_.has_value());
+  auto endpoint = Endpoint{.method = method_, .uri = std::move(*uri_)};
+  auto data = RestRequestData{.params = std::move(params_),
+                              .headers = std::move(headers_),
+                              .body = std::move(body_)};
   return std::make_pair(std::move(endpoint), std::move(data));
 }
 }  // namespace stonks::network

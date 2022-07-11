@@ -89,8 +89,8 @@ auto RestRequestSender::SendRequestAndGetResponse(
     auto http_request =
         web::http::http_request{HttpMethodFromNetworkMethod(endpoint_.method)};
 
-    for (const auto &[key, value] : data.params) {
-      http_request.headers().add(std::string{key}, std::string{value});
+    for (const auto &[key, value] : data.headers) {
+      http_request.headers().add(key, value);
     }
 
     if (data.body) {
