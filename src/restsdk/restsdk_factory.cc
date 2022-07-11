@@ -1,6 +1,7 @@
 #include "restsdk_factory.h"
 
 #include <memory>
+#include <type_traits>
 
 #include "network_json.h"
 #include "not_null.hpp"

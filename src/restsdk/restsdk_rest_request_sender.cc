@@ -6,7 +6,6 @@
 #include <cpprest/http_client.h>
 #include <cpprest/http_headers.h>
 #include <cpprest/http_msg.h>
-#include <cpprest/json.h>
 #include <cpprest/uri_builder.h>
 #include <fmt/format.h>
 #include <pplx/pplxtasks.h>
@@ -25,13 +24,37 @@
 #include "not_null.hpp"
 #include "restsdk_json.h"
 #include "restsdk_json_impl.h"
-#include "restsdk_utils.h"
 
 namespace stonks::restsdk {
 namespace {
 [[nodiscard]] auto Logger() -> spdlog::logger & {
   static auto logger = spdlog::stdout_color_mt("Client");
   return *logger;
+}
+
+auto HttpMethodFromNetworkMethod(network::Method method) -> web::http::method {
+  switch (method) {
+    case network::Method::kGet:
+      return web::http::methods::GET;
+    case network::Method::kPost:
+      return web::http::methods::POST;
+    case network::Method::kPut:
+      return web::http::methods::PUT;
+    case network::Method::kDelete:
+      return web::http::methods::DEL;
+    case network::Method::kHead:
+      return web::http::methods::HEAD;
+    case network::Method::kOptions:
+      return web::http::methods::OPTIONS;
+    case network::Method::kTrace:
+      return web::http::methods::TRCE;
+    case network::Method::kConnect:
+      return web::http::methods::CONNECT;
+    case network::Method::kMerge:
+      return web::http::methods::MERGE;
+    case network::Method::kPatch:
+      return web::http::methods::PATCH;
+  }
 }
 }  // namespace
 
@@ -52,8 +75,8 @@ auto RestRequestSender::SendRequestAndGetResponse(
   }();
 
   auto http_request = [this, &data]() {
-    auto http_request = web::http::http_request{
-        utils::MethodFromNetworkMethod(endpoint_.method)};
+    auto http_request =
+        web::http::http_request{HttpMethodFromNetworkMethod(endpoint_.method)};
 
     for (const auto &[key, value] : data.params) {
       http_request.headers().add(std::string{key}, std::string{value});

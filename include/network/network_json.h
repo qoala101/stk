@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <exception>
-#include <gsl/pointers>
 #include <memory>
 
 #include "not_null.hpp"

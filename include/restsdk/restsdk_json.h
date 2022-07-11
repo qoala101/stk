@@ -1,7 +1,11 @@
 #ifndef STONKS_RESTSDK_RESTSDK_JSON_H_
 #define STONKS_RESTSDK_RESTSDK_JSON_H_
 
+#include <stdint.h>
+
 #include <memory>
+#include <string>
+#include <string_view>
 
 #include "network_json.h"
 #include "not_null.hpp"
