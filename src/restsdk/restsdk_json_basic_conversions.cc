@@ -31,26 +31,26 @@ auto ParseFromJson(const IJson &json) -> std::string {
   return json.GetImpl().GetJson().as_string();
 }
 
-auto ConvertToJson(const int &value) -> isocpp_p0201::polymorphic_value<IJson> {
+auto ConvertToJson(int value) -> isocpp_p0201::polymorphic_value<IJson> {
   return isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>(
       IJson::Impl{value});
 }
 
-auto ConvertToJson(const int64_t &value)
+auto ConvertToJson(int64_t value)
     -> isocpp_p0201::polymorphic_value<IJson> {
   return isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>(
       IJson::Impl{value});
 }
 
-auto ConvertToJson(const double &value)
+auto ConvertToJson(double value)
     -> isocpp_p0201::polymorphic_value<IJson> {
   return isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>(
       IJson::Impl{value});
 }
 
-auto ConvertToJson(const std::string &value)
+auto ConvertToJson(std::string_view value)
     -> isocpp_p0201::polymorphic_value<IJson> {
   return isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>(
-      IJson::Impl{web::json::value::string(value)});
+      IJson::Impl{web::json::value::string(value.data())});
 }
 }  // namespace stonks::network

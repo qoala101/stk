@@ -48,7 +48,7 @@ auto RestRequestBuilder::AppendUri(std::string_view uri)
 
 auto RestRequestBuilder::AddParam(std::string_view key, std::string_view value)
     -> RestRequestBuilder& {
-  params_[key.data()] = value.data();
+  params_.emplace(key.data(), value.data());
   return *this;
 }
 
@@ -65,7 +65,7 @@ auto RestRequestBuilder::AddParam(std::string_view key,
 
 auto RestRequestBuilder::AddHeader(std::string_view key, std::string_view value)
     -> RestRequestBuilder& {
-  headers_[key.data()] = value.data();
+  headers_.emplace(key.data(), value.data());
   return *this;
 }
 

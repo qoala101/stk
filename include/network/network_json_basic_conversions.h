@@ -26,15 +26,13 @@ auto ParseFromJson(const IJson &json) -> double;
 template <>
 auto ParseFromJson(const IJson &json) -> std::string;
 
-auto ConvertToJson(const int &value) -> isocpp_p0201::polymorphic_value<IJson>;
+auto ConvertToJson(int value) -> isocpp_p0201::polymorphic_value<IJson>;
 
-auto ConvertToJson(const int64_t &value)
-    -> isocpp_p0201::polymorphic_value<IJson>;
+auto ConvertToJson(int64_t value) -> isocpp_p0201::polymorphic_value<IJson>;
 
-auto ConvertToJson(const double &value)
-    -> isocpp_p0201::polymorphic_value<IJson>;
+auto ConvertToJson(double value) -> isocpp_p0201::polymorphic_value<IJson>;
 
-auto ConvertToJson(const std::string &value)
+auto ConvertToJson(std::string_view value)
     -> isocpp_p0201::polymorphic_value<IJson>;
 }  // namespace stonks::network
 
