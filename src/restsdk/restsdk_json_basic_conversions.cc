@@ -25,28 +25,24 @@ auto ParseFromJson(const stonks::network::IJson &json) -> std::string {
   return json.GetImpl().GetJson().as_string();
 }
 
-template <>
 auto ConvertToJson(const int &value)
     -> cpp::not_null<std::unique_ptr<stonks::network::IJson>> {
   return cpp::assume_not_null(
       std::make_unique<restsdk::Json>(IJson::Impl{value}));
 }
 
-template <>
 auto ConvertToJson(const int64_t &value)
     -> cpp::not_null<std::unique_ptr<stonks::network::IJson>> {
   return cpp::assume_not_null(
       std::make_unique<restsdk::Json>(IJson::Impl{value}));
 }
 
-template <>
 auto ConvertToJson(const double &value)
     -> cpp::not_null<std::unique_ptr<stonks::network::IJson>> {
   return cpp::assume_not_null(
       std::make_unique<restsdk::Json>(IJson::Impl{value}));
 }
 
-template <>
 auto ConvertToJson(const std::string &value)
     -> cpp::not_null<std::unique_ptr<stonks::network::IJson>> {
   return cpp::assume_not_null(std::make_unique<restsdk::Json>(

@@ -24,22 +24,15 @@ auto ParseFromJson(const stonks::network::IJson &json) -> double;
 template <>
 auto ParseFromJson(const stonks::network::IJson &json) -> std::string;
 
-template <typename T>
-auto ConvertToJson(const T &value) -> cpp::not_null<std::unique_ptr<IJson>>;
-
-template <>
 auto ConvertToJson(const int &value)
     -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
 
-template <>
 auto ConvertToJson(const int64_t &value)
     -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
 
-template <>
 auto ConvertToJson(const double &value)
     -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
 
-template <>
 auto ConvertToJson(const std::string &value)
     -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
 }  // namespace stonks::network

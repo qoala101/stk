@@ -10,7 +10,7 @@
 #include "network_rest_request_builder.h"
 #include "not_null.hpp"
 #include "restsdk_factory.h"
-#include "restsdk_json_impl.h"
+#include "network_json_basic_conversions.h"
 #include "restsdk_rest_request_sender.h"
 
 TEST(RestRequest, AppendUri) {
@@ -112,7 +112,6 @@ auto ParseFromJson(const stonks::network::IJson &json) -> AvgPrice {
       std::stod(ParseFromJson<std::string>(*json.GetChild("price")))};
 }
 
-template <>
 auto ConvertToJson(const AvgPrice &value)
     -> cpp::not_null<std::unique_ptr<IJson>> {
   auto json = restsdk::Factory{}.CreateJson();
