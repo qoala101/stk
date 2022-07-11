@@ -7,7 +7,6 @@
 #include <range/v3/view/subrange.hpp>
 #include <range/v3/view/view.hpp>
 #include <string>
-#include <type_traits>
 #include <utility>
 
 #include "network_types.h"
@@ -70,10 +69,10 @@ auto RestRequestBuilder::AddHeader(std::string_view key, std::string_view value)
   return *this;
 }
 
-auto RestRequestBuilder::WithBody(cpp::not_null<std::unique_ptr<IJson>> body)
+auto RestRequestBuilder::WithBody(isocpp_p0201::polymorphic_value<IJson> body)
     -> RestRequestBuilder& {
   Expects(!body_);
-  body_ = std::move(body).as_nullable();
+  body_.emplace(std::move(body));
   return *this;
 }
 
@@ -81,9 +80,7 @@ auto RestRequestBuilder::Build() const -> std::pair<Endpoint, RestRequestData> {
   auto endpoint =
       Endpoint{.method = method_, .uri = AccumulateUriParts(uri_parts_)};
   auto data =
-      RestRequestData{.params = params_,
-                      .headers = headers_,
-                      .body = body_ ? body_->Clone().as_nullable() : nullptr};
+      RestRequestData{.params = params_, .headers = headers_, .body = body_};
   return std::make_pair(std::move(endpoint), std::move(data));
 }
 }  // namespace stonks::network

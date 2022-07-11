@@ -1,6 +1,8 @@
 #ifndef STONKS_RESTSDK_RESTSDK_FACTORY_H_
 #define STONKS_RESTSDK_RESTSDK_FACTORY_H_
 
+#include <polymorphic_value.h>
+
 #include <memory>
 #include <string_view>
 
@@ -33,7 +35,7 @@ class Factory : public network::IFactory {
    * @copydoc network::IFactory::CreateJson
    */
   [[nodiscard]] auto CreateJson() const
-      -> cpp::not_null<std::unique_ptr<network::IJson>> override;
+      -> isocpp_p0201::polymorphic_value<network::IJson> override;
 };
 }  // namespace stonks::restsdk
 

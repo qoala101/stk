@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <polymorphic_value.h>
 
 #include <cstdint>
 #include <magic_enum.hpp>
@@ -7,10 +8,10 @@
 #include <string>
 
 #include "network_json.h"
+#include "network_json_basic_conversions.h"
 #include "network_rest_request_builder.h"
 #include "not_null.hpp"
 #include "restsdk_factory.h"
-#include "network_json_basic_conversions.h"
 #include "restsdk_rest_request_sender.h"
 
 TEST(RestRequest, AppendUri) {
@@ -113,7 +114,7 @@ auto ParseFromJson(const stonks::network::IJson &json) -> AvgPrice {
 }
 
 auto ConvertToJson(const AvgPrice &value)
-    -> cpp::not_null<std::unique_ptr<IJson>> {
+    -> isocpp_p0201::polymorphic_value<IJson> {
   auto json = restsdk::Factory{}.CreateJson();
   json->SetChild("mins", *ConvertToJson(value.mins));
   json->SetChild("price", *ConvertToJson(std::to_string(value.price)));

@@ -1,10 +1,11 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_REQUEST_BUILDER_H_
 #define STONKS_NETWORK_NETWORK_REST_REQUEST_BUILDER_H_
 
+#include <polymorphic_value.h>
+
 #include <chrono>
 #include <magic_enum.hpp>
 #include <map>
-#include <memory>
 #include <optional>
 #include <sstream>
 #include <string>
@@ -16,7 +17,6 @@
 #include "network_enums.h"
 #include "network_json.h"
 #include "network_types.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 /**
@@ -115,7 +115,7 @@ class RestRequestBuilder {
    * @brief Sets the JSON body of the request.
    * @remark Should be called once.
    */
-  auto WithBody(cpp::not_null<std::unique_ptr<IJson>> body)
+  auto WithBody(isocpp_p0201::polymorphic_value<IJson> body)
       -> RestRequestBuilder &;
 
   /**
@@ -128,7 +128,7 @@ class RestRequestBuilder {
   std::vector<std::string> uri_parts_{};
   std::map<std::string, std::string> params_{};
   std::map<std::string, std::string> headers_{};
-  std::unique_ptr<IJson> body_{};
+  std::optional<isocpp_p0201::polymorphic_value<IJson>> body_{};
 };
 }  // namespace stonks::network
 

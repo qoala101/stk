@@ -1,6 +1,8 @@
 #ifndef STONKS_NETWORK_NETWORK_JSON_BASIC_CONVERSIONS_H_
 #define STONKS_NETWORK_NETWORK_JSON_BASIC_CONVERSIONS_H_
 
+#include <polymorphic_value.h>
+
 #include "network_json.h"
 
 /**
@@ -13,28 +15,27 @@ template <typename T>
 auto ParseFromJson(const IJson &json) -> T;
 
 template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> int;
+auto ParseFromJson(const IJson &json) -> int;
 
 template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> int64_t;
+auto ParseFromJson(const IJson &json) -> int64_t;
 
 template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> double;
+auto ParseFromJson(const IJson &json) -> double;
 
 template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> std::string;
+auto ParseFromJson(const IJson &json) -> std::string;
 
-auto ConvertToJson(const int &value)
-    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
+auto ConvertToJson(const int &value) -> isocpp_p0201::polymorphic_value<IJson>;
 
 auto ConvertToJson(const int64_t &value)
-    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
+    -> isocpp_p0201::polymorphic_value<IJson>;
 
 auto ConvertToJson(const double &value)
-    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
+    -> isocpp_p0201::polymorphic_value<IJson>;
 
 auto ConvertToJson(const std::string &value)
-    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
+    -> isocpp_p0201::polymorphic_value<IJson>;
 }  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_NETWORK_JSON_BASIC_CONVERSIONS_H_

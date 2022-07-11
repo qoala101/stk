@@ -23,7 +23,7 @@ struct Endpoint {
 struct RestRequestData {
   std::map<std::string, std::string> params{};
   std::map<std::string, std::string> headers{};
-  std::unique_ptr<IJson> body{};
+  std::optional<isocpp_p0201::polymorphic_value<IJson>> body{};
 };
 }  // namespace stonks::network
 

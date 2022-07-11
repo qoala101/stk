@@ -1,6 +1,8 @@
 #ifndef STONKS_NETWORK_NETWORK_FACTORY_H_
 #define STONKS_NETWORK_NETWORK_FACTORY_H_
 
+#include <polymorphic_value.h>
+
 #include "network_json.h"
 #include "network_rest_request_handler.h"
 #include "network_rest_request_sender.h"
@@ -35,7 +37,7 @@ class IFactory {
    * @brief Creates an empty JSON object.
    */
   [[nodiscard]] virtual auto CreateJson() const
-      -> cpp::not_null<std::unique_ptr<IJson>> = 0;
+      -> isocpp_p0201::polymorphic_value<IJson> = 0;
 };
 }  // namespace stonks::network
 

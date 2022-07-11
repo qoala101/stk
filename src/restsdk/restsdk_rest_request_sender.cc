@@ -8,6 +8,7 @@
 #include <cpprest/http_msg.h>
 #include <cpprest/uri_builder.h>
 #include <fmt/format.h>
+#include <polymorphic_value.h>
 #include <pplx/pplxtasks.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -15,13 +16,13 @@
 #include <magic_enum.hpp>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 
 #include "network_enums.h"
 #include "network_json.h"
 #include "network_types.h"
-#include "not_null.hpp"
 #include "restsdk_json.h"
 #include "restsdk_json_impl.h"
 
@@ -63,7 +64,7 @@ RestRequestSender::RestRequestSender(network::Endpoint endpoint)
 
 auto RestRequestSender::SendRequestAndGetResponse(
     const network::RestRequestData &data) const
-    -> cpp::not_null<std::unique_ptr<network::IJson>> {
+    -> isocpp_p0201::polymorphic_value<network::IJson> {
   auto uri_builder = [this, &data]() {
     auto uri_builder = web::http::uri_builder{endpoint_.uri};
 
@@ -83,7 +84,7 @@ auto RestRequestSender::SendRequestAndGetResponse(
     }
 
     if (data.body) {
-      http_request.set_body(data.body->GetImpl().GetJson());
+      http_request.set_body((*data.body)->GetImpl().GetJson());
     }
 
     return http_request;
@@ -99,8 +100,8 @@ auto RestRequestSender::SendRequestAndGetResponse(
   try {
     const auto response = http_client.request(http_request).get();
     auto json = response.extract_json().get();
-    return cpp::assume_not_null(
-        std::make_unique<Json>(network::IJson::Impl{std::move(json)}));
+    return isocpp_p0201::make_polymorphic_value<network::IJson, Json>(
+        network::IJson::Impl{std::move(json)});
   } catch (const std::exception &exception) {
     Logger().error("Request failed: {}", exception.what());
     throw;

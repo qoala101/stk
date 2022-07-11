@@ -1,10 +1,9 @@
 #ifndef STONKS_RESTSDK_RESTSDK_JSON_H_
 #define STONKS_RESTSDK_RESTSDK_JSON_H_
 
-#include <stdint.h>
+#include <polymorphic_value.h>
 
 #include <memory>
-#include <string>
 #include <string_view>
 
 #include "network_json.h"
@@ -21,14 +20,20 @@ class Json : public network::IJson {
   explicit Json(network::IJson::Impl impl);
 
   /**
-   * @copydoc network::IJson::Clone
+   * @copydoc network::IJson::clone
    */
-  [[nodiscard]] auto Clone() const
+  [[nodiscard]] auto clone() const
       -> cpp::not_null<std::unique_ptr<IJson>> override;
 
+  /**
+   * @copydoc network::IJson::GetChild
+   */
   [[nodiscard]] auto GetChild(std::string_view key) const
-      -> cpp::not_null<std::unique_ptr<IJson>> override;
-      
+      -> isocpp_p0201::polymorphic_value<IJson> override;
+
+  /**
+   * @copydoc network::IJson::SetChild
+   */
   void SetChild(std::string_view key, const IJson& child) override;
 
   /**

@@ -1,7 +1,8 @@
 #include "restsdk_factory.h"
 
+#include <polymorphic_value.h>
+
 #include <memory>
-#include <type_traits>
 
 #include "network_json.h"
 #include "not_null.hpp"
@@ -20,7 +21,7 @@ auto Factory::CreateRestRequestHandler(std::string_view local_uri) const
 }
 
 auto Factory::CreateJson() const
-    -> cpp::not_null<std::unique_ptr<network::IJson>> {
-  return cpp::assume_not_null(std::make_unique<Json>());
+    -> isocpp_p0201::polymorphic_value<network::IJson> {
+  return isocpp_p0201::make_polymorphic_value<network::IJson, Json>();
 }
 }  // namespace stonks::restsdk

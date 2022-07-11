@@ -1,6 +1,8 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_REQUEST_SENDER_H_
 #define STONKS_NETWORK_NETWORK_REST_REQUEST_SENDER_H_
 
+#include <polymorphic_value.h>
+
 #include <memory>
 
 #include "network_json.h"
@@ -22,7 +24,7 @@ class IRestRequestSender {
    */
   // NOLINTNEXTLINE(*-use-nodiscard)
   virtual auto SendRequestAndGetResponse(const RestRequestData &data) const
-      -> cpp::not_null<std::unique_ptr<IJson>> = 0;
+      -> isocpp_p0201::polymorphic_value<IJson> = 0;
 };
 }  // namespace stonks::network
 
