@@ -8,6 +8,7 @@
 #include <range/v3/view/view.hpp>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "network_types.h"
 

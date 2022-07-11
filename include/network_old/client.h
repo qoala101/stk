@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_CLIENT_H_
-#define STONKS_NETWORK_CLIENT_H_
+#ifndef STONKS_NETWORK_OLD_CLIENT_H_
+#define STONKS_NETWORK_OLD_CLIENT_H_
 
 #include <map>
 #include <memory>
@@ -48,4 +48,4 @@ class Client {
 };
 }  // namespace stonks::network
 
-#endif  // STONKS_NETWORK_CLIENT_H_
+#endif  // STONKS_NETWORK_OLD_CLIENT_H_

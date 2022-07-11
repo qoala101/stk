@@ -1,9 +1,10 @@
 #include <cpprest/json.h>
 #include <polymorphic_value.h>
-#include <stdint.h>
 
+#include <cstdint>
 #include <memory>
 #include <string>
+#include <string_view>
 
 #include "network_json.h"
 #include "network_json_basic_conversions.h"
@@ -36,14 +37,12 @@ auto ConvertToJson(int value) -> isocpp_p0201::polymorphic_value<IJson> {
       IJson::Impl{value});
 }
 
-auto ConvertToJson(int64_t value)
-    -> isocpp_p0201::polymorphic_value<IJson> {
+auto ConvertToJson(int64_t value) -> isocpp_p0201::polymorphic_value<IJson> {
   return isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>(
       IJson::Impl{value});
 }
 
-auto ConvertToJson(double value)
-    -> isocpp_p0201::polymorphic_value<IJson> {
+auto ConvertToJson(double value) -> isocpp_p0201::polymorphic_value<IJson> {
   return isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>(
       IJson::Impl{value});
 }

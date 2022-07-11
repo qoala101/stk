@@ -6,6 +6,7 @@
 #include <cpprest/http_client.h>
 #include <cpprest/http_headers.h>
 #include <cpprest/http_msg.h>
+#include <cpprest/json.h>
 #include <cpprest/uri_builder.h>
 #include <fmt/format.h>
 #include <polymorphic_value.h>
