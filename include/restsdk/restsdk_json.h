@@ -26,20 +26,9 @@ class Json : public network::IJson {
   [[nodiscard]] auto Clone() const
       -> cpp::not_null<std::unique_ptr<IJson>> override;
 
-  [[nodiscard]] auto AsInt() const -> int override;
-  void SetInt(int value) override;
-
-  [[nodiscard]] auto AsInt64() const -> int64_t override;
-  void SetInt64(int64_t value) override;
-
-  [[nodiscard]] auto AsDouble() const -> double override;
-  void SetDouble(double value) override;
-
-  [[nodiscard]] auto AsString() const -> std::string override;
-  void SetString(std::string_view value) override;
-
   [[nodiscard]] auto GetChild(std::string_view key) const
       -> cpp::not_null<std::unique_ptr<IJson>> override;
+      
   void SetChild(std::string_view key, const IJson& child) override;
 
   /**

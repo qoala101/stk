@@ -3,14 +3,15 @@
 #include <cstdint>
 #include <magic_enum.hpp>
 #include <memory>
+#include <ostream>
 #include <string>
 
 #include "network_json.h"
 #include "network_rest_request_builder.h"
 #include "not_null.hpp"
-#include "restsdk_rest_request_sender.h"
 #include "restsdk_factory.h"
 #include "restsdk_json_impl.h"
+#include "restsdk_rest_request_sender.h"
 
 TEST(RestRequest, AppendUri) {
   const auto [endpoint, data] = stonks::network::RestRequestBuilder{}
@@ -91,6 +92,13 @@ TEST(RestRequest, ParameterTypesToString) {
 struct AvgPrice {
   int mins{};
   double price{};
+
+ private:
+  friend auto operator==(const AvgPrice &, const AvgPrice &) -> bool = default;
+  friend auto operator<<(std::ostream &stream, const AvgPrice &avg_price)
+      -> std::ostream & {
+    return stream << avg_price.mins << " " << avg_price.price;
+  }
 };
 
 void ParseFromJson(const stonks::network::IJson &json,
@@ -98,45 +106,10 @@ void ParseFromJson(const stonks::network::IJson &json,
 
 namespace stonks::network {
 template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> int {
-  return json.AsInt();
-}
-template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> int64_t {
-  return json.AsInt64();
-}
-
-template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> double {
-  return json.AsDouble();
-}
-
-template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> std::string {
-  return json.AsString();
-}
-
-template <>
 auto ParseFromJson(const stonks::network::IJson &json) -> AvgPrice {
   return AvgPrice{
       ParseFromJson<int>(*json.GetChild("mins")),
       std::stod(ParseFromJson<std::string>(*json.GetChild("price")))};
-}
-
-template <>
-auto ConvertToJson(const int &value)
-    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>> {
-  auto json = restsdk::Factory{}.CreateJson();
-  json->SetInt(value);
-  return json;
-}
-
-template <>
-auto ConvertToJson(const std::string &value)
-    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>> {
-  auto json = restsdk::Factory{}.CreateJson();
-  json->SetString(value);
-  return json;
 }
 
 template <>
@@ -159,11 +132,12 @@ TEST(RestRequest, SendRequest) {
   const auto sender =
       std::make_unique<stonks::restsdk::RestRequestSender>(endpoint);
   const auto response = sender->SendRequestAndGetResponse(data);
-  // const auto &a = response->GetImpl();
-  // EXPECT_FALSE(a.GetJson().is_null());
+  const auto response_price = ParseFromJson<AvgPrice>(*response);
+  EXPECT_GT(response_price.mins, 0);
+  EXPECT_GT(response_price.price, 0);
 
-  // const auto avg_price = ParseFromJson<AvgPrice>(*response);
-  // std::cout << "\n" << avg_price.mins << " " << avg_price.price << "\n\n";
-  // const auto avg_price_json = stonks::network::ConvertToJson(avg_price);
-  // std::cout << avg_price_json->GetImpl().GetJson().serialize() << "\n\n";
+  const auto response_price_json =
+      stonks::network::ConvertToJson(response_price);
+  const auto json_price = ParseFromJson<AvgPrice>(*response_price_json);
+  EXPECT_EQ(response_price, json_price);
 }

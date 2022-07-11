@@ -29,33 +29,50 @@ class IJson {
 
   virtual ~IJson() = default;
 
-  [[nodiscard]] virtual auto AsInt() const -> int = 0;
-  virtual void SetInt(int value) = 0;
-
-  [[nodiscard]] virtual auto AsInt64() const -> int64_t = 0;
-  virtual void SetInt64(int64_t value) = 0;
-
-  [[nodiscard]] virtual auto AsDouble() const -> double = 0;
-  virtual void SetDouble(double value) = 0;
-
-  [[nodiscard]] virtual auto AsString() const -> std::string = 0;
-  virtual void SetString(std::string_view value) = 0;
-
   [[nodiscard]] virtual auto GetChild(std::string_view key) const
       -> cpp::not_null<std::unique_ptr<IJson>> = 0;
-  virtual void SetChild(std::string_view key, const IJson& child) = 0;
+      
+  virtual void SetChild(std::string_view key, const IJson &child) = 0;
 
   /**
    * @brief Gives implementation details.
    */
-  [[nodiscard]] virtual auto GetImpl() const -> const Impl& = 0;
+  [[nodiscard]] virtual auto GetImpl() const -> const Impl & = 0;
 };
 
 template <typename T>
-auto ParseFromJson(const IJson& json) -> T;
+auto ParseFromJson(const IJson &json) -> T;
+
+template <>
+auto ParseFromJson(const stonks::network::IJson &json) -> int;
+
+template <>
+auto ParseFromJson(const stonks::network::IJson &json) -> int64_t;
+
+template <>
+auto ParseFromJson(const stonks::network::IJson &json) -> double;
+
+template <>
+auto ParseFromJson(const stonks::network::IJson &json) -> std::string;
 
 template <typename T>
-auto ConvertToJson(const T& value) -> cpp::not_null<std::unique_ptr<IJson>>;
+auto ConvertToJson(const T &value) -> cpp::not_null<std::unique_ptr<IJson>>;
+
+template <>
+auto ConvertToJson(const int &value)
+    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
+
+template <>
+auto ConvertToJson(const int64_t &value)
+    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
+
+template <>
+auto ConvertToJson(const double &value)
+    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
+
+template <>
+auto ConvertToJson(const std::string &value)
+    -> cpp::not_null<std::unique_ptr<stonks::network::IJson>>;
 }  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_NETWORK_JSON_H_
