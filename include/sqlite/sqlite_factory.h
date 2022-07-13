@@ -14,7 +14,7 @@ namespace stonks::sqlite {
  * @brief sqldb::IFactory
  */
 // NOLINTNEXTLINE(*-special-member-functions)
-class SqliteDbFactory : public sqldb::IFactory {
+class Factory : public sqldb::IFactory {
  public:
   /**
    * @copydoc sqldb::IDb::LoadDbFromFile

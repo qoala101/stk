@@ -13,9 +13,9 @@ namespace stonks::sqlite {
 /**
  * @brief Convenience API for SQLite DB.
  */
-class SqliteDbFacade {
+class DbFacade {
  public:
-  explicit SqliteDbFacade(cpp::not_null<sqlite3 *> sqlite_db);
+  explicit DbFacade(cpp::not_null<sqlite3 *> sqlite_db);
 
   /**
    * @brief Gets the file from which DB was read.

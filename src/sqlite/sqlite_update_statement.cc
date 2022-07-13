@@ -11,14 +11,14 @@
 #include "sqlite_prepared_statement_handle.h"
 
 namespace stonks::sqlite {
-SqliteUpdateStatement::SqliteUpdateStatement(
-    SqlitePreparedStatementHandle prepared_statement_handle)
+UpdateStatement::UpdateStatement(
+    PreparedStatementHandle prepared_statement_handle)
     : prepared_statement_handle_{std::move(prepared_statement_handle)} {}
 
-void SqliteUpdateStatement::Execute(const std::vector<sqldb::Value> &params) {
+void UpdateStatement::Execute(const std::vector<sqldb::Value> &params) {
   auto &sqlite_statement = prepared_statement_handle_.GetSqliteStatement();
   auto prepared_statement_facade =
-      SqlitePreparedStatementFacade{cpp::assume_not_null(&sqlite_statement)};
+      PreparedStatementFacade{cpp::assume_not_null(&sqlite_statement)};
   prepared_statement_facade.Reset();
   prepared_statement_facade.BindParams(params);
 

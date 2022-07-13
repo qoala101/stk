@@ -15,7 +15,7 @@ namespace stonks::sqlite {
 /**
  * @copydoc sqldb::ISelectStatement
  */
-class SqliteSelectStatement : public sqldb::ISelectStatement {
+class SelectStatement : public sqldb::ISelectStatement {
  public:
   /**
    * @param prepared_statement_handle Handle for SQLite prepared statement
@@ -23,9 +23,8 @@ class SqliteSelectStatement : public sqldb::ISelectStatement {
    * @param result_definition Description of rows to be parsed from prepared
    * statement result.
    */
-  explicit SqliteSelectStatement(
-      SqlitePreparedStatementHandle prepared_statement_handle,
-      const sqldb::RowDefinition &result_definition);
+  explicit SelectStatement(PreparedStatementHandle prepared_statement_handle,
+                           const sqldb::RowDefinition &result_definition);
 
   /**
    * @copydoc sqldb::ISelectStatement::Execute
@@ -34,7 +33,7 @@ class SqliteSelectStatement : public sqldb::ISelectStatement {
       -> sqldb::Rows override;
 
  private:
-  SqlitePreparedStatementHandle prepared_statement_handle_;
+  PreparedStatementHandle prepared_statement_handle_;
   std::vector<sqldb::Column> result_columns_{};
   std::vector<sqldb::DataType> result_types_{};
 };

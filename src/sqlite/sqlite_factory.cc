@@ -6,14 +6,14 @@
 #include "sqlite_utils.h"
 
 namespace stonks::sqlite {
-auto SqliteDbFactory::LoadDbFromFile(std::string_view file_path) const
+auto Factory::LoadDbFromFile(std::string_view file_path) const
     -> cpp::not_null<std::unique_ptr<sqldb::IDb>> {
-  return cpp::assume_not_null(std::make_unique<SqliteDb>(
-      utils::LoadSqliteDbFromFileToMemory(file_path)));
+  return cpp::assume_not_null(
+      std::make_unique<Db>(utils::LoadSqliteDbFromFileToMemory(file_path)));
 }
 
-auto SqliteDbFactory::CreateQueryBuilder() const
+auto Factory::CreateQueryBuilder() const
     -> cpp::not_null<std::unique_ptr<sqldb::IQueryBuilder>> {
-  return cpp::assume_not_null(std::make_unique<SqliteQueryBuilder>());
+  return cpp::assume_not_null(std::make_unique<QueryBuilder>());
 }
 }  // namespace stonks::sqlite

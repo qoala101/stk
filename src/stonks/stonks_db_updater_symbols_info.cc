@@ -41,6 +41,7 @@ class DbUpdaterSymbolsInfo::Impl {
     const auto binance_client = client::Binance{};
     const auto exchange_info = binance_client.GetExchangeInfo();
 
+    // TODO change to free functions
     const auto get_base_asset = [](const auto &symbol_info) {
       return symbol_info.base_asset;
     };

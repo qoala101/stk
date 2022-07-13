@@ -15,24 +15,24 @@ namespace stonks::sqlite {
 /**
  * @copydoc sqldb::IDb
  */
-class SqliteDb : public sqldb::IDb {
+class Db : public sqldb::IDb {
  public:
   /**
    * @brief Creates wrapper for SQLite DB.
    */
-  explicit SqliteDb(SqliteDbHandle sqlite_db);
+  explicit Db(SqliteDbHandle sqlite_db);
 
-  SqliteDb(const SqliteDb &) = delete;
-  SqliteDb(SqliteDb &&) noexcept = default;
+  Db(const Db &) = delete;
+  Db(Db &&) noexcept = default;
 
-  auto operator=(const SqliteDb &) -> SqliteDb & = delete;
-  auto operator=(SqliteDb &&) noexcept -> SqliteDb & = default;
+  auto operator=(const Db &) -> Db & = delete;
+  auto operator=(Db &&) noexcept -> Db & = default;
 
   /**
    * @brief Closes SQLite DB.
    * @remark Doesn't write DB to file. It should be done manually.
    */
-  ~SqliteDb() noexcept override;
+  ~Db() noexcept override;
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement

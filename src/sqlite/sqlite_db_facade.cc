@@ -15,17 +15,17 @@
 namespace stonks::sqlite {
 namespace {
 [[nodiscard]] auto Logger() -> spdlog::logger & {
-  static auto logger = spdlog::stdout_color_mt("SqliteDbFacade");
+  static auto logger = spdlog::stdout_color_mt("sqlite::DbFacade");
   return *logger;
 }
 }  // namespace
 
-SqliteDbFacade::SqliteDbFacade(cpp::not_null<sqlite3 *> sqlite_db)
+DbFacade::DbFacade(cpp::not_null<sqlite3 *> sqlite_db)
     : sqlite_db_{sqlite_db.as_nullable()} {
   Ensures(sqlite_db_ != nullptr);
 }
 
-auto SqliteDbFacade::GetFileName() const -> std::string {
+auto DbFacade::GetFileName() const -> std::string {
   Expects(sqlite_db_ != nullptr);
 
   const auto *const file_name = sqlite3_db_filename(sqlite_db_, nullptr);
@@ -37,16 +37,16 @@ auto SqliteDbFacade::GetFileName() const -> std::string {
   return file_name;
 }
 
-void SqliteDbFacade::WriteToFile(std::string_view file_path) const {
+void DbFacade::WriteToFile(std::string_view file_path) const {
   Expects(sqlite_db_ != nullptr);
 
   auto file_db = utils::OpenSqliteDbFromFile(file_path);
-  SqliteDbFacade(cpp::assume_not_null(file_db.get())).CopyDataFrom(*sqlite_db_);
+  DbFacade(cpp::assume_not_null(file_db.get())).CopyDataFrom(*sqlite_db_);
 
   Logger().info("Stored DB to {}", file_path.data());
 }
 
-void SqliteDbFacade::CopyDataFrom(sqlite3 &other_db) {
+void DbFacade::CopyDataFrom(sqlite3 &other_db) {
   Expects(sqlite_db_ != nullptr);
 
   auto *backup = sqlite3_backup_init(sqlite_db_, "main", &other_db, "main");
@@ -54,7 +54,7 @@ void SqliteDbFacade::CopyDataFrom(sqlite3 &other_db) {
   sqlite3_backup_finish(backup);
 }
 
-auto SqliteDbFacade::CreatePreparedStatement(std::string_view query)
+auto DbFacade::CreatePreparedStatement(std::string_view query)
     -> SqliteStatementHandle {
   Expects(sqlite_db_ != nullptr);
 
@@ -75,7 +75,7 @@ auto SqliteDbFacade::CreatePreparedStatement(std::string_view query)
           sqlite_statement});
 }
 
-void SqliteDbFacade::Close() {
+void DbFacade::Close() {
   Expects(sqlite_db_ != nullptr);
 
   const auto file_name = GetFileName();

@@ -15,7 +15,7 @@
 namespace stonks::sqlite {
 namespace {
 [[nodiscard]] auto Logger() -> auto & {
-  static auto logger = spdlog::stdout_color_mt("SqlitePreparedStatementFacade");
+  static auto logger = spdlog::stdout_color_mt("sqlite::PreparedStatementFacade");
   return *logger;
 }
 
@@ -76,13 +76,13 @@ auto GetValue(sqlite3_stmt &statement, int index, sqldb::DataType type)
 }
 }  // namespace
 
-SqlitePreparedStatementFacade::SqlitePreparedStatementFacade(
+PreparedStatementFacade::PreparedStatementFacade(
     cpp::not_null<sqlite3_stmt *> sqlite_statement)
     : sqlite_statement_{sqlite_statement.as_nullable()} {
   Ensures(sqlite_statement_ != nullptr);
 }
 
-void SqlitePreparedStatementFacade::Reset() {
+void PreparedStatementFacade::Reset() {
   Expects(sqlite_statement_ != nullptr);
 
   const auto result_code = sqlite3_reset(sqlite_statement_);
@@ -93,7 +93,7 @@ void SqlitePreparedStatementFacade::Reset() {
   }
 }
 
-void SqlitePreparedStatementFacade::BindParams(
+void PreparedStatementFacade::BindParams(
     const std::vector<sqldb::Value> &params) {
   Expects(sqlite_statement_ != nullptr);
 
@@ -102,12 +102,12 @@ void SqlitePreparedStatementFacade::BindParams(
   }
 }
 
-auto SqlitePreparedStatementFacade::Step() -> ResultCode {
+auto PreparedStatementFacade::Step() -> ResultCode {
   Expects(sqlite_statement_ != nullptr);
   return sqlite3_step(sqlite_statement_);
 }
 
-auto SqlitePreparedStatementFacade::GetStepValues(
+auto PreparedStatementFacade::GetStepValues(
     const std::vector<sqldb::DataType> &value_types) const
     -> std::vector<sqldb::Value> {
   Expects(sqlite_statement_ != nullptr);
@@ -125,7 +125,7 @@ auto SqlitePreparedStatementFacade::GetStepValues(
   return values;
 }
 
-void SqlitePreparedStatementFacade::Finalize() {
+void PreparedStatementFacade::Finalize() {
   Expects(sqlite_statement_ != nullptr);
 
   const auto result_code = sqlite3_finalize(sqlite_statement_);

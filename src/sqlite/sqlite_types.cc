@@ -11,20 +11,19 @@
 namespace stonks::sqlite {
 namespace {
 [[nodiscard]] auto Logger() -> spdlog::logger& {
-  static auto logger = spdlog::stdout_color_mt("SqliteTypes");
+  static auto logger = spdlog::stdout_color_mt("sqlite::Types");
   return *logger;
 }
 }  // namespace
 
 void SqliteDbCloser::operator()(sqlite3* sqlite_db) noexcept try {
-  SqliteDbFacade{cpp::check_not_null(sqlite_db)}.Close();
+  DbFacade{cpp::check_not_null(sqlite_db)}.Close();
 } catch (const std::exception& exception) {
   Logger().error(exception.what());
 }
 
 void SqliteStatementFinalizer::operator()(
     sqlite3_stmt* sqlite_statement) noexcept {
-  SqlitePreparedStatementFacade{cpp::check_not_null(sqlite_statement)}
-      .Finalize();
+  PreparedStatementFacade{cpp::check_not_null(sqlite_statement)}.Finalize();
 }
 }  // namespace stonks::sqlite

@@ -18,23 +18,25 @@
 #include "sqldb_enums_to_string.h"  // IWYU pragma: keep
 
 namespace stonks::sqlite {
-auto SqliteQueryBuilder::BuildCreateTableIfNotExistsQuery(
+namespace {
+auto IsColumnPrimaryKey(const sqldb::ColumnDefinition &column) -> bool {
+  return column.primary_key;
+}
+
+auto IsColumnForeignKey(const sqldb::ColumnDefinition &column) -> bool {
+  return column.foreign_key.has_value();
+}
+}  // namespace
+
+auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
     const sqldb::TableDefinition &table_definition) const -> std::string {
   Expects(!table_definition.table.empty());
   Expects(!table_definition.columns.empty());
 
-  const auto column_is_primary_key = [](const sqldb::ColumnDefinition &column) {
-    return column.primary_key;
-  };
   const auto has_primary_keys =
-      ranges::any_of(table_definition.columns, column_is_primary_key);
-
-  const auto column_is_foreign_key = [](const sqldb::ColumnDefinition &column) {
-    return column.foreign_key.has_value();
-  };
+      ranges::any_of(table_definition.columns, &IsColumnPrimaryKey);
   const auto has_foreign_keys =
-      ranges::any_of(table_definition.columns, column_is_foreign_key);
-
+      ranges::any_of(table_definition.columns, &IsColumnForeignKey);
   const auto has_keys = has_primary_keys || has_foreign_keys;
 
   auto query = std::string{"CREATE TABLE IF NOT EXISTS \"" +
@@ -58,7 +60,7 @@ auto SqliteQueryBuilder::BuildCreateTableIfNotExistsQuery(
   if (has_primary_keys) {
     query += "PRIMARY KEY(";
     auto primary_key_columns =
-        table_definition.columns | ranges::views::filter(column_is_primary_key);
+        table_definition.columns | ranges::views::filter(&IsColumnPrimaryKey);
 
     for (const auto &column_def : primary_key_columns) {
       query += "\"" + column_def.column + "\"";
@@ -82,7 +84,7 @@ auto SqliteQueryBuilder::BuildCreateTableIfNotExistsQuery(
 
   if (has_foreign_keys) {
     auto foreign_key_columns =
-        table_definition.columns | ranges::views::filter(column_is_foreign_key);
+        table_definition.columns | ranges::views::filter(&IsColumnForeignKey);
 
     for (const auto &column_def : foreign_key_columns) {
       const auto &foreign_key = *column_def.foreign_key;
@@ -103,7 +105,7 @@ auto SqliteQueryBuilder::BuildCreateTableIfNotExistsQuery(
   return query;
 }
 
-auto SqliteQueryBuilder::BuildDropTableQuery(const sqldb::Table &table) const
+auto QueryBuilder::BuildDropTableQuery(const sqldb::Table &table) const
     -> std::string {
   Expects(!table.empty());
 
@@ -113,9 +115,10 @@ auto SqliteQueryBuilder::BuildDropTableQuery(const sqldb::Table &table) const
   return query;
 }
 
-auto SqliteQueryBuilder::BuildSelectQuery(
-    const sqldb::Table &table, const std::vector<sqldb::Column> *columns,
-    std::string_view where_clause) const -> std::string {
+auto QueryBuilder::BuildSelectQuery(const sqldb::Table &table,
+                                    const std::vector<sqldb::Column> *columns,
+                                    std::string_view where_clause) const
+    -> std::string {
   Expects(!table.empty());
 
   auto query = std::string{"SELECT "};
@@ -141,7 +144,7 @@ auto SqliteQueryBuilder::BuildSelectQuery(
   return query;
 }
 
-auto SqliteQueryBuilder::BuildInsertQuery(
+auto QueryBuilder::BuildInsertQuery(
     const sqldb::Table &table, const std::vector<sqldb::Column> &columns) const
     -> std::string {
   Expects(!table.empty());
@@ -167,9 +170,10 @@ auto SqliteQueryBuilder::BuildInsertQuery(
   return query;
 }
 
-auto SqliteQueryBuilder::BuildUpdateQuery(
-    const sqldb::Table &table, const std::vector<sqldb::Column> &columns,
-    std::string_view where_clause) const -> std::string {
+auto QueryBuilder::BuildUpdateQuery(const sqldb::Table &table,
+                                    const std::vector<sqldb::Column> &columns,
+                                    std::string_view where_clause) const
+    -> std::string {
   Expects(!table.empty());
   Expects(!columns.empty());
 
@@ -191,8 +195,8 @@ auto SqliteQueryBuilder::BuildUpdateQuery(
   return query;
 }
 
-auto SqliteQueryBuilder::BuildDeleteQuery(const sqldb::Table &table,
-                                          std::string_view where_clause) const
+auto QueryBuilder::BuildDeleteQuery(const sqldb::Table &table,
+                                    std::string_view where_clause) const
     -> std::string {
   Expects(!table.empty());
 

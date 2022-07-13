@@ -13,14 +13,14 @@ namespace stonks::sqlite {
 /**
  * @brief Convenience API for SQLite prepared statement.
  */
-class SqlitePreparedStatementFacade {
+class PreparedStatementFacade {
  public:
   /**
    * @brief SQLite result code.
    */
   using ResultCode = int;
 
-  explicit SqlitePreparedStatementFacade(
+  explicit PreparedStatementFacade(
       cpp::not_null<sqlite3_stmt *> sqlite_statement);
 
   /**

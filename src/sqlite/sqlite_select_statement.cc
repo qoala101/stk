@@ -40,8 +40,8 @@ auto GetCellTypes(const std::vector<sqldb::CellDefinition> &cell_definitions)
 }
 }  // namespace
 
-SqliteSelectStatement::SqliteSelectStatement(
-    SqlitePreparedStatementHandle prepared_statement_handle,
+SelectStatement::SelectStatement(
+    PreparedStatementHandle prepared_statement_handle,
     const sqldb::RowDefinition &result_definition)
     : prepared_statement_handle_{std::move(prepared_statement_handle)},
       result_columns_{GetColumns(result_definition.GetCellDefinitions())},
@@ -49,11 +49,11 @@ SqliteSelectStatement::SqliteSelectStatement(
   Ensures(result_columns_.size() == result_types_.size());
 }
 
-auto SqliteSelectStatement::Execute(const std::vector<sqldb::Value> &params)
+auto SelectStatement::Execute(const std::vector<sqldb::Value> &params)
     -> sqldb::Rows {
   auto &sqlite_statement = prepared_statement_handle_.GetSqliteStatement();
   auto prepared_statement_facade =
-      SqlitePreparedStatementFacade{cpp::assume_not_null(&sqlite_statement)};
+      PreparedStatementFacade{cpp::assume_not_null(&sqlite_statement)};
   prepared_statement_facade.Reset();
   prepared_statement_facade.BindParams(params);
 

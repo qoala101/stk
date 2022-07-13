@@ -17,7 +17,7 @@
 namespace stonks::sqlite::utils {
 namespace {
 [[nodiscard]] auto Logger() -> spdlog::logger & {
-  static auto logger = spdlog::stdout_color_mt("Sqlite");
+  static auto logger = spdlog::stdout_color_mt("sqlite::Utils");
   return *logger;
 }
 
@@ -67,8 +67,7 @@ auto LoadSqliteDbFromFileToMemory(std::string_view file_path)
   }
 
   auto file_db = OpenSqliteDbFromFile(file_path);
-  SqliteDbFacade{cpp::assume_not_null(in_memory_db.get())}.CopyDataFrom(
-      *file_db);
+  DbFacade{cpp::assume_not_null(in_memory_db.get())}.CopyDataFrom(*file_db);
 
   Logger().info("Loaded DB from {}", file_path.data());
   return in_memory_db;

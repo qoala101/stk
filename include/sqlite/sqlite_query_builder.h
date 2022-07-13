@@ -12,7 +12,7 @@ namespace stonks::sqlite {
 /**
  * @copydoc sqldb::IQueryBuilder
  */
-class SqliteQueryBuilder : public sqldb::IQueryBuilder {
+class QueryBuilder : public sqldb::IQueryBuilder {
  public:
   /**
    * @copydoc sqldb::IQueryBuilder::BuildCreateTableIfNotExistsQuery

@@ -25,7 +25,7 @@ auto query_builder_facade = std::optional<stonks::sqldb::QueryBuilderFacade>{};
 
 TEST(SqliteDb, CreateAndDropTable) {
   static_cast<void>(std::filesystem::remove(kTestDbFileName));
-  db_factory = std::make_unique<stonks::sqlite::SqliteDbFactory>();
+  db_factory = std::make_unique<stonks::sqlite::Factory>();
   db = db_factory->LoadDbFromFile(kTestDbFileName).as_nullable();
   query_builder = db_factory->CreateQueryBuilder().as_nullable();
   query_builder_facade.emplace(cpp::assume_not_null(query_builder));

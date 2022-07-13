@@ -13,22 +13,21 @@ namespace stonks::sqlite {
  * @brief Handle for SQLite prepared statement.
  * @remark Keeps DB alive while handle is alive.
  */
-class SqlitePreparedStatementHandle {
+class PreparedStatementHandle {
  public:
-  explicit SqlitePreparedStatementHandle(
+  explicit PreparedStatementHandle(
       cpp::not_null<std::shared_ptr<sqlite3>> sqlite_db_handle,
       SqliteStatementHandle sqlite_statement_handle);
 
-  SqlitePreparedStatementHandle(const SqlitePreparedStatementHandle &) = delete;
-  SqlitePreparedStatementHandle(SqlitePreparedStatementHandle &&) noexcept =
-      default;
+  PreparedStatementHandle(const PreparedStatementHandle &) = delete;
+  PreparedStatementHandle(PreparedStatementHandle &&) noexcept = default;
 
-  auto operator=(const SqlitePreparedStatementHandle &)
-      -> SqlitePreparedStatementHandle & = delete;
-  auto operator=(SqlitePreparedStatementHandle &&) noexcept
-      -> SqlitePreparedStatementHandle & = default;
+  auto operator=(const PreparedStatementHandle &)
+      -> PreparedStatementHandle & = delete;
+  auto operator=(PreparedStatementHandle &&) noexcept
+      -> PreparedStatementHandle & = default;
 
-  ~SqlitePreparedStatementHandle() noexcept = default;
+  ~PreparedStatementHandle() noexcept = default;
 
   [[nodiscard]] auto GetSqliteStatement() const -> sqlite3_stmt &;
 
