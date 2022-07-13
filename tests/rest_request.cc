@@ -10,7 +10,6 @@
 #include "network_json.h"
 #include "network_json_basic_conversions.h"
 #include "network_rest_request_builder.h"
-#include "not_null.hpp"
 #include "restsdk_factory.h"
 #include "restsdk_rest_request_sender.h"
 
@@ -50,8 +49,8 @@ TEST(RestRequest, ParameterTypesToString) {
           .AddParam("int64_t", int64_t{123456789})
           .AddParam("float", float{123456789.123456789})
           .AddParam("double", double{123456789.123456789})
-          .AddParam("default_enum_name", DefaultNameEnum::kDefaultEnumName)
-          .AddParam("custom_enum_name", CustomNameEnum::kCustomEnumName)
+          // .AddParam("default_enum_name", DefaultNameEnum::kDefaultEnumName)
+          // .AddParam("custom_enum_name", CustomNameEnum::kCustomEnumName)
           // .AddParam("optional_string", std::optional<std::string>{"abc"})
           // .AddParam("optional_milliseconds",
           //           std::optional<std::chrono::milliseconds>{123456789})

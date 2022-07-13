@@ -17,7 +17,7 @@ auto finance_db = std::shared_ptr<stonks::finance::FinanceDb>{};
 
 TEST(FinanceDb, UpdateSymbolsInfo) {
   finance_db = std::make_shared<stonks::finance::FinanceDb>(
-      stonks::sqlite::SqliteDbFactory{}, ":memory:");
+      stonks::sqlite::Factory{}, ":memory:");
 
   finance_db->UpdateAssets({"YYY", "USDT"});
   auto assets = finance_db->SelectAssets();
@@ -84,7 +84,7 @@ TEST(FinanceDb, UpdateSymbolsInfo) {
 TEST(FinanceDb, TablesInitialization) {
   static_cast<void>(std::remove(kTestDbFileName));
   finance_db = std::make_shared<stonks::finance::FinanceDb>(
-      stonks::sqlite::SqliteDbFactory{}, kTestDbFileName);
+      stonks::sqlite::Factory{}, kTestDbFileName);
   static_cast<void>(stonks::DbUpdaterSymbolsInfo{finance_db});
 
   const auto assets = finance_db->SelectAssets();
