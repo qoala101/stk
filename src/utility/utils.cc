@@ -3,12 +3,13 @@
 #include <date/date.h>
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
-#include <stdio.h>
 
 #include <array>
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/string_generator.hpp>
+#include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <cstdio>
 #include <ctime>
 #include <sstream>
 

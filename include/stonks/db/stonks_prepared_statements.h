@@ -1,5 +1,5 @@
-#ifndef STONKS_FINANCE_DB_PREPARED_STATEMENTS_H_
-#define STONKS_FINANCE_DB_PREPARED_STATEMENTS_H_
+#ifndef STONKS_STONKS_DB_STONKS_PREPARED_STATEMENTS_H_
+#define STONKS_STONKS_DB_STONKS_PREPARED_STATEMENTS_H_
 
 #include <memory>
 
@@ -10,7 +10,7 @@
 #include "sqldb_select_statement.h"
 #include "sqldb_update_statement.h"
 
-namespace stonks::finance {
+namespace stonks::db {
 /**
  * @brief Storage of prepared statements used by DB.
  * @remark Statements are prepared when requested first time.
@@ -55,6 +55,6 @@ class PreparedStatements {
   std::unique_ptr<sqldb::ISelectStatement> select_symbol_price_ticks_;
   std::unique_ptr<sqldb::IUpdateStatement> insert_price_tick_;
 };
-}  // namespace stonks::finance
+}  // namespace stonks::db
 
-#endif  // STONKS_FINANCE_DB_PREPARED_STATEMENTS_H_
+#endif  // STONKS_STONKS_DB_STONKS_PREPARED_STATEMENTS_H_

@@ -1,4 +1,4 @@
-#include "prepared_statements.h"
+#include "stonks_prepared_statements.h"
 
 #include <gsl/assert>
 #include <memory>
@@ -15,9 +15,9 @@
 #include "sqldb_select_query_builder.h"
 #include "sqldb_types.h"
 #include "sqldb_update_query_builder.h"
-#include "table_definitions.h"
+#include "stonks_table_definitions.h"
 
-namespace stonks::finance {
+namespace stonks::db {
 namespace {
 auto InitSelectPriceTicksQuery(
     const sqldb::QueryBuilderFacade& query_builder_facade)
@@ -247,4 +247,4 @@ auto PreparedStatements::InsertPriceTick() -> sqldb::IUpdateStatement& {
   Ensures(insert_price_tick_ != nullptr);
   return *insert_price_tick_;
 }
-}  // namespace stonks::finance
+}  // namespace stonks::db

@@ -1,15 +1,15 @@
-#ifndef STONKS_FINANCE_DB_TABLE_DEFINITIONS_H_
-#define STONKS_FINANCE_DB_TABLE_DEFINITIONS_H_
+#ifndef STONKS_STONKS_DB_STONKS_TABLE_DEFINITIONS_H_
+#define STONKS_STONKS_DB_STONKS_TABLE_DEFINITIONS_H_
 
 #include "sqldb_types.h"
 
 /**
  * @file Table definitions used by DB.
  */
-namespace stonks::finance::table_definitions {
+namespace stonks::db::table_definitions {
 [[nodiscard]] auto Asset() -> const stonks::sqldb::TableDefinition &;
 [[nodiscard]] auto Symbol() -> const stonks::sqldb::TableDefinition &;
 [[nodiscard]] auto SymbolPriceTick() -> const stonks::sqldb::TableDefinition &;
-}  // namespace stonks::finance::table_definitions
+}  // namespace stonks::db::table_definitions
 
-#endif  // STONKS_FINANCE_DB_TABLE_DEFINITIONS_H_
+#endif  // STONKS_STONKS_DB_STONKS_TABLE_DEFINITIONS_H_

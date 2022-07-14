@@ -1,16 +1,16 @@
-#ifndef STONKS_FINANCE_DB_CACHE_H_
-#define STONKS_FINANCE_DB_CACHE_H_
+#ifndef STONKS_STONKS_DB_STONKS_DB_CACHE_H_
+#define STONKS_STONKS_DB_STONKS_DB_CACHE_H_
 
 #include <cstdint>
 #include <map>
 #include <memory>
 #include <string>
 
-#include "finance_types.h"
 #include "not_null.hpp"
-#include "prepared_statements.h"
+#include "stonks_prepared_statements.h"
+#include "stonks_types.h"
 
-namespace stonks::finance {
+namespace stonks::db {
 /**
  * @brief Cache used by DB in order to speedup often used lookups.
  */
@@ -39,6 +39,6 @@ class Cache {
   std::map<SymbolName, int64_t> symbol_to_symbol_id_map_{};
   std::map<int64_t, SymbolName> symbol_id_to_symbol_map_{};
 };
-}  // namespace stonks::finance
+}  // namespace stonks::db
 
-#endif  // STONKS_FINANCE_DB_CACHE_H_
+#endif  // STONKS_STONKS_DB_STONKS_DB_CACHE_H_

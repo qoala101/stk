@@ -1,4 +1,4 @@
-#include "finance_db.h"
+#include "stonks_db.h"
 
 #include <chrono>
 #include <compare>
@@ -23,10 +23,7 @@
 #include <utility>
 #include <vector>
 
-#include "cache.h"
-#include "finance_types.h"
 #include "not_null.hpp"
-#include "prepared_statements.h"
 #include "sqldb_db.h"
 #include "sqldb_factory.h"
 #include "sqldb_query_builder.h"
@@ -34,9 +31,11 @@
 #include "sqldb_select_statement.h"
 #include "sqldb_update_statement.h"
 #include "sqldb_value.h"
-#include "table_definitions.h"
+#include "stonks_cache.h"
+#include "stonks_prepared_statements.h"
+#include "stonks_table_definitions.h"
 
-namespace stonks::finance {
+namespace stonks {
 namespace {
 auto GetStartTime(const Period *period) -> std::chrono::milliseconds {
   if ((period != nullptr) && period->start_time.has_value()) {
@@ -63,23 +62,23 @@ auto SymbolEqual(const SymbolInfo &left, const SymbolInfo &right) -> bool {
 }
 }  // namespace
 
-FinanceDb::FinanceDb(const sqldb::IFactory &factory, std::string_view file_path)
+Db::Db(const sqldb::IFactory &factory, std::string_view file_path)
     : db_{factory.LoadDbFromFile(file_path)},
       query_builder_{factory.CreateQueryBuilder()},
       prepared_statements_{cpp::assume_not_null(
-          std::make_shared<PreparedStatements>(db_, query_builder_))},
+          std::make_shared<db::PreparedStatements>(db_, query_builder_))},
       cache_{prepared_statements_} {
   CreateTablesIfNotExist();
   cache_.Update();
 }
 
-FinanceDb::FinanceDb(FinanceDb &&) noexcept = default;
+Db::Db(Db &&) noexcept = default;
 
-auto FinanceDb::operator=(FinanceDb &&) noexcept -> FinanceDb & = default;
+auto Db::operator=(Db &&) noexcept -> Db & = default;
 
-FinanceDb::~FinanceDb() = default;
+Db::~Db() = default;
 
-auto FinanceDb::SelectAssets() const -> std::vector<std::string> {
+auto Db::SelectAssets() const -> std::vector<std::string> {
   auto rows = prepared_statements_->SelectAssets().Execute();
   auto &name_values = rows.GetColumnValues("name");
   return name_values | ranges::views::transform([](auto &asset) {
@@ -88,7 +87,7 @@ auto FinanceDb::SelectAssets() const -> std::vector<std::string> {
          ranges::to_vector;
 }
 
-void FinanceDb::UpdateAssets(std::vector<std::string> assets) {
+void Db::UpdateAssets(std::vector<std::string> assets) {
   assets |= ranges::actions::sort | ranges::actions::unique;
   const auto old_assets =
       SelectAssets() | ranges::actions::sort | ranges::actions::unique;
@@ -111,7 +110,7 @@ void FinanceDb::UpdateAssets(std::vector<std::string> assets) {
   cache_.Update();
 }
 
-auto FinanceDb::SelectSymbols() const -> std::vector<SymbolName> {
+auto Db::SelectSymbols() const -> std::vector<SymbolName> {
   auto rows = prepared_statements_->SelectSymbols().Execute();
   auto &name_values = rows.GetColumnValues("name");
   return name_values | ranges::views::transform([](auto &asset) {
@@ -120,7 +119,7 @@ auto FinanceDb::SelectSymbols() const -> std::vector<SymbolName> {
          ranges::to_vector;
 }
 
-auto FinanceDb::SelectSymbolsInfo() const -> std::vector<SymbolInfo> {
+auto Db::SelectSymbolsInfo() const -> std::vector<SymbolInfo> {
   auto rows = prepared_statements_->SelectSymbolsInfo().Execute();
 
   auto &symbol = rows.GetColumnValues("name");
@@ -149,7 +148,7 @@ auto FinanceDb::SelectSymbolsInfo() const -> std::vector<SymbolInfo> {
   return symbols_info;
 }
 
-void FinanceDb::UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) {
+void Db::UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) {
   symbols_info |=
       ranges::actions::sort(SymbolLess) | ranges::actions::unique(SymbolEqual);
   const auto old_symbols_info = SelectSymbolsInfo() |
@@ -184,9 +183,8 @@ void FinanceDb::UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) {
   cache_.Update();
 }
 
-auto FinanceDb::SelectSymbolPriceTicks(const SymbolName *symbol,
-                                       const Period *period,
-                                       const int *limit) const
+auto Db::SelectSymbolPriceTicks(const SymbolName *symbol, const Period *period,
+                                const int *limit) const
     -> std::vector<SymbolPriceTick> {
   auto *statement = (sqldb::ISelectStatement *){};
   auto values = std::vector<sqldb::Value>{GetStartTime(period).count(),
@@ -224,27 +222,26 @@ auto FinanceDb::SelectSymbolPriceTicks(const SymbolName *symbol,
   return price_ticks;
 }
 
-void FinanceDb::InsertSymbolPriceTick(
-    const SymbolPriceTick &symbol_price_tick) {
+void Db::InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick) {
   prepared_statements_->InsertPriceTick().Execute(
       {cache_.GetSymbolIdBySymbol(symbol_price_tick.symbol),
        symbol_price_tick.time.count(), symbol_price_tick.buy_price,
        symbol_price_tick.sell_price});
 }
 
-void FinanceDb::CreateTablesIfNotExist() {
+void Db::CreateTablesIfNotExist() {
   db_->PrepareStatement(query_builder_->BuildCreateTableIfNotExistsQuery(
-                            table_definitions::Asset()))
+                            db::table_definitions::Asset()))
       ->Execute();
   db_->PrepareStatement(query_builder_->BuildCreateTableIfNotExistsQuery(
-                            table_definitions::Symbol()))
+                            db::table_definitions::Symbol()))
       ->Execute();
   db_->PrepareStatement(query_builder_->BuildCreateTableIfNotExistsQuery(
-                            table_definitions::SymbolPriceTick()))
+                            db::table_definitions::SymbolPriceTick()))
       ->Execute();
 }
 
-void FinanceDb::InsertSymbolInfo(const SymbolInfo &symbol_info) {
+void Db::InsertSymbolInfo(const SymbolInfo &symbol_info) {
   prepared_statements_->InsertSymbolInfo().Execute(
       {sqldb::Value{symbol_info.symbol},
        cache_.GetAssetIdByAsset(symbol_info.base_asset),
@@ -253,7 +250,7 @@ void FinanceDb::InsertSymbolInfo(const SymbolInfo &symbol_info) {
        symbol_info.base_step, symbol_info.quote_step});
 }
 
-void FinanceDb::UpdateSymbolInfo(const SymbolInfo &symbol_info) {
+void Db::UpdateSymbolInfo(const SymbolInfo &symbol_info) {
   prepared_statements_->UpdateSymbolInfo().Execute(
       {cache_.GetAssetIdByAsset(symbol_info.base_asset),
        cache_.GetAssetIdByAsset(symbol_info.quote_asset),
@@ -261,4 +258,4 @@ void FinanceDb::UpdateSymbolInfo(const SymbolInfo &symbol_info) {
        symbol_info.base_step, symbol_info.quote_step,
        sqldb::Value{symbol_info.symbol}});
 }
-}  // namespace stonks::finance
+}  // namespace stonks

@@ -1,14 +1,14 @@
-#include "cache.h"
+#include "stonks_cache.h"
 
 #include <gsl/assert>
 #include <utility>
 #include <vector>
 
-#include "prepared_statements.h"
 #include "sqldb_rows.h"
 #include "sqldb_select_statement.h"
+#include "stonks_prepared_statements.h"
 
-namespace stonks::finance {
+namespace stonks::db {
 namespace {
 template <typename Key, typename Value>
 [[nodiscard]] auto GetValue(const std::map<Key, Value> &map, const Key &key)
@@ -71,4 +71,4 @@ void Cache::UpdateSymbolMaps() {
     symbol_id_to_symbol_map_[id] = std::move(name);
   }
 }
-}  // namespace stonks::finance
+}  // namespace stonks::db

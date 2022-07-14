@@ -1,10 +1,10 @@
-#include "table_definitions.h"
+#include "stonks_table_definitions.h"
 
 #include <string>
 
 #include "sqldb_enums.h"
 
-namespace stonks::finance::table_definitions {
+namespace stonks::db::table_definitions {
 auto Asset() -> const sqldb::TableDefinition& {
   static const auto table_definition =
       sqldb::TableDefinition{.table = "Asset",
@@ -56,4 +56,4 @@ auto SymbolPriceTick() -> const sqldb::TableDefinition& {
           {.column = "sell_price", .data_type = sqldb::DataType::kDouble}}};
   return table_definition;
 }
-}  // namespace stonks::finance::table_definitions
+}  // namespace stonks::db::table_definitions

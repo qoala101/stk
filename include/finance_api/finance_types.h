@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "finance_enums.h"
+#include "stonks_types.h"
 
 namespace stonks::finance {
 struct Symbol {
@@ -24,30 +25,11 @@ struct Symbol {
                                            const Symbol &right) = default;
 };
 
-using SymbolName = std::string;
-
 struct SymbolBalanceTick {
   SymbolName symbol{};
   std::chrono::milliseconds time{};
   double base_balance{};
   double quote_balance{};
-};
-
-struct SymbolInfo {
-  SymbolName symbol;
-  std::string base_asset{};
-  std::string quote_asset{};
-  double min_base_amount{};
-  double min_quote_amount{};
-  double base_step{};
-  double quote_step{};
-
- private:
-  [[nodiscard]] friend auto operator==(const SymbolInfo &, const SymbolInfo &)
-      -> bool = default;
-  [[nodiscard]] friend auto operator<=>(const SymbolInfo &left,
-                                        const SymbolInfo &right)
-      -> std::partial_ordering = default;
 };
 
 struct TimeDouble {
@@ -56,11 +38,6 @@ struct TimeDouble {
 
  private:
   friend bool operator==(const TimeDouble &, const TimeDouble &) = default;
-};
-
-struct Period {
-  std::optional<std::chrono::milliseconds> start_time{};
-  std::optional<std::chrono::milliseconds> end_time{};
 };
 
 struct SymbolPrice {
@@ -95,20 +72,6 @@ struct Candle {
   friend bool operator==(const Candle &left, const Candle &right);
   friend std::partial_ordering operator<=>(const Candle &left,
                                            const Candle &right);
-};
-
-struct SymbolPriceTick {
-  SymbolName symbol{};
-  std::chrono::milliseconds time{};
-  double buy_price{};
-  double sell_price{};
-
- private:
-  friend auto operator==(const SymbolPriceTick &left,
-                         const SymbolPriceTick &right) -> bool = default;
-  friend auto operator<=>(const SymbolPriceTick &left,
-                          const SymbolPriceTick &right)
-      -> std::partial_ordering = default;
 };
 
 struct BreakoutStrategyData {

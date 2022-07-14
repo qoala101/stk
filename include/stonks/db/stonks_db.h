@@ -1,74 +1,73 @@
-#ifndef STONKS_FINANCE_DB_FINANCE_DB_H_
-#define STONKS_FINANCE_DB_FINANCE_DB_H_
+#ifndef STONKS_STONKS_DB_STONKS_DB_H_
+#define STONKS_STONKS_DB_STONKS_DB_H_
 
 #include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
 
-#include "cache.h"
-#include "finance_types.h"
 #include "not_null.hpp"
-#include "prepared_statements.h"
 #include "sqldb_db.h"
 #include "sqldb_factory.h"
 #include "sqldb_query_builder.h"
-#include "stonks_db.h"
+#include "stonks_cache.h"
+#include "stonks_idb.h"
+#include "stonks_prepared_statements.h"
+#include "stonks_types.h"
 
-namespace stonks::finance {
+namespace stonks {
 /**
- * @copydoc StonksDb
+ * @copydoc IDb
  */
-class FinanceDb : public StonksDb {
+class Db : public IDb {
  public:
   /**
    * @brief Reads DB from the specified file.
    * @param factory SQL DB implementation.
    */
-  explicit FinanceDb(const sqldb::IFactory &factory,
-                     std::string_view file_path);
+  explicit Db(const sqldb::IFactory &factory, std::string_view file_path);
 
-  [[deprecated]] explicit FinanceDb(std::string_view uri = "stonks.db");
+  [[deprecated]] explicit Db(std::string_view uri = "stonks.db");
 
-  FinanceDb(const FinanceDb &) = delete;
-  FinanceDb(FinanceDb &&) noexcept;
+  Db(const Db &) = delete;
+  Db(Db &&) noexcept;
 
-  auto operator=(const FinanceDb &) -> FinanceDb & = delete;
-  auto operator=(FinanceDb &&) noexcept -> FinanceDb &;
+  auto operator=(const Db &) -> Db & = delete;
+  auto operator=(Db &&) noexcept -> Db &;
 
   /**
    * @brief Writes DB to the file specified at construction.
    */
-  ~FinanceDb() override;
+  ~Db() override;
 
   /**
-   * @copydoc StonksDb::SelectAssets
+   * @copydoc IDb::SelectAssets
    */
   [[nodiscard]] auto SelectAssets() const -> std::vector<std::string> override;
 
   /**
-   * @copydoc StonksDb::UpdateAssets
+   * @copydoc IDb::UpdateAssets
    */
   void UpdateAssets(std::vector<std::string> assets) override;
 
   /**
-   * @copydoc StonksDb::SelectSymbols
+   * @copydoc IDb::SelectSymbols
    */
   [[nodiscard]] auto SelectSymbols() const -> std::vector<SymbolName> override;
 
   /**
-   * @copydoc StonksDb::SelectSymbolsInfo
+   * @copydoc IDb::SelectSymbolsInfo
    */
   [[nodiscard]] auto SelectSymbolsInfo() const
       -> std::vector<SymbolInfo> override;
 
   /**
-   * @copydoc StonksDb::UpdateSymbolsInfo
+   * @copydoc IDb::UpdateSymbolsInfo
    */
   void UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) override;
 
   /**
-   * @copydoc StonksDb::SelectSymbolPriceTicks
+   * @copydoc IDb::SelectSymbolPriceTicks
    */
   [[nodiscard]] auto SelectSymbolPriceTicks(const SymbolName *symbol,
                                             const Period *period,
@@ -76,7 +75,7 @@ class FinanceDb : public StonksDb {
       -> std::vector<SymbolPriceTick> override;
 
   /**
-   * @copydoc StonksDb::InsertSymbolPriceTick
+   * @copydoc IDb::InsertSymbolPriceTick
    */
   void InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick) override;
 
@@ -87,9 +86,9 @@ class FinanceDb : public StonksDb {
 
   cpp::not_null<std::shared_ptr<sqldb::IDb>> db_;
   cpp::not_null<std::shared_ptr<sqldb::IQueryBuilder>> query_builder_;
-  cpp::not_null<std::shared_ptr<PreparedStatements>> prepared_statements_;
-  Cache cache_;
+  cpp::not_null<std::shared_ptr<db::PreparedStatements>> prepared_statements_;
+  db::Cache cache_;
 };
-}  // namespace stonks::finance
+}  // namespace stonks
 
-#endif  // STONKS_FINANCE_DB_FINANCE_DB_H_
+#endif  // STONKS_STONKS_DB_STONKS_DB_H_
