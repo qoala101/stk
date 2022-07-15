@@ -62,9 +62,9 @@ auto SymbolEqual(const SymbolInfo &left, const SymbolInfo &right) -> bool {
 }
 }  // namespace
 
-Db::Db(const sqldb::IFactory &factory, std::string_view file_path)
-    : db_{factory.LoadDbFromFile(file_path)},
-      query_builder_{factory.CreateQueryBuilder()},
+Db::Db(std::string_view file_path, const sqldb::IFactory &db_factory)
+    : db_{db_factory.LoadDbFromFile(file_path)},
+      query_builder_{db_factory.CreateQueryBuilder()},
       prepared_statements_{cpp::assume_not_null(
           std::make_shared<db::PreparedStatements>(db_, query_builder_))},
       cache_{prepared_statements_} {

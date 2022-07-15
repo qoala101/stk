@@ -8,7 +8,7 @@
 
 #include "network_factory.h"
 #include "network_json.h"
-#include "network_rest_request_handler.h"
+#include "network_rest_request_receiver.h"
 #include "network_rest_request_sender.h"
 #include "network_types.h"
 #include "not_null.hpp"
@@ -26,10 +26,14 @@ class Factory : public network::IFactory {
       -> cpp::not_null<std::unique_ptr<network::IRestRequestSender>> override;
 
   /**
-   * @copydoc network::IFactory::CreateRestRequestHandler
+   * @copydoc network::IFactory::CreateRestRequestReceiver
    */
-  [[nodiscard]] auto CreateRestRequestHandler(std::string_view local_uri) const
-      -> cpp::not_null<std::unique_ptr<network::IRestRequestHandler>> override;
+  [[nodiscard]] auto CreateRestRequestReceiver(
+      std::string_view local_uri,
+      std::function<std::pair<network::Status, network::Result>(
+          network::Endpoint, network::RestRequestData)>
+          handler) const
+      -> cpp::not_null<std::unique_ptr<network::IRestRequestReceiver>> override;
 
   /**
    * @copydoc network::IFactory::CreateJson

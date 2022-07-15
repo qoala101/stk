@@ -24,7 +24,7 @@ class IRestRequestSender {
    */
   // NOLINTNEXTLINE(*-use-nodiscard)
   virtual auto SendRequestAndGetResponse(const RestRequestData &data) const
-      -> isocpp_p0201::polymorphic_value<IJson> = 0;
+      -> std::pair<Status, Result> = 0;
 };
 }  // namespace stonks::network
 

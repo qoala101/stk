@@ -7,6 +7,7 @@
 #include "network_json.h"
 #include "not_null.hpp"
 #include "restsdk_json.h"
+#include "restsdk_rest_request_receiver.h"
 #include "restsdk_rest_request_sender.h"
 
 namespace stonks::restsdk {
@@ -15,9 +16,14 @@ auto Factory::CreateRestRequestSender(network::Endpoint endpoint) const
   return cpp::assume_not_null(std::make_unique<RestRequestSender>(endpoint));
 }
 
-auto Factory::CreateRestRequestHandler(std::string_view local_uri) const
-    -> cpp::not_null<std::unique_ptr<network::IRestRequestHandler>> {
-  // return std::make_unique<RestRequestHandler>(local_uri);
+auto Factory::CreateRestRequestReceiver(
+    std::string_view local_uri,
+    std::function<std::pair<network::Status, network::Result>(
+        network::Endpoint, network::RestRequestData)>
+        handler) const
+    -> cpp::not_null<std::unique_ptr<network::IRestRequestReceiver>> {
+  return cpp::assume_not_null(
+      std::make_unique<RestRequestReceiver>(local_uri, std::move(handler)));
 }
 
 auto Factory::CreateJson() const

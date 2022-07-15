@@ -8,6 +8,7 @@ add_library(librestsdk
   restsdk_json_basic_conversions.cc
   restsdk_json_impl.cc
   restsdk_json.cc
+  restsdk_rest_request_receiver.cc
   restsdk_rest_request_sender.cc
 )
 set_target_properties(librestsdk PROPERTIES OUTPUT_NAME restsdk)

@@ -13,17 +13,21 @@
 #include "restsdk_factory.h"
 #include "restsdk_rest_request_sender.h"
 
-TEST(RestRequest, AppendUri) {
-  const auto [endpoint, data] = stonks::network::RestRequestBuilder{}
-                                    .WithBaseUri("base_uri")
-                                    .AppendUri("appended_uri")
-                                    .Build();
-  EXPECT_EQ(endpoint.uri, "base_uri/appended_uri");
-}
-
 namespace {
 enum class DefaultNameEnum { kDefaultEnumName };
 enum class CustomNameEnum { kCustomEnumName };
+
+struct AvgPrice {
+  int mins{};
+  double price{};
+
+ private:
+  friend auto operator==(const AvgPrice &, const AvgPrice &) -> bool = default;
+  friend auto operator<<(std::ostream &stream, const AvgPrice &avg_price)
+      -> std::ostream & {
+    return stream << avg_price.mins << " " << avg_price.price;
+  }
+};
 }  // namespace
 
 template <>
@@ -39,7 +43,33 @@ constexpr auto magic_enum::customize::enum_name<CustomNameEnum>(
   return {};
 }
 
-TEST(RestRequest, ParameterTypesToString) {
+namespace stonks::network {
+template <>
+auto ParseFromJson(const IJson &json) -> AvgPrice {
+  return AvgPrice{
+      ParseFromJson<int>(*json.GetChild("mins")),
+      std::stod(ParseFromJson<std::string>(*json.GetChild("price")))};
+}
+
+auto ConvertToJson(const AvgPrice &value)
+    -> isocpp_p0201::polymorphic_value<IJson> {
+  auto json = restsdk::Factory{}.CreateJson();
+  json->SetChild("mins", *ConvertToJson(value.mins));
+  json->SetChild("price", *ConvertToJson(std::to_string(value.price)));
+  return json;
+}
+}  // namespace stonks::network
+
+namespace {
+TEST(RestRequestSender, AppendUri) {
+  const auto [endpoint, data] = stonks::network::RestRequestBuilder{}
+                                    .WithBaseUri("base_uri")
+                                    .AppendUri("appended_uri")
+                                    .Build();
+  EXPECT_EQ(endpoint.uri, "base_uri/appended_uri");
+}
+
+TEST(RestRequestSender, ParameterTypesToString) {
   const auto [endpoint, data] =
       stonks::network::RestRequestBuilder{}
           .WithBaseUri("")
@@ -90,39 +120,7 @@ TEST(RestRequest, ParameterTypesToString) {
   // EXPECT_EQ(data.params, expected_params);
 }
 
-struct AvgPrice {
-  int mins{};
-  double price{};
-
- private:
-  friend auto operator==(const AvgPrice &, const AvgPrice &) -> bool = default;
-  friend auto operator<<(std::ostream &stream, const AvgPrice &avg_price)
-      -> std::ostream & {
-    return stream << avg_price.mins << " " << avg_price.price;
-  }
-};
-
-void ParseFromJson(const stonks::network::IJson &json,
-                   std::optional<AvgPrice> &object) {}
-
-namespace stonks::network {
-template <>
-auto ParseFromJson(const stonks::network::IJson &json) -> AvgPrice {
-  return AvgPrice{
-      ParseFromJson<int>(*json.GetChild("mins")),
-      std::stod(ParseFromJson<std::string>(*json.GetChild("price")))};
-}
-
-auto ConvertToJson(const AvgPrice &value)
-    -> isocpp_p0201::polymorphic_value<IJson> {
-  auto json = restsdk::Factory{}.CreateJson();
-  json->SetChild("mins", *ConvertToJson(value.mins));
-  json->SetChild("price", *ConvertToJson(std::to_string(value.price)));
-  return json;
-}
-}  // namespace stonks::network
-
-TEST(RestRequest, SendRequest) {
+TEST(RestRequestSender, SendRequest) {
   const auto [endpoint, data] =
       stonks::network::RestRequestBuilder{}
           .WithBaseUri("https://api.binance.com/api/v3")
@@ -132,7 +130,7 @@ TEST(RestRequest, SendRequest) {
   const auto sender =
       std::make_unique<stonks::restsdk::RestRequestSender>(endpoint);
   const auto response = sender->SendRequestAndGetResponse(data);
-  const auto response_price = ParseFromJson<AvgPrice>(*response);
+  const auto response_price = ParseFromJson<AvgPrice>(*response.second);
   EXPECT_GT(response_price.mins, 0);
   EXPECT_GT(response_price.price, 0);
 
@@ -141,3 +139,4 @@ TEST(RestRequest, SendRequest) {
   const auto json_price = ParseFromJson<AvgPrice>(*response_price_json);
   EXPECT_EQ(response_price, json_price);
 }
+}  // namespace

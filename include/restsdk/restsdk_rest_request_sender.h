@@ -23,7 +23,8 @@ class RestRequestSender : public network::IRestRequestSender {
    */
   // NOLINTNEXTLINE(*-use-nodiscard)
   auto SendRequestAndGetResponse(const network::RestRequestData &data) const
-      -> isocpp_p0201::polymorphic_value<network::IJson> override;
+      -> std::pair<network::Status,
+                   isocpp_p0201::polymorphic_value<network::IJson>> override;
 
  private:
   network::Endpoint endpoint_{};
