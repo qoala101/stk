@@ -1,12 +1,9 @@
 #ifndef STONKS_RESTSDK_RESTSDK_REST_REQUEST_SENDER_H_
 #define STONKS_RESTSDK_RESTSDK_REST_REQUEST_SENDER_H_
 
-#include <polymorphic_value.h>
-
 #include <utility>
 
 #include "network_enums.h"
-#include "network_i_json.h"
 #include "network_i_rest_request_sender.h"
 #include "network_types.h"
 
@@ -24,10 +21,9 @@ class RestRequestSender : public network::IRestRequestSender {
   /**
    * @copydoc network::IRestRequestSender::SendRequestAndGetResponse
    */
-  // NOLINTNEXTLINE(*-use-nodiscard)
-  auto SendRequestAndGetResponse(const network::RestRequestData &data) const
-      -> std::pair<network::Status,
-                   isocpp_p0201::polymorphic_value<network::IJson>> override;
+  [[nodiscard]] auto SendRequestAndGetResponse(
+      const network::RestRequestData &data) const
+      -> std::pair<network::Status, network::Result> override;
 
  private:
   network::Endpoint endpoint_{};

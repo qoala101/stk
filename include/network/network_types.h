@@ -13,7 +13,8 @@
 
 namespace stonks::network {
 using Result = isocpp_p0201::polymorphic_value<IJson>;
-using Params = std::map<std::string, isocpp_p0201::polymorphic_value<IJson>>;
+using Param = isocpp_p0201::polymorphic_value<IJson>;
+using Params = std::map<std::string, Param>;
 using Headers = std::map<std::string, std::string>;
 using Body = isocpp_p0201::polymorphic_value<IJson>;
 

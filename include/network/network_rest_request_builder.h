@@ -1,17 +1,12 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_REQUEST_BUILDER_H_
 #define STONKS_NETWORK_NETWORK_REST_REQUEST_BUILDER_H_
 
-#include <polymorphic_value.h>
-
-#include <map>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
 
-#include "concepts.h"  // IWYU pragma: keep
 #include "network_enums.h"
-#include "network_i_json.h"
 #include "network_json_basic_conversions.h"
 #include "network_types.h"
 
@@ -40,9 +35,7 @@ class RestRequestBuilder {
    * @brief Adds parameter to be send by request.
    * @remark Would override existing value with the same key.
    */
-  auto AddParam(std::string_view key,
-                isocpp_p0201::polymorphic_value<IJson> value)
-      -> RestRequestBuilder &;
+  auto AddParam(std::string_view key, Param value) -> RestRequestBuilder &;
 
   /**
    * @copydoc RestRequestBuilder::AddParam
@@ -63,8 +56,7 @@ class RestRequestBuilder {
    * @brief Sets the JSON body of the request.
    * @remark Should be called once.
    */
-  auto WithBody(isocpp_p0201::polymorphic_value<IJson> body)
-      -> RestRequestBuilder &;
+  auto WithBody(Body body) -> RestRequestBuilder &;
 
   /**
    * @brief Build REST request parts from inputs.
@@ -79,9 +71,9 @@ class RestRequestBuilder {
  private:
   Method method_{};
   std::optional<std::string> uri_{};
-  std::map<std::string, isocpp_p0201::polymorphic_value<IJson>> params_{};
-  std::map<std::string, std::string> headers_{};
-  std::optional<isocpp_p0201::polymorphic_value<IJson>> body_{};
+  Params params_{};
+  Headers headers_{};
+  std::optional<Body> body_{};
 };
 }  // namespace stonks::network
 

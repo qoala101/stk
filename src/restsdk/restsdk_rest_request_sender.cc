@@ -108,8 +108,7 @@ RestRequestSender::RestRequestSender(network::Endpoint endpoint)
 
 auto RestRequestSender::SendRequestAndGetResponse(
     const network::RestRequestData &data) const
-    -> std::pair<network::Status,
-                 isocpp_p0201::polymorphic_value<network::IJson>> {
+    -> std::pair<network::Status, network::Result> {
   auto uri_builder = [this, &data]() {
     auto uri_builder = web::http::uri_builder{endpoint_.uri};
 

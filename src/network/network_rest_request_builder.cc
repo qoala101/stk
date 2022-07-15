@@ -47,8 +47,7 @@ auto RestRequestBuilder::AppendUri(std::string_view uri)
   return *this;
 }
 
-auto RestRequestBuilder::AddParam(std::string_view key,
-                                  isocpp_p0201::polymorphic_value<IJson> value)
+auto RestRequestBuilder::AddParam(std::string_view key, Param value)
     -> RestRequestBuilder& {
   params_.emplace(key.data(), std::move(value));
   return *this;
@@ -60,8 +59,7 @@ auto RestRequestBuilder::AddHeader(std::string_view key, std::string_view value)
   return *this;
 }
 
-auto RestRequestBuilder::WithBody(isocpp_p0201::polymorphic_value<IJson> body)
-    -> RestRequestBuilder& {
+auto RestRequestBuilder::WithBody(Body body) -> RestRequestBuilder& {
   Expects(!body_);
   body_.emplace(std::move(body));
   return *this;

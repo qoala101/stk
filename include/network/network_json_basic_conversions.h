@@ -5,7 +5,6 @@
 
 #include <gsl/gsl>
 
-#include "concepts.h"  // IWYU pragma: keep
 #include "network_i_json.h"
 
 /**
