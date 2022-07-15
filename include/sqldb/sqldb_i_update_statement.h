@@ -18,13 +18,13 @@ class IUpdateStatement {
   /**
    * @brief Executes the statement.
    */
-  void Execute();
+  void Execute() const;
 
   /**
    * @brief Executes the statement.
    * @param params Values to be injected into the query in the specified order.
    */
-  virtual void Execute(const std::vector<Value> &params) = 0;
+  virtual void Execute(const std::vector<Value> &params) const = 0;
 };
 }  // namespace stonks::sqldb
 

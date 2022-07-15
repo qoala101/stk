@@ -15,7 +15,7 @@ UpdateStatement::UpdateStatement(
     PreparedStatementHandle prepared_statement_handle)
     : prepared_statement_handle_{std::move(prepared_statement_handle)} {}
 
-void UpdateStatement::Execute(const std::vector<sqldb::Value> &params) {
+void UpdateStatement::Execute(const std::vector<sqldb::Value> &params) const {
   auto &sqlite_statement = prepared_statement_handle_.GetSqliteStatement();
   auto prepared_statement_facade =
       PreparedStatementFacade{cpp::assume_not_null(&sqlite_statement)};

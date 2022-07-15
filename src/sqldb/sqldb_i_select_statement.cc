@@ -3,5 +3,5 @@
 #include "sqldb_rows.h"
 
 namespace stonks::sqldb {
-auto ISelectStatement::Execute() -> Rows { return Execute({}); }
+auto ISelectStatement::Execute() const -> Rows { return Execute({}); }
 }  // namespace stonks::sqldb

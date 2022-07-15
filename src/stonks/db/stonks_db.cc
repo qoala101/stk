@@ -187,9 +187,9 @@ void Db::UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) {
 auto Db::SelectSymbolPriceTicks(const SymbolName *symbol, const Period *period,
                                 const int *limit) const
     -> std::vector<SymbolPriceTick> {
-  auto *statement = symbol != nullptr
-                        ? &prepared_statements_->SelectSymbolPriceTicks()
-                        : &prepared_statements_->SelectPriceTicks();
+  const auto *statement = symbol != nullptr
+                              ? &prepared_statements_->SelectSymbolPriceTicks()
+                              : &prepared_statements_->SelectPriceTicks();
   const auto values = [this, symbol, period, limit]() {
     auto values = std::vector<sqldb::Value>{GetStartTime(period).count(),
                                             GetEndTime(period).count()};

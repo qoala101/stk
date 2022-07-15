@@ -39,7 +39,8 @@ PreparedStatements::PreparedStatements(
       query_builder_facade_{cpp::assume_not_null(
           std::make_unique<sqldb::QueryBuilderFacade>(query_builder_))} {}
 
-auto PreparedStatements::SelectAssets() -> sqldb::ISelectStatement& {
+auto PreparedStatements::SelectAssets() const
+    -> const sqldb::ISelectStatement& {
   if (select_assets_ == nullptr) {
     const auto& table = table_definitions::Asset();
     const auto columns = table.GetColumnDefinitions({"name"});
@@ -54,7 +55,8 @@ auto PreparedStatements::SelectAssets() -> sqldb::ISelectStatement& {
   return *select_assets_;
 }
 
-auto PreparedStatements::SelectAssetsWithIds() -> sqldb::ISelectStatement& {
+auto PreparedStatements::SelectAssetsWithIds() const
+    -> const sqldb::ISelectStatement& {
   if (select_assets_with_ids_ == nullptr) {
     const auto& table = table_definitions::Asset();
     auto query =
@@ -66,7 +68,7 @@ auto PreparedStatements::SelectAssetsWithIds() -> sqldb::ISelectStatement& {
   return *select_assets_with_ids_;
 }
 
-auto PreparedStatements::DeleteAsset() -> sqldb::IUpdateStatement& {
+auto PreparedStatements::DeleteAsset() const -> const sqldb::IUpdateStatement& {
   if (delete_asset_ == nullptr) {
     auto query = query_builder_facade_->Delete()
                      .FromTable(table_definitions::Asset())
@@ -79,7 +81,7 @@ auto PreparedStatements::DeleteAsset() -> sqldb::IUpdateStatement& {
   return *delete_asset_;
 }
 
-auto PreparedStatements::InsertAsset() -> sqldb::IUpdateStatement& {
+auto PreparedStatements::InsertAsset() const -> const sqldb::IUpdateStatement& {
   if (insert_asset_ == nullptr) {
     auto query = query_builder_facade_->Insert()
                      .IntoTable(table_definitions::Asset())
@@ -92,7 +94,8 @@ auto PreparedStatements::InsertAsset() -> sqldb::IUpdateStatement& {
   return *insert_asset_;
 }
 
-auto PreparedStatements::SelectSymbols() -> sqldb::ISelectStatement& {
+auto PreparedStatements::SelectSymbols() const
+    -> const sqldb::ISelectStatement& {
   if (select_symbols_ == nullptr) {
     const auto& table = table_definitions::Symbol();
     const auto columns = table.GetColumnDefinitions({"name"});
@@ -108,7 +111,8 @@ auto PreparedStatements::SelectSymbols() -> sqldb::ISelectStatement& {
   return *select_symbols_;
 }
 
-auto PreparedStatements::SelectSymbolsWithIds() -> sqldb::ISelectStatement& {
+auto PreparedStatements::SelectSymbolsWithIds() const
+    -> const sqldb::ISelectStatement& {
   if (select_symbols_with_ids_ == nullptr) {
     const auto& table = table_definitions::Symbol();
     const auto columns = table.GetColumnDefinitions({"id", "name"});
@@ -124,7 +128,8 @@ auto PreparedStatements::SelectSymbolsWithIds() -> sqldb::ISelectStatement& {
   return *select_symbols_with_ids_;
 }
 
-auto PreparedStatements::SelectSymbolsInfo() -> sqldb::ISelectStatement& {
+auto PreparedStatements::SelectSymbolsInfo() const
+    -> const sqldb::ISelectStatement& {
   if (select_symbols_info_ == nullptr) {
     auto symbol_columns = table_definitions::Symbol().GetColumnDefinitions(
         {"name", "min_base_amount", "min_quote_amount", "base_step",
@@ -167,7 +172,8 @@ auto PreparedStatements::SelectSymbolsInfo() -> sqldb::ISelectStatement& {
   return *select_symbols_info_;
 }
 
-auto PreparedStatements::InsertSymbolInfo() -> sqldb::IUpdateStatement& {
+auto PreparedStatements::InsertSymbolInfo() const
+    -> const sqldb::IUpdateStatement& {
   if (insert_symbol_info_ == nullptr) {
     const auto& table = table_definitions::Symbol();
     const auto columns = table.GetColumnDefinitions(
@@ -184,7 +190,8 @@ auto PreparedStatements::InsertSymbolInfo() -> sqldb::IUpdateStatement& {
   return *insert_symbol_info_;
 }
 
-auto PreparedStatements::UpdateSymbolInfo() -> sqldb::IUpdateStatement& {
+auto PreparedStatements::UpdateSymbolInfo() const
+    -> const sqldb::IUpdateStatement& {
   if (update_symbol_info_ == nullptr) {
     auto query =
         query_builder_facade_->Update()
@@ -200,7 +207,8 @@ auto PreparedStatements::UpdateSymbolInfo() -> sqldb::IUpdateStatement& {
   return *update_symbol_info_;
 }
 
-auto PreparedStatements::DeleteSymbolInfo() -> sqldb::IUpdateStatement& {
+auto PreparedStatements::DeleteSymbolInfo() const
+    -> const sqldb::IUpdateStatement& {
   if (delete_symbol_info_ == nullptr) {
     auto query = query_builder_facade_->Delete()
                      .FromTable(table_definitions::Symbol())
@@ -213,7 +221,8 @@ auto PreparedStatements::DeleteSymbolInfo() -> sqldb::IUpdateStatement& {
   return *delete_symbol_info_;
 }
 
-auto PreparedStatements::SelectPriceTicks() -> sqldb::ISelectStatement& {
+auto PreparedStatements::SelectPriceTicks() const
+    -> const sqldb::ISelectStatement& {
   if (select_price_ticks_ == nullptr) {
     auto query = InitSelectPriceTicksQuery(*query_builder_facade_).Build();
     select_price_ticks_ =
@@ -226,7 +235,8 @@ auto PreparedStatements::SelectPriceTicks() -> sqldb::ISelectStatement& {
   return *select_price_ticks_;
 }
 
-auto PreparedStatements::SelectSymbolPriceTicks() -> sqldb::ISelectStatement& {
+auto PreparedStatements::SelectSymbolPriceTicks() const
+    -> const sqldb::ISelectStatement& {
   if (select_symbol_price_ticks_ == nullptr) {
     auto query = InitSelectPriceTicksQuery(*query_builder_facade_)
                      .And("SymbolPriceTick.symbol_id = ?")
@@ -241,7 +251,8 @@ auto PreparedStatements::SelectSymbolPriceTicks() -> sqldb::ISelectStatement& {
   return *select_symbol_price_ticks_;
 }
 
-auto PreparedStatements::InsertPriceTick() -> sqldb::IUpdateStatement& {
+auto PreparedStatements::InsertPriceTick() const
+    -> const sqldb::IUpdateStatement& {
   if (insert_price_tick_ == nullptr) {
     auto query = query_builder_facade_->Insert()
                      .WholeRow()

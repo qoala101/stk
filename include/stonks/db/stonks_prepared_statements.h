@@ -21,19 +21,27 @@ class PreparedStatements {
       cpp::not_null<std::shared_ptr<sqldb::IDb>> db,
       cpp::not_null<std::shared_ptr<sqldb::IQueryBuilder>> query_builder);
 
-  [[nodiscard]] auto SelectAssets() -> sqldb::ISelectStatement &;
-  [[nodiscard]] auto SelectAssetsWithIds() -> sqldb::ISelectStatement &;
-  [[nodiscard]] auto DeleteAsset() -> sqldb::IUpdateStatement &;
-  [[nodiscard]] auto InsertAsset() -> sqldb::IUpdateStatement &;
-  [[nodiscard]] auto SelectSymbols() -> sqldb::ISelectStatement &;
-  [[nodiscard]] auto SelectSymbolsWithIds() -> sqldb::ISelectStatement &;
-  [[nodiscard]] auto SelectSymbolsInfo() -> sqldb::ISelectStatement &;
-  [[nodiscard]] auto InsertSymbolInfo() -> sqldb::IUpdateStatement &;
-  [[nodiscard]] auto UpdateSymbolInfo() -> sqldb::IUpdateStatement &;
-  [[nodiscard]] auto DeleteSymbolInfo() -> sqldb::IUpdateStatement &;
-  [[nodiscard]] auto SelectPriceTicks() -> sqldb::ISelectStatement &;
-  [[nodiscard]] auto SelectSymbolPriceTicks() -> sqldb::ISelectStatement &;
-  [[nodiscard]] auto InsertPriceTick() -> sqldb::IUpdateStatement &;
+  [[nodiscard]] auto SelectAssets() const -> const sqldb::ISelectStatement &;
+  [[nodiscard]] auto SelectAssetsWithIds() const
+      -> const sqldb::ISelectStatement &;
+  [[nodiscard]] auto DeleteAsset() const -> const sqldb::IUpdateStatement &;
+  [[nodiscard]] auto InsertAsset() const -> const sqldb::IUpdateStatement &;
+  [[nodiscard]] auto SelectSymbols() const -> const sqldb::ISelectStatement &;
+  [[nodiscard]] auto SelectSymbolsWithIds() const
+      -> const sqldb::ISelectStatement &;
+  [[nodiscard]] auto SelectSymbolsInfo() const
+      -> const sqldb::ISelectStatement &;
+  [[nodiscard]] auto InsertSymbolInfo() const
+      -> const sqldb::IUpdateStatement &;
+  [[nodiscard]] auto UpdateSymbolInfo() const
+      -> const sqldb::IUpdateStatement &;
+  [[nodiscard]] auto DeleteSymbolInfo() const
+      -> const sqldb::IUpdateStatement &;
+  [[nodiscard]] auto SelectPriceTicks() const
+      -> const sqldb::ISelectStatement &;
+  [[nodiscard]] auto SelectSymbolPriceTicks() const
+      -> const sqldb::ISelectStatement &;
+  [[nodiscard]] auto InsertPriceTick() const -> const sqldb::IUpdateStatement &;
 
  private:
   cpp::not_null<std::shared_ptr<sqldb::IDb>> db_;
@@ -41,19 +49,19 @@ class PreparedStatements {
   cpp::not_null<std::unique_ptr<sqldb::QueryBuilderFacade>>
       query_builder_facade_;
 
-  std::unique_ptr<sqldb::ISelectStatement> select_assets_;
-  std::unique_ptr<sqldb::ISelectStatement> select_assets_with_ids_;
-  std::unique_ptr<sqldb::IUpdateStatement> delete_asset_;
-  std::unique_ptr<sqldb::IUpdateStatement> insert_asset_;
-  std::unique_ptr<sqldb::ISelectStatement> select_symbols_;
-  std::unique_ptr<sqldb::ISelectStatement> select_symbols_with_ids_;
-  std::unique_ptr<sqldb::ISelectStatement> select_symbols_info_;
-  std::unique_ptr<sqldb::IUpdateStatement> insert_symbol_info_;
-  std::unique_ptr<sqldb::IUpdateStatement> update_symbol_info_;
-  std::unique_ptr<sqldb::IUpdateStatement> delete_symbol_info_;
-  std::unique_ptr<sqldb::ISelectStatement> select_price_ticks_;
-  std::unique_ptr<sqldb::ISelectStatement> select_symbol_price_ticks_;
-  std::unique_ptr<sqldb::IUpdateStatement> insert_price_tick_;
+  mutable std::unique_ptr<sqldb::ISelectStatement> select_assets_;
+  mutable std::unique_ptr<sqldb::ISelectStatement> select_assets_with_ids_;
+  mutable std::unique_ptr<sqldb::IUpdateStatement> delete_asset_;
+  mutable std::unique_ptr<sqldb::IUpdateStatement> insert_asset_;
+  mutable std::unique_ptr<sqldb::ISelectStatement> select_symbols_;
+  mutable std::unique_ptr<sqldb::ISelectStatement> select_symbols_with_ids_;
+  mutable std::unique_ptr<sqldb::ISelectStatement> select_symbols_info_;
+  mutable std::unique_ptr<sqldb::IUpdateStatement> insert_symbol_info_;
+  mutable std::unique_ptr<sqldb::IUpdateStatement> update_symbol_info_;
+  mutable std::unique_ptr<sqldb::IUpdateStatement> delete_symbol_info_;
+  mutable std::unique_ptr<sqldb::ISelectStatement> select_price_ticks_;
+  mutable std::unique_ptr<sqldb::ISelectStatement> select_symbol_price_ticks_;
+  mutable std::unique_ptr<sqldb::IUpdateStatement> insert_price_tick_;
 };
 }  // namespace stonks::db
 
