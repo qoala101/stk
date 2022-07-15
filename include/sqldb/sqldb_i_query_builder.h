@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_QUERY_BUILDER_H_
-#define STONKS_SQLDB_SQLDB_QUERY_BUILDER_H_
+#ifndef STONKS_SQLDB_SQLDB_I_QUERY_BUILDER_H_
+#define STONKS_SQLDB_SQLDB_I_QUERY_BUILDER_H_
 
 #include <functional>
 #include <memory>
@@ -75,4 +75,4 @@ class IQueryBuilder {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_QUERY_BUILDER_H_
+#endif  // STONKS_SQLDB_SQLDB_I_QUERY_BUILDER_H_

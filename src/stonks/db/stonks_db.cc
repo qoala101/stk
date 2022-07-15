@@ -24,12 +24,12 @@
 #include <vector>
 
 #include "not_null.hpp"
-#include "sqldb_db.h"
-#include "sqldb_factory.h"
-#include "sqldb_query_builder.h"
+#include "sqldb_i_db.h"
+#include "sqldb_i_factory.h"
+#include "sqldb_i_query_builder.h"
+#include "sqldb_i_select_statement.h"
+#include "sqldb_i_update_statement.h"
 #include "sqldb_rows.h"
-#include "sqldb_select_statement.h"
-#include "sqldb_update_statement.h"
 #include "sqldb_value.h"
 #include "stonks_cache.h"
 #include "stonks_prepared_statements.h"
@@ -130,8 +130,9 @@ auto Db::SelectSymbolsInfo() const -> std::vector<SymbolInfo> {
   auto &base_asset = rows.GetColumnValues("base_asset");
   auto &quote_asset = rows.GetColumnValues("quote_asset");
 
-  auto symbols_info = std::vector<SymbolInfo>{};
   const auto num_rows = rows.GetSize();
+
+  auto symbols_info = std::vector<SymbolInfo>{};
   symbols_info.reserve(num_rows);
 
   for (auto i = 0; i < num_rows; ++i) {
@@ -186,19 +187,21 @@ void Db::UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) {
 auto Db::SelectSymbolPriceTicks(const SymbolName *symbol, const Period *period,
                                 const int *limit) const
     -> std::vector<SymbolPriceTick> {
-  auto *statement = (sqldb::ISelectStatement *){};
-  auto values = std::vector<sqldb::Value>{GetStartTime(period).count(),
-                                          GetEndTime(period).count()};
+  auto *statement = symbol != nullptr
+                        ? &prepared_statements_->SelectSymbolPriceTicks()
+                        : &prepared_statements_->SelectPriceTicks();
+  const auto values = [this, symbol, period, limit]() {
+    auto values = std::vector<sqldb::Value>{GetStartTime(period).count(),
+                                            GetEndTime(period).count()};
 
-  if (symbol != nullptr) {
-    statement = &prepared_statements_->SelectSymbolPriceTicks();
-    values.emplace_back(cache_.GetSymbolIdBySymbol(*symbol));
-  } else {
-    statement = &prepared_statements_->SelectPriceTicks();
-  }
+    if (symbol != nullptr) {
+      values.emplace_back(cache_.GetSymbolIdBySymbol(*symbol));
+    }
 
-  values.emplace_back((limit != nullptr) ? *limit
-                                         : std::numeric_limits<int>::max());
+    values.emplace_back((limit != nullptr) ? *limit
+                                           : std::numeric_limits<int>::max());
+    return values;
+  }();
 
   auto rows = statement->Execute(values);
 
@@ -207,8 +210,9 @@ auto Db::SelectSymbolPriceTicks(const SymbolName *symbol, const Period *period,
   auto &buy_price = rows.GetColumnValues("buy_price");
   auto &sell_price = rows.GetColumnValues("sell_price");
 
-  auto price_ticks = std::vector<SymbolPriceTick>{};
   const auto num_rows = rows.GetSize();
+
+  auto price_ticks = std::vector<SymbolPriceTick>{};
   price_ticks.reserve(num_rows);
 
   for (auto i = 0; i < num_rows; ++i) {

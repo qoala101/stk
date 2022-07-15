@@ -1,7 +1,6 @@
 #include "sqlite_query_builder.h"
 
 #include <gsl/assert>
-#include <iterator>
 #include <magic_enum.hpp>
 #include <optional>
 #include <range/v3/algorithm/any_of.hpp>
@@ -11,6 +10,7 @@
 #include <range/v3/view/adaptor.hpp>
 #include <range/v3/view/drop.hpp>
 #include <range/v3/view/filter.hpp>
+#include <range/v3/view/subrange.hpp>
 #include <range/v3/view/view.hpp>
 #include <string>
 #include <utility>

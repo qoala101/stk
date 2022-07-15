@@ -1,13 +1,10 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_REQUEST_SENDER_H_
 #define STONKS_NETWORK_NETWORK_REST_REQUEST_SENDER_H_
 
-#include <polymorphic_value.h>
+#include <utility>
 
-#include <memory>
-
-#include "network_json.h"
+#include "network_enums.h"
 #include "network_types.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 /**
@@ -22,9 +19,14 @@ class IRestRequestSender {
    * @brief Executes the request and returns response JSON.
    * @remark Destination is specified during construction.
    */
-  // NOLINTNEXTLINE(*-use-nodiscard)
-  virtual auto SendRequestAndGetResponse(const RestRequestData &data) const
-      -> std::pair<Status, Result> = 0;
+  [[nodiscard]] virtual auto SendRequestAndGetResponse(
+      const RestRequestData &data) const -> std::pair<Status, Result> = 0;
+
+  /**
+   * @brief Executes the request.
+   * @remark Destination is specified during construction.
+   */
+  void SendRequest(const RestRequestData &data) const;
 };
 }  // namespace stonks::network
 

@@ -6,13 +6,8 @@ find_package(polymorphic_value REQUIRED)
 find_package(Boost REQUIRED)
 
 add_library(libnetwork
-  # client.cc
-  # endpoint.cc
-  # proxy.cc
+  network_i_rest_request_sender.cc
   network_rest_request_builder.cc
-  # server.cc
-  # uri.cc
-  # web_socket.cc
 )
 set_target_properties(libnetwork PROPERTIES OUTPUT_NAME network)
 target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/network)

@@ -5,7 +5,7 @@
 #include <memory>
 #include <utility>
 
-#include "network_json.h"
+#include "network_i_json.h"
 #include "not_null.hpp"
 
 namespace stonks::network {

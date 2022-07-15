@@ -4,11 +4,11 @@
 #include <memory>
 
 #include "not_null.hpp"
-#include "sqldb_db.h"
-#include "sqldb_query_builder.h"
+#include "sqldb_i_db.h"
+#include "sqldb_i_query_builder.h"
+#include "sqldb_i_select_statement.h"
+#include "sqldb_i_update_statement.h"
 #include "sqldb_query_builder_facade.h"
-#include "sqldb_select_statement.h"
-#include "sqldb_update_statement.h"
 
 namespace stonks::db {
 /**

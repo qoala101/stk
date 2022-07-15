@@ -1,4 +1,4 @@
-#include "sqldb_update_statement.h"
+#include "sqldb_i_update_statement.h"
 
 namespace stonks::sqldb {
 void IUpdateStatement::Execute() { Execute({}); }

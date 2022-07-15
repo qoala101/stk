@@ -5,8 +5,8 @@
 
 #include "not_null.hpp"
 #include "sqldb_delete_query_builder.h"
+#include "sqldb_i_query_builder.h"
 #include "sqldb_insert_query_builder.h"
-#include "sqldb_query_builder.h"
 #include "sqldb_select_query_builder.h"
 #include "sqldb_update_query_builder.h"
 

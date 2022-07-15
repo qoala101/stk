@@ -7,11 +7,11 @@
 #include <vector>
 
 #include "not_null.hpp"
-#include "sqldb_db.h"
-#include "sqldb_factory.h"
-#include "sqldb_query_builder.h"
+#include "sqldb_i_db.h"
+#include "sqldb_i_factory.h"
+#include "sqldb_i_query_builder.h"
 #include "stonks_cache.h"
-#include "stonks_idb.h"
+#include "stonks_i_db.h"
 #include "stonks_prepared_statements.h"
 #include "stonks_types.h"
 

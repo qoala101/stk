@@ -5,7 +5,7 @@
 #include <string_view>
 #include <vector>
 
-#include "sqldb_query_builder.h"
+#include "sqldb_i_query_builder.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqlite {

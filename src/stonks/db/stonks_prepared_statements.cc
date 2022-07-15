@@ -9,8 +9,8 @@
 
 #include "not_null.hpp"
 #include "sqldb_delete_query_builder.h"
+#include "sqldb_i_query_builder.h"
 #include "sqldb_insert_query_builder.h"
-#include "sqldb_query_builder.h"
 #include "sqldb_query_builder_facade.h"
 #include "sqldb_select_query_builder.h"
 #include "sqldb_types.h"
@@ -130,14 +130,20 @@ auto PreparedStatements::SelectSymbolsInfo() -> sqldb::ISelectStatement& {
         {"name", "min_base_amount", "min_quote_amount", "base_step",
          "quote_step"});
 
-    auto base_asset_column =
-        table_definitions::Asset().GetColumnDefinition("name");
-    base_asset_column.column = "base_asset";
+    const auto base_asset_column = []() {
+      auto base_asset_column =
+          table_definitions::Asset().GetColumnDefinition("name");
+      base_asset_column.column = "base_asset";
+      return base_asset_column;
+    }();
     symbol_columns.emplace_back(cpp::assume_not_null(&base_asset_column));
 
-    auto quote_asset_column =
-        table_definitions::Asset().GetColumnDefinition("name");
-    quote_asset_column.column = "quote_asset";
+    const auto quote_asset_column = []() {
+      auto quote_asset_column =
+          table_definitions::Asset().GetColumnDefinition("name");
+      quote_asset_column.column = "quote_asset";
+      return quote_asset_column;
+    }();
     symbol_columns.emplace_back(cpp::assume_not_null(&quote_asset_column));
 
     const auto& columns = symbol_columns;

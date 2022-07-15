@@ -3,8 +3,11 @@
 
 #include <polymorphic_value.h>
 
-#include "network_json.h"
-#include "network_rest_request_sender.h"
+#include <utility>
+
+#include "network_enums.h"
+#include "network_i_json.h"
+#include "network_i_rest_request_sender.h"
 #include "network_types.h"
 
 namespace stonks::restsdk {

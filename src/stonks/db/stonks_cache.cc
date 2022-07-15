@@ -4,8 +4,8 @@
 #include <utility>
 #include <vector>
 
+#include "sqldb_i_select_statement.h"
 #include "sqldb_rows.h"
-#include "sqldb_select_statement.h"
 #include "stonks_prepared_statements.h"
 
 namespace stonks::db {

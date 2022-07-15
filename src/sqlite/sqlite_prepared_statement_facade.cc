@@ -15,7 +15,8 @@
 namespace stonks::sqlite {
 namespace {
 [[nodiscard]] auto Logger() -> auto & {
-  static auto logger = spdlog::stdout_color_mt("sqlite::PreparedStatementFacade");
+  static auto logger =
+      spdlog::stdout_color_mt("sqlite::PreparedStatementFacade");
   return *logger;
 }
 

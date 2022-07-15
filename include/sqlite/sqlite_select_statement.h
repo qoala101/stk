@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "sqldb_enums.h"
+#include "sqldb_i_select_statement.h"
 #include "sqldb_row_definition.h"
 #include "sqldb_rows.h"
-#include "sqldb_select_statement.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 #include "sqlite_prepared_statement_handle.h"

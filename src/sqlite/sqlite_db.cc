@@ -9,8 +9,8 @@
 
 #include "not_null.hpp"
 #include "sqldb_enums_to_string.h"  // IWYU pragma: keep
-#include "sqldb_select_statement.h"
-#include "sqldb_update_statement.h"
+#include "sqldb_i_select_statement.h"
+#include "sqldb_i_update_statement.h"
 #include "sqlite_db_facade.h"
 #include "sqlite_prepared_statement_handle.h"
 #include "sqlite_select_statement.h"

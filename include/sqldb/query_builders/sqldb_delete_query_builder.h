@@ -7,7 +7,7 @@
 #include <string_view>
 
 #include "not_null.hpp"
-#include "sqldb_query_builder.h"
+#include "sqldb_i_query_builder.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb {

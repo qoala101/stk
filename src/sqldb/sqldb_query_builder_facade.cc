@@ -4,7 +4,7 @@
 #include <utility>
 
 #include "not_null.hpp"
-#include "sqldb_query_builder.h"
+#include "sqldb_i_query_builder.h"
 
 namespace stonks::sqldb {
 QueryBuilderFacade::QueryBuilderFacade(

@@ -9,7 +9,7 @@
 #include <variant>
 
 #include "network_enums.h"
-#include "network_json.h"
+#include "network_i_json.h"
 
 namespace stonks::network {
 using Result = isocpp_p0201::polymorphic_value<IJson>;

@@ -1,10 +1,10 @@
-#ifndef STONKS_SQLDB_SQLDB_DB_FACTORY_H_
-#define STONKS_SQLDB_SQLDB_DB_FACTORY_H_
+#ifndef STONKS_SQLDB_SQLDB_I_FACTORY_H_
+#define STONKS_SQLDB_SQLDB_I_FACTORY_H_
 
 #include <memory>
 
-#include "sqldb_db.h"
-#include "sqldb_query_builder.h"
+#include "sqldb_i_db.h"
+#include "sqldb_i_query_builder.h"
 
 namespace stonks::sqldb {
 /**
@@ -29,4 +29,4 @@ class IFactory {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_DB_FACTORY_H_
+#endif  // STONKS_SQLDB_SQLDB_I_FACTORY_H_

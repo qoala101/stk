@@ -11,7 +11,7 @@
 
 #include "concepts.h"  // IWYU pragma: keep
 #include "network_enums.h"
-#include "network_json.h"
+#include "network_i_json.h"
 #include "network_json_basic_conversions.h"
 #include "network_types.h"
 

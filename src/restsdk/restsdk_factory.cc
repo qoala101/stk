@@ -4,7 +4,7 @@
 
 #include <memory>
 
-#include "network_json.h"
+#include "network_i_json.h"
 #include "not_null.hpp"
 #include "restsdk_json.h"
 #include "restsdk_rest_request_receiver.h"

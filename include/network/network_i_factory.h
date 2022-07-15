@@ -5,9 +5,9 @@
 
 #include <vector>
 
-#include "network_json.h"
-#include "network_rest_request_receiver.h"
-#include "network_rest_request_sender.h"
+#include "network_i_json.h"
+#include "network_i_rest_request_receiver.h"
+#include "network_i_rest_request_sender.h"
 #include "network_types.h"
 #include "not_null.hpp"
 

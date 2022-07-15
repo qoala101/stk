@@ -23,7 +23,7 @@
 #include <utility>
 
 #include "network_enums.h"
-#include "network_json.h"
+#include "network_i_json.h"
 #include "network_types.h"
 #include "restsdk_json.h"
 #include "restsdk_json_impl.h"

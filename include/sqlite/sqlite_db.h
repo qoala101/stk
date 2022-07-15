@@ -5,10 +5,10 @@
 #include <string_view>
 
 #include "not_null.hpp"
-#include "sqldb_db.h"
+#include "sqldb_i_db.h"
+#include "sqldb_i_select_statement.h"
+#include "sqldb_i_update_statement.h"
 #include "sqldb_row_definition.h"
-#include "sqldb_select_statement.h"
-#include "sqldb_update_statement.h"
 #include "sqlite_types.h"
 
 namespace stonks::sqlite {

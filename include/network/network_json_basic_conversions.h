@@ -6,7 +6,7 @@
 #include <gsl/gsl>
 
 #include "concepts.h"  // IWYU pragma: keep
-#include "network_json.h"
+#include "network_i_json.h"
 
 /**
  * @file List of basic type conversions which should be provided by the network

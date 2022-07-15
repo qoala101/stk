@@ -6,7 +6,7 @@
 #include <memory>
 #include <string_view>
 
-#include "network_json.h"
+#include "network_i_json.h"
 #include "not_null.hpp"
 #include "restsdk_json_impl.h"
 

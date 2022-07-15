@@ -1,11 +1,15 @@
 #ifndef STONKS_RESTSDK_RESTSDK_REST_REQUEST_RECEIVER_H_
 #define STONKS_RESTSDK_RESTSDK_REST_REQUEST_RECEIVER_H_
 
-#include <map>
+#include <functional>
+#include <memory>
 #include <string_view>
+#include <utility>
 
-#include "network_rest_request_receiver.h"
+#include "network_enums.h"
+#include "network_i_rest_request_receiver.h"
 #include "network_types.h"
+#include "not_null.hpp"
 
 namespace web::http {
 class http_request;

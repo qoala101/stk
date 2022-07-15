@@ -9,7 +9,7 @@
 #include <thread>
 
 #include "network_enums.h"
-#include "network_json.h"
+#include "network_i_json.h"
 #include "network_json_basic_conversions.h"
 #include "network_rest_request_builder.h"
 #include "network_types.h"
@@ -53,23 +53,21 @@ auto ConvertToJson(const SymbolPrice &value)
 namespace {
 TEST(RestRequestReceiver, SendRequest) {
   // auto receiver_thread = std::jthread([]() {
-    const auto receiver =
-        std::make_unique<stonks::restsdk::RestRequestReceiver>(
-            "http://localhost:6506",
-            [](stonks::network::Endpoint endpoint,
-               stonks::network::RestRequestData data)
-                -> std::pair<stonks::network::Status, stonks::network::Result> {
-              EXPECT_EQ(endpoint.method, stonks::network::Method::kGet);
-              EXPECT_EQ(endpoint.uri, "/Test");
-              return {
-                  stonks::network::Status::kOk,
-                  stonks::network::ConvertToJson(SymbolPrice{
-                      .symbol =
-                          stonks::network::ParseFromJson<stonks::SymbolName>(
-                              **data.body),
-                      .price = stonks::network::ParseFromJson<double>(
-                          *data.params.at("price"))})};
-            });
+  const auto receiver = std::make_unique<stonks::restsdk::RestRequestReceiver>(
+      "http://localhost:6506",
+      [](stonks::network::Endpoint endpoint,
+         stonks::network::RestRequestData data)
+          -> std::pair<stonks::network::Status, stonks::network::Result> {
+        EXPECT_EQ(endpoint.method, stonks::network::Method::kGet);
+        EXPECT_EQ(endpoint.uri, "/Test");
+        return {
+            stonks::network::Status::kOk,
+            stonks::network::ConvertToJson(SymbolPrice{
+                .symbol = stonks::network::ParseFromJson<stonks::SymbolName>(
+                    **data.body),
+                .price = stonks::network::ParseFromJson<double>(
+                    *data.params.at("price"))})};
+      });
   // });
 
   const auto [endpoint, data] =

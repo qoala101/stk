@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_UPDATE_STATEMENT_H_
-#define STONKS_SQLDB_SQLDB_UPDATE_STATEMENT_H_
+#ifndef STONKS_SQLDB_SQLDB_I_UPDATE_STATEMENT_H_
+#define STONKS_SQLDB_SQLDB_I_UPDATE_STATEMENT_H_
 
 #include <vector>
 
@@ -28,4 +28,4 @@ class IUpdateStatement {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_UPDATE_STATEMENT_H_
+#endif  // STONKS_SQLDB_SQLDB_I_UPDATE_STATEMENT_H_

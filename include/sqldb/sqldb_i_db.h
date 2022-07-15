@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_DB_H_
-#define STONKS_SQLDB_SQLDB_DB_H_
+#ifndef STONKS_SQLDB_SQLDB_I_DB_H_
+#define STONKS_SQLDB_SQLDB_I_DB_H_
 
 #include <memory>
 #include <optional>
@@ -7,11 +7,11 @@
 #include <vector>
 
 #include "not_null.hpp"
-#include "sqldb_query_builder.h"
+#include "sqldb_i_query_builder.h"
+#include "sqldb_i_select_statement.h"
+#include "sqldb_i_update_statement.h"
 #include "sqldb_row_definition.h"
-#include "sqldb_select_statement.h"
 #include "sqldb_types.h"
-#include "sqldb_update_statement.h"
 
 namespace stonks::sqldb {
 /**
@@ -44,4 +44,4 @@ class IDb {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_DB_H_
+#endif  // STONKS_SQLDB_SQLDB_I_DB_H_

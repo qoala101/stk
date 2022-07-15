@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_ENUM_CONVERSIONS_H_
-#define STONKS_SQLDB_SQLDB_ENUM_CONVERSIONS_H_
+#ifndef STONKS_SQLDB_SQLDB_ENUMS_TO_STRING_H_
+#define STONKS_SQLDB_SQLDB_ENUMS_TO_STRING_H_
 
 #include <magic_enum.hpp>
 #include <string_view>
@@ -22,4 +22,4 @@ constexpr auto magic_enum::customize::enum_name<stonks::sqldb::DataType>(
   return {};
 }
 
-#endif  // STONKS_SQLDB_SQLDB_ENUM_CONVERSIONS_H_
+#endif  // STONKS_SQLDB_SQLDB_ENUMS_TO_STRING_H_

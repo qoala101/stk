@@ -7,8 +7,8 @@
 #include <range/v3/view/transform.hpp>
 
 #include "not_null.hpp"
-#include "sqldb_db.h"
-#include "sqldb_query_builder.h"
+#include "sqldb_i_db.h"
+#include "sqldb_i_query_builder.h"
 #include "sqldb_query_builder_facade.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"

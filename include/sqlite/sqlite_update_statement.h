@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "sqldb_update_statement.h"
+#include "sqldb_i_update_statement.h"
 #include "sqldb_value.h"
 #include "sqlite_prepared_statement_handle.h"
 

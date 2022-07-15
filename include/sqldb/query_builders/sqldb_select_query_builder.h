@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "not_null.hpp"
-#include "sqldb_query_builder.h"
+#include "sqldb_i_query_builder.h"
 #include "sqldb_query_builders_common.h"
 #include "sqldb_types.h"
 

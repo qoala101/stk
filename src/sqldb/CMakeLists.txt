@@ -7,13 +7,13 @@ add_library(libsqldb
   query_builders/sqldb_query_builders_common.cc
   query_builders/sqldb_select_query_builder.cc
   query_builders/sqldb_update_query_builder.cc
+  sqldb_i_select_statement.cc
+  sqldb_i_update_statement.cc
   sqldb_query_builder_facade.cc
   sqldb_row_definition.cc
   sqldb_row.cc
   sqldb_rows.cc
-  sqldb_select_statement.cc
   sqldb_types.cc
-  sqldb_update_statement.cc
   sqldb_value.cc
 )
 set_target_properties(libsqldb PROPERTIES OUTPUT_NAME sqldb)
