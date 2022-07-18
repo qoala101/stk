@@ -20,21 +20,23 @@ Rows::Rows(std::vector<Column> columns)
   Ensures(columns_.size() == columns.size());
 }
 
-auto Rows::GetColumnValues(const Column &column) const
-    -> const std::vector<Value> & {
+template <typename T>
+auto Rows::GetColumnValuesImpl(T &t, const Column &column) -> auto & {
   const auto iter =
-      ranges::find_if(columns_, [&column](const auto &other_column) {
+      ranges::find_if(t.columns_, [&column](const auto &other_column) {
         return other_column.column == column;
       });
-  Expects(iter != columns_.end());
+  Expects(iter != t.columns_.end());
   return iter->values;
 }
 
+auto Rows::GetColumnValues(const Column &column) const
+    -> const std::vector<Value> & {
+  return GetColumnValuesImpl(*this, column);
+}
+
 auto Rows::GetColumnValues(const Column &column) -> std::vector<Value> & {
-  // NOLINTNEXTLINE(*-const-cast)
-  return const_cast<std::vector<Value> &>(
-      // NOLINTNEXTLINE(*-const-cast)
-      const_cast<const Rows *>(this)->GetColumnValues(column));
+  return GetColumnValuesImpl(*this, column);
 }
 
 auto Rows::GetSize() const -> int {

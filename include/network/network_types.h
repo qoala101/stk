@@ -37,7 +37,7 @@ struct Endpoint {
 struct RestRequestData {
   Params params{};
   Headers headers{};
-  Body body{};
+  std::optional<Body> body{};
 };
 
 /**

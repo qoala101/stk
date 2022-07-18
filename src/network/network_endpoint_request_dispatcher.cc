@@ -1,7 +1,10 @@
 #include "network_endpoint_request_dispatcher.h"
 
+#include <polymorphic_value.h>
+
 #include <functional>
 #include <gsl/assert>
+#include <optional>
 
 #include "network_enums.h"
 

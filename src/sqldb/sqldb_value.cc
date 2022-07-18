@@ -47,15 +47,17 @@ auto Value::GetDouble() const -> double {
   return std::get<double>(value_);
 }
 
-auto Value::GetString() const -> const std::string& {
-  Expects(std::holds_alternative<std::string>(value_));
-  return std::get<std::string>(value_);
+template <typename This>
+auto Value::GetStringImpl(This& t) -> auto& {
+  Expects(std::holds_alternative<std::string>(t.value_));
+  return std::get<std::string>(t.value_);
 }
 
-auto Value::GetString() -> std::string& {
-  // NOLINTNEXTLINE(*-const-cast)
-  return const_cast<std::string&>(const_cast<const Value*>(this)->GetString());
+auto Value::GetString() const -> const std::string& {
+  return GetStringImpl(*this);
 }
+
+auto Value::GetString() -> std::string& { return GetStringImpl(*this); }
 
 auto Value::GetType() const -> DataType {
   Expects(!IsNull());

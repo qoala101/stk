@@ -22,6 +22,13 @@ class Row {
   [[nodiscard]] auto GetCells() -> std::map<Column, Value> &;
 
  private:
+  template <typename This>
+  [[nodiscard]] static auto GetValueImpl(This &t, const Column &column)
+      -> auto &;
+
+  template <typename This>
+  [[nodiscard]] static auto GetCellsImpl(This &t) -> auto &;
+
   std::map<Column, Value> cells_{};
 };
 }  // namespace stonks::sqldb

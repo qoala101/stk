@@ -32,8 +32,8 @@ class IJson::Impl {
   [[nodiscard]] auto GetJson() -> web::json::value &;
 
  private:
-  template <typename T>
-  [[nodiscard]] static auto GetJsonImpl(T &t) -> auto &;
+  template <typename This>
+  [[nodiscard]] static auto GetJsonImpl(This &t) -> auto &;
 
   cpp::not_null<std::unique_ptr<web::json::value>> json_;
 };

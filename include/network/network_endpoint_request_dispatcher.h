@@ -1,14 +1,13 @@
 #ifndef STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
 #define STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
 
-#include <memory>
+#include <functional>
+#include <map>
 #include <type_traits>
 #include <utility>
 
-#include "network_i_factory.h"
-#include "network_i_rest_request_receiver.h"
+#include "network_enums.h"
 #include "network_types.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 /**
