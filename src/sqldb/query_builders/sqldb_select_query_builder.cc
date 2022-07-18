@@ -18,6 +18,7 @@ auto SelectQueryBuilder::Columns(std::vector<Column> columns)
     -> SelectQueryBuilder & {
   Expects(std::holds_alternative<std::monostate>(columns_));
   columns_.emplace<std::vector<Column>>(std::move(columns));
+  Ensures(!std::holds_alternative<std::monostate>(columns_));
   return *this;
 }
 
@@ -30,18 +31,22 @@ auto SelectQueryBuilder::Columns(
 auto SelectQueryBuilder::AllColumns() -> SelectQueryBuilder & {
   Expects(std::holds_alternative<std::monostate>(columns_));
   columns_.emplace<AllColumnsType>();
+  Ensures(!std::holds_alternative<std::monostate>(columns_));
   return *this;
 }
 
 auto SelectQueryBuilder::FromTable(Table table) -> SelectQueryBuilder & {
   Expects(!table_.has_value());
   table_.emplace(std::move(table));
+  Ensures(table_.has_value());
   return *this;
 }
 
 auto SelectQueryBuilder::FromTable(const TableDefinition &table_definition)
     -> SelectQueryBuilder & {
+  Expects(!table_.has_value());
   table_.emplace(table_definition.table);
+  Ensures(table_.has_value());
   return *this;
 }
 
@@ -49,6 +54,7 @@ auto SelectQueryBuilder::Where(std::string_view where_clause)
     -> SelectQueryBuilder & {
   Expects(!where_clause_.has_value());
   where_clause_.emplace(std::string{"WHERE "} + where_clause.data());
+  Ensures(where_clause_.has_value());
   return *this;
 }
 
@@ -68,12 +74,14 @@ auto SelectQueryBuilder::Or(std::string_view where_clause)
 auto SelectQueryBuilder::Limit(int limit) -> SelectQueryBuilder & {
   Expects(std::holds_alternative<std::monostate>(limit_));
   limit_.emplace<int>(limit);
+  Ensures(!std::holds_alternative<std::monostate>(limit_));
   return *this;
 }
 
 auto SelectQueryBuilder::Limited() -> SelectQueryBuilder & {
   Expects(std::holds_alternative<std::monostate>(limit_));
   limit_.emplace<LimitedType>();
+  Ensures(!std::holds_alternative<std::monostate>(limit_));
   return *this;
 }
 

@@ -16,7 +16,9 @@ Rows::Rows(std::vector<Column> columns)
           ranges::views::transform(
               columns,
               [](auto &column) { return ColumnValues{std::move(column)}; }) |
-          ranges::to_vector} {}
+          ranges::to_vector} {
+  Ensures(columns_.size() == columns.size());
+}
 
 auto Rows::GetColumnValues(const Column &column) const
     -> const std::vector<Value> & {

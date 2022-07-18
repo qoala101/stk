@@ -37,6 +37,7 @@ auto RestRequestBuilder::WithBaseUri(std::string_view base_uri)
     -> RestRequestBuilder& {
   Expects(!uri_.has_value());
   uri_.emplace(base_uri.data());
+  Ensures(uri_.has_value());
   return *this;
 }
 
@@ -56,12 +57,14 @@ auto RestRequestBuilder::AddParam(std::string_view key, Param value)
 auto RestRequestBuilder::AddHeader(std::string_view key, std::string_view value)
     -> RestRequestBuilder& {
   headers_.emplace(key.data(), value.data());
+  Ensures(!headers_.empty());
   return *this;
 }
 
 auto RestRequestBuilder::WithBody(Body body) -> RestRequestBuilder& {
   Expects(!body_);
   body_.emplace(std::move(body));
+  Ensures(body_);
   return *this;
 }
 

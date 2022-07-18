@@ -20,6 +20,8 @@ Value::Value(std::string_view value, DataType data_type) {
     case DataType::kString:
       value_ = value.data();
   }
+
+  Ensures(!IsNull());
 }
 
 Value::Value(int value) : value_{value} {}

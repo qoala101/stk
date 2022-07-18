@@ -15,12 +15,14 @@ InsertQueryBuilder::InsertQueryBuilder(
 auto InsertQueryBuilder::WholeRow() -> InsertQueryBuilder& {
   Expects(std::holds_alternative<std::monostate>(columns_));
   columns_.emplace<AllColumnsType>();
+  Ensures(!std::holds_alternative<std::monostate>(columns_));
   return *this;
 }
 
 auto InsertQueryBuilder::IntoTable(Table table) -> InsertQueryBuilder& {
   Expects(std::holds_alternative<std::monostate>(table_));
   table_ = {std::move(table)};
+  Ensures(!std::holds_alternative<std::monostate>(table_));
   return *this;
 }
 
@@ -28,6 +30,7 @@ auto InsertQueryBuilder::IntoTable(TableDefinition table_definition)
     -> InsertQueryBuilder& {
   Expects(std::holds_alternative<std::monostate>(table_));
   table_ = {std::move(table_definition)};
+  Ensures(!std::holds_alternative<std::monostate>(table_));
   return *this;
 }
 
@@ -35,6 +38,7 @@ auto InsertQueryBuilder::IntoColumns(std::vector<Column> columns)
     -> InsertQueryBuilder& {
   Expects(std::holds_alternative<std::monostate>(columns_));
   columns_.emplace<std::vector<Column>>(std::move(columns));
+  Ensures(!std::holds_alternative<std::monostate>(columns_));
   return *this;
 }
 

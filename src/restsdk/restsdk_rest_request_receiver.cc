@@ -124,7 +124,9 @@ RestRequestReceiver::RestRequestReceiver(
             std::bind_front(&RestRequestReceiver::HandleHttpRequest, this));
         http_listener->open();
         return http_listener;
-      }()} {}
+      }()} {
+  Ensures(handler_);
+}
 
 RestRequestReceiver::RestRequestReceiver(RestRequestReceiver &&) noexcept =
     default;
@@ -135,7 +137,7 @@ auto RestRequestReceiver::operator=(RestRequestReceiver &&) noexcept
 RestRequestReceiver::~RestRequestReceiver() = default;
 
 void RestRequestReceiver::HandleHttpRequest(
-    const web::http::http_request &request) {
+    const web::http::http_request &request) const {
   Logger().info("Received {} request on {}", request.method(),
                 request.absolute_uri().path());
 

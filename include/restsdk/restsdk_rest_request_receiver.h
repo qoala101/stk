@@ -41,7 +41,7 @@ class RestRequestReceiver : public network::IRestRequestReceiver {
   ~RestRequestReceiver() override;
 
  private:
-  void HandleHttpRequest(const web::http::http_request &request);
+  void HandleHttpRequest(const web::http::http_request &request) const;
 
   std::function<std::pair<network::Status, network::Result>(
       network::Endpoint, network::RestRequestData)>

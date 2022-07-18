@@ -77,9 +77,9 @@ TEST(StonksDb, UpdateSymbolsInfo) {
 }
 
 TEST(StonksDb, TablesInitialization) {
-  static_cast<void>(std::remove(kTestDbFileName));
+  std::ignore = std::remove(kTestDbFileName);
   db = std::make_shared<stonks::Db>(stonks::sqlite::Factory{}, kTestDbFileName);
-  static_cast<void>(stonks::DbUpdaterSymbolsInfo{db});
+  std::ignore = stonks::DbUpdaterSymbolsInfo{db};
 
   const auto assets = db->SelectAssets();
   EXPECT_FALSE(assets.empty());

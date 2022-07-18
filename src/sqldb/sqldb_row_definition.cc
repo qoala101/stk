@@ -1,5 +1,6 @@
 #include "sqldb_row_definition.h"
 
+#include <gsl/assert>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/all.hpp>
@@ -23,7 +24,9 @@ RowDefinition::RowDefinition(
                                                    column_definition.column,
                                                    column_definition.data_type};
                                              }) |
-                    ranges::to_vector} {}
+                    ranges::to_vector} {
+  Ensures(cell_definitions_.size() == column_definitions.size());
+}
 
 RowDefinition::RowDefinition(
     const ConstView<ColumnDefinition> &column_definitions)
@@ -33,7 +36,9 @@ RowDefinition::RowDefinition(
                           return CellDefinition{column_definition->column,
                                                 column_definition->data_type};
                         }) |
-                    ranges::to_vector} {}
+                    ranges::to_vector} {
+  Ensures(cell_definitions_.size() == column_definitions.size());
+}
 
 auto RowDefinition::GetCellDefinitions() const
     -> const std::vector<CellDefinition> & {

@@ -12,6 +12,7 @@ DeleteQueryBuilder::DeleteQueryBuilder(
 auto DeleteQueryBuilder::FromTable(Table table) -> DeleteQueryBuilder& {
   Expects(!table_.has_value());
   table_ = {std::move(table)};
+  Ensures(table_.has_value());
   return *this;
 }
 
@@ -24,6 +25,7 @@ auto DeleteQueryBuilder::Where(std::string_view where_clause)
     -> DeleteQueryBuilder& {
   Expects(!where_clause_.has_value());
   where_clause_.emplace(std::string{"WHERE "} + where_clause.data());
+  Ensures(where_clause_.has_value());
   return *this;
 }
 

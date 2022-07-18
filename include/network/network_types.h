@@ -37,8 +37,14 @@ struct Endpoint {
 struct RestRequestData {
   Params params{};
   Headers headers{};
-  std::optional<Body> body{};
+  Body body{};
 };
+
+/**
+ * @brief Handles REST request and returns response.
+ */
+using RestRequestHandler =
+    std::function<std::pair<Status, Result>(Endpoint, RestRequestData)>;
 }  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_NETWORK_TYPES_H_

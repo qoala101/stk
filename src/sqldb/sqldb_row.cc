@@ -9,6 +9,8 @@ Row::Row(std::vector<Cell> cells) {
   for (auto &cell : cells) {
     cells_.emplace(std::move(cell.column), std::move(cell.value));
   }
+
+  Ensures(cells_.size() == cells.size());
 }
 
 auto Row::GetValue(const Column &column) const -> const Value & {

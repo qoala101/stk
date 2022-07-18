@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_FACTORY_H_
-#define STONKS_NETWORK_NETWORK_FACTORY_H_
+#ifndef STONKS_NETWORK_NETWORK_I_FACTORY_H_
+#define STONKS_NETWORK_NETWORK_I_FACTORY_H_
 
 #include <polymorphic_value.h>
 
@@ -34,9 +34,7 @@ class IFactory {
    * @param handler Function to be called when request is received.
    */
   [[nodiscard]] virtual auto CreateRestRequestReceiver(
-      std::string_view local_uri,
-      std::function<std::pair<Status, Result>(Endpoint, RestRequestData)>
-          handler) const
+      std::string_view local_uri, RestRequestHandler handler) const
       -> cpp::not_null<std::unique_ptr<IRestRequestReceiver>> = 0;
 
   /**
@@ -47,4 +45,4 @@ class IFactory {
 };
 }  // namespace stonks::network
 
-#endif  // STONKS_NETWORK_NETWORK_FACTORY_H_
+#endif  // STONKS_NETWORK_NETWORK_I_FACTORY_H_
