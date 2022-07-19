@@ -57,6 +57,9 @@ class IDb {
    */
   virtual void InsertSymbolPriceTick(
       const SymbolPriceTick &symbol_price_tick) = 0;
+
+ protected:
+  explicit IDb() = default;
 };
 }  // namespace stonks
 

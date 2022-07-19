@@ -18,7 +18,6 @@
 #include <magic_enum.hpp>
 #include <map>
 #include <memory>
-#include <optional>
 #include <string>
 #include <utility>
 
@@ -103,14 +102,12 @@ auto ConvertToRequestParam(const network::IJson &json) -> std::string {
 }
 }  // namespace
 
-RestRequestSender::RestRequestSender(network::Endpoint endpoint)
-    : endpoint_{std::move(endpoint)} {}
-
 auto RestRequestSender::SendRequestAndGetResponse(
+    const network::Endpoint &endpoint,
     const network::RestRequestData &data) const
     -> std::pair<network::Status, network::Result> {
-  auto uri_builder = [this, &data]() {
-    auto uri_builder = web::http::uri_builder{endpoint_.uri};
+  auto uri_builder = [this, &endpoint, &data]() {
+    auto uri_builder = web::http::uri_builder{endpoint.uri};
 
     for (const auto &[key, value] : data.params) {
       uri_builder.append_query(key, ConvertToRequestParam(*value));
@@ -119,9 +116,9 @@ auto RestRequestSender::SendRequestAndGetResponse(
     return uri_builder;
   }();
 
-  auto http_request = [this, &data]() {
+  auto http_request = [this, &endpoint, &data]() {
     auto http_request =
-        web::http::http_request{HttpMethodFromNetworkMethod(endpoint_.method)};
+        web::http::http_request{HttpMethodFromNetworkMethod(endpoint.method)};
 
     for (const auto &[key, value] : data.headers) {
       http_request.headers().add(key, value);
@@ -137,7 +134,7 @@ auto RestRequestSender::SendRequestAndGetResponse(
   const auto full_uri = uri_builder.to_uri();
 
   Logger().info("Sending {} request to {}",
-                magic_enum::enum_name(endpoint_.method), full_uri.to_string());
+                magic_enum::enum_name(endpoint.method), full_uri.to_string());
 
   auto http_client = web::http::client::http_client{full_uri};
   const auto response = http_client.request(http_request).get();

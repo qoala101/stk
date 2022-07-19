@@ -72,6 +72,9 @@ class IQueryBuilder {
   [[nodiscard]] virtual auto BuildDeleteQuery(
       const Table &table, std::string_view where_clause) const
       -> std::string = 0;
+
+ protected:
+  explicit IQueryBuilder() = default;
 };
 }  // namespace stonks::sqldb
 

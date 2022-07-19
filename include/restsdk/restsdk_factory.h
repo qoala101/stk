@@ -25,7 +25,7 @@ class Factory : public network::IFactory {
   /**
    * @copydoc network::IFactory::CreateRestRequestSender
    */
-  [[nodiscard]] auto CreateRestRequestSender(network::Endpoint endpoint) const
+  [[nodiscard]] auto CreateRestRequestSender() const
       -> cpp::not_null<std::unique_ptr<network::IRestRequestSender>> override;
 
   /**

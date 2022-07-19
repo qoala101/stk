@@ -11,9 +11,9 @@
 #include "restsdk_rest_request_sender.h"
 
 namespace stonks::restsdk {
-auto Factory::CreateRestRequestSender(network::Endpoint endpoint) const
+auto Factory::CreateRestRequestSender() const
     -> cpp::not_null<std::unique_ptr<network::IRestRequestSender>> {
-  return cpp::assume_not_null(std::make_unique<RestRequestSender>(endpoint));
+  return cpp::assume_not_null(std::make_unique<RestRequestSender>());
 }
 
 auto Factory::CreateRestRequestReceiver(

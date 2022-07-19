@@ -17,16 +17,13 @@ class IRestRequestSender {
 
   /**
    * @brief Executes the request and returns response JSON.
-   * @remark Destination is specified during construction.
    */
   [[nodiscard]] virtual auto SendRequestAndGetResponse(
-      const RestRequestData &data) const -> std::pair<Status, Result> = 0;
+      const Endpoint &endpoint, const RestRequestData &data) const
+      -> std::pair<Status, Result> = 0;
 
-  /**
-   * @brief Executes the request.
-   * @remark Destination is specified during construction.
-   */
-  void SendRequest(const RestRequestData &data) const;
+ protected:
+  explicit IRestRequestSender() = default;
 };
 }  // namespace stonks::network
 

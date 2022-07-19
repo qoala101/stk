@@ -14,19 +14,12 @@ namespace stonks::restsdk {
 class RestRequestSender : public network::IRestRequestSender {
  public:
   /**
-   * @param endpoint Request destination.
-   */
-  explicit RestRequestSender(network::Endpoint endpoint);
-
-  /**
    * @copydoc network::IRestRequestSender::SendRequestAndGetResponse
    */
   [[nodiscard]] auto SendRequestAndGetResponse(
+      const network::Endpoint &endpoint,
       const network::RestRequestData &data) const
       -> std::pair<network::Status, network::Result> override;
-
- private:
-  network::Endpoint endpoint_{};
 };
 }  // namespace stonks::restsdk
 

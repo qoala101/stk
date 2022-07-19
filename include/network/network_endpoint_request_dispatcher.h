@@ -11,18 +11,20 @@
 
 namespace stonks::network {
 /**
- * @brief Request handler which forwards requests to sub-endpoints
- * to the distinct handlers.
+ * @brief Request handler which maps endpoint requests to the distinct handlers.
  */
 class EndpointRequestDispatcher {
  public:
   /**
-   * @brief Handle of sub-endpoint.
+   * @brief Handles requested endpoint.
    */
   using EndpointRequestHandler = std::function<Result(Params, Body)>;
 
   /**
-   * @param endpoint_handlers Handle per each sub-endpoint.
+   * @param base_uri Part of URI which is subtracted from the beginning
+   * of the requested URI.
+   * @param endpoint_handlers Handle per each endpoint which represents
+   * the remaining part of the requested URI.
    */
   explicit EndpointRequestDispatcher(
       std::map<Endpoint, EndpointRequestHandler> endpoint_handlers);

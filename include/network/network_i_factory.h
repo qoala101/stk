@@ -22,9 +22,8 @@ class IFactory {
 
   /**
    * @brief Creates executor of REST request.
-   * @param endpoint Request destination.
    */
-  [[nodiscard]] virtual auto CreateRestRequestSender(Endpoint endpoint) const
+  [[nodiscard]] virtual auto CreateRestRequestSender() const
       -> cpp::not_null<std::unique_ptr<IRestRequestSender>> = 0;
 
   /**
@@ -42,6 +41,9 @@ class IFactory {
    */
   [[nodiscard]] virtual auto CreateJson() const
       -> isocpp_p0201::polymorphic_value<IJson> = 0;
+
+ protected:
+  explicit IFactory() = default;
 };
 }  // namespace stonks::network
 

@@ -65,7 +65,7 @@ namespace {
 [[nodiscard]] auto FetchEndpoint(const web::http::http_request &request)
     -> network::Endpoint {
   return {.method = NetworkMethodFromHttpMethod(request.method()),
-          .uri = request.request_uri().path()};
+          .uri = request.relative_uri().path()};
 }
 
 [[nodiscard]] auto FetchParams(const std::string &request_query)

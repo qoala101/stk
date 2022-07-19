@@ -3,7 +3,6 @@
 #include <gsl/assert>
 #include <memory>
 #include <range/v3/algorithm/find_if.hpp>
-#include <range/v3/functional/identity.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/all.hpp>

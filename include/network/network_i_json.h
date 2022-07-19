@@ -48,6 +48,9 @@ class IJson {
    * @brief Gives implementation details.
    */
   [[nodiscard]] virtual auto GetImpl() const -> const Impl & = 0;
+
+ protected:
+  explicit IJson() = default;
 };
 }  // namespace stonks::network
 

@@ -27,6 +27,9 @@ class ISelectStatement {
    */
   [[nodiscard]] virtual auto Execute(const std::vector<Value> &params) const
       -> Rows = 0;
+
+ protected:
+  explicit ISelectStatement() = default;
 };
 }  // namespace stonks::sqldb
 

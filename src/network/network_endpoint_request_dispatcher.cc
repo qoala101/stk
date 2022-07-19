@@ -1,7 +1,5 @@
 #include "network_endpoint_request_dispatcher.h"
 
-#include <polymorphic_value.h>
-
 #include <functional>
 #include <gsl/assert>
 #include <optional>
@@ -25,6 +23,6 @@ auto EndpointRequestDispatcher::operator()(const Endpoint &endpoint,
   const auto &handler = endpoint_handler->second;
   Expects(handler);
 
-  return {Status::kOk, handler(std::move(data.params), std::move(*data.body))};
+  return {Status::kOk, handler(std::move(data.params), std::move(data.body))};
 }
 }  // namespace stonks::network
