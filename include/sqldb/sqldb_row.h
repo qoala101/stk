@@ -22,12 +22,10 @@ class Row {
   [[nodiscard]] auto GetCells() -> std::map<Column, Value> &;
 
  private:
-  template <typename This>
-  [[nodiscard]] static auto GetValueImpl(This &t, const Column &column)
+  [[nodiscard]] static auto GetValueImpl(auto &t, const Column &column)
       -> auto &;
 
-  template <typename This>
-  [[nodiscard]] static auto GetCellsImpl(This &t) -> auto &;
+  [[nodiscard]] static auto GetCellsImpl(auto &t) -> auto &;
 
   std::map<Column, Value> cells_{};
 };

@@ -12,11 +12,11 @@
 #include "network_i_json.h"
 
 namespace stonks::network {
-using Result = isocpp_p0201::polymorphic_value<IJson>;
+using Result = std::optional<isocpp_p0201::polymorphic_value<IJson>>;
 using Param = isocpp_p0201::polymorphic_value<IJson>;
 using Params = std::map<std::string, Param>;
 using Headers = std::map<std::string, std::string>;
-using Body = isocpp_p0201::polymorphic_value<IJson>;
+using Body = std::optional<isocpp_p0201::polymorphic_value<IJson>>;
 
 /**
  * @brief HTTP endpoint.
@@ -37,7 +37,7 @@ struct Endpoint {
 struct RestRequestData {
   Params params{};
   Headers headers{};
-  std::optional<Body> body{};
+  Body body{};
 };
 
 /**

@@ -95,8 +95,14 @@ namespace {
 
 [[nodiscard]] auto FetchBody(const web::http::http_request &request)
     -> network::Body {
+  auto json = request.extract_json().get();
+
+  if (json.is_null()) {
+    return std::nullopt;
+  }
+
   return isocpp_p0201::make_polymorphic_value<network::IJson, Json>(
-      network::IJson::Impl{request.extract_json().get()});
+      network::IJson::Impl{std::move(json)});
 }
 
 [[nodiscard]] auto FetchRequestData(const web::http::http_request &request)
@@ -149,10 +155,8 @@ void RestRequestReceiver::HandleHttpRequest(
     auto response =
         web::http::http_response{HttpStatusFromNetworkStatus(status)};
 
-    const auto &json = result->GetImpl().GetJson();
-
-    if (!json.is_null()) {
-      response.set_body(json);
+    if (result.has_value()) {
+      response.set_body((*result)->GetImpl().GetJson());
     }
 
     return response;

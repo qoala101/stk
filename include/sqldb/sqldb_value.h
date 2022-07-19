@@ -49,8 +49,7 @@ class Value {
  private:
   friend auto operator==(const Value &, const Value &) -> bool = default;
 
-  template <typename This>
-  [[nodiscard]] static auto GetStringImpl(This &t) -> auto &;
+  [[nodiscard]] static auto GetStringImpl(auto &t) -> auto &;
 
   std::variant<std::monostate, int, int64_t, double, std::string> value_{};
 };

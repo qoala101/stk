@@ -13,8 +13,7 @@ Row::Row(std::vector<Cell> cells) {
   Ensures(cells_.size() == cells.size());
 }
 
-template <typename This>
-auto Row::GetValueImpl(This &t, const Column &column) -> auto & {
+auto Row::GetValueImpl(auto &t, const Column &column) -> auto & {
   Expects(t.cells_.find(column) != t.cells_.end());
   return t.cells_.at(column);
 }
@@ -27,8 +26,7 @@ auto Row::GetValue(const Column &column) -> Value & {
   return GetValueImpl(*this, column);
 }
 
-template <typename This>
-auto Row::GetCellsImpl(This &t) -> auto & {
+auto Row::GetCellsImpl(auto &t) -> auto & {
   return t.cells_;
 }
 

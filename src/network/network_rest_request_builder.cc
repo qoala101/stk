@@ -61,7 +61,7 @@ auto RestRequestBuilder::AddHeader(std::string_view key, std::string_view value)
   return *this;
 }
 
-auto RestRequestBuilder::WithBody(Body body) -> RestRequestBuilder& {
+auto RestRequestBuilder::WithBody(Body::value_type body) -> RestRequestBuilder& {
   Expects(!body_);
   body_.emplace(std::move(body));
   Ensures(body_);

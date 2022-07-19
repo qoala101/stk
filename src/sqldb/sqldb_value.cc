@@ -47,8 +47,7 @@ auto Value::GetDouble() const -> double {
   return std::get<double>(value_);
 }
 
-template <typename This>
-auto Value::GetStringImpl(This& t) -> auto& {
+auto Value::GetStringImpl(auto& t) -> auto& {
   Expects(std::holds_alternative<std::string>(t.value_));
   return std::get<std::string>(t.value_);
 }

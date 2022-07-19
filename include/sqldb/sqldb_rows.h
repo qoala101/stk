@@ -36,8 +36,7 @@ class Rows {
 
   friend auto operator==(const Rows &, const Rows &) -> bool = default;
 
-  template <typename T>
-  [[nodiscard]] static auto GetColumnValuesImpl(T &t, const Column &column)
+  [[nodiscard]] static auto GetColumnValuesImpl(auto &t, const Column &column)
       -> auto &;
 
   std::vector<ColumnValues> columns_{};

@@ -20,8 +20,7 @@ Rows::Rows(std::vector<Column> columns)
   Ensures(columns_.size() == columns.size());
 }
 
-template <typename T>
-auto Rows::GetColumnValuesImpl(T &t, const Column &column) -> auto & {
+auto Rows::GetColumnValuesImpl(auto &t, const Column &column) -> auto & {
   const auto iter =
       ranges::find_if(t.columns_, [&column](const auto &other_column) {
         return other_column.column == column;

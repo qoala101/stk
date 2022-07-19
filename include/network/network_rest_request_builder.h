@@ -40,9 +40,8 @@ class RestRequestBuilder {
   /**
    * @copydoc RestRequestBuilder::AddParam
    */
-  template <typename T>
-  auto AddParam(std::string_view key, T &&value) -> RestRequestBuilder & {
-    return AddParam(key, ConvertToJson(std::forward<T>(value)));
+  auto AddParam(std::string_view key, auto &&value) -> RestRequestBuilder & {
+    return AddParam(key, ConvertToJson(std::forward<decltype(value)>(value)));
   }
 
   /**
@@ -56,7 +55,7 @@ class RestRequestBuilder {
    * @brief Sets the JSON body of the request.
    * @remark Should be called once.
    */
-  auto WithBody(Body body) -> RestRequestBuilder &;
+  auto WithBody(Body::value_type body) -> RestRequestBuilder &;
 
   /**
    * @brief Build REST request parts from inputs.
@@ -73,7 +72,7 @@ class RestRequestBuilder {
   std::optional<std::string> uri_{};
   Params params_{};
   Headers headers_{};
-  std::optional<Body> body_{};
+  Body body_{};
 };
 }  // namespace stonks::network
 

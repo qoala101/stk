@@ -40,10 +40,7 @@ auto IJson::Impl::operator=(Impl &&) noexcept -> Impl & = default;
 
 IJson::Impl::~Impl() = default;
 
-template <typename This>
-auto IJson::Impl::GetJsonImpl(This &t) -> auto & {
-  return *t.json_;
-}
+auto IJson::Impl::GetJsonImpl(auto &t) -> auto & { return *t.json_; }
 
 auto IJson::Impl::GetJson() const -> const web::json::value & {
   return GetJsonImpl(*this);

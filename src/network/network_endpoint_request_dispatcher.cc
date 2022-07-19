@@ -10,15 +10,8 @@
 
 namespace stonks::network {
 EndpointRequestDispatcher::EndpointRequestDispatcher(
-    std::map<Endpoint, EndpointRequestHandler> endpoint_handlers,
-    EndpointRequestHandler not_found_handler)
-    : endpoint_handlers_{std::move(endpoint_handlers)},
-      not_found_handler_{[&not_found_handler]() {
-        Expects(not_found_handler);
-        return std::move(not_found_handler);
-      }()} {
-  Ensures(not_found_handler_);
-}
+    std::map<Endpoint, EndpointRequestHandler> endpoint_handlers)
+    : endpoint_handlers_{std::move(endpoint_handlers)} {}
 
 auto EndpointRequestDispatcher::operator()(const Endpoint &endpoint,
                                            RestRequestData data) const
@@ -26,8 +19,7 @@ auto EndpointRequestDispatcher::operator()(const Endpoint &endpoint,
   const auto endpoint_handler = endpoint_handlers_.find(endpoint);
 
   if (endpoint_handler == endpoint_handlers_.end()) {
-    return {Status::kNotFound,
-            not_found_handler_(std::move(data.params), std::move(*data.body))};
+    return {Status::kNotFound, std::nullopt};
   }
 
   const auto &handler = endpoint_handler->second;

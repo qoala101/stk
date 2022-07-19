@@ -23,11 +23,9 @@ class EndpointRequestDispatcher {
 
   /**
    * @param endpoint_handlers Handle per each sub-endpoint.
-   * @param not_found_handler Handler for not registered sub-endpoint.
    */
   explicit EndpointRequestDispatcher(
-      std::map<Endpoint, EndpointRequestHandler> endpoint_handlers,
-      EndpointRequestHandler not_found_handler);
+      std::map<Endpoint, EndpointRequestHandler> endpoint_handlers);
 
   /**
    * @brief Forwards the request to the appropriate handler.
@@ -37,7 +35,6 @@ class EndpointRequestDispatcher {
 
  private:
   std::map<Endpoint, EndpointRequestHandler> endpoint_handlers_{};
-  EndpointRequestHandler not_found_handler_{};
 };
 
 static_assert(
