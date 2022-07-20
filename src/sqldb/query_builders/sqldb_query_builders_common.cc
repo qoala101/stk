@@ -11,7 +11,7 @@
 
 #include "sqldb_types.h"
 
-namespace stonks::sqldb {
+namespace stonks::sqldb::query_builder_facade {
 auto GetTable(const TableVariant &table) -> const Table & {
   return std::visit(
       [](const auto &variant) -> const Table & {
@@ -62,4 +62,4 @@ auto GetColumns(const ConstView<ColumnDefinition> &column_definitions)
   Expects(columns.size() == column_definitions.size());
   return columns;
 }
-}  // namespace stonks::sqldb
+}  // namespace stonks::sqldb::query_builder_facade

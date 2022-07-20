@@ -9,7 +9,7 @@
 /**
  * @file Symbols used by query builders.
  */
-namespace stonks::sqldb {
+namespace stonks::sqldb::query_builder_facade {
 /**
  * @brief Variant of columns specification.
  */
@@ -44,6 +44,6 @@ using ColumnsVariant =
 [[nodiscard]] auto GetColumns(
     const ConstView<ColumnDefinition> &column_definitions)
     -> std::vector<Column>;
-}  // namespace stonks::sqldb
+}  // namespace stonks::sqldb::query_builder_facade
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QUERY_BUILDERS_COMMON_H_

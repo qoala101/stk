@@ -2,10 +2,11 @@
 #define STONKS_NETWORK_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
 
 #include <memory>
-#include <string>
+#include <optional>
 #include <string_view>
+#include <utility>
 
-#include "expose_private_constructor_to.h"
+#include "ccutils_expose_private_constructors.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_rest_request_sender.h"
 #include "network_json_basic_conversions.h"
@@ -52,7 +53,7 @@ class RequestBuilder {
   }
 
  private:
-  friend class utils::ExposePrivateConstructorsTo<RestClient, RequestBuilder>;
+  friend class ccutils::ExposePrivateConstructorsTo<RestClient, RequestBuilder>;
 
   explicit RequestBuilder(
       Endpoint endpoint,

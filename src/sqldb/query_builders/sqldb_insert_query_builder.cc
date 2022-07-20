@@ -7,7 +7,7 @@
 
 #include "sqldb_query_builders_common.h"
 
-namespace stonks::sqldb {
+namespace stonks::sqldb::query_builder_facade {
 InsertQueryBuilder::InsertQueryBuilder(
     cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder)
     : query_builder_{std::move(query_builder)} {}
@@ -57,4 +57,4 @@ auto InsertQueryBuilder::Build() const -> std::string {
                            : GetColumns(table_, AllColumnsType{});
   return query_builder_->BuildInsertQuery(table, columns);
 }
-}  // namespace stonks::sqldb
+}  // namespace stonks::sqldb::query_builder_facade

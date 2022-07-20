@@ -1,6 +1,7 @@
 #include "network_rest_client_request_builder.h"
 
 #include <gsl/assert>
+#include <string>
 #include <tuple>
 #include <utility>
 

@@ -20,10 +20,10 @@ class QueryBuilderFacade {
   explicit QueryBuilderFacade(
       cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder);
 
-  [[nodiscard]] auto Select() const -> SelectQueryBuilder;
-  [[nodiscard]] auto Insert() const -> InsertQueryBuilder;
-  [[nodiscard]] auto Update() const -> UpdateQueryBuilder;
-  [[nodiscard]] auto Delete() const -> DeleteQueryBuilder;
+  [[nodiscard]] auto Select() const -> query_builder_facade::SelectQueryBuilder;
+  [[nodiscard]] auto Insert() const -> query_builder_facade::InsertQueryBuilder;
+  [[nodiscard]] auto Update() const -> query_builder_facade::UpdateQueryBuilder;
+  [[nodiscard]] auto Delete() const -> query_builder_facade::DeleteQueryBuilder;
 
  private:
   cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder_;

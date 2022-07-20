@@ -9,7 +9,7 @@
 #include "sqldb_query_builders_common.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb {
+namespace stonks::sqldb::query_builder_facade {
 SelectQueryBuilder::SelectQueryBuilder(
     cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder)
     : query_builder_{std::move(query_builder)} {}
@@ -123,4 +123,4 @@ auto SelectQueryBuilder::Build() const -> std::string {
   return query_builder_->BuildSelectQuery(
       *table_, columns, where_clause_.value_or(std::string{}) + limit);
 }
-}  // namespace stonks::sqldb
+}  // namespace stonks::sqldb::query_builder_facade

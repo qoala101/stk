@@ -4,7 +4,7 @@
 #include <string>
 #include <utility>
 
-namespace stonks::sqldb {
+namespace stonks::sqldb::query_builder_facade {
 DeleteQueryBuilder::DeleteQueryBuilder(
     cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder)
     : query_builder_{std::move(query_builder)} {}
@@ -34,4 +34,4 @@ auto DeleteQueryBuilder::Build() const -> std::string {
   return query_builder_->BuildDeleteQuery(
       *table_, where_clause_.value_or(std::string{}));
 }
-}  // namespace stonks::sqldb
+}  // namespace stonks::sqldb::query_builder_facade

@@ -1,11 +1,9 @@
 #include "network_rest_client.h"
 
-#include <gsl/assert>
 #include <memory>
-#include <tuple>
 #include <utility>
 
-#include "expose_private_constructor_to.h"
+#include "ccutils_expose_private_constructors.h"
 
 namespace stonks::network {
 RestClient::RestClient(
@@ -15,8 +13,8 @@ RestClient::RestClient(
 
 auto RestClient::Call(Endpoint endpoint) const -> rest_client::RequestBuilder {
   endpoint.uri = base_uri_ + endpoint.uri;
-  return utils::CallExposedPrivateConstructorOf<rest_client::RequestBuilder,
-                                                RestClient>{}(
+  return ccutils::CallExposedPrivateConstructorOf<rest_client::RequestBuilder,
+                                                  RestClient>{}(
       std::move(endpoint), request_sender_);
 }
 }  // namespace stonks::network

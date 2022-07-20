@@ -2,7 +2,6 @@
 
 #include <gsl/assert>
 #include <gsl/narrow>
-#include <gsl/util>
 #include <memory>
 #include <range/v3/algorithm/find_if.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>

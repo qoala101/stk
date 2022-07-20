@@ -14,6 +14,7 @@ add_library(libnetwork
 set_target_properties(libnetwork PROPERTIES OUTPUT_NAME network)
 target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/network)
 target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/utility)
+target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils)
 target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/json)
 target_link_libraries(libnetwork PRIVATE spdlog::spdlog)
 target_link_libraries(libnetwork PRIVATE range-v3::range-v3)

@@ -19,6 +19,7 @@ add_library(libsqldb
 set_target_properties(libsqldb PROPERTIES OUTPUT_NAME sqldb)
 target_include_directories(libsqldb PUBLIC ${PROJECT_SOURCE_DIR}/include/sqldb)
 target_include_directories(libsqldb PUBLIC ${PROJECT_SOURCE_DIR}/include/sqldb/query_builders)
+target_include_directories(libsqldb PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils)
 target_link_libraries(libsqldb PRIVATE range-v3::range-v3)
 target_link_libraries(libsqldb PRIVATE Microsoft.GSL::GSL)
 target_link_libraries(libsqldb PUBLIC NotNull)

@@ -3,7 +3,7 @@
 
 #include <utility>
 
-namespace stonks::utils {
+namespace stonks::ccutils {
 /**
  * @brief Enables friend like access to the private constructors.
  * @tparam TFriend Type which would have acces to constructors of T.
@@ -30,6 +30,6 @@ class ExposePrivateConstructorsTo {
  */
 template <typename TFriend, typename T>
 using CallExposedPrivateConstructorOf = ExposePrivateConstructorsTo<T, TFriend>;
-}  // namespace stonks::utils
+}  // namespace stonks::ccutils
 
 #endif  // STONKS_UTILITY_ATTORNEY_H_
