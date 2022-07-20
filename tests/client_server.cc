@@ -91,24 +91,24 @@ class EntityServer {
                                   this)}}})} {}
 
  private:
-  [[nodiscard]] auto PushSymbolEndpointHandler(stonks::network::Params,
-                                               stonks::network::Body body)
+  [[nodiscard]] auto PushSymbolEndpointHandler(
+      const stonks::network::Params& /*unused*/, stonks::network::Body body)
       -> stonks::network::Result {
     entity_.PushSymbol(
         stonks::network::ParseFromJson<stonks::SymbolName>(*(*body)));
     return std::nullopt;
   }
 
-  [[nodiscard]] auto GetSymbolEndpointHandler(stonks::network::Params params,
-                                              stonks::network::Body)
+  [[nodiscard]] auto GetSymbolEndpointHandler(
+      stonks::network::Params params, const stonks::network::Body& /*unused*/)
       -> stonks::network::Result {
     return stonks::network::ConvertToJson(entity_.GetSymbol(
         stonks::network::ParseFromJson<int>(*params["index"])));
   }
 
-  [[nodiscard]] auto GetSizeEndpointHandler(stonks::network::Params,
-                                            stonks::network::Body)
-      -> stonks::network::Result {
+  [[nodiscard]] auto GetSizeEndpointHandler(
+      const stonks::network::Params& /*unused*/,
+      const stonks::network::Body& /*unused*/) -> stonks::network::Result {
     return stonks::network::ConvertToJson(entity_.GetSize());
   }
 
@@ -124,20 +124,19 @@ class EntityClient : public EntityInterface {
                 stonks::restsdk::Factory{}.CreateRestRequestSender()} {}
 
   void PushSymbol(stonks::SymbolName symbol) override {
-    client_.Call(EntityServer::PushSymbolEndpointDesc(),
-                 {.body = stonks::network::ConvertToJson(symbol)});
+    client_.Call(EntityServer::PushSymbolEndpointDesc())
+        .WithBody(symbol)
+        .DiscardingResult();
   }
 
   [[nodiscard]] auto GetSymbol(int index) const -> stonks::SymbolName override {
-    return stonks::network::ParseFromJson<stonks::SymbolName>(
-        *(*client_.CallAndGet(
-            EntityServer::GetSymbolEndpointDesc(),
-            {.params = {{"index", stonks::network::ConvertToJson(index)}}})));
+    return client_.Call(EntityServer::GetSymbolEndpointDesc())
+        .WithParam("index", index)
+        .AndReceive<stonks::SymbolName>();
   }
 
   [[nodiscard]] auto GetSize() const -> int override {
-    return stonks::network::ParseFromJson<int>(
-        *(*client_.CallAndGet(EntityServer::GetSizeEndpointDesc())));
+    return client_.Call(EntityServer::GetSizeEndpointDesc()).AndReceive<int>();
   }
 
  private:

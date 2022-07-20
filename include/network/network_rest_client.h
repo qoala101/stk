@@ -5,13 +5,16 @@
 #include <string>
 #include <string_view>
 
+#include "network_concepts.h"
 #include "network_i_rest_request_sender.h"
+#include "network_json_basic_conversions.h"
+#include "network_rest_client_request_builder.h"
 #include "network_types.h"
 #include "not_null.hpp"
 
 namespace stonks::network {
 /**
- * @brief Client for the single REST resource with many endpoints.
+ * @brief Client for the REST resource with many endpoints.
  */
 class RestClient {
  public:
@@ -21,23 +24,19 @@ class RestClient {
    */
   explicit RestClient(
       std::string_view base_uri,
-      cpp::not_null<std::unique_ptr<IRestRequestSender>> request_sender);
+      cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender);
 
   /**
-   * @brief Sends REST request with result to the specified endpoint.
+   * @brief Creates request builder which provides a further API for request
+   * sending.
+   * @param endpoint Endpoint relative to the base URI.
    */
-  [[nodiscard]] auto CallAndGet(const Endpoint &endpoint,
-                                const RestRequestData &data = {}) const
-      -> Result;
-
-  /**
-   * @brief Sends REST request to the specified endpoint.
-   */
-  void Call(const Endpoint &endpoint, const RestRequestData &data = {}) const;
+  [[nodiscard]] auto Call(Endpoint endpoint) const
+      -> rest_client::RequestBuilder;
 
  private:
   std::string base_uri_{};
-  cpp::not_null<std::unique_ptr<IRestRequestSender>> request_sender_;
+  cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender_;
 };
 }  // namespace stonks::network
 

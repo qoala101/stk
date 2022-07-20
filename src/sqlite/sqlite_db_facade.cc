@@ -6,6 +6,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <gsl/assert>
+#include <gsl/narrow>
 #include <memory>
 #include <stdexcept>
 
@@ -60,7 +61,7 @@ auto DbFacade::CreatePreparedStatement(std::string_view query)
 
   auto *sqlite_statement = (sqlite3_stmt *){};
   sqlite3_prepare_v3(sqlite_db_, query.data(),
-                     static_cast<int>(query.length()) + 1,
+                     gsl::narrow<int>(query.length()) + 1,
                      SQLITE_PREPARE_PERSISTENT, &sqlite_statement, nullptr);
 
   if (sqlite_statement == nullptr) {

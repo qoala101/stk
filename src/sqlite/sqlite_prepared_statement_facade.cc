@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include <gsl/assert>
+#include <gsl/narrow>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -43,7 +44,7 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
       const auto &string = value.GetString();
       result_code =
           sqlite3_bind_text(&statement, index, string.c_str(),
-                            static_cast<int>(string.length()), nullptr);
+                            gsl::narrow<int>(string.length()), nullptr);
       break;
     }
   }

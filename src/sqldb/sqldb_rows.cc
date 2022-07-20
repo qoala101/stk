@@ -1,6 +1,8 @@
 #include "sqldb_rows.h"
 
 #include <gsl/assert>
+#include <gsl/narrow>
+#include <gsl/util>
 #include <memory>
 #include <range/v3/algorithm/find_if.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
@@ -42,7 +44,7 @@ auto Rows::GetSize() const -> int {
     return 0;
   }
 
-  return static_cast<int>(columns_.front().values.size());
+  return gsl::narrow<int>(columns_.front().values.size());
 }
 
 void Rows::Push(std::vector<Value> values) {

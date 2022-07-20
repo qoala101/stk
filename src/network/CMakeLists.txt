@@ -7,7 +7,8 @@ find_package(Boost REQUIRED)
 
 add_library(libnetwork
   network_endpoint_request_dispatcher.cc
-  network_i_rest_request_sender.cc
+  network_rest_client_request_builder.cc
+  network_rest_client.cc
   network_rest_request_builder.cc
 )
 set_target_properties(libnetwork PROPERTIES OUTPUT_NAME network)
