@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "ccutils_expose_private_constructors.h"
+#include "ccutils_views.h"
 #include "not_null.hpp"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_query_builders_common.h"
@@ -24,15 +25,18 @@ namespace query_builder_facade {
 class SelectQueryBuilder {
  public:
   auto Columns(std::vector<Column> columns) -> SelectQueryBuilder &;
-  auto Columns(const ConstView<ColumnDefinition> &column_definitions)
+  auto Columns(const ccutils::ConstView<ColumnDefinition> &column_definitions)
       -> SelectQueryBuilder &;
   auto AllColumns() -> SelectQueryBuilder &;
+
   auto FromTable(Table table) -> SelectQueryBuilder &;
   auto FromTable(const TableDefinition &table_definition)
       -> SelectQueryBuilder &;
+
   auto Where(std::string_view where_clause) -> SelectQueryBuilder &;
   auto And(std::string_view where_clause) -> SelectQueryBuilder &;
   auto Or(std::string_view where_clause) -> SelectQueryBuilder &;
+
   auto Limit(int limit) -> SelectQueryBuilder &;
   auto Limited() -> SelectQueryBuilder &;
 

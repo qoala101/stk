@@ -23,7 +23,7 @@ auto SelectQueryBuilder::Columns(std::vector<Column> columns)
 }
 
 auto SelectQueryBuilder::Columns(
-    const ConstView<ColumnDefinition> &column_definitions)
+    const ccutils::ConstView<ColumnDefinition> &column_definitions)
     -> SelectQueryBuilder & {
   return Columns(GetColumns(column_definitions));
 }

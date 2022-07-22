@@ -12,7 +12,7 @@
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::query_builder_facade {
-auto GetTable(const TableVariant &table) -> const Table & {
+auto GetTable(const TableVariant &table) -> Table {
   return std::visit(
       [](const auto &variant) -> const Table & {
         using T = std::decay_t<decltype(variant)>;
@@ -52,7 +52,7 @@ auto GetColumns(const TableVariant &table, const ColumnsVariant &columns)
   return table_columns;
 }
 
-auto GetColumns(const ConstView<ColumnDefinition> &column_definitions)
+auto GetColumns(const ccutils::ConstView<ColumnDefinition> &column_definitions)
     -> std::vector<Column> {
   auto columns = column_definitions |
                  ranges::views::transform([](const auto &column_definition) {

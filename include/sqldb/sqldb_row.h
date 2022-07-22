@@ -25,8 +25,6 @@ class Row {
   [[nodiscard]] static auto GetValueImpl(auto &t, const Column &column)
       -> auto &;
 
-  [[nodiscard]] static auto GetCellsImpl(auto &t) -> auto &;
-
   std::map<Column, Value> cells_{};
 };
 }  // namespace stonks::sqldb

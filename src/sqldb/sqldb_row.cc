@@ -26,13 +26,7 @@ auto Row::GetValue(const Column &column) -> Value & {
   return GetValueImpl(*this, column);
 }
 
-auto Row::GetCellsImpl(auto &t) -> auto & { return t.cells_; }
+auto Row::GetCells() const -> const std::map<Column, Value> & { return cells_; }
 
-auto Row::GetCells() const -> const std::map<Column, Value> & {
-  return GetCellsImpl(*this);
-}
-
-auto Row::GetCells() -> std::map<Column, Value> & {
-  return GetCellsImpl(*this);
-}
+auto Row::GetCells() -> std::map<Column, Value> & { return cells_; }
 }  // namespace stonks::sqldb

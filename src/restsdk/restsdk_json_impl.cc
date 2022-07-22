@@ -40,11 +40,7 @@ auto IJson::Impl::operator=(Impl &&) noexcept -> Impl & = default;
 
 IJson::Impl::~Impl() = default;
 
-auto IJson::Impl::GetJsonImpl(auto &t) -> auto & { return *t.json_; }
+auto IJson::Impl::GetJson() const -> const web::json::value & { return *json_; }
 
-auto IJson::Impl::GetJson() const -> const web::json::value & {
-  return GetJsonImpl(*this);
-}
-
-auto IJson::Impl::GetJson() -> web::json::value & { return GetJsonImpl(*this); }
+auto IJson::Impl::GetJson() -> web::json::value & { return *json_; }
 }  // namespace stonks::network

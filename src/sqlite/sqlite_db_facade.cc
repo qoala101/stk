@@ -11,7 +11,7 @@
 #include <stdexcept>
 
 #include "not_null.hpp"
-#include "sqlite_utils.h"
+#include "sqlite_read_from_file.h"
 
 namespace stonks::sqlite {
 namespace {
@@ -41,7 +41,7 @@ auto DbFacade::GetFileName() const -> std::string {
 void DbFacade::WriteToFile(std::string_view file_path) const {
   Expects(sqlite_db_ != nullptr);
 
-  auto file_db = utils::OpenSqliteDbFromFile(file_path);
+  auto file_db = read_from_file::OpenSqliteDbFromFile(file_path);
   DbFacade(cpp::assume_not_null(file_db.get())).CopyDataFrom(*sqlite_db_);
 
   Logger().info("Stored DB to {}", file_path.data());

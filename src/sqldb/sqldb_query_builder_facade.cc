@@ -12,28 +12,28 @@ QueryBuilderFacade::QueryBuilderFacade(
     cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
-[[nodiscard]] auto QueryBuilderFacade::Select() const
+auto QueryBuilderFacade::Select() const
     -> query_builder_facade::SelectQueryBuilder {
   return ccutils::CallExposedPrivateConstructorOf<
       query_builder_facade::SelectQueryBuilder, QueryBuilderFacade>{}(
       query_builder_);
 }
 
-[[nodiscard]] auto QueryBuilderFacade::Insert() const
+auto QueryBuilderFacade::Insert() const
     -> query_builder_facade::InsertQueryBuilder {
   return ccutils::CallExposedPrivateConstructorOf<
       query_builder_facade::InsertQueryBuilder, QueryBuilderFacade>{}(
       query_builder_);
 }
 
-[[nodiscard]] auto QueryBuilderFacade::Update() const
+auto QueryBuilderFacade::Update() const
     -> query_builder_facade::UpdateQueryBuilder {
   return ccutils::CallExposedPrivateConstructorOf<
       query_builder_facade::UpdateQueryBuilder, QueryBuilderFacade>{}(
       query_builder_);
 }
 
-[[nodiscard]] auto QueryBuilderFacade::Delete() const
+auto QueryBuilderFacade::Delete() const
     -> query_builder_facade::DeleteQueryBuilder {
   return ccutils::CallExposedPrivateConstructorOf<
       query_builder_facade::DeleteQueryBuilder, QueryBuilderFacade>{}(

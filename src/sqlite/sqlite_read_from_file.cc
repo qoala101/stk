@@ -1,4 +1,4 @@
-#include "sqlite_utils.h"
+#include "sqlite_read_from_file.h"
 
 #include <bits/exception.h>
 #include <fmt/format.h>
@@ -14,14 +14,14 @@
 #include "not_null.hpp"
 #include "sqlite_db_facade.h"
 
-namespace stonks::sqlite::utils {
+namespace stonks::sqlite::read_from_file {
 namespace {
 [[nodiscard]] auto Logger() -> spdlog::logger & {
   static auto logger = spdlog::stdout_color_mt("sqlite::Utils");
   return *logger;
 }
 
-auto OpenSqliteInMemoryDb() -> SqliteDbHandle {
+[[nodiscard]] auto OpenSqliteInMemoryDb() -> SqliteDbHandle {
   auto *in_memory_db = (sqlite3 *){};
   sqlite3_open(":memory:", &in_memory_db);
 
@@ -72,4 +72,4 @@ auto LoadSqliteDbFromFileToMemory(std::string_view file_path)
   Logger().info("Loaded DB from {}", file_path.data());
   return in_memory_db;
 }
-}  // namespace stonks::sqlite::utils
+}  // namespace stonks::sqlite::read_from_file

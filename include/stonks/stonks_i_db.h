@@ -25,7 +25,7 @@ class IDb {
   /**
    * @brief Updates Assets table with the new list of assets.
    */
-  virtual void UpdateAssets(std::vector<std::string> assets) = 0;
+  virtual void UpdateAssets(const std::vector<std::string> &assets) = 0;
 
   /**
    * @brief Selects all symbols.
@@ -42,7 +42,8 @@ class IDb {
   /**
    * @brief Updates Symbols table with the new list of symbols info.
    */
-  virtual void UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) = 0;
+  virtual void UpdateSymbolsInfo(
+      const std::vector<SymbolInfo> &symbols_info) = 0;
 
   /**
    * @brief Selects price ticks following the conditions.

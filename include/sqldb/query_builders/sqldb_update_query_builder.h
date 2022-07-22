@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "ccutils_expose_private_constructors.h"
+#include "ccutils_views.h"
 #include "not_null.hpp"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_query_builders_common.h"
@@ -24,10 +25,12 @@ class UpdateQueryBuilder {
  public:
   auto OfTable(Table table) -> UpdateQueryBuilder &;
   auto OfTable(TableDefinition table_definition) -> UpdateQueryBuilder &;
+
   auto Columns(std::vector<Column> columns) -> UpdateQueryBuilder &;
-  auto Columns(const ConstView<ColumnDefinition> &column_definitions)
+  auto Columns(const ccutils::ConstView<ColumnDefinition> &column_definitions)
       -> UpdateQueryBuilder &;
   auto AllColumns() -> UpdateQueryBuilder &;
+
   auto Where(std::string_view where_clause) -> UpdateQueryBuilder &;
 
   [[nodiscard]] auto Build() const -> std::string;

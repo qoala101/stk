@@ -29,7 +29,8 @@ class Factory : public network::IFactory {
    * @copydoc network::IFactory::CreateRestRequestReceiver
    */
   [[nodiscard]] auto CreateRestRequestReceiver(
-      std::string_view local_uri, network::RestRequestHandler handler) const
+      std::string_view local_uri,
+      const network::RestRequestHandler &handler) const
       -> cpp::not_null<std::unique_ptr<network::IRestRequestReceiver>> override;
 
   /**

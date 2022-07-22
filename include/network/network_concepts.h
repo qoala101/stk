@@ -8,7 +8,7 @@
 namespace stonks::network {
 template <typename T>
 concept Parsable = requires(const IJson &json) {
-  ParseFromJson<T>(json);
+  { ParseFromJson<T>(json) } -> std::same_as<T>;
 };
 
 template <typename T>

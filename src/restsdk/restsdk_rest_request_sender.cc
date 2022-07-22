@@ -102,7 +102,8 @@ namespace {
   return rest_json.serialize();
 }
 
-[[nodiscard]] auto HttpRequestFromNetworkRequest(network::RestRequest request) {
+[[nodiscard]] auto HttpRequestFromNetworkRequest(
+    const network::RestRequest &request) {
   auto http_request = web::http::http_request{
       HttpMethodFromNetworkMethod(request.endpoint.method)};
 
@@ -117,7 +118,7 @@ namespace {
   return http_request;
 }
 
-[[nodiscard]] auto FetchWebUriFromRequest(network::RestRequest request)
+[[nodiscard]] auto FetchWebUriFromRequest(const network::RestRequest &request)
     -> web::uri {
   auto uri_builder = web::http::uri_builder{request.endpoint.uri};
 
@@ -130,7 +131,7 @@ namespace {
 }  // namespace
 
 auto RestRequestSender::SendRequestAndGetResponse(
-    network::RestRequest request) const -> network::RestResponse {
+    const network::RestRequest &request) const -> network::RestResponse {
   const auto full_uri = FetchWebUriFromRequest(request);
 
   Logger().info("Sending {} request to {}",

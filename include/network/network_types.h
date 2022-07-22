@@ -26,8 +26,9 @@ struct Endpoint {
   std::string uri{};
 
  private:
-  friend auto operator==(const Endpoint &, const Endpoint &) -> bool = default;
-  friend auto operator<=>(const Endpoint &, const Endpoint &)
+  [[nodiscard]] friend auto operator==(const Endpoint &, const Endpoint &)
+      -> bool = default;
+  [[nodiscard]] friend auto operator<=>(const Endpoint &, const Endpoint &)
       -> std::partial_ordering = default;
 };
 

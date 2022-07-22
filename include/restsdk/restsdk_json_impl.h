@@ -28,12 +28,17 @@ class IJson::Impl {
 
   ~Impl();
 
+  /**
+   * @brief Get native handle.
+   */
   [[nodiscard]] auto GetJson() const -> const web::json::value &;
+
+  /**
+   * @copydoc GetJson
+   */
   [[nodiscard]] auto GetJson() -> web::json::value &;
 
  private:
-  [[nodiscard]] static auto GetJsonImpl(auto &t) -> auto &;
-
   cpp::not_null<std::unique_ptr<web::json::value>> json_;
 };
 }  // namespace stonks::network

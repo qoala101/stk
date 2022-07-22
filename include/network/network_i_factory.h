@@ -33,7 +33,7 @@ class IFactory {
    * @param handler Function to be called when request is received.
    */
   [[nodiscard]] virtual auto CreateRestRequestReceiver(
-      std::string_view local_uri, RestRequestHandler handler) const
+      std::string_view local_uri, const RestRequestHandler &handler) const
       -> cpp::not_null<std::unique_ptr<IRestRequestReceiver>> = 0;
 
   /**

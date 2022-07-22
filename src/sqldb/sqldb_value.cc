@@ -86,7 +86,7 @@ auto Value::GetType() const -> DataType {
       value_);
 }
 
-[[nodiscard]] auto Value::IsNull() const -> bool {
+auto Value::IsNull() const -> bool {
   return std::holds_alternative<std::monostate>(value_);
 }
 }  // namespace stonks::sqldb

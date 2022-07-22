@@ -4,6 +4,7 @@
 #include <variant>
 #include <vector>
 
+#include "ccutils_views.h"
 #include "sqldb_types.h"
 
 /**
@@ -29,7 +30,7 @@ using ColumnsVariant =
 /**
  * @brief Get table from variant.
  */
-[[nodiscard]] auto GetTable(const TableVariant &table) -> const Table &;
+[[nodiscard]] auto GetTable(const TableVariant &table) -> Table;
 
 /**
  * @brief Get columns from stored values.
@@ -42,7 +43,7 @@ using ColumnsVariant =
  * @brief Get columns from their definitions.
  */
 [[nodiscard]] auto GetColumns(
-    const ConstView<ColumnDefinition> &column_definitions)
+    const ccutils::ConstView<ColumnDefinition> &column_definitions)
     -> std::vector<Column>;
 }  // namespace stonks::sqldb::query_builder_facade
 

@@ -7,11 +7,9 @@
 #include <vector>
 
 #include "not_null.hpp"
-#include "sqldb_i_query_builder.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_row_definition.h"
-#include "sqldb_types.h"
 
 namespace stonks::sqldb {
 /**

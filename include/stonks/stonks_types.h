@@ -31,10 +31,11 @@ struct SymbolPriceTick {
   double sell_price{};
 
  private:
-  friend auto operator==(const SymbolPriceTick &left,
-                         const SymbolPriceTick &right) -> bool = default;
-  friend auto operator<=>(const SymbolPriceTick &left,
-                          const SymbolPriceTick &right)
+  [[nodiscard]] friend auto operator==(const SymbolPriceTick &left,
+                                       const SymbolPriceTick &right)
+      -> bool = default;
+  [[nodiscard]] friend auto operator<=>(const SymbolPriceTick &left,
+                                        const SymbolPriceTick &right)
       -> std::partial_ordering = default;
 };
 

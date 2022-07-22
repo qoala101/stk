@@ -29,7 +29,7 @@ RowDefinition::RowDefinition(
 }
 
 RowDefinition::RowDefinition(
-    const ConstView<ColumnDefinition> &column_definitions)
+    const ccutils::ConstView<ColumnDefinition> &column_definitions)
     : RowDefinition{ranges::views::transform(
                         column_definitions,
                         [](const auto &column_definition) {
@@ -42,6 +42,10 @@ RowDefinition::RowDefinition(
 
 auto RowDefinition::GetCellDefinitions() const
     -> const std::vector<CellDefinition> & {
+  return cell_definitions_;
+}
+
+auto RowDefinition::GetCellDefinitions() -> std::vector<CellDefinition> & {
   return cell_definitions_;
 }
 }  // namespace stonks::sqldb

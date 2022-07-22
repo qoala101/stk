@@ -30,11 +30,13 @@ class Rows {
     std::vector<Value> values{};
 
    private:
-    friend auto operator==(const ColumnValues &, const ColumnValues &)
+    [[nodiscard]] friend auto operator==(const ColumnValues &,
+                                         const ColumnValues &)
         -> bool = default;
   };
 
-  friend auto operator==(const Rows &, const Rows &) -> bool = default;
+  [[nodiscard]] friend auto operator==(const Rows &, const Rows &)
+      -> bool = default;
 
   [[nodiscard]] static auto GetColumnValuesImpl(auto &t, const Column &column)
       -> auto &;

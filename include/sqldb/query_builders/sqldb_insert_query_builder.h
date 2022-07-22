@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "ccutils_expose_private_constructors.h"
+#include "ccutils_views.h"
 #include "not_null.hpp"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_query_builders_common.h"
@@ -24,7 +25,8 @@ class InsertQueryBuilder {
   auto IntoTable(Table table) -> InsertQueryBuilder &;
   auto IntoTable(TableDefinition table_definition) -> InsertQueryBuilder &;
   auto IntoColumns(std::vector<Column> columns) -> InsertQueryBuilder &;
-  auto IntoColumns(const ConstView<ColumnDefinition> &column_definitions)
+  auto IntoColumns(
+      const ccutils::ConstView<ColumnDefinition> &column_definitions)
       -> InsertQueryBuilder &;
 
   [[nodiscard]] auto Build() const -> std::string;

@@ -1,11 +1,10 @@
-#ifndef STONKS_NETWORK_NETWORK_JSON_H_
-#define STONKS_NETWORK_NETWORK_JSON_H_
+#ifndef STONKS_NETWORK_NETWORK_I_JSON_H_
+#define STONKS_NETWORK_NETWORK_I_JSON_H_
 
 #include <polymorphic_value.h>
 
-#include <cstdint>
-#include <exception>
 #include <memory>
+#include <string_view>
 
 #include "not_null.hpp"
 
@@ -35,23 +34,39 @@ class IJson {
   /**
    * @brief Gives child JSON at the key.
    */
-  [[nodiscard]] virtual auto GetChild(std::string_view key) const
-      -> isocpp_p0201::polymorphic_value<IJson> = 0;
+  [[nodiscard]] virtual auto GetChild(std::string_view key)
+      const& -> isocpp_p0201::polymorphic_value<IJson> = 0;
+
+  /**
+   * @copydoc GetChild
+   */
+  [[nodiscard]] virtual auto GetChild(
+      std::string_view key) && -> isocpp_p0201::polymorphic_value<IJson> = 0;
 
   /**
    * @brief Sets child JSON at the key.
    * @remark Would override existing child at the same key.
    */
-  virtual void SetChild(std::string_view key, const IJson &child) = 0;
+  virtual void SetChild(std::string_view key, const IJson& child) = 0;
+
+  /**
+   * @copydoc SetChild
+   */
+  virtual void SetChild(std::string_view key, IJson&& child);
 
   /**
    * @brief Gives implementation details.
    */
-  [[nodiscard]] virtual auto GetImpl() const -> const Impl & = 0;
+  [[nodiscard]] virtual auto GetImpl() const -> const Impl& = 0;
+
+  /**
+   * @copydoc GetImpl
+   */
+  [[nodiscard]] virtual auto GetImpl() -> Impl& = 0;
 
  protected:
   explicit IJson() = default;
 };
 }  // namespace stonks::network
 
-#endif  // STONKS_NETWORK_NETWORK_JSON_H_
+#endif  // STONKS_NETWORK_NETWORK_I_JSON_H_

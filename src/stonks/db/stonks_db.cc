@@ -37,7 +37,8 @@
 
 namespace stonks {
 namespace {
-auto GetStartTime(const Period *period) -> std::chrono::milliseconds {
+[[nodiscard]] auto GetStartTime(const Period *period)
+    -> std::chrono::milliseconds {
   if ((period != nullptr) && period->start_time.has_value()) {
     return *period->start_time;
   }
@@ -45,7 +46,8 @@ auto GetStartTime(const Period *period) -> std::chrono::milliseconds {
   return std::chrono::milliseconds::min();
 }
 
-auto GetEndTime(const Period *period) -> std::chrono::milliseconds {
+[[nodiscard]] auto GetEndTime(const Period *period)
+    -> std::chrono::milliseconds {
   if ((period != nullptr) && period->end_time.has_value()) {
     return *period->end_time;
   }
@@ -53,11 +55,13 @@ auto GetEndTime(const Period *period) -> std::chrono::milliseconds {
   return std::chrono::milliseconds::max();
 }
 
-auto SymbolLess(const SymbolInfo &left, const SymbolInfo &right) -> bool {
+[[nodiscard]] auto SymbolLess(const SymbolInfo &left, const SymbolInfo &right)
+    -> bool {
   return left.symbol < right.symbol;
 }
 
-auto SymbolEqual(const SymbolInfo &left, const SymbolInfo &right) -> bool {
+[[nodiscard]] auto SymbolEqual(const SymbolInfo &left, const SymbolInfo &right)
+    -> bool {
   return left.symbol == right.symbol;
 }
 }  // namespace
@@ -87,11 +91,11 @@ auto Db::SelectAssets() const -> std::vector<std::string> {
          ranges::to_vector;
 }
 
-void Db::UpdateAssets(std::vector<std::string> assets) {
-  assets |= ranges::actions::sort | ranges::actions::unique;
+void Db::UpdateAssets(const std::vector<std::string> &assets) {
   const auto old_assets =
       SelectAssets() | ranges::actions::sort | ranges::actions::unique;
-  const auto &new_assets = assets;
+  const auto new_assets = std::vector<std::string>{assets} |
+                          ranges::actions::sort | ranges::actions::unique;
 
   const auto removed_assets =
       ranges::views::set_difference(old_assets, new_assets);
@@ -149,13 +153,13 @@ auto Db::SelectSymbolsInfo() const -> std::vector<SymbolInfo> {
   return symbols_info;
 }
 
-void Db::UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) {
-  symbols_info |=
-      ranges::actions::sort(SymbolLess) | ranges::actions::unique(SymbolEqual);
+void Db::UpdateSymbolsInfo(const std::vector<SymbolInfo> &symbols_info) {
   const auto old_symbols_info = SelectSymbolsInfo() |
                                 ranges::actions::sort(SymbolLess) |
                                 ranges::actions::unique(SymbolEqual);
-  const auto &new_symbols_info = symbols_info;
+  const auto new_symbols_info = std::vector<SymbolInfo>{symbols_info} |
+                                ranges::actions::sort(SymbolLess) |
+                                ranges::actions::unique(SymbolEqual);
 
   const auto removed_symbols = ranges::views::set_difference(
       old_symbols_info, new_symbols_info, SymbolLess);

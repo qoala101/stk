@@ -48,7 +48,7 @@ class Db : public IDb {
   /**
    * @copydoc IDb::UpdateAssets
    */
-  void UpdateAssets(std::vector<std::string> assets) override;
+  void UpdateAssets(const std::vector<std::string> &assets) override;
 
   /**
    * @copydoc IDb::SelectSymbols
@@ -64,7 +64,7 @@ class Db : public IDb {
   /**
    * @copydoc IDb::UpdateSymbolsInfo
    */
-  void UpdateSymbolsInfo(std::vector<SymbolInfo> symbols_info) override;
+  void UpdateSymbolsInfo(const std::vector<SymbolInfo> &symbols_info) override;
 
   /**
    * @copydoc IDb::SelectSymbolPriceTicks

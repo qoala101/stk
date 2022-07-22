@@ -8,12 +8,8 @@
 #include "network_types.h"
 
 namespace stonks::network::rest_client {
-void RequestBuilder::DiscardingResult() const& {
+void RequestBuilder::DiscardingResult() const {
   std::ignore = request_sender_->SendRequestAndGetResponse(request_);
-}
-
-void RequestBuilder::DiscardingResult() && {
-  std::ignore = request_sender_->SendRequestAndGetResponse(std::move(request_));
 }
 
 RequestBuilder::RequestBuilder(
@@ -38,13 +34,6 @@ auto RequestBuilder::WithBody(Body::value_type body) -> RequestBuilder& {
 
 auto RequestBuilder::SendRequestAndGetResult() const -> Result::value_type {
   auto result = request_sender_->SendRequestAndGetResponse(request_).result;
-  Expects(result);
-  return *result;
-}
-
-auto RequestBuilder::SendRequestAndGetResult() -> Result::value_type {
-  auto result =
-      request_sender_->SendRequestAndGetResponse(std::move(request_)).result;
   Expects(result);
   return *result;
 }

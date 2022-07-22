@@ -19,9 +19,9 @@
 
 namespace stonks::db {
 namespace {
-auto InitSelectPriceTicksQuery(
+[[nodiscard]] auto InitSelectPriceTicksQuery(
     const sqldb::QueryBuilderFacade& query_builder_facade)
-    -> sqldb::SelectQueryBuilder {
+    -> sqldb::query_builder_facade::SelectQueryBuilder {
   return query_builder_facade.Select()
       .AllColumns()
       .FromTable(table_definitions::SymbolPriceTick())

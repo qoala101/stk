@@ -34,8 +34,11 @@ class Value {
   Value(std::string_view value);
 
   [[nodiscard]] auto GetInt() const -> int;
+
   [[nodiscard]] auto GetInt64() const -> int64_t;
+
   [[nodiscard]] auto GetDouble() const -> double;
+
   [[nodiscard]] auto GetString() const -> const std::string &;
   [[nodiscard]] auto GetString() -> std::string &;
 
@@ -47,7 +50,8 @@ class Value {
   [[nodiscard]] auto IsNull() const -> bool;
 
  private:
-  friend auto operator==(const Value &, const Value &) -> bool = default;
+  [[nodiscard]] friend auto operator==(const Value &, const Value &)
+      -> bool = default;
 
   [[nodiscard]] static auto GetStringImpl(auto &t) -> auto &;
 

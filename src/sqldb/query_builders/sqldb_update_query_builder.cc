@@ -36,7 +36,7 @@ auto UpdateQueryBuilder::Columns(std::vector<Column> columns)
 }
 
 auto UpdateQueryBuilder::Columns(
-    const ConstView<ColumnDefinition>& column_definitions)
+    const ccutils::ConstView<ColumnDefinition>& column_definitions)
     -> UpdateQueryBuilder& {
   return Columns(GetColumns(column_definitions));
 }

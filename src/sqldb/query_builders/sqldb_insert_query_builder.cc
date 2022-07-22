@@ -43,7 +43,7 @@ auto InsertQueryBuilder::IntoColumns(std::vector<Column> columns)
 }
 
 auto InsertQueryBuilder::IntoColumns(
-    const ConstView<ColumnDefinition>& column_definitions)
+    const ccutils::ConstView<ColumnDefinition>& column_definitions)
     -> InsertQueryBuilder& {
   return IntoColumns(GetColumns(column_definitions));
 }

@@ -14,27 +14,30 @@
  */
 namespace stonks::network {
 template <typename T>
-auto ParseFromJson(const IJson &json) -> T;
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
 
 template <>
-auto ParseFromJson(const IJson &json) -> int;
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> int;
 
 template <>
-auto ParseFromJson(const IJson &json) -> int64_t;
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> int64_t;
 
 template <>
-auto ParseFromJson(const IJson &json) -> double;
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> double;
 
 template <>
-auto ParseFromJson(const IJson &json) -> std::string;
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> std::string;
 
-auto ConvertToJson(int value) -> isocpp_p0201::polymorphic_value<IJson>;
+[[nodiscard]] auto ConvertToJson(int value)
+    -> isocpp_p0201::polymorphic_value<IJson>;
 
-auto ConvertToJson(int64_t value) -> isocpp_p0201::polymorphic_value<IJson>;
+[[nodiscard]] auto ConvertToJson(int64_t value)
+    -> isocpp_p0201::polymorphic_value<IJson>;
 
-auto ConvertToJson(double value) -> isocpp_p0201::polymorphic_value<IJson>;
+[[nodiscard]] auto ConvertToJson(double value)
+    -> isocpp_p0201::polymorphic_value<IJson>;
 
-auto ConvertToJson(std::string_view value)
+[[nodiscard]] auto ConvertToJson(std::string_view value)
     -> isocpp_p0201::polymorphic_value<IJson>;
 }  // namespace stonks::network
 

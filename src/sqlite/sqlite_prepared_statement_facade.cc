@@ -55,8 +55,8 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
   }
 }
 
-auto GetValue(sqlite3_stmt &statement, int index, sqldb::DataType type)
-    -> sqldb::Value {
+[[nodiscard]] auto GetValue(sqlite3_stmt &statement, int index,
+                            sqldb::DataType type) -> sqldb::Value {
   Expects(index >= 0);
 
   if (sqlite3_column_type(&statement, index) == SQLITE_NULL) {

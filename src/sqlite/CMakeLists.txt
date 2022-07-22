@@ -11,10 +11,10 @@ add_library(libsqlite
   sqlite_prepared_statement_facade.cc
   sqlite_prepared_statement_handle.cc
   sqlite_query_builder.cc
+  sqlite_read_from_file.cc
   sqlite_select_statement.cc
   sqlite_types.cc
   sqlite_update_statement.cc
-  sqlite_utils.cc
 )
 set_target_properties(libsqlite PROPERTIES OUTPUT_NAME sqlite)
 target_include_directories(libsqlite PUBLIC ${PROJECT_SOURCE_DIR}/include/sqlite)
