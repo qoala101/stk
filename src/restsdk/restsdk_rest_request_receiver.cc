@@ -11,13 +11,16 @@
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
+#include <functional>
 #include <gsl/assert>
 #include <map>
 #include <memory>
 #include <optional>
 #include <string>
+#include <utility>
 
 #include "cpprest/http_msg.h"
+#include "network_enums.h"
 #include "network_i_json.h"
 #include "network_types.h"
 #include "not_null.hpp"
@@ -105,19 +108,29 @@ namespace {
       network::IJson::Impl{std::move(json)});
 }
 
-[[nodiscard]] auto FetchRequestData(const web::http::http_request &request)
-    -> network::RestRequestData {
-  return {.params = FetchParams(request.request_uri().query()),
+[[nodiscard]] auto RestRequestFromHttpRequest(
+    const web::http::http_request &request) -> network::RestRequest {
+  return {.endpoint = FetchEndpoint(request),
+          .params = FetchParams(request.request_uri().query()),
           .headers = FetchHeaders(request.headers()),
           .body = FetchBody(request)};
 }
+
+[[nodiscard]] auto HttpResponseFromRestResponse(
+    const network::RestResponse &response) -> web::http::http_response {
+  auto http_response =
+      web::http::http_response{HttpStatusFromNetworkStatus(response.status)};
+
+  if (response.result.has_value()) {
+    http_response.set_body((*response.result)->GetImpl().GetJson());
+  }
+
+  return http_response;
+}
 }  // namespace
 
-RestRequestReceiver::RestRequestReceiver(
-    std::string_view local_uri,
-    std::function<std::pair<network::Status, network::Result>(
-        network::Endpoint, network::RestRequestData)>
-        handler)
+RestRequestReceiver::RestRequestReceiver(std::string_view local_uri,
+                                         network::RestRequestHandler handler)
     : handler_{[&handler]() {
         Expects(handler);
         return std::move(handler);
@@ -147,20 +160,9 @@ void RestRequestReceiver::HandleHttpRequest(
   Logger().info("Received {} request on {}", request.method(),
                 request.absolute_uri().path());
 
-  auto endpoint = FetchEndpoint(request);
-  auto data = FetchRequestData(request);
-  auto [status, result] = handler_(std::move(endpoint), std::move(data));
-
-  const auto response = [status = status, &result = result]() {
-    auto response =
-        web::http::http_response{HttpStatusFromNetworkStatus(status)};
-
-    if (result.has_value()) {
-      response.set_body((*result)->GetImpl().GetJson());
-    }
-
-    return response;
-  }();
-  request.reply(response);
+  auto rest_request = RestRequestFromHttpRequest(request);
+  const auto rest_response = handler_(std::move(rest_request));
+  const auto http_response = HttpResponseFromRestResponse(rest_response);
+  request.reply(http_response);
 }
 }  // namespace stonks::restsdk

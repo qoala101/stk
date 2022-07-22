@@ -35,21 +35,34 @@ class RequestBuilder {
    * @brief Sets the body of the request.
    * @remark Can only be called once.
    */
-  auto WithBody(Parsable auto &&value) -> RequestBuilder & {
+  auto WithBody(Convertible auto &&value) -> RequestBuilder & {
     return WithBody(ConvertToJson(std::forward<decltype(value)>(value)));
   }
 
   /**
    * @brief Sends the request discarding result.
    */
-  void DiscardingResult() const;
+  void DiscardingResult() const &;
+
+  /**
+   * @copydoc DiscardingResult
+   */
+  void DiscardingResult() &&;
 
   /**
    * @brief Sends the request and converts result to the specified type.
    */
   template <typename T>
-  [[nodiscard]] auto AndReceive() -> T {
-    return ParseFromJson<T>(*SendRequestAndGetResponse());
+  [[nodiscard]] auto AndReceive() const & -> T {
+    return ParseFromJson<T>(*SendRequestAndGetResult());
+  }
+
+  /**
+   * @copydoc AndReceive
+   */
+  template <typename T>
+  [[nodiscard]] auto AndReceive() && -> T {
+    return ParseFromJson<T>(*SendRequestAndGetResult());
   }
 
  private:
@@ -64,10 +77,10 @@ class RequestBuilder {
 
   [[nodiscard]] auto WithBody(Body::value_type body) -> RequestBuilder &;
 
-  [[nodiscard]] auto SendRequestAndGetResponse() const -> Result::value_type;
+  [[nodiscard]] auto SendRequestAndGetResult() const -> Result::value_type;
+  [[nodiscard]] auto SendRequestAndGetResult() -> Result::value_type;
 
-  Endpoint endpoint_{};
-  RestRequestData data_{};
+  RestRequest request_{};
   cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender_;
 };
 }  // namespace rest_client

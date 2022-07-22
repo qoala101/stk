@@ -1,12 +1,9 @@
 #ifndef STONKS_RESTSDK_RESTSDK_REST_REQUEST_RECEIVER_H_
 #define STONKS_RESTSDK_RESTSDK_REST_REQUEST_RECEIVER_H_
 
-#include <functional>
 #include <memory>
 #include <string_view>
-#include <utility>
 
-#include "network_enums.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_types.h"
 #include "not_null.hpp"
@@ -25,11 +22,8 @@ namespace stonks::restsdk {
  */
 class RestRequestReceiver : public network::IRestRequestReceiver {
  public:
-  explicit RestRequestReceiver(
-      std::string_view local_uri,
-      std::function<std::pair<network::Status, network::Result>(
-          network::Endpoint, network::RestRequestData)>
-          handler);
+  explicit RestRequestReceiver(std::string_view local_uri,
+                               network::RestRequestHandler handler);
 
   RestRequestReceiver(const RestRequestReceiver &other) = delete;
   RestRequestReceiver(RestRequestReceiver &&) noexcept;
@@ -43,9 +37,7 @@ class RestRequestReceiver : public network::IRestRequestReceiver {
  private:
   void HandleHttpRequest(const web::http::http_request &request) const;
 
-  std::function<std::pair<network::Status, network::Result>(
-      network::Endpoint, network::RestRequestData)>
-      handler_{};
+  network::RestRequestHandler handler_{};
   cpp::not_null<
       std::unique_ptr<web::http::experimental::listener::http_listener>>
       http_listener_;

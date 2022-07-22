@@ -3,6 +3,7 @@
 #include <polymorphic_value.h>
 
 #include <memory>
+#include <utility>
 
 #include "network_i_json.h"
 #include "not_null.hpp"
@@ -17,10 +18,7 @@ auto Factory::CreateRestRequestSender() const
 }
 
 auto Factory::CreateRestRequestReceiver(
-    std::string_view local_uri,
-    std::function<std::pair<network::Status, network::Result>(
-        network::Endpoint, network::RestRequestData)>
-        handler) const
+    std::string_view local_uri, network::RestRequestHandler handler) const
     -> cpp::not_null<std::unique_ptr<network::IRestRequestReceiver>> {
   return cpp::assume_not_null(
       std::make_unique<RestRequestReceiver>(local_uri, std::move(handler)));

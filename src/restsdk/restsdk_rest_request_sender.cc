@@ -91,7 +91,8 @@ namespace {
   Expects(false);
 }
 
-auto ConvertToRequestParam(const network::IJson &json) -> std::string {
+[[nodiscard]] auto ConvertToRequestParam(const network::IJson &json)
+    -> std::string {
   const auto &rest_json = json.GetImpl().GetJson();
 
   if (rest_json.is_string()) {
@@ -100,48 +101,49 @@ auto ConvertToRequestParam(const network::IJson &json) -> std::string {
 
   return rest_json.serialize();
 }
+
+[[nodiscard]] auto HttpRequestFromNetworkRequest(network::RestRequest request) {
+  auto http_request = web::http::http_request{
+      HttpMethodFromNetworkMethod(request.endpoint.method)};
+
+  for (const auto &[key, value] : request.headers) {
+    http_request.headers().add(key, value);
+  }
+
+  if (request.body) {
+    http_request.set_body((*request.body)->GetImpl().GetJson());
+  }
+
+  return http_request;
+}
+
+[[nodiscard]] auto FetchWebUriFromRequest(network::RestRequest request)
+    -> web::uri {
+  auto uri_builder = web::http::uri_builder{request.endpoint.uri};
+
+  for (const auto &[key, value] : request.params) {
+    uri_builder.append_query(key, ConvertToRequestParam(*value));
+  }
+
+  return uri_builder.to_uri();
+}
 }  // namespace
 
 auto RestRequestSender::SendRequestAndGetResponse(
-    const network::Endpoint &endpoint,
-    const network::RestRequestData &data) const
-    -> std::pair<network::Status, network::Result> {
-  auto uri_builder = [this, &endpoint, &data]() {
-    auto uri_builder = web::http::uri_builder{endpoint.uri};
-
-    for (const auto &[key, value] : data.params) {
-      uri_builder.append_query(key, ConvertToRequestParam(*value));
-    }
-
-    return uri_builder;
-  }();
-
-  auto http_request = [this, &endpoint, &data]() {
-    auto http_request =
-        web::http::http_request{HttpMethodFromNetworkMethod(endpoint.method)};
-
-    for (const auto &[key, value] : data.headers) {
-      http_request.headers().add(key, value);
-    }
-
-    if (data.body) {
-      http_request.set_body((*data.body)->GetImpl().GetJson());
-    }
-
-    return http_request;
-  }();
-
-  const auto full_uri = uri_builder.to_uri();
+    network::RestRequest request) const -> network::RestResponse {
+  const auto full_uri = FetchWebUriFromRequest(request);
 
   Logger().info("Sending {} request to {}",
-                magic_enum::enum_name(endpoint.method), full_uri.to_string());
+                magic_enum::enum_name(request.endpoint.method),
+                full_uri.to_string());
 
   auto http_client = web::http::client::http_client{full_uri};
-  const auto response = http_client.request(http_request).get();
-  auto json = response.extract_json().get();
+  const auto http_request = HttpRequestFromNetworkRequest(request);
+  const auto http_response = http_client.request(http_request).get();
+  auto response_json = http_response.extract_json().get();
 
-  return {NetworkStatusFromHttpStatus(response.status_code()),
-          isocpp_p0201::make_polymorphic_value<network::IJson, Json>(
-              network::IJson::Impl{std::move(json)})};
+  return {.status = NetworkStatusFromHttpStatus(http_response.status_code()),
+          .result = isocpp_p0201::make_polymorphic_value<network::IJson, Json>(
+              network::IJson::Impl{std::move(response_json)})};
 }
 }  // namespace stonks::restsdk

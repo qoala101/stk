@@ -3,12 +3,9 @@
 
 #include <polymorphic_value.h>
 
-#include <functional>
 #include <memory>
 #include <string_view>
-#include <utility>
 
-#include "network_enums.h"
 #include "network_i_factory.h"
 #include "network_i_json.h"
 #include "network_i_rest_request_receiver.h"
@@ -32,10 +29,7 @@ class Factory : public network::IFactory {
    * @copydoc network::IFactory::CreateRestRequestReceiver
    */
   [[nodiscard]] auto CreateRestRequestReceiver(
-      std::string_view local_uri,
-      std::function<std::pair<network::Status, network::Result>(
-          network::Endpoint, network::RestRequestData)>
-          handler) const
+      std::string_view local_uri, network::RestRequestHandler handler) const
       -> cpp::not_null<std::unique_ptr<network::IRestRequestReceiver>> override;
 
   /**

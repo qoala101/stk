@@ -60,12 +60,12 @@ class RestRequestBuilder {
   /**
    * @brief Build REST request parts from inputs.
    */
-  [[nodiscard]] auto Build() const & -> std::pair<Endpoint, RestRequestData>;
+  [[nodiscard]] auto Build() const & -> RestRequest;
 
   /**
    * @copydoc Build
    */
-  [[nodiscard]] auto Build() && -> std::pair<Endpoint, RestRequestData>;
+  [[nodiscard]] auto Build() && -> RestRequest;
 
  private:
   Method method_{};
