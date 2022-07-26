@@ -22,7 +22,7 @@ class UpdateStatement : public sqldb::IUpdateStatement {
   /**
    * @copydoc sqldb::IUpdateStatement::Execute
    */
-  void Execute(const std::vector<sqldb::Value> &params) const override;
+  void Execute(std::vector<sqldb::Value> params) const override;
 
  private:
   PreparedStatementHandle prepared_statement_handle_;

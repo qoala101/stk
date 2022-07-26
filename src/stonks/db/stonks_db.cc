@@ -2,7 +2,6 @@
 
 #include <chrono>
 #include <compare>
-#include <concepts/concepts.hpp>
 #include <functional>
 #include <limits>
 #include <memory>
@@ -10,9 +9,7 @@
 #include <range/v3/action/action.hpp>
 #include <range/v3/action/sort.hpp>
 #include <range/v3/action/unique.hpp>
-#include <range/v3/functional/bind_back.hpp>
 #include <range/v3/functional/comparisons.hpp>
-#include <range/v3/functional/compose.hpp>
 #include <range/v3/functional/identity.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/iterator/default_sentinel.hpp>
@@ -127,10 +124,10 @@ auto Db::SelectSymbolsInfo() const -> std::vector<SymbolInfo> {
   auto rows = prepared_statements_->SelectSymbolsInfo().Execute();
 
   auto &symbol = rows.GetColumnValues("name");
-  auto &min_base_amount = rows.GetColumnValues("min_base_amount");
-  auto &min_quote_amount = rows.GetColumnValues("min_quote_amount");
-  auto &base_step = rows.GetColumnValues("base_step");
-  auto &quote_step = rows.GetColumnValues("quote_step");
+  const auto &min_base_amount = rows.GetColumnValues("min_base_amount");
+  const auto &min_quote_amount = rows.GetColumnValues("min_quote_amount");
+  const auto &base_step = rows.GetColumnValues("base_step");
+  const auto &quote_step = rows.GetColumnValues("quote_step");
   auto &base_asset = rows.GetColumnValues("base_asset");
   auto &quote_asset = rows.GetColumnValues("quote_asset");
 
@@ -194,7 +191,7 @@ auto Db::SelectSymbolPriceTicks(const SymbolName *symbol, const Period *period,
   const auto *statement = symbol != nullptr
                               ? &prepared_statements_->SelectSymbolPriceTicks()
                               : &prepared_statements_->SelectPriceTicks();
-  const auto values = [this, symbol, period, limit]() {
+  auto values = [this, symbol, period, limit]() {
     auto values = std::vector<sqldb::Value>{GetStartTime(period).count(),
                                             GetEndTime(period).count()};
 
@@ -207,12 +204,12 @@ auto Db::SelectSymbolPriceTicks(const SymbolName *symbol, const Period *period,
     return values;
   }();
 
-  auto rows = statement->Execute(values);
+  const auto rows = statement->Execute(std::move(values));
 
-  auto &symbol_id = rows.GetColumnValues("symbol_id");
-  auto &time = rows.GetColumnValues("time");
-  auto &buy_price = rows.GetColumnValues("buy_price");
-  auto &sell_price = rows.GetColumnValues("sell_price");
+  const auto &symbol_id = rows.GetColumnValues("symbol_id");
+  const auto &time = rows.GetColumnValues("time");
+  const auto &buy_price = rows.GetColumnValues("buy_price");
+  const auto &sell_price = rows.GetColumnValues("sell_price");
 
   const auto num_rows = rows.GetSize();
 

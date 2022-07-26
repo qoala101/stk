@@ -37,8 +37,8 @@ class Db : public sqldb::IDb {
   /**
    * @copydoc sqldb::IDb::PrepareStatement
    */
-  [[nodiscard]] auto PrepareStatement(
-      std::string_view query, const sqldb::RowDefinition &result_definition)
+  [[nodiscard]] auto PrepareStatement(std::string_view query,
+                                      sqldb::RowDefinition result_definition)
       -> cpp::not_null<std::unique_ptr<sqldb::ISelectStatement>> override;
 
   /**
@@ -48,7 +48,8 @@ class Db : public sqldb::IDb {
       -> cpp::not_null<std::unique_ptr<sqldb::IUpdateStatement>> override;
 
   /**
-   * @copydoc sqldb::IDb::WriteToFile
+   * @brief
+   *
    */
   void WriteToFile(std::string_view file_path) override;
 

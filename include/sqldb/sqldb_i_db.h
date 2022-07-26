@@ -24,8 +24,8 @@ class IDb {
    * @brief Creates prepared statement which can then be called to execute the
    * select query on DB.
    */
-  [[nodiscard]] virtual auto PrepareStatement(
-      std::string_view query, const RowDefinition &result_definition)
+  [[nodiscard]] virtual auto PrepareStatement(std::string_view query,
+                                              RowDefinition result_definition)
       -> cpp::not_null<std::unique_ptr<ISelectStatement>> = 0;
 
   /**

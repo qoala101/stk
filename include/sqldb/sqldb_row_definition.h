@@ -12,11 +12,10 @@ namespace stonks::sqldb {
  */
 class RowDefinition {
  public:
-  RowDefinition() = default;
+  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
+  RowDefinition(std::vector<CellDefinition> cell_definitions = {});
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   RowDefinition(const TableDefinition &table_definition);
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  RowDefinition(std::vector<CellDefinition> cell_definitions);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   RowDefinition(const std::vector<ColumnDefinition> &column_definitions);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)

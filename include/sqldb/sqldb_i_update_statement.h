@@ -24,7 +24,7 @@ class IUpdateStatement {
    * @brief Executes the statement.
    * @param params Values to be injected into the query in the specified order.
    */
-  virtual void Execute(const std::vector<Value> &params) const = 0;
+  virtual void Execute(std::vector<Value> params) const = 0;
 
  protected:
   explicit IUpdateStatement() = default;

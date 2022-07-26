@@ -73,7 +73,7 @@ Db::Db(SqliteDbHandle sqlite_db_handle)
 Db::~Db() noexcept = default;
 
 auto Db::PrepareStatement(std::string_view query,
-                          const sqldb::RowDefinition &result_definition)
+                          sqldb::RowDefinition result_definition)
     -> cpp::not_null<std::unique_ptr<sqldb::ISelectStatement>> {
   return impl_->PrepareStatement(query, result_definition);
 }

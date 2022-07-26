@@ -49,7 +49,7 @@ SelectStatement::SelectStatement(
   Ensures(result_columns_.size() == result_types_.size());
 }
 
-auto SelectStatement::Execute(const std::vector<sqldb::Value> &params) const
+auto SelectStatement::Execute(std::vector<sqldb::Value> params) const
     -> sqldb::Rows {
   auto &sqlite_statement = prepared_statement_handle_.GetSqliteStatement();
   auto prepared_statement_facade =

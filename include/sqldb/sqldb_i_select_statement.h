@@ -25,7 +25,7 @@ class ISelectStatement {
    * @brief Executes the statement and gives result.
    * @param params Values to be injected into the query in the specified order.
    */
-  [[nodiscard]] virtual auto Execute(const std::vector<Value> &params) const
+  [[nodiscard]] virtual auto Execute(std::vector<Value> params) const
       -> Rows = 0;
 
  protected:
