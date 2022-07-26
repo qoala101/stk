@@ -5,11 +5,19 @@
 #include <tuple>
 #include <utility>
 
+#include "ccutils_move_if_this_is_rvalue.h"
 #include "network_types.h"
 
 namespace stonks::network::rest_client {
-void RequestBuilder::DiscardingResult() const {
-  std::ignore = request_sender_->SendRequestAndGetResponse(request_);
+void RequestBuilder::DiscardingResultImpl(auto&& t) {
+  std::ignore = t.request_sender_->SendRequestAndGetResponse(
+      ccutils::MoveIfThisIsRvalue<decltype(t)>(t.request_));
+}
+
+void RequestBuilder::DiscardingResult() const& { DiscardingResultImpl(*this); }
+
+void RequestBuilder::DiscardingResult() && {
+  DiscardingResultImpl(std::move(*this));
 }
 
 RequestBuilder::RequestBuilder(
@@ -17,6 +25,16 @@ RequestBuilder::RequestBuilder(
     cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender)
     : request_{std::move(endpoint)},
       request_sender_{std::move(request_sender)} {}
+
+auto RequestBuilder::SendRequestAndGetResultImpl(auto&& t)
+    -> Result::value_type {
+  auto result = t.request_sender_
+                    ->SendRequestAndGetResponse(
+                        ccutils::MoveIfThisIsRvalue<decltype(t)>(t.request_))
+                    .result;
+  Expects(result);
+  return std::move(*result);
+}
 
 auto RequestBuilder::WithParam(std::string_view key, Param value)
     -> RequestBuilder& {
@@ -32,9 +50,11 @@ auto RequestBuilder::WithBody(Body::value_type body) -> RequestBuilder& {
   return *this;
 }
 
-auto RequestBuilder::SendRequestAndGetResult() const -> Result::value_type {
-  auto result = request_sender_->SendRequestAndGetResponse(request_).result;
-  Expects(result);
-  return *result;
+auto RequestBuilder::SendRequestAndGetResult() const& -> Result::value_type {
+  return SendRequestAndGetResultImpl(*this);
+}
+
+auto RequestBuilder::SendRequestAndGetResult() && -> Result::value_type {
+  return SendRequestAndGetResultImpl(std::move(*this));
 }
 }  // namespace stonks::network::rest_client

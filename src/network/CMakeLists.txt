@@ -6,6 +6,9 @@ find_package(polymorphic_value REQUIRED)
 find_package(Boost REQUIRED)
 
 add_library(libnetwork
+  network_auto_parsable_request_handler.cc
+  network_auto_parsable_request.cc
+  network_auto_parsable.cc
   network_endpoint_request_dispatcher.cc
   network_i_json.cc
   network_rest_client_request_builder.cc

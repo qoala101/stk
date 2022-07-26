@@ -10,6 +10,8 @@
 #include <thread>
 
 #include "finance_types.h"
+#include "network_auto_parsable_request.h"
+#include "network_auto_parsable_request_handler.h"
 #include "network_endpoint_request_dispatcher.h"
 #include "network_enums.h"
 #include "network_i_rest_request_receiver.h"
@@ -81,36 +83,27 @@ class EntityServer {
             base_uri,
             stonks::network::EndpointRequestDispatcher{
                 {{PushSymbolEndpointDesc(),
-                  std::bind_front(&EntityServer::PushSymbolEndpointHandler,
-                                  this)},
+                  stonks::network::AutoParsableRequestHandler{std::bind_front(
+                      &EntityServer::PushSymbolEndpointHandler, this)}},
                  {GetSymbolEndpointDesc(),
-                  std::bind_front(&EntityServer::GetSymbolEndpointHandler,
-                                  this)},
+                  stonks::network::AutoParsableRequestHandler{std::bind_front(
+                      &EntityServer::GetSymbolEndpointHandler, this)}},
                  {GetSizeEndpointDesc(),
-                  std::bind_front(&EntityServer::GetSizeEndpointHandler,
-                                  this)}}})} {}
+                  stonks::network::AutoParsableRequestHandler{std::bind_front(
+                      &EntityServer::GetSizeEndpointHandler, this)}}}})} {}
 
  private:
-  [[nodiscard]] auto PushSymbolEndpointHandler(
-      const stonks::network::Params& /*unused*/, stonks::network::Body body)
-      -> stonks::network::Result {
-    entity_.PushSymbol(
-        stonks::network::ParseFromJson<stonks::SymbolName>(*(*body)));
-    return std::nullopt;
+  void PushSymbolEndpointHandler(
+      stonks::network::AutoParsableRestRequest request) {
+    entity_.PushSymbol(request.Body());
   }
 
-  [[nodiscard]] auto GetSymbolEndpointHandler(
-      stonks::network::Params params, const stonks::network::Body& /*unused*/)
-      -> stonks::network::Result {
-    return stonks::network::ConvertToJson(entity_.GetSymbol(
-        stonks::network::ParseFromJson<int>(*params["index"])));
+  auto GetSymbolEndpointHandler(
+      stonks::network::AutoParsableRestRequest request) -> stonks::SymbolName {
+    return entity_.GetSymbol(request.Param("index"));
   }
 
-  [[nodiscard]] auto GetSizeEndpointHandler(
-      const stonks::network::Params& /*unused*/,
-      const stonks::network::Body& /*unused*/) -> stonks::network::Result {
-    return stonks::network::ConvertToJson(entity_.GetSize());
-  }
+  auto GetSizeEndpointHandler() -> int { return entity_.GetSize(); }
 
   Entity entity_{};
   cpp::not_null<std::unique_ptr<stonks::network::IRestRequestReceiver>>

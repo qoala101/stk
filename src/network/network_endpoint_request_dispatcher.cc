@@ -1,28 +1,25 @@
 #include "network_endpoint_request_dispatcher.h"
 
 #include <functional>
-#include <gsl/assert>
 #include <optional>
+#include <utility>
 
 #include "network_enums.h"
+#include "network_types.h"
 
 namespace stonks::network {
 EndpointRequestDispatcher::EndpointRequestDispatcher(
-    std::map<Endpoint, EndpointRequestHandler> endpoint_handlers)
+    std::map<Endpoint, RestRequestHandler> endpoint_handlers)
     : endpoint_handlers_{std::move(endpoint_handlers)} {}
 
-auto EndpointRequestDispatcher::operator()(const Endpoint &endpoint,
-                                           RestRequestData data) const
-    -> std::pair<Status, Result> {
-  const auto endpoint_handler = endpoint_handlers_.find(endpoint);
+auto EndpointRequestDispatcher::operator()(RestRequest request) const
+    -> RestResponse {
+  const auto endpoint_handler = endpoint_handlers_.find(request.endpoint);
 
   if (endpoint_handler == endpoint_handlers_.end()) {
     return {Status::kNotFound, std::nullopt};
   }
 
-  const auto &handler = endpoint_handler->second;
-  Expects(handler);
-
-  return {Status::kOk, handler(std::move(data.params), std::move(data.body))};
+  return endpoint_handler->second(std::move(request));
 }
 }  // namespace stonks::network

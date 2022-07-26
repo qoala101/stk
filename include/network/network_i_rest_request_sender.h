@@ -19,7 +19,7 @@ class IRestRequestSender {
    * @brief Executes the request and returns response JSON.
    */
   [[nodiscard]] virtual auto SendRequestAndGetResponse(
-      const RestRequest &request) const -> RestResponse = 0;
+      RestRequest request) const -> RestResponse = 0;
 
  protected:
   explicit IRestRequestSender() = default;

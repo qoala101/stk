@@ -131,7 +131,7 @@ namespace {
 }  // namespace
 
 auto RestRequestSender::SendRequestAndGetResponse(
-    const network::RestRequest &request) const -> network::RestResponse {
+    network::RestRequest request) const -> network::RestResponse {
   const auto full_uri = FetchWebUriFromRequest(request);
 
   Logger().info("Sending {} request to {}",

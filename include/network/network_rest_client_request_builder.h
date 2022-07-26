@@ -4,6 +4,7 @@
 #include <memory>
 #include <optional>
 #include <string_view>
+#include <type_traits>
 #include <utility>
 
 #include "ccutils_expose_private_constructors.h"
@@ -42,14 +43,27 @@ class RequestBuilder {
   /**
    * @brief Sends the request discarding result.
    */
-  void DiscardingResult() const;
+  void DiscardingResult() const &;
+
+  /**
+   * @copydoc DiscardingResult
+   */
+  void DiscardingResult() &&;
 
   /**
    * @brief Sends the request and converts result to the specified type.
    */
-  template <typename T>
-  [[nodiscard]] auto AndReceive() const -> T {
+  template <Parsable T>
+  [[nodiscard]] auto AndReceive() const & -> T {
     return ParseFromJson<T>(*SendRequestAndGetResult());
+  }
+
+  /**
+   * @copydoc AndReceive
+   */
+  template <Parsable T>
+  [[nodiscard]] auto AndReceive() && -> T {
+    return ParseFromJson<T>(*std::move(*this).SendRequestAndGetResult());
   }
 
  private:
@@ -59,12 +73,18 @@ class RequestBuilder {
       Endpoint endpoint,
       cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender);
 
+  static void DiscardingResultImpl(auto &&t);
+
+  [[nodiscard]] static auto SendRequestAndGetResultImpl(auto &&t)
+      -> Result::value_type;
+
   [[nodiscard]] auto WithParam(std::string_view key, Param value)
       -> RequestBuilder &;
 
   [[nodiscard]] auto WithBody(Body::value_type body) -> RequestBuilder &;
 
-  [[nodiscard]] auto SendRequestAndGetResult() const -> Result::value_type;
+  [[nodiscard]] auto SendRequestAndGetResult() const & -> Result::value_type;
+  [[nodiscard]] auto SendRequestAndGetResult() && -> Result::value_type;
 
   RestRequest request_{};
   cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender_;

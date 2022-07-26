@@ -1,12 +1,9 @@
 #ifndef STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
 #define STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
 
-#include <functional>
 #include <map>
 #include <type_traits>
-#include <utility>
 
-#include "network_enums.h"
 #include "network_types.h"
 
 namespace stonks::network {
@@ -16,27 +13,21 @@ namespace stonks::network {
 class EndpointRequestDispatcher {
  public:
   /**
-   * @brief Handles requested endpoint.
-   */
-  using EndpointRequestHandler = std::function<Result(Params, Body)>;
-
-  /**
    * @param base_uri Part of URI which is subtracted from the beginning
    * of the requested URI.
    * @param endpoint_handlers Handle per each endpoint which represents
    * the remaining part of the requested URI.
    */
   explicit EndpointRequestDispatcher(
-      std::map<Endpoint, EndpointRequestHandler> endpoint_handlers);
+      std::map<Endpoint, RestRequestHandler> endpoint_handlers);
 
   /**
    * @brief Forwards the request to the appropriate handler.
    */
-  auto operator()(const Endpoint &endpoint, RestRequestData data) const
-      -> std::pair<Status, Result>;
+  auto operator()(RestRequest request) const -> RestResponse;
 
  private:
-  std::map<Endpoint, EndpointRequestHandler> endpoint_handlers_{};
+  std::map<Endpoint, RestRequestHandler> endpoint_handlers_{};
 };
 
 static_assert(

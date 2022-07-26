@@ -14,8 +14,7 @@ class RestRequestSender : public network::IRestRequestSender {
    * @copydoc network::IRestRequestSender::SendRequestAndGetResponse
    */
   [[nodiscard]] auto SendRequestAndGetResponse(
-      const network::RestRequest &request) const
-      -> network::RestResponse override;
+      network::RestRequest request) const -> network::RestResponse override;
 };
 }  // namespace stonks::restsdk
 
