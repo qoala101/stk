@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <exception>
 #include <functional>
+#include <memory>
 #include <stdexcept>
 #include <thread>
 
@@ -18,7 +19,9 @@
 #include "network_i_rest_request_sender.h"
 #include "network_json_basic_conversions.h"
 #include "network_rest_client.h"
+#include "network_rest_server.h"
 #include "network_types.h"
+#include "not_null.hpp"
 #include "restsdk_factory.h"
 #include "stonks_types.h"
 
@@ -79,18 +82,21 @@ class EntityServer {
   }
 
   explicit EntityServer(std::string_view base_uri)
-      : request_receiver_{stonks::restsdk::Factory{}.CreateRestRequestReceiver(
-            base_uri,
-            stonks::network::EndpointRequestDispatcher{
-                {{PushSymbolEndpointDesc(),
-                  stonks::network::AutoParsableRequestHandler{std::bind_front(
-                      &EntityServer::PushSymbolEndpointHandler, this)}},
-                 {GetSymbolEndpointDesc(),
-                  stonks::network::AutoParsableRequestHandler{std::bind_front(
-                      &EntityServer::GetSymbolEndpointHandler, this)}},
-                 {GetSizeEndpointDesc(),
-                  stonks::network::AutoParsableRequestHandler{std::bind_front(
-                      &EntityServer::GetSizeEndpointHandler, this)}}}})} {}
+      : request_receiver_{
+            stonks::network::RestServer{
+                cpp::assume_not_null(
+                    std::make_unique<stonks::restsdk::Factory>())}
+                .On(base_uri.data())
+                .Handling(PushSymbolEndpointDesc(),
+                          std::bind_front(
+                              &EntityServer::PushSymbolEndpointHandler, this))
+                .Handling(GetSymbolEndpointDesc(),
+                          std::bind_front(
+                              &EntityServer::GetSymbolEndpointHandler, this))
+                .Handling(GetSizeEndpointDesc(),
+                          std::bind_front(&EntityServer::GetSizeEndpointHandler,
+                                          this))
+                .Start()} {}
 
  private:
   void PushSymbolEndpointHandler(

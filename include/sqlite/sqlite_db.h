@@ -2,6 +2,7 @@
 #define STONKS_SQLITE_SQLITE_DB_H_
 
 #include <memory>
+#include <string>
 #include <string_view>
 
 #include "not_null.hpp"

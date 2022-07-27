@@ -2,6 +2,7 @@
 
 #include <gsl/assert>
 #include <type_traits>
+#include <utility>
 #include <variant>
 
 #include "sqldb_enums.h"

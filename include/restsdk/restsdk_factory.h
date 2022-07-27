@@ -4,7 +4,7 @@
 #include <polymorphic_value.h>
 
 #include <memory>
-#include <string_view>
+#include <string>
 
 #include "network_i_factory.h"
 #include "network_i_json.h"
@@ -29,7 +29,7 @@ class Factory : public network::IFactory {
    * @copydoc network::IFactory::CreateRestRequestReceiver
    */
   [[nodiscard]] auto CreateRestRequestReceiver(
-      std::string_view local_uri, network::RestRequestHandler handler) const
+      std::string local_uri, network::RestRequestHandler handler) const
       -> cpp::not_null<std::unique_ptr<network::IRestRequestReceiver>> override;
 
   /**

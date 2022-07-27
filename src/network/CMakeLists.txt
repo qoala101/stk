@@ -14,6 +14,7 @@ add_library(libnetwork
   network_rest_client_request_builder.cc
   network_rest_client.cc
   network_rest_request_builder.cc
+  network_rest_server.cc
 )
 set_target_properties(libnetwork PROPERTIES OUTPUT_NAME network)
 target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/network)

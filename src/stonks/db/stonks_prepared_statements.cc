@@ -2,7 +2,6 @@
 
 #include <gsl/assert>
 #include <memory>
-#include <string>
 #include <utility>
 #include <vector>
 
