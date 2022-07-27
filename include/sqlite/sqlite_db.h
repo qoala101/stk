@@ -37,14 +37,14 @@ class Db : public sqldb::IDb {
   /**
    * @copydoc sqldb::IDb::PrepareStatement
    */
-  [[nodiscard]] auto PrepareStatement(std::string_view query,
+  [[nodiscard]] auto PrepareStatement(std::string query,
                                       sqldb::RowDefinition result_definition)
       -> cpp::not_null<std::unique_ptr<sqldb::ISelectStatement>> override;
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement
    */
-  [[nodiscard]] auto PrepareStatement(std::string_view query)
+  [[nodiscard]] auto PrepareStatement(std::string query)
       -> cpp::not_null<std::unique_ptr<sqldb::IUpdateStatement>> override;
 
   /**

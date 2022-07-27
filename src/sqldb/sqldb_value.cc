@@ -30,7 +30,7 @@ Value::Value(int64_t value) : value_{value} {}
 
 Value::Value(double value) : value_{value} {}
 
-Value::Value(std::string_view value) : value_{value.data()} {}
+Value::Value(std::string value) : value_{std::move(value)} {}
 
 auto Value::GetInt() const -> int {
   Expects(std::holds_alternative<int>(value_));

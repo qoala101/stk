@@ -40,7 +40,7 @@ class Db::Impl {
   ~Impl() noexcept = default;
 
   [[nodiscard]] auto PrepareStatement(
-      std::string_view query, const sqldb::RowDefinition &result_definition)
+      const std::string &query, const sqldb::RowDefinition &result_definition)
       -> cpp::not_null<std::unique_ptr<sqldb::ISelectStatement>> {
     return cpp::assume_not_null(std::make_unique<SelectStatement>(
         PreparedStatementHandle{
@@ -49,7 +49,7 @@ class Db::Impl {
         result_definition));
   }
 
-  [[nodiscard]] auto PrepareStatement(std::string_view query)
+  [[nodiscard]] auto PrepareStatement(const std::string &query)
       -> cpp::not_null<std::unique_ptr<sqldb::IUpdateStatement>> {
     return cpp::assume_not_null(
         std::make_unique<UpdateStatement>(PreparedStatementHandle{
@@ -72,13 +72,13 @@ Db::Db(SqliteDbHandle sqlite_db_handle)
 
 Db::~Db() noexcept = default;
 
-auto Db::PrepareStatement(std::string_view query,
+auto Db::PrepareStatement(std::string query,
                           sqldb::RowDefinition result_definition)
     -> cpp::not_null<std::unique_ptr<sqldb::ISelectStatement>> {
   return impl_->PrepareStatement(query, result_definition);
 }
 
-auto Db::PrepareStatement(std::string_view query)
+auto Db::PrepareStatement(std::string query)
     -> cpp::not_null<std::unique_ptr<sqldb::IUpdateStatement>> {
   return impl_->PrepareStatement(query);
 }

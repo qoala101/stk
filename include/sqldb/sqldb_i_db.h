@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <optional>
-#include <string_view>
+#include <string>
 #include <vector>
 
 #include "not_null.hpp"
@@ -24,7 +24,7 @@ class IDb {
    * @brief Creates prepared statement which can then be called to execute the
    * select query on DB.
    */
-  [[nodiscard]] virtual auto PrepareStatement(std::string_view query,
+  [[nodiscard]] virtual auto PrepareStatement(std::string query,
                                               RowDefinition result_definition)
       -> cpp::not_null<std::unique_ptr<ISelectStatement>> = 0;
 
@@ -32,7 +32,7 @@ class IDb {
    * @brief Creates prepared statement which can then be called to execute the
    * update query on DB.
    */
-  [[nodiscard]] virtual auto PrepareStatement(std::string_view query)
+  [[nodiscard]] virtual auto PrepareStatement(std::string query)
       -> cpp::not_null<std::unique_ptr<IUpdateStatement>> = 0;
 
   /**
