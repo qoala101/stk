@@ -26,31 +26,18 @@ class AutoParsableRestRequest {
   ~AutoParsableRestRequest() = default;
 
   /**
-   * @brief Gives request param by name.
+   * @brief Gives request param by name by moving it into result.
+   * @remark Same param should not be requested more than once.
    */
-  [[nodiscard]] auto Param(std::string_view key) const & -> AutoParsable;
+  [[nodiscard]] auto Param(std::string_view key) -> AutoParsable;
 
   /**
-   * @copydoc Param
+   * @brief Gives request body by moving it into result.
+   * @remark Body should not be requested more than once.
    */
-  [[nodiscard]] auto Param(std::string_view key) && -> AutoParsable;
-
-  /**
-   * @brief Gives request body.
-   */
-  [[nodiscard]] auto Body() const & -> AutoParsable;
-
-  /**
-   * @copydoc Body
-   */
-  [[nodiscard]] auto Body() && -> AutoParsable;
+  [[nodiscard]] auto Body() -> AutoParsable;
 
  private:
-  [[nodiscard]] static auto ParamImpl(auto &&t, std::string_view key)
-      -> AutoParsable;
-
-  [[nodiscard]] static auto BodyImpl(auto &&t) -> AutoParsable;
-
   RestRequest rest_request_;
 };
 }  // namespace stonks::network
