@@ -24,7 +24,7 @@ class RestRequestBuilder {
   /**
    * @brief Set beginning of URI which usually starts with http://.
    */
-  auto WithBaseUri(std::string_view base_uri) -> RestRequestBuilder &;
+  auto WithBaseUri(std::string base_uri) -> RestRequestBuilder &;
 
   /**
    * @brief Appends one more string to the base URI separated with /.
@@ -35,12 +35,12 @@ class RestRequestBuilder {
    * @brief Adds parameter to be send by request.
    * @remark Would override existing value with the same key.
    */
-  auto AddParam(std::string_view key, Param value) -> RestRequestBuilder &;
+  auto AddParam(std::string key, Param value) -> RestRequestBuilder &;
 
   /**
    * @copydoc RestRequestBuilder::AddParam
    */
-  auto AddParam(std::string_view key, auto &&value) -> RestRequestBuilder & {
+  auto AddParam(std::string key, auto &&value) -> RestRequestBuilder & {
     return AddParam(key, ConvertToJson(std::forward<decltype(value)>(value)));
   }
 
@@ -48,8 +48,7 @@ class RestRequestBuilder {
    * @brief Adds header to be send by request.
    * @remark Would override existing value with the same key.
    */
-  auto AddHeader(std::string_view key, std::string_view value)
-      -> RestRequestBuilder &;
+  auto AddHeader(std::string key, std::string value) -> RestRequestBuilder &;
 
   /**
    * @brief Sets the JSON body of the request.
@@ -68,11 +67,8 @@ class RestRequestBuilder {
   [[nodiscard]] auto Build() && -> RestRequest;
 
  private:
-  Method method_{};
-  std::optional<std::string> uri_{};
-  Params params_{};
-  Headers headers_{};
-  Body body_{};
+  RestRequest request_{};
+  bool uri_is_set_{};
 };
 }  // namespace stonks::network
 

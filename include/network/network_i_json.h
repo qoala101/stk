@@ -47,12 +47,12 @@ class IJson {
    * @brief Sets child JSON at the key.
    * @remark Would override existing child at the same key.
    */
-  virtual void SetChild(std::string_view key, const IJson& child) = 0;
+  virtual void SetChild(std::string key, const IJson& child) = 0;
 
   /**
    * @copydoc SetChild
    */
-  virtual void SetChild(std::string_view key, IJson&& child);
+  virtual void SetChild(std::string key, IJson&& child);
 
   /**
    * @brief Gives implementation details.

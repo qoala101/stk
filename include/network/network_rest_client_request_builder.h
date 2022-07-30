@@ -27,9 +27,10 @@ class RequestBuilder {
    * @brief Sets request parameter.
    * @remark Overrides the parameter with the same name.
    */
-  auto WithParam(std::string_view key, Convertible auto &&value)
+  auto WithParam(std::string key, Convertible auto &&value)
       -> RequestBuilder & {
-    return WithParam(key, ConvertToJson(std::forward<decltype(value)>(value)));
+    return WithParam(std::move(key),
+                     ConvertToJson(std::forward<decltype(value)>(value)));
   }
 
   /**
@@ -78,7 +79,7 @@ class RequestBuilder {
   [[nodiscard]] static auto SendRequestAndGetResultImpl(auto &&t)
       -> Result::value_type;
 
-  [[nodiscard]] auto WithParam(std::string_view key, Param value)
+  [[nodiscard]] auto WithParam(std::string key, Param value)
       -> RequestBuilder &;
 
   [[nodiscard]] auto WithBody(Body::value_type body) -> RequestBuilder &;

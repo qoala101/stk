@@ -7,9 +7,10 @@
 
 namespace stonks::network {
 RestClient::RestClient(
-    std::string_view base_uri,
+    std::string base_uri,
     cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender)
-    : base_uri_{base_uri}, request_sender_{std::move(request_sender)} {}
+    : base_uri_{std::move(base_uri)},
+      request_sender_{std::move(request_sender)} {}
 
 auto RestClient::Call(Endpoint endpoint) const -> rest_client::RequestBuilder {
   endpoint.uri = base_uri_ + endpoint.uri;

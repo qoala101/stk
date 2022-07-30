@@ -36,9 +36,9 @@ auto RequestBuilder::SendRequestAndGetResultImpl(auto&& t)
   return std::move(*result);
 }
 
-auto RequestBuilder::WithParam(std::string_view key, Param value)
+auto RequestBuilder::WithParam(std::string key, Param value)
     -> RequestBuilder& {
-  request_.params.emplace(key.data(), std::move(value));
+  request_.params.emplace(std::move(key), std::move(value));
   Ensures(!request_.params.empty());
   return *this;
 }

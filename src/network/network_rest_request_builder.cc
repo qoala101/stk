@@ -13,75 +13,66 @@
 #include "network_types.h"
 
 namespace stonks::network {
-namespace {
-auto AccumulateUriParts(const std::vector<std::string>& uri_parts)
-    -> std::string {
-  if (uri_parts.empty()) {
-    return {};
-  }
-
-  return ranges::accumulate(uri_parts | ranges::views::drop(1),
-                            uri_parts.front(),
-                            [](const auto& result, const auto& uri_part) {
-                              return result + "/" + uri_part;
-                            });
-};
-}  // namespace
-
 auto RestRequestBuilder::WithMethod(Method method) -> RestRequestBuilder& {
-  method_ = method;
+  request_.endpoint.method = method;
   return *this;
 }
 
-auto RestRequestBuilder::WithBaseUri(std::string_view base_uri)
+auto RestRequestBuilder::WithBaseUri(std::string base_uri)
     -> RestRequestBuilder& {
-  Expects(!uri_.has_value());
-  uri_.emplace(base_uri.data());
-  Ensures(uri_.has_value());
+  Expects(!uri_is_set_);
+  request_.endpoint.uri = std::move(base_uri);
+  uri_is_set_ = true;
+  Ensures(uri_is_set_);
   return *this;
 }
 
 auto RestRequestBuilder::AppendUri(std::string_view uri)
     -> RestRequestBuilder& {
-  Expects(uri_.has_value());
-  (*uri_) += std::string{"/"} + uri.data();
+  Expects(uri_is_set_);
+  request_.endpoint.uri += "/";
+  request_.endpoint.uri += uri.data();
+  Ensures(!request_.endpoint.uri.empty());
   return *this;
 }
 
-auto RestRequestBuilder::AddParam(std::string_view key, Param value)
+auto RestRequestBuilder::AddParam(std::string key, Param value)
     -> RestRequestBuilder& {
-  params_.emplace(key.data(), std::move(value));
+  request_.params.emplace(std::move(key), std::move(value));
+  Ensures(!request_.params.empty());
   return *this;
 }
 
-auto RestRequestBuilder::AddHeader(std::string_view key, std::string_view value)
+auto RestRequestBuilder::AddHeader(std::string key, std::string value)
     -> RestRequestBuilder& {
-  headers_.emplace(key.data(), value.data());
-  Ensures(!headers_.empty());
+  request_.headers.emplace(std::move(key), std::move(value));
+  Ensures(!request_.headers.empty());
   return *this;
 }
 
 auto RestRequestBuilder::WithBody(Body::value_type body)
     -> RestRequestBuilder& {
-  Expects(!body_);
-  body_.emplace(std::move(body));
-  Ensures(body_);
+  Expects(!request_.body.has_value());
+  request_.body.emplace(std::move(body));
+  Ensures(request_.body.has_value());
   return *this;
 }
 
 auto RestRequestBuilder::Build() const& -> RestRequest {
-  Expects(uri_.has_value());
-  return {.endpoint = {.method = method_, .uri = *uri_},
-          .params = params_,
-          .headers = headers_,
-          .body = body_};
+  Expects(uri_is_set_);
+  return request_;
 }
 
 auto RestRequestBuilder::Build() && -> RestRequest {
-  Expects(uri_.has_value());
-  return {.endpoint = {.method = method_, .uri = std::move(*uri_)},
-          .params = std::move(params_),
-          .headers = std::move(headers_),
-          .body = std::move(body_)};
+  Expects(uri_is_set_);
+  auto request = RestRequest{std::move(request_)};
+  request_ = {};
+  Ensures(request_.endpoint.uri.empty());
+  Ensures(request_.endpoint.method == Method{});
+  Ensures(request_.params.empty());
+  Ensures(request_.headers.empty());
+  Ensures(!request_.body.has_value());
+  Ensures(!uri_is_set_);
+  return request;
 }
 }  // namespace stonks::network

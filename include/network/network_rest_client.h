@@ -21,7 +21,7 @@ class RestClient {
    * @param request_sender Executes REST requests.
    */
   explicit RestClient(
-      std::string_view base_uri,
+      std::string base_uri,
       cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender);
 
   /**
