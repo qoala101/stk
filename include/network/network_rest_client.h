@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <string>
-#include <string_view>
 
 #include "network_i_rest_request_sender.h"
 #include "network_rest_client_request_builder.h"

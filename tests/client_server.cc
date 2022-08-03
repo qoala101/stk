@@ -83,19 +83,22 @@ class EntityServer {
 
   explicit EntityServer(std::string_view base_uri)
       : request_receiver_{
-            stonks::network::RestServer{
-                cpp::assume_not_null(
-                    std::make_unique<stonks::restsdk::Factory>())}
-                .On(base_uri.data())
-                .Handling(PushSymbolEndpointDesc(),
-                          std::bind_front(
-                              &EntityServer::PushSymbolEndpointHandler, this))
-                .Handling(GetSymbolEndpointDesc(),
-                          std::bind_front(
-                              &EntityServer::GetSymbolEndpointHandler, this))
-                .Handling(GetSizeEndpointDesc(),
-                          std::bind_front(&EntityServer::GetSizeEndpointHandler,
-                                          this))
+            std::move(
+                stonks::network::RestServer{
+                    cpp::assume_not_null(
+                        std::make_unique<stonks::restsdk::Factory>())}
+                    .On(base_uri.data())
+                    .Handling(
+                        PushSymbolEndpointDesc(),
+                        std::bind_front(
+                            &EntityServer::PushSymbolEndpointHandler, this))
+                    .Handling(
+                        GetSymbolEndpointDesc(),
+                        std::bind_front(&EntityServer::GetSymbolEndpointHandler,
+                                        this))
+                    .Handling(GetSizeEndpointDesc(),
+                              std::bind_front(
+                                  &EntityServer::GetSizeEndpointHandler, this)))
                 .Start()} {}
 
  private:
@@ -118,24 +121,25 @@ class EntityServer {
 
 class EntityClient : public EntityInterface {
  public:
-  explicit EntityClient(std::string_view base_uri)
-      : client_{base_uri,
+  explicit EntityClient(std::string base_uri)
+      : client_{std::move(base_uri),
                 stonks::restsdk::Factory{}.CreateRestRequestSender()} {}
 
   void PushSymbol(stonks::SymbolName symbol) override {
-    client_.Call(EntityServer::PushSymbolEndpointDesc())
-        .WithBody(symbol)
+    std::move(
+        client_.Call(EntityServer::PushSymbolEndpointDesc()).WithBody(symbol))
         .DiscardingResult();
   }
 
   [[nodiscard]] auto GetSymbol(int index) const -> stonks::SymbolName override {
-    return client_.Call(EntityServer::GetSymbolEndpointDesc())
-        .WithParam("index", index)
+    return std::move(client_.Call(EntityServer::GetSymbolEndpointDesc())
+                         .WithParam("index", index))
         .AndReceive<stonks::SymbolName>();
   }
 
   [[nodiscard]] auto GetSize() const -> int override {
-    return client_.Call(EntityServer::GetSizeEndpointDesc()).AndReceive<int>();
+    return std::move(client_.Call(EntityServer::GetSizeEndpointDesc()))
+        .AndReceive<int>();
   }
 
  private:

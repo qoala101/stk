@@ -1,7 +1,6 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_REQUEST_BUILDER_H_
 #define STONKS_NETWORK_NETWORK_REST_REQUEST_BUILDER_H_
 
-#include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -63,6 +62,7 @@ class RestRequestBuilder {
 
   /**
    * @copydoc Build
+   * @remark Other methods should not be called after this.
    */
   [[nodiscard]] auto Build() && -> RestRequest;
 

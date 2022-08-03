@@ -15,19 +15,32 @@ auto RestServer::On(std::string base_uri) -> RestServer& {
   return *this;
 }
 
+auto RestServer::Start()
+    const& -> cpp::not_null<std::unique_ptr<IRestRequestReceiver>> {
+  Expects(base_uri_.has_value());
+  Expects(!endpoint_handlers_.empty());
+  return network_factory_->CreateRestRequestReceiver(
+      *base_uri_, EndpointRequestDispatcher{endpoint_handlers_});
+}
+
+auto RestServer::Start() && -> cpp::not_null<
+    std::unique_ptr<IRestRequestReceiver>> {
+  Expects(base_uri_.has_value());
+  Expects(!endpoint_handlers_.empty());
+  auto result = network_factory_->CreateRestRequestReceiver(
+      std::move(*base_uri_),
+      EndpointRequestDispatcher{std::move(endpoint_handlers_)});
+  base_uri_.reset();
+  endpoint_handlers_.clear();
+  Ensures(!base_uri_.has_value());
+  Ensures(endpoint_handlers_.empty());
+  return result;
+}
+
 auto RestServer::Handling(Endpoint endpoint, AutoParsableRequestHandler handler)
     -> RestServer& {
   endpoint_handlers_.emplace(std::move(endpoint), std::move(handler));
   Ensures(!endpoint_handlers_.empty());
   return *this;
-}
-
-auto RestServer::Start()
-    -> cpp::not_null<std::unique_ptr<IRestRequestReceiver>> {
-  Expects(base_uri_.has_value());
-  Expects(!endpoint_handlers_.empty());
-  return network_factory_->CreateRestRequestReceiver(
-      std::move(*base_uri_),
-      EndpointRequestDispatcher{std::move(endpoint_handlers_)});
 }
 }  // namespace stonks::network

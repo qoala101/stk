@@ -5,7 +5,6 @@
 #include <memory>
 #include <optional>
 #include <string>
-#include <type_traits>
 #include <utility>
 
 #include "network_auto_parsable_request_handler.h"
@@ -33,24 +32,30 @@ class RestServer {
   template <typename T>
   requires std::is_constructible_v<AutoParsableRequestHandler, T>
   auto Handling(Endpoint endpoint, T handler) -> RestServer & {
-    return std::move(*this).Handling(
-        std::move(endpoint), AutoParsableRequestHandler{std::move(handler)});
+    return Handling(std::move(endpoint),
+                    AutoParsableRequestHandler{std::move(handler)});
   }
-
-  /**
-   * @copydoc Handling
-   */
-  auto Handling(Endpoint endpoint, AutoParsableRequestHandler handler)
-      -> RestServer &;
 
   /**
    * @brief Starts the server and returns request receiver
    * responsible for handling of requests.
    * @return Keeps handling REST requests while alive.
+   * @remark Other methods should not be called after this.
    */
-  auto Start() -> cpp::not_null<std::unique_ptr<IRestRequestReceiver>>;
+  [[nodiscard]] auto Start()
+      const & -> cpp::not_null<std::unique_ptr<IRestRequestReceiver>>;
+
+  /**
+   * @copydoc Start
+   * @remark Other methods should not be called after this.
+   */
+  [[nodiscard]] auto Start()
+      && -> cpp::not_null<std::unique_ptr<IRestRequestReceiver>>;
 
  private:
+  auto Handling(Endpoint endpoint, AutoParsableRequestHandler handler)
+      -> RestServer &;
+
   cpp::not_null<std::unique_ptr<IFactory>> network_factory_;
   std::optional<std::string> base_uri_{};
   std::map<Endpoint, RestRequestHandler> endpoint_handlers_{};

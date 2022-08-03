@@ -1,12 +1,13 @@
 #ifndef STONKS_NETWORK_NETWORK_TYPES_H_
 #define STONKS_NETWORK_NETWORK_TYPES_H_
 
+#include <polymorphic_value.h>
+
 #include <compare>
 #include <functional>
 #include <map>
-#include <memory>
+#include <optional>
 #include <string>
-#include <variant>
 
 #include "network_enums.h"
 #include "network_i_json.h"
@@ -36,6 +37,8 @@ struct Endpoint {
  * @brief Where and what to send via REST API call.
  */
 struct RestRequest {
+  [[nodiscard]] auto IsEmpty() const -> bool;
+
   Endpoint endpoint{};
   Params params{};
   Headers headers{};

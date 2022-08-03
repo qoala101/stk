@@ -4,6 +4,7 @@
 #include <polymorphic_value.h>
 
 #include <memory>
+#include <string>
 #include <string_view>
 
 #include "network_i_json.h"
@@ -41,12 +42,12 @@ class Json : public network::IJson {
   /**
    * @copydoc network::IJson::SetChild
    */
-  void SetChild(std::string_view key, const IJson& child) override;
+  void SetChild(std::string key, const IJson& child) override;
 
   /**
    * @copydoc network::IJson::SetChild
    */
-  void SetChild(std::string_view key, IJson&& child) override;
+  void SetChild(std::string key, IJson&& child) override;
 
   /**
    * @copydoc network::IJson::GetImpl

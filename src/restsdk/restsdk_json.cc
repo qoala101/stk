@@ -27,12 +27,12 @@ auto Json::GetChild(
       IJson::Impl{std::move(impl_.GetJson().at(key.data()))});
 }
 
-void Json::SetChild(std::string_view key, const IJson& child) {
-  impl_.GetJson()[key.data()] = child.GetImpl().GetJson();
+void Json::SetChild(std::string key, const IJson& child) {
+  impl_.GetJson()[key] = child.GetImpl().GetJson();
 }
 
-void Json::SetChild(std::string_view key, IJson&& child) {
-  impl_.GetJson()[key.data()] = std::move(child.GetImpl().GetJson());
+void Json::SetChild(std::string key, IJson&& child) {
+  impl_.GetJson()[key] = std::move(child.GetImpl().GetJson());
 }
 
 auto Json::GetImpl() const -> const IJson::Impl& { return impl_; }

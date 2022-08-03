@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <optional>
-#include <string_view>
+#include <string>
 #include <type_traits>
 #include <utility>
 
@@ -48,6 +48,7 @@ class RequestBuilder {
 
   /**
    * @copydoc DiscardingResult
+   * @remark Other methods should not be called after this.
    */
   void DiscardingResult() &&;
 
@@ -61,6 +62,7 @@ class RequestBuilder {
 
   /**
    * @copydoc AndReceive
+   * @remark Other methods should not be called after this.
    */
   template <Parsable T>
   [[nodiscard]] auto AndReceive() && -> T {

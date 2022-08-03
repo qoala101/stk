@@ -1,14 +1,8 @@
 #include "network_rest_request_builder.h"
 
 #include <gsl/assert>
-#include <range/v3/functional/identity.hpp>
-#include <range/v3/numeric/accumulate.hpp>
-#include <range/v3/view/drop.hpp>
-#include <range/v3/view/subrange.hpp>
-#include <range/v3/view/view.hpp>
 #include <string>
 #include <utility>
-#include <vector>
 
 #include "network_types.h"
 
@@ -67,11 +61,7 @@ auto RestRequestBuilder::Build() && -> RestRequest {
   Expects(uri_is_set_);
   auto request = RestRequest{std::move(request_)};
   request_ = {};
-  Ensures(request_.endpoint.uri.empty());
-  Ensures(request_.endpoint.method == Method{});
-  Ensures(request_.params.empty());
-  Ensures(request_.headers.empty());
-  Ensures(!request_.body.has_value());
+  Ensures(request_.IsEmpty());
   Ensures(!uri_is_set_);
   return request;
 }

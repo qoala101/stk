@@ -30,7 +30,7 @@ class AutoParsable {
    */
   template <Parsable T>
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  operator T() && {
+  operator T() {
     return ParseFromJson<std::decay_t<T>>(*json_);
   }
 
