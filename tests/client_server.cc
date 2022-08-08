@@ -20,6 +20,7 @@
 #include "network_json_basic_conversions.h"
 #include "network_rest_client.h"
 #include "network_rest_server.h"
+#include "network_typed_endpoint.h"
 #include "network_types.h"
 #include "not_null.hpp"
 #include "restsdk_factory.h"
@@ -65,20 +66,30 @@ class Entity : public EntityInterface {
 class EntityServer {
  public:
   [[nodiscard]] static auto PushSymbolEndpointDesc()
-      -> stonks::network::Endpoint {
-    return stonks::network::Endpoint{.method = stonks::network::Method::kPost,
-                                     .uri = "/PushSymbol"};
+      -> stonks::network::TypedEndpoint {
+    return stonks::network::TypedEndpoint{
+        .endpoint = {.method = stonks::network::Method::kPost,
+                     .uri = "/PushSymbol"},
+        .expected_types = {
+            .params = {{"symbol",
+                        stonks::network::ExpectedType<stonks::SymbolName>()}}}};
   }
 
   [[nodiscard]] static auto GetSymbolEndpointDesc()
-      -> stonks::network::Endpoint {
-    return stonks::network::Endpoint{.method = stonks::network::Method::kGet,
-                                     .uri = "/GetSymbol"};
+      -> stonks::network::TypedEndpoint {
+    return stonks::network::TypedEndpoint{
+        .endpoint = {.method = stonks::network::Method::kGet,
+                     .uri = "/GetSymbol"},
+        .expected_types = {
+            .result = stonks::network::ExpectedType<stonks::SymbolName>()}};
   }
 
-  [[nodiscard]] static auto GetSizeEndpointDesc() -> stonks::network::Endpoint {
-    return stonks::network::Endpoint{.method = stonks::network::Method::kGet,
-                                     .uri = "/GetSize"};
+  [[nodiscard]] static auto GetSizeEndpointDesc()
+      -> stonks::network::TypedEndpoint {
+    return stonks::network::TypedEndpoint{
+        .endpoint = {.method = stonks::network::Method::kGet,
+                     .uri = "/GetSize"},
+        .expected_types = {.result = stonks::network::ExpectedType<int>()}};
   }
 
   explicit EntityServer(std::string_view base_uri)

@@ -6,7 +6,7 @@
 
 #include "network_i_rest_request_sender.h"
 #include "network_rest_client_request_builder.h"
-#include "network_types.h"
+#include "network_typed_endpoint.h"
 #include "not_null.hpp"
 
 namespace stonks::network {
@@ -28,7 +28,7 @@ class RestClient {
    * sending.
    * @param endpoint Endpoint relative to the base URI.
    */
-  [[nodiscard]] auto Call(Endpoint endpoint) const
+  [[nodiscard]] auto Call(TypedEndpoint endpoint) const
       -> rest_client::RequestBuilder;
 
  private:

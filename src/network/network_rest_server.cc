@@ -3,6 +3,9 @@
 #include <gsl/assert>
 
 #include "network_endpoint_request_dispatcher.h"
+#include "network_typed_endpoint.h"
+#include "network_typed_endpoint_handler.h"
+#include "network_types.h"
 
 namespace stonks::network {
 RestServer::RestServer(cpp::not_null<std::unique_ptr<IFactory>> network_factory)
@@ -37,9 +40,12 @@ auto RestServer::Start() && -> cpp::not_null<
   return result;
 }
 
-auto RestServer::Handling(Endpoint endpoint, AutoParsableRequestHandler handler)
-    -> RestServer& {
-  endpoint_handlers_.emplace(std::move(endpoint), std::move(handler));
+auto RestServer::Handling(TypedEndpoint endpoint,
+                          AutoParsableRequestHandler handler) -> RestServer& {
+  endpoint_handlers_.emplace(
+      std::move(endpoint.endpoint),
+      TypedEndpointHandler{std::move(endpoint.expected_types),
+                           std::move(handler)});
   Ensures(!endpoint_handlers_.empty());
   return *this;
 }

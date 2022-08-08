@@ -13,10 +13,29 @@
 #include "network_i_json.h"
 
 namespace stonks::network {
+/**
+ * @brief REST response body.
+ */
 using Result = std::optional<isocpp_p0201::polymorphic_value<IJson>>;
+
+/**
+ * @brief REST request param.
+ */
 using Param = isocpp_p0201::polymorphic_value<IJson>;
+
+/**
+ * @brief REST request params.
+ */
 using Params = std::map<std::string, Param>;
+
+/**
+ * @brief REST request headers.
+ */
 using Headers = std::map<std::string, std::string>;
+
+/**
+ * @brief REST request body.
+ */
 using Body = std::optional<isocpp_p0201::polymorphic_value<IJson>>;
 
 /**

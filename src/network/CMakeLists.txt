@@ -15,6 +15,8 @@ add_library(libnetwork
   network_rest_client.cc
   network_rest_request_builder.cc
   network_rest_server.cc
+  network_typed_endpoint_handler.cc
+  network_typed_endpoint_sender.cc
   network_types.cc
 )
 set_target_properties(libnetwork PROPERTIES OUTPUT_NAME network)

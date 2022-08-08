@@ -10,6 +10,7 @@
 #include "network_auto_parsable_request_handler.h"
 #include "network_i_factory.h"
 #include "network_i_rest_request_receiver.h"
+#include "network_typed_endpoint.h"
 #include "network_types.h"
 #include "not_null.hpp"
 
@@ -31,7 +32,7 @@ class RestServer {
    */
   template <typename T>
   requires std::is_constructible_v<AutoParsableRequestHandler, T>
-  auto Handling(Endpoint endpoint, T handler) -> RestServer & {
+  auto Handling(TypedEndpoint endpoint, T handler) -> RestServer & {
     return Handling(std::move(endpoint),
                     AutoParsableRequestHandler{std::move(handler)});
   }
@@ -53,7 +54,8 @@ class RestServer {
       && -> cpp::not_null<std::unique_ptr<IRestRequestReceiver>>;
 
  private:
-  auto Handling(Endpoint endpoint, AutoParsableRequestHandler handler)
+  [[nodiscard]] auto Handling(TypedEndpoint endpoint,
+                              AutoParsableRequestHandler handler)
       -> RestServer &;
 
   cpp::not_null<std::unique_ptr<IFactory>> network_factory_;
