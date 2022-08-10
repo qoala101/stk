@@ -8,7 +8,9 @@
 #include <functional>
 #include <memory>
 #include <stdexcept>
+#include <string>
 #include <thread>
+#include <tuple>
 
 #include "finance_types.h"
 #include "network_auto_parsable_request.h"
@@ -71,8 +73,7 @@ class EntityServer {
         .endpoint = {.method = stonks::network::Method::kPost,
                      .uri = "/PushSymbol"},
         .expected_types = {
-            .params = {{"symbol",
-                        stonks::network::ExpectedType<stonks::SymbolName>()}}}};
+            .body = stonks::network::ExpectedType<stonks::SymbolName>()}};
   }
 
   [[nodiscard]] static auto GetSymbolEndpointDesc()
@@ -81,6 +82,7 @@ class EntityServer {
         .endpoint = {.method = stonks::network::Method::kGet,
                      .uri = "/GetSymbol"},
         .expected_types = {
+            .params = {{"index", stonks::network::ExpectedType<int>()}},
             .result = stonks::network::ExpectedType<stonks::SymbolName>()}};
   }
 
@@ -171,52 +173,91 @@ TEST(ClientServer, ApiTest) {
   EXPECT_EQ(entity.GetSize(), entity_client.GetSize());
   EXPECT_EQ(entity.GetSymbol(0), entity_client.GetSymbol(0));
   EXPECT_EQ(entity.GetSymbol(1), entity_client.GetSymbol(1));
-  // EXPECT_ANY_THROW(static_cast<void>(entity.GetSymbol(2)));
-  // EXPECT_ANY_THROW(static_cast<void>(entity_client.GetSymbol(2)));
 
-  // try {
-  //   static_cast<void>(entity.GetSymbol(2));
-  // } catch (const std::exception& exception) {
-  //   EXPECT_STRCASEEQ(exception.what(), Entity::kIndexOutOfBoundsMessage);
-  // }
+  // const auto entity_exception = [&entity]() {
+  //   try {
+  //     std::ignore = entity.GetSymbol(2);
+  //   } catch (const std::exception &exception) {
+  //     return std::string{exception.what()};
+  //   }
 
-  // try {
-  //   static_cast<void>(entity_client.GetSymbol(2));
-  // } catch (const std::exception& exception) {
-  //   EXPECT_STRCASEEQ(exception.what(), Entity::kIndexOutOfBoundsMessage);
-  // }
+  //   std::terminate();
+  // }();
+  // const auto client_exception = [&entity_client]() {
+  //   try {
+  //     std::ignore = entity_client.GetSymbol(2);
+  //   } catch (const std::exception &exception) {
+  //     return std::string{exception.what()};
+  //   }
+
+  //   std::terminate();
+  // }();
+  // EXPECT_EQ(entity_exception, Entity::kIndexOutOfBoundsMessage);
+  // EXPECT_EQ(client_exception, Entity::kIndexOutOfBoundsMessage);
+}
+
+TEST(ClientServerDeathTest, WrongClientTypes) {
+  auto entity_server = EntityServer{kBaseUri};
+  auto rest_client = stonks::network::RestClient{
+      kBaseUri, stonks::restsdk::Factory{}.CreateRestRequestSender()};
+
+  EXPECT_DEATH(rest_client.Call(EntityServer::PushSymbolEndpointDesc())
+                   .WithBody(0)
+                   .DiscardingResult(),
+               "");
+  EXPECT_DEATH(rest_client.Call(EntityServer::PushSymbolEndpointDesc())
+                   .DiscardingResult(),
+               "");
+  EXPECT_DEATH(rest_client.Call(EntityServer::PushSymbolEndpointDesc())
+                   .WithParam("NOT_EXPECTED_PARAM", 1)
+                   .WithBody("BTC")
+                   .DiscardingResult(),
+               "");
+  rest_client.Call(EntityServer::PushSymbolEndpointDesc())
+      .WithBody("BTC")
+      .DiscardingResult();
+
+  auto endpoint_with_added_param = EntityServer::GetSymbolEndpointDesc();
+  endpoint_with_added_param.expected_types.params["NOT_SENT_PARAM"] =
+      stonks::network::ExpectedType<int>();
+  EXPECT_DEATH(std::ignore = rest_client.Call(endpoint_with_added_param)
+                                 .WithParam("index", 0)
+                                 .AndReceive<stonks::SymbolName>()
+               ,
+               "");
+  EXPECT_DEATH(std::ignore = rest_client.Call(endpoint_with_added_param)
+                                 .WithParam("index", 0)
+                                 .WithParam("UNKNOWN_PARAM", 0)
+                                 .AndReceive<stonks::SymbolName>(),
+               "");
 }
 
 // TEST(ClientServerDeathTest, ExceptionTest) {
-//   auto entity_server = EntityServer{kBaseUri};
+// auto entity_server = EntityServer{kBaseUri};
+// auto rest_client = stonks::network::RestClient{
+//     kBaseUri, stonks::restsdk::Factory{}.CreateRestRequestSender()};
 
-//   class BadRequestClient : public stonks::network::Client {
-//    public:
-//     explicit BadRequestClient() : stonks::network::Client{kBaseUri} {}
-//     void SendBadRequests() {
-//       auto endpoint = EntityServer::GetSizeEndpointDesc();
-//       EXPECT_NO_THROW(Execute(endpoint));
+// auto endpoint = EntityServer::GetSizeEndpointDesc();
+// EXPECT_NO_THROW(rest_client.Call(endpoint).DiscardingResult());
 
-//       endpoint = EntityServer::GetSizeEndpointDesc();
-//       endpoint.method = web::http::methods::POST;
-//       EXPECT_ANY_THROW(Execute(endpoint));
+// endpoint = EntityServer::GetSizeEndpointDesc();
+// endpoint.endpoint.method = stonks::network::Method::kPost;
+// EXPECT_ANY_THROW(rest_client.Call(endpoint).DiscardingResult());
 
-//       endpoint = EntityServer::GetSizeEndpointDesc();
-//       endpoint.relative_uri += "BAD";
-//       EXPECT_ANY_THROW(Execute(endpoint));
+// endpoint = EntityServer::GetSizeEndpointDesc();
+// endpoint.endpoint.uri += "BAD";
+// EXPECT_ANY_THROW(rest_client.Call(endpoint).DiscardingResult());
 
-//       endpoint = EntityServer::PushSymbolEndpointDesc();
-//       EXPECT_NO_THROW(Execute(endpoint, {.body =
-//       stonks::finance::Symbol{}}));
+// endpoint = EntityServer::PushSymbolEndpointDesc();
+// EXPECT_NO_THROW(rest_client.Call(endpoint)
+//                     .WithBody(stonks::SymbolName{})
+//                     .DiscardingResult());
 
-//       endpoint = EntityServer::PushSymbolEndpointDesc();
-//       EXPECT_DEATH(Execute(endpoint), "");
+// endpoint = EntityServer::PushSymbolEndpointDesc();
+// EXPECT_DEATH(rest_client.Call(endpoint).DiscardingResult(), "");
 
-//       endpoint = EntityServer::PushSymbolEndpointDesc();
-//       EXPECT_DEATH(Execute(endpoint, {.body = 33}), "");
-//     }
-//   } client;
-
-//   client.SendBadRequests();
+// endpoint = EntityServer::PushSymbolEndpointDesc();
+// EXPECT_DEATH(rest_client.Call(endpoint).WithBody(33).DiscardingResult(),
+// "");
 // }
 }  // namespace

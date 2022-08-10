@@ -141,10 +141,17 @@ auto RestRequestSender::SendRequestAndGetResponse(
   auto http_client = web::http::client::http_client{full_uri};
   const auto http_request = HttpRequestFromNetworkRequest(request);
   const auto http_response = http_client.request(http_request).get();
-  auto response_json = http_response.extract_json().get();
 
-  return {.status = NetworkStatusFromHttpStatus(http_response.status_code()),
-          .result = isocpp_p0201::make_polymorphic_value<network::IJson, Json>(
-              network::IJson::Impl{std::move(response_json)})};
+  auto response = network::RestResponse{
+      .status = NetworkStatusFromHttpStatus(http_response.status_code())};
+  auto http_response_json = http_response.extract_json().get();
+
+  if (!http_response_json.is_null()) {
+    response.result.emplace(
+        isocpp_p0201::make_polymorphic_value<network::IJson, Json>(
+            network::IJson::Impl{std::move(http_response_json)}));
+  }
+
+  return response;
 }
 }  // namespace stonks::restsdk

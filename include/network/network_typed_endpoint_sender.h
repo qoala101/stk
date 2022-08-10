@@ -31,6 +31,11 @@ class TypedEndpointSender : public IRestRequestSender {
       -> RestResponse override;
 
  private:
+  void ValidateRequest(const RestRequest &request) const;
+  void ValidateRequestParamTypes(const Params &params) const;
+  void ValidateRequestBodyType(const Body &body) const;
+  void ValidateResponseTypes(const RestResponse &response) const;
+
   EndpointTypes endpoint_types_{};
   cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender_;
 };
