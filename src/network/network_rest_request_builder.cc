@@ -24,7 +24,11 @@ auto RestRequestBuilder::WithBaseUri(std::string base_uri)
 auto RestRequestBuilder::AppendUri(std::string_view uri)
     -> RestRequestBuilder& {
   Expects(uri_is_set_);
-  request_.endpoint.uri += "/";
+  
+  if (!uri.starts_with("/")) {
+    request_.endpoint.uri += "/";
+  }
+
   request_.endpoint.uri += uri.data();
   Ensures(!request_.endpoint.uri.empty());
   return *this;

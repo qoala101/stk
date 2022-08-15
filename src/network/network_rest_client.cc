@@ -5,6 +5,7 @@
 
 #include "ccutils_expose_private_constructors.h"
 #include "network_i_rest_request_sender.h"
+#include "network_response_exception_handler.h"
 #include "network_typed_endpoint_sender.h"
 #include "network_types.h"
 #include "not_null.hpp"
@@ -21,8 +22,9 @@ auto RestClient::Call(TypedEndpoint endpoint) const
   endpoint.endpoint.uri = base_uri_ + endpoint.endpoint.uri;
 
   auto typed_sender =
-      cpp::assume_not_null(std::make_unique<TypedEndpointSender>(
-          std::move(endpoint.expected_types), request_sender_));
+      cpp::assume_not_null(std::make_unique<ResponseExceptionHandler>(
+          cpp::assume_not_null(std::make_unique<TypedEndpointSender>(
+              std::move(endpoint.expected_types), request_sender_))));
 
   return ccutils::CallExposedPrivateConstructorOf<rest_client::RequestBuilder,
                                                   RestClient>{}(

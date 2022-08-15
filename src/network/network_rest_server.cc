@@ -3,6 +3,7 @@
 #include <gsl/assert>
 
 #include "network_endpoint_request_dispatcher.h"
+#include "network_request_exception_handler.h"
 #include "network_typed_endpoint.h"
 #include "network_typed_endpoint_handler.h"
 #include "network_types.h"
@@ -44,8 +45,8 @@ auto RestServer::Handling(TypedEndpoint endpoint,
                           AutoParsableRequestHandler handler) -> RestServer& {
   endpoint_handlers_.emplace(
       std::move(endpoint.endpoint),
-      TypedEndpointHandler{std::move(endpoint.expected_types),
-                           std::move(handler)});
+      RequestExceptionHandler{TypedEndpointHandler{
+          std::move(endpoint.expected_types), std::move(handler)}});
   Ensures(!endpoint_handlers_.empty());
   return *this;
 }

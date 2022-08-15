@@ -3,9 +3,13 @@
 
 #include <polymorphic_value.h>
 
+#include <exception>
 #include <gsl/gsl>
+#include <memory>
+#include <stdexcept>
 
 #include "network_i_json.h"
+#include "not_null.hpp"
 
 /**
  * @file List of basic type conversions which should be provided by the network
@@ -28,6 +32,10 @@ template <>
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> std::string;
 
+template <>
+[[nodiscard]] auto ParseFromJson(const IJson &json)
+    -> cpp::not_null<std::unique_ptr<std::exception>>;
+
 [[nodiscard]] auto ConvertToJson(int value)
     -> isocpp_p0201::polymorphic_value<IJson>;
 
@@ -38,6 +46,9 @@ template <>
     -> isocpp_p0201::polymorphic_value<IJson>;
 
 [[nodiscard]] auto ConvertToJson(std::string_view value)
+    -> isocpp_p0201::polymorphic_value<IJson>;
+
+[[nodiscard]] auto ConvertToJson(const std::exception &value)
     -> isocpp_p0201::polymorphic_value<IJson>;
 }  // namespace stonks::network
 

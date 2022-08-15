@@ -21,6 +21,7 @@
 #include "network_i_rest_request_sender.h"
 #include "network_json_basic_conversions.h"
 #include "network_rest_client.h"
+#include "network_rest_request_builder.h"
 #include "network_rest_server.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
@@ -231,6 +232,34 @@ TEST(ClientServerDeathTest, WrongClientTypes) {
                "");
 }
 
+TEST(ClientServerDeathTest, WrongClientTypesReceived) {
+  auto entity_client = EntityClient{kBaseUri};
+  auto entity_server = stonks::restsdk::Factory{}.CreateRestRequestReceiver(
+      kBaseUri,
+      stonks::network::EndpointRequestDispatcher{
+          {{EntityServer::PushSymbolEndpointDesc().endpoint,
+            [](const stonks::network::RestRequest& /*unused*/) {
+              return stonks::network::RestResponse{
+                  .status = stonks::network::Status::kOk,
+                  .result = stonks::network::ConvertToJson(0)};
+            }},
+           {EntityServer::GetSymbolEndpointDesc().endpoint,
+            [](const stonks::network::RestRequest& /*unused*/) {
+              return stonks::network::RestResponse{
+                  .status = stonks::network::Status::kOk};
+            }},
+           {EntityServer::PushSymbolEndpointDesc().endpoint,
+            [](const stonks::network::RestRequest& /*unused*/) {
+              return stonks::network::RestResponse{
+                  .status = stonks::network::Status::kOk,
+                  .result = stonks::network::ConvertToJson("NOT_INT")};
+            }}}});
+
+  EXPECT_ANY_THROW(entity_client.PushSymbol("BTC"));
+  EXPECT_ANY_THROW(std::ignore = entity_client.GetSymbol(0));
+  EXPECT_ANY_THROW(std::ignore = entity_client.GetSize());
+}
+
 TEST(ClientServerDeathTest, WrongServerTypes) {
   auto entity = []() {
     auto entity = Entity{};
@@ -257,40 +286,12 @@ TEST(ClientServerDeathTest, WrongServerTypes) {
                     [&entity]() { return "NOT_INT"; })
           .Start();
 
-  // TODO(vh): EXPECT_DEATH doesn't work here and just blocks the app. Each of
-  // the following lines should be uncommented one by one and abort the program.
+  // TODO(vh): EXPECT_DEATH doesn't work here and just blocks the app.
+  // Each of the following lines should be uncommented one by one
+  // and abort the program.
 
   // entity_client.PushSymbol("BTC");
   // std::ignore = entity_client.GetSymbol(0);
   // std::ignore = entity_client.GetSize();
 }
-
-// TEST(ClientServerDeathTest, ExceptionTest) {
-// auto entity_server = EntityServer{kBaseUri};
-// auto rest_client = stonks::network::RestClient{
-//     kBaseUri, stonks::restsdk::Factory{}.CreateRestRequestSender()};
-
-// auto endpoint = EntityServer::GetSizeEndpointDesc();
-// EXPECT_NO_THROW(rest_client.Call(endpoint).DiscardingResult());
-
-// endpoint = EntityServer::GetSizeEndpointDesc();
-// endpoint.endpoint.method = stonks::network::Method::kPost;
-// EXPECT_ANY_THROW(rest_client.Call(endpoint).DiscardingResult());
-
-// endpoint = EntityServer::GetSizeEndpointDesc();
-// endpoint.endpoint.uri += "BAD";
-// EXPECT_ANY_THROW(rest_client.Call(endpoint).DiscardingResult());
-
-// endpoint = EntityServer::PushSymbolEndpointDesc();
-// EXPECT_NO_THROW(rest_client.Call(endpoint)
-//                     .WithBody(stonks::SymbolName{})
-//                     .DiscardingResult());
-
-// endpoint = EntityServer::PushSymbolEndpointDesc();
-// EXPECT_DEATH(rest_client.Call(endpoint).DiscardingResult(), "");
-
-// endpoint = EntityServer::PushSymbolEndpointDesc();
-// EXPECT_DEATH(rest_client.Call(endpoint).WithBody(33).DiscardingResult(),
-// "");
-// }
 }  // namespace

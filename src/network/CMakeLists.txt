@@ -11,6 +11,8 @@ add_library(libnetwork
   network_auto_parsable.cc
   network_endpoint_request_dispatcher.cc
   network_i_json.cc
+  network_request_exception_handler.cc
+  network_response_exception_handler.cc
   network_rest_client_request_builder.cc
   network_rest_client.cc
   network_rest_request_builder.cc
