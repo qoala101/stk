@@ -1,8 +1,12 @@
 #include "network_typed_endpoint_sender.h"
 
+#include <bits/exception.h>
+#include <polymorphic_value.h>
+
+#include <functional>
 #include <gsl/assert>
-#include <range/v3/view/set_algorithm.hpp>
-#include <range/v3/view/transform.hpp>
+#include <map>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -23,7 +27,7 @@ auto TypedEndpointSender::SendRequestAndGetResponse(RestRequest request) const
   ValidateRequest(request);
   auto response =
       request_sender_->SendRequestAndGetResponse(std::move(request));
-  ValidateResponseTypes(response);
+  ValidateResponse(response);
   return response;
 }
 
@@ -63,14 +67,18 @@ void TypedEndpointSender::ValidateRequestBodyType(const Body &body) const {
   Expects(!body.has_value());
 }
 
-void TypedEndpointSender::ValidateResponseTypes(
-    const RestResponse &response) const {
-  // if (endpoint_types_.result.has_value()) {
-  //   if (!response.result.has_value()) {
-  //     throw std::runtime_error{"Response doesn't have expected result"};
-  //   }
+void TypedEndpointSender::ValidateResponse(const RestResponse &response) const {
+  if (endpoint_types_.result.has_value()) {
+    if (!response.result.has_value()) {
+      throw std::runtime_error{"Response is missing result"};
+    }
 
-  //   (*endpoint_types_.result)(**response.result);
-  // }
+    (*endpoint_types_.result)(**response.result);
+    return;
+  }
+
+  if (response.result.has_value()) {
+    throw std::runtime_error{"Response has unexpected result"};
+  }
 }
 }  // namespace stonks::network

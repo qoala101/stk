@@ -222,14 +222,47 @@ TEST(ClientServerDeathTest, WrongClientTypes) {
       stonks::network::ExpectedType<int>();
   EXPECT_DEATH(std::ignore = rest_client.Call(endpoint_with_added_param)
                                  .WithParam("index", 0)
-                                 .AndReceive<stonks::SymbolName>()
-               ,
+                                 .AndReceive<stonks::SymbolName>(),
                "");
   EXPECT_DEATH(std::ignore = rest_client.Call(endpoint_with_added_param)
                                  .WithParam("index", 0)
                                  .WithParam("UNKNOWN_PARAM", 0)
                                  .AndReceive<stonks::SymbolName>(),
                "");
+}
+
+TEST(ClientServerDeathTest, WrongServerTypes) {
+  auto entity = []() {
+    auto entity = Entity{};
+    entity.PushSymbol("ETH");
+    return entity;
+  }();
+  auto entity_client = EntityClient{kBaseUri};
+  auto rest_server =
+      stonks::network::RestServer{
+          cpp::assume_not_null(std::make_unique<stonks::restsdk::Factory>())}
+          .On(kBaseUri)
+          .Handling(
+              EntityServer::PushSymbolEndpointDesc(),
+              [&entity](stonks::network::AutoParsableRestRequest request) {
+                entity.PushSymbol(request.Body());
+                return 55;
+              })
+          .Handling(
+              EntityServer::GetSymbolEndpointDesc(),
+              [&entity](stonks::network::AutoParsableRestRequest request) {
+                std::ignore = entity.GetSymbol(request.Param("index"));
+              })
+          .Handling(EntityServer::GetSizeEndpointDesc(),
+                    [&entity]() { return "NOT_INT"; })
+          .Start();
+
+  // TODO(vh): EXPECT_DEATH doesn't work here and just blocks the app. Each of
+  // the following lines should be uncommented one by one and abort the program.
+
+  // entity_client.PushSymbol("BTC");
+  // std::ignore = entity_client.GetSymbol(0);
+  // std::ignore = entity_client.GetSize();
 }
 
 // TEST(ClientServerDeathTest, ExceptionTest) {

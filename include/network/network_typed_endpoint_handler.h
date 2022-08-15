@@ -27,6 +27,11 @@ class TypedEndpointHandler {
   auto operator()(RestRequest request) const -> RestResponse;
 
  private:
+  void ValidateRequest(const RestRequest &request) const;
+  void ValidateRequestParamTypes(const Params &params) const;
+  void ValidateRequestBodyType(const Body &body) const;
+  void ValidateResponse(const RestResponse &response) const;
+
   EndpointTypes endpoint_types_{};
   RestRequestHandler handler_{};
 };
