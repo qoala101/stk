@@ -60,14 +60,15 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
 };
 }  // namespace
 
-TypedEndpointHandler::TypedEndpointHandler(EndpointTypes endpoint_types,
-                                           RestRequestHandler handler)
+TypedEndpointHandler::TypedEndpointHandler(
+    EndpointTypes endpoint_types,
+    cpp::not_null<std::unique_ptr<IRestRequestHandler>> handler)
     : type_checker_{cpp::assume_not_null(
-          std::make_shared<TypeChecker>(std::move(endpoint_types)))},
+          std::make_unique<TypeChecker>(std::move(endpoint_types)))},
       handler_{std::move(handler)} {}
 
-auto TypedEndpointHandler::operator()(RestRequest request) const
-    -> RestResponse {
+auto TypedEndpointHandler::HandleRequestAndGiveResponse(
+    RestRequest request) const -> RestResponse {
   try {
     type_checker_->ValidateRequest(request);
   } catch (const std::exception &exception) {
@@ -78,7 +79,7 @@ auto TypedEndpointHandler::operator()(RestRequest request) const
   auto response = std::optional<RestResponse>{};
 
   try {
-    response = handler_(std::move(request));
+    response = handler_->HandleRequestAndGiveResponse(std::move(request));
   } catch (const std::exception &exception) {
     return {.status = Status::kInternalError,
             .result = ConvertToJson(std::runtime_error{exception.what()})};

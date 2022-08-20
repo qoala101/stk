@@ -33,8 +33,10 @@ class RestServer {
   template <typename T>
   requires std::is_constructible_v<AutoParsableRequestHandler, T>
   auto Handling(TypedEndpoint endpoint, T handler) -> RestServer & {
-    return Handling(std::move(endpoint),
-                    AutoParsableRequestHandler{std::move(handler)});
+    return Handling(
+        std::move(endpoint),
+        cpp::assume_not_null(
+            std::make_unique<AutoParsableRequestHandler>(std::move(handler))));
   }
 
   /**
@@ -44,23 +46,18 @@ class RestServer {
    * @remark Other methods should not be called after this.
    */
   [[nodiscard]] auto Start()
-      const & -> cpp::not_null<std::unique_ptr<IRestRequestReceiver>>;
-
-  /**
-   * @copydoc Start
-   * @remark Other methods should not be called after this.
-   */
-  [[nodiscard]] auto Start()
       && -> cpp::not_null<std::unique_ptr<IRestRequestReceiver>>;
 
  private:
-  [[nodiscard]] auto Handling(TypedEndpoint endpoint,
-                              AutoParsableRequestHandler handler)
+  [[nodiscard]] auto Handling(
+      TypedEndpoint endpoint,
+      cpp::not_null<std::unique_ptr<IRestRequestHandler>> handler)
       -> RestServer &;
 
   cpp::not_null<std::unique_ptr<IFactory>> network_factory_;
   std::optional<std::string> base_uri_{};
-  std::map<Endpoint, RestRequestHandler> endpoint_handlers_{};
+  std::map<Endpoint, cpp::not_null<std::unique_ptr<IRestRequestHandler>>>
+      endpoint_handlers_{};
 };
 }  // namespace stonks::network
 

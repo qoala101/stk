@@ -3,6 +3,7 @@
 
 #include <type_traits>
 
+#include "network_i_rest_request_handler.h"
 #include "network_types.h"
 
 namespace stonks::network {
@@ -10,22 +11,21 @@ namespace stonks::network {
  * @brief Decorator of request handler which transforms the exception thrown by
  * the handler to the appropriate response.
  */
-class RequestExceptionHandler {
+class RequestExceptionHandler : public IRestRequestHandler {
  public:
-  explicit RequestExceptionHandler(RestRequestHandler handler);
+  explicit RequestExceptionHandler(
+      cpp::not_null<std::unique_ptr<IRestRequestHandler>> handler);
 
   /**
    * @brief Catches exception thrown by the handler and transforms it
    * to the response.
    */
-  auto operator()(RestRequest request) const -> RestResponse;
+  [[nodiscard]] auto HandleRequestAndGiveResponse(RestRequest request) const
+      -> RestResponse override;
 
  private:
-  RestRequestHandler handler_{};
+  cpp::not_null<std::unique_ptr<IRestRequestHandler>> handler_;
 };
-
-static_assert(
-    std::is_convertible_v<RequestExceptionHandler, RestRequestHandler>);
 }  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_NETWORK_REQUEST_EXCEPTION_HANDLER_H_

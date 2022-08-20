@@ -18,7 +18,8 @@ auto Factory::CreateRestRequestSender() const
 }
 
 auto Factory::CreateRestRequestReceiver(
-    std::string local_uri, network::RestRequestHandler handler) const
+    std::string local_uri,
+    cpp::not_null<std::unique_ptr<network::IRestRequestHandler>> handler) const
     -> cpp::not_null<std::unique_ptr<network::IRestRequestReceiver>> {
   return cpp::assume_not_null(
       std::make_unique<RestRequestReceiver>(local_uri, std::move(handler)));

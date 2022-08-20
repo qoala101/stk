@@ -7,6 +7,7 @@
 #include <variant>
 
 #include "network_auto_parsable_request.h"
+#include "network_i_rest_request_handler.h"
 #include "network_json_basic_conversions.h"
 #include "network_types.h"
 
@@ -39,7 +40,7 @@ concept CallableWithRequestAndResponse =
  * @brief Convenient request handler constructible from any callable which may
  * take auto-parsable request and return any convertible value.
  */
-class AutoParsableRequestHandler {
+class AutoParsableRequestHandler : public IRestRequestHandler {
  public:
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   AutoParsableRequestHandler(
@@ -71,9 +72,10 @@ class AutoParsableRequestHandler {
             }} {}
 
   /**
-   * @brief Wraps request in auto-convertible and forwards to the handler.
+   * @brief Wraps request in auto-convertible and forwards it to the handler.
    */
-  auto operator()(RestRequest request) const -> RestResponse;
+  [[nodiscard]] auto HandleRequestAndGiveResponse(RestRequest request) const
+      -> RestResponse override;
 
  private:
   using Handler = std::function<void()>;
@@ -86,9 +88,6 @@ class AutoParsableRequestHandler {
                HandlerWithRequestAndResponse>
       handler_{};
 };
-
-static_assert(
-    std::is_convertible_v<AutoParsableRequestHandler, RestRequestHandler>);
 }  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_H_

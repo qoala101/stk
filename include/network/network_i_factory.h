@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "network_i_json.h"
+#include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_i_rest_request_sender.h"
 #include "network_types.h"
@@ -33,7 +34,8 @@ class IFactory {
    * @param handler Function to be called when request is received.
    */
   [[nodiscard]] virtual auto CreateRestRequestReceiver(
-      std::string local_uri, RestRequestHandler handler) const
+      std::string local_uri,
+      cpp::not_null<std::unique_ptr<IRestRequestHandler>> handler) const
       -> cpp::not_null<std::unique_ptr<IRestRequestReceiver>> = 0;
 
   /**

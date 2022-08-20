@@ -7,8 +7,8 @@
 #include "network_enums.h"
 
 namespace stonks::network {
-auto AutoParsableRequestHandler::operator()(RestRequest request) const
-    -> RestResponse {
+auto AutoParsableRequestHandler::HandleRequestAndGiveResponse(
+    RestRequest request) const -> RestResponse {
   return std::visit(
       [&request](const auto &variant) -> RestResponse {
         Expects(variant);

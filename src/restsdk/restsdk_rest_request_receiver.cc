@@ -129,23 +129,18 @@ namespace {
 }
 }  // namespace
 
-RestRequestReceiver::RestRequestReceiver(std::string_view local_uri,
-                                         network::RestRequestHandler handler)
-    : handler_{[&handler]() {
-        Expects(handler);
-        return std::move(handler);
-      }()},
-      http_listener_{[this, local_uri]() {
+RestRequestReceiver::RestRequestReceiver(
+    std::string_view local_uri,
+    cpp::not_null<std::unique_ptr<network::IRestRequestHandler>> handler)
+    : handler_{std::move(handler)}, http_listener_{[this, local_uri]() {
         auto http_listener = cpp::assume_not_null(
             std::make_unique<web::http::experimental::listener::http_listener>(
                 local_uri.data()));
         http_listener->support(
             std::bind_front(&RestRequestReceiver::HandleHttpRequest, this));
-        http_listener->open();
+        http_listener->open().wait();
         return http_listener;
-      }()} {
-  Ensures(handler_);
-}
+      }()} {}
 
 RestRequestReceiver::RestRequestReceiver(RestRequestReceiver &&) noexcept =
     default;
@@ -161,7 +156,8 @@ void RestRequestReceiver::HandleHttpRequest(
                 request.absolute_uri().path());
 
   auto rest_request = RestRequestFromHttpRequest(request);
-  const auto rest_response = handler_(std::move(rest_request));
+  const auto rest_response =
+      handler_->HandleRequestAndGiveResponse(std::move(rest_request));
   const auto http_response = HttpResponseFromRestResponse(rest_response);
   request.reply(http_response);
 }

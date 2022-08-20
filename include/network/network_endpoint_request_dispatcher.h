@@ -4,13 +4,15 @@
 #include <map>
 #include <type_traits>
 
+#include "network_i_rest_request_handler.h"
 #include "network_types.h"
+#include "not_null.hpp"
 
 namespace stonks::network {
 /**
  * @brief Request handler which maps endpoint requests to the distinct handlers.
  */
-class EndpointRequestDispatcher {
+class EndpointRequestDispatcher : public IRestRequestHandler {
  public:
   /**
    * @param base_uri Part of URI which is subtracted from the beginning
@@ -19,19 +21,19 @@ class EndpointRequestDispatcher {
    * the remaining part of the requested URI.
    */
   explicit EndpointRequestDispatcher(
-      std::map<Endpoint, RestRequestHandler> endpoint_handlers);
+      std::map<Endpoint, cpp::not_null<std::unique_ptr<IRestRequestHandler>>>
+          endpoint_handlers);
 
   /**
    * @brief Forwards the request to the appropriate handler.
    */
-  auto operator()(RestRequest request) const -> RestResponse;
+  [[nodiscard]] auto HandleRequestAndGiveResponse(RestRequest request) const
+      -> RestResponse override;
 
  private:
-  std::map<Endpoint, RestRequestHandler> endpoint_handlers_{};
+  std::map<Endpoint, cpp::not_null<std::unique_ptr<IRestRequestHandler>>>
+      endpoint_handlers_{};
 };
-
-static_assert(
-    std::is_convertible_v<EndpointRequestDispatcher, RestRequestHandler>);
 }  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_

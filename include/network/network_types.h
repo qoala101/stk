@@ -71,11 +71,6 @@ struct RestResponse {
   Status status{};
   Result result{};
 };
-
-/**
- * @brief Handles REST request and returns response.
- */
-using RestRequestHandler = std::function<RestResponse(RestRequest)>;
 }  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_NETWORK_TYPES_H_
