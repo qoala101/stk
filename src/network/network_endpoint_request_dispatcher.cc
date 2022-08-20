@@ -1,6 +1,5 @@
 #include "network_endpoint_request_dispatcher.h"
 
-#include <functional>
 #include <optional>
 #include <utility>
 

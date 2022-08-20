@@ -2,6 +2,7 @@
 
 #include <gsl/assert>
 #include <optional>
+#include <type_traits>
 
 #include "network_auto_parsable_request.h"
 #include "network_enums.h"

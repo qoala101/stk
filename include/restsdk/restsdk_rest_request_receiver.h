@@ -6,7 +6,6 @@
 
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
-#include "network_types.h"
 #include "not_null.hpp"
 
 namespace web::http {

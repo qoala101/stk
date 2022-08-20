@@ -2,7 +2,6 @@
 #define STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_ENDPOINT_HANDLER_H_
 
 #include <memory>
-#include <type_traits>
 
 #include "network_endpoint_types_validator_template.h"
 #include "network_i_rest_request_handler.h"

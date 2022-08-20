@@ -1,10 +1,11 @@
 #ifndef STONKS_NETWORK_NETWORK_REQUEST_EXCEPTION_HANDLER_H_
 #define STONKS_NETWORK_NETWORK_REQUEST_EXCEPTION_HANDLER_H_
 
-#include <type_traits>
+#include <memory>
 
 #include "network_i_rest_request_handler.h"
 #include "network_types.h"
+#include "not_null.hpp"
 
 namespace stonks::network {
 /**

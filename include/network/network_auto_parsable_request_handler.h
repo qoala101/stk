@@ -2,7 +2,6 @@
 #define STONKS_NETWORK_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_H_
 
 #include <functional>
-#include <type_traits>
 #include <utility>
 #include <variant>
 

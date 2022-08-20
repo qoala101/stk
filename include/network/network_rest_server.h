@@ -9,6 +9,7 @@
 
 #include "network_auto_parsable_request_handler.h"
 #include "network_i_factory.h"
+#include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"

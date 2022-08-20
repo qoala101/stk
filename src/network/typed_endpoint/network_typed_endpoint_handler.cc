@@ -52,7 +52,7 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   void HandleMissingResponseBody() const override { Expects(false); }
 
   void HandleWrongResponseBodyType(
-      const std::exception &exception) const override {
+      const std::exception & /*exception*/) const override {
     Expects(false);
   }
 
