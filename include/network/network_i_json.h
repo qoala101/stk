@@ -4,6 +4,7 @@
 #include <polymorphic_value.h>
 
 #include <memory>
+#include <string>
 #include <string_view>
 
 #include "not_null.hpp"
