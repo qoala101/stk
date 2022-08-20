@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "network_endpoint_types_validator_template.h"
 #include "network_i_rest_request_sender.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
@@ -31,12 +32,7 @@ class TypedEndpointSender : public IRestRequestSender {
       -> RestResponse override;
 
  private:
-  void ValidateRequest(const RestRequest &request) const;
-  void ValidateRequestParamTypes(const Params &params) const;
-  void ValidateRequestBodyType(const Body &body) const;
-  void ValidateResponse(const RestResponse &response) const;
-
-  EndpointTypes endpoint_types_{};
+  cpp::not_null<std::unique_ptr<EndpointTypesValidatorTemplate>> type_checker_;
   cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender_;
 };
 }  // namespace stonks::network

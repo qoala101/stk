@@ -1,10 +1,13 @@
 #ifndef STONKS_NETWORK_NETWORK_TYPED_ENDPOINT_HANDLER_H_
 #define STONKS_NETWORK_NETWORK_TYPED_ENDPOINT_HANDLER_H_
 
+#include <memory>
 #include <type_traits>
 
+#include "network_endpoint_types_validator_template.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
+#include "not_null.hpp"
 
 namespace stonks::network {
 /**
@@ -27,12 +30,7 @@ class TypedEndpointHandler {
   auto operator()(RestRequest request) const -> RestResponse;
 
  private:
-  void ValidateRequest(const RestRequest &request) const;
-  void ValidateRequestParamTypes(const Params &params) const;
-  void ValidateRequestBodyType(const Body &body) const;
-  void ValidateResponse(const RestResponse &response) const;
-
-  EndpointTypes endpoint_types_{};
+  cpp::not_null<std::shared_ptr<EndpointTypesValidatorTemplate>> type_checker_;
   RestRequestHandler handler_{};
 };
 

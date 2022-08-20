@@ -6,6 +6,7 @@ find_package(polymorphic_value REQUIRED)
 find_package(Boost REQUIRED)
 
 add_library(libnetwork
+  type_checking/network_endpoint_types_validator_template.cc
   network_auto_parsable_request_handler.cc
   network_auto_parsable_request.cc
   network_auto_parsable.cc
@@ -23,9 +24,9 @@ add_library(libnetwork
 )
 set_target_properties(libnetwork PROPERTIES OUTPUT_NAME network)
 target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/network)
+target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/network/type_checking)
 target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/utility)
 target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils)
-target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/json)
 target_link_libraries(libnetwork PRIVATE spdlog::spdlog)
 target_link_libraries(libnetwork PRIVATE range-v3::range-v3)
 target_link_libraries(libnetwork PRIVATE Microsoft.GSL::GSL)
