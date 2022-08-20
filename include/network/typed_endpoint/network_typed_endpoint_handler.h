@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_TYPED_ENDPOINT_HANDLER_H_
-#define STONKS_NETWORK_NETWORK_TYPED_ENDPOINT_HANDLER_H_
+#ifndef STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_ENDPOINT_HANDLER_H_
+#define STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_ENDPOINT_HANDLER_H_
 
 #include <memory>
 #include <type_traits>
@@ -37,4 +37,4 @@ class TypedEndpointHandler {
 static_assert(std::is_convertible_v<TypedEndpointHandler, RestRequestHandler>);
 }  // namespace stonks::network
 
-#endif  // STONKS_NETWORK_NETWORK_TYPED_ENDPOINT_HANDLER_H_
+#endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_ENDPOINT_HANDLER_H_
