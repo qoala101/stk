@@ -2,7 +2,7 @@
 
 #include <gsl/assert>
 #include <iterator>
-#include <memory>
+#include "ccutils_not_null.h"
 
 #include "finance_enums.h"
 #include "utils.h"

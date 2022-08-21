@@ -8,7 +8,7 @@
 #include <functional>
 #include <future>
 #include <map>
-#include <memory>
+#include "ccutils_not_null.h"
 #include <stop_token>
 #include <string>
 #include <thread>
@@ -50,7 +50,7 @@ const auto kBookTickerUnsubscribeMessage = R"(
 
 class DbUpdaterPriceTicks::Impl {
  public:
-  explicit Impl(std::shared_ptr<StonksDb> stonks_db)
+  explicit Impl(ccutils::Sp<StonksDb> stonks_db)
       : web_socket_{binance::settings::GetBaseStreamUri()},
         stonks_db_{std::move(stonks_db)} {
     web_socket_.AppendUri("ws");
@@ -137,13 +137,13 @@ class DbUpdaterPriceTicks::Impl {
   };
 
   network::WebSocket web_socket_;
-  std::shared_ptr<StonksDb> stonks_db_{};
+  ccutils::Sp<StonksDb> stonks_db_{};
   std::map<std::string, Prices> last_symbol_prices_map_{};
   std::jthread thread_{};
 };
 
-DbUpdaterPriceTicks::DbUpdaterPriceTicks(std::shared_ptr<StonksDb> stonks_db)
-    : impl_{std::make_unique<Impl>(std::move(stonks_db))} {}
+DbUpdaterPriceTicks::DbUpdaterPriceTicks(ccutils::Sp<StonksDb> stonks_db)
+    : impl_{ccutils::MakeUp<Impl>(std::move(stonks_db))} {}
 
 DbUpdaterPriceTicks::DbUpdaterPriceTicks(DbUpdaterPriceTicks &&) noexcept =
     default;

@@ -9,7 +9,7 @@
 #include <boost/uuid/detail/uuid_x86.ipp>
 #include <boost/uuid/uuid.hpp>
 #include <map>
-#include <memory>
+#include "ccutils_not_null.h"
 #include <optional>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/view/view.hpp>

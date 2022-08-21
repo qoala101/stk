@@ -7,7 +7,7 @@
 #include <spdlog/spdlog.h>
 
 #include <chrono>
-#include <memory>
+#include "ccutils_not_null.h"
 #include <optional>
 
 #include "finance_api.h"

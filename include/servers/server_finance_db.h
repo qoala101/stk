@@ -1,7 +1,7 @@
 #ifndef STONKS_SERVERS_SERVER_FINANCE_DB_H_
 #define STONKS_SERVERS_SERVER_FINANCE_DB_H_
 
-#include <memory>
+#include "ccutils_not_null.h"
 
 #include "endpoint.h"
 #include "server.h"
@@ -12,7 +12,7 @@ class StonksDb {
  public:
   static constexpr auto kEndpoint = "/Db";
 
-  explicit StonksDb(int port, std::shared_ptr<stonks::StonksDb> entity);
+  explicit StonksDb(int port, ccutils::Sp<stonks::StonksDb> entity);
 
  private:
   [[nodiscard]] auto SelectAssets() const -> network::Endpoint;
@@ -24,7 +24,7 @@ class StonksDb {
   [[nodiscard]] auto InsertSymbolPriceTick() const -> network::Endpoint;
 
   network::Server server_;
-  std::shared_ptr<stonks::StonksDb> entity_{};
+  ccutils::Sp<stonks::StonksDb> entity_{};
 };
 }  // namespace stonks::server
 

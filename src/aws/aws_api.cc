@@ -18,9 +18,9 @@ auto Options() -> const Aws::SDKOptions& {
 }
 }  // namespace
 
-auto AwsApi::Instance() -> std::shared_ptr<AwsApi> {
+auto AwsApi::Instance() -> ccutils::Sp<AwsApi> {
   class PublicAwsApi : public AwsApi {};
-  static auto instance = std::make_shared<PublicAwsApi>();
+  static auto instance = ccutils::MakeSp<PublicAwsApi>();
   return instance;
 }
 

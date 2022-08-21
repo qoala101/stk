@@ -34,7 +34,7 @@ namespace {
 
 class DbUpdaterSymbolsInfo::Impl {
  public:
-  explicit Impl(std::shared_ptr<StonksDb> stonks_db)
+  explicit Impl(ccutils::Sp<StonksDb> stonks_db)
       : stonks_db_{std::move(stonks_db)} {
     Expects(stonks_db_ != nullptr);
 
@@ -79,11 +79,11 @@ class DbUpdaterSymbolsInfo::Impl {
   ~Impl() = default;
 
  private:
-  std::shared_ptr<StonksDb> stonks_db_{};
+  ccutils::Sp<StonksDb> stonks_db_{};
 };
 
-DbUpdaterSymbolsInfo::DbUpdaterSymbolsInfo(std::shared_ptr<StonksDb> stonks_db)
-    : impl_{std::make_unique<Impl>(std::move(stonks_db))} {}
+DbUpdaterSymbolsInfo::DbUpdaterSymbolsInfo(ccutils::Sp<StonksDb> stonks_db)
+    : impl_{ccutils::MakeUp<Impl>(std::move(stonks_db))} {}
 
 DbUpdaterSymbolsInfo::DbUpdaterSymbolsInfo(DbUpdaterSymbolsInfo &&) noexcept =
     default;

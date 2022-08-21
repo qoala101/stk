@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <limits>
-#include <memory>
+#include "ccutils_not_null.h"
 
 #include "client_finance_db.h"
 #include "finance_db.h"
@@ -13,7 +13,7 @@
 namespace {
 const auto kBaseUri = stonks::network::LocalUri{6506, "/Entity"};
 
-void SetupDb(const std::shared_ptr<stonks::StonksDb> &stonks_db) {
+void SetupDb(const ccutils::Sp<stonks::StonksDb> &stonks_db) {
   static_cast<void>(stonks::DbUpdaterSymbolsInfo{stonks_db});
   const auto eth_price_ticks = std::vector<stonks::finance::SymbolPriceTick>{
       stonks::finance::SymbolPriceTick{.symbol = "ETHUSDT",
@@ -76,12 +76,12 @@ void Compare(const stonks::StonksDb &left, const stonks::StonksDb &right) {
 
 TEST(FinanceDbClientServer, Requests) {
   auto local_finance_db =
-      std::make_shared<stonks::finance::FinanceDb>(":memory:");
+      ccutils::MakeSp<stonks::finance::FinanceDb>(":memory:");
   auto server_finance_db =
-      std::make_shared<stonks::finance::FinanceDb>(":memory:");
+      ccutils::MakeSp<stonks::finance::FinanceDb>(":memory:");
 
   const auto server_db = stonks::server::StonksDb{6506, server_finance_db};
-  auto finance_db_client = std::make_shared<stonks::client::FinanceDb>(6506);
+  auto finance_db_client = ccutils::MakeSp<stonks::client::FinanceDb>(6506);
 
   SetupDb(local_finance_db);
   SetupDb(finance_db_client);

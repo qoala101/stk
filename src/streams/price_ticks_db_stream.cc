@@ -11,7 +11,7 @@
 #include <chrono>
 #include <condition_variable>
 #include <gsl/assert>
-#include <memory>
+#include "ccutils_not_null.h"
 #include <mutex>
 #include <optional>
 #include <range/v3/iterator/basic_iterator.hpp>

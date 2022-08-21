@@ -1,7 +1,7 @@
 #ifndef STONKS_SERVERS_SERVER_INFO_H_
 #define STONKS_SERVERS_SERVER_INFO_H_
 
-#include <memory>
+#include "ccutils_not_null.h"
 
 #include "endpoint.h"
 #include "server.h"
@@ -12,7 +12,7 @@ class Info {
  public:
   static constexpr auto kEndpoint = "/Info";
 
-  explicit Info(int port, std::shared_ptr<stonks::Info> entity);
+  explicit Info(int port, ccutils::Sp<stonks::Info> entity);
 
  private:
   [[nodiscard]] auto GetSymbols() -> network::Endpoint;
@@ -20,7 +20,7 @@ class Info {
   [[nodiscard]] auto GetPriceTicks() -> network::Endpoint;
 
   network::Server server_;
-  std::shared_ptr<stonks::Info> entity_{};
+  ccutils::Sp<stonks::Info> entity_{};
 };
 }  // namespace stonks::server
 

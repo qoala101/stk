@@ -122,11 +122,11 @@ class DynamoDb::Impl {
     return tables;
   }
 
-  std::shared_ptr<AwsApi> aws_api_{};
+  ccutils::Sp<AwsApi> aws_api_{};
   Aws::DynamoDB::DynamoDBClient db_client_{};
 };
 
-DynamoDb::DynamoDb() : impl_{std::make_unique<Impl>()} {}
+DynamoDb::DynamoDb() : impl_{ccutils::MakeUp<Impl>()} {}
 
 DynamoDb::~DynamoDb() = default;
 

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <magic_enum.hpp>
-#include <memory>
+#include "ccutils_not_null.h"
 #include <ostream>
 #include <string>
 #include <thread>
@@ -42,7 +42,7 @@ auto ParseFromJson(const IJson &json) -> SymbolPrice {
 }
 
 auto ConvertToJson(const SymbolPrice &value)
-    -> isocpp_p0201::polymorphic_value<IJson> {
+    -> ccutils::Pv<IJson> {
   auto json = restsdk::Factory{}.CreateJson();
   json->SetChild("symbol", *ConvertToJson(value.symbol));
   json->SetChild("price", *ConvertToJson(std::to_string(value.price)));
@@ -53,7 +53,7 @@ auto ConvertToJson(const SymbolPrice &value)
 namespace {
 TEST(RestRequestReceiver, SendRequest) {
   // auto receiver_thread = std::jthread([]() {
-  const auto receiver = std::make_unique<stonks::restsdk::RestRequestReceiver>(
+  const auto receiver = ccutils::MakeUp<stonks::restsdk::RestRequestReceiver>(
       "http://localhost:6506",
       [](stonks::network::Endpoint endpoint,
          stonks::network::RestRequestData data)
@@ -79,7 +79,7 @@ TEST(RestRequestReceiver, SendRequest) {
           .AddParam("price", 123.456)
           .Build();
   const auto sender =
-      std::make_unique<stonks::restsdk::RestRequestSender>(endpoint);
+      ccutils::MakeUp<stonks::restsdk::RestRequestSender>(endpoint);
   const auto response = sender->SendRequestAndGetResponse(data);
   const auto response_price = ParseFromJson<SymbolPrice>(*response.second);
   EXPECT_EQ(response.first, stonks::network::Status::kOk);

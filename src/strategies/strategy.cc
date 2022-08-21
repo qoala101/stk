@@ -1,6 +1,6 @@
 #include "strategy.h"
 
-#include <memory>
+#include "ccutils_not_null.h"
 #include <optional>
 #include <range/v3/algorithm/find_if.hpp>
 #include <range/v3/functional/identity.hpp>

@@ -13,7 +13,7 @@
 #include <ext/alloc_traits.h>
 #include <functional>
 #include <gsl/assert>
-#include <memory>
+#include "ccutils_not_null.h"
 #include <utility>
 #include <vector>
 

@@ -2,7 +2,7 @@
 #define STONKS_NETWORK_OLD_CLIENT_H_
 
 #include <map>
-#include <memory>
+#include "ccutils_not_null.h"
 #include <string>
 
 #include "endpoint.h"

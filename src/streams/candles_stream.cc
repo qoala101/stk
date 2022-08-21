@@ -4,7 +4,7 @@
 
 #include <compare>
 #include <gsl/assert>
-#include <memory>
+#include "ccutils_not_null.h"
 #include <ratio>
 #include <thread>
 #include <utility>

@@ -1,14 +1,14 @@
 #ifndef STONKS_STONKS_STONKS_DB_UPDATER_PRICE_TICKS_H_
 #define STONKS_STONKS_STONKS_DB_UPDATER_PRICE_TICKS_H_
 
-#include <memory>
+#include "ccutils_not_null.h"
 
 #include "stonks_db.h"
 
 namespace stonks {
 class DbUpdaterPriceTicks {
  public:
-  explicit DbUpdaterPriceTicks(std::shared_ptr<StonksDb> stonks_db);
+  explicit DbUpdaterPriceTicks(ccutils::Sp<StonksDb> stonks_db);
 
   DbUpdaterPriceTicks(const DbUpdaterPriceTicks &) = delete;
   DbUpdaterPriceTicks(DbUpdaterPriceTicks &&) noexcept;
@@ -20,7 +20,7 @@ class DbUpdaterPriceTicks {
 
  private:
   class Impl;
-  std::unique_ptr<Impl> impl_{};
+  ccutils::Up<Impl> impl_{};
 };
 }  // namespace stonks
 

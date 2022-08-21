@@ -2,7 +2,7 @@
 
 #include <cpprest/http_msg.h>
 
-#include <memory>
+#include "ccutils_not_null.h"
 #include <string_view>
 
 #include "endpoint.h"

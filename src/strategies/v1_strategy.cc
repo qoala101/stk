@@ -10,7 +10,7 @@
 #include <cmath>
 #include <compare>
 #include <iterator>
-#include <memory>
+#include "ccutils_not_null.h"
 #include <optional>
 #include <range/v3/algorithm/max_element.hpp>
 #include <range/v3/algorithm/min_element.hpp>

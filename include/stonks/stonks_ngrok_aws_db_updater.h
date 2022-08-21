@@ -1,7 +1,7 @@
 #ifndef STONKS_STONKS_STONKS_NGROK_AWS_DB_UPDATER_H_
 #define STONKS_STONKS_STONKS_NGROK_AWS_DB_UPDATER_H_
 
-#include <memory>
+#include "ccutils_not_null.h"
 
 namespace stonks {
 class NgrokAwsDbUpdater {
@@ -18,7 +18,7 @@ class NgrokAwsDbUpdater {
 
  private:
   class Impl;
-  std::unique_ptr<Impl> impl_{};
+  ccutils::Up<Impl> impl_{};
 };
 }  // namespace stonks
 

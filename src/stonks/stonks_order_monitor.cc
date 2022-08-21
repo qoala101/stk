@@ -13,6 +13,7 @@
 #include <thread>
 #include <utility>
 
+#include "ccutils_not_null.h"
 #include "finance_api.h"
 #include "utils.h"
 
@@ -48,7 +49,7 @@ void OrderMonitor::Start() {
             monitored_orders_cond_var.wait(lock, has_orders_to_monitor);
 
             auto stop_monitoring_orders =
-                std::vector<gsl::not_null<const OrderMonitorOrderState *>>{};
+                std::vector<ccutils::Nn<const OrderMonitorOrderState *>>{};
 
             for (auto &monitored_order : monitored_orders) {
               const auto sleep_finally = gsl::finally([]() {
@@ -92,7 +93,7 @@ void OrderMonitor::Start() {
                     const OrderMonitorOrderState &monitored_order) {
                   const auto compare_pointers =
                       [&monitored_order](
-                          const gsl::not_null<const OrderMonitorOrderState *>
+                          const ccutils::Nn<const OrderMonitorOrderState *>
                               unmonitored_order) {
                         return unmonitored_order == &monitored_order;
                       };

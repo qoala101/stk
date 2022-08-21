@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include <memory>
+#include "ccutils_not_null.h"
 #include <optional>
 
 #include "client_proxy.h"
@@ -15,6 +15,6 @@ auto main(int /*unused*/, const char* /*unused*/[]) -> int {
 
   const auto app = stonks::server::StonksDb{
       *port,
-      std::make_shared<stonks::finance::FinanceDb>("StrategyTestingDb.db")};
+      ccutils::MakeSp<stonks::finance::FinanceDb>("StrategyTestingDb.db")};
   static_cast<void>(getchar());
 }

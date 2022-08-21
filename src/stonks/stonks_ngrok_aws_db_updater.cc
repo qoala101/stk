@@ -148,7 +148,7 @@ class NgrokAwsDbUpdater::Impl {
   std::jthread thread_{};
 };
 
-NgrokAwsDbUpdater::NgrokAwsDbUpdater() : impl_{std::make_unique<Impl>()} {}
+NgrokAwsDbUpdater::NgrokAwsDbUpdater() : impl_{ccutils::MakeUp<Impl>()} {}
 
 NgrokAwsDbUpdater::NgrokAwsDbUpdater(NgrokAwsDbUpdater &&) noexcept = default;
 

@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include <memory>
+#include "ccutils_not_null.h"
 #include <optional>
 
 #include "client_proxy.h"
@@ -14,6 +14,6 @@ auto main(int /*unused*/, const char* /*unused*/[]) -> int {
   const auto port = proxy.GetEndpointPort(endpoint);
 
   const auto app =
-      stonks::server::V1Strategy{*port, std::make_shared<stonks::V1Strategy>()};
+      stonks::server::V1Strategy{*port, ccutils::MakeSp<stonks::V1Strategy>()};
   static_cast<void>(getchar());
 }
