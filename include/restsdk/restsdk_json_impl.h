@@ -1,10 +1,8 @@
 #ifndef STONKS_RESTSDK_RESTSDK_JSON_IMPL_H_
 #define STONKS_RESTSDK_RESTSDK_JSON_IMPL_H_
 
-#include <memory>
-
+#include "ccutils_not_null.h"
 #include "network_i_json.h"
-#include "not_null.hpp"
 
 namespace web::json {
 class value;
@@ -39,7 +37,7 @@ class IJson::Impl {
   [[nodiscard]] auto GetJson() -> web::json::value &;
 
  private:
-  cpp::not_null<std::unique_ptr<web::json::value>> json_;
+  ccutils::NnUp<web::json::value> json_;
 };
 }  // namespace stonks::network
 

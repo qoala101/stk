@@ -22,9 +22,8 @@ void RequestBuilder::DiscardingResult() && {
   Ensures(request_.IsEmpty());
 }
 
-RequestBuilder::RequestBuilder(
-    Endpoint endpoint,
-    cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender)
+RequestBuilder::RequestBuilder(Endpoint endpoint,
+                               ccutils::NnSp<IRestRequestSender> request_sender)
     : request_{std::move(endpoint)},
       request_sender_{std::move(request_sender)} {}
 

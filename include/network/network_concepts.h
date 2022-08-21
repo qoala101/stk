@@ -14,7 +14,7 @@ concept Parsable = requires(const IJson &json) {
 
 template <typename T>
 concept Convertible = requires(const T &t) {
-  { ConvertToJson(t) } -> std::same_as<isocpp_p0201::polymorphic_value<IJson>>;
+  { ConvertToJson(t) } -> std::same_as<ccutils::Pv<IJson>>;
 };
 }  // namespace stonks::network
 

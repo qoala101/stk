@@ -1,17 +1,15 @@
 #ifndef STONKS_RESTSDK_RESTSDK_FACTORY_H_
 #define STONKS_RESTSDK_RESTSDK_FACTORY_H_
 
-#include <polymorphic_value.h>
-
-#include <memory>
 #include <string>
 
+#include "ccutils_not_null.h"
+#include "ccutils_polymorphic_value.h"
 #include "network_i_factory.h"
 #include "network_i_json.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_i_rest_request_sender.h"
-#include "not_null.hpp"
 
 namespace stonks::restsdk {
 /**
@@ -23,22 +21,20 @@ class Factory : public network::IFactory {
    * @copydoc network::IFactory::CreateRestRequestSender
    */
   [[nodiscard]] auto CreateRestRequestSender() const
-      -> cpp::not_null<std::unique_ptr<network::IRestRequestSender>> override;
+      -> ccutils::NnUp<network::IRestRequestSender> override;
 
   /**
    * @copydoc network::IFactory::CreateRestRequestReceiver
    */
   [[nodiscard]] auto CreateRestRequestReceiver(
       std::string local_uri,
-      cpp::not_null<std::unique_ptr<network::IRestRequestHandler>> handler)
-      const
-      -> cpp::not_null<std::unique_ptr<network::IRestRequestReceiver>> override;
+      ccutils::NnUp<network::IRestRequestHandler> handler) const
+      -> ccutils::NnUp<network::IRestRequestReceiver> override;
 
   /**
    * @copydoc network::IFactory::CreateJson
    */
-  [[nodiscard]] auto CreateJson() const
-      -> isocpp_p0201::polymorphic_value<network::IJson> override;
+  [[nodiscard]] auto CreateJson() const -> ccutils::Pv<network::IJson> override;
 };
 }  // namespace stonks::restsdk
 

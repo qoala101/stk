@@ -1,6 +1,7 @@
 #include "sqldb_insert_query_builder.h"
 
 #include <gsl/assert>
+#include <memory>
 #include <type_traits>
 #include <utility>
 #include <variant>
@@ -9,7 +10,7 @@
 
 namespace stonks::sqldb::query_builder_facade {
 InsertQueryBuilder::InsertQueryBuilder(
-    cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder)
+    ccutils::NnSp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto InsertQueryBuilder::WholeRow() -> InsertQueryBuilder& {

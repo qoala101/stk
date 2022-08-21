@@ -1,13 +1,12 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDERS_SQLDB_INSERT_QUERY_BUILDER_H_
 #define STONKS_SQLDB_QUERY_BUILDERS_SQLDB_INSERT_QUERY_BUILDER_H_
 
-#include <memory>
 #include <string>
 #include <vector>
 
 #include "ccutils_expose_private_constructors.h"
+#include "ccutils_not_null.h"
 #include "ccutils_views.h"
-#include "not_null.hpp"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_query_builders_common.h"
 #include "sqldb_types.h"
@@ -35,10 +34,9 @@ class InsertQueryBuilder {
   friend class ccutils::ExposePrivateConstructorsTo<QueryBuilderFacade,
                                                     InsertQueryBuilder>;
 
-  explicit InsertQueryBuilder(
-      cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder);
+  explicit InsertQueryBuilder(ccutils::NnSp<IQueryBuilder> query_builder);
 
-  cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder_;
+  ccutils::NnSp<IQueryBuilder> query_builder_;
 
   TableVariant table_{};
   ColumnsVariant columns_{};

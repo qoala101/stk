@@ -2,10 +2,10 @@
 
 #include <cstdint>
 #include <filesystem>
-#include <memory>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 
+#include "ccutils_not_null.h"
 #include "not_null.hpp"
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"
@@ -18,17 +18,17 @@
 namespace {
 const auto kTestDbFileName = "sqlite_db_test.db";
 
-auto db_factory = std::unique_ptr<stonks::sqldb::IFactory>{};
-auto db = std::unique_ptr<stonks::sqldb::IDb>{};
-auto query_builder = std::shared_ptr<stonks::sqldb::IQueryBuilder>{};
+auto db_factory = ccutils::Up<stonks::sqldb::IFactory>{};
+auto db = ccutils::Up<stonks::sqldb::IDb>{};
+auto query_builder = ccutils::Sp<stonks::sqldb::IQueryBuilder>{};
 auto query_builder_facade = std::optional<stonks::sqldb::QueryBuilderFacade>{};
 
 TEST(SqliteDb, CreateAndDropTable) {
   std::ignore = std::filesystem::remove(kTestDbFileName);
-  db_factory = std::make_unique<stonks::sqlite::Factory>();
+  db_factory = ccutils::MakeUp<stonks::sqlite::Factory>();
   db = db_factory->LoadDbFromFile(kTestDbFileName).as_nullable();
   query_builder = db_factory->CreateQueryBuilder().as_nullable();
-  query_builder_facade.emplace(cpp::assume_not_null(query_builder));
+  query_builder_facade.emplace(ccutils::AssumeNn(query_builder));
 
   const auto table = stonks::sqldb::Table{"TestTable"};
   const auto table_definition = stonks::sqldb::TableDefinition{

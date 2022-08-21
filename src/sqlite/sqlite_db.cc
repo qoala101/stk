@@ -7,6 +7,7 @@
 #include <memory>
 #include <utility>
 
+#include "ccutils_not_null.h"
 #include "not_null.hpp"
 #include "sqldb_enums_to_string.h"  // IWYU pragma: keep
 #include "sqldb_i_select_statement.h"
@@ -29,7 +30,7 @@ class Db::Impl {
  public:
   explicit Impl(SqliteDbHandle sqlite_db_handle)
       : sqlite_db_handle_{std::move(sqlite_db_handle)},
-        sqlite_db_facade_{cpp::assume_not_null(sqlite_db_handle_.get())} {}
+        sqlite_db_facade_{ccutils::AssumeNn(sqlite_db_handle_.get())} {}
 
   Impl(const Impl &) = delete;
   Impl(Impl &&) noexcept = default;
@@ -41,20 +42,18 @@ class Db::Impl {
 
   [[nodiscard]] auto PrepareStatement(
       const std::string &query, const sqldb::RowDefinition &result_definition)
-      -> cpp::not_null<std::unique_ptr<sqldb::ISelectStatement>> {
-    return cpp::assume_not_null(std::make_unique<SelectStatement>(
+      -> ccutils::NnUp<sqldb::ISelectStatement> {
+    return ccutils::MakeNnUp<SelectStatement>(
         PreparedStatementHandle{
             sqlite_db_handle_,
             sqlite_db_facade_.CreatePreparedStatement(query)},
-        result_definition));
+        result_definition);
   }
 
   [[nodiscard]] auto PrepareStatement(const std::string &query)
-      -> cpp::not_null<std::unique_ptr<sqldb::IUpdateStatement>> {
-    return cpp::assume_not_null(
-        std::make_unique<UpdateStatement>(PreparedStatementHandle{
-            sqlite_db_handle_,
-            sqlite_db_facade_.CreatePreparedStatement(query)}));
+      -> ccutils::NnUp<sqldb::IUpdateStatement> {
+    return ccutils::MakeNnUp<UpdateStatement>(PreparedStatementHandle{
+        sqlite_db_handle_, sqlite_db_facade_.CreatePreparedStatement(query)});
   }
 
   void WriteToFile(std::string_view file_path) {
@@ -62,24 +61,23 @@ class Db::Impl {
   }
 
  private:
-  cpp::not_null<std::shared_ptr<sqlite3>> sqlite_db_handle_;
+  ccutils::NnSp<sqlite3> sqlite_db_handle_;
   DbFacade sqlite_db_facade_;
 };
 
 Db::Db(SqliteDbHandle sqlite_db_handle)
-    : impl_{cpp::assume_not_null(
-          std::make_unique<Impl>(std::move(sqlite_db_handle)))} {}
+    : impl_{ccutils::MakeNnUp<Impl>(std::move(sqlite_db_handle))} {}
 
 Db::~Db() noexcept = default;
 
 auto Db::PrepareStatement(std::string query,
                           sqldb::RowDefinition result_definition)
-    -> cpp::not_null<std::unique_ptr<sqldb::ISelectStatement>> {
+    -> ccutils::NnUp<sqldb::ISelectStatement> {
   return impl_->PrepareStatement(query, result_definition);
 }
 
 auto Db::PrepareStatement(std::string query)
-    -> cpp::not_null<std::unique_ptr<sqldb::IUpdateStatement>> {
+    -> ccutils::NnUp<sqldb::IUpdateStatement> {
   return impl_->PrepareStatement(query);
 }
 

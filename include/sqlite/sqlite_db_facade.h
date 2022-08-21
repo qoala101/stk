@@ -6,7 +6,7 @@
 #include <string>
 #include <string_view>
 
-#include "not_null.hpp"
+#include "ccutils_not_null.h"
 #include "sqlite_types.h"
 
 namespace stonks::sqlite {
@@ -15,7 +15,7 @@ namespace stonks::sqlite {
  */
 class DbFacade {
  public:
-  explicit DbFacade(cpp::not_null<sqlite3 *> sqlite_db);
+  explicit DbFacade(ccutils::Nn<sqlite3 *> sqlite_db);
 
   /**
    * @brief Gets the file from which DB was read.

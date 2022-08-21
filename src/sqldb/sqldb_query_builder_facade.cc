@@ -1,15 +1,14 @@
 #include "sqldb_query_builder_facade.h"
 
-#include <memory>
 #include <utility>
 
 #include "ccutils_expose_private_constructors.h"
-#include "not_null.hpp"
+#include "ccutils_not_null.h"
 #include "sqldb_i_query_builder.h"
 
 namespace stonks::sqldb {
 QueryBuilderFacade::QueryBuilderFacade(
-    cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder)
+    ccutils::NnSp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto QueryBuilderFacade::Select() const

@@ -1,10 +1,9 @@
 #ifndef STONKS_NETWORK_NETWORK_AUTO_PARSABLE_H_
 #define STONKS_NETWORK_NETWORK_AUTO_PARSABLE_H_
 
-#include <polymorphic_value.h>
-
 #include <type_traits>
 
+#include "ccutils_polymorphic_value.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_json.h"
 #include "network_json_basic_conversions.h"
@@ -15,7 +14,7 @@ namespace stonks::network {
  */
 class AutoParsable {
  public:
-  explicit AutoParsable(isocpp_p0201::polymorphic_value<IJson> json);
+  explicit AutoParsable(ccutils::Pv<IJson> json);
 
   AutoParsable(const AutoParsable &) = delete;
   AutoParsable(AutoParsable &&) noexcept = default;
@@ -35,7 +34,7 @@ class AutoParsable {
   }
 
  private:
-  isocpp_p0201::polymorphic_value<IJson> json_;
+  ccutils::Pv<IJson> json_;
 };
 }  // namespace stonks::network
 

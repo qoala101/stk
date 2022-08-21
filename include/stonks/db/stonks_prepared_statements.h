@@ -1,9 +1,8 @@
 #ifndef STONKS_STONKS_DB_STONKS_PREPARED_STATEMENTS_H_
 #define STONKS_STONKS_DB_STONKS_PREPARED_STATEMENTS_H_
 
-#include <memory>
-
-#include "not_null.hpp"
+#include "ccutils_not_null.h"
+#include "ccutils_smart_pointers.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_i_select_statement.h"
@@ -18,8 +17,8 @@ namespace stonks::db {
 class PreparedStatements {
  public:
   explicit PreparedStatements(
-      cpp::not_null<std::shared_ptr<sqldb::IDb>> db,
-      cpp::not_null<std::shared_ptr<sqldb::IQueryBuilder>> query_builder);
+      ccutils::NnSp<sqldb::IDb> db,
+      ccutils::NnSp<sqldb::IQueryBuilder> query_builder);
 
   [[nodiscard]] auto SelectAssets() const -> const sqldb::ISelectStatement &;
   [[nodiscard]] auto SelectAssetsWithIds() const
@@ -44,24 +43,23 @@ class PreparedStatements {
   [[nodiscard]] auto InsertPriceTick() const -> const sqldb::IUpdateStatement &;
 
  private:
-  cpp::not_null<std::shared_ptr<sqldb::IDb>> db_;
-  cpp::not_null<std::shared_ptr<sqldb::IQueryBuilder>> query_builder_;
-  cpp::not_null<std::unique_ptr<sqldb::QueryBuilderFacade>>
-      query_builder_facade_;
+  ccutils::NnSp<sqldb::IDb> db_;
+  ccutils::NnSp<sqldb::IQueryBuilder> query_builder_;
+  ccutils::NnUp<sqldb::QueryBuilderFacade> query_builder_facade_;
 
-  mutable std::unique_ptr<sqldb::ISelectStatement> select_assets_;
-  mutable std::unique_ptr<sqldb::ISelectStatement> select_assets_with_ids_;
-  mutable std::unique_ptr<sqldb::IUpdateStatement> delete_asset_;
-  mutable std::unique_ptr<sqldb::IUpdateStatement> insert_asset_;
-  mutable std::unique_ptr<sqldb::ISelectStatement> select_symbols_;
-  mutable std::unique_ptr<sqldb::ISelectStatement> select_symbols_with_ids_;
-  mutable std::unique_ptr<sqldb::ISelectStatement> select_symbols_info_;
-  mutable std::unique_ptr<sqldb::IUpdateStatement> insert_symbol_info_;
-  mutable std::unique_ptr<sqldb::IUpdateStatement> update_symbol_info_;
-  mutable std::unique_ptr<sqldb::IUpdateStatement> delete_symbol_info_;
-  mutable std::unique_ptr<sqldb::ISelectStatement> select_price_ticks_;
-  mutable std::unique_ptr<sqldb::ISelectStatement> select_symbol_price_ticks_;
-  mutable std::unique_ptr<sqldb::IUpdateStatement> insert_price_tick_;
+  mutable ccutils::Up<sqldb::ISelectStatement> select_assets_;
+  mutable ccutils::Up<sqldb::ISelectStatement> select_assets_with_ids_;
+  mutable ccutils::Up<sqldb::IUpdateStatement> delete_asset_;
+  mutable ccutils::Up<sqldb::IUpdateStatement> insert_asset_;
+  mutable ccutils::Up<sqldb::ISelectStatement> select_symbols_;
+  mutable ccutils::Up<sqldb::ISelectStatement> select_symbols_with_ids_;
+  mutable ccutils::Up<sqldb::ISelectStatement> select_symbols_info_;
+  mutable ccutils::Up<sqldb::IUpdateStatement> insert_symbol_info_;
+  mutable ccutils::Up<sqldb::IUpdateStatement> update_symbol_info_;
+  mutable ccutils::Up<sqldb::IUpdateStatement> delete_symbol_info_;
+  mutable ccutils::Up<sqldb::ISelectStatement> select_price_ticks_;
+  mutable ccutils::Up<sqldb::ISelectStatement> select_symbol_price_ticks_;
+  mutable ccutils::Up<sqldb::IUpdateStatement> insert_price_tick_;
 };
 }  // namespace stonks::db
 

@@ -1,9 +1,11 @@
 #include "stonks_cache.h"
 
 #include <gsl/assert>
+#include <memory>
 #include <utility>
 #include <vector>
 
+#include "not_null.hpp"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_rows.h"
 #include "stonks_prepared_statements.h"
@@ -19,8 +21,7 @@ template <typename Key, typename Value>
 }
 }  // namespace
 
-Cache::Cache(
-    cpp::not_null<std::shared_ptr<PreparedStatements>> prepared_statements)
+Cache::Cache(ccutils::NnSp<PreparedStatements> prepared_statements)
     : prepared_statements_{std::move(prepared_statements)} {}
 
 [[nodiscard]] auto Cache::GetAssetIdByAsset(const std::string &asset) const

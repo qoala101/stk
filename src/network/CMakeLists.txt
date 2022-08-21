@@ -27,6 +27,7 @@ target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/netwo
 target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/network/typed_endpoint)
 target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/utility)
 target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils)
+target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils/aliases)
 target_link_libraries(libnetwork PRIVATE spdlog::spdlog)
 target_link_libraries(libnetwork PRIVATE range-v3::range-v3)
 target_link_libraries(libnetwork PRIVATE Microsoft.GSL::GSL)

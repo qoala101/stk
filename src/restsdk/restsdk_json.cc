@@ -5,25 +5,23 @@
 #include <memory>
 #include <utility>
 
+#include "ccutils_not_null.h"
 #include "network_i_json.h"
-#include "not_null.hpp"
 
 namespace stonks::restsdk {
 Json::Json(IJson::Impl impl) : impl_{std::move(impl)} {}
 
-auto Json::clone() const -> cpp::not_null<std::unique_ptr<IJson>> {
-  return cpp::assume_not_null(std::make_unique<Json>(impl_));
+auto Json::clone() const -> ccutils::NnUp<IJson> {
+  return ccutils::MakeNnUp<Json>(impl_);
 }
 
-auto Json::GetChild(
-    std::string_view key) const& -> isocpp_p0201::polymorphic_value<IJson> {
-  return isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>(
+auto Json::GetChild(std::string_view key) const& -> ccutils::Pv<IJson> {
+  return ccutils::MakePv<IJson, restsdk::Json>(
       IJson::Impl{impl_.GetJson().at(key.data())});
 }
 
-auto Json::GetChild(
-    std::string_view key) && -> isocpp_p0201::polymorphic_value<IJson> {
-  return isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>(
+auto Json::GetChild(std::string_view key) && -> ccutils::Pv<IJson> {
+  return ccutils::MakePv<IJson, restsdk::Json>(
       IJson::Impl{std::move(impl_.GetJson().at(key.data()))});
 }
 

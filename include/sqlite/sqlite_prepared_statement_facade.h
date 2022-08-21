@@ -5,7 +5,7 @@
 
 #include <vector>
 
-#include "not_null.hpp"
+#include "ccutils_not_null.h"
 #include "sqldb_enums.h"
 #include "sqldb_value.h"
 
@@ -21,7 +21,7 @@ class PreparedStatementFacade {
   using ResultCode = int;
 
   explicit PreparedStatementFacade(
-      cpp::not_null<sqlite3_stmt *> sqlite_statement);
+      ccutils::Nn<sqlite3_stmt *> sqlite_statement);
 
   /**
    * @brief Resets prepared statement.

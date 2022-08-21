@@ -1,11 +1,11 @@
 #include "stonks_prepared_statements.h"
 
 #include <gsl/assert>
-#include <memory>
 #include <utility>
 #include <vector>
+#include <memory>
 
-#include "not_null.hpp"
+#include "ccutils_not_null.h"
 #include "sqldb_delete_query_builder.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_insert_query_builder.h"
@@ -30,12 +30,12 @@ namespace {
 }  // namespace
 
 PreparedStatements::PreparedStatements(
-    cpp::not_null<std::shared_ptr<sqldb::IDb>> db,
-    cpp::not_null<std::shared_ptr<sqldb::IQueryBuilder>> query_builder)
+    ccutils::NnSp<sqldb::IDb> db,
+    ccutils::NnSp<sqldb::IQueryBuilder> query_builder)
     : db_{std::move(db)},
       query_builder_{std::move(query_builder)},
-      query_builder_facade_{cpp::assume_not_null(
-          std::make_unique<sqldb::QueryBuilderFacade>(query_builder_))} {}
+      query_builder_facade_{
+          ccutils::MakeNnUp<sqldb::QueryBuilderFacade>(query_builder_)} {}
 
 auto PreparedStatements::SelectAssets() const
     -> const sqldb::ISelectStatement& {
@@ -138,7 +138,7 @@ auto PreparedStatements::SelectSymbolsInfo() const
       base_asset_column.column = "base_asset";
       return base_asset_column;
     }();
-    symbol_columns.emplace_back(cpp::assume_not_null(&base_asset_column));
+    symbol_columns.emplace_back(ccutils::AssumeNn(&base_asset_column));
 
     const auto quote_asset_column = []() {
       auto quote_asset_column =
@@ -146,7 +146,7 @@ auto PreparedStatements::SelectSymbolsInfo() const
       quote_asset_column.column = "quote_asset";
       return quote_asset_column;
     }();
-    symbol_columns.emplace_back(cpp::assume_not_null(&quote_asset_column));
+    symbol_columns.emplace_back(ccutils::AssumeNn(&quote_asset_column));
 
     const auto& columns = symbol_columns;
     const auto* query =

@@ -1,21 +1,21 @@
 #include "network_typed_endpoint_handler.h"
 
 #include <bits/exception.h>
-#include <polymorphic_value.h>
 
 #include <gsl/assert>
+#include <memory>
 #include <optional>
 #include <stdexcept>
 #include <string>
 #include <string_view>
 #include <utility>
 
+#include "ccutils_polymorphic_value.h"
 #include "network_endpoint_types_validator_template.h"
 #include "network_enums.h"
 #include "network_json_basic_conversions.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 namespace {
@@ -61,10 +61,8 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
 }  // namespace
 
 TypedEndpointHandler::TypedEndpointHandler(
-    EndpointTypes endpoint_types,
-    cpp::not_null<std::unique_ptr<IRestRequestHandler>> handler)
-    : type_checker_{cpp::assume_not_null(
-          std::make_unique<TypeChecker>(std::move(endpoint_types)))},
+    EndpointTypes endpoint_types, ccutils::NnUp<IRestRequestHandler> handler)
+    : type_checker_{ccutils::MakeNnUp<TypeChecker>(std::move(endpoint_types))},
       handler_{std::move(handler)} {}
 
 auto TypedEndpointHandler::HandleRequestAndGiveResponse(

@@ -20,10 +20,9 @@
 #include <utility>
 #include <vector>
 
+#include "ccutils_not_null.h"
 #include "not_null.hpp"
-#include "sqldb_i_db.h"
 #include "sqldb_i_factory.h"
-#include "sqldb_i_query_builder.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_rows.h"
@@ -66,8 +65,8 @@ namespace {
 Db::Db(std::string_view file_path, const sqldb::IFactory &db_factory)
     : db_{db_factory.LoadDbFromFile(file_path)},
       query_builder_{db_factory.CreateQueryBuilder()},
-      prepared_statements_{cpp::assume_not_null(
-          std::make_shared<db::PreparedStatements>(db_, query_builder_))},
+      prepared_statements_{
+          ccutils::MakeNnSp<db::PreparedStatements>(db_, query_builder_)},
       cache_{prepared_statements_} {
   CreateTablesIfNotExist();
   cache_.Update();

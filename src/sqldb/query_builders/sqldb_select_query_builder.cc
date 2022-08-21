@@ -1,6 +1,7 @@
 #include "sqldb_select_query_builder.h"
 
 #include <gsl/assert>
+#include <memory>
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -11,7 +12,7 @@
 
 namespace stonks::sqldb::query_builder_facade {
 SelectQueryBuilder::SelectQueryBuilder(
-    cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder)
+    ccutils::NnSp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto SelectQueryBuilder::Columns(std::vector<Column> columns)

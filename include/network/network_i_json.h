@@ -1,13 +1,11 @@
 #ifndef STONKS_NETWORK_NETWORK_I_JSON_H_
 #define STONKS_NETWORK_NETWORK_I_JSON_H_
 
-#include <polymorphic_value.h>
-
-#include <memory>
 #include <string>
 #include <string_view>
 
-#include "not_null.hpp"
+#include "ccutils_not_null.h"
+#include "ccutils_polymorphic_value.h"
 
 namespace stonks::network {
 /**
@@ -27,22 +25,21 @@ class IJson {
    * @brief Creates a copy with the same data.
    * @remark Required by polymorphic_value.
    */
-  [[nodiscard]] virtual auto clone() const
-      -> cpp::not_null<std::unique_ptr<IJson>> = 0;
+  [[nodiscard]] virtual auto clone() const -> ccutils::NnUp<IJson> = 0;
 
   virtual ~IJson() = default;
 
   /**
    * @brief Gives child JSON at the key.
    */
-  [[nodiscard]] virtual auto GetChild(std::string_view key)
-      const& -> isocpp_p0201::polymorphic_value<IJson> = 0;
+  [[nodiscard]] virtual auto GetChild(
+      std::string_view key) const& -> ccutils::Pv<IJson> = 0;
 
   /**
    * @copydoc GetChild
    */
   [[nodiscard]] virtual auto GetChild(
-      std::string_view key) && -> isocpp_p0201::polymorphic_value<IJson> = 0;
+      std::string_view key) && -> ccutils::Pv<IJson> = 0;
 
   /**
    * @brief Sets child JSON at the key.

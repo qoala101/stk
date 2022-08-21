@@ -1,12 +1,11 @@
 #ifndef STONKS_STONKS_DB_STONKS_DB_H_
 #define STONKS_STONKS_DB_STONKS_DB_H_
 
-#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
 
-#include "not_null.hpp"
+#include "ccutils_not_null.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_factory.h"
 #include "sqldb_i_query_builder.h"
@@ -84,9 +83,9 @@ class Db : public IDb {
   void InsertSymbolInfo(const SymbolInfo &symbol_info);
   void UpdateSymbolInfo(const SymbolInfo &symbol_info);
 
-  cpp::not_null<std::shared_ptr<sqldb::IDb>> db_;
-  cpp::not_null<std::shared_ptr<sqldb::IQueryBuilder>> query_builder_;
-  cpp::not_null<std::shared_ptr<db::PreparedStatements>> prepared_statements_;
+  ccutils::NnSp<sqldb::IDb> db_;
+  ccutils::NnSp<sqldb::IQueryBuilder> query_builder_;
+  ccutils::NnSp<db::PreparedStatements> prepared_statements_;
   db::Cache cache_;
 };
 }  // namespace stonks

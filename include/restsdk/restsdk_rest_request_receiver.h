@@ -1,12 +1,11 @@
 #ifndef STONKS_RESTSDK_RESTSDK_REST_REQUEST_RECEIVER_H_
 #define STONKS_RESTSDK_RESTSDK_REST_REQUEST_RECEIVER_H_
 
-#include <memory>
 #include <string_view>
 
+#include "ccutils_not_null.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
-#include "not_null.hpp"
 
 namespace web::http {
 class http_request;
@@ -24,7 +23,7 @@ class RestRequestReceiver : public network::IRestRequestReceiver {
  public:
   explicit RestRequestReceiver(
       std::string_view local_uri,
-      cpp::not_null<std::unique_ptr<network::IRestRequestHandler>> handler);
+      ccutils::NnUp<network::IRestRequestHandler> handler);
 
   RestRequestReceiver(const RestRequestReceiver &other) = delete;
   RestRequestReceiver(RestRequestReceiver &&) noexcept;
@@ -38,9 +37,8 @@ class RestRequestReceiver : public network::IRestRequestReceiver {
  private:
   void HandleHttpRequest(const web::http::http_request &request) const;
 
-  cpp::not_null<std::unique_ptr<network::IRestRequestHandler>> handler_;
-  cpp::not_null<
-      std::unique_ptr<web::http::experimental::listener::http_listener>>
+  ccutils::NnUp<network::IRestRequestHandler> handler_;
+  ccutils::NnUp<web::http::experimental::listener::http_listener>
       http_listener_;
 };
 }  // namespace stonks::restsdk

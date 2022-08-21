@@ -1,8 +1,7 @@
 #ifndef STONKS_SQLDB_SQLDB_I_FACTORY_H_
 #define STONKS_SQLDB_SQLDB_I_FACTORY_H_
 
-#include <memory>
-
+#include "ccutils_not_null.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"
 
@@ -19,13 +18,13 @@ class IFactory {
    * @brief Loads DB from specified file.
    */
   [[nodiscard]] virtual auto LoadDbFromFile(std::string_view file_path) const
-      -> cpp::not_null<std::unique_ptr<IDb>> = 0;
+      -> ccutils::NnUp<IDb> = 0;
 
   /**
    * @brief Creates query builder which knows how to build queries for DB.
    */
   [[nodiscard]] virtual auto CreateQueryBuilder() const
-      -> cpp::not_null<std::unique_ptr<IQueryBuilder>> = 0;
+      -> ccutils::NnUp<IQueryBuilder> = 0;
 
  protected:
   explicit IFactory() = default;

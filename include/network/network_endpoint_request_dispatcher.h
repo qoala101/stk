@@ -2,11 +2,10 @@
 #define STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
 
 #include <map>
-#include <memory>
 
+#include "ccutils_not_null.h"
 #include "network_i_rest_request_handler.h"
 #include "network_types.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 /**
@@ -21,8 +20,7 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
    * the remaining part of the requested URI.
    */
   explicit EndpointRequestDispatcher(
-      std::map<Endpoint, cpp::not_null<std::unique_ptr<IRestRequestHandler>>>
-          endpoint_handlers);
+      std::map<Endpoint, ccutils::NnUp<IRestRequestHandler>> endpoint_handlers);
 
   /**
    * @brief Forwards the request to the appropriate handler.
@@ -31,8 +29,7 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
       -> RestResponse override;
 
  private:
-  std::map<Endpoint, cpp::not_null<std::unique_ptr<IRestRequestHandler>>>
-      endpoint_handlers_{};
+  std::map<Endpoint, ccutils::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
 }  // namespace stonks::network
 

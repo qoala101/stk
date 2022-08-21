@@ -2,18 +2,17 @@
 #define STONKS_NETWORK_NETWORK_REST_SERVER_H_
 
 #include <map>
-#include <memory>
 #include <optional>
 #include <string>
 #include <utility>
 
+#include "ccutils_not_null.h"
 #include "network_auto_parsable_request_handler.h"
 #include "network_i_factory.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 /**
@@ -21,7 +20,7 @@ namespace stonks::network {
  */
 class RestServer {
  public:
-  explicit RestServer(cpp::not_null<std::unique_ptr<IFactory>> network_factory);
+  explicit RestServer(ccutils::NnUp<IFactory> network_factory);
 
   /**
    * @brief Sets base URI on which requests are to be handled.
@@ -36,8 +35,7 @@ class RestServer {
   auto Handling(TypedEndpoint endpoint, T handler) -> RestServer & {
     return Handling(
         std::move(endpoint),
-        cpp::assume_not_null(
-            std::make_unique<AutoParsableRequestHandler>(std::move(handler))));
+        ccutils::MakeNnUp<AutoParsableRequestHandler>(std::move(handler)));
   }
 
   /**
@@ -46,19 +44,16 @@ class RestServer {
    * @return Keeps handling REST requests while alive.
    * @remark Other methods should not be called after this.
    */
-  [[nodiscard]] auto Start()
-      && -> cpp::not_null<std::unique_ptr<IRestRequestReceiver>>;
+  [[nodiscard]] auto Start() && -> ccutils::NnUp<IRestRequestReceiver>;
 
  private:
-  [[nodiscard]] auto Handling(
-      TypedEndpoint endpoint,
-      cpp::not_null<std::unique_ptr<IRestRequestHandler>> handler)
+  [[nodiscard]] auto Handling(TypedEndpoint endpoint,
+                              ccutils::NnUp<IRestRequestHandler> handler)
       -> RestServer &;
 
-  cpp::not_null<std::unique_ptr<IFactory>> network_factory_;
+  ccutils::NnUp<IFactory> network_factory_;
   std::optional<std::string> base_uri_{};
-  std::map<Endpoint, cpp::not_null<std::unique_ptr<IRestRequestHandler>>>
-      endpoint_handlers_{};
+  std::map<Endpoint, ccutils::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
 }  // namespace stonks::network
 

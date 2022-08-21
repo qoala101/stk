@@ -9,9 +9,10 @@
 #include <string_view>
 #include <utility>
 
+#include "ccutils_not_null.h"
+#include "ccutils_polymorphic_value.h"
 #include "network_i_json.h"
 #include "network_json_basic_conversions.h"
-#include "not_null.hpp"
 #include "restsdk_json.h"
 #include "restsdk_json_impl.h"
 
@@ -52,42 +53,36 @@ auto ParseFromJson(const IJson &json) -> std::string {
 }
 
 template <>
-auto ParseFromJson(const IJson &json)
-    -> cpp::not_null<std::unique_ptr<std::exception>> {
+auto ParseFromJson(const IJson &json) -> ccutils::NnUp<std::exception> {
   const auto type = ParseFromJson<std::string>(*json.GetChild("restsdk:type"));
 
   if (type == "std::exception") {
-    return cpp::assume_not_null(std::make_unique<GenericException>(
-        ParseFromJson<std::string>(*json.GetChild("message"))));
+    return ccutils::MakeNnUp<GenericException>(
+        ParseFromJson<std::string>(*json.GetChild("message")));
   }
 
   Expects(false);
 }
 
-auto ConvertToJson(int value) -> isocpp_p0201::polymorphic_value<IJson> {
-  return isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>(
-      IJson::Impl{value});
+auto ConvertToJson(int value) -> ccutils::Pv<IJson> {
+  return ccutils::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
 }
 
-auto ConvertToJson(int64_t value) -> isocpp_p0201::polymorphic_value<IJson> {
-  return isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>(
-      IJson::Impl{value});
+auto ConvertToJson(int64_t value) -> ccutils::Pv<IJson> {
+  return ccutils::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
 }
 
-auto ConvertToJson(double value) -> isocpp_p0201::polymorphic_value<IJson> {
-  return isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>(
-      IJson::Impl{value});
+auto ConvertToJson(double value) -> ccutils::Pv<IJson> {
+  return ccutils::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
 }
 
-auto ConvertToJson(std::string_view value)
-    -> isocpp_p0201::polymorphic_value<IJson> {
-  return isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>(
+auto ConvertToJson(std::string_view value) -> ccutils::Pv<IJson> {
+  return ccutils::MakePv<IJson, restsdk::Json>(
       IJson::Impl{web::json::value::string(value.data())});
 }
 
-auto ConvertToJson(const std::exception &value)
-    -> isocpp_p0201::polymorphic_value<IJson> {
-  auto json = isocpp_p0201::make_polymorphic_value<IJson, restsdk::Json>();
+auto ConvertToJson(const std::exception &value) -> ccutils::Pv<IJson> {
+  auto json = ccutils::MakePv<IJson, restsdk::Json>();
   json->SetChild("restsdk:type",
                  restsdk::Json{network::IJson::Impl{
                      web::json::value::string("std::exception")}});

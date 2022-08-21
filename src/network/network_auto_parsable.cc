@@ -3,6 +3,5 @@
 #include <utility>
 
 namespace stonks::network {
-AutoParsable::AutoParsable(isocpp_p0201::polymorphic_value<IJson> json)
-    : json_{std::move(json)} {}
+AutoParsable::AutoParsable(ccutils::Pv<IJson> json) : json_{std::move(json)} {}
 }  // namespace stonks::network

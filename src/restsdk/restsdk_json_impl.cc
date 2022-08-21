@@ -2,26 +2,23 @@
 
 #include <cpprest/json.h>
 
-#include <memory>
 #include <utility>
 
+#include "ccutils_not_null.h"
 #include "network_i_json.h"
 #include "not_null.hpp"
 
 namespace stonks::network {
-IJson::Impl::Impl()
-    : json_{cpp::assume_not_null(std::make_unique<web::json::value>())} {}
+IJson::Impl::Impl() : json_{ccutils::MakeNnUp<web::json::value>()} {}
 
 IJson::Impl::Impl(const web::json::value &json)
-    : json_{cpp::assume_not_null(std::make_unique<web::json::value>(json))} {}
+    : json_{ccutils::MakeNnUp<web::json::value>(json)} {}
 
 IJson::Impl::Impl(web::json::value &&json)
-    : json_{cpp::assume_not_null(
-          std::make_unique<web::json::value>(std::move(json)))} {}
+    : json_{ccutils::MakeNnUp<web::json::value>(std::move(json))} {}
 
 IJson::Impl::Impl(const Impl &other)
-    : json_{cpp::assume_not_null(
-          std::make_unique<web::json::value>(*other.json_))} {}
+    : json_{ccutils::MakeNnUp<web::json::value>(*other.json_)} {}
 
 IJson::Impl::Impl(Impl &&) noexcept = default;
 
@@ -30,8 +27,7 @@ auto IJson::Impl::operator=(const Impl &other) -> Impl & {
     return *this;
   }
 
-  json_ =
-      cpp::assume_not_null(std::make_unique<web::json::value>(*other.json_));
+  json_ = ccutils::MakeNnUp<web::json::value>(*other.json_);
 
   return *this;
 }

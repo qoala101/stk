@@ -1,11 +1,11 @@
 #ifndef STONKS_SQLDB_SQLDB_I_DB_H_
 #define STONKS_SQLDB_SQLDB_I_DB_H_
 
-#include <memory>
 #include <optional>
 #include <string>
 #include <vector>
 
+#include "ccutils_not_null.h"
 #include "not_null.hpp"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
@@ -26,14 +26,14 @@ class IDb {
    */
   [[nodiscard]] virtual auto PrepareStatement(std::string query,
                                               RowDefinition result_definition)
-      -> cpp::not_null<std::unique_ptr<ISelectStatement>> = 0;
+      -> ccutils::NnUp<ISelectStatement> = 0;
 
   /**
    * @brief Creates prepared statement which can then be called to execute the
    * update query on DB.
    */
   [[nodiscard]] virtual auto PrepareStatement(std::string query)
-      -> cpp::not_null<std::unique_ptr<IUpdateStatement>> = 0;
+      -> ccutils::NnUp<IUpdateStatement> = 0;
 
   /**
    * @brief Stores this DB to the specified file.

@@ -1,15 +1,16 @@
 #include "network_endpoint_request_dispatcher.h"
 
+#include <memory>
 #include <optional>
 #include <utility>
 
 #include "network_enums.h"
 #include "network_types.h"
+#include "not_null.hpp"
 
 namespace stonks::network {
 EndpointRequestDispatcher::EndpointRequestDispatcher(
-    std::map<Endpoint, cpp::not_null<std::unique_ptr<IRestRequestHandler>>>
-        endpoint_handlers)
+    std::map<Endpoint, ccutils::NnUp<IRestRequestHandler>> endpoint_handlers)
     : endpoint_handlers_{std::move(endpoint_handlers)} {}
 
 auto EndpointRequestDispatcher::HandleRequestAndGiveResponse(

@@ -1,11 +1,10 @@
 #ifndef STONKS_SQLITE_SQLITE_DB_H_
 #define STONKS_SQLITE_SQLITE_DB_H_
 
-#include <memory>
 #include <string>
 #include <string_view>
 
-#include "not_null.hpp"
+#include "ccutils_not_null.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
@@ -40,13 +39,13 @@ class Db : public sqldb::IDb {
    */
   [[nodiscard]] auto PrepareStatement(std::string query,
                                       sqldb::RowDefinition result_definition)
-      -> cpp::not_null<std::unique_ptr<sqldb::ISelectStatement>> override;
+      -> ccutils::NnUp<sqldb::ISelectStatement> override;
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement
    */
   [[nodiscard]] auto PrepareStatement(std::string query)
-      -> cpp::not_null<std::unique_ptr<sqldb::IUpdateStatement>> override;
+      -> ccutils::NnUp<sqldb::IUpdateStatement> override;
 
   /**
    * @brief
@@ -56,7 +55,7 @@ class Db : public sqldb::IDb {
 
  private:
   class Impl;
-  cpp::not_null<std::unique_ptr<Impl>> impl_;
+  ccutils::NnUp<Impl> impl_;
 };
 }  // namespace stonks::sqlite
 

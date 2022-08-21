@@ -1,12 +1,13 @@
 #include "sqldb_delete_query_builder.h"
 
 #include <gsl/assert>
+#include <memory>
 #include <string>
 #include <utility>
 
 namespace stonks::sqldb::query_builder_facade {
 DeleteQueryBuilder::DeleteQueryBuilder(
-    cpp::not_null<std::shared_ptr<IQueryBuilder>> query_builder)
+    ccutils::NnSp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto DeleteQueryBuilder::FromTable(Table table) -> DeleteQueryBuilder& {

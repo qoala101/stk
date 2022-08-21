@@ -4,6 +4,8 @@
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
+#include <memory>
+
 #include "not_null.hpp"
 #include "sqlite_db_facade.h"
 #include "sqlite_prepared_statement_facade.h"

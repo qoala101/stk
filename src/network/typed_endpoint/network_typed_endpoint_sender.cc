@@ -3,6 +3,7 @@
 #include <bits/exception.h>
 
 #include <gsl/assert>
+#include <memory>
 #include <stdexcept>
 #include <string_view>
 #include <utility>
@@ -52,9 +53,8 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
 
 TypedEndpointSender::TypedEndpointSender(
     EndpointTypes endpoint_types,
-    cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender)
-    : type_checker_{cpp::assume_not_null(
-          std::make_unique<TypeChecker>(std::move(endpoint_types)))},
+    ccutils::NnSp<IRestRequestSender> request_sender)
+    : type_checker_{ccutils::MakeNnUp<TypeChecker>(std::move(endpoint_types))},
       request_sender_{std::move(request_sender)} {}
 
 auto TypedEndpointSender::SendRequestAndGetResponse(RestRequest request) const

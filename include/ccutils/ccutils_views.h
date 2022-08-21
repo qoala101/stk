@@ -3,14 +3,14 @@
 
 #include <vector>
 
-#include "not_null.hpp"
+#include "ccutils_not_null.h"
 
 namespace stonks::ccutils {
 /**
  * @brief Pointers to multiple elements.
  */
 template <typename T>
-using View = std::vector<cpp::not_null<T *>>;
+using View = std::vector<ccutils::Nn<T *>>;
 
 /**
  * @brief Const pointers to multiple elements.

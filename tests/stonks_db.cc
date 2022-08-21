@@ -3,9 +3,9 @@
 #include <gtest/gtest.h>
 
 #include <chrono>
-#include <memory>
 #include <optional>
 
+#include "ccutils_not_null.h"
 #include "sqlite_factory.h"
 #include "stonks_db_updater_symbols_info.h"
 #include "stonks_types.h"
@@ -13,10 +13,10 @@
 namespace {
 const auto kTestDbFileName = "stonks_db_test.db";
 
-auto db = std::shared_ptr<stonks::Db>{};
+auto db = ccutils::Sp<stonks::Db>{};
 
 TEST(StonksDb, UpdateSymbolsInfo) {
-  db = std::make_shared<stonks::Db>(stonks::sqlite::Factory{}, ":memory:");
+  db = ccutils::MakeSp<stonks::Db>(stonks::sqlite::Factory{}, ":memory:");
 
   db->UpdateAssets({"YYY", "USDT"});
   auto assets = db->SelectAssets();
@@ -78,7 +78,7 @@ TEST(StonksDb, UpdateSymbolsInfo) {
 
 TEST(StonksDb, TablesInitialization) {
   std::ignore = std::remove(kTestDbFileName);
-  db = std::make_shared<stonks::Db>(stonks::sqlite::Factory{}, kTestDbFileName);
+  db = ccutils::MakeSp<stonks::Db>(stonks::sqlite::Factory{}, kTestDbFileName);
   std::ignore = stonks::DbUpdaterSymbolsInfo{db};
 
   const auto assets = db->SelectAssets();

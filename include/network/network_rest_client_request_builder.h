@@ -1,18 +1,17 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
 #define STONKS_NETWORK_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
 
-#include <memory>
 #include <optional>
 #include <string>
 #include <type_traits>
 #include <utility>
 
 #include "ccutils_expose_private_constructors.h"
+#include "ccutils_not_null.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_rest_request_sender.h"
 #include "network_json_basic_conversions.h"
 #include "network_types.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 class RestClient;
@@ -72,9 +71,8 @@ class RequestBuilder {
  private:
   friend class ccutils::ExposePrivateConstructorsTo<RestClient, RequestBuilder>;
 
-  explicit RequestBuilder(
-      Endpoint endpoint,
-      cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender);
+  explicit RequestBuilder(Endpoint endpoint,
+                          ccutils::NnSp<IRestRequestSender> request_sender);
 
   static void DiscardingResultImpl(auto &&t);
 
@@ -90,7 +88,7 @@ class RequestBuilder {
   [[nodiscard]] auto SendRequestAndGetResult() && -> Result::value_type;
 
   RestRequest request_{};
-  cpp::not_null<std::shared_ptr<IRestRequestSender>> request_sender_;
+  ccutils::NnSp<IRestRequestSender> request_sender_;
 };
 }  // namespace rest_client
 }  // namespace stonks::network

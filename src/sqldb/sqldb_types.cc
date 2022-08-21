@@ -34,7 +34,7 @@ auto TableDefinition::GetColumnDefinitions(const std::vector<Column> &columns)
     const -> ccutils::ConstView<ColumnDefinition> {
   auto column_definitions =
       columns | ranges::views::transform([this](const auto &column) {
-        return cpp::assume_not_null(&GetColumnDefinition(column));
+        return ccutils::AssumeNn(&GetColumnDefinition(column));
       }) |
       ranges::to_vector;
   Ensures(column_definitions.size() == columns.size());

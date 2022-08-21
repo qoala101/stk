@@ -1,12 +1,13 @@
 #include "network_request_exception_handler.h"
 
+#include <memory>
 #include <utility>
 
 #include "network_types.h"
 
 namespace stonks::network {
 RequestExceptionHandler::RequestExceptionHandler(
-    cpp::not_null<std::unique_ptr<IRestRequestHandler>> handler)
+    ccutils::NnUp<IRestRequestHandler> handler)
     : handler_{std::move(handler)} {}
 
 auto RequestExceptionHandler::HandleRequestAndGiveResponse(
