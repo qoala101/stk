@@ -1,5 +1,5 @@
-#ifndef STONKS_STONKS_STONKS_ORDER_PROXY_H_
-#define STONKS_STONKS_STONKS_ORDER_PROXY_H_
+#ifndef STONKS_INCLUDE_STONKS_STONKS_ORDER_PROXY_H_
+#define STONKS_INCLUDE_STONKS_STONKS_ORDER_PROXY_H_
 
 #include <boost/uuid/uuid.hpp>
 #include <condition_variable>
@@ -79,4 +79,4 @@ class OrderProxy {
 };
 }  // namespace stonks::finance
 
-#endif  // STONKS_STONKS_STONKS_ORDER_PROXY_H_
+#endif  // STONKS_INCLUDE_STONKS_STONKS_ORDER_PROXY_H_
