@@ -3,9 +3,9 @@
 
 #include <compare>
 #include <map>
-#include <optional>
 #include <string>
 
+#include "ccutils_optional.h"
 #include "ccutils_polymorphic_value.h"
 #include "network_enums.h"
 #include "network_i_json.h"
@@ -14,7 +14,7 @@ namespace stonks::network {
 /**
  * @brief REST response body.
  */
-using Result = std::optional<ccutils::Pv<IJson>>;
+using Result = ccutils::Opt<ccutils::Pv<IJson>>;
 
 /**
  * @brief REST request param.
@@ -34,7 +34,7 @@ using Headers = std::map<std::string, std::string>;
 /**
  * @brief REST request body.
  */
-using Body = std::optional<ccutils::Pv<IJson>>;
+using Body = ccutils::Opt<ccutils::Pv<IJson>>;
 
 /**
  * @brief HTTP endpoint.

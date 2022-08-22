@@ -6,10 +6,10 @@
 #include <compare>
 #include <functional>
 #include <map>
-#include <optional>
 #include <string>
 #include <tuple>
 
+#include "ccutils_optional.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_json.h"
 #include "network_json_basic_conversions.h"
@@ -35,8 +35,8 @@ auto ExpectedType() -> ParseTypeCheck {
  */
 struct EndpointTypes {
   std::map<std::string, ParseTypeCheck> params{};
-  std::optional<ParseTypeCheck> body{};
-  std::optional<ParseTypeCheck> result{};
+  ccutils::Opt<ParseTypeCheck> body{};
+  ccutils::Opt<ParseTypeCheck> result{};
 };
 
 /**

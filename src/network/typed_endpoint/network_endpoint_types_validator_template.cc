@@ -4,10 +4,11 @@
 
 #include <functional>
 #include <map>
-#include <optional>
 #include <string>
 #include <type_traits>
 #include <utility>
+
+#include "ccutils_optional.h"
 
 namespace stonks::network {
 EndpointTypesValidatorTemplate::EndpointTypesValidatorTemplate(

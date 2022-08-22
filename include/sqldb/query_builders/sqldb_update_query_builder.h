@@ -1,13 +1,13 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDERS_SQLDB_UPDATE_QUERY_BUILDER_H_
 #define STONKS_SQLDB_QUERY_BUILDERS_SQLDB_UPDATE_QUERY_BUILDER_H_
 
-#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
 
 #include "ccutils_expose_private_constructors.h"
 #include "ccutils_not_null.h"
+#include "ccutils_optional.h"
 #include "ccutils_views.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_query_builders_common.h"
@@ -44,7 +44,7 @@ class UpdateQueryBuilder {
 
   TableVariant table_{};
   ColumnsVariant columns_{};
-  std::optional<std::string> where_clause_{};
+  ccutils::Opt<std::string> where_clause_{};
 };
 }  // namespace query_builder_facade
 }  // namespace stonks::sqldb

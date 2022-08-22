@@ -2,11 +2,11 @@
 #define STONKS_NETWORK_NETWORK_REST_SERVER_H_
 
 #include <map>
-#include <optional>
 #include <string>
 #include <utility>
 
 #include "ccutils_not_null.h"
+#include "ccutils_optional.h"
 #include "network_auto_parsable_request_handler.h"
 #include "network_i_factory.h"
 #include "network_i_rest_request_handler.h"
@@ -52,7 +52,7 @@ class RestServer {
       -> RestServer &;
 
   ccutils::NnUp<IFactory> network_factory_;
-  std::optional<std::string> base_uri_{};
+  ccutils::Opt<std::string> base_uri_{};
   std::map<Endpoint, ccutils::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
 }  // namespace stonks::network

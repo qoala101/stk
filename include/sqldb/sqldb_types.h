@@ -1,10 +1,10 @@
 #ifndef STONKS_SQLDB_SQLDB_TYPES_H_
 #define STONKS_SQLDB_SQLDB_TYPES_H_
 
-#include <optional>
 #include <string>
 #include <vector>
 
+#include "ccutils_optional.h"
 #include "ccutils_views.h"
 #include "sqldb_enums.h"
 #include "sqldb_value.h"
@@ -24,7 +24,7 @@ struct ColumnDefinition {
   bool primary_key{};
   bool auto_increment{};
   bool unique{};
-  std::optional<ForeignKey> foreign_key{};
+  ccutils::Opt<ForeignKey> foreign_key{};
 };
 
 struct TableDefinition {

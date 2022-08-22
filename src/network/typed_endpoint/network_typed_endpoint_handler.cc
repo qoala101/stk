@@ -10,6 +10,7 @@
 #include <string_view>
 #include <utility>
 
+#include "ccutils_optional.h"
 #include "ccutils_polymorphic_value.h"
 #include "network_endpoint_types_validator_template.h"
 #include "network_enums.h"
@@ -74,10 +75,11 @@ auto TypedEndpointHandler::HandleRequestAndGiveResponse(
             .result = ConvertToJson(std::runtime_error{"Wrong request"})};
   }
 
-  auto response = std::optional<RestResponse>{};
+  auto response = ccutils::Opt<RestResponse>{};
 
   try {
-    response = handler_->HandleRequestAndGiveResponse(std::move(request));
+    response.emplace(
+        handler_->HandleRequestAndGiveResponse(std::move(request)));
   } catch (const std::exception &exception) {
     return {.status = Status::kInternalError,
             .result = ConvertToJson(std::runtime_error{exception.what()})};

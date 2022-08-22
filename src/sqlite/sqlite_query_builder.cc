@@ -2,7 +2,6 @@
 
 #include <gsl/assert>
 #include <magic_enum.hpp>
-#include <optional>
 #include <range/v3/algorithm/any_of.hpp>
 #include <range/v3/functional/identity.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
@@ -15,6 +14,7 @@
 #include <string>
 #include <utility>
 
+#include "ccutils_optional.h"
 #include "sqldb_enums_to_string.h"  // IWYU pragma: keep
 
 namespace stonks::sqlite {

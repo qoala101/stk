@@ -1,7 +1,6 @@
 #ifndef STONKS_SQLDB_SQLDB_I_DB_H_
 #define STONKS_SQLDB_SQLDB_I_DB_H_
 
-#include <optional>
 #include <string>
 #include <vector>
 

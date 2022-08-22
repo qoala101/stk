@@ -5,7 +5,6 @@
 #include <functional>
 #include <limits>
 #include <memory>
-#include <optional>
 #include <range/v3/action/action.hpp>
 #include <range/v3/action/sort.hpp>
 #include <range/v3/action/unique.hpp>
@@ -21,6 +20,7 @@
 #include <vector>
 
 #include "ccutils_not_null.h"
+#include "ccutils_optional.h"
 #include "not_null.hpp"
 #include "sqldb_i_factory.h"
 #include "sqldb_i_select_statement.h"

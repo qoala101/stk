@@ -151,19 +151,22 @@ TEST(StonksDb, SelectPeriod) {
   auto price_ticks = db->SelectSymbolPriceTicks(nullptr, &period, nullptr);
   EXPECT_EQ(price_ticks.size(), 6);
 
-  period = stonks::Period{.start_time = std::chrono::milliseconds{1001},
-                          .end_time = std::nullopt};
+  period = stonks::Period{
+      .start_time = ccutils::MakeOpt<std::chrono::milliseconds>(1001),
+      .end_time = std::nullopt};
   auto symbol = stonks::SymbolName{"ETHUSDT"};
   price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
   EXPECT_EQ(price_ticks.size(), 2);
 
-  period = stonks::Period{.start_time = std::nullopt,
-                          .end_time = std::chrono::milliseconds{2999}};
+  period = stonks::Period{
+      .start_time = std::nullopt,
+      .end_time = ccutils::MakeOpt<std::chrono::milliseconds>(2999)};
   price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
   EXPECT_EQ(price_ticks.size(), 2);
 
-  period = stonks::Period{.start_time = std::chrono::milliseconds{1001},
-                          .end_time = std::chrono::milliseconds{2999}};
+  period = stonks::Period{
+      .start_time = ccutils::MakeOpt<std::chrono::milliseconds>(1001),
+      .end_time = ccutils::MakeOpt<std::chrono::milliseconds>(2999)};
   price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
   EXPECT_EQ(price_ticks.size(), 1);
 }

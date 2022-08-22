@@ -12,7 +12,7 @@ DeleteQueryBuilder::DeleteQueryBuilder(
 
 auto DeleteQueryBuilder::FromTable(Table table) -> DeleteQueryBuilder& {
   Expects(!table_.has_value());
-  table_ = {std::move(table)};
+  table_.emplace(std::move(table));
   Ensures(table_.has_value());
   return *this;
 }
