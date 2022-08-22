@@ -21,7 +21,7 @@
 #include <string>
 #include <utility>
 
-#include "ccutils_polymorphic_value.h"
+#include "cpp_polymorphic_value.h"
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_types.h"
@@ -150,7 +150,7 @@ auto RestRequestSender::SendRequestAndGetResponse(
   auto http_response_json = http_response.extract_json().get();
 
   if (!http_response_json.is_null()) {
-    response.result.emplace(ccutils::MakePv<network::IJson, Json>(
+    response.result.emplace(cpp::MakePv<network::IJson, Json>(
         network::IJson::Impl{std::move(http_response_json)}));
   }
 

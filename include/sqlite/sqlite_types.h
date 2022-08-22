@@ -3,7 +3,7 @@
 
 #include <sqlite3.h>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 
 /**
  * @file Common SQLite types.
@@ -20,13 +20,12 @@ struct SqliteStatementFinalizer {
 /**
  * @brief Closes DB connection when destroyed.
  */
-using SqliteDbHandle = ccutils::NnUp<sqlite3, SqliteDbCloser>;
+using SqliteDbHandle = cpp::NnUp<sqlite3, SqliteDbCloser>;
 
 /**
  * @brief Finalizes statement when destroyed.
  */
-using SqliteStatementHandle =
-    ccutils::NnUp<sqlite3_stmt, SqliteStatementFinalizer>;
+using SqliteStatementHandle = cpp::NnUp<sqlite3_stmt, SqliteStatementFinalizer>;
 }  // namespace stonks::sqlite
 
 #endif  // STONKS_SQLITE_SQLITE_TYPES_H_

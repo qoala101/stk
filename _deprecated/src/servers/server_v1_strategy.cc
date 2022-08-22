@@ -10,7 +10,7 @@
 #include "uri.h"
 
 namespace stonks::server {
-V1Strategy::V1Strategy(int port, ccutils::Sp<stonks::V1Strategy> entity)
+V1Strategy::V1Strategy(int port, cpp::Sp<stonks::V1Strategy> entity)
     : server_{network::LocalUri{port, kEndpoint}, {Run()}},
       entity_{std::move(entity)} {
   Expects(entity_ != nullptr);

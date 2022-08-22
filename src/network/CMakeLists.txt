@@ -24,8 +24,8 @@ set_target_properties(libnetwork PROPERTIES
 )
 
 target_include_directories(libnetwork
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils/aliases
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/aliases
   PUBLIC ${PROJECT_SOURCE_DIR}/include/network
   PUBLIC ${PROJECT_SOURCE_DIR}/include/network/typed_endpoint
 )

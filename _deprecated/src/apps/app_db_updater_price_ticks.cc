@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include <optional>
 
 #include "client_finance_db.h"
@@ -14,6 +14,6 @@ auto main(int /*unused*/, const char* /*unused*/[]) -> int {
   const auto port = proxy.GetEndpointPort(endpoint);
 
   const auto app = stonks::DbUpdaterPriceTicks{
-      ccutils::MakeSp<stonks::client::FinanceDb>(*port)};
+      cpp::MakeSp<stonks::client::FinanceDb>(*port)};
   static_cast<void>(getchar());
 }

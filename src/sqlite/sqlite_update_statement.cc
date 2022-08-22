@@ -6,7 +6,7 @@
 #include <string>
 #include <utility>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "sqlite_prepared_statement_facade.h"
 #include "sqlite_prepared_statement_handle.h"
 
@@ -18,7 +18,7 @@ UpdateStatement::UpdateStatement(
 void UpdateStatement::Execute(std::vector<sqldb::Value> params) const {
   auto &sqlite_statement = prepared_statement_handle_.GetSqliteStatement();
   auto prepared_statement_facade =
-      PreparedStatementFacade{ccutils::AssumeNn(&sqlite_statement)};
+      PreparedStatementFacade{cpp::AssumeNn(&sqlite_statement)};
   prepared_statement_facade.Reset();
   prepared_statement_facade.BindParams(params);
 

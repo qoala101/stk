@@ -10,8 +10,8 @@
 #include <memory>
 #include <stdexcept>
 
-#include "ccutils_not_null.h"
-#include "ccutils_smart_pointers.h"
+#include "cpp_not_null.h"
+#include "cpp_smart_pointers.h"
 #include "not_null.hpp"
 #include "sqlite_read_from_file.h"
 
@@ -23,7 +23,7 @@ namespace {
 }
 }  // namespace
 
-DbFacade::DbFacade(ccutils::Nn<sqlite3 *> sqlite_db)
+DbFacade::DbFacade(cpp::Nn<sqlite3 *> sqlite_db)
     : sqlite_db_{sqlite_db.as_nullable()} {
   Ensures(sqlite_db_ != nullptr);
 }
@@ -44,7 +44,7 @@ void DbFacade::WriteToFile(std::string_view file_path) const {
   Expects(sqlite_db_ != nullptr);
 
   auto file_db = read_from_file::OpenSqliteDbFromFile(file_path);
-  DbFacade(ccutils::AssumeNn(file_db.get())).CopyDataFrom(*sqlite_db_);
+  DbFacade(cpp::AssumeNn(file_db.get())).CopyDataFrom(*sqlite_db_);
 
   Logger().info("Stored DB to {}", file_path.data());
 }
@@ -73,8 +73,8 @@ auto DbFacade::CreatePreparedStatement(std::string_view query)
   }
 
   Logger().info("Prepared statement for query: {}", query.data());
-  return ccutils::AssumeNn(
-      ccutils::Up<sqlite3_stmt, SqliteStatementFinalizer>{sqlite_statement});
+  return cpp::AssumeNn(
+      cpp::Up<sqlite3_stmt, SqliteStatementFinalizer>{sqlite_statement});
 }
 
 void DbFacade::Close() {

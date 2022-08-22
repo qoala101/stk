@@ -3,5 +3,5 @@
 #include <utility>
 
 namespace stonks::network {
-AutoParsable::AutoParsable(ccutils::Pv<IJson> json) : json_{std::move(json)} {}
+AutoParsable::AutoParsable(cpp::Pv<IJson> json) : json_{std::move(json)} {}
 }  // namespace stonks::network

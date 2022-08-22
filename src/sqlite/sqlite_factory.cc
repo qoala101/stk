@@ -6,13 +6,12 @@
 
 namespace stonks::sqlite {
 auto Factory::LoadDbFromFile(std::string_view file_path) const
-    -> ccutils::NnUp<sqldb::IDb> {
-  return ccutils::MakeNnUp<Db>(
+    -> cpp::NnUp<sqldb::IDb> {
+  return cpp::MakeNnUp<Db>(
       read_from_file::LoadSqliteDbFromFileToMemory(file_path));
 }
 
-auto Factory::CreateQueryBuilder() const
-    -> ccutils::NnUp<sqldb::IQueryBuilder> {
-  return ccutils::MakeNnUp<QueryBuilder>();
+auto Factory::CreateQueryBuilder() const -> cpp::NnUp<sqldb::IQueryBuilder> {
+  return cpp::MakeNnUp<QueryBuilder>();
 }
 }  // namespace stonks::sqlite

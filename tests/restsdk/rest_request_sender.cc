@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <magic_enum.hpp>
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include <ostream>
 #include <string>
 
@@ -52,7 +52,7 @@ auto ParseFromJson(const IJson &json) -> AvgPrice {
 }
 
 auto ConvertToJson(const AvgPrice &value)
-    -> ccutils::Pv<IJson> {
+    -> cpp::Pv<IJson> {
   auto json = restsdk::Factory{}.CreateJson();
   json->SetChild("mins", *ConvertToJson(value.mins));
   json->SetChild("price", *ConvertToJson(std::to_string(value.price)));
@@ -128,7 +128,7 @@ TEST(RestRequestSender, SendRequest) {
           .AddParam("symbol", "BTCUSDT")
           .Build();
   const auto sender =
-      ccutils::MakeUp<stonks::restsdk::RestRequestSender>(endpoint);
+      cpp::MakeUp<stonks::restsdk::RestRequestSender>(endpoint);
   const auto response = sender->SendRequestAndGetResponse(data);
   const auto response_price = ParseFromJson<AvgPrice>(*response.second);
   EXPECT_GT(response_price.mins, 0);

@@ -6,7 +6,6 @@
 
 #include <memory>
 
-#include "not_null.hpp"
 #include "sqlite_db_facade.h"
 #include "sqlite_prepared_statement_facade.h"
 
@@ -19,13 +18,13 @@ namespace {
 }  // namespace
 
 void SqliteDbCloser::operator()(sqlite3* sqlite_db) noexcept try {
-  DbFacade{cpp::check_not_null(sqlite_db)}.Close();
+  DbFacade{cpp::CheckNn(sqlite_db)}.Close();
 } catch (const std::exception& exception) {
   Logger().error(exception.what());
 }
 
 void SqliteStatementFinalizer::operator()(
     sqlite3_stmt* sqlite_statement) noexcept {
-  PreparedStatementFacade{cpp::check_not_null(sqlite_statement)}.Finalize();
+  PreparedStatementFacade{cpp::CheckNn(sqlite_statement)}.Finalize();
 }
 }  // namespace stonks::sqlite

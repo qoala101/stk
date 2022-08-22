@@ -4,7 +4,7 @@
 #include <string>
 #include <string_view>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
@@ -39,13 +39,13 @@ class Db : public sqldb::IDb {
    */
   [[nodiscard]] auto PrepareStatement(std::string query,
                                       sqldb::RowDefinition result_definition)
-      -> ccutils::NnUp<sqldb::ISelectStatement> override;
+      -> cpp::NnUp<sqldb::ISelectStatement> override;
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement
    */
   [[nodiscard]] auto PrepareStatement(std::string query)
-      -> ccutils::NnUp<sqldb::IUpdateStatement> override;
+      -> cpp::NnUp<sqldb::IUpdateStatement> override;
 
   /**
    * @brief
@@ -55,7 +55,7 @@ class Db : public sqldb::IDb {
 
  private:
   class Impl;
-  ccutils::NnUp<Impl> impl_;
+  cpp::NnUp<Impl> impl_;
 };
 }  // namespace stonks::sqlite
 

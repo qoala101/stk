@@ -34,7 +34,7 @@ namespace {
 
 class DbUpdaterSymbolsInfo::Impl {
  public:
-  explicit Impl(ccutils::Sp<StonksDb> stonks_db)
+  explicit Impl(cpp::Sp<StonksDb> stonks_db)
       : stonks_db_{std::move(stonks_db)} {
     Expects(stonks_db_ != nullptr);
 
@@ -79,11 +79,11 @@ class DbUpdaterSymbolsInfo::Impl {
   ~Impl() = default;
 
  private:
-  ccutils::Sp<StonksDb> stonks_db_{};
+  cpp::Sp<StonksDb> stonks_db_{};
 };
 
-DbUpdaterSymbolsInfo::DbUpdaterSymbolsInfo(ccutils::Sp<StonksDb> stonks_db)
-    : impl_{ccutils::MakeUp<Impl>(std::move(stonks_db))} {}
+DbUpdaterSymbolsInfo::DbUpdaterSymbolsInfo(cpp::Sp<StonksDb> stonks_db)
+    : impl_{cpp::MakeUp<Impl>(std::move(stonks_db))} {}
 
 DbUpdaterSymbolsInfo::DbUpdaterSymbolsInfo(DbUpdaterSymbolsInfo &&) noexcept =
     default;

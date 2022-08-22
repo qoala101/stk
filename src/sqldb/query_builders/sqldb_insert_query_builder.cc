@@ -9,8 +9,7 @@
 #include "sqldb_query_builders_common.h"
 
 namespace stonks::sqldb::query_builder_facade {
-InsertQueryBuilder::InsertQueryBuilder(
-    ccutils::NnSp<IQueryBuilder> query_builder)
+InsertQueryBuilder::InsertQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto InsertQueryBuilder::WholeRow() -> InsertQueryBuilder& {
@@ -44,7 +43,7 @@ auto InsertQueryBuilder::IntoColumns(std::vector<Column> columns)
 }
 
 auto InsertQueryBuilder::IntoColumns(
-    const ccutils::ConstView<ColumnDefinition>& column_definitions)
+    const cpp::ConstView<ColumnDefinition>& column_definitions)
     -> InsertQueryBuilder& {
   return IntoColumns(GetColumns(column_definitions));
 }

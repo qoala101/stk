@@ -52,7 +52,7 @@ auto GetColumns(const TableVariant &table, const ColumnsVariant &columns)
   return table_columns;
 }
 
-auto GetColumns(const ccutils::ConstView<ColumnDefinition> &column_definitions)
+auto GetColumns(const cpp::ConstView<ColumnDefinition> &column_definitions)
     -> std::vector<Column> {
   auto columns = column_definitions |
                  ranges::views::transform([](const auto &column_definition) {

@@ -2,11 +2,11 @@
 #define STONKS_SQLDB_SQLDB_I_QUERY_BUILDER_H_
 
 #include <functional>
-#include "ccutils_not_null.h"
 #include <string>
 #include <string_view>
 #include <vector>
 
+#include "cpp_not_null.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb {

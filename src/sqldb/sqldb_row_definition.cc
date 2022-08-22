@@ -29,7 +29,7 @@ RowDefinition::RowDefinition(
 }
 
 RowDefinition::RowDefinition(
-    const ccutils::ConstView<ColumnDefinition> &column_definitions)
+    const cpp::ConstView<ColumnDefinition> &column_definitions)
     : RowDefinition{ranges::views::transform(
                         column_definitions,
                         [](const auto &column_definition) {

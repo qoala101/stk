@@ -11,8 +11,7 @@
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::query_builder_facade {
-SelectQueryBuilder::SelectQueryBuilder(
-    ccutils::NnSp<IQueryBuilder> query_builder)
+SelectQueryBuilder::SelectQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto SelectQueryBuilder::Columns(std::vector<Column> columns)
@@ -24,7 +23,7 @@ auto SelectQueryBuilder::Columns(std::vector<Column> columns)
 }
 
 auto SelectQueryBuilder::Columns(
-    const ccutils::ConstView<ColumnDefinition> &column_definitions)
+    const cpp::ConstView<ColumnDefinition> &column_definitions)
     -> SelectQueryBuilder & {
   return Columns(GetColumns(column_definitions));
 }

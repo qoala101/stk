@@ -5,8 +5,8 @@
 #include <string>
 #include <utility>
 
-#include "ccutils_not_null.h"
-#include "ccutils_optional.h"
+#include "cpp_not_null.h"
+#include "cpp_optional.h"
 #include "network_auto_parsable_request_handler.h"
 #include "network_i_factory.h"
 #include "network_i_rest_request_handler.h"
@@ -20,7 +20,7 @@ namespace stonks::network {
  */
 class RestServer {
  public:
-  explicit RestServer(ccutils::NnUp<IFactory> network_factory);
+  explicit RestServer(cpp::NnUp<IFactory> network_factory);
 
   /**
    * @brief Sets base URI on which requests are to be handled.
@@ -35,7 +35,7 @@ class RestServer {
   auto Handling(TypedEndpoint endpoint, T handler) -> RestServer & {
     return Handling(
         std::move(endpoint),
-        ccutils::MakeNnUp<AutoParsableRequestHandler>(std::move(handler)));
+        cpp::MakeNnUp<AutoParsableRequestHandler>(std::move(handler)));
   }
 
   /**
@@ -44,16 +44,16 @@ class RestServer {
    * @return Keeps handling REST requests while alive.
    * @remark Other methods should not be called after this.
    */
-  [[nodiscard]] auto Start() && -> ccutils::NnUp<IRestRequestReceiver>;
+  [[nodiscard]] auto Start() && -> cpp::NnUp<IRestRequestReceiver>;
 
  private:
   [[nodiscard]] auto Handling(TypedEndpoint endpoint,
-                              ccutils::NnUp<IRestRequestHandler> handler)
+                              cpp::NnUp<IRestRequestHandler> handler)
       -> RestServer &;
 
-  ccutils::NnUp<IFactory> network_factory_;
-  ccutils::Opt<std::string> base_uri_{};
-  std::map<Endpoint, ccutils::NnUp<IRestRequestHandler>> endpoint_handlers_{};
+  cpp::NnUp<IFactory> network_factory_;
+  cpp::Opt<std::string> base_uri_{};
+  std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
 }  // namespace stonks::network
 

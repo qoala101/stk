@@ -3,7 +3,7 @@
 
 #include <type_traits>
 
-#include "ccutils_polymorphic_value.h"
+#include "cpp_polymorphic_value.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_json.h"
 #include "network_json_basic_conversions.h"
@@ -14,7 +14,7 @@ namespace stonks::network {
  */
 class AutoParsable {
  public:
-  explicit AutoParsable(ccutils::Pv<IJson> json);
+  explicit AutoParsable(cpp::Pv<IJson> json);
 
   AutoParsable(const AutoParsable &) = delete;
   AutoParsable(AutoParsable &&) noexcept = default;
@@ -34,7 +34,7 @@ class AutoParsable {
   }
 
  private:
-  ccutils::Pv<IJson> json_;
+  cpp::Pv<IJson> json_;
 };
 }  // namespace stonks::network
 

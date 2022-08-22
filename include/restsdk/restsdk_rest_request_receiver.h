@@ -3,7 +3,7 @@
 
 #include <string_view>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
 
@@ -21,9 +21,8 @@ namespace stonks::restsdk {
  */
 class RestRequestReceiver : public network::IRestRequestReceiver {
  public:
-  explicit RestRequestReceiver(
-      std::string_view local_uri,
-      ccutils::NnUp<network::IRestRequestHandler> handler);
+  explicit RestRequestReceiver(std::string_view local_uri,
+                               cpp::NnUp<network::IRestRequestHandler> handler);
 
   RestRequestReceiver(const RestRequestReceiver &other) = delete;
   RestRequestReceiver(RestRequestReceiver &&) noexcept;
@@ -37,9 +36,8 @@ class RestRequestReceiver : public network::IRestRequestReceiver {
  private:
   void HandleHttpRequest(const web::http::http_request &request) const;
 
-  ccutils::NnUp<network::IRestRequestHandler> handler_;
-  ccutils::NnUp<web::http::experimental::listener::http_listener>
-      http_listener_;
+  cpp::NnUp<network::IRestRequestHandler> handler_;
+  cpp::NnUp<web::http::experimental::listener::http_listener> http_listener_;
 };
 }  // namespace stonks::restsdk
 

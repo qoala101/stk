@@ -9,8 +9,8 @@
 #include <string_view>
 #include <utility>
 
-#include "ccutils_not_null.h"
-#include "ccutils_polymorphic_value.h"
+#include "cpp_not_null.h"
+#include "cpp_polymorphic_value.h"
 #include "network_i_json.h"
 #include "network_json_basic_conversions.h"
 #include "restsdk_json.h"
@@ -53,36 +53,36 @@ auto ParseFromJson(const IJson &json) -> std::string {
 }
 
 template <>
-auto ParseFromJson(const IJson &json) -> ccutils::NnUp<std::exception> {
+auto ParseFromJson(const IJson &json) -> cpp::NnUp<std::exception> {
   const auto type = ParseFromJson<std::string>(*json.GetChild("restsdk:type"));
 
   if (type == "std::exception") {
-    return ccutils::MakeNnUp<GenericException>(
+    return cpp::MakeNnUp<GenericException>(
         ParseFromJson<std::string>(*json.GetChild("message")));
   }
 
   Expects(false);
 }
 
-auto ConvertToJson(int value) -> ccutils::Pv<IJson> {
-  return ccutils::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
+auto ConvertToJson(int value) -> cpp::Pv<IJson> {
+  return cpp::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
 }
 
-auto ConvertToJson(int64_t value) -> ccutils::Pv<IJson> {
-  return ccutils::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
+auto ConvertToJson(int64_t value) -> cpp::Pv<IJson> {
+  return cpp::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
 }
 
-auto ConvertToJson(double value) -> ccutils::Pv<IJson> {
-  return ccutils::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
+auto ConvertToJson(double value) -> cpp::Pv<IJson> {
+  return cpp::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
 }
 
-auto ConvertToJson(std::string_view value) -> ccutils::Pv<IJson> {
-  return ccutils::MakePv<IJson, restsdk::Json>(
+auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson> {
+  return cpp::MakePv<IJson, restsdk::Json>(
       IJson::Impl{web::json::value::string(value.data())});
 }
 
-auto ConvertToJson(const std::exception &value) -> ccutils::Pv<IJson> {
-  auto json = ccutils::MakePv<IJson, restsdk::Json>();
+auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson> {
+  auto json = cpp::MakePv<IJson, restsdk::Json>();
   json->SetChild("restsdk:type",
                  restsdk::Json{network::IJson::Impl{
                      web::json::value::string("std::exception")}});

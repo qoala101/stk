@@ -8,7 +8,7 @@
 namespace stonks::network {
 
 ResponseExceptionHandler::ResponseExceptionHandler(
-    ccutils::NnSp<IRestRequestSender> request_sender)
+    cpp::NnSp<IRestRequestSender> request_sender)
     : request_sender_{std::move(request_sender)} {}
 
 auto ResponseExceptionHandler::SendRequestAndGetResponse(

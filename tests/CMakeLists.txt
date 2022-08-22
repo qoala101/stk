@@ -19,8 +19,8 @@ set_property(TARGET unittests
 )
 
 target_include_directories(unittests
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils/aliases
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/aliases
 )
 
 target_link_libraries(unittests

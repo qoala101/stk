@@ -6,7 +6,7 @@
 #include <exception>
 #include <stdexcept>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "network_i_json.h"
 #include "not_null.hpp"
 
@@ -33,18 +33,17 @@ template <>
 
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json)
-    -> ccutils::NnUp<std::exception>;
+    -> cpp::NnUp<std::exception>;
 
-[[nodiscard]] auto ConvertToJson(int value) -> ccutils::Pv<IJson>;
+[[nodiscard]] auto ConvertToJson(int value) -> cpp::Pv<IJson>;
 
-[[nodiscard]] auto ConvertToJson(int64_t value) -> ccutils::Pv<IJson>;
+[[nodiscard]] auto ConvertToJson(int64_t value) -> cpp::Pv<IJson>;
 
-[[nodiscard]] auto ConvertToJson(double value) -> ccutils::Pv<IJson>;
+[[nodiscard]] auto ConvertToJson(double value) -> cpp::Pv<IJson>;
 
-[[nodiscard]] auto ConvertToJson(std::string_view value) -> ccutils::Pv<IJson>;
+[[nodiscard]] auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson>;
 
-[[nodiscard]] auto ConvertToJson(const std::exception &value)
-    -> ccutils::Pv<IJson>;
+[[nodiscard]] auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson>;
 }  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_NETWORK_JSON_BASIC_CONVERSIONS_H_

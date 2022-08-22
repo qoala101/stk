@@ -4,8 +4,8 @@
 #include <string>
 #include <string_view>
 
-#include "ccutils_not_null.h"
-#include "ccutils_polymorphic_value.h"
+#include "cpp_not_null.h"
+#include "cpp_polymorphic_value.h"
 #include "network_i_json.h"
 #include "restsdk_json_impl.h"
 
@@ -21,19 +21,19 @@ class Json : public network::IJson {
   /**
    * @copydoc network::IJson::clone
    */
-  [[nodiscard]] auto clone() const -> ccutils::NnUp<IJson> override;
+  [[nodiscard]] auto clone() const -> cpp::NnUp<IJson> override;
 
   /**
    * @copydoc network::IJson::GetChild
    */
   [[nodiscard]] auto GetChild(
-      std::string_view key) const& -> ccutils::Pv<IJson> override;
+      std::string_view key) const& -> cpp::Pv<IJson> override;
 
   /**
    * @copydoc network::IJson::GetChild
    */
   [[nodiscard]] auto GetChild(
-      std::string_view key) && -> ccutils::Pv<IJson> override;
+      std::string_view key) && -> cpp::Pv<IJson> override;
 
   /**
    * @copydoc network::IJson::SetChild

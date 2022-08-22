@@ -10,7 +10,7 @@
 #include "uri.h"
 
 namespace stonks::server {
-Info::Info(int port, ccutils::Sp<stonks::Info> entity)
+Info::Info(int port, cpp::Sp<stonks::Info> entity)
     : server_{network::LocalUri{port, kEndpoint},
               {GetSymbols(), GetStrategyNames(), GetPriceTicks()}},
       entity_{std::move(entity)} {

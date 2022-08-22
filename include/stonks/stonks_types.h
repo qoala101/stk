@@ -4,7 +4,7 @@
 #include <chrono>
 #include <string>
 
-#include "ccutils_optional.h"
+#include "cpp_optional.h"
 
 namespace stonks {
 using SymbolName = std::string;
@@ -41,8 +41,8 @@ struct SymbolPriceTick {
 };
 
 struct Period {
-  ccutils::Opt<std::chrono::milliseconds> start_time{};
-  ccutils::Opt<std::chrono::milliseconds> end_time{};
+  cpp::Opt<std::chrono::milliseconds> start_time{};
+  cpp::Opt<std::chrono::milliseconds> end_time{};
 };
 }  // namespace stonks
 

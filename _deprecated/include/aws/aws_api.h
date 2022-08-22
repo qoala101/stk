@@ -1,7 +1,7 @@
 #ifndef STONKS_AWS_AWS_API_H_
 #define STONKS_AWS_AWS_API_H_
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 
 namespace stonks::aws {
 /**
@@ -10,7 +10,7 @@ namespace stonks::aws {
  */
 class AwsApi {
  public:
-  static auto Instance() -> ccutils::Sp<AwsApi>;
+  static auto Instance() -> cpp::Sp<AwsApi>;
 
   AwsApi(const AwsApi &) = delete;
   AwsApi(AwsApi &&) noexcept = delete;

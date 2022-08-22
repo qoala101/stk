@@ -5,23 +5,23 @@
 #include <memory>
 #include <utility>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "network_i_json.h"
 
 namespace stonks::restsdk {
 Json::Json(IJson::Impl impl) : impl_{std::move(impl)} {}
 
-auto Json::clone() const -> ccutils::NnUp<IJson> {
-  return ccutils::MakeNnUp<Json>(impl_);
+auto Json::clone() const -> cpp::NnUp<IJson> {
+  return cpp::MakeNnUp<Json>(impl_);
 }
 
-auto Json::GetChild(std::string_view key) const& -> ccutils::Pv<IJson> {
-  return ccutils::MakePv<IJson, restsdk::Json>(
+auto Json::GetChild(std::string_view key) const& -> cpp::Pv<IJson> {
+  return cpp::MakePv<IJson, restsdk::Json>(
       IJson::Impl{impl_.GetJson().at(key.data())});
 }
 
-auto Json::GetChild(std::string_view key) && -> ccutils::Pv<IJson> {
-  return ccutils::MakePv<IJson, restsdk::Json>(
+auto Json::GetChild(std::string_view key) && -> cpp::Pv<IJson> {
+  return cpp::MakePv<IJson, restsdk::Json>(
       IJson::Impl{std::move(impl_.GetJson().at(key.data()))});
 }
 

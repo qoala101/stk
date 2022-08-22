@@ -1,5 +1,5 @@
-#ifndef STONKS_CCUTILS_CCUTILS_MOVE_IF_RVALUE_H_
-#define STONKS_CCUTILS_CCUTILS_MOVE_IF_RVALUE_H_
+#ifndef STONKS_CPP_CPP_MOVE_IF_THIS_IS_RVALUE_H_
+#define STONKS_CPP_CPP_MOVE_IF_THIS_IS_RVALUE_H_
 
 #include <concepts>
 #include <gsl/util>
@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace stonks::ccutils {
+namespace stonks::cpp {
 /**
  * @brief Applies rvalue cast to the value.
  */
@@ -29,6 +29,6 @@ auto MoveIfThisIsRvalue(auto &&value) -> auto && {
 auto MoveIfThisIsRvalue(const auto &&t, auto &&value) -> auto && {
   return MoveIfThisIsRvalue<decltype(t)>(std::forward<decltype(value)>(value));
 }
-}  // namespace stonks::ccutils
+}  // namespace stonks::cpp
 
-#endif  // STONKS_CCUTILS_CCUTILS_MOVE_IF_RVALUE_H_
+#endif  // STONKS_CPP_CPP_MOVE_IF_THIS_IS_RVALUE_H_

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "not_null.hpp"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
@@ -25,14 +25,14 @@ class IDb {
    */
   [[nodiscard]] virtual auto PrepareStatement(std::string query,
                                               RowDefinition result_definition)
-      -> ccutils::NnUp<ISelectStatement> = 0;
+      -> cpp::NnUp<ISelectStatement> = 0;
 
   /**
    * @brief Creates prepared statement which can then be called to execute the
    * update query on DB.
    */
   [[nodiscard]] virtual auto PrepareStatement(std::string query)
-      -> ccutils::NnUp<IUpdateStatement> = 0;
+      -> cpp::NnUp<IUpdateStatement> = 0;
 
   /**
    * @brief Stores this DB to the specified file.

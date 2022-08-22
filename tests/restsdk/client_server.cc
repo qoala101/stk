@@ -12,8 +12,8 @@
 #include <utility>
 #include <vector>
 
-#include "ccutils_not_null.h"
-#include "ccutils_polymorphic_value.h"
+#include "cpp_not_null.h"
+#include "cpp_polymorphic_value.h"
 #include "gtest/gtest_pred_impl.h"
 #include "network_auto_parsable.h"
 #include "network_auto_parsable_request.h"
@@ -102,7 +102,7 @@ class EntityServer {
       : request_receiver_{
             std::move(
                 stonks::network::RestServer{
-                    stonks::ccutils::MakeNnUp<stonks::restsdk::Factory>()}
+                    stonks::cpp::MakeNnUp<stonks::restsdk::Factory>()}
                     .On(base_uri.data())
                     .Handling(
                         PushSymbolEndpointDesc(),
@@ -131,7 +131,7 @@ class EntityServer {
   auto GetSizeEndpointHandler() -> int { return entity_.GetSize(); }
 
   Entity entity_{};
-  stonks::ccutils::NnUp<stonks::network::IRestRequestReceiver>
+  stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>
       request_receiver_;
 };
 
@@ -257,24 +257,24 @@ TEST(ClientServerDeathTest, WrongClientTypesReceived) {
 
   auto handlers =
       std::map<stonks::network::Endpoint,
-               stonks::ccutils::NnUp<stonks::network::IRestRequestHandler>>{};
+               stonks::cpp::NnUp<stonks::network::IRestRequestHandler>>{};
 
   handlers.emplace(EntityServer::PushSymbolEndpointDesc().endpoint,
-                   stonks::ccutils::MakeNnUp<FunctionHandler>(
+                   stonks::cpp::MakeNnUp<FunctionHandler>(
                        [](const stonks::network::RestRequest& /*unused*/) {
                          return stonks::network::RestResponse{
                              .status = stonks::network::Status::kOk,
                              .result = stonks::network::ConvertToJson(0)};
                        }));
   handlers.emplace(EntityServer::GetSymbolEndpointDesc().endpoint,
-                   stonks::ccutils::MakeNnUp<FunctionHandler>(
+                   stonks::cpp::MakeNnUp<FunctionHandler>(
                        [](const stonks::network::RestRequest& /*unused*/) {
                          return stonks::network::RestResponse{
                              .status = stonks::network::Status::kOk};
                        }));
   handlers.emplace(
       EntityServer::PushSymbolEndpointDesc().endpoint,
-      stonks::ccutils::MakeNnUp<FunctionHandler>(
+      stonks::cpp::MakeNnUp<FunctionHandler>(
           [](const stonks::network::RestRequest& /*unused*/) {
             return stonks::network::RestResponse{
                 .status = stonks::network::Status::kOk,
@@ -283,7 +283,7 @@ TEST(ClientServerDeathTest, WrongClientTypesReceived) {
 
   auto entity_server = stonks::restsdk::Factory{}.CreateRestRequestReceiver(
       kBaseUri,
-      stonks::ccutils::MakeNnUp<stonks::network::EndpointRequestDispatcher>(
+      stonks::cpp::MakeNnUp<stonks::network::EndpointRequestDispatcher>(
           std::move(handlers)));
 
   EXPECT_ANY_THROW(entity_client.PushSymbol("BTC"));
@@ -301,7 +301,7 @@ TEST(ClientServerDeathTest, WrongServerTypes) {
   auto rest_server =
       std::move(
           stonks::network::RestServer{
-              stonks::ccutils::MakeNnUp<stonks::restsdk::Factory>()}
+              stonks::cpp::MakeNnUp<stonks::restsdk::Factory>()}
               .On(kBaseUri)
               .Handling(
                   EntityServer::PushSymbolEndpointDesc(),

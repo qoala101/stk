@@ -6,8 +6,8 @@
 #include <type_traits>
 #include <utility>
 
-#include "ccutils_expose_private_constructors.h"
-#include "ccutils_not_null.h"
+#include "cpp_expose_private_constructors.h"
+#include "cpp_not_null.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_rest_request_sender.h"
 #include "network_json_basic_conversions.h"
@@ -69,10 +69,10 @@ class RequestBuilder {
   }
 
  private:
-  friend class ccutils::ExposePrivateConstructorsTo<RestClient, RequestBuilder>;
+  friend class cpp::ExposePrivateConstructorsTo<RestClient, RequestBuilder>;
 
   explicit RequestBuilder(Endpoint endpoint,
-                          ccutils::NnSp<IRestRequestSender> request_sender);
+                          cpp::NnSp<IRestRequestSender> request_sender);
 
   static void DiscardingResultImpl(auto &&t);
 
@@ -88,7 +88,7 @@ class RequestBuilder {
   [[nodiscard]] auto SendRequestAndGetResult() && -> Result::value_type;
 
   RestRequest request_{};
-  ccutils::NnSp<IRestRequestSender> request_sender_;
+  cpp::NnSp<IRestRequestSender> request_sender_;
 };
 }  // namespace rest_client
 }  // namespace stonks::network

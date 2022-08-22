@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "ccutils_views.h"
+#include "cpp_views.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb {
@@ -19,7 +19,7 @@ class RowDefinition {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   RowDefinition(const std::vector<ColumnDefinition> &column_definitions);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  RowDefinition(const ccutils::ConstView<ColumnDefinition> &column_definitions);
+  RowDefinition(const cpp::ConstView<ColumnDefinition> &column_definitions);
 
   [[nodiscard]] auto GetCellDefinitions() const
       -> const std::vector<CellDefinition> &;

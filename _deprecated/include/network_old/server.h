@@ -1,7 +1,7 @@
 #ifndef STONKS_NETWORK_SERVER_H_
 #define STONKS_NETWORK_SERVER_H_
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include <vector>
 
 #include "endpoint.h"
@@ -35,7 +35,7 @@ class Server {
 
  private:
   class Impl;
-  ccutils::Up<Impl> impl_{};
+  cpp::Up<Impl> impl_{};
 };
 }  // namespace stonks::network
 

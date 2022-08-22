@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "ccutils_not_null.h"
-#include "ccutils_polymorphic_value.h"
+#include "cpp_not_null.h"
+#include "cpp_polymorphic_value.h"
 #include "network_i_factory.h"
 #include "network_i_json.h"
 #include "network_i_rest_request_handler.h"
@@ -21,20 +21,20 @@ class Factory : public network::IFactory {
    * @copydoc network::IFactory::CreateRestRequestSender
    */
   [[nodiscard]] auto CreateRestRequestSender() const
-      -> ccutils::NnUp<network::IRestRequestSender> override;
+      -> cpp::NnUp<network::IRestRequestSender> override;
 
   /**
    * @copydoc network::IFactory::CreateRestRequestReceiver
    */
   [[nodiscard]] auto CreateRestRequestReceiver(
       std::string local_uri,
-      ccutils::NnUp<network::IRestRequestHandler> handler) const
-      -> ccutils::NnUp<network::IRestRequestReceiver> override;
+      cpp::NnUp<network::IRestRequestHandler> handler) const
+      -> cpp::NnUp<network::IRestRequestReceiver> override;
 
   /**
    * @copydoc network::IFactory::CreateJson
    */
-  [[nodiscard]] auto CreateJson() const -> ccutils::Pv<network::IJson> override;
+  [[nodiscard]] auto CreateJson() const -> cpp::Pv<network::IJson> override;
 };
 }  // namespace stonks::restsdk
 

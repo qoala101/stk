@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "ccutils_optional.h"
-#include "ccutils_views.h"
+#include "cpp_optional.h"
+#include "cpp_views.h"
 #include "sqldb_enums.h"
 #include "sqldb_value.h"
 
@@ -24,7 +24,7 @@ struct ColumnDefinition {
   bool primary_key{};
   bool auto_increment{};
   bool unique{};
-  ccutils::Opt<ForeignKey> foreign_key{};
+  cpp::Opt<ForeignKey> foreign_key{};
 };
 
 struct TableDefinition {
@@ -34,7 +34,7 @@ struct TableDefinition {
       -> ColumnDefinition &;
 
   [[nodiscard]] auto GetColumnDefinitions(const std::vector<Column> &columns)
-      const -> ccutils::ConstView<ColumnDefinition>;
+      const -> cpp::ConstView<ColumnDefinition>;
 
   Table table{};
   std::vector<ColumnDefinition> columns{};

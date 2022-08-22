@@ -1,5 +1,5 @@
-#ifndef STONKS_CCUTILS_ALIASES_CCUTILS_SMART_POINTERS_H_
-#define STONKS_CCUTILS_ALIASES_CCUTILS_SMART_POINTERS_H_
+#ifndef STONKS_CPP_ALIASES_CPP_SMART_POINTERS_H_
+#define STONKS_CPP_ALIASES_CPP_SMART_POINTERS_H_
 
 #include <memory>
 
@@ -7,7 +7,7 @@
  * @file Short smart pointer aliases.
  */
 
-namespace stonks::ccutils {
+namespace stonks::cpp {
 template <typename... Ts>
 using Up = std::unique_ptr<Ts...>;
 
@@ -26,6 +26,6 @@ template <typename... Ts>
 [[nodiscard]] auto MakeSp(auto &&...args) {
   return std::make_shared<Ts...>(std::forward<decltype(args)>(args)...);
 }
-}  // namespace stonks::ccutils
+}  // namespace stonks::cpp
 
-#endif  // STONKS_CCUTILS_ALIASES_CCUTILS_SMART_POINTERS_H_
+#endif  // STONKS_CPP_ALIASES_CPP_SMART_POINTERS_H_

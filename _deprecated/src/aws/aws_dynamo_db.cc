@@ -122,11 +122,11 @@ class DynamoDb::Impl {
     return tables;
   }
 
-  ccutils::Sp<AwsApi> aws_api_{};
+  cpp::Sp<AwsApi> aws_api_{};
   Aws::DynamoDB::DynamoDBClient db_client_{};
 };
 
-DynamoDb::DynamoDb() : impl_{ccutils::MakeUp<Impl>()} {}
+DynamoDb::DynamoDb() : impl_{cpp::MakeUp<Impl>()} {}
 
 DynamoDb::~DynamoDb() = default;
 

@@ -147,7 +147,7 @@ class Server::Impl {
 };
 
 Server::Server(const LocalUri &uri, std::vector<Endpoint> endpoints)
-    : impl_{ccutils::MakeUp<Impl>(uri, std::move(endpoints))} {}
+    : impl_{cpp::MakeUp<Impl>(uri, std::move(endpoints))} {}
 
 Server::Server(Server &&) noexcept = default;
 

@@ -1,14 +1,14 @@
 #ifndef STONKS_STONKS_STONKS_DB_UPDATER_SYMBOLS_INFO_H_
 #define STONKS_STONKS_STONKS_DB_UPDATER_SYMBOLS_INFO_H_
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 
 #include "stonks_db.h"
 
 namespace stonks {
 class DbUpdaterSymbolsInfo {
  public:
-  explicit DbUpdaterSymbolsInfo(ccutils::Sp<StonksDb> stonks_db);
+  explicit DbUpdaterSymbolsInfo(cpp::Sp<StonksDb> stonks_db);
 
   DbUpdaterSymbolsInfo(const DbUpdaterSymbolsInfo &) = delete;
   DbUpdaterSymbolsInfo(DbUpdaterSymbolsInfo &&) noexcept;
@@ -21,7 +21,7 @@ class DbUpdaterSymbolsInfo {
 
  private:
   class Impl;
-  ccutils::Up<Impl> impl_{};
+  cpp::Up<Impl> impl_{};
 };
 }  // namespace stonks
 

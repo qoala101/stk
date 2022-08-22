@@ -3,7 +3,7 @@
 
 #include <string_view>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_factory.h"
 #include "sqldb_i_query_builder.h"
@@ -19,13 +19,13 @@ class Factory : public sqldb::IFactory {
    * @copydoc sqldb::IDb::LoadDbFromFile
    */
   [[nodiscard]] auto LoadDbFromFile(std::string_view file_path) const
-      -> ccutils::NnUp<sqldb::IDb> override;
+      -> cpp::NnUp<sqldb::IDb> override;
 
   /**
    * @copydoc sqldb::IDb::CreateQueryBuilder
    */
   [[nodiscard]] auto CreateQueryBuilder() const
-      -> ccutils::NnUp<sqldb::IQueryBuilder> override;
+      -> cpp::NnUp<sqldb::IQueryBuilder> override;
 };
 }  // namespace stonks::sqlite
 

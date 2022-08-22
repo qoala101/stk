@@ -1,5 +1,5 @@
-#ifndef STONKS_CCUTILS_ALIASES_CCUTILS_POLYMORPHIC_VALUE_H_
-#define STONKS_CCUTILS_ALIASES_CCUTILS_POLYMORPHIC_VALUE_H_
+#ifndef STONKS_CPP_ALIASES_CPP_POLYMORPHIC_VALUE_H_
+#define STONKS_CPP_ALIASES_CPP_POLYMORPHIC_VALUE_H_
 
 #include <polymorphic_value.h>
 
@@ -9,7 +9,7 @@
  * @file Short isocpp_p0201::polymorphic_value aliases.
  */
 
-namespace stonks::ccutils {
+namespace stonks::cpp {
 template <typename... Ts>
 using Pv = isocpp_p0201::polymorphic_value<Ts...>;
 
@@ -18,6 +18,6 @@ template <typename... Ts>
   return isocpp_p0201::make_polymorphic_value<Ts...>(
       std::forward<decltype(args)>(args)...);
 }
-}  // namespace stonks::ccutils
+}  // namespace stonks::cpp
 
-#endif  // STONKS_CCUTILS_ALIASES_CCUTILS_POLYMORPHIC_VALUE_H_
+#endif  // STONKS_CPP_ALIASES_CPP_POLYMORPHIC_VALUE_H_

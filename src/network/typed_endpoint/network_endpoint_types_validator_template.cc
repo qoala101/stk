@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "ccutils_optional.h"
+#include "cpp_optional.h"
 
 namespace stonks::network {
 EndpointTypesValidatorTemplate::EndpointTypesValidatorTemplate(

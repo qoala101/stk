@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "ccutils_expose_private_constructors.h"
-#include "ccutils_not_null.h"
-#include "ccutils_views.h"
+#include "cpp_expose_private_constructors.h"
+#include "cpp_not_null.h"
+#include "cpp_views.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_query_builders_common.h"
 #include "sqldb_types.h"
@@ -24,19 +24,18 @@ class InsertQueryBuilder {
   auto IntoTable(Table table) -> InsertQueryBuilder &;
   auto IntoTable(TableDefinition table_definition) -> InsertQueryBuilder &;
   auto IntoColumns(std::vector<Column> columns) -> InsertQueryBuilder &;
-  auto IntoColumns(
-      const ccutils::ConstView<ColumnDefinition> &column_definitions)
+  auto IntoColumns(const cpp::ConstView<ColumnDefinition> &column_definitions)
       -> InsertQueryBuilder &;
 
   [[nodiscard]] auto Build() const -> std::string;
 
  private:
-  friend class ccutils::ExposePrivateConstructorsTo<QueryBuilderFacade,
-                                                    InsertQueryBuilder>;
+  friend class cpp::ExposePrivateConstructorsTo<QueryBuilderFacade,
+                                                InsertQueryBuilder>;
 
-  explicit InsertQueryBuilder(ccutils::NnSp<IQueryBuilder> query_builder);
+  explicit InsertQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder);
 
-  ccutils::NnSp<IQueryBuilder> query_builder_;
+  cpp::NnSp<IQueryBuilder> query_builder_;
 
   TableVariant table_{};
   ColumnsVariant columns_{};

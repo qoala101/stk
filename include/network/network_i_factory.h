@@ -25,7 +25,7 @@ class IFactory {
    * @brief Creates executor of REST request.
    */
   [[nodiscard]] virtual auto CreateRestRequestSender() const
-      -> ccutils::NnUp<IRestRequestSender> = 0;
+      -> cpp::NnUp<IRestRequestSender> = 0;
 
   /**
    * @brief Creates the handler of REST requests on the specified URI.
@@ -34,13 +34,13 @@ class IFactory {
    * @param handler Function to be called when request is received.
    */
   [[nodiscard]] virtual auto CreateRestRequestReceiver(
-      std::string local_uri, ccutils::NnUp<IRestRequestHandler> handler) const
-      -> ccutils::NnUp<IRestRequestReceiver> = 0;
+      std::string local_uri, cpp::NnUp<IRestRequestHandler> handler) const
+      -> cpp::NnUp<IRestRequestReceiver> = 0;
 
   /**
    * @brief Creates an empty JSON object.
    */
-  [[nodiscard]] virtual auto CreateJson() const -> ccutils::Pv<IJson> = 0;
+  [[nodiscard]] virtual auto CreateJson() const -> cpp::Pv<IJson> = 0;
 
  protected:
   explicit IFactory() = default;

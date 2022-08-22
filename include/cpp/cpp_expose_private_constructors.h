@@ -1,9 +1,9 @@
-#ifndef STONKS_UTILITY_ATTORNEY_H_
-#define STONKS_UTILITY_ATTORNEY_H_
+#ifndef STONKS_CPP_CPP_EXPOSE_PRIVATE_CONSTRUCTORS_H_
+#define STONKS_CPP_CPP_EXPOSE_PRIVATE_CONSTRUCTORS_H_
 
 #include <utility>
 
-namespace stonks::ccutils {
+namespace stonks::cpp {
 /**
  * @brief Enables friend like access to the private constructors.
  * @tparam TFriend Type which would have acces to constructors of T.
@@ -30,6 +30,6 @@ class ExposePrivateConstructorsTo {
  */
 template <typename TFriend, typename T>
 using CallExposedPrivateConstructorOf = ExposePrivateConstructorsTo<T, TFriend>;
-}  // namespace stonks::ccutils
+}  // namespace stonks::cpp
 
-#endif  // STONKS_UTILITY_ATTORNEY_H_
+#endif  // STONKS_CPP_CPP_EXPOSE_PRIVATE_CONSTRUCTORS_H_

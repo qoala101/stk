@@ -1,7 +1,7 @@
 #ifndef STONKS_NETWORK_NETWORK_RESPONSE_EXCEPTION_HANDLER_H_
 #define STONKS_NETWORK_NETWORK_RESPONSE_EXCEPTION_HANDLER_H_
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "network_i_rest_request_sender.h"
 #include "network_types.h"
 
@@ -13,7 +13,7 @@ namespace stonks::network {
 class ResponseExceptionHandler : public IRestRequestSender {
  public:
   explicit ResponseExceptionHandler(
-      ccutils::NnSp<IRestRequestSender> request_sender);
+      cpp::NnSp<IRestRequestSender> request_sender);
 
   /**
    * @brief Checks whether response is an exception, parses, and throws it.
@@ -22,7 +22,7 @@ class ResponseExceptionHandler : public IRestRequestSender {
       -> RestResponse override;
 
  private:
-  ccutils::NnSp<IRestRequestSender> request_sender_;
+  cpp::NnSp<IRestRequestSender> request_sender_;
 };
 }  // namespace stonks::network
 

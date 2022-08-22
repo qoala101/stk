@@ -21,7 +21,7 @@ template <typename Key, typename Value>
 }
 }  // namespace
 
-Cache::Cache(ccutils::NnSp<PreparedStatements> prepared_statements)
+Cache::Cache(cpp::NnSp<PreparedStatements> prepared_statements)
     : prepared_statements_{std::move(prepared_statements)} {}
 
 [[nodiscard]] auto Cache::GetAssetIdByAsset(const std::string &asset) const

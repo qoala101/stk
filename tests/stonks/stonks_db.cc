@@ -5,7 +5,7 @@
 #include <chrono>
 #include <optional>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "sqlite_factory.h"
 #include "stonks_db_updater_symbols_info.h"
 #include "stonks_types.h"
@@ -13,10 +13,10 @@
 namespace {
 const auto kTestDbFileName = "stonks_db_test.db";
 
-auto db = ccutils::Sp<stonks::Db>{};
+auto db = cpp::Sp<stonks::Db>{};
 
 TEST(StonksDb, UpdateSymbolsInfo) {
-  db = ccutils::MakeSp<stonks::Db>(stonks::sqlite::Factory{}, ":memory:");
+  db = cpp::MakeSp<stonks::Db>(stonks::sqlite::Factory{}, ":memory:");
 
   db->UpdateAssets({"YYY", "USDT"});
   auto assets = db->SelectAssets();
@@ -78,7 +78,7 @@ TEST(StonksDb, UpdateSymbolsInfo) {
 
 TEST(StonksDb, TablesInitialization) {
   std::ignore = std::remove(kTestDbFileName);
-  db = ccutils::MakeSp<stonks::Db>(stonks::sqlite::Factory{}, kTestDbFileName);
+  db = cpp::MakeSp<stonks::Db>(stonks::sqlite::Factory{}, kTestDbFileName);
   std::ignore = stonks::DbUpdaterSymbolsInfo{db};
 
   const auto assets = db->SelectAssets();
@@ -152,7 +152,7 @@ TEST(StonksDb, SelectPeriod) {
   EXPECT_EQ(price_ticks.size(), 6);
 
   period = stonks::Period{
-      .start_time = ccutils::MakeOpt<std::chrono::milliseconds>(1001),
+      .start_time = cpp::MakeOpt<std::chrono::milliseconds>(1001),
       .end_time = std::nullopt};
   auto symbol = stonks::SymbolName{"ETHUSDT"};
   price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
@@ -160,13 +160,13 @@ TEST(StonksDb, SelectPeriod) {
 
   period = stonks::Period{
       .start_time = std::nullopt,
-      .end_time = ccutils::MakeOpt<std::chrono::milliseconds>(2999)};
+      .end_time = cpp::MakeOpt<std::chrono::milliseconds>(2999)};
   price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
   EXPECT_EQ(price_ticks.size(), 2);
 
   period = stonks::Period{
-      .start_time = ccutils::MakeOpt<std::chrono::milliseconds>(1001),
-      .end_time = ccutils::MakeOpt<std::chrono::milliseconds>(2999)};
+      .start_time = cpp::MakeOpt<std::chrono::milliseconds>(1001),
+      .end_time = cpp::MakeOpt<std::chrono::milliseconds>(2999)};
   price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
   EXPECT_EQ(price_ticks.size(), 1);
 }

@@ -1,7 +1,7 @@
 #ifndef STONKS_SERVERS_SERVER_V1_STRATEGY_H_
 #define STONKS_SERVERS_SERVER_V1_STRATEGY_H_
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 
 #include "endpoint.h"
 #include "server.h"
@@ -12,13 +12,13 @@ class V1Strategy {
  public:
   static constexpr auto kEndpoint = "/V1Strategy";
 
-  explicit V1Strategy(int port, ccutils::Sp<stonks::V1Strategy> entity);
+  explicit V1Strategy(int port, cpp::Sp<stonks::V1Strategy> entity);
 
  private:
   [[nodiscard]] auto Run() -> network::Endpoint;
 
   network::Server server_;
-  ccutils::Sp<stonks::V1Strategy> entity_{};
+  cpp::Sp<stonks::V1Strategy> entity_{};
 };
 }  // namespace stonks::server
 

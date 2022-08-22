@@ -1,7 +1,7 @@
 #ifndef STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_ENDPOINT_HANDLER_H_
 #define STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_ENDPOINT_HANDLER_H_
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "network_endpoint_types_validator_template.h"
 #include "network_i_rest_request_handler.h"
 #include "network_typed_endpoint.h"
@@ -19,7 +19,7 @@ class TypedEndpointHandler : public IRestRequestHandler {
    * those.
    */
   explicit TypedEndpointHandler(EndpointTypes endpoint_types,
-                                ccutils::NnUp<IRestRequestHandler> handler);
+                                cpp::NnUp<IRestRequestHandler> handler);
 
   /**
    * @brief Validates request prior forwarding it to the handler and response
@@ -29,8 +29,8 @@ class TypedEndpointHandler : public IRestRequestHandler {
       -> RestResponse override;
 
  private:
-  ccutils::NnUp<EndpointTypesValidatorTemplate> type_checker_;
-  ccutils::NnUp<IRestRequestHandler> handler_;
+  cpp::NnUp<EndpointTypesValidatorTemplate> type_checker_;
+  cpp::NnUp<IRestRequestHandler> handler_;
 };
 }  // namespace stonks::network
 

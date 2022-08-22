@@ -7,7 +7,7 @@
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 
 namespace stonks::sqldb {
 auto TableDefinition::GetColumnDefinitionImpl(auto &t, const Column &column)
@@ -31,10 +31,10 @@ auto TableDefinition::GetColumnDefinition(const Column &column)
 }
 
 auto TableDefinition::GetColumnDefinitions(const std::vector<Column> &columns)
-    const -> ccutils::ConstView<ColumnDefinition> {
+    const -> cpp::ConstView<ColumnDefinition> {
   auto column_definitions =
       columns | ranges::views::transform([this](const auto &column) {
-        return ccutils::AssumeNn(&GetColumnDefinition(column));
+        return cpp::AssumeNn(&GetColumnDefinition(column));
       }) |
       ranges::to_vector;
   Ensures(column_definitions.size() == columns.size());

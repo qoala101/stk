@@ -1,7 +1,7 @@
 #ifndef STONKS_SQLDB_SQLDB_QUERY_BUILDER_FACADE_H_
 #define STONKS_SQLDB_SQLDB_QUERY_BUILDER_FACADE_H_
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "sqldb_delete_query_builder.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_insert_query_builder.h"
@@ -15,7 +15,7 @@ namespace stonks::sqldb {
  */
 class QueryBuilderFacade {
  public:
-  explicit QueryBuilderFacade(ccutils::NnSp<IQueryBuilder> query_builder);
+  explicit QueryBuilderFacade(cpp::NnSp<IQueryBuilder> query_builder);
 
   /**
    * @brief Start building select statement.
@@ -38,7 +38,7 @@ class QueryBuilderFacade {
   [[nodiscard]] auto Delete() const -> query_builder_facade::DeleteQueryBuilder;
 
  private:
-  ccutils::NnSp<IQueryBuilder> query_builder_;
+  cpp::NnSp<IQueryBuilder> query_builder_;
 };
 }  // namespace stonks::sqldb
 

@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "stonks_prepared_statements.h"
 #include "stonks_types.h"
 
@@ -15,7 +15,7 @@ namespace stonks::db {
  */
 class Cache {
  public:
-  explicit Cache(ccutils::NnSp<PreparedStatements> prepared_statements);
+  explicit Cache(cpp::NnSp<PreparedStatements> prepared_statements);
 
   [[nodiscard]] auto GetAssetIdByAsset(const std::string &asset) const
       -> int64_t;
@@ -31,7 +31,7 @@ class Cache {
   void UpdateAssetMap();
   void UpdateSymbolMaps();
 
-  ccutils::NnSp<PreparedStatements> prepared_statements_;
+  cpp::NnSp<PreparedStatements> prepared_statements_;
 
   std::map<std::string, int64_t> asset_to_asset_id_map_{};
   std::map<SymbolName, int64_t> symbol_to_symbol_id_map_{};

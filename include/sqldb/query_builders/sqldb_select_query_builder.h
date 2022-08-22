@@ -6,10 +6,10 @@
 #include <variant>
 #include <vector>
 
-#include "ccutils_expose_private_constructors.h"
-#include "ccutils_not_null.h"
-#include "ccutils_optional.h"
-#include "ccutils_views.h"
+#include "cpp_expose_private_constructors.h"
+#include "cpp_not_null.h"
+#include "cpp_optional.h"
+#include "cpp_views.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_query_builders_common.h"
 #include "sqldb_types.h"
@@ -24,7 +24,7 @@ namespace query_builder_facade {
 class SelectQueryBuilder {
  public:
   auto Columns(std::vector<Column> columns) -> SelectQueryBuilder &;
-  auto Columns(const ccutils::ConstView<ColumnDefinition> &column_definitions)
+  auto Columns(const cpp::ConstView<ColumnDefinition> &column_definitions)
       -> SelectQueryBuilder &;
   auto AllColumns() -> SelectQueryBuilder &;
 
@@ -42,20 +42,20 @@ class SelectQueryBuilder {
   [[nodiscard]] auto Build() const -> std::string;
 
  private:
-  friend class ccutils::ExposePrivateConstructorsTo<QueryBuilderFacade,
-                                                    SelectQueryBuilder>;
+  friend class cpp::ExposePrivateConstructorsTo<QueryBuilderFacade,
+                                                SelectQueryBuilder>;
 
   struct LimitedType {};
 
   using LimitVariant = std::variant<std::monostate, int, LimitedType>;
 
-  explicit SelectQueryBuilder(ccutils::NnSp<IQueryBuilder> query_builder);
+  explicit SelectQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder);
 
-  ccutils::NnSp<IQueryBuilder> query_builder_;
+  cpp::NnSp<IQueryBuilder> query_builder_;
 
-  ccutils::Opt<Table> table_{};
+  cpp::Opt<Table> table_{};
   ColumnsVariant columns_{};
-  ccutils::Opt<std::string> where_clause_{};
+  cpp::Opt<std::string> where_clause_{};
   LimitVariant limit_{};
 };
 }  // namespace query_builder_facade

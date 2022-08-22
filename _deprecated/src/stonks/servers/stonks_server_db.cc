@@ -1,7 +1,7 @@
 // #include "stonks_server_db.h"
 
 // #include <functional>
-// #include "ccutils_not_null.h"
+// #include "cpp_not_null.h"
 
 // #include "network_endpoint_request_dispatcher.h"
 // #include "network_json_basic_conversions.h"
@@ -11,7 +11,7 @@
 // #include "stonks_types.h"
 
 // namespace stonks::server {
-// Db::Db(ccutils::NnUp<IDb>> db, std::string_view local_uri,
+// Db::Db(cpp::NnUp<IDb>> db, std::string_view local_uri,
 //        const network::IFactory &network_factory)
 //     : db_{std::move(db)},
 //       request_receiver_{network_factory.CreateRestRequestReceiver(

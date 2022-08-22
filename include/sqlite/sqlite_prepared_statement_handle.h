@@ -3,7 +3,7 @@
 
 #include <sqlite3.h>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "sqlite_types.h"
 
 namespace stonks::sqlite {
@@ -14,7 +14,7 @@ namespace stonks::sqlite {
 class PreparedStatementHandle {
  public:
   explicit PreparedStatementHandle(
-      ccutils::NnSp<sqlite3> sqlite_db_handle,
+      cpp::NnSp<sqlite3> sqlite_db_handle,
       SqliteStatementHandle sqlite_statement_handle);
 
   PreparedStatementHandle(const PreparedStatementHandle &) = delete;
@@ -30,7 +30,7 @@ class PreparedStatementHandle {
   [[nodiscard]] auto GetSqliteStatement() const -> sqlite3_stmt &;
 
  private:
-  ccutils::NnSp<sqlite3> sqlite_db_handle_;
+  cpp::NnSp<sqlite3> sqlite_db_handle_;
   SqliteStatementHandle sqlite_statement_handle_;
 };
 }  // namespace stonks::sqlite

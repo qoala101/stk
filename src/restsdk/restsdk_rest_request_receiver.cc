@@ -19,8 +19,8 @@
 #include <string>
 #include <utility>
 
-#include "ccutils_not_null.h"
-#include "ccutils_polymorphic_value.h"
+#include "cpp_not_null.h"
+#include "cpp_polymorphic_value.h"
 #include "cpprest/http_msg.h"
 #include "network_enums.h"
 #include "network_i_json.h"
@@ -80,7 +80,7 @@ namespace {
   auto params = network::Params{};
 
   for (const auto &[name, value] : raw_params) {
-    params[name] = ccutils::MakePv<network::IJson, Json>(
+    params[name] = cpp::MakePv<network::IJson, Json>(
         network::IJson::Impl{web::json::value::parse(value)});
   }
 
@@ -106,7 +106,7 @@ namespace {
     return std::nullopt;
   }
 
-  return ccutils::MakePv<network::IJson, Json>(
+  return cpp::MakePv<network::IJson, Json>(
       network::IJson::Impl{std::move(json)});
 }
 
@@ -132,11 +132,10 @@ namespace {
 }  // namespace
 
 RestRequestReceiver::RestRequestReceiver(
-    std::string_view local_uri,
-    ccutils::NnUp<network::IRestRequestHandler> handler)
+    std::string_view local_uri, cpp::NnUp<network::IRestRequestHandler> handler)
     : handler_{std::move(handler)}, http_listener_{[this, local_uri]() {
         auto http_listener =
-            ccutils::MakeNnUp<web::http::experimental::listener::http_listener>(
+            cpp::MakeNnUp<web::http::experimental::listener::http_listener>(
                 local_uri.data());
         http_listener->support(
             std::bind_front(&RestRequestReceiver::HandleHttpRequest, this));

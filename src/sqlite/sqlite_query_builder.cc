@@ -14,7 +14,7 @@
 #include <string>
 #include <utility>
 
-#include "ccutils_optional.h"
+#include "cpp_optional.h"
 #include "sqldb_enums_to_string.h"  // IWYU pragma: keep
 
 namespace stonks::sqlite {

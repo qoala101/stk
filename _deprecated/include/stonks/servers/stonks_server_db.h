@@ -4,7 +4,7 @@
 #include <polymorphic_value.h>
 
 #include <map>
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 
 #include "network_endpoint_request_dispatcher.h"
 #include "network_enums.h"
@@ -18,7 +18,7 @@
 namespace stonks::server {
 class Db {
  public:
-  explicit Db(ccutils::NnUp<IDb> db,
+  explicit Db(cpp::NnUp<IDb> db,
               std::string_view local_uri,
               const network::IFactory &network_factory);
 
@@ -39,8 +39,8 @@ class Db {
       -> std::vector<SymbolPriceTick>;
   void InsertSymbolPriceTick(network::RequestData &request);
 
-  ccutils::NnUp<IDb> db_;
-  ccutils::NnUp<network::IRestRequestReceiver>
+  cpp::NnUp<IDb> db_;
+  cpp::NnUp<network::IRestRequestReceiver>
       request_receiver_;
 };
 }  // namespace stonks::server

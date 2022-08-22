@@ -13,7 +13,7 @@
 #include "uri.h"
 
 namespace stonks::server {
-StonksDb::StonksDb(int port, ccutils::Sp<stonks::StonksDb> entity)
+StonksDb::StonksDb(int port, cpp::Sp<stonks::StonksDb> entity)
     : server_{network::LocalUri{port, kEndpoint},
               {SelectAssets(), UpdateAssets(), SelectSymbols(),
                SelectSymbolsInfo(), UpdateSymbolsInfo(),

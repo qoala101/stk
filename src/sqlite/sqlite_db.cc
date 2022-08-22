@@ -7,7 +7,7 @@
 #include <memory>
 #include <utility>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "not_null.hpp"
 #include "sqldb_enums_to_string.h"  // IWYU pragma: keep
 #include "sqldb_i_select_statement.h"
@@ -30,7 +30,7 @@ class Db::Impl {
  public:
   explicit Impl(SqliteDbHandle sqlite_db_handle)
       : sqlite_db_handle_{std::move(sqlite_db_handle)},
-        sqlite_db_facade_{ccutils::AssumeNn(sqlite_db_handle_.get())} {}
+        sqlite_db_facade_{cpp::AssumeNn(sqlite_db_handle_.get())} {}
 
   Impl(const Impl &) = delete;
   Impl(Impl &&) noexcept = default;
@@ -42,8 +42,8 @@ class Db::Impl {
 
   [[nodiscard]] auto PrepareStatement(
       const std::string &query, const sqldb::RowDefinition &result_definition)
-      -> ccutils::NnUp<sqldb::ISelectStatement> {
-    return ccutils::MakeNnUp<SelectStatement>(
+      -> cpp::NnUp<sqldb::ISelectStatement> {
+    return cpp::MakeNnUp<SelectStatement>(
         PreparedStatementHandle{
             sqlite_db_handle_,
             sqlite_db_facade_.CreatePreparedStatement(query)},
@@ -51,8 +51,8 @@ class Db::Impl {
   }
 
   [[nodiscard]] auto PrepareStatement(const std::string &query)
-      -> ccutils::NnUp<sqldb::IUpdateStatement> {
-    return ccutils::MakeNnUp<UpdateStatement>(PreparedStatementHandle{
+      -> cpp::NnUp<sqldb::IUpdateStatement> {
+    return cpp::MakeNnUp<UpdateStatement>(PreparedStatementHandle{
         sqlite_db_handle_, sqlite_db_facade_.CreatePreparedStatement(query)});
   }
 
@@ -61,23 +61,23 @@ class Db::Impl {
   }
 
  private:
-  ccutils::NnSp<sqlite3> sqlite_db_handle_;
+  cpp::NnSp<sqlite3> sqlite_db_handle_;
   DbFacade sqlite_db_facade_;
 };
 
 Db::Db(SqliteDbHandle sqlite_db_handle)
-    : impl_{ccutils::MakeNnUp<Impl>(std::move(sqlite_db_handle))} {}
+    : impl_{cpp::MakeNnUp<Impl>(std::move(sqlite_db_handle))} {}
 
 Db::~Db() noexcept = default;
 
 auto Db::PrepareStatement(std::string query,
                           sqldb::RowDefinition result_definition)
-    -> ccutils::NnUp<sqldb::ISelectStatement> {
+    -> cpp::NnUp<sqldb::ISelectStatement> {
   return impl_->PrepareStatement(query, result_definition);
 }
 
 auto Db::PrepareStatement(std::string query)
-    -> ccutils::NnUp<sqldb::IUpdateStatement> {
+    -> cpp::NnUp<sqldb::IUpdateStatement> {
   return impl_->PrepareStatement(query);
 }
 

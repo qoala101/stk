@@ -5,7 +5,7 @@
 #include <string_view>
 #include <vector>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_factory.h"
 #include "sqldb_i_query_builder.h"
@@ -83,9 +83,9 @@ class Db : public IDb {
   void InsertSymbolInfo(const SymbolInfo &symbol_info);
   void UpdateSymbolInfo(const SymbolInfo &symbol_info);
 
-  ccutils::NnSp<sqldb::IDb> db_;
-  ccutils::NnSp<sqldb::IQueryBuilder> query_builder_;
-  ccutils::NnSp<db::PreparedStatements> prepared_statements_;
+  cpp::NnSp<sqldb::IDb> db_;
+  cpp::NnSp<sqldb::IQueryBuilder> query_builder_;
+  cpp::NnSp<db::PreparedStatements> prepared_statements_;
   db::Cache cache_;
 };
 }  // namespace stonks

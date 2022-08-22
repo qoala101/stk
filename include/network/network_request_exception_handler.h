@@ -1,7 +1,7 @@
 #ifndef STONKS_NETWORK_NETWORK_REQUEST_EXCEPTION_HANDLER_H_
 #define STONKS_NETWORK_NETWORK_REQUEST_EXCEPTION_HANDLER_H_
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include "network_i_rest_request_handler.h"
 #include "network_types.h"
 
@@ -12,7 +12,7 @@ namespace stonks::network {
  */
 class RequestExceptionHandler : public IRestRequestHandler {
  public:
-  explicit RequestExceptionHandler(ccutils::NnUp<IRestRequestHandler> handler);
+  explicit RequestExceptionHandler(cpp::NnUp<IRestRequestHandler> handler);
 
   /**
    * @brief Catches exception thrown by the handler and transforms it
@@ -22,7 +22,7 @@ class RequestExceptionHandler : public IRestRequestHandler {
       -> RestResponse override;
 
  private:
-  ccutils::NnUp<IRestRequestHandler> handler_;
+  cpp::NnUp<IRestRequestHandler> handler_;
 };
 }  // namespace stonks::network
 

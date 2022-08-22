@@ -10,7 +10,7 @@
 #include "uri.h"
 
 namespace stonks::server {
-Proxy::Proxy(ccutils::Sp<network::Proxy> entity)
+Proxy::Proxy(cpp::Sp<network::Proxy> entity)
     : server_{network::LocalUri{kPort, kEndpoint},
               {GetEndpointPort(), RegisterEndpoint()}},
       entity_{std::move(entity)} {

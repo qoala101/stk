@@ -18,9 +18,9 @@ auto Options() -> const Aws::SDKOptions& {
 }
 }  // namespace
 
-auto AwsApi::Instance() -> ccutils::Sp<AwsApi> {
+auto AwsApi::Instance() -> cpp::Sp<AwsApi> {
   class PublicAwsApi : public AwsApi {};
-  static auto instance = ccutils::MakeSp<PublicAwsApi>();
+  static auto instance = cpp::MakeSp<PublicAwsApi>();
   return instance;
 }
 

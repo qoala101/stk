@@ -12,7 +12,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 
 namespace stonks::sqlite {
 namespace {
@@ -82,7 +82,7 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
 }  // namespace
 
 PreparedStatementFacade::PreparedStatementFacade(
-    ccutils::Nn<sqlite3_stmt *> sqlite_statement)
+    cpp::Nn<sqlite3_stmt *> sqlite_statement)
     : sqlite_statement_{sqlite_statement.as_nullable()} {
   Ensures(sqlite_statement_ != nullptr);
 }

@@ -10,8 +10,8 @@
 #include <string_view>
 #include <utility>
 
-#include "ccutils_optional.h"
-#include "ccutils_polymorphic_value.h"
+#include "cpp_optional.h"
+#include "cpp_polymorphic_value.h"
 #include "network_endpoint_types_validator_template.h"
 #include "network_enums.h"
 #include "network_json_basic_conversions.h"
@@ -62,8 +62,8 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
 }  // namespace
 
 TypedEndpointHandler::TypedEndpointHandler(
-    EndpointTypes endpoint_types, ccutils::NnUp<IRestRequestHandler> handler)
-    : type_checker_{ccutils::MakeNnUp<TypeChecker>(std::move(endpoint_types))},
+    EndpointTypes endpoint_types, cpp::NnUp<IRestRequestHandler> handler)
+    : type_checker_{cpp::MakeNnUp<TypeChecker>(std::move(endpoint_types))},
       handler_{std::move(handler)} {}
 
 auto TypedEndpointHandler::HandleRequestAndGiveResponse(
@@ -75,7 +75,7 @@ auto TypedEndpointHandler::HandleRequestAndGiveResponse(
             .result = ConvertToJson(std::runtime_error{"Wrong request"})};
   }
 
-  auto response = ccutils::Opt<RestResponse>{};
+  auto response = cpp::Opt<RestResponse>{};
 
   try {
     response.emplace(

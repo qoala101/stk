@@ -4,9 +4,9 @@
 #include <string>
 #include <string_view>
 
-#include "ccutils_expose_private_constructors.h"
-#include "ccutils_not_null.h"
-#include "ccutils_optional.h"
+#include "cpp_expose_private_constructors.h"
+#include "cpp_not_null.h"
+#include "cpp_optional.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_types.h"
 
@@ -27,15 +27,15 @@ class DeleteQueryBuilder {
   [[nodiscard]] auto Build() const -> std::string;
 
  private:
-  friend class ccutils::ExposePrivateConstructorsTo<QueryBuilderFacade,
-                                                    DeleteQueryBuilder>;
+  friend class cpp::ExposePrivateConstructorsTo<QueryBuilderFacade,
+                                                DeleteQueryBuilder>;
 
-  explicit DeleteQueryBuilder(ccutils::NnSp<IQueryBuilder> query_builder);
+  explicit DeleteQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder);
 
-  ccutils::NnSp<IQueryBuilder> query_builder_;
+  cpp::NnSp<IQueryBuilder> query_builder_;
 
-  ccutils::Opt<Table> table_{};
-  ccutils::Opt<std::string> where_clause_{};
+  cpp::Opt<Table> table_{};
+  cpp::Opt<std::string> where_clause_{};
 };
 }  // namespace query_builder_facade
 }  // namespace stonks::sqldb

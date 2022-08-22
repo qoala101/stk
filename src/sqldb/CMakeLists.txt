@@ -22,8 +22,8 @@ set_target_properties(libsqldb PROPERTIES
 )
 
 target_include_directories(libsqldb
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils/aliases
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/aliases
   PUBLIC ${PROJECT_SOURCE_DIR}/include/sqldb
   PUBLIC ${PROJECT_SOURCE_DIR}/include/sqldb/query_builders
 )

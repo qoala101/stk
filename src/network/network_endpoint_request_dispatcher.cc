@@ -10,7 +10,7 @@
 
 namespace stonks::network {
 EndpointRequestDispatcher::EndpointRequestDispatcher(
-    std::map<Endpoint, ccutils::NnUp<IRestRequestHandler>> endpoint_handlers)
+    std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers)
     : endpoint_handlers_{std::move(endpoint_handlers)} {}
 
 auto EndpointRequestDispatcher::HandleRequestAndGiveResponse(

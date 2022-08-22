@@ -9,8 +9,7 @@
 #include "sqldb_query_builders_common.h"
 
 namespace stonks::sqldb::query_builder_facade {
-UpdateQueryBuilder::UpdateQueryBuilder(
-    ccutils::NnSp<IQueryBuilder> query_builder)
+UpdateQueryBuilder::UpdateQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto UpdateQueryBuilder::OfTable(Table table) -> UpdateQueryBuilder& {
@@ -37,7 +36,7 @@ auto UpdateQueryBuilder::Columns(std::vector<Column> columns)
 }
 
 auto UpdateQueryBuilder::Columns(
-    const ccutils::ConstView<ColumnDefinition>& column_definitions)
+    const cpp::ConstView<ColumnDefinition>& column_definitions)
     -> UpdateQueryBuilder& {
   return Columns(GetColumns(column_definitions));
 }

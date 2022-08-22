@@ -1,7 +1,7 @@
 #ifndef STONKS_AWS_AWS_DYNAMO_DB_H_
 #define STONKS_AWS_AWS_DYNAMO_DB_H_
 
-#include "ccutils_not_null.h"
+#include "cpp_not_null.h"
 #include <string>
 
 namespace stonks::aws {
@@ -50,7 +50,7 @@ class DynamoDb {
 
  private:
   class Impl;
-  ccutils::Up<Impl> impl_{};
+  cpp::Up<Impl> impl_{};
 };
 }  // namespace stonks::aws
 
