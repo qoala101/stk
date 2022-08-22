@@ -5,7 +5,6 @@
 
 #include <compare>
 #include <functional>
-#include <gsl/assert>
 #include <map>
 #include <optional>
 #include <string>

@@ -7,7 +7,7 @@
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
 
-#include "not_null.hpp"
+#include "ccutils_not_null.h"
 
 namespace stonks::sqldb {
 auto TableDefinition::GetColumnDefinitionImpl(auto &t, const Column &column)

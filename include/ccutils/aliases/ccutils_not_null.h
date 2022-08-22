@@ -5,7 +5,7 @@
 #include "not_null.hpp"
 
 /**
- * @file Short not_null aliases.
+ * @file Short cpp::not_null aliases.
  */
 
 namespace stonks::ccutils {

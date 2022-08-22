@@ -4,7 +4,6 @@
 #include <polymorphic_value.h>
 
 #include <exception>
-#include <gsl/gsl>
 #include <stdexcept>
 
 #include "ccutils_not_null.h"

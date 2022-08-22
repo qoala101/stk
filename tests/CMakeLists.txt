@@ -1,23 +1,40 @@
 find_package(GTest REQUIRED)
-find_package(spdlog REQUIRED)
-find_package(range-v3 REQUIRED)
-find_package(magic_enum REQUIRED)
+find_package(polymorphic_value REQUIRED)
+
+include(GoogleTest)
+
+enable_testing()
 
 add_executable(unittests
-  main.cc
-  client_server.cc
+  restsdk/client_server.cc
+
+  # restsdk/rest_request_receiver.cc
+  # restsdk/rest_request_sender.cc
+  # sqlite/sqlite_db.cc
+  # stonks/stonks_db.cc
 )
 
-set_property(TARGET unittests PROPERTY CXX_INCLUDE_WHAT_YOU_USE)
+set_property(TARGET unittests
+  PROPERTY CXX_INCLUDE_WHAT_YOU_USE
+)
+
+target_include_directories(unittests
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils/aliases
+)
+
+target_link_libraries(unittests
+  PRIVATE GTest::gtest GTest::gtest_main
+)
+
+# Has to come after linking to GTest and before other libs.
+# Otherwise tests in third-party libs would also be discovered.
+gtest_discover_tests(unittests)
 
 target_link_libraries(unittests
   PRIVATE libstonks
-  PRIVATE libsqldb
-  PRIVATE libsqlite
-  PRIVATE libnetwork
   PRIVATE librestsdk
-  PRIVATE spdlog::spdlog
-  PRIVATE GTest::gtest GTest::gtest_main
-  PRIVATE range-v3::range-v3
-  PRIVATE magic_enum::magic_enum
+  PRIVATE libsqlite
+  PRIVATE NotNull
+  PRIVATE polymorphic_value::polymorphic_value
 )

@@ -76,6 +76,8 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
       return sqldb::Value{reinterpret_cast<const char *>(
           sqlite3_column_text(&statement, index))};
   }
+
+  Expects(false);
 }
 }  // namespace
 

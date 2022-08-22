@@ -1,9 +1,5 @@
 find_package(Microsoft.GSL REQUIRED)
-find_package(spdlog REQUIRED)
-find_package(magic_enum REQUIRED)
-find_package(range-v3 REQUIRED)
 find_package(polymorphic_value REQUIRED)
-find_package(Boost REQUIRED)
 
 add_library(libnetwork
   typed_endpoint/network_endpoint_types_validator_template.cc
@@ -22,15 +18,20 @@ add_library(libnetwork
   network_rest_server.cc
   network_types.cc
 )
-set_target_properties(libnetwork PROPERTIES OUTPUT_NAME network)
-target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/network)
-target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/network/typed_endpoint)
-target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/utility)
-target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils)
-target_include_directories(libnetwork PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils/aliases)
-target_link_libraries(libnetwork PRIVATE spdlog::spdlog)
-target_link_libraries(libnetwork PRIVATE range-v3::range-v3)
-target_link_libraries(libnetwork PRIVATE Microsoft.GSL::GSL)
-target_link_libraries(libnetwork PRIVATE Boost::boost)
-target_link_libraries(libnetwork PUBLIC NotNull)
-target_link_libraries(libnetwork PUBLIC polymorphic_value::polymorphic_value)
+
+set_target_properties(libnetwork PROPERTIES
+  OUTPUT_NAME network
+)
+
+target_include_directories(libnetwork
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/ccutils/aliases
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/network
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/network/typed_endpoint
+)
+
+target_link_libraries(libnetwork
+  PUBLIC NotNull
+  PUBLIC polymorphic_value::polymorphic_value
+  PRIVATE Microsoft.GSL::GSL
+)

@@ -47,6 +47,8 @@ namespace {
     case network::Method::kOther:
       Expects(false);
   }
+
+  Expects(false);
 }
 
 [[nodiscard]] auto NetworkStatusFromHttpStatus(web::http::status_code status)
