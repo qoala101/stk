@@ -1,0 +1,3 @@
+mSH9FBf6mHFnLN44C6qmWo7w3sj1xBlxR4nr8ksB1oXt90GA1500athPklbXhoBh - real
+umQ8if1bMb3Q6QnVz3pH5xHuKh8AGcVeErek7luZB4ULhMvUXEylbB1UolWzqUlX - testnet v2
+Ndf6k18BgPOkneuKlZUokDtUGJ0SxzrbQBz9a5ZkZ1oyaAHWJYc0xIf4TvRtXhVY - testnet

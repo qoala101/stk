@@ -12,7 +12,6 @@
 #include <tuple>
 
 #include "ccutils_not_null.h"
-#include "finance_types.h"
 #include "network_auto_parsable_request.h"
 #include "network_auto_parsable_request_handler.h"
 #include "network_endpoint_request_dispatcher.h"

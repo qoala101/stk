@@ -1,0 +1,2 @@
+https://api.binance.com - real
+https://testnet.binance.vision - testnet

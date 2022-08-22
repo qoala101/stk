@@ -23,7 +23,7 @@ namespace {
 }
 }  // namespace
 
-DbFacade::DbFacade(cpp::not_null<sqlite3 *> sqlite_db)
+DbFacade::DbFacade(ccutils::Nn<sqlite3 *> sqlite_db)
     : sqlite_db_{sqlite_db.as_nullable()} {
   Ensures(sqlite_db_ != nullptr);
 }
