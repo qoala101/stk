@@ -39,6 +39,7 @@ void EndpointTypesValidatorTemplate::HandleUnexpectedRequestBody() const {}
 void EndpointTypesValidatorTemplate::HandleMissingResponseBody() const {}
 
 void EndpointTypesValidatorTemplate::HandleWrongResponseBodyType(
+    const Body::value_type &response_body,
     const std::exception &exception) const {}
 
 void EndpointTypesValidatorTemplate::HandleUnexpectedResponseBody() const {}
@@ -94,7 +95,7 @@ void EndpointTypesValidatorTemplate::ValidateResponse(
     try {
       (*endpoint_types_.result)(**response.result);
     } catch (const std::exception &exception) {
-      HandleWrongResponseBodyType(exception);
+      HandleWrongResponseBodyType(*response.result, exception);
     }
 
     return;

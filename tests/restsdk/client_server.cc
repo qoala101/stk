@@ -34,6 +34,7 @@
 
 namespace {
 const auto kBaseUri = "http://localhost:6506/Entity";
+const auto kIndexOutOfBoundsMessage = "Index out of bounds";
 
 class EntityInterface {
  public:
@@ -49,18 +50,13 @@ class EntityInterface {
 
 class Entity : public EntityInterface {
  public:
-  static constexpr auto kIndexOutOfBoundsMessage = "Index out of bounds";
-
   void PushSymbol(stonks::SymbolName symbol) override {
     symbols_.emplace_back(std::move(symbol));
   }
 
   [[nodiscard]] auto GetSymbol(int index) const -> stonks::SymbolName override {
-    if (symbols_.size() > index) {
-      return symbols_[index];
-    }
-
-    throw std::runtime_error{kIndexOutOfBoundsMessage};
+    assert(symbols_.size() > index);
+    return symbols_[index];
   }
 
   [[nodiscard]] auto GetSize() const -> int override { return symbols_.size(); }
@@ -125,14 +121,19 @@ class EntityServer {
 
   auto GetSymbolEndpointHandler(
       stonks::network::AutoParsableRestRequest request) -> stonks::SymbolName {
-    return entity_.GetSymbol(request.Param("index"));
+    const auto index = int{request.Param("index")};
+
+    if (index >= entity_.GetSize()) {
+      throw std::runtime_error{kIndexOutOfBoundsMessage};
+    }
+
+    return entity_.GetSymbol(index);
   }
 
   auto GetSizeEndpointHandler() -> int { return entity_.GetSize(); }
 
   Entity entity_{};
-  stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>
-      request_receiver_;
+  stonks::cpp::NnUp<stonks::network::IRestRequestReceiver> request_receiver_;
 };
 
 class EntityClient : public EntityInterface {
@@ -162,7 +163,7 @@ class EntityClient : public EntityInterface {
   stonks::network::RestClient client_;
 };
 
-TEST(ClientServer, ApiTest) {
+TEST(ClientServerDeathTest, ApiTest) {
   auto entity = Entity{};
   entity.PushSymbol("ETHUSDT");
   entity.PushSymbol("BTCUSDT");
@@ -176,27 +177,23 @@ TEST(ClientServer, ApiTest) {
   EXPECT_EQ(entity.GetSize(), entity_client.GetSize());
   EXPECT_EQ(entity.GetSymbol(0), entity_client.GetSymbol(0));
   EXPECT_EQ(entity.GetSymbol(1), entity_client.GetSymbol(1));
+}
 
-  // const auto entity_exception = [&entity]() {
-  //   try {
-  //     std::ignore = entity.GetSymbol(2);
-  //   } catch (const std::exception &exception) {
-  //     return std::string{exception.what()};
-  //   }
+TEST(ClientServerDeathTest, Exceptions) {
+  auto entity_server = EntityServer{kBaseUri};
+  auto entity_client = EntityClient{kBaseUri};
 
-  //   std::terminate();
-  // }();
-  // const auto client_exception = [&entity_client]() {
-  //   try {
-  //     std::ignore = entity_client.GetSymbol(2);
-  //   } catch (const std::exception &exception) {
-  //     return std::string{exception.what()};
-  //   }
+  const auto client_exception = [&entity_client]() {
+    try {
+      std::ignore = entity_client.GetSymbol(2);
+    } catch (const std::exception& exception) {
+      return std::string{exception.what()};
+    }
 
-  //   std::terminate();
-  // }();
-  // EXPECT_EQ(entity_exception, Entity::kIndexOutOfBoundsMessage);
-  // EXPECT_EQ(client_exception, Entity::kIndexOutOfBoundsMessage);
+    std::terminate();
+  }();
+
+  EXPECT_EQ(client_exception, kIndexOutOfBoundsMessage);
 }
 
 TEST(ClientServerDeathTest, WrongClientTypes) {

@@ -47,6 +47,7 @@ class EndpointTypesValidatorTemplate {
   virtual void HandleUnexpectedRequestBody() const;
   virtual void HandleMissingResponseBody() const;
   virtual void HandleWrongResponseBodyType(
+      const Body::value_type &response_body,
       const std::exception &exception) const;
   virtual void HandleUnexpectedResponseBody() const;
 

@@ -4,17 +4,12 @@
 
 #include <gsl/assert>
 #include <memory>
-#include <optional>
 #include <stdexcept>
 #include <string>
 #include <string_view>
 #include <utility>
 
-#include "cpp_optional.h"
-#include "cpp_polymorphic_value.h"
 #include "network_endpoint_types_validator_template.h"
-#include "network_enums.h"
-#include "network_json_basic_conversions.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 
@@ -53,6 +48,7 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   void HandleMissingResponseBody() const override { Expects(false); }
 
   void HandleWrongResponseBodyType(
+      const Body::value_type & /*response_body*/,
       const std::exception & /*exception*/) const override {
     Expects(false);
   }
@@ -68,24 +64,9 @@ TypedEndpointHandler::TypedEndpointHandler(
 
 auto TypedEndpointHandler::HandleRequestAndGiveResponse(
     RestRequest request) const -> RestResponse {
-  try {
-    type_checker_->ValidateRequest(request);
-  } catch (const std::exception &exception) {
-    return {.status = Status::kBadRequest,
-            .result = ConvertToJson(std::runtime_error{"Wrong request"})};
-  }
-
-  auto response = cpp::Opt<RestResponse>{};
-
-  try {
-    response.emplace(
-        handler_->HandleRequestAndGiveResponse(std::move(request)));
-  } catch (const std::exception &exception) {
-    return {.status = Status::kInternalError,
-            .result = ConvertToJson(std::runtime_error{exception.what()})};
-  }
-
-  type_checker_->ValidateResponse(*response);
-  return std::move(*response);
+  type_checker_->ValidateRequest(request);
+  auto response = handler_->HandleRequestAndGiveResponse(std::move(request));
+  type_checker_->ValidateResponse(response);
+  return response;
 }
 }  // namespace stonks::network

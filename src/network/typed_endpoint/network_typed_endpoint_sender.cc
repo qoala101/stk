@@ -5,11 +5,13 @@
 #include <gsl/assert>
 #include <memory>
 #include <stdexcept>
+#include <string>
 #include <string_view>
 #include <utility>
 
 #include "network_typed_endpoint.h"
 #include "network_types.h"
+#include "network_wrong_type_exception.h"
 
 namespace stonks::network {
 namespace {
@@ -41,8 +43,9 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   }
 
   void HandleWrongResponseBodyType(
+      const Body::value_type &response_body,
       const std::exception &exception) const override {
-    throw exception;
+    throw WrongTypeException{exception.what(), response_body};
   }
 
   void HandleUnexpectedResponseBody() const override {

@@ -3,13 +3,11 @@
 #include <polymorphic_value.h>
 
 #include <cstdint>
-#include <gsl/assert>
 #include <memory>
 #include <string>
 #include <string_view>
-#include <utility>
 
-#include "cpp_not_null.h"
+#include "cpp_message_exception.h"
 #include "cpp_polymorphic_value.h"
 #include "network_i_json.h"
 #include "network_json_basic_conversions.h"

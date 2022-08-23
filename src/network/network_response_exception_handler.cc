@@ -1,11 +1,30 @@
 #include "network_response_exception_handler.h"
 
+#include <bits/exception.h>
+
 #include <memory>
+#include <optional>
 #include <utility>
 
+#include "cpp_message_exception.h"
+#include "cpp_optional.h"
+#include "cpp_polymorphic_value.h"
+#include "network_i_json.h"
+#include "network_json_basic_conversions.h"
 #include "network_types.h"
+#include "network_wrong_type_exception.h"
 
 namespace stonks::network {
+namespace {
+[[nodiscard]] auto TryToParseException(const IJson &json)
+    -> cpp::Opt<cpp::MessageException> {
+  try {
+    return ParseFromJson<cpp::MessageException>(json);
+  } catch (const std::exception &) {
+    return std::nullopt;
+  }
+}
+}  // namespace
 
 ResponseExceptionHandler::ResponseExceptionHandler(
     cpp::NnSp<IRestRequestSender> request_sender)
@@ -13,6 +32,16 @@ ResponseExceptionHandler::ResponseExceptionHandler(
 
 auto ResponseExceptionHandler::SendRequestAndGetResponse(
     RestRequest request) const -> RestResponse {
-  return request_sender_->SendRequestAndGetResponse(std::move(request));
+  try {
+    return request_sender_->SendRequestAndGetResponse(std::move(request));
+  } catch (const WrongTypeException &exception) {
+    auto server_exception = TryToParseException(*exception.GetJson());
+
+    if (const auto server_send_exception = server_exception.has_value()) {
+      throw cpp::MessageException{std::move(*server_exception)};
+    }
+
+    throw;
+  }
 }
 }  // namespace stonks::network

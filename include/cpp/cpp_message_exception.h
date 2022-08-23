@@ -1,7 +1,8 @@
 #ifndef STONKS_CPP_CPP_MESSAGE_EXCEPTION_H_
 #define STONKS_CPP_CPP_MESSAGE_EXCEPTION_H_
 
-#include <exception>
+#include <bits/exception.h>
+
 #include <string>
 
 namespace stonks::cpp {

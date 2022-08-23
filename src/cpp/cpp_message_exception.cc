@@ -1,5 +1,7 @@
 #include "cpp_message_exception.h"
 
+#include <utility>
+
 namespace stonks::cpp {
 MessageException::MessageException(std::string message)
     : message_{std::move(message)} {}

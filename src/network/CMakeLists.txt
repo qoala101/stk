@@ -8,6 +8,7 @@ add_library(libnetwork
   typed_endpoint/network_endpoint_types_validator_template.cc
   typed_endpoint/network_typed_endpoint_handler.cc
   typed_endpoint/network_typed_endpoint_sender.cc
+  typed_endpoint/network_wrong_type_exception.cc
   network_endpoint_request_dispatcher.cc
   network_i_json.cc
   network_request_exception_handler.cc
