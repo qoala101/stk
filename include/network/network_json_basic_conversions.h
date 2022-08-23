@@ -3,6 +3,7 @@
 
 #include <polymorphic_value.h>
 
+#include <cstddef>
 #include <exception>
 #include <stdexcept>
 
@@ -18,6 +19,10 @@
  */
 
 namespace stonks::network {
+[[nodiscard]] auto IsNullJson(const IJson &json) -> bool;
+
+[[nodiscard]] auto CreateNullJson() -> cpp::Pv<IJson>;
+
 template <typename T>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
 

@@ -7,6 +7,7 @@ enable_testing()
 
 add_executable(unittests
   restsdk/client_server.cc
+  restsdk/json_specialized_conversions.cc
 
   # restsdk/rest_request_receiver.cc
   # restsdk/rest_request_sender.cc

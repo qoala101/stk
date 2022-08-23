@@ -65,6 +65,7 @@ auto RestRequestBuilder::Build() && -> RestRequest {
   Expects(uri_is_set_);
   auto request = RestRequest{std::move(request_)};
   request_ = {};
+  uri_is_set_ = false;
   Ensures(request_.IsEmpty());
   Ensures(!uri_is_set_);
   return request;
