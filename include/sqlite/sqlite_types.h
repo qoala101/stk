@@ -8,6 +8,7 @@
 /**
  * @file Common SQLite types.
  */
+ 
 namespace stonks::sqlite {
 struct SqliteDbCloser {
   void operator()(sqlite3* sqlite_db) noexcept;

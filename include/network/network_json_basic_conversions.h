@@ -16,6 +16,7 @@
  * library implementer. Client could then use those for conversion of client
  * types.
  */
+ 
 namespace stonks::network {
 template <typename T>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T;

@@ -6,6 +6,7 @@
 /**
  * @file Table definitions used by DB.
  */
+ 
 namespace stonks::db::table_definitions {
 [[nodiscard]] auto Asset() -> const stonks::sqldb::TableDefinition &;
 [[nodiscard]] auto Symbol() -> const stonks::sqldb::TableDefinition &;

@@ -10,6 +10,7 @@
 /**
  * @file Symbols used by query builders.
  */
+ 
 namespace stonks::sqldb::query_builder_facade {
 /**
  * @brief Variant of columns specification.

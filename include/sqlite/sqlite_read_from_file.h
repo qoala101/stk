@@ -8,6 +8,7 @@
 /**
  * @file SQLite utils related to reading from file.
  */
+ 
 namespace stonks::sqlite::read_from_file {
 /**
  * @brief Reads SQLite DB from file.
