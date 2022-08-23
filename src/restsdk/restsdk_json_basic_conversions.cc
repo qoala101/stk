@@ -17,21 +17,6 @@
 #include "restsdk_json_impl.h"
 
 namespace stonks::network {
-namespace {
-class GenericException : public std::exception {
- public:
-  explicit GenericException(std::string message)
-      : message_{std::move(message)} {}
-
-  [[nodiscard]] auto what() const noexcept -> const char * override {
-    return message_.c_str();
-  }
-
- private:
-  std::string message_{};
-};
-}  // namespace
-
 template <>
 auto ParseFromJson(const IJson &json) -> int {
   return json.GetImpl().GetJson().as_integer();
@@ -53,15 +38,9 @@ auto ParseFromJson(const IJson &json) -> std::string {
 }
 
 template <>
-auto ParseFromJson(const IJson &json) -> cpp::NnUp<std::exception> {
-  const auto type = ParseFromJson<std::string>(*json.GetChild("restsdk:type"));
-
-  if (type == "std::exception") {
-    return cpp::MakeNnUp<GenericException>(
-        ParseFromJson<std::string>(*json.GetChild("message")));
-  }
-
-  Expects(false);
+auto ParseFromJson(const IJson &json) -> cpp::MessageException {
+  return cpp::MessageException{
+      ParseFromJson<std::string>(*json.GetChild("message"))};
 }
 
 auto ConvertToJson(int value) -> cpp::Pv<IJson> {
@@ -83,9 +62,6 @@ auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson> {
 
 auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson> {
   auto json = cpp::MakePv<IJson, restsdk::Json>();
-  json->SetChild("restsdk:type",
-                 restsdk::Json{network::IJson::Impl{
-                     web::json::value::string("std::exception")}});
   json->SetChild("message", restsdk::Json{network::IJson::Impl{
                                 web::json::value::string(value.what())}});
   return json;

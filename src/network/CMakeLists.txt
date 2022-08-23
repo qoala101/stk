@@ -24,14 +24,13 @@ set_target_properties(libnetwork PROPERTIES
 )
 
 target_include_directories(libnetwork
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/aliases
   PUBLIC ${PROJECT_SOURCE_DIR}/include/network
   PUBLIC ${PROJECT_SOURCE_DIR}/include/network/auto_parsable
   PUBLIC ${PROJECT_SOURCE_DIR}/include/network/typed_endpoint
 )
 
 target_link_libraries(libnetwork
+  PUBLIC libcpp
   PUBLIC NotNull
   PUBLIC polymorphic_value::polymorphic_value
   PRIVATE Microsoft.GSL::GSL

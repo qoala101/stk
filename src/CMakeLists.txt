@@ -6,6 +6,7 @@ FetchContent_Declare(NotNull
 
 FetchContent_MakeAvailable(NotNull)
 
+add_subdirectory(cpp)
 add_subdirectory(network)
 add_subdirectory(restsdk)
 add_subdirectory(sqldb)

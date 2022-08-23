@@ -6,6 +6,7 @@
 #include <exception>
 #include <stdexcept>
 
+#include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "network_i_json.h"
 #include "not_null.hpp"
@@ -32,8 +33,7 @@ template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> std::string;
 
 template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json)
-    -> cpp::NnUp<std::exception>;
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> cpp::MessageException;
 
 [[nodiscard]] auto ConvertToJson(int value) -> cpp::Pv<IJson>;
 
