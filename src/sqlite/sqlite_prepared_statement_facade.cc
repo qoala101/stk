@@ -45,7 +45,7 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
       const auto &string = value.GetString();
       result_code =
           sqlite3_bind_text(&statement, index, string.c_str(),
-                            gsl::narrow<int>(string.length()), nullptr);
+                            gsl::narrow_cast<int>(string.length()), nullptr);
       break;
     }
   }

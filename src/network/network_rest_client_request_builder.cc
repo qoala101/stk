@@ -5,13 +5,13 @@
 #include <tuple>
 #include <utility>
 
-#include "cpp_move_if_this_is_rvalue.h"
+#include "cpp_move_if.h"
 #include "network_types.h"
 
 namespace stonks::network::rest_client {
 void RequestBuilder::DiscardingResultImpl(auto&& t) {
   std::ignore = t.request_sender_->SendRequestAndGetResponse(
-      cpp::MoveIfThisIsRvalue<decltype(t)>(t.request_));
+      cpp::MoveIfRvalue<decltype(t)>(t.request_));
 }
 
 void RequestBuilder::DiscardingResult() const& { DiscardingResultImpl(*this); }
@@ -31,7 +31,7 @@ auto RequestBuilder::SendRequestAndGetResultImpl(auto&& t)
     -> Result::value_type {
   auto result = t.request_sender_
                     ->SendRequestAndGetResponse(
-                        cpp::MoveIfThisIsRvalue<decltype(t)>(t.request_))
+                        cpp::MoveIfRvalue<decltype(t)>(t.request_))
                     .result;
   Expects(result);
   return std::move(*result);

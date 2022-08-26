@@ -6,8 +6,10 @@ include(GoogleTest)
 enable_testing()
 
 add_executable(unittests
-  restsdk/client_server.cc
-  restsdk/json_specialized_conversions.cc
+  cpp/move_if.cc
+
+  # restsdk/client_server.cc
+  # restsdk/json_template_conversions.cc
 
   # restsdk/rest_request_receiver.cc
   # restsdk/rest_request_sender.cc
@@ -33,9 +35,11 @@ target_link_libraries(unittests
 gtest_discover_tests(unittests)
 
 target_link_libraries(unittests
-  PRIVATE libstonks
-  PRIVATE librestsdk
-  PRIVATE libsqlite
-  PRIVATE NotNull
-  PRIVATE polymorphic_value::polymorphic_value
+  PRIVATE libcpp
+
+  # PRIVATE libstonks
+  # PRIVATE librestsdk
+  # PRIVATE libsqlite
+  # PRIVATE NotNull
+  # PRIVATE polymorphic_value::polymorphic_value
 )

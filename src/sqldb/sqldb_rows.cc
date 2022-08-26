@@ -43,7 +43,7 @@ auto Rows::GetSize() const -> int {
     return 0;
   }
 
-  return gsl::narrow<int>(columns_.front().values.size());
+  return gsl::narrow_cast<int>(columns_.front().values.size());
 }
 
 void Rows::Push(std::vector<Value> values) {
