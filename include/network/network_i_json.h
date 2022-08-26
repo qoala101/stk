@@ -23,11 +23,21 @@ class IJson {
 
   /**
    * @brief Creates a copy with the same data.
-   * @remark Required by polymorphic_value.
+   * @remark Required by the polymorphic_value.
    */
-  [[nodiscard]] virtual auto clone() const -> cpp::NnUp<IJson> = 0;
+  [[nodiscard]] virtual auto clone() const& -> cpp::NnUp<IJson> = 0;
+
+  /**
+   * @copydoc clone
+   */
+  [[nodiscard]] virtual auto clone() && -> cpp::NnUp<IJson> = 0;
 
   virtual ~IJson() = default;
+
+  /**
+   * @brief Whether JSON is default-created and empty.
+   */
+  [[nodiscard]] virtual auto IsNull() const -> bool = 0;
 
   /**
    * @brief Gives child JSON at the key.
@@ -45,12 +55,28 @@ class IJson {
    * @brief Sets child JSON at the key.
    * @remark Would override existing child at the same key.
    */
-  virtual void SetChild(std::string key, const IJson& child) = 0;
+  virtual void SetChild(std::string key, cpp::Pv<IJson> child) = 0;
 
   /**
-   * @copydoc SetChild
+   * @brief Gives child JSON at index.
    */
-  virtual void SetChild(std::string key, IJson&& child);
+  [[nodiscard]] virtual auto GetChild(int index) const& -> cpp::Pv<IJson> = 0;
+
+  /**
+   * @copydoc GetChild
+   */
+  [[nodiscard]] virtual auto GetChild(int index) && -> cpp::Pv<IJson> = 0;
+
+  /**
+   * @brief Sets child JSON at index.
+   * @remark Would override existing child at the same index.
+   */
+  virtual void SetChild(int index, cpp::Pv<IJson> child) = 0;
+
+  /**
+   * @brief Gives number of children.
+   */
+  [[nodiscard]] virtual auto GetSize() const -> int = 0;
 
   /**
    * @brief Gives implementation details.

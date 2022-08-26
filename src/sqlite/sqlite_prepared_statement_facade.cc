@@ -7,7 +7,7 @@
 
 #include <cstdint>
 #include <gsl/assert>
-#include <gsl/narrow>
+#include <gsl/util>
 #include <memory>
 #include <stdexcept>
 #include <string>

@@ -2,35 +2,90 @@
 
 #include <cpprest/json.h>
 
+#include <gsl/assert>
+#include <gsl/util>
 #include <memory>
 #include <utility>
 
+#include "cpp_move_if.h"
 #include "cpp_not_null.h"
 #include "network_i_json.h"
 
 namespace stonks::restsdk {
 Json::Json(IJson::Impl impl) : impl_{std::move(impl)} {}
 
-auto Json::clone() const -> cpp::NnUp<IJson> {
-  return cpp::MakeNnUp<Json>(impl_);
+auto Json::CloneImpl(auto&& t) -> cpp::NnUp<IJson> {
+  return cpp::MakeNnUp<Json>(cpp::MoveIfNotConst<decltype(t)>(t.impl_));
+}
+
+auto Json::clone() const& -> cpp::NnUp<IJson> { return CloneImpl(*this); }
+
+auto Json::clone() && -> cpp::NnUp<IJson> { return CloneImpl(*this); }
+
+auto Json::IsNull() const -> bool { return impl_.GetJson().is_null(); }
+
+auto Json::GetChildImpl(auto&& t, std::string_view key) -> cpp::Pv<IJson> {
+  auto& json = t.impl_.GetJson();
+  Expects(json.is_array());
+
+  return cpp::MakePv<IJson, restsdk::Json>(
+      IJson::Impl{cpp::MoveIfNotConst<decltype(t)>(json.at(key.data()))});
 }
 
 auto Json::GetChild(std::string_view key) const& -> cpp::Pv<IJson> {
-  return cpp::MakePv<IJson, restsdk::Json>(
-      IJson::Impl{impl_.GetJson().at(key.data())});
+  return GetChildImpl(*this, key);
 }
 
 auto Json::GetChild(std::string_view key) && -> cpp::Pv<IJson> {
+  return GetChildImpl(*this, key);
+}
+
+void Json::SetChild(std::string key, cpp::Pv<IJson> child) {
+  auto& json = impl_.GetJson();
+  Expects(!json.is_array());
+
+  json[key] = std::move(child->GetImpl().GetJson());
+}
+
+auto Json::GetChildImpl(auto&& t, int index) -> cpp::Pv<IJson> {
+  auto& json = t.impl_.GetJson();
+  Expects(json.is_array());
+
   return cpp::MakePv<IJson, restsdk::Json>(
-      IJson::Impl{std::move(impl_.GetJson().at(key.data()))});
+      IJson::Impl{cpp::MoveIfNotConst<decltype(t)>(json.as_array().at(index))});
 }
 
-void Json::SetChild(std::string key, const IJson& child) {
-  impl_.GetJson()[key] = child.GetImpl().GetJson();
+auto Json::GetChild(int index) const& -> cpp::Pv<IJson> {
+  return GetChildImpl(*this, index);
 }
 
-void Json::SetChild(std::string key, IJson&& child) {
-  impl_.GetJson()[key] = std::move(child.GetImpl().GetJson());
+auto Json::GetChild(int index) && -> cpp::Pv<IJson> {
+  return GetChildImpl(*this, index);
+}
+
+void Json::SetChild(int index, cpp::Pv<IJson> child) {
+  auto& json = impl_.GetJson();
+  Expects(json.is_array() || json.is_null());
+
+  if (json.is_null()) {
+    json = web::json::value::array();
+  }
+
+  json.as_array()[index] = std::move(child->GetImpl().GetJson());
+  
+  Ensures(json.is_array());
+  Ensures(GetSize() > 0);
+}
+
+auto Json::GetSize() const -> int {
+  const auto& json = impl_.GetJson();
+  Expects(json.is_array() || json.is_null());
+
+  if (json.is_null()) {
+    return 0;
+  }
+
+  return gsl::narrow_cast<int>(json.as_array().size());
 }
 
 auto Json::GetImpl() const -> const IJson::Impl& { return impl_; }

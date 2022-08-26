@@ -21,7 +21,17 @@ class Json : public network::IJson {
   /**
    * @copydoc network::IJson::clone
    */
-  [[nodiscard]] auto clone() const -> cpp::NnUp<IJson> override;
+  [[nodiscard]] auto clone() const& -> cpp::NnUp<IJson> override;
+
+  /**
+   * @copydoc network::IJson::clone
+   */
+  [[nodiscard]] auto clone() && -> cpp::NnUp<IJson> override;
+
+  /**
+   * @copydoc network::IJson::IsNull
+   */
+  [[nodiscard]] auto IsNull() const -> bool override;
 
   /**
    * @copydoc network::IJson::GetChild
@@ -38,12 +48,27 @@ class Json : public network::IJson {
   /**
    * @copydoc network::IJson::SetChild
    */
-  void SetChild(std::string key, const IJson& child) override;
+  void SetChild(std::string key, cpp::Pv<IJson> child) override;
+
+  /**
+   * @copydoc network::IJson::GetChild
+   */
+  [[nodiscard]] auto GetChild(int index) const& -> cpp::Pv<IJson> override;
+
+  /**
+   * @copydoc network::IJson::GetChild
+   */
+  [[nodiscard]] auto GetChild(int index) && -> cpp::Pv<IJson> override;
 
   /**
    * @copydoc network::IJson::SetChild
    */
-  void SetChild(std::string key, IJson&& child) override;
+  void SetChild(int index, cpp::Pv<IJson> child) override;
+
+  /**
+   * @copydoc network::IJson::GetSize
+   */
+  [[nodiscard]] auto GetSize() const -> int override;
 
   /**
    * @copydoc network::IJson::GetImpl
@@ -56,6 +81,13 @@ class Json : public network::IJson {
   [[nodiscard]] auto GetImpl() -> IJson::Impl& override;
 
  private:
+  [[nodiscard]] static auto CloneImpl(auto&& t) -> cpp::NnUp<IJson>;
+
+  [[nodiscard]] static auto GetChildImpl(auto&& t, std::string_view key)
+      -> cpp::Pv<IJson>;
+
+  [[nodiscard]] static auto GetChildImpl(auto&& t, int index) -> cpp::Pv<IJson>;
+
   network::IJson::Impl impl_;
 };
 }  // namespace stonks::restsdk

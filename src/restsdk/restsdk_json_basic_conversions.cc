@@ -68,8 +68,7 @@ auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson> {
 
 auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson> {
   auto json = cpp::MakePv<IJson, restsdk::Json>();
-  json->SetChild("message", restsdk::Json{network::IJson::Impl{
-                                web::json::value::string(value.what())}});
+  json->SetChild("message", ConvertToJson(value.what()));
   return json;
 }
 }  // namespace stonks::network

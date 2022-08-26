@@ -9,7 +9,7 @@ add_executable(unittests
   cpp/move_if.cc
 
   # restsdk/client_server.cc
-  # restsdk/json_template_conversions.cc
+  restsdk/json_template_conversions.cc
 
   # restsdk/rest_request_receiver.cc
   # restsdk/rest_request_sender.cc
@@ -36,10 +36,9 @@ gtest_discover_tests(unittests)
 
 target_link_libraries(unittests
   PRIVATE libcpp
-
-  # PRIVATE libstonks
-  # PRIVATE librestsdk
-  # PRIVATE libsqlite
-  # PRIVATE NotNull
-  # PRIVATE polymorphic_value::polymorphic_value
+  PRIVATE libstonks
+  PRIVATE librestsdk
+  PRIVATE libsqlite
+  PRIVATE NotNull
+  PRIVATE polymorphic_value::polymorphic_value
 )

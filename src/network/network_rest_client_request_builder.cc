@@ -11,13 +11,13 @@
 namespace stonks::network::rest_client {
 void RequestBuilder::DiscardingResultImpl(auto&& t) {
   std::ignore = t.request_sender_->SendRequestAndGetResponse(
-      cpp::MoveIfRvalue<decltype(t)>(t.request_));
+      cpp::MoveIfNotConst<decltype(t)>(t.request_));
 }
 
 void RequestBuilder::DiscardingResult() const& { DiscardingResultImpl(*this); }
 
 void RequestBuilder::DiscardingResult() && {
-  DiscardingResultImpl(std::move(*this));
+  DiscardingResultImpl(*this);
   request_ = RestRequest{};
   Ensures(request_.IsEmpty());
 }
@@ -31,7 +31,7 @@ auto RequestBuilder::SendRequestAndGetResultImpl(auto&& t)
     -> Result::value_type {
   auto result = t.request_sender_
                     ->SendRequestAndGetResponse(
-                        cpp::MoveIfRvalue<decltype(t)>(t.request_))
+                        cpp::MoveIfNotConst<decltype(t)>(t.request_))
                     .result;
   Expects(result);
   return std::move(*result);
@@ -56,7 +56,7 @@ auto RequestBuilder::SendRequestAndGetResult() const& -> Result::value_type {
 }
 
 auto RequestBuilder::SendRequestAndGetResult() && -> Result::value_type {
-  auto result = SendRequestAndGetResultImpl(std::move(*this));
+  auto result = SendRequestAndGetResultImpl(*this);
   request_ = RestRequest{};
   Ensures(request_.IsEmpty());
   return result;

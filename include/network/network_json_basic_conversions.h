@@ -19,8 +19,6 @@
  */
 
 namespace stonks::network {
-[[nodiscard]] auto IsNullJson(const IJson &json) -> bool;
-
 [[nodiscard]] auto CreateNullJson() -> cpp::Pv<IJson>;
 
 template <typename T>

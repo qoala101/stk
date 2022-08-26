@@ -6,7 +6,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <gsl/assert>
-#include <gsl/narrow>
+#include <gsl/util>
 #include <memory>
 #include <stdexcept>
 
