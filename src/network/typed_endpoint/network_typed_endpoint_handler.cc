@@ -28,8 +28,8 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   }
 
   void HandleWrongRequestParamType(
-      const std::exception &exception) const override {
-    throw exception;
+      const std::exception &parsing_exception) const override {
+    throw parsing_exception;
   }
 
   void HandleMissingRequestBody() const override {
@@ -37,8 +37,8 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   }
 
   void HandleWrongRequestBodyType(
-      const std::exception &exception) const override {
-    throw exception;
+      const std::exception &parsing_exception) const override {
+    throw parsing_exception;
   }
 
   void HandleUnexpectedRequestBody() const override {
@@ -49,7 +49,7 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
 
   void HandleWrongResponseBodyType(
       const Body::value_type & /*response_body*/,
-      const std::exception & /*exception*/) const override {
+      const std::exception & /*parsing_exception*/) const override {
     Expects(false);
   }
 

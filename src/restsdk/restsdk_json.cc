@@ -26,7 +26,7 @@ auto Json::IsNull() const -> bool { return impl_.GetJson().is_null(); }
 
 auto Json::GetChildImpl(auto&& t, std::string_view key) -> cpp::Pv<IJson> {
   auto& json = t.impl_.GetJson();
-  Expects(json.is_array());
+  Expects(!json.is_array());
 
   return cpp::MakePv<IJson, restsdk::Json>(
       IJson::Impl{cpp::MoveIfNotConst<decltype(t)>(json.at(key.data()))});

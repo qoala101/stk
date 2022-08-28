@@ -34,8 +34,8 @@ auto ResponseExceptionHandler::SendRequestAndGetResponse(
     RestRequest request) const -> RestResponse {
   try {
     return request_sender_->SendRequestAndGetResponse(std::move(request));
-  } catch (const WrongTypeException &exception) {
-    auto server_exception = TryToParseException(*exception.GetJson());
+  } catch (const WrongTypeException &e) {
+    auto server_exception = TryToParseException(*e.GetJson());
 
     if (const auto server_send_exception = server_exception.has_value()) {
       throw cpp::MessageException{std::move(*server_exception)};

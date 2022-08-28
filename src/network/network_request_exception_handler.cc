@@ -19,9 +19,8 @@ auto RequestExceptionHandler::HandleRequestAndGiveResponse(
     RestRequest request) const -> RestResponse {
   try {
     return handler_->HandleRequestAndGiveResponse(std::move(request));
-  } catch (const std::exception &exception) {
-    return {.status = Status::kInternalError,
-            .result = ConvertToJson(exception)};
+  } catch (const std::exception &e) {
+    return {.status = Status::kInternalError, .result = ConvertToJson(e)};
   }
 }
 }  // namespace stonks::network

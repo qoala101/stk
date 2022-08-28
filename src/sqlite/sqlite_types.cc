@@ -19,8 +19,8 @@ namespace {
 
 void SqliteDbCloser::operator()(sqlite3* sqlite_db) noexcept try {
   DbFacade{cpp::CheckNn(sqlite_db)}.Close();
-} catch (const std::exception& exception) {
-  Logger().error(exception.what());
+} catch (const std::exception& e) {
+  Logger().error(e.what());
 }
 
 void SqliteStatementFinalizer::operator()(

@@ -44,8 +44,8 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
 
   void HandleWrongResponseBodyType(
       const Body::value_type &response_body,
-      const std::exception &exception) const override {
-    throw WrongTypeException{exception.what(), response_body};
+      const std::exception &parsing_exception) const override {
+    throw WrongTypeException{parsing_exception.what(), response_body};
   }
 
   void HandleUnexpectedResponseBody() const override {
