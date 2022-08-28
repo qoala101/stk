@@ -8,7 +8,7 @@
 #include <string_view>
 #include <utility>
 
-#include "cpp_message_exception.h"
+#include "network_exception.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 #include "network_wrong_type_exception.h"
@@ -41,7 +41,7 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   void HandleUnexpectedRequestBody() const override { Expects(false); }
 
   void HandleMissingResponseBody() const override {
-    throw cpp::MessageException{"Response is missing result"};
+    throw Exception{"Response is missing result"};
   }
 
   void HandleWrongResponseBodyType(
@@ -51,7 +51,7 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   }
 
   void HandleUnexpectedResponseBody() const override {
-    throw cpp::MessageException{"Response has unexpected result"};
+    throw Exception{"Response has unexpected result"};
   }
 };
 }  // namespace

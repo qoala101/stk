@@ -7,8 +7,7 @@ enable_testing()
 
 add_executable(unittests
   cpp/move_if.cc
-
-  # restsdk/client_server.cc
+  restsdk/client_server.cc
   restsdk/json_template_conversions.cc
 
   # restsdk/rest_request_receiver.cc
