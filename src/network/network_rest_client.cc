@@ -19,12 +19,12 @@ auto RestClient::Call(TypedEndpoint endpoint) const
     -> rest_client::RequestBuilder {
   endpoint.endpoint.uri = base_uri_ + endpoint.endpoint.uri;
 
-  auto typed_sender = cpp::MakeNnUp<ResponseExceptionHandler>(
+  auto decorated_sender = cpp::MakeNnUp<ResponseExceptionHandler>(
       cpp::MakeNnUp<TypedEndpointSender>(std::move(endpoint.expected_types),
                                          request_sender_));
 
   return cpp::CallExposedPrivateConstructorOf<rest_client::RequestBuilder,
                                               RestClient>{}(
-      std::move(endpoint.endpoint), std::move(typed_sender));
+      std::move(endpoint.endpoint), std::move(decorated_sender));
 }
 }  // namespace stonks::network

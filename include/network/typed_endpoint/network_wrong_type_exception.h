@@ -3,15 +3,15 @@
 
 #include <string>
 
-#include "cpp_message_exception.h"
 #include "cpp_polymorphic_value.h"
+#include "network_exception.h"
 #include "network_i_json.h"
 
 namespace stonks::network {
 /**
- * @brief Exception produced by the attempt to a JSON.
+ * @brief Exception produced by the attempt to parse a JSON.
  */
-class WrongTypeException : public cpp::MessageException {
+class WrongTypeException : public Exception {
  public:
   /**
    * @param message Description of parsing error.

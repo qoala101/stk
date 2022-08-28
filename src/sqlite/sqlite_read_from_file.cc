@@ -8,9 +8,9 @@
 
 #include <filesystem>
 #include <memory>
-#include <stdexcept>
 #include <string>
 
+#include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
 #include "not_null.hpp"
@@ -28,7 +28,7 @@ namespace {
   sqlite3_open(":memory:", &in_memory_db);
 
   if (in_memory_db == nullptr) {
-    throw std::runtime_error{"Couldn't create in memory DB"};
+    throw cpp::MessageException{"Couldn't create in memory DB"};
   }
 
   return cpp::AssumeNn(cpp::Up<sqlite3, SqliteDbCloser>{in_memory_db});
@@ -39,7 +39,7 @@ void UpdateNewDb(sqlite3 &sqlite_db) {
                                         nullptr, nullptr, nullptr);
 
   if (result_code != SQLITE_OK) {
-    throw std::runtime_error{"Couldn't set foreign_keys pragma on new DB"};
+    throw cpp::MessageException{"Couldn't set foreign_keys pragma on new DB"};
   }
 }
 }  // namespace
@@ -49,8 +49,9 @@ auto OpenSqliteDbFromFile(std::string_view file_path) -> SqliteDbHandle {
   sqlite3_open(file_path.data(), &file_db);
 
   if (file_db == nullptr) {
-    throw std::runtime_error{std::string{"Couldn't read DB from file "} +
-                             file_path.data() + ": " + sqlite3_errmsg(file_db)};
+    throw cpp::MessageException{std::string{"Couldn't read DB from file "} +
+                                file_path.data() + ": " +
+                                sqlite3_errmsg(file_db)};
   }
 
   return cpp::AssumeNn(cpp::Up<sqlite3, SqliteDbCloser>{file_db});

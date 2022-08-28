@@ -27,11 +27,12 @@ void EndpointTypesValidatorTemplate::HandleUnknownParam(
     std::string_view param_name) const {}
 
 void EndpointTypesValidatorTemplate::HandleWrongRequestParamType(
-    const std::exception &parsing_exception) const {}
+    const Param &param, const std::exception &parsing_exception) const {}
 
 void EndpointTypesValidatorTemplate::HandleMissingRequestBody() const {}
 
 void EndpointTypesValidatorTemplate::HandleWrongRequestBodyType(
+    const Body::value_type &request_body,
     const std::exception &parsing_exception) const {}
 
 void EndpointTypesValidatorTemplate::HandleUnexpectedRequestBody() const {}
@@ -59,7 +60,7 @@ void EndpointTypesValidatorTemplate::ValidateRequestParamTypes(
     try {
       param_type->second(*value);
     } catch (const std::exception &e) {
-      HandleWrongRequestParamType(e);
+      HandleWrongRequestParamType(value, e);
     }
   }
 }
@@ -74,7 +75,7 @@ void EndpointTypesValidatorTemplate::ValidateRequestBodyType(
     try {
       (*endpoint_types_.body)(**body);
     } catch (const std::exception &e) {
-      HandleWrongRequestBodyType(e);
+      HandleWrongRequestBodyType(*body, e);
     }
 
     return;

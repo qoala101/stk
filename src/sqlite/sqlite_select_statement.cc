@@ -7,10 +7,10 @@
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
-#include <stdexcept>
 #include <string>
 #include <utility>
 
+#include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "sqldb_types.h"
 #include "sqlite_prepared_statement_facade.h"
@@ -72,8 +72,8 @@ auto SelectStatement::Execute(std::vector<sqldb::Value> params) const
         return result_rows;
 
       default:
-        throw std::runtime_error{"Unexpected select statement result: " +
-                                 std::to_string(result_code)};
+        throw cpp::MessageException{"Unexpected select statement result: " +
+                                    std::to_string(result_code)};
     }
   }
 }

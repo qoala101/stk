@@ -4,11 +4,11 @@
 
 #include <gsl/assert>
 #include <memory>
-#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <utility>
 
+#include "cpp_message_exception.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 #include "network_wrong_type_exception.h"
@@ -25,21 +25,23 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   }
 
   void HandleWrongRequestParamType(
-      const std::exception & /*exception*/) const override {
+      const Param & /*param*/,
+      const std::exception & /*parsing_exception*/) const override {
     Expects(false);
   }
 
   void HandleMissingRequestBody() const override { Expects(false); }
 
   void HandleWrongRequestBodyType(
-      const std::exception & /*exception*/) const override {
+      const Body::value_type & /*request_body*/,
+      const std::exception & /*parsing_exception*/) const override {
     Expects(false);
   }
 
   void HandleUnexpectedRequestBody() const override { Expects(false); }
 
   void HandleMissingResponseBody() const override {
-    throw std::runtime_error{"Response is missing result"};
+    throw cpp::MessageException{"Response is missing result"};
   }
 
   void HandleWrongResponseBodyType(
@@ -49,7 +51,7 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   }
 
   void HandleUnexpectedResponseBody() const override {
-    throw std::runtime_error{"Response has unexpected result"};
+    throw cpp::MessageException{"Response has unexpected result"};
   }
 };
 }  // namespace

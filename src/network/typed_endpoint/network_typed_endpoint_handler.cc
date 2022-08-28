@@ -4,14 +4,15 @@
 
 #include <gsl/assert>
 #include <memory>
-#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <utility>
 
 #include "network_endpoint_types_validator_template.h"
+#include "network_exception.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
+#include "network_wrong_type_exception.h"
 
 namespace stonks::network {
 namespace {
@@ -19,30 +20,31 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   using EndpointTypesValidatorTemplate::EndpointTypesValidatorTemplate;
 
   void HandleWrongParamsSize() const override {
-    throw std::runtime_error{"Wrong number of request params"};
+    throw Exception{"Wrong number of request params"};
   }
 
   void HandleUnknownParam(std::string_view param_name) const override {
-    throw std::runtime_error{std::string{"Unknown request param: "} +
-                             param_name.data()};
+    throw Exception{std::string{"Unknown request param: "} + param_name.data()};
   }
 
   void HandleWrongRequestParamType(
+      const Param &param,
       const std::exception &parsing_exception) const override {
-    throw parsing_exception;
+    throw WrongTypeException{parsing_exception.what(), param};
   }
 
   void HandleMissingRequestBody() const override {
-    throw std::runtime_error{"Request body is missing"};
+    throw Exception{"Request body is missing"};
   }
 
   void HandleWrongRequestBodyType(
+      const Body::value_type &request_body,
       const std::exception &parsing_exception) const override {
-    throw parsing_exception;
+    throw WrongTypeException{parsing_exception.what(), request_body};
   }
 
   void HandleUnexpectedRequestBody() const override {
-    throw std::runtime_error{"Request has unexpected body"};
+    throw Exception{"Request has unexpected body"};
   }
 
   void HandleMissingResponseBody() const override { Expects(false); }

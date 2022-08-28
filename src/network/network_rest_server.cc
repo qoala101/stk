@@ -39,11 +39,13 @@ auto RestServer::Start() && -> cpp::Nn<cpp::Up<IRestRequestReceiver>> {
 auto RestServer::Handling(TypedEndpoint endpoint,
                           cpp::NnUp<IRestRequestHandler> handler)
     -> RestServer& {
-  endpoint_handlers_.emplace(
-      std::move(endpoint.endpoint),
-      cpp::MakeNnUp<RequestExceptionHandler>(
-          cpp::MakeNnUp<TypedEndpointHandler>(
-              std::move(endpoint.expected_types), std::move(handler))));
+  auto decorated_handler = cpp::MakeNnUp<RequestExceptionHandler>(
+      cpp::MakeNnUp<TypedEndpointHandler>(std::move(endpoint.expected_types),
+                                          std::move(handler)));
+
+  endpoint_handlers_.emplace(std::move(endpoint.endpoint),
+                             std::move(decorated_handler));
+
   Ensures(!endpoint_handlers_.empty());
   return *this;
 }

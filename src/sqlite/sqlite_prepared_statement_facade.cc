@@ -9,9 +9,9 @@
 #include <gsl/assert>
 #include <gsl/util>
 #include <memory>
-#include <stdexcept>
 #include <string>
 
+#include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 
 namespace stonks::sqlite {
@@ -51,8 +51,9 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
   }
 
   if (result_code != SQLITE_OK) {
-    throw std::runtime_error{"Couldn't bind parameter to prepared statement: " +
-                             std::to_string(result_code)};
+    throw cpp::MessageException{
+        "Couldn't bind parameter to prepared statement: " +
+        std::to_string(result_code)};
   }
 }
 
@@ -93,8 +94,8 @@ void PreparedStatementFacade::Reset() {
   const auto result_code = sqlite3_reset(sqlite_statement_);
 
   if (result_code != SQLITE_OK) {
-    throw std::runtime_error{"Couldn't reset prepared statement: " +
-                             std::to_string(result_code)};
+    throw cpp::MessageException{"Couldn't reset prepared statement: " +
+                                std::to_string(result_code)};
   }
 }
 

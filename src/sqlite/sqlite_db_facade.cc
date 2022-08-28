@@ -8,8 +8,8 @@
 #include <gsl/assert>
 #include <gsl/util>
 #include <memory>
-#include <stdexcept>
 
+#include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
 #include "not_null.hpp"
@@ -67,7 +67,7 @@ auto DbFacade::CreatePreparedStatement(std::string_view query)
                      SQLITE_PREPARE_PERSISTENT, &sqlite_statement, nullptr);
 
   if (sqlite_statement == nullptr) {
-    throw std::runtime_error{
+    throw cpp::MessageException{
         std::string{"Couldn't prepare the statement for query: "} +
         query.data()};
   }
@@ -84,7 +84,7 @@ void DbFacade::Close() {
   const auto result_code = sqlite3_close(sqlite_db_);
 
   if (result_code != SQLITE_OK) {
-    throw std::runtime_error{"Couldn't close DB from " + file_name};
+    throw cpp::MessageException{"Couldn't close DB from " + file_name};
   }
 
   Logger().info("Closed DB from {}", file_name);
