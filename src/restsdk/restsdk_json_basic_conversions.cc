@@ -24,6 +24,11 @@ auto CreateNullJson() -> cpp::Pv<IJson> {
 }
 
 template <>
+auto ParseFromJson(const IJson &json) -> bool {
+  return json.GetImpl().GetJson().as_bool();
+}
+
+template <>
 auto ParseFromJson(const IJson &json) -> int {
   return json.GetImpl().GetJson().as_integer();
 }
@@ -47,6 +52,10 @@ template <>
 auto ParseFromJson(const IJson &json) -> cpp::MessageException {
   return cpp::MessageException{
       ParseFromJson<std::string>(*json.GetChild("message"))};
+}
+
+auto ConvertToJson(bool value) -> cpp::Pv<IJson> {
+  return cpp::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
 }
 
 auto ConvertToJson(int value) -> cpp::Pv<IJson> {

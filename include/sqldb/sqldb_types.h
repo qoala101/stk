@@ -9,6 +9,10 @@
 #include "sqldb_enums.h"
 #include "sqldb_value.h"
 
+/**
+ * @file Common DB related types.
+ */
+
 namespace stonks::sqldb {
 using Table = std::string;
 using Column = std::string;
@@ -47,7 +51,7 @@ struct TableDefinition {
 
 struct Cell {
   Column column{};
-  Value value;
+  Value value{};
 };
 
 struct CellDefinition {

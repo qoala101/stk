@@ -32,6 +32,10 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
   auto result_code = SQLITE_OK;
 
   switch (value.GetType()) {
+    case sqldb::DataType::kBool:
+      result_code = sqlite3_bind_int(&statement, index,
+                                     static_cast<int>(value.GetBool()));
+      break;
     case sqldb::DataType::kInt:
       result_code = sqlite3_bind_int(&statement, index, value.GetInt());
       break;
@@ -66,6 +70,9 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
   }
 
   switch (type) {
+    case sqldb::DataType::kBool:
+      return sqldb::Value{
+          static_cast<bool>(sqlite3_column_int(&statement, index))};
     case sqldb::DataType::kInt:
       return sqldb::Value{sqlite3_column_int(&statement, index)};
     case sqldb::DataType::kInt64:
@@ -74,8 +81,8 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
       return sqldb::Value{sqlite3_column_double(&statement, index)};
     case sqldb::DataType::kString:
       // NOLINTNEXTLINE(*-reinterpret-cast)
-      return sqldb::Value{reinterpret_cast<const char *>(
-          sqlite3_column_text(&statement, index))};
+      return sqldb::Value{std::string{reinterpret_cast<const char *>(
+          sqlite3_column_text(&statement, index))}};
   }
 
   Expects(false);

@@ -25,6 +25,9 @@ template <typename T>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
 
 template <>
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> bool;
+
+template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> int;
 
 template <>
@@ -38,6 +41,8 @@ template <>
 
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> cpp::MessageException;
+
+[[nodiscard]] auto ConvertToJson(bool value) -> cpp::Pv<IJson>;
 
 [[nodiscard]] auto ConvertToJson(int value) -> cpp::Pv<IJson>;
 

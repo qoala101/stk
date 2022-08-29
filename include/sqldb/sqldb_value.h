@@ -25,6 +25,8 @@ class Value {
   Value() = default;
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
+  Value(bool value);
+  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   Value(int value);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   Value(int64_t value);
@@ -32,6 +34,8 @@ class Value {
   Value(double value);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   Value(std::string value);
+
+  [[nodiscard]] auto GetBool() const -> bool;
 
   [[nodiscard]] auto GetInt() const -> int;
 
@@ -55,7 +59,8 @@ class Value {
 
   [[nodiscard]] static auto GetStringImpl(auto &t) -> auto &;
 
-  std::variant<std::monostate, int, int64_t, double, std::string> value_{};
+  std::variant<std::monostate, bool, int, int64_t, double, std::string>
+      value_{};
 };
 }  // namespace stonks::sqldb
 

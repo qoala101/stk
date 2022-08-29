@@ -12,6 +12,8 @@ Value::Value(std::string_view value, DataType data_type) {
   Expects(!value.empty() || (data_type == DataType::kString));
 
   switch (data_type) {
+    case DataType::kBool:
+      value_ = static_cast<bool>(std::stoi(value.data()));
     case DataType::kInt:
       value_ = std::stoi(value.data());
     case DataType::kInt64:
@@ -25,6 +27,8 @@ Value::Value(std::string_view value, DataType data_type) {
   Ensures(!IsNull());
 }
 
+Value::Value(bool value) : value_{value} {}
+
 Value::Value(int value) : value_{value} {}
 
 Value::Value(int64_t value) : value_{value} {}
@@ -32,6 +36,11 @@ Value::Value(int64_t value) : value_{value} {}
 Value::Value(double value) : value_{value} {}
 
 Value::Value(std::string value) : value_{std::move(value)} {}
+
+auto Value::GetBool() const -> bool {
+  Expects(std::holds_alternative<bool>(value_));
+  return std::get<bool>(value_);
+}
 
 auto Value::GetInt() const -> int {
   Expects(std::holds_alternative<int>(value_));
