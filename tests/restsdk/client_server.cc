@@ -27,6 +27,7 @@
 #include "network_json_basic_conversions.h"
 #include "network_rest_client.h"
 #include "network_rest_client_request_builder.h"
+#include "network_rest_request_builder.h"
 #include "network_rest_server.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
