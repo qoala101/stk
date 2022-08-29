@@ -1,6 +1,7 @@
 #ifndef STONKS_RESTSDK_RESTSDK_JSON_H_
 #define STONKS_RESTSDK_RESTSDK_JSON_H_
 
+#include <cstdint>
 #include <string>
 #include <string_view>
 
@@ -16,7 +17,13 @@ namespace stonks::restsdk {
 class Json : public network::IJson {
  public:
   explicit Json() = default;
-  explicit Json(network::IJson::Impl impl);
+  explicit Json(bool value);
+  explicit Json(int value);
+  explicit Json(int64_t value);
+  explicit Json(double value);
+  explicit Json(const char* value);
+  explicit Json(std::string_view value);
+  explicit Json(IJson::Impl impl);
 
   /**
    * @copydoc network::IJson::clone

@@ -35,6 +35,8 @@ Value::Value(int64_t value) : value_{value} {}
 
 Value::Value(double value) : value_{value} {}
 
+Value::Value(const char* value) : Value{std::string{value}} {}
+
 Value::Value(std::string value) : value_{std::move(value)} {}
 
 auto Value::GetBool() const -> bool {
@@ -74,6 +76,10 @@ auto Value::GetType() const -> DataType {
   return std::visit(
       [](const auto& variant) -> DataType {
         using T = std::decay_t<decltype(variant)>;
+
+        if constexpr (std::is_same_v<T, bool>) {
+          return DataType::kBool;
+        }
 
         if constexpr (std::is_same_v<T, int>) {
           return DataType::kInt;

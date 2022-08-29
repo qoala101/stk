@@ -56,7 +56,7 @@ class Db::Impl {
         sqlite_db_handle_, sqlite_db_facade_.CreatePreparedStatement(query)});
   }
 
-  void WriteToFile(std::string_view file_path) {
+  void WriteToFile(std::string_view file_path) const {
     sqlite_db_facade_.WriteToFile(file_path);
   }
 
@@ -81,7 +81,7 @@ auto Db::PrepareStatement(std::string query)
   return impl_->PrepareStatement(query);
 }
 
-void Db::WriteToFile(std::string_view file_path) {
+void Db::WriteToFile(std::string_view file_path) const {
   impl_->WriteToFile(file_path);
 }
 }  // namespace stonks::sqlite

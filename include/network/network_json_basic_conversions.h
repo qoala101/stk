@@ -50,6 +50,8 @@ template <>
 
 [[nodiscard]] auto ConvertToJson(double value) -> cpp::Pv<IJson>;
 
+[[nodiscard]] auto ConvertToJson(const char *value) -> cpp::Pv<IJson>;
+
 [[nodiscard]] auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson>;
 
 [[nodiscard]] auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson>;

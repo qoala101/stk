@@ -4,9 +4,7 @@
 #include <string>
 
 #include "cpp_not_null.h"
-#include "cpp_polymorphic_value.h"
 #include "network_i_factory.h"
-#include "network_i_json.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_i_rest_request_sender.h"
@@ -30,11 +28,6 @@ class Factory : public network::IFactory {
       std::string local_uri,
       cpp::NnUp<network::IRestRequestHandler> handler) const
       -> cpp::NnUp<network::IRestRequestReceiver> override;
-
-  /**
-   * @copydoc network::IFactory::CreateJson
-   */
-  [[nodiscard]] auto CreateJson() const -> cpp::Pv<network::IJson> override;
 };
 }  // namespace stonks::restsdk
 

@@ -48,10 +48,9 @@ class Db : public sqldb::IDb {
       -> cpp::NnUp<sqldb::IUpdateStatement> override;
 
   /**
-   * @brief
-   *
+   * @copydoc sqldb::IDb::WriteToFile
    */
-  void WriteToFile(std::string_view file_path) override;
+  void WriteToFile(std::string_view file_path) const override;
 
  private:
   class Impl;

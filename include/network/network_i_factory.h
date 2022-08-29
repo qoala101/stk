@@ -37,11 +37,6 @@ class IFactory {
       std::string local_uri, cpp::NnUp<IRestRequestHandler> handler) const
       -> cpp::NnUp<IRestRequestReceiver> = 0;
 
-  /**
-   * @brief Creates an empty JSON object.
-   */
-  [[nodiscard]] virtual auto CreateJson() const -> cpp::Pv<IJson> = 0;
-
  protected:
   explicit IFactory() = default;
 };

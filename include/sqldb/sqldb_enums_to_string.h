@@ -11,6 +11,7 @@ template <>
 magic_enum::customize::enum_name<stonks::sqldb::DataType>(
     stonks::sqldb::DataType value) noexcept -> std::string_view {
   switch (value) {
+    case stonks::sqldb::DataType::kBool:
     case stonks::sqldb::DataType::kInt:
     case stonks::sqldb::DataType::kInt64:
       return "INTEGER";

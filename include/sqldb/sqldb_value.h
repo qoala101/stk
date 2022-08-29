@@ -33,6 +33,8 @@ class Value {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   Value(double value);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
+  Value(const char *value);
+  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   Value(std::string value);
 
   [[nodiscard]] auto GetBool() const -> bool;

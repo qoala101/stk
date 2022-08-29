@@ -15,10 +15,6 @@
 #include "restsdk_json_impl.h"
 
 namespace stonks::network {
-auto IsNullJson(const IJson &json) -> bool {
-  return json.GetImpl().GetJson().is_null();
-}
-
 auto CreateNullJson() -> cpp::Pv<IJson> {
   return cpp::MakePv<IJson, restsdk::Json>();
 }
@@ -55,24 +51,27 @@ auto ParseFromJson(const IJson &json) -> cpp::MessageException {
 }
 
 auto ConvertToJson(bool value) -> cpp::Pv<IJson> {
-  return cpp::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
+  return cpp::MakePv<IJson, restsdk::Json>(value);
 }
 
 auto ConvertToJson(int value) -> cpp::Pv<IJson> {
-  return cpp::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
+  return cpp::MakePv<IJson, restsdk::Json>(value);
 }
 
 auto ConvertToJson(int64_t value) -> cpp::Pv<IJson> {
-  return cpp::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
+  return cpp::MakePv<IJson, restsdk::Json>(value);
 }
 
 auto ConvertToJson(double value) -> cpp::Pv<IJson> {
-  return cpp::MakePv<IJson, restsdk::Json>(IJson::Impl{value});
+  return cpp::MakePv<IJson, restsdk::Json>(value);
+}
+
+auto ConvertToJson(const char *value) -> cpp::Pv<IJson> {
+  return cpp::MakePv<IJson, restsdk::Json>(value);
 }
 
 auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson> {
-  return cpp::MakePv<IJson, restsdk::Json>(
-      IJson::Impl{web::json::value::string(value.data())});
+  return cpp::MakePv<IJson, restsdk::Json>(value);
 }
 
 auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson> {

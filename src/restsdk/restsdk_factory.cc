@@ -1,11 +1,8 @@
 #include "restsdk_factory.h"
 
-#include <memory>
 #include <utility>
 
 #include "cpp_not_null.h"
-#include "network_i_json.h"
-#include "restsdk_json.h"
 #include "restsdk_rest_request_receiver.h"
 #include "restsdk_rest_request_sender.h"
 
@@ -20,9 +17,5 @@ auto Factory::CreateRestRequestReceiver(
     cpp::NnUp<network::IRestRequestHandler> handler) const
     -> cpp::NnUp<network::IRestRequestReceiver> {
   return cpp::MakeNnUp<RestRequestReceiver>(local_uri, std::move(handler));
-}
-
-auto Factory::CreateJson() const -> cpp::Pv<network::IJson> {
-  return cpp::MakePv<network::IJson, Json>();
 }
 }  // namespace stonks::restsdk
