@@ -6,9 +6,11 @@ include(GoogleTest)
 enable_testing()
 
 add_executable(unittests
-  cpp/move_if.cc
-  restsdk/client_server.cc
-  restsdk/json_template_conversions.cc
+  aws/dynamo_db.cc
+
+  # cpp/move_if.cc
+  # restsdk/client_server.cc
+  # restsdk/json_template_conversions.cc
 
   # restsdk/rest_request_receiver.cc
   # restsdk/rest_request_sender.cc
@@ -35,6 +37,7 @@ gtest_discover_tests(unittests)
 
 target_link_libraries(unittests
   PRIVATE libcpp
+  PRIVATE libaws
   PRIVATE libstonks
   PRIVATE librestsdk
   PRIVATE libsqlite
