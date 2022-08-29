@@ -3,10 +3,16 @@
 
 #include <string>
 #include <string_view>
+#include <vector>
 
-#include "cpp_smart_pointers.h"
+#include "aws_api_handle.h"
+#include "cpp_not_null.h"
 #include "nosqldb_i_db.h"
 #include "nosqldb_types.h"
+
+namespace Aws::DynamoDB {
+class DynamoDBClient;
+}  // namespace Aws::DynamoDB
 
 namespace stonks::aws {
 /**
@@ -19,10 +25,10 @@ class Db : public nosqldb::IDb {
   explicit Db();
 
   Db(const Db &) = delete;
-  Db(Db &&) noexcept = default;
+  Db(Db &&) noexcept;
 
   auto operator=(const Db &) -> Db & = delete;
-  auto operator=(Db &&) noexcept -> Db & = default;
+  auto operator=(Db &&) noexcept -> Db &;
 
   ~Db() override;
 
@@ -89,9 +95,10 @@ class Db : public nosqldb::IDb {
   void WriteToUri(std::string_view uri) const override;
 
  private:
-  class Impl;
+  [[nodiscard]] auto GetExistingTables() -> std::vector<KeyValueTable>;
 
-  cpp::Up<Impl> impl_{};
+  cpp::NnSp<ApiHandle> api_handle_;
+  cpp::NnUp<Aws::DynamoDB::DynamoDBClient> db_client_;
 };
 }  // namespace stonks::aws
 

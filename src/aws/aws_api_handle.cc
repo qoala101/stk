@@ -20,9 +20,9 @@ namespace {
 }
 }  // namespace
 
-auto ApiHandle::Instance() -> cpp::Sp<ApiHandle> {
+auto ApiHandle::Instance() -> cpp::NnSp<ApiHandle> {
   class EnableMakeSp : public ApiHandle {};
-  static auto instance = cpp::MakeSp<EnableMakeSp>();
+  static auto instance = cpp::MakeNnSp<EnableMakeSp>();
   return instance;
 }
 

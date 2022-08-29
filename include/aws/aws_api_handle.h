@@ -1,7 +1,7 @@
 #ifndef STONKS_AWS_AWS_API_HANDLE_H_
 #define STONKS_AWS_AWS_API_HANDLE_H_
 
-#include "cpp_smart_pointers.h"
+#include "cpp_not_null.h"
 
 namespace stonks::aws {
 /**
@@ -13,7 +13,7 @@ class ApiHandle {
   /**
    * @brief Gives shared instance.
    */
-  [[nodiscard]] static auto Instance() -> cpp::Sp<ApiHandle>;
+  [[nodiscard]] static auto Instance() -> cpp::NnSp<ApiHandle>;
 
   ApiHandle(const ApiHandle &) = delete;
   ApiHandle(ApiHandle &&) noexcept = delete;
