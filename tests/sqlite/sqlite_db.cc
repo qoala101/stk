@@ -13,22 +13,21 @@
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 #include "sqlite_factory.h"
-#include "utils.h"
 
 namespace {
 const auto kTestDbFileName = "sqlite_db_test.db";
 
-auto db_factory = cpp::Up<stonks::sqldb::IFactory>{};
-auto db = cpp::Up<stonks::sqldb::IDb>{};
-auto query_builder = cpp::Sp<stonks::sqldb::IQueryBuilder>{};
+auto db_factory = stonks::cpp::Up<stonks::sqldb::IFactory>{};
+auto db = stonks::cpp::Up<stonks::sqldb::IDb>{};
+auto query_builder = stonks::cpp::Sp<stonks::sqldb::IQueryBuilder>{};
 auto query_builder_facade = std::optional<stonks::sqldb::QueryBuilderFacade>{};
 
 TEST(SqliteDb, CreateAndDropTable) {
   std::ignore = std::filesystem::remove(kTestDbFileName);
-  db_factory = cpp::MakeUp<stonks::sqlite::Factory>();
+  db_factory = stonks::cpp::MakeUp<stonks::sqlite::Factory>();
   db = db_factory->LoadDbFromFile(kTestDbFileName).as_nullable();
   query_builder = db_factory->CreateQueryBuilder().as_nullable();
-  query_builder_facade.emplace(cpp::AssumeNn(query_builder));
+  query_builder_facade.emplace(stonks::cpp::AssumeNn(query_builder));
 
   const auto table = stonks::sqldb::Table{"TestTable"};
   const auto table_definition = stonks::sqldb::TableDefinition{
@@ -79,9 +78,9 @@ TEST(SqliteDb, InsertAndSelect) {
                                .IntoTable(kAssetTableDefinition)
                                .IntoColumns({"name"})
                                .Build());
-  insert_statement->Execute({std::string_view{"BTC"}});
-  insert_statement->Execute({std::string_view{"ETH"}});
-  insert_statement->Execute({std::string_view{"USDT"}});
+  insert_statement->Execute({"BTC"});
+  insert_statement->Execute({"ETH"});
+  insert_statement->Execute({"USDT"});
 
   auto select_statement =
       db->PrepareStatement(query_builder_facade->Select()
@@ -161,9 +160,9 @@ TEST(SqliteDb, ForeignKey) {
                                .IntoTable(kSymbolPriceTableDefinition)
                                .Build());
   insert_symbol_price_statement->Execute(
-      {1, stonks::utils::GetUnixTime().count(), 12345});
+      {1, 1661787828796, 12345});
   insert_symbol_price_statement->Execute(
-      {2, stonks::utils::GetUnixTime().count(), 0.12345});
+      {2, 1661787828796, 0.12345});
 }
 
 TEST(SqliteDb, SelectJoin) {

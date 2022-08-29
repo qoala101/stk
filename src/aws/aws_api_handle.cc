@@ -14,15 +14,15 @@ namespace {
   return *logger;
 }
 
-auto Options() -> const Aws::SDKOptions& {
+[[nodiscard]] auto Options() -> const Aws::SDKOptions& {
   static const auto kOptions = Aws::SDKOptions{};
   return kOptions;
 }
 }  // namespace
 
 auto ApiHandle::Instance() -> cpp::Sp<ApiHandle> {
-  class PublicApiHandle : public ApiHandle {};
-  static auto instance = cpp::MakeSp<PublicApiHandle>();
+  class EnableMakeSp : public ApiHandle {};
+  static auto instance = cpp::MakeSp<EnableMakeSp>();
   return instance;
 }
 

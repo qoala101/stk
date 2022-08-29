@@ -8,7 +8,7 @@
 /**
  * @file Common SQLite types.
  */
- 
+
 namespace stonks::sqlite {
 struct SqliteDbCloser {
   void operator()(sqlite3* sqlite_db) noexcept;
@@ -22,6 +22,11 @@ struct SqliteStatementFinalizer {
  * @brief Closes DB connection when destroyed.
  */
 using SqliteDbHandle = cpp::NnUp<sqlite3, SqliteDbCloser>;
+
+/**
+ * @brief Closes DB connection when last instance is destroyed.
+ */
+using SqliteDbSharedHandle = cpp::NnSp<sqlite3>;
 
 /**
  * @brief Finalizes statement when destroyed.

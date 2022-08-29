@@ -9,7 +9,11 @@
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_row_definition.h"
+#include "sqlite_db_facade.h"
 #include "sqlite_types.h"
+
+class sqlite3;  // IWYU pragma: keep
+                // IWYU pragma: no_include <sqlite3.h>
 
 namespace stonks::sqlite {
 /**
@@ -20,7 +24,7 @@ class Db : public sqldb::IDb {
   /**
    * @brief Creates wrapper for SQLite DB.
    */
-  explicit Db(SqliteDbHandle sqlite_db);
+  explicit Db(SqliteDbSharedHandle sqlite_db_handle);
 
   Db(const Db &) = delete;
   Db(Db &&) noexcept = default;
@@ -32,7 +36,7 @@ class Db : public sqldb::IDb {
    * @brief Closes SQLite DB.
    * @remark Doesn't write DB to file. It should be done manually.
    */
-  ~Db() noexcept override;
+  ~Db() override = default;
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement
@@ -53,8 +57,8 @@ class Db : public sqldb::IDb {
   void WriteToFile(std::string_view file_path) const override;
 
  private:
-  class Impl;
-  cpp::NnUp<Impl> impl_;
+  SqliteDbSharedHandle sqlite_db_handle_;
+  DbFacade sqlite_db_facade_;
 };
 }  // namespace stonks::sqlite
 
