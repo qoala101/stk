@@ -29,9 +29,6 @@ template <typename... Ts>
 using NnSp = ::cpp::not_null<Sp<Ts...>>;
 
 template <typename... Ts>
-using NnWp = ::cpp::not_null<Wp<Ts...>>;
-
-template <typename... Ts>
 [[nodiscard]] auto MakeNnUp(auto &&...args) {
   return AssumeNn(MakeUp<Ts...>(std::forward<decltype(args)>(args)...));
 }

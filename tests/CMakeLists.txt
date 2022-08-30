@@ -1,12 +1,14 @@
 find_package(GTest REQUIRED)
 find_package(polymorphic_value REQUIRED)
+find_package(range-v3 REQUIRED)
 
 include(GoogleTest)
 
 enable_testing()
 
 add_executable(unittests
-  aws/dynamo_db.cc
+  aws/api_handle.cc
+  # aws/dynamo_db.cc
 
   # cpp/move_if.cc
   # restsdk/client_server.cc
@@ -43,4 +45,5 @@ target_link_libraries(unittests
   PRIVATE libsqlite
   PRIVATE NotNull
   PRIVATE polymorphic_value::polymorphic_value
+  PRIVATE range-v3::range-v3
 )

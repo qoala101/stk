@@ -1,4 +1,5 @@
 find_package(AWSSDK REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
 find_package(range-v3 REQUIRED)
 find_package(spdlog REQUIRED)
 
@@ -19,6 +20,7 @@ target_include_directories(libaws
 target_link_libraries(libaws
   PUBLIC libnosqldb
   PRIVATE AWS::dynamodb
+  PRIVATE Microsoft.GSL::GSL
   PRIVATE NotNull
   PRIVATE range-v3::range-v3
   PRIVATE spdlog::spdlog

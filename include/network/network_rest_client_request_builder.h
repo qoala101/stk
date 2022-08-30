@@ -18,7 +18,7 @@ class RestClient;
 
 namespace rest_client {
 /**
- * @brief Convenience API for building of requests from the REST client.
+ * @brief Convenience API for building requests from the REST client.
  */
 class RequestBuilder {
  public:
