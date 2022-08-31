@@ -15,27 +15,21 @@ namespace stonks::sqldb {
 class Value {
  public:
   /**
+   * @brief Constructs null value.
+   */
+  Value() = default;
+
+  /**
    * @brief Parses value of specified type from string.
    */
   explicit Value(std::string_view value, DataType data_type);
 
-  /**
-   * @brief Constructs NULL value.
-   */
-  Value() = default;
-
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  Value(bool value);
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  Value(int value);
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  Value(int64_t value);
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  Value(double value);
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  Value(const char *value);
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  Value(std::string value);
+  explicit Value(bool value);
+  explicit Value(int value);
+  explicit Value(int64_t value);
+  explicit Value(double value);
+  explicit Value(const char *value);
+  explicit Value(std::string value);
 
   [[nodiscard]] auto GetBool() const -> bool;
 

@@ -27,7 +27,7 @@ class IUpdateStatement {
   virtual void Execute(std::vector<Value> params) const = 0;
 
  protected:
-  explicit IUpdateStatement() = default;
+  IUpdateStatement() = default;
 };
 }  // namespace stonks::sqldb
 

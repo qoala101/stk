@@ -24,7 +24,7 @@ class ITablesInterface {
   virtual void DropTableIfExists(const Table &table) = 0;
 
  protected:
-  explicit ITablesInterface() = default;
+  ITablesInterface() = default;
 };
 }  // namespace stonks::nosqldb
 

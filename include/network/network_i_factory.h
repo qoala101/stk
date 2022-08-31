@@ -38,7 +38,7 @@ class IFactory {
       -> cpp::NnUp<IRestRequestReceiver> = 0;
 
  protected:
-  explicit IFactory() = default;
+  IFactory() = default;
 };
 }  // namespace stonks::network
 

@@ -29,7 +29,7 @@ class ISelectStatement {
       -> Rows = 0;
 
  protected:
-  explicit ISelectStatement() = default;
+  ISelectStatement() = default;
 };
 }  // namespace stonks::sqldb
 

@@ -60,7 +60,7 @@ class IDb {
       const SymbolPriceTick &symbol_price_tick) = 0;
 
  protected:
-  explicit IDb() = default;
+  IDb() = default;
 };
 }  // namespace stonks
 

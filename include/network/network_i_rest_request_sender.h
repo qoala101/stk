@@ -22,7 +22,7 @@ class IRestRequestSender {
       RestRequest request) const -> RestResponse = 0;
 
  protected:
-  explicit IRestRequestSender() = default;
+  IRestRequestSender() = default;
 };
 }  // namespace stonks::network
 

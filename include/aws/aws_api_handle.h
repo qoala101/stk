@@ -31,7 +31,7 @@ class ApiHandle {
   /**
    * @brief Initializes the API.
    */
-  explicit ApiHandle();
+  ApiHandle();
 };
 }  // namespace stonks::aws
 

@@ -89,7 +89,7 @@ class IJson {
   [[nodiscard]] virtual auto GetImpl() -> Impl& = 0;
 
  protected:
-  explicit IJson() = default;
+  IJson() = default;
 };
 }  // namespace stonks::network
 

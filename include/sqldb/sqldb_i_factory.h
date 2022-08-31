@@ -27,7 +27,7 @@ class IFactory {
       -> cpp::NnUp<IQueryBuilder> = 0;
 
  protected:
-  explicit IFactory() = default;
+  IFactory() = default;
 };
 }  // namespace stonks::sqldb
 

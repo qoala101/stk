@@ -19,7 +19,7 @@ class IRestRequestHandler {
       RestRequest request) const -> RestResponse = 0;
 
  protected:
-  explicit IRestRequestHandler() = default;
+  IRestRequestHandler() = default;
 };
 }  // namespace stonks::network
 

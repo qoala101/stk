@@ -33,7 +33,7 @@ class IFactory {
   [[nodiscard]] virtual auto CreateDb() const -> cpp::NnUp<IDb>;
 
  protected:
-  explicit IFactory() = default;
+  IFactory() = default;
 };
 }  // namespace stonks::nosqldb
 

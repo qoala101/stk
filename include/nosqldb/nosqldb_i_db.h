@@ -10,7 +10,7 @@ namespace stonks::nosqldb {
  */
 class IDb : public ITablesInterface, public IItemsInterface {
  protected:
-  explicit IDb() = default;
+  IDb() = default;
 };
 }  // namespace stonks::nosqldb
 

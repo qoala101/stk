@@ -37,10 +37,10 @@ class IDb {
   /**
    * @brief Stores this DB to the specified file.
    */
-  virtual void WriteToFile(std::string_view file_path) = 0;
+  virtual void WriteToFile(std::string_view file_path) const = 0;
 
  protected:
-  explicit IDb() = default;
+  IDb() = default;
 };
 }  // namespace stonks::sqldb
 

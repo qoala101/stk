@@ -11,7 +11,7 @@
 #include "sqldb_i_query_builder.h"
 #include "sqldb_query_builder_facade.h"
 #include "sqldb_types.h"
-#include "sqldb_value.h"
+#include "sqldb_value_as_v.h"
 #include "sqlite_factory.h"
 
 namespace {
@@ -78,9 +78,9 @@ TEST(SqliteDb, InsertAndSelect) {
                                .IntoTable(kAssetTableDefinition)
                                .IntoColumns({"name"})
                                .Build());
-  insert_statement->Execute({"BTC"});
-  insert_statement->Execute({"ETH"});
-  insert_statement->Execute({"USDT"});
+  insert_statement->Execute({V{"BTC"}});
+  insert_statement->Execute({V{"ETH"}});
+  insert_statement->Execute({V{"USDT"}});
 
   auto select_statement =
       db->PrepareStatement(query_builder_facade->Select()
@@ -147,9 +147,9 @@ TEST(SqliteDb, ForeignKey) {
           .IntoTable(kSymbolTableDefinition.table)
           .IntoColumns({{"base_asset_id"}, {"quote_asset_id"}})
           .Build());
-  insert_symbol_statement->Execute({1, 3});
-  insert_symbol_statement->Execute({2, 3});
-  EXPECT_ANY_THROW(insert_symbol_statement->Execute({5, 6}));
+  insert_symbol_statement->Execute({V{1}, V{3}});
+  insert_symbol_statement->Execute({V{2}, V{3}});
+  EXPECT_ANY_THROW(insert_symbol_statement->Execute({V{5}, V{6}}));
 
   db->PrepareStatement(query_builder->BuildCreateTableIfNotExistsQuery(
                            kSymbolPriceTableDefinition))
@@ -159,10 +159,8 @@ TEST(SqliteDb, ForeignKey) {
       db->PrepareStatement(query_builder_facade->Insert()
                                .IntoTable(kSymbolPriceTableDefinition)
                                .Build());
-  insert_symbol_price_statement->Execute(
-      {1, 1661787828796, 12345});
-  insert_symbol_price_statement->Execute(
-      {2, 1661787828796, 0.12345});
+  insert_symbol_price_statement->Execute({V{1}, V{1661787828796}, V{12345}});
+  insert_symbol_price_statement->Execute({V{2}, V{1661787828796}, V{0.12345}});
 }
 
 TEST(SqliteDb, SelectJoin) {

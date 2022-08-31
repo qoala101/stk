@@ -74,7 +74,7 @@ class IQueryBuilder {
       -> std::string = 0;
 
  protected:
-  explicit IQueryBuilder() = default;
+  IQueryBuilder() = default;
 };
 }  // namespace stonks::sqldb
 

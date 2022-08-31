@@ -32,7 +32,7 @@ class IItemsInterface {
   virtual void DeleteItemIfExists(const Table &table, const Key &key) = 0;
 
  protected:
-  explicit IItemsInterface() = default;
+  IItemsInterface() = default;
 };
 }  // namespace stonks::nosqldb
 

@@ -14,7 +14,7 @@ namespace stonks::network {
  */
 class IJson::Impl {
  public:
-  explicit Impl();
+  Impl();
   explicit Impl(const web::json::value &json);
   explicit Impl(web::json::value &&json);
 

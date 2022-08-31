@@ -16,7 +16,11 @@ namespace stonks::restsdk {
  */
 class Json : public network::IJson {
  public:
-  explicit Json() = default;
+ /**
+  * @brief Constructs null JSON.
+  */
+  Json() = default;
+
   explicit Json(bool value);
   explicit Json(int value);
   explicit Json(int64_t value);
