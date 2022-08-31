@@ -1,2 +1,0 @@
-wss://stream.binance.com:9443 - real
-wss://testnet.binance.vision - testnet
