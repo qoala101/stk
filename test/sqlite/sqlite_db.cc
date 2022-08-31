@@ -10,9 +10,9 @@
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_query_builder_facade.h"
-#include "sqldb_row_definition_as_rs.h"
+#include "sqldb_row_definition_alias_rd.h"
 #include "sqldb_types.h"
-#include "sqldb_value_as_v.h"
+#include "sqldb_value_alias_v.h"
 #include "sqlite_factory.h"
 
 namespace {
@@ -88,7 +88,7 @@ TEST(SqliteDb, InsertAndSelect) {
                                .AllColumns()
                                .FromTable(kAssetTableDefinition.table)
                                .Build(),
-                           Rs{kAssetTableDefinition});
+                           Rd{kAssetTableDefinition});
 
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 3);
@@ -178,7 +178,7 @@ TEST(SqliteDb, SelectJoin) {
       "FROM Symbol "
       "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
       "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id=QuoteAsset.id;",
-      Rs{cell_definitions});
+      Rd{cell_definitions});
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
   EXPECT_EQ(rows.GetColumnValues("base_asset")[0].GetString(), "BTC");
@@ -199,10 +199,10 @@ TEST(SqliteDb, FileWriteAndRead) {
                                 .FromTable(kSymbolPriceTableDefinition.table)
                                 .Build();
   const auto db_rows =
-      db->PrepareStatement(select_query, Rs{kSymbolPriceTableDefinition})
+      db->PrepareStatement(select_query, Rd{kSymbolPriceTableDefinition})
           ->Execute();
   const auto db_copy_rows =
-      db_copy->PrepareStatement(select_query, Rs{kSymbolPriceTableDefinition})
+      db_copy->PrepareStatement(select_query, Rd{kSymbolPriceTableDefinition})
           ->Execute();
   EXPECT_GT(db_rows.GetSize(), 0);
   EXPECT_EQ(db_rows, db_copy_rows);
@@ -223,7 +223,7 @@ TEST(SqliteDb, CascadeForeignKeyDelete) {
                                .AllColumns()
                                .FromTable(kAssetTableDefinition.table)
                                .Build(),
-                           Rs{kAssetTableDefinition});
+                           Rd{kAssetTableDefinition});
   auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
 
@@ -232,7 +232,7 @@ TEST(SqliteDb, CascadeForeignKeyDelete) {
                                .AllColumns()
                                .FromTable(kSymbolTableDefinition.table)
                                .Build(),
-                           Rs{kSymbolTableDefinition});
+                           Rd{kSymbolTableDefinition});
   rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 0);
 
@@ -241,7 +241,7 @@ TEST(SqliteDb, CascadeForeignKeyDelete) {
                                .AllColumns()
                                .FromTable(kSymbolPriceTableDefinition.table)
                                .Build(),
-                           Rs{kSymbolPriceTableDefinition});
+                           Rd{kSymbolPriceTableDefinition});
   rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 0);
 }

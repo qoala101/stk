@@ -27,7 +27,7 @@
 #include "sqldb_i_update_statement.h"
 #include "sqldb_rows.h"
 #include "sqldb_value.h"
-#include "sqldb_value_as_v.h"
+#include "sqldb_value_alias_v.h"
 #include "stonks_cache.h"
 #include "stonks_prepared_statements.h"
 #include "stonks_table_definitions.h"

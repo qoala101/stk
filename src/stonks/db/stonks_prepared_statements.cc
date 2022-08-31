@@ -10,7 +10,7 @@
 #include "sqldb_i_query_builder.h"
 #include "sqldb_insert_query_builder.h"
 #include "sqldb_query_builder_facade.h"
-#include "sqldb_row_definition_as_rs.h"
+#include "sqldb_row_definition_alias_rd.h"
 #include "sqldb_select_query_builder.h"
 #include "sqldb_types.h"
 #include "sqldb_update_query_builder.h"
@@ -46,7 +46,7 @@ auto PreparedStatements::SelectAssets() const
                            .Columns(columns)
                            .FromTable(table)
                            .Build();
-    select_assets_ = db_->PrepareStatement(query, Rs{columns}).as_nullable();
+    select_assets_ = db_->PrepareStatement(query, Rd{columns}).as_nullable();
   }
 
   Ensures(select_assets_ != nullptr);
@@ -60,7 +60,7 @@ auto PreparedStatements::SelectAssetsWithIds() const
     const auto query =
         query_builder_facade_->Select().AllColumns().FromTable(table).Build();
     select_assets_with_ids_ =
-        db_->PrepareStatement(query, Rs{table}).as_nullable();
+        db_->PrepareStatement(query, Rd{table}).as_nullable();
   }
 
   Ensures(select_assets_with_ids_ != nullptr);
@@ -102,7 +102,7 @@ auto PreparedStatements::SelectSymbols() const
                            .Columns(columns)
                            .FromTable(table)
                            .Build();
-    select_symbols_ = db_->PrepareStatement(query, Rs{columns}).as_nullable();
+    select_symbols_ = db_->PrepareStatement(query, Rd{columns}).as_nullable();
   }
 
   Ensures(select_symbols_ != nullptr);
@@ -119,7 +119,7 @@ auto PreparedStatements::SelectSymbolsWithIds() const
                            .FromTable(table)
                            .Build();
     select_symbols_with_ids_ =
-        db_->PrepareStatement(query, Rs{columns}).as_nullable();
+        db_->PrepareStatement(query, Rd{columns}).as_nullable();
   }
 
   Ensures(select_symbols_with_ids_ != nullptr);
@@ -164,7 +164,7 @@ auto PreparedStatements::SelectSymbolsInfo() const
         "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id = QuoteAsset.id";
 
     select_symbols_info_ =
-        db_->PrepareStatement(query, Rs{columns}).as_nullable();
+        db_->PrepareStatement(query, Rd{columns}).as_nullable();
   }
 
   Ensures(select_symbols_info_ != nullptr);
@@ -226,7 +226,7 @@ auto PreparedStatements::SelectPriceTicks() const
     const auto query =
         InitSelectPriceTicksQuery(*query_builder_facade_).Build();
     select_price_ticks_ =
-        db_->PrepareStatement(query, Rs{table_definitions::SymbolPriceTick()})
+        db_->PrepareStatement(query, Rd{table_definitions::SymbolPriceTick()})
             .as_nullable();
   }
 
@@ -241,7 +241,7 @@ auto PreparedStatements::SelectSymbolPriceTicks() const
                            .And("SymbolPriceTick.symbol_id = ?")
                            .Build();
     select_symbol_price_ticks_ =
-        db_->PrepareStatement(query, Rs{table_definitions::SymbolPriceTick()})
+        db_->PrepareStatement(query, Rd{table_definitions::SymbolPriceTick()})
             .as_nullable();
   }
 
