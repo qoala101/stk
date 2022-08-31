@@ -1,64 +1,45 @@
-#ifndef STONKS_AWS_AWS_DYNAMODB_DB_H_
-#define STONKS_AWS_AWS_DYNAMODB_DB_H_
+#ifndef STONKS_AWS_DYNAMODB_AWS_DYNAMODB_SYNC_DB_PROXY_H_
+#define STONKS_AWS_DYNAMODB_AWS_DYNAMODB_SYNC_DB_PROXY_H_
 
-#include <string>
 #include <string_view>
 #include <vector>
 
 #include "aws_api_handle.h"
+#include "aws_dynamodb_async_db.h"
 #include "cpp_not_null.h"
+#include "cpp_optional.h"
 #include "nosqldb_i_db.h"
 #include "nosqldb_types.h"
 
 namespace Aws::DynamoDB {
 class DynamoDBClient;
+
+namespace Model {
+enum class TableStatus;
+}  // namespace Model
 }  // namespace Aws::DynamoDB
 
-namespace stonks::aws {
+namespace stonks::aws::dynamodb {
 /**
  * @brief Handle to AWS DynamoDB.
  * Access is defined by the user credentials specified in the current
  * environment.
  */
-class Db : public nosqldb::IDb {
+class SyncDbProxy : public nosqldb::IDb {
  public:
-  explicit Db();
-
-  Db(const Db &) = delete;
-  Db(Db &&) noexcept;
-
-  auto operator=(const Db &) -> Db & = delete;
-  auto operator=(Db &&) noexcept -> Db &;
-
-  ~Db() override;
-
   /**
-   * @brief Table which has Key and Value columns.
+   * @param db Proxied DB.
    */
-  struct KeyValueTable {
-    std::string name{};
+  explicit SyncDbProxy(cpp::NnUp<nosqldb::IDb> db,
+                       cpp::NnSp<ApiHandle> api_handle);
 
-   private:
-    friend auto operator==(const KeyValueTable &, const KeyValueTable &)
-        -> bool = default;
-  };
+  SyncDbProxy(const SyncDbProxy &) = delete;
+  SyncDbProxy(SyncDbProxy &&) noexcept;
 
-  /**
-   * @throws If action didn't succeeded.
-   */
-  void CreateTableIfNotExists(const KeyValueTable &table);
+  auto operator=(const SyncDbProxy &) -> SyncDbProxy & = delete;
+  auto operator=(SyncDbProxy &&) noexcept -> SyncDbProxy &;
 
-  struct KeyValue {
-    std::string key{};
-    std::string value{};
-  };
-
-  /**
-   * @throws If action didn't succeeded.
-   */
-  void AddOrUpdateItem(const KeyValueTable &table, const KeyValue &key_value);
-
-  ////////////////////////////////////////
+  ~SyncDbProxy() override;
 
   /**
    * @copydoc nosqldb::IDb::CreateTableIfNotExists
@@ -75,7 +56,7 @@ class Db : public nosqldb::IDb {
    */
   [[nodiscard]] auto SelectItem(const nosqldb::Table &table,
                                 const nosqldb::Key &key) const
-      -> nosqldb::Value override;
+      -> cpp::Opt<nosqldb::Value> override;
 
   /**
    * @copydoc nosqldb::IDb::InsertOrUpdateItem
@@ -95,11 +76,18 @@ class Db : public nosqldb::IDb {
   void WriteToUri(std::string_view uri) const override;
 
  private:
-  [[nodiscard]] auto GetExistingTables() -> std::vector<KeyValueTable>;
+  [[nodiscard]] auto GetTableStatus(const nosqldb::Table &table) const
+      -> cpp::Opt<Aws::DynamoDB::Model::TableStatus>;
 
+  [[nodiscard]] auto IsTableExists(const nosqldb::Table &table) const -> bool;
+
+  [[nodiscard]] auto IsTableReadyForUse(const nosqldb::Table &table) const
+      -> bool;
+
+  cpp::NnUp<nosqldb::IDb> db_;
   cpp::NnSp<ApiHandle> api_handle_;
   cpp::NnUp<Aws::DynamoDB::DynamoDBClient> db_client_;
 };
-}  // namespace stonks::aws
+}  // namespace stonks::aws::dynamodb
 
-#endif  // STONKS_AWS_AWS_DYNAMODB_DB_H_
+#endif  // STONKS_AWS_DYNAMODB_AWS_DYNAMODB_SYNC_DB_PROXY_H_

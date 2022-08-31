@@ -4,9 +4,10 @@ find_package(range-v3 REQUIRED)
 find_package(spdlog REQUIRED)
 
 add_library(libaws
+  dynamodb/aws_dynamodb_async_db.cc
+  dynamodb/aws_dynamodb_factory.cc
+  dynamodb/aws_dynamodb_sync_db_proxy.cc
   aws_api_handle.cc
-  aws_dynamodb_db.cc
-  aws_dynamodb_factory.cc
 )
 
 set_target_properties(libaws PROPERTIES
@@ -15,6 +16,7 @@ set_target_properties(libaws PROPERTIES
 
 target_include_directories(libaws
   PUBLIC ${PROJECT_SOURCE_DIR}/include/aws
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/aws/dynamodb
 )
 
 target_link_libraries(libaws

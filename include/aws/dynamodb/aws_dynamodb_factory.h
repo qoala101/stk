@@ -1,5 +1,5 @@
-#ifndef STONKS_AWS_AWS_DYNAMODB_FACTORY_H_
-#define STONKS_AWS_AWS_DYNAMODB_FACTORY_H_
+#ifndef STONKS_AWS_DYNAMODB_AWS_DYNAMODB_FACTORY_H_
+#define STONKS_AWS_DYNAMODB_AWS_DYNAMODB_FACTORY_H_
 
 #include <string_view>
 
@@ -7,7 +7,7 @@
 #include "nosqldb_i_db.h"
 #include "nosqldb_i_factory.h"
 
-namespace stonks::aws {
+namespace stonks::aws::dynamodb {
 /**
  * @copydoc network::IFactory
  */
@@ -19,6 +19,6 @@ class Factory : public nosqldb::IFactory {
   [[nodiscard]] auto LoadDbFromUri(std::string_view uri) const
       -> cpp::NnUp<nosqldb::IDb> override;
 };
-}  // namespace stonks::aws
+}  // namespace stonks::aws::dynamodb
 
-#endif  // STONKS_AWS_AWS_DYNAMODB_FACTORY_H_
+#endif  // STONKS_AWS_DYNAMODB_AWS_DYNAMODB_FACTORY_H_

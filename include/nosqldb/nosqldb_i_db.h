@@ -1,6 +1,7 @@
 #ifndef STONKS_NOSQLDB_NOSQLDB_I_DB_H_
 #define STONKS_NOSQLDB_NOSQLDB_I_DB_H_
 
+#include "cpp_optional.h"
 #include "nosqldb_types.h"
 
 namespace stonks::nosqldb {
@@ -26,7 +27,8 @@ class IDb {
    * @brief Selects the item with the specified key.
    */
   [[nodiscard]] virtual auto SelectItem(const Table &table,
-                                        const Key &key) const -> Value = 0;
+                                        const Key &key) const
+      -> cpp::Opt<Value> = 0;
 
   /**
    * @brief Sets the item value for the specified key.
