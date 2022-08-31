@@ -1,11 +1,17 @@
-#include <gtest/gtest.h>
+#include <gtest/gtest-message.h>
+#include <gtest/gtest-test-part.h>
 
 #include <memory>
 #include <optional>
+#include <string>
+#include <tuple>
 
 #include "aws_dynamodb_factory.h"
+#include "gtest/gtest_pred_impl.h"
 #include "nosqldb_types.h"
+#include "not_null.hpp"
 
+namespace {
 TEST(DynamoDb, Test1) {
   auto db = stonks::aws::dynamodb::Factory{}.CreateDb();
 
@@ -38,3 +44,4 @@ TEST(DynamoDb, Test1) {
   EXPECT_ANY_THROW(std::ignore = db->SelectItem(kTable, item1.key));
   EXPECT_ANY_THROW(db->DeleteItemIfExists(kTable, item2.key));
 }
+}  // namespace

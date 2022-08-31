@@ -21,5 +21,4 @@ target_link_libraries(libaws
   PUBLIC libnosqldb
   PRIVATE AWS::dynamodb
   PRIVATE Microsoft.GSL::GSL
-  PRIVATE NotNull
 )

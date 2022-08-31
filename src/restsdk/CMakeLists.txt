@@ -1,7 +1,7 @@
 find_package(cpprestsdk REQUIRED)
+find_package(magic_enum REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
 find_package(spdlog REQUIRED)
-find_package(magic_enum REQUIRED)
 
 add_library(librestsdk
   restsdk_factory.cc
@@ -23,7 +23,7 @@ target_include_directories(librestsdk
 target_link_libraries(librestsdk
   PUBLIC libnetwork
   PRIVATE cpprestsdk::cpprest
+  PRIVATE magic_enum::magic_enum
   PRIVATE Microsoft.GSL::GSL
   PRIVATE spdlog::spdlog
-  PRIVATE magic_enum::magic_enum
 )

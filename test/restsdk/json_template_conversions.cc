@@ -11,6 +11,7 @@
 #include "network_json_basic_conversions.h"
 #include "network_json_template_conversions.h"
 
+namespace {
 TEST(JsonSpecializedConversions, ConvertAndParseOptional) {
   const auto text = std::string{"HELLO"};
   const auto text_json = stonks::network::ConvertToJson(text);
@@ -65,3 +66,4 @@ TEST(JsonSpecializedConversions, ConvertAndParseOptionalVector) {
 
   EXPECT_FALSE(parsed_items_null.has_value());
 }
+}  // namespace

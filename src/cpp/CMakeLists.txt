@@ -10,3 +10,7 @@ target_include_directories(libcpp
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/aliases
 )
+
+target_link_libraries(libcpp
+  PUBLIC NotNull
+)

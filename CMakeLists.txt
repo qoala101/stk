@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 
 # Generates compile_commands.json which should be included
 # in .vscode/c_cpp_properties.json so that VS Code IntelliSence
-# can find external library headeds
+# can find external library headers.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(
@@ -33,7 +33,7 @@ set(iwyu ${iwyu}
     --cxx17ns)
 set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu})
 
-# Removes the clash of U macro between cpprestsdk and gtest libs
+# Removes the clash of U macro between cpprestsdk and gtest libs.
 add_compile_definitions(_TURN_OFF_PLATFORM_STRING)
 
 include(CTest)

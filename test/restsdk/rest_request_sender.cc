@@ -3,10 +3,10 @@
 
 #include <cstdint>
 #include <magic_enum.hpp>
-#include "cpp_not_null.h"
 #include <ostream>
 #include <string>
 
+#include "cpp_not_null.h"
 #include "network_i_json.h"
 #include "network_json_basic_conversions.h"
 #include "network_rest_request_builder.h"
@@ -46,39 +46,39 @@ constexpr auto magic_enum::customize::enum_name<CustomNameEnum>(
 namespace stonks::network {
 template <>
 auto ParseFromJson(const IJson &json) -> AvgPrice {
-  return AvgPrice{
-      ParseFromJson<int>(*json.GetChild("mins")),
-      std::stod(ParseFromJson<std::string>(*json.GetChild("price")))};
+  return {
+      .mins = ParseFromJson<int>(*json.GetChild("mins")),
+      .price = std::stod(ParseFromJson<std::string>(*json.GetChild("price")))};
 }
 
-auto ConvertToJson(const AvgPrice &value)
-    -> cpp::Pv<IJson> {
-  auto json = restsdk::Factory{}.CreateJson();
-  json->SetChild("mins", *ConvertToJson(value.mins));
-  json->SetChild("price", *ConvertToJson(std::to_string(value.price)));
+auto ConvertToJson(const AvgPrice &value) -> cpp::Pv<IJson> {
+  auto json = stonks::network::CreateNullJson();
+  json->SetChild("mins", ConvertToJson(value.mins));
+  json->SetChild("price", ConvertToJson(std::to_string(value.price)));
   return json;
 }
 }  // namespace stonks::network
 
 namespace {
 TEST(RestRequestSender, AppendUri) {
-  const auto [endpoint, data] = stonks::network::RestRequestBuilder{}
-                                    .WithBaseUri("base_uri")
-                                    .AppendUri("appended_uri")
-                                    .Build();
-  EXPECT_EQ(endpoint.uri, "base_uri/appended_uri");
+  const auto request = std::move(stonks::network::RestRequestBuilder{}
+                                     .WithBaseUri("base_uri")
+                                     .AppendUri("appended_uri"))
+                           .Build();
+  EXPECT_EQ(request.endpoint.uri, "base_uri/appended_uri");
 }
 
 TEST(RestRequestSender, ParameterTypesToString) {
-  const auto [endpoint, data] =
-      stonks::network::RestRequestBuilder{}
-          .WithBaseUri("")
-          .AddParam("string", "abc")
-          // .AddParam("milliseconds", std::chrono::milliseconds{123456789})
-          .AddParam("int", 123456789)
-          .AddParam("int64_t", int64_t{123456789})
-          .AddParam("float", float{123456789.123456789})
-          .AddParam("double", double{123456789.123456789})
+  const auto request =
+      std::move(
+          stonks::network::RestRequestBuilder{}
+              .WithBaseUri("")
+              .AddParam("string", "abc")
+              // .AddParam("milliseconds", std::chrono::milliseconds{123456789})
+              .AddParam("int", 123456789)
+              .AddParam("int64_t", int64_t{123456789})
+              .AddParam("float", float{123456789.123456789})
+              .AddParam("double", double{123456789.123456789})
           // .AddParam("default_enum_name", DefaultNameEnum::kDefaultEnumName)
           // .AddParam("custom_enum_name", CustomNameEnum::kCustomEnumName)
           // .AddParam("optional_string", std::optional<std::string>{"abc"})
@@ -98,6 +98,7 @@ TEST(RestRequestSender, ParameterTypesToString) {
           //     "optional_custom_enum_name",
           //     std::optional<CustomNameEnum>{CustomNameEnum::kCustomEnumName})
           // .AddParam("no_option", std::optional<int>{std::nullopt})
+          )
           .Build();
   const auto expected_params = std::map<std::string, std::string>{
       {"string", "abc"},
@@ -121,16 +122,16 @@ TEST(RestRequestSender, ParameterTypesToString) {
 }
 
 TEST(RestRequestSender, SendRequest) {
-  const auto [endpoint, data] =
-      stonks::network::RestRequestBuilder{}
-          .WithBaseUri("https://api.binance.com/api/v3")
-          .AppendUri("avgPrice")
-          .AddParam("symbol", "BTCUSDT")
+  const auto request =
+      std::move(stonks::network::RestRequestBuilder{}
+                    .WithBaseUri("https://api.binance.com/api/v3")
+                    .AppendUri("avgPrice")
+                    .AddParam("symbol", "BTCUSDT"))
           .Build();
-  const auto sender =
-      cpp::MakeUp<stonks::restsdk::RestRequestSender>(endpoint);
-  const auto response = sender->SendRequestAndGetResponse(data);
-  const auto response_price = ParseFromJson<AvgPrice>(*response.second);
+  const auto sender = stonks::restsdk::RestRequestSender{};
+  const auto response = sender.SendRequestAndGetResponse(request);
+  const auto response_price =
+      stonks::network::ParseFromJson<AvgPrice>(**response.result);
   EXPECT_GT(response_price.mins, 0);
   EXPECT_GT(response_price.price, 0);
 

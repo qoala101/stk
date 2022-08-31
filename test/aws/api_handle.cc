@@ -1,7 +1,13 @@
-#include <gtest/gtest.h>
+#include <gtest/gtest-message.h>
+#include <gtest/gtest-test-part.h>
+
+#include <memory>
 
 #include "aws_api_handle.h"
+#include "gtest/gtest_pred_impl.h"
+#include "not_null.hpp"
 
+namespace {
 TEST(ApiHandle, InstanceSharing) {
   auto* old_instance = (stonks::aws::ApiHandle*){};
 
@@ -17,3 +23,4 @@ TEST(ApiHandle, InstanceSharing) {
   auto instance3 = stonks::aws::ApiHandle::Instance();
   EXPECT_NE(instance3.get(), old_instance);
 }
+}  // namespace

@@ -3,11 +3,11 @@
 
 #include <cstdint>
 #include <magic_enum.hpp>
-#include "cpp_not_null.h"
 #include <ostream>
 #include <string>
 #include <thread>
 
+#include "cpp_not_null.h"
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_json_basic_conversions.h"
@@ -41,48 +41,46 @@ auto ParseFromJson(const IJson &json) -> SymbolPrice {
       std::stod(ParseFromJson<std::string>(*json.GetChild("price")))};
 }
 
-auto ConvertToJson(const SymbolPrice &value)
-    -> cpp::Pv<IJson> {
-  auto json = restsdk::Factory{}.CreateJson();
-  json->SetChild("symbol", *ConvertToJson(value.symbol));
-  json->SetChild("price", *ConvertToJson(std::to_string(value.price)));
+auto ConvertToJson(const SymbolPrice &value) -> cpp::Pv<IJson> {
+  auto json = stonks::network::CreateNullJson();
+  json->SetChild("symbol", ConvertToJson(value.symbol));
+  json->SetChild("price", ConvertToJson(std::to_string(value.price)));
   return json;
 }
 }  // namespace stonks::network
 
 namespace {
 TEST(RestRequestReceiver, SendRequest) {
-  // auto receiver_thread = std::jthread([]() {
-  const auto receiver = cpp::MakeUp<stonks::restsdk::RestRequestReceiver>(
-      "http://localhost:6506",
-      [](stonks::network::Endpoint endpoint,
-         stonks::network::RestRequestData data)
-          -> std::pair<stonks::network::Status, stonks::network::Result> {
-        EXPECT_EQ(endpoint.method, stonks::network::Method::kGet);
-        EXPECT_EQ(endpoint.uri, "/Test");
-        return {
-            stonks::network::Status::kOk,
-            stonks::network::ConvertToJson(SymbolPrice{
-                .symbol = stonks::network::ParseFromJson<stonks::SymbolName>(
-                    **data.body),
-                .price = stonks::network::ParseFromJson<double>(
-                    *data.params.at("price"))})};
-      });
-  // });
+  struct Handler : public stonks::network::IRestRequestHandler {
+    [[nodiscard]] auto HandleRequestAndGiveResponse(
+        stonks::network::RestRequest request) const
+        -> stonks::network::RestResponse override {
+      EXPECT_EQ(request.endpoint.method, stonks::network::Method::kGet);
+      EXPECT_EQ(request.endpoint.uri, "/Test");
+      return {stonks::network::Status::kOk,
+              stonks::network::ConvertToJson(SymbolPrice{
+                  .symbol = stonks::network::ParseFromJson<stonks::SymbolName>(
+                      **request.body),
+                  .price = stonks::network::ParseFromJson<double>(
+                      *request.params.at("price"))})};
+    }
+  };
 
-  const auto [endpoint, data] =
-      stonks::network::RestRequestBuilder{}
-          .WithMethod(stonks::network::Method::kGet)
-          .WithBaseUri("http://localhost:6506")
-          .AppendUri("Test")
-          .WithBody(stonks::network::ConvertToJson("BTCUSDT"))
-          .AddParam("price", 123.456)
+  const auto receiver = stonks::restsdk::RestRequestReceiver{
+      "http://localhost:6506", stonks::cpp::MakeNnUp<Handler>()};
+
+  const auto request =
+      std::move(stonks::network::RestRequestBuilder{}
+                    .WithMethod(stonks::network::Method::kGet)
+                    .WithBaseUri("http://localhost:6506")
+                    .AppendUri("Test")
+                    .WithBody(stonks::network::ConvertToJson("BTCUSDT"))
+                    .AddParam("price", 123.456))
           .Build();
-  const auto sender =
-      cpp::MakeUp<stonks::restsdk::RestRequestSender>(endpoint);
-  const auto response = sender->SendRequestAndGetResponse(data);
-  const auto response_price = ParseFromJson<SymbolPrice>(*response.second);
-  EXPECT_EQ(response.first, stonks::network::Status::kOk);
+  const auto sender = stonks::restsdk::RestRequestSender{};
+  const auto response = sender.SendRequestAndGetResponse(request);
+  const auto response_price = ParseFromJson<SymbolPrice>(**response.result);
+  EXPECT_EQ(response.status, stonks::network::Status::kOk);
   EXPECT_EQ(response_price.symbol, "BTCUSDT");
   EXPECT_EQ(response_price.price, 123.456);
 }

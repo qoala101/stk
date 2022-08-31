@@ -1,8 +1,8 @@
 find_package(SQLite3 REQUIRED)
+find_package(magic_enum REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
 find_package(range-v3 REQUIRED)
 find_package(spdlog REQUIRED)
-find_package(magic_enum REQUIRED)
 
 add_library(libsqlite
   sqlite_db_facade.cc
@@ -28,8 +28,8 @@ target_include_directories(libsqlite
 target_link_libraries(libsqlite
   PUBLIC libsqldb
   PRIVATE SQLite::SQLite3
+  PRIVATE magic_enum::magic_enum
   PRIVATE Microsoft.GSL::GSL
   PRIVATE range-v3::range-v3
   PRIVATE spdlog::spdlog
-  PRIVATE magic_enum::magic_enum
 )

@@ -1,3 +1,4 @@
+find_package(magic_enum REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
 find_package(range-v3 REQUIRED)
 
@@ -22,14 +23,13 @@ set_target_properties(libsqldb PROPERTIES
 )
 
 target_include_directories(libsqldb
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/aliases
   PUBLIC ${PROJECT_SOURCE_DIR}/include/sqldb
   PUBLIC ${PROJECT_SOURCE_DIR}/include/sqldb/query_builders
 )
 
 target_link_libraries(libsqldb
-  PUBLIC NotNull
+  PUBLIC libcpp
+  PRIVATE magic_enum::magic_enum
   PRIVATE Microsoft.GSL::GSL
   PRIVATE range-v3::range-v3
 )

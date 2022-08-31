@@ -1,5 +1,5 @@
-find_package(Microsoft.GSL REQUIRED)
 find_package(polymorphic_value REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
 
 add_library(libnetwork
   auto_parsable/network_auto_parsable_request_handler.cc
@@ -31,7 +31,6 @@ target_include_directories(libnetwork
 
 target_link_libraries(libnetwork
   PUBLIC libcpp
-  PUBLIC NotNull
   PUBLIC polymorphic_value::polymorphic_value
   PRIVATE Microsoft.GSL::GSL
 )

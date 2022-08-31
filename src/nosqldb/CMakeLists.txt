@@ -12,5 +12,4 @@ target_include_directories(libnosqldb
 
 target_link_libraries(libnosqldb
   PUBLIC libcpp
-  PRIVATE NotNull
 )

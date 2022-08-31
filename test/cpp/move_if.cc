@@ -1,5 +1,9 @@
+#include <gtest/gtest-message.h>
+#include <gtest/gtest-test-part.h>
 #include <gtest/gtest.h>
 
+#include <memory>
+#include <type_traits>
 #include <utility>
 
 #include "cpp_move_if.h"
