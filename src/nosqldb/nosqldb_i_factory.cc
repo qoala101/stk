@@ -15,8 +15,8 @@ namespace stonks::nosqldb {
 namespace {
 class AggregateDb : public IDb {
  public:
-  explicit AggregateDb(cpp::NnUp<ITablesInterface> tables_interface,
-                       cpp::NnUp<IItemsInterface> items_interface)
+  AggregateDb(cpp::NnUp<ITablesInterface> tables_interface,
+              cpp::NnUp<IItemsInterface> items_interface)
       : tables_interface_{std::move(tables_interface)},
         items_interface_{std::move(items_interface)} {}
 

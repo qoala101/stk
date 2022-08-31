@@ -18,8 +18,8 @@ class TypedEndpointHandler : public IRestRequestHandler {
    * @param endpoint_types Request and response would be validated against
    * those.
    */
-  explicit TypedEndpointHandler(EndpointTypes endpoint_types,
-                                cpp::NnUp<IRestRequestHandler> handler);
+  TypedEndpointHandler(EndpointTypes endpoint_types,
+                       cpp::NnUp<IRestRequestHandler> handler);
 
   /**
    * @brief Validates request prior forwarding it to the handler and response

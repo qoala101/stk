@@ -18,8 +18,8 @@ class TypedEndpointSender : public IRestRequestSender {
    * @param endpoint_types Request and response would be validated against
    * those.
    */
-  explicit TypedEndpointSender(EndpointTypes endpoint_types,
-                               cpp::NnSp<IRestRequestSender> request_sender);
+  TypedEndpointSender(EndpointTypes endpoint_types,
+                      cpp::NnSp<IRestRequestSender> request_sender);
 
   /**
    * @brief Validates request prior forwarding it to the sender and response

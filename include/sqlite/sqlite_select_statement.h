@@ -23,8 +23,8 @@ class SelectStatement : public sqldb::ISelectStatement {
    * @param result_definition Description of rows to be parsed from prepared
    * statement result.
    */
-  explicit SelectStatement(PreparedStatementHandle prepared_statement_handle,
-                           const sqldb::RowDefinition &result_definition);
+  SelectStatement(PreparedStatementHandle prepared_statement_handle,
+                  const sqldb::RowDefinition &result_definition);
 
   /**
    * @copydoc sqldb::ISelectStatement::Execute

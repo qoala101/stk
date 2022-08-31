@@ -22,7 +22,7 @@ class Value {
   /**
    * @brief Parses value of specified type from string.
    */
-  explicit Value(std::string_view value, DataType data_type);
+  Value(std::string_view value, DataType data_type);
 
   explicit Value(bool value);
   explicit Value(int value);

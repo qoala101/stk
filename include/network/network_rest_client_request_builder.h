@@ -71,8 +71,8 @@ class RequestBuilder {
  private:
   friend class cpp::ExposePrivateConstructorsTo<RestClient, RequestBuilder>;
 
-  explicit RequestBuilder(Endpoint endpoint,
-                          cpp::NnSp<IRestRequestSender> request_sender);
+  RequestBuilder(Endpoint endpoint,
+                 cpp::NnSp<IRestRequestSender> request_sender);
 
   static void DiscardingResultImpl(auto &&t);
 

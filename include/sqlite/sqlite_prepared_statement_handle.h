@@ -12,9 +12,8 @@ namespace stonks::sqlite {
  */
 class PreparedStatementHandle {
  public:
-  explicit PreparedStatementHandle(
-      SqliteDbSharedHandle sqlite_db_handle,
-      SqliteStatementHandle sqlite_statement_handle);
+  PreparedStatementHandle(SqliteDbSharedHandle sqlite_db_handle,
+                          SqliteStatementHandle sqlite_statement_handle);
 
   PreparedStatementHandle(const PreparedStatementHandle &) = delete;
   PreparedStatementHandle(PreparedStatementHandle &&) noexcept = default;

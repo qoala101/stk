@@ -18,8 +18,8 @@ class RestClient {
    * @param base_uri Base resource URI.
    * @param request_sender Executes REST requests.
    */
-  explicit RestClient(std::string base_uri,
-                      cpp::NnSp<IRestRequestSender> request_sender);
+  RestClient(std::string base_uri,
+             cpp::NnSp<IRestRequestSender> request_sender);
 
   /**
    * @brief Creates request builder which provides a further API for request

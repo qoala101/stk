@@ -17,7 +17,7 @@ class WrongTypeException : public Exception {
    * @param message Description of parsing error.
    * @param json JSON which failed to be parsed
    */
-  explicit WrongTypeException(std::string message, cpp::Pv<IJson> json);
+  WrongTypeException(std::string message, cpp::Pv<IJson> json);
 
   /**
    * @brief Gives JSON which failed to be parsed.

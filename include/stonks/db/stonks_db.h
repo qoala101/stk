@@ -24,7 +24,7 @@ class Db : public IDb {
    * @brief Reads DB from the specified file.
    * @param db_factory SQL DB implementation.
    */
-  explicit Db(std::string_view file_path, const sqldb::IFactory &db_factory);
+  Db(std::string_view file_path, const sqldb::IFactory &db_factory);
 
   [[deprecated]] explicit Db(std::string_view uri = "stonks.db");
 
