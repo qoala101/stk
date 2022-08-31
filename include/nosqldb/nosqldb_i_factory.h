@@ -31,9 +31,6 @@ class IFactory {
    * @brief Creates an object with the full list of DB actions.
    */
   [[nodiscard]] virtual auto CreateDb() const -> cpp::NnUp<IDb>;
-
- protected:
-  IFactory() = default;
 };
 }  // namespace stonks::nosqldb
 

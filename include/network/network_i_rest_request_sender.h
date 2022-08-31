@@ -20,9 +20,6 @@ class IRestRequestSender {
    */
   [[nodiscard]] virtual auto SendRequestAndGetResponse(
       RestRequest request) const -> RestResponse = 0;
-
- protected:
-  IRestRequestSender() = default;
 };
 }  // namespace stonks::network
 

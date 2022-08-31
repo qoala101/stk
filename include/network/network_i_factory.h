@@ -36,9 +36,6 @@ class IFactory {
   [[nodiscard]] virtual auto CreateRestRequestReceiver(
       std::string local_uri, cpp::NnUp<IRestRequestHandler> handler) const
       -> cpp::NnUp<IRestRequestReceiver> = 0;
-
- protected:
-  IFactory() = default;
 };
 }  // namespace stonks::network
 

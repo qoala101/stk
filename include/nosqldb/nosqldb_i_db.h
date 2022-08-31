@@ -8,10 +8,7 @@ namespace stonks::nosqldb {
 /**
  * @brief Generic NoSQL DB interface.
  */
-class IDb : public ITablesInterface, public IItemsInterface {
- protected:
-  IDb() = default;
-};
+class IDb : public ITablesInterface, public IItemsInterface {};
 }  // namespace stonks::nosqldb
 
 #endif  // STONKS_NOSQLDB_NOSQLDB_I_DB_H_

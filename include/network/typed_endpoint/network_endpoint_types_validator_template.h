@@ -16,12 +16,6 @@ namespace stonks::network {
 // NOLINTNEXTLINE(*-special-member-functions)
 class EndpointTypesValidatorTemplate {
  public:
-  /**
-   * @param endpoint_types Request and response would be validated against
-   * those.
-   */
-  explicit EndpointTypesValidatorTemplate(EndpointTypes endpoint_types);
-
   virtual ~EndpointTypesValidatorTemplate() = default;
 
   /**
@@ -35,6 +29,13 @@ class EndpointTypesValidatorTemplate {
    * when errors detected.
    */
   void ValidateResponse(const RestResponse &response) const;
+
+ protected:
+  /**
+   * @param endpoint_types Request and response would be validated against
+   * those.
+   */
+  explicit EndpointTypesValidatorTemplate(EndpointTypes endpoint_types);
 
  private:
   virtual void HandleWrongParamsSize() const;

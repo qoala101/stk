@@ -22,9 +22,6 @@ class ITablesInterface {
    * @brief Deletes the table from DB.
    */
   virtual void DropTableIfExists(const Table &table) = 0;
-
- protected:
-  ITablesInterface() = default;
 };
 }  // namespace stonks::nosqldb
 

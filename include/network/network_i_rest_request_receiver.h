@@ -11,9 +11,6 @@ namespace stonks::network {
 class IRestRequestReceiver {
  public:
   virtual ~IRestRequestReceiver() = default;
-
- protected:
-  IRestRequestReceiver() = default;
 };
 }  // namespace stonks::network
 

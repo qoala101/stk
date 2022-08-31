@@ -87,9 +87,6 @@ class IJson {
    * @copydoc GetImpl
    */
   [[nodiscard]] virtual auto GetImpl() -> Impl& = 0;
-
- protected:
-  IJson() = default;
 };
 }  // namespace stonks::network
 

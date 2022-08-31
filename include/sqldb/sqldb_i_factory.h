@@ -25,9 +25,6 @@ class IFactory {
    */
   [[nodiscard]] virtual auto CreateQueryBuilder() const
       -> cpp::NnUp<IQueryBuilder> = 0;
-
- protected:
-  IFactory() = default;
 };
 }  // namespace stonks::sqldb
 

@@ -17,8 +17,11 @@
 namespace stonks::network {
 namespace {
 class TypeChecker : public EndpointTypesValidatorTemplate {
-  using EndpointTypesValidatorTemplate::EndpointTypesValidatorTemplate;
+ public:
+  explicit TypeChecker(EndpointTypes endpoint_types)
+      : EndpointTypesValidatorTemplate{std::move(endpoint_types)} {}
 
+ private:
   void HandleWrongParamsSize() const override {
     throw Exception{"Wrong number of request params"};
   }

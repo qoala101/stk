@@ -30,9 +30,6 @@ class IItemsInterface {
    * @brief Deletes the item with the specified key.
    */
   virtual void DeleteItemIfExists(const Table &table, const Key &key) = 0;
-
- protected:
-  IItemsInterface() = default;
 };
 }  // namespace stonks::nosqldb
 
