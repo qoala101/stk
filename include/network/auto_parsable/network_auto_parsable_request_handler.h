@@ -41,27 +41,23 @@ concept CallableWithRequestAndResponse =
  */
 class AutoParsableRequestHandler : public IRestRequestHandler {
  public:
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  AutoParsableRequestHandler(
+  explicit AutoParsableRequestHandler(
       auto_parsable_request_handler::Callable auto handler)
       : handler_{std::in_place_type_t<Handler>{}, std::move(handler)} {}
 
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  AutoParsableRequestHandler(
+  explicit AutoParsableRequestHandler(
       auto_parsable_request_handler::CallableWithRequest auto handler)
       : handler_{std::in_place_type_t<HandlerWithRequest>{},
                  std::move(handler)} {}
 
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  AutoParsableRequestHandler(
+  explicit AutoParsableRequestHandler(
       auto_parsable_request_handler::CallableWithResponse auto handler)
       : handler_{std::in_place_type_t<HandlerWithResponse>{},
                  [handler = std::move(handler)]() {
                    return ConvertToJson(handler());
                  }} {}
 
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  AutoParsableRequestHandler(
+  explicit AutoParsableRequestHandler(
       auto_parsable_request_handler::CallableWithRequestAndResponse auto
           handler)
       : handler_{
