@@ -6,7 +6,7 @@ class Value;
 }  // namespace stonks::sqldb
 
 /**
- * @file Short alias for Value.
+ * @file Short alias for value.
  */
 
 using V = stonks::sqldb::Value;
