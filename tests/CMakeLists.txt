@@ -8,7 +8,7 @@ enable_testing()
 
 add_executable(unittests
   aws/api_handle.cc
-  aws/dynamodb.cc
+  aws/dynamodb_db.cc
 
   # cpp/move_if.cc
   # restsdk/client_server.cc

@@ -6,10 +6,18 @@
 #include "cpp_not_null.h"
 
 namespace stonks::aws::dynamodb {
-auto Factory::LoadDbFromUri(std::string_view uri) const
-    -> cpp::NnUp<nosqldb::IDb> {
+auto Factory::CreateTablesInterface() const
+    -> cpp::NnUp<nosqldb::ITablesInterface> {
+  return CreateDb();
+}
+
+auto Factory::CreateItemsInterface() const
+    -> cpp::NnUp<nosqldb::IItemsInterface> {
+  return CreateDb();
+}
+
+auto Factory::CreateDb() const -> cpp::NnUp<nosqldb::IDb> {
   const auto api_handle = ApiHandle::Instance();
-  return cpp::MakeNnUp<SyncDbProxy>(cpp::MakeNnUp<AsyncDb>(api_handle),
-                                    api_handle);
+  return cpp::MakeNnUp<SyncDbProxy>(AsyncDb{api_handle});
 }
 }  // namespace stonks::aws::dynamodb

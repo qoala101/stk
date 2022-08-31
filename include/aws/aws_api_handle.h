@@ -11,7 +11,8 @@ namespace stonks::aws {
 class ApiHandle {
  public:
   /**
-   * @brief Gives shared instance.
+   * @remark Keeps weak reference to the given instance
+   * and returns it if its alive.
    */
   [[nodiscard]] static auto Instance() -> cpp::NnSp<ApiHandle>;
 

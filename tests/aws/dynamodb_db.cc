@@ -6,8 +6,8 @@
 #include "aws_dynamodb_factory.h"
 
 TEST(DynamoDb, Test1) {
-  auto db = stonks::aws::dynamodb::Factory{}.LoadDbFromUri("");
-  db->DropTable("TestTable");
+  auto db = stonks::aws::dynamodb::Factory{}.CreateDb();
+  db->DropTableIfExists("TestTable");
   db->CreateTableIfNotExists("TestTable");
 
   ASSERT_EQ(db->SelectItem("TestTable", "TestKey1"), std::nullopt);
@@ -21,9 +21,10 @@ TEST(DynamoDb, Test1) {
   db->InsertOrUpdateItem("TestTable", "TestKey2", "TestValue2");
   ASSERT_EQ(db->SelectItem("TestTable", "TestKey2"), "TestValue2");
 
-  db->DeleteItem("TestTable", "TestKey1");
+  db->DeleteItemIfExists("TestTable", "TestKey1");
   ASSERT_EQ(db->SelectItem("TestTable", "TestKey1"), std::nullopt);
 
-  db->DropTable("TestTable");
+  db->DropTableIfExists("TestTable");
   EXPECT_ANY_THROW(std::ignore = db->SelectItem("TestTable", "TestKey2"));
+  EXPECT_ANY_THROW(db->DeleteItemIfExists("TestTable", "TestKey2"));
 }

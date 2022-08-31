@@ -3,6 +3,8 @@
 
 #include "cpp_not_null.h"
 #include "nosqldb_i_db.h"
+#include "nosqldb_i_items_interface.h"
+#include "nosqldb_i_tables_interface.h"
 
 namespace stonks::nosqldb {
 /**
@@ -14,10 +16,21 @@ class IFactory {
   virtual ~IFactory() = default;
 
   /**
-   * @brief Loads DB from specified URI.
+   * @brief Creates an object which can manipulate tables.
    */
-  [[nodiscard]] virtual auto LoadDbFromUri(std::string_view uri) const
-      -> cpp::NnUp<IDb> = 0;
+  [[nodiscard]] virtual auto CreateTablesInterface() const
+      -> cpp::NnUp<ITablesInterface> = 0;
+
+  /**
+   * @brief Creates an object which can manipulate items.
+   */
+  [[nodiscard]] virtual auto CreateItemsInterface() const
+      -> cpp::NnUp<IItemsInterface> = 0;
+
+  /**
+   * @brief Creates an object with the full list of DB actions.
+   */
+  [[nodiscard]] virtual auto CreateDb() const -> cpp::NnUp<IDb>;
 
  protected:
   explicit IFactory() = default;

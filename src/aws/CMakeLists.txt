@@ -1,7 +1,5 @@
 find_package(AWSSDK REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
-find_package(range-v3 REQUIRED)
-find_package(spdlog REQUIRED)
 
 add_library(libaws
   dynamodb/aws_dynamodb_async_db.cc
@@ -24,6 +22,4 @@ target_link_libraries(libaws
   PRIVATE AWS::dynamodb
   PRIVATE Microsoft.GSL::GSL
   PRIVATE NotNull
-  PRIVATE range-v3::range-v3
-  PRIVATE spdlog::spdlog
 )

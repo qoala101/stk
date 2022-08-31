@@ -1,5 +1,5 @@
 add_library(libnosqldb
-  empty.cc
+  nosqldb_i_factory.cc
 )
 
 set_target_properties(libnosqldb PROPERTIES
@@ -12,4 +12,5 @@ target_include_directories(libnosqldb
 
 target_link_libraries(libnosqldb
   PUBLIC libcpp
+  PRIVATE NotNull
 )
