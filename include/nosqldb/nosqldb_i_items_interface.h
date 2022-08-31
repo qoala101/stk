@@ -18,13 +18,12 @@ class IItemsInterface {
    */
   [[nodiscard]] virtual auto SelectItem(const Table &table,
                                         const Key &key) const
-      -> cpp::Opt<Value> = 0;
+      -> cpp::Opt<Item> = 0;
 
   /**
    * @brief Sets the item value for the specified key.
    */
-  virtual void InsertOrUpdateItem(const Table &table, const Key &key,
-                                  const Value &value) = 0;
+  virtual void InsertOrUpdateItem(const Table &table, Item item) = 0;
 
   /**
    * @brief Deletes the item with the specified key.

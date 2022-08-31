@@ -86,7 +86,7 @@ void AsyncDb::DropTableIfExists(const nosqldb::Table &table) {
 
 auto AsyncDb::SelectItem(const nosqldb::Table &table,
                          const nosqldb::Key &key) const
-    -> cpp::Opt<nosqldb::Value> {
+    -> cpp::Opt<nosqldb::Item> {
   const auto attr_key = Aws::DynamoDB::Model::AttributeValue{key};
 
   const auto request =
@@ -107,14 +107,13 @@ auto AsyncDb::SelectItem(const nosqldb::Table &table,
     return std::nullopt;
   }
 
-  return iter->second.GetS();
+  return nosqldb::Item{.key = key, .value = iter->second.GetS()};
 }
 
 void AsyncDb::InsertOrUpdateItem(const nosqldb::Table &table,
-                                 const nosqldb::Key &key,
-                                 const nosqldb::Value &value) {
-  const auto attr_key = Aws::DynamoDB::Model::AttributeValue{key};
-  const auto attr_value = Aws::DynamoDB::Model::AttributeValue{value};
+                                 nosqldb::Item item) {
+  const auto attr_key = Aws::DynamoDB::Model::AttributeValue{item.key};
+  const auto attr_value = Aws::DynamoDB::Model::AttributeValue{item.value};
 
   const auto request =
       Aws::DynamoDB::Model::UpdateItemRequest{}
@@ -127,7 +126,7 @@ void AsyncDb::InsertOrUpdateItem(const nosqldb::Table &table,
   const auto &result = db_client_->UpdateItem(request);
 
   if (!result.IsSuccess()) {
-    throw cpp::MessageException{"Couldn't insert or update item " + key +
+    throw cpp::MessageException{"Couldn't insert or update item " + item.key +
                                 " in table " + table + ": " +
                                 result.GetError().GetMessage()};
   }

@@ -54,19 +54,16 @@ void SyncDbProxy::DropTableIfExists(const nosqldb::Table &table) {
 
 auto SyncDbProxy::SelectItem(const nosqldb::Table &table,
                              const nosqldb::Key &key) const
-    -> cpp::Opt<nosqldb::Value> {
+    -> cpp::Opt<nosqldb::Item> {
   return async_db_.SelectItem(table, key);
 }
 
 void SyncDbProxy::InsertOrUpdateItem(const nosqldb::Table &table,
-                                     const nosqldb::Key &key,
-                                     const nosqldb::Value &value) {
-  async_db_.InsertOrUpdateItem(table, key, value);
+                                     nosqldb::Item item) {
+  async_db_.InsertOrUpdateItem(table, item);
 
-  WaitUntil([this, &table, &key, &value]() {
-    return IsItemWithValueExists(table, key, value);
-  });
-  Ensures(IsItemWithValueExists(table, key, value));
+  WaitUntil([this, &table, &item]() { return IsItemExists(table, item); });
+  Ensures(IsItemExists(table, item));
 }
 
 void SyncDbProxy::DeleteItemIfExists(const nosqldb::Table &table,
@@ -118,11 +115,9 @@ auto SyncDbProxy::IsItemExists(const nosqldb::Table &table,
   return async_db_.SelectItem(table, key).has_value();
 }
 
-auto SyncDbProxy::IsItemWithValueExists(const nosqldb::Table &table,
-                                        const nosqldb::Key &key,
-                                        const nosqldb::Value &value) const
-    -> bool {
-  const auto item = async_db_.SelectItem(table, key);
-  return item.has_value() && (*item == value);
+auto SyncDbProxy::IsItemExists(const nosqldb::Table &table,
+                               const nosqldb::Item &item) const -> bool {
+  const auto selected_item = async_db_.SelectItem(table, item.key);
+  return selected_item.has_value() && (*selected_item == item);
 }
 }  // namespace stonks::aws::dynamodb

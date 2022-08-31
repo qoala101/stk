@@ -52,13 +52,13 @@ class AsyncDb : public nosqldb::IDb {
    */
   [[nodiscard]] auto SelectItem(const nosqldb::Table &table,
                                 const nosqldb::Key &key) const
-      -> cpp::Opt<nosqldb::Value> override;
+      -> cpp::Opt<nosqldb::Item> override;
 
   /**
    * @copydoc nosqldb::IDb::InsertOrUpdateItem
    */
-  void InsertOrUpdateItem(const nosqldb::Table &table, const nosqldb::Key &key,
-                          const nosqldb::Value &value) override;
+  void InsertOrUpdateItem(const nosqldb::Table &table,
+                          nosqldb::Item item) override;
 
   /**
    * @copydoc nosqldb::IDb::DeleteItemIfExists

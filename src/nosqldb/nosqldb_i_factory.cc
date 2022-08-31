@@ -29,13 +29,12 @@ class AggregateDb : public IDb {
   }
 
   [[nodiscard]] auto SelectItem(const Table &table, const Key &key) const
-      -> cpp::Opt<Value> override {
+      -> cpp::Opt<Item> override {
     return items_interface_->SelectItem(table, key);
   }
 
-  void InsertOrUpdateItem(const Table &table, const Key &key,
-                          const Value &value) override {
-    return items_interface_->InsertOrUpdateItem(table, key, value);
+  void InsertOrUpdateItem(const Table &table, Item item) override {
+    return items_interface_->InsertOrUpdateItem(table, std::move(item));
   }
 
   void DeleteItemIfExists(const Table &table, const Key &key) override {

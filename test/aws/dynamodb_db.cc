@@ -4,27 +4,37 @@
 #include <optional>
 
 #include "aws_dynamodb_factory.h"
+#include "nosqldb_types.h"
 
 TEST(DynamoDb, Test1) {
   auto db = stonks::aws::dynamodb::Factory{}.CreateDb();
-  db->DropTableIfExists("TestTable");
-  db->CreateTableIfNotExists("TestTable");
 
-  ASSERT_EQ(db->SelectItem("TestTable", "TestKey1"), std::nullopt);
+  static const auto kTable = stonks::nosqldb::Table{"TestTable"};
 
-  db->InsertOrUpdateItem("TestTable", "TestKey1", "TestValue1");
-  ASSERT_EQ(db->SelectItem("TestTable", "TestKey1"), "TestValue1");
+  db->DropTableIfExists(kTable);
+  db->CreateTableIfNotExists(kTable);
 
-  db->InsertOrUpdateItem("TestTable", "TestKey1", "TestValue2");
-  ASSERT_EQ(db->SelectItem("TestTable", "TestKey1"), "TestValue2");
+  const auto item1 =
+      stonks::nosqldb::Item{.key = "TestKey1", .value = "TestValue1"};
+  ASSERT_EQ(db->SelectItem(kTable, item1.key), std::nullopt);
 
-  db->InsertOrUpdateItem("TestTable", "TestKey2", "TestValue2");
-  ASSERT_EQ(db->SelectItem("TestTable", "TestKey2"), "TestValue2");
+  db->InsertOrUpdateItem(kTable, item1);
+  ASSERT_EQ(db->SelectItem(kTable, item1.key), item1);
 
-  db->DeleteItemIfExists("TestTable", "TestKey1");
-  ASSERT_EQ(db->SelectItem("TestTable", "TestKey1"), std::nullopt);
+  const auto item1_new_value =
+      stonks::nosqldb::Item{.key = item1.key, .value = "TestValue2"};
+  db->InsertOrUpdateItem(kTable, item1_new_value);
+  ASSERT_EQ(db->SelectItem(kTable, item1.key), item1_new_value);
 
-  db->DropTableIfExists("TestTable");
-  EXPECT_ANY_THROW(std::ignore = db->SelectItem("TestTable", "TestKey2"));
-  EXPECT_ANY_THROW(db->DeleteItemIfExists("TestTable", "TestKey2"));
+  const auto item2 =
+      stonks::nosqldb::Item{.key = "TestKey2", .value = "TestValue2"};
+  db->InsertOrUpdateItem(kTable, item2);
+  ASSERT_EQ(db->SelectItem(kTable, item2.key), item2);
+
+  db->DeleteItemIfExists(kTable, item1.key);
+  ASSERT_EQ(db->SelectItem(kTable, item1.key), std::nullopt);
+
+  db->DropTableIfExists(kTable);
+  EXPECT_ANY_THROW(std::ignore = db->SelectItem(kTable, item1.key));
+  EXPECT_ANY_THROW(db->DeleteItemIfExists(kTable, item2.key));
 }
