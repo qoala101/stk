@@ -31,7 +31,7 @@ class RestServer {
    * @brief Registers handler for particular endpoint.
    */
   template <typename T>
-  requires std::is_constructible_v<AutoParsableRequestHandler, T>
+  requires std::constructible_from<AutoParsableRequestHandler, T>
   auto Handling(TypedEndpoint endpoint, T handler) -> RestServer & {
     return Handling(
         std::move(endpoint),

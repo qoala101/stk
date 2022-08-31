@@ -12,12 +12,10 @@ namespace stonks::cpp {
 template <typename... Ts>
 using Nn = ::cpp::not_null<Ts...>;
 
-template <typename... Ts>
 [[nodiscard]] auto AssumeNn(auto &&...args) {
   return ::cpp::assume_not_null(std::forward<decltype(args)>(args)...);
 }
 
-template <typename... Ts>
 [[nodiscard]] auto CheckNn(auto &&...args) {
   return ::cpp::check_not_null(std::forward<decltype(args)>(args)...);
 }

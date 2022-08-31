@@ -11,6 +11,7 @@
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
+#include "network_concepts.h"
 #include "network_i_json.h"
 #include "network_json_basic_conversions.h"
 #include "not_null.hpp"
@@ -21,6 +22,7 @@
 
 namespace stonks::network {
 template <cpp::Vector T>
+requires Parsable<typename T::value_type>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
   auto vector = T{};
 
@@ -33,6 +35,7 @@ template <cpp::Vector T>
 }
 
 template <cpp::Optional T>
+requires Parsable<typename T::value_type>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
   if (json.IsNull()) {
     return std::nullopt;
@@ -41,7 +44,7 @@ template <cpp::Optional T>
   return ParseFromJson<typename T::value_type>(json);
 }
 
-template <typename T>
+template <Convertible T>
 [[nodiscard]] auto ConvertToJson(const std::vector<T> &value)
     -> cpp::Pv<IJson> {
   auto json = CreateNullJson();
@@ -53,6 +56,8 @@ template <typename T>
   return json;
 }
 
+// TODO(vh): Changing typename to Convertible here leads to call to the bool
+// overload when passing pointers.
 template <typename T>
 [[nodiscard]] auto ConvertToJson(T *value) -> cpp::Pv<IJson> {
   if (value == nullptr) {
