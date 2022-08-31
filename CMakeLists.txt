@@ -39,4 +39,4 @@ add_compile_definitions(_TURN_OFF_PLATFORM_STRING)
 include(CTest)
 
 add_subdirectory(src)
-add_subdirectory(tests)
+add_subdirectory(test)
