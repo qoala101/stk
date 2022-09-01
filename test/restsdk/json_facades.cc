@@ -24,7 +24,7 @@ TEST(RestRequestReceiver, SendRequest) {
                                   std::numeric_limits<double>::max(), "text"};
 
   // clang-format off
-  const auto json = C(
+  auto json = C(
     "a", original.a,
     "b", original.b,
     "c", original.c,
@@ -33,8 +33,13 @@ TEST(RestRequestReceiver, SendRequest) {
   );
   // clang-format on
 
-  const auto parsed = P<BaseTypes>(*json, "a", "b", "c", "d", "e");
+  const auto parsed_const =
+      P<BaseTypes>(const_cast<const stonks::network::IJson &>(*json), "a", "b",
+                   "c", "d", "e");
+  const auto parsed_moved =
+      P<BaseTypes>(std::move(*json), "a", "b", "c", "d", "e");
 
-  EXPECT_EQ(original, parsed);
+  EXPECT_EQ(original, parsed_const);
+  EXPECT_EQ(original, parsed_moved);
 }
 }  // namespace

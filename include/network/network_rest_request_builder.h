@@ -5,6 +5,7 @@
 #include <string_view>
 #include <utility>
 
+#include "network_concepts.h"  // IWYU pragma: keep
 #include "network_enums.h"
 #include "network_json_basic_conversions.h"
 #include "network_types.h"
@@ -39,7 +40,8 @@ class RestRequestBuilder {
   /**
    * @copydoc RestRequestBuilder::AddParam
    */
-  auto AddParam(std::string key, auto &&value) -> RestRequestBuilder & {
+  auto AddParam(std::string key, Convertible auto &&value)
+      -> RestRequestBuilder & {
     return AddParam(key, ConvertToJson(std::forward<decltype(value)>(value)));
   }
 

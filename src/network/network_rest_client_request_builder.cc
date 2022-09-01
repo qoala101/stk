@@ -9,9 +9,13 @@
 #include "network_types.h"
 
 namespace stonks::network::rest_client {
-void RequestBuilder::DiscardingResultImpl(auto&& t) {
-  std::ignore = t.request_sender_->SendRequestAndGetResponse(
-      cpp::MoveIfNotConst<decltype(t)>(t.request_));
+void RequestBuilder::DiscardingResultImpl(
+    cpp::DecaysTo<RequestBuilder> auto&& t) {
+  using T = decltype(t);
+
+  auto&& ft = std::forward<T>(t);
+  std::ignore = ft.request_sender_->SendRequestAndGetResponse(
+      cpp::MoveIfNotConst<T>(ft.request_));
 }
 
 void RequestBuilder::DiscardingResult() const& { DiscardingResultImpl(*this); }
@@ -27,12 +31,15 @@ RequestBuilder::RequestBuilder(Endpoint endpoint,
     : request_{std::move(endpoint)},
       request_sender_{std::move(request_sender)} {}
 
-auto RequestBuilder::SendRequestAndGetResultImpl(auto&& t)
-    -> Result::value_type {
-  auto result = t.request_sender_
-                    ->SendRequestAndGetResponse(
-                        cpp::MoveIfNotConst<decltype(t)>(t.request_))
-                    .result;
+auto RequestBuilder::SendRequestAndGetResultImpl(
+    cpp::DecaysTo<RequestBuilder> auto&& t) -> Result::value_type {
+  using T = decltype(t);
+
+  auto&& ft = std::forward<T>(t);
+  auto result =
+      ft.request_sender_
+          ->SendRequestAndGetResponse(cpp::MoveIfNotConst<T>(ft.request_))
+          .result;
   Expects(result);
   return std::move(*result);
 }

@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORK_NETWORK_JSON_FACADES_H_
 #define STONKS_NETWORK_NETWORK_JSON_FACADES_H_
 
+#include "cpp_concepts.h"
 #include "network_auto_parsable.h"
 #include "network_concepts.h"
 #include "network_i_json.h"
@@ -11,9 +12,10 @@
 
 namespace stonks::network {
 namespace details {
-[[nodiscard]] auto MakeFromJsonImpl(const IJson &json, auto &&...args)
-    -> AutoParsable {
-  return AutoParsable{json.GetChild(std::forward<decltype(args)>(args)...)};
+[[nodiscard]] auto MakeFromJsonImpl(cpp::DecaysTo<IJson> auto &&json,
+                                    auto &&...args) -> AutoParsable {
+  return AutoParsable{std::forward<decltype(json)>(json).GetChild(
+      std::forward<decltype(args)>(args)...)};
 }
 
 inline void BuildJsonFromImpl(IJson &json) {}
@@ -32,8 +34,11 @@ void BuildJsonFromImpl(IJson &json, std::convertible_to<std::string> auto &&key,
  * @param keys List of JSON children names.
  */
 template <typename T>
-[[nodiscard]] auto MakeFromJson(const IJson &json, auto &&...keys) -> T {
-  return T{details::MakeFromJsonImpl(json, keys)...};
+[[nodiscard]] auto MakeFromJson(cpp::DecaysTo<IJson> auto &&json,
+                                std::convertible_to<std::string> auto &&...keys)
+    -> T {
+  return T{details::MakeFromJsonImpl(std::forward<decltype(json)>(json),
+                                     std::forward<decltype(keys)>(keys))...};
 }
 
 /**

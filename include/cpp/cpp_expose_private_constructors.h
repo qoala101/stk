@@ -19,9 +19,8 @@ class ExposePrivateConstructorsTo {
   /**
    * @brief Constructs T calling private constructor.
    */
-  template <typename... Args>
-  [[nodiscard]] auto operator()(Args &&...args) -> T {
-    return T{std::forward<Args>(args)...};
+  [[nodiscard]] auto operator()(auto &&...args) -> T {
+    return T{std::forward<decltype(args)>(args)...};
   }
 };
 

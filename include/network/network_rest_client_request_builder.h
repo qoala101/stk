@@ -6,6 +6,7 @@
 #include <type_traits>
 #include <utility>
 
+#include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
 #include "network_concepts.h"  // IWYU pragma: keep
@@ -74,10 +75,10 @@ class RequestBuilder {
   RequestBuilder(Endpoint endpoint,
                  cpp::NnSp<IRestRequestSender> request_sender);
 
-  static void DiscardingResultImpl(auto &&t);
+  static void DiscardingResultImpl(cpp::DecaysTo<RequestBuilder> auto &&t);
 
-  [[nodiscard]] static auto SendRequestAndGetResultImpl(auto &&t)
-      -> Result::value_type;
+  [[nodiscard]] static auto SendRequestAndGetResultImpl(
+      cpp::DecaysTo<RequestBuilder> auto &&t) -> Result::value_type;
 
   [[nodiscard]] auto WithParam(std::string key, Param value)
       -> RequestBuilder &;

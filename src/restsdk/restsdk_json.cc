@@ -27,8 +27,10 @@ Json::Json(std::string_view value)
 
 Json::Json(IJson::Impl impl) : impl_{std::move(impl)} {}
 
-auto Json::CloneImpl(auto&& t) -> cpp::NnUp<IJson> {
-  return cpp::MakeNnUp<Json>(cpp::MoveIfNotConst<decltype(t)>(t.impl_));
+auto Json::CloneImpl(cpp::DecaysTo<Json> auto&& t) -> cpp::NnUp<IJson> {
+  using T = decltype(t);
+
+  return cpp::MakeNnUp<Json>(cpp::MoveIfNotConst<T>(std::forward<T>(t).impl_));
 }
 
 auto Json::clone() const& -> cpp::NnUp<IJson> { return CloneImpl(*this); }
@@ -37,12 +39,15 @@ auto Json::clone() && -> cpp::NnUp<IJson> { return CloneImpl(*this); }
 
 auto Json::IsNull() const -> bool { return impl_.GetJson().is_null(); }
 
-auto Json::GetChildImpl(auto&& t, std::string_view key) -> cpp::Pv<IJson> {
-  auto& json = t.impl_.GetJson();
+auto Json::GetChildImpl(cpp::DecaysTo<Json> auto&& t, std::string_view key)
+    -> cpp::Pv<IJson> {
+  using T = decltype(t);
+
+  auto& json = std::forward<T>(t).impl_.GetJson();
   Expects(!json.is_array());
 
   return cpp::MakePv<IJson, restsdk::Json>(
-      IJson::Impl{cpp::MoveIfNotConst<decltype(t)>(json.at(key.data()))});
+      IJson::Impl{cpp::MoveIfNotConst<T>(json.at(key.data()))});
 }
 
 auto Json::GetChild(std::string_view key) const& -> cpp::Pv<IJson> {
@@ -60,12 +65,15 @@ void Json::SetChild(std::string key, cpp::Pv<IJson> child) {
   json[key] = std::move(child->GetImpl().GetJson());
 }
 
-auto Json::GetChildImpl(auto&& t, int index) -> cpp::Pv<IJson> {
-  auto& json = t.impl_.GetJson();
+auto Json::GetChildImpl(cpp::DecaysTo<Json> auto&& t, int index)
+    -> cpp::Pv<IJson> {
+  using T = decltype(t);
+
+  auto& json = std::forward<T>(t).impl_.GetJson();
   Expects(json.is_array());
 
   return cpp::MakePv<IJson, restsdk::Json>(
-      IJson::Impl{cpp::MoveIfNotConst<decltype(t)>(json.as_array().at(index))});
+      IJson::Impl{cpp::MoveIfNotConst<T>(json.as_array().at(index))});
 }
 
 auto Json::GetChild(int index) const& -> cpp::Pv<IJson> {
