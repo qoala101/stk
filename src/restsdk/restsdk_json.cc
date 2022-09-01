@@ -12,17 +12,18 @@
 #include "network_i_json.h"
 
 namespace stonks::restsdk {
-Json::Json(bool value) : impl_{web::json::value{value}} {}
+Json::Json(bool value) : impl_{web::json::value::boolean(value)} {}
 
-Json::Json(int value) : impl_{web::json::value{value}} {}
+Json::Json(int value) : impl_{web::json::value::number(value)} {}
 
-Json::Json(int64_t value) : impl_{web::json::value{value}} {}
+Json::Json(int64_t value) : impl_{web::json::value::number(value)} {}
 
-Json::Json(double value) : impl_{web::json::value{value}} {}
+Json::Json(double value) : impl_{web::json::value::number(value)} {}
 
 Json::Json(const char* value) : impl_{web::json::value::string(value)} {}
 
-Json::Json(std::string_view value) : impl_{web::json::value::string(value.data())} {}
+Json::Json(std::string_view value)
+    : impl_{web::json::value::string(value.data())} {}
 
 Json::Json(IJson::Impl impl) : impl_{std::move(impl)} {}
 

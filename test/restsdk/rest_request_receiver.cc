@@ -42,7 +42,7 @@ auto ParseFromJson(const IJson &json) -> SymbolPrice {
 }
 
 auto ConvertToJson(const SymbolPrice &value) -> cpp::Pv<IJson> {
-  auto json = stonks::network::CreateNullJson();
+  auto json = CreateNullJson();
   json->SetChild("symbol", ConvertToJson(value.symbol));
   json->SetChild("price", ConvertToJson(std::to_string(value.price)));
   return json;

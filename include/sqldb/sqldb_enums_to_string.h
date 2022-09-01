@@ -6,6 +6,10 @@
 
 #include "sqldb_enums.h"
 
+/**
+ * @file Library enums to string conversions.
+ */
+
 template <>
 [[nodiscard]] constexpr auto
 magic_enum::customize::enum_name<stonks::sqldb::DataType>(

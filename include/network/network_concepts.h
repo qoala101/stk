@@ -6,6 +6,10 @@
 #include "network_i_json.h"
 #include "network_json_basic_conversions.h"
 
+/**
+ * @file Common network library concepts.
+ */
+
 namespace stonks::network {
 template <typename T>
 concept Parsable = requires(const IJson &json) {

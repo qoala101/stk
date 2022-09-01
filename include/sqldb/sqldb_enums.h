@@ -1,6 +1,10 @@
 #ifndef STONKS_SQLDB_SQLDB_ENUMS_H_
 #define STONKS_SQLDB_SQLDB_ENUMS_H_
 
+/**
+ * @file Library enums.
+ */
+
 namespace stonks::sqldb {
 enum class DataType { kBool, kInt, kInt64, kDouble, kString };
 }  // namespace stonks::sqldb
