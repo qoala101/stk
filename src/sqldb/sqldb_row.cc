@@ -13,9 +13,11 @@ Row::Row(std::vector<Cell> cells) {
   Ensures(cells_.size() == cells.size());
 }
 
-auto Row::GetValueImpl(auto &t, const Column &column) -> auto & {
-  Expects(t.cells_.find(column) != t.cells_.end());
-  return t.cells_.at(column);
+auto Row::GetValueImpl(cpp::DecaysTo<Row> auto &&t, const Column &column)
+    -> cpp::DecaysTo<Value> auto && {
+  auto &&ft = std::forward<decltype(t)>(t);
+  Expects(ft.cells_.find(column) != ft.cells_.end());
+  return ft.cells_.at(column);
 }
 
 auto Row::GetValue(const Column &column) const -> const Value & {

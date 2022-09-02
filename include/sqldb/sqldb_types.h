@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "cpp_concepts.h"
 #include "cpp_optional.h"
 #include "cpp_views.h"
 #include "sqldb_enums.h"
@@ -44,9 +45,9 @@ struct TableDefinition {
   std::vector<ColumnDefinition> columns{};
 
  private:
-  [[nodiscard]] static auto GetColumnDefinitionImpl(auto &t,
-                                                    const Column &column)
-      -> auto &;
+  [[nodiscard]] static auto GetColumnDefinitionImpl(
+      cpp::DecaysTo<TableDefinition> auto &&t, const Column &column)
+      -> cpp::DecaysTo<ColumnDefinition> auto &&;
 };
 
 struct Cell {

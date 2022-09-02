@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 
+#include "cpp_concepts.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 
@@ -22,8 +23,9 @@ class Row {
   [[nodiscard]] auto GetCells() -> std::map<Column, Value> &;
 
  private:
-  [[nodiscard]] static auto GetValueImpl(auto &t, const Column &column)
-      -> auto &;
+  [[nodiscard]] static auto GetValueImpl(cpp::DecaysTo<Row> auto &&t,
+                                         const Column &column)
+      -> cpp::DecaysTo<Value> auto &&;
 
   std::map<Column, Value> cells_{};
 };

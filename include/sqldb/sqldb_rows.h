@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "cpp_concepts.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 
@@ -38,8 +39,9 @@ class Rows {
   [[nodiscard]] friend auto operator==(const Rows &, const Rows &)
       -> bool = default;
 
-  [[nodiscard]] static auto GetColumnValuesImpl(auto &t, const Column &column)
-      -> auto &;
+  [[nodiscard]] static auto GetColumnValuesImpl(cpp::DecaysTo<Rows> auto &&t,
+                                                const Column &column)
+      -> cpp::DecaysTo<std::vector<Value>> auto &&;
 
   std::vector<ColumnValues> columns_{};
 };

@@ -20,12 +20,15 @@ Rows::Rows(std::vector<Column> columns)
   Ensures(columns_.size() == columns.size());
 }
 
-auto Rows::GetColumnValuesImpl(auto &t, const Column &column) -> auto & {
+auto Rows::GetColumnValuesImpl(cpp::DecaysTo<Rows> auto &&t,
+                               const Column &column)
+    -> cpp::DecaysTo<std::vector<Value>> auto && {
+  auto &&ft = std::forward<decltype(t)>(t);
   const auto iter =
-      ranges::find_if(t.columns_, [&column](const auto &other_column) {
+      ranges::find_if(ft.columns_, [&column](const auto &other_column) {
         return other_column.column == column;
       });
-  Expects(iter != t.columns_.end());
+  Expects(iter != ft.columns_.end());
   return iter->values;
 }
 

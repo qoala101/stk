@@ -59,9 +59,11 @@ auto Value::GetDouble() const -> double {
   return std::get<double>(value_);
 }
 
-auto Value::GetStringImpl(auto& t) -> auto& {
-  Expects(std::holds_alternative<std::string>(t.value_));
-  return std::get<std::string>(t.value_);
+auto Value::GetStringImpl(cpp::DecaysTo<Value> auto&& t)
+    -> cpp::DecaysTo<std::string> auto&& {
+  auto&& ft = std::forward<decltype(t)>(t);
+  Expects(std::holds_alternative<std::string>(ft.value_));
+  return std::get<std::string>(ft.value_);
 }
 
 auto Value::GetString() const -> const std::string& {

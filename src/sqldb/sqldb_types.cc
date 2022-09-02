@@ -10,13 +10,15 @@
 #include "cpp_not_null.h"
 
 namespace stonks::sqldb {
-auto TableDefinition::GetColumnDefinitionImpl(auto &t, const Column &column)
-    -> auto & {
+auto TableDefinition::GetColumnDefinitionImpl(
+    cpp::DecaysTo<TableDefinition> auto &&t, const Column &column)
+    -> cpp::DecaysTo<ColumnDefinition> auto && {
+  auto &&ft = std::forward<decltype(t)>(t);
   const auto iter =
-      ranges::find_if(t.columns, [&column](const auto &column_definition) {
+      ranges::find_if(ft.columns, [&column](const auto &column_definition) {
         return column_definition.column == column;
       });
-  Expects(iter != t.columns.end());
+  Expects(iter != ft.columns.end());
   return *iter.base();
 }
 

@@ -6,6 +6,7 @@
 #include <string_view>
 #include <variant>
 
+#include "cpp_concepts.h"
 #include "sqldb_enums.h"
 
 namespace stonks::sqldb {
@@ -53,7 +54,8 @@ class Value {
   [[nodiscard]] friend auto operator==(const Value &, const Value &)
       -> bool = default;
 
-  [[nodiscard]] static auto GetStringImpl(auto &t) -> auto &;
+  [[nodiscard]] static auto GetStringImpl(cpp::DecaysTo<Value> auto &&t)
+      -> cpp::DecaysTo<std::string> auto &&;
 
   std::variant<std::monostate, bool, int, int64_t, double, std::string>
       value_{};

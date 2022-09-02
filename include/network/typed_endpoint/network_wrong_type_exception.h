@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "cpp_concepts.h"
 #include "cpp_polymorphic_value.h"
 #include "network_exception.h"
 #include "network_i_json.h"
@@ -30,7 +31,9 @@ class WrongTypeException : public Exception {
   [[nodiscard]] auto GetJson() -> cpp::Pv<IJson> &;
 
  private:
-  [[nodiscard]] static auto GetJsonImpl(auto &t) -> auto &;
+  [[nodiscard]] static auto GetJsonImpl(
+      cpp::DecaysTo<WrongTypeException> auto &&t)
+      -> cpp::DecaysTo<cpp::Pv<IJson>> auto &&;
 
   cpp::Pv<IJson> json_{};
 };
