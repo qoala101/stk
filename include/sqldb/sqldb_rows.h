@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "cpp_concepts.h"
+#include "cpp_copy_const.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 
@@ -41,7 +41,7 @@ class Rows {
 
   [[nodiscard]] static auto GetColumnValuesImpl(cpp::DecaysTo<Rows> auto &&t,
                                                 const Column &column)
-      -> cpp::DecaysTo<std::vector<Value>> auto &&;
+      -> cpp::CopyConst<decltype(t), std::vector<Value> &>;
 
   std::vector<ColumnValues> columns_{};
 };

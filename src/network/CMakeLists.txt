@@ -1,4 +1,3 @@
-find_package(polymorphic_value REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
 
 add_library(libnetwork
@@ -31,6 +30,5 @@ target_include_directories(libnetwork
 
 target_link_libraries(libnetwork
   PUBLIC libcpp
-  PUBLIC polymorphic_value::polymorphic_value
   PRIVATE Microsoft.GSL::GSL
 )

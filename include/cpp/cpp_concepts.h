@@ -15,6 +15,9 @@ template <typename T>
 concept Const = std::is_const_v<std::remove_reference_t<T>>;
 
 template <typename T>
+concept Reference = std::is_lvalue_reference_v<T>;
+
+template <typename T>
 concept Rvalue = std::is_rvalue_reference_v<T>;
 
 template <typename T, typename U>

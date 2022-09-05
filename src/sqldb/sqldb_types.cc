@@ -6,13 +6,14 @@
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
+#include <utility>
 
 #include "cpp_not_null.h"
 
 namespace stonks::sqldb {
 auto TableDefinition::GetColumnDefinitionImpl(
     cpp::DecaysTo<TableDefinition> auto &&t, const Column &column)
-    -> cpp::DecaysTo<ColumnDefinition> auto && {
+    -> cpp::CopyConst<decltype(t), ColumnDefinition &> {
   auto &&ft = std::forward<decltype(t)>(t);
   const auto iter =
       ranges::find_if(ft.columns, [&column](const auto &column_definition) {

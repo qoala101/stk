@@ -1,7 +1,5 @@
 #include "sqlite_prepared_statement_facade.h"
 
-#include <bits/exception.h>
-#include <fmt/format.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
@@ -144,7 +142,8 @@ void PreparedStatementFacade::Finalize() {
   const auto result_code = sqlite3_finalize(sqlite_statement_);
 
   if (result_code != SQLITE_OK) {
-    Logger().error("Prepared statement finalized with error: {}", result_code);
+    throw cpp::MessageException{"Couldn't finalize prepared statement: " +
+                                std::to_string(result_code)};
   }
 
   sqlite_statement_ = nullptr;

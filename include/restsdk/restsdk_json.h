@@ -6,6 +6,7 @@
 #include <string_view>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
+#include "cpp_copy_const.h"
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 #include "network_i_json.h"
@@ -102,6 +103,9 @@ class Json : public network::IJson {
 
   [[nodiscard]] static auto GetChildImpl(cpp::DecaysTo<Json> auto&& t,
                                          int index) -> cpp::Pv<IJson>;
+
+  [[nodiscard]] static auto GetImplImpl(cpp::DecaysTo<Json> auto&& t)
+      -> cpp::CopyConst<decltype(t), IJson::Impl&>;
 
   network::IJson::Impl impl_;
 };

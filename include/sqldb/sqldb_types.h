@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "cpp_concepts.h"
+#include "cpp_copy_const.h"
 #include "cpp_optional.h"
 #include "cpp_views.h"
 #include "sqldb_enums.h"
@@ -47,7 +47,7 @@ struct TableDefinition {
  private:
   [[nodiscard]] static auto GetColumnDefinitionImpl(
       cpp::DecaysTo<TableDefinition> auto &&t, const Column &column)
-      -> cpp::DecaysTo<ColumnDefinition> auto &&;
+      -> cpp::CopyConst<decltype(t), ColumnDefinition &>;
 };
 
 struct Cell {

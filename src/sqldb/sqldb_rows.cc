@@ -22,7 +22,7 @@ Rows::Rows(std::vector<Column> columns)
 
 auto Rows::GetColumnValuesImpl(cpp::DecaysTo<Rows> auto &&t,
                                const Column &column)
-    -> cpp::DecaysTo<std::vector<Value>> auto && {
+    -> cpp::CopyConst<decltype(t), std::vector<Value> &> {
   auto &&ft = std::forward<decltype(t)>(t);
   const auto iter =
       ranges::find_if(ft.columns_, [&column](const auto &other_column) {

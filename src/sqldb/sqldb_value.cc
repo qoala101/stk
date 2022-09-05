@@ -60,7 +60,7 @@ auto Value::GetDouble() const -> double {
 }
 
 auto Value::GetStringImpl(cpp::DecaysTo<Value> auto&& t)
-    -> cpp::DecaysTo<std::string> auto&& {
+    -> cpp::CopyConst<decltype(t), std::string&> {
   auto&& ft = std::forward<decltype(t)>(t);
   Expects(std::holds_alternative<std::string>(ft.value_));
   return std::get<std::string>(ft.value_);

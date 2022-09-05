@@ -6,7 +6,7 @@
 #include <string_view>
 #include <variant>
 
-#include "cpp_concepts.h"
+#include "cpp_copy_const.h"
 #include "sqldb_enums.h"
 
 namespace stonks::sqldb {
@@ -55,7 +55,7 @@ class Value {
       -> bool = default;
 
   [[nodiscard]] static auto GetStringImpl(cpp::DecaysTo<Value> auto &&t)
-      -> cpp::DecaysTo<std::string> auto &&;
+      -> cpp::CopyConst<decltype(t), std::string &>;
 
   std::variant<std::monostate, bool, int, int64_t, double, std::string>
       value_{};

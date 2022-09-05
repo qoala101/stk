@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 
-#include "cpp_concepts.h"
+#include "cpp_copy_const.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 
@@ -25,7 +25,10 @@ class Row {
  private:
   [[nodiscard]] static auto GetValueImpl(cpp::DecaysTo<Row> auto &&t,
                                          const Column &column)
-      -> cpp::DecaysTo<Value> auto &&;
+      -> cpp::CopyConst<decltype(t), Value &>;
+
+  [[nodiscard]] static auto GetCellsImpl(cpp::DecaysTo<Row> auto &&t)
+      -> cpp::CopyConst<decltype(t), std::map<Column, Value> &>;
 
   std::map<Column, Value> cells_{};
 };

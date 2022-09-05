@@ -109,7 +109,12 @@ auto Json::GetSize() const -> int {
   return gsl::narrow_cast<int>(json.as_array().size());
 }
 
-auto Json::GetImpl() const -> const IJson::Impl& { return impl_; }
+auto Json::GetImplImpl(cpp::DecaysTo<Json> auto&& t)
+    -> cpp::CopyConst<decltype(t), IJson::Impl&> {
+  return std::forward<decltype(t)>(t).impl_;
+}
 
-auto Json::GetImpl() -> IJson::Impl& { return impl_; }
+auto Json::GetImpl() const -> const IJson::Impl& { return GetImplImpl(*this); }
+
+auto Json::GetImpl() -> IJson::Impl& { return GetImplImpl(*this); }
 }  // namespace stonks::restsdk

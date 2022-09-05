@@ -7,7 +7,7 @@ WrongTypeException::WrongTypeException(std::string message, cpp::Pv<IJson> json)
     : Exception{std::move(message)}, json_{std::move(json)} {}
 
 auto WrongTypeException::GetJsonImpl(cpp::DecaysTo<WrongTypeException> auto&& t)
-    -> cpp::DecaysTo<cpp::Pv<IJson>> auto&& {
+    -> cpp::CopyConst<decltype(t), cpp::Pv<IJson>&> {
   return std::forward<decltype(t)>(t).json_;
 }
 
