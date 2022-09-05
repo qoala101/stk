@@ -63,8 +63,8 @@ namespace {
 }
 }  // namespace
 
-Db::Db(std::string_view file_path, const sqldb::IFactory &db_factory)
-    : db_{db_factory.LoadDbFromFile(file_path)},
+Db::Db(const sqldb::IFactory &db_factory)
+    : db_{db_factory.CreateDb()},
       query_builder_{db_factory.CreateQueryBuilder()},
       prepared_statements_{
           cpp::MakeNnSp<db::PreparedStatements>(db_, query_builder_)},

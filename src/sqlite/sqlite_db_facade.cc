@@ -8,12 +8,13 @@
 #include <gsl/assert>
 #include <gsl/util>
 #include <memory>
+#include <string>
 
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
-#include "cpp_smart_pointers.h"
 #include "not_null.hpp"
-#include "sqlite_read_from_file.h"
+#include "sqlite_db_handles_factory.h"
+#include "sqlite_raw_handles.h"
 
 namespace stonks::sqlite {
 namespace {
@@ -21,17 +22,9 @@ namespace {
   static auto logger = spdlog::stdout_color_mt("sqlite::DbFacade");
   return *logger;
 }
-}  // namespace
 
-DbFacade::DbFacade(cpp::Nn<sqlite3 *> sqlite_db)
-    : sqlite_db_{sqlite_db.as_nullable()} {
-  Ensures(sqlite_db_ != nullptr);
-}
-
-auto DbFacade::GetFileName() const -> std::string {
-  Expects(sqlite_db_ != nullptr);
-
-  const auto *const file_name = sqlite3_db_filename(sqlite_db_, nullptr);
+[[nodiscard]] auto GetAssociatedFileName(sqlite3 &sqlite_db) -> std::string {
+  const auto *const file_name = sqlite3_db_filename(&sqlite_db, nullptr);
 
   if (file_name == nullptr) {
     return {};
@@ -40,24 +33,45 @@ auto DbFacade::GetFileName() const -> std::string {
   return file_name;
 }
 
+[[nodiscard]] auto GetPrintableFileName(sqlite3 &sqlite_db) -> std::string {
+  auto file_name = GetAssociatedFileName(sqlite_db);
+
+  if (file_name.empty()) {
+    return "memory";
+  }
+
+  return file_name;
+}
+}  // namespace
+
+DbFacade::DbFacade(cpp::Nn<sqlite3 *> sqlite_db)
+    : sqlite_db_{sqlite_db.as_nullable()} {
+  Ensures(sqlite_db_ != nullptr);
+}
+
 void DbFacade::WriteToFile(std::string_view file_path) const {
   Expects(sqlite_db_ != nullptr);
 
-  auto file_db = read_from_file::OpenSqliteDbFromFile(file_path);
-  DbFacade(cpp::AssumeNn(file_db.get())).CopyDataFrom(*sqlite_db_);
+  auto file_db = db_handles_factory::CreateHandleToFileDb(file_path);
+  DbFacade{cpp::AssumeNn(file_db.get())}.CopyDataFrom(*sqlite_db_);
 
   Logger().info("Stored DB to {}", file_path.data());
 }
 
-void DbFacade::CopyDataFrom(sqlite3 &other_db) {
+void DbFacade::CopyDataFrom(sqlite3 &other_db) const {
   Expects(sqlite_db_ != nullptr);
 
   auto *backup = sqlite3_backup_init(sqlite_db_, "main", &other_db, "main");
   sqlite3_backup_step(backup, -1);
-  sqlite3_backup_finish(backup);
+  const auto result_code = sqlite3_backup_finish(backup);
+
+  if (result_code != SQLITE_OK) {
+    throw cpp::MessageException{"Couldn't copy data from other DB: " +
+                                std::to_string(result_code)};
+  }
 }
 
-auto DbFacade::CreatePreparedStatement(std::string_view query)
+auto DbFacade::CreatePreparedStatement(std::string_view query) const
     -> SqliteStatementHandle {
   Expects(sqlite_db_ != nullptr);
 
@@ -73,14 +87,25 @@ auto DbFacade::CreatePreparedStatement(std::string_view query)
   }
 
   Logger().info("Prepared statement for query: {}", query.data());
-  return cpp::AssumeNn(
-      cpp::Up<sqlite3_stmt, SqliteStatementFinalizer>{sqlite_statement});
+  return SqliteStatementHandle{cpp::AssumeNn(sqlite_statement)};
+}
+
+void DbFacade::EnableForeignKeys() const {
+  Expects(sqlite_db_ != nullptr);
+
+  const auto result_code = sqlite3_exec(sqlite_db_, "PRAGMA foreign_keys = ON",
+                                        nullptr, nullptr, nullptr);
+
+  if (result_code != SQLITE_OK) {
+    throw cpp::MessageException{"Couldn't set foreign_keys pragma on new DB: " +
+                                std::to_string(result_code)};
+  }
 }
 
 void DbFacade::Close() {
   Expects(sqlite_db_ != nullptr);
 
-  const auto file_name = GetFileName();
+  const auto file_name = GetPrintableFileName(*sqlite_db_);
   const auto result_code = sqlite3_close(sqlite_db_);
 
   if (result_code != SQLITE_OK) {

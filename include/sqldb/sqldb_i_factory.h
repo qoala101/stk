@@ -15,10 +15,9 @@ class IFactory {
   virtual ~IFactory() = default;
 
   /**
-   * @brief Loads DB from specified file.
+   * @brief Creates interface to DB.
    */
-  [[nodiscard]] virtual auto LoadDbFromFile(std::string_view file_path) const
-      -> cpp::NnUp<IDb> = 0;
+  [[nodiscard]] virtual auto CreateDb() const -> cpp::NnUp<IDb> = 0;
 
   /**
    * @brief Creates query builder which knows how to build queries for DB.

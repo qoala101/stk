@@ -3,11 +3,10 @@
 
 #include <sqlite3.h>
 
-#include <string>
 #include <string_view>
 
 #include "cpp_not_null.h"
-#include "sqlite_types.h"
+#include "sqlite_raw_handles.h"
 
 namespace stonks::sqlite {
 /**
@@ -18,11 +17,6 @@ class DbFacade {
   explicit DbFacade(cpp::Nn<sqlite3 *> sqlite_db);
 
   /**
-   * @brief Gets the file from which DB was read.
-   */
-  [[nodiscard]] auto GetFileName() const -> std::string;
-
-  /**
    * @brief Writes DB to file.
    */
   void WriteToFile(std::string_view file_path) const;
@@ -30,13 +24,19 @@ class DbFacade {
   /**
    * @brief Replaces current data with the contents of the other DB.
    */
-  void CopyDataFrom(sqlite3 &other_db);
+  void CopyDataFrom(sqlite3 &other_db) const;
 
   /**
    * @brief Creates prepared statement for the query.
    */
-  [[nodiscard]] auto CreatePreparedStatement(std::string_view query)
+  [[nodiscard]] auto CreatePreparedStatement(std::string_view query) const
       -> SqliteStatementHandle;
+
+  /**
+   * @brief Enforces foreign keys on DB.
+   * @remark Foreign keys are disabled by default.
+   */
+  void EnableForeignKeys() const;
 
   /**
    * @brief Closes DB.

@@ -8,12 +8,13 @@
 #include "cpp_not_null.h"
 #include "not_null.hpp"
 #include "sqldb_i_db.h"
+#include "sqldb_i_factory.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_query_builder_facade.h"
 #include "sqldb_row_definition_alias_rd.h"
 #include "sqldb_types.h"
 #include "sqldb_value_alias_v.h"
-#include "sqlite_factory.h"
+#include "sqlite_file_db_factory.h"
 
 namespace {
 const auto kTestDbFileName = "sqlite_db_test.db";
@@ -25,8 +26,9 @@ auto query_builder_facade = std::optional<stonks::sqldb::QueryBuilderFacade>{};
 
 TEST(SqliteDb, CreateAndDropTable) {
   std::ignore = std::filesystem::remove(kTestDbFileName);
-  db_factory = stonks::cpp::MakeUp<stonks::sqlite::Factory>();
-  db = db_factory->LoadDbFromFile(kTestDbFileName).as_nullable();
+  db_factory =
+      stonks::cpp::MakeUp<stonks::sqlite::FileDbFactory>(kTestDbFileName);
+  db = db_factory->CreateDb().as_nullable();
   query_builder = db_factory->CreateQueryBuilder().as_nullable();
   query_builder_facade.emplace(stonks::cpp::AssumeNn(query_builder));
 
@@ -189,10 +191,11 @@ TEST(SqliteDb, SelectJoin) {
 
 TEST(SqliteDb, FileWriteAndRead) {
   EXPECT_FALSE(std::filesystem::exists(kTestDbFileName));
-  db->WriteToFile(kTestDbFileName);
+  db.reset();
   EXPECT_TRUE(std::filesystem::exists(kTestDbFileName));
 
-  auto db_copy = db_factory->LoadDbFromFile(kTestDbFileName).as_nullable();
+  db = db_factory->CreateDb().as_nullable();
+  auto db_copy = db_factory->CreateDb().as_nullable();
 
   const auto select_query = query_builder_facade->Select()
                                 .AllColumns()

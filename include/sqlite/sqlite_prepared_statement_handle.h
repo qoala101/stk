@@ -1,9 +1,11 @@
-#ifndef STONKS_SQLITE_SQLITE_PREPARED_STATEMENT_H_
-#define STONKS_SQLITE_SQLITE_PREPARED_STATEMENT_H_
+#ifndef STONKS_SQLITE_SQLITE_PREPARED_STATEMENT_HANDLE_H_
+#define STONKS_SQLITE_SQLITE_PREPARED_STATEMENT_HANDLE_H_
 
 #include <sqlite3.h>
 
-#include "sqlite_types.h"
+#include "cpp_not_null.h"
+#include "sqlite_db_handle_variant.h"
+#include "sqlite_raw_handles.h"
 
 namespace stonks::sqlite {
 /**
@@ -12,7 +14,7 @@ namespace stonks::sqlite {
  */
 class PreparedStatementHandle {
  public:
-  PreparedStatementHandle(SqliteDbSharedHandle sqlite_db_handle,
+  PreparedStatementHandle(cpp::NnSp<SqliteDbHandleVariant> sqlite_db_handle,
                           SqliteStatementHandle sqlite_statement_handle);
 
   PreparedStatementHandle(const PreparedStatementHandle &) = delete;
@@ -23,14 +25,14 @@ class PreparedStatementHandle {
   auto operator=(PreparedStatementHandle &&) noexcept
       -> PreparedStatementHandle & = default;
 
-  ~PreparedStatementHandle() noexcept = default;
+  ~PreparedStatementHandle() = default;
 
   [[nodiscard]] auto GetSqliteStatement() const -> sqlite3_stmt &;
 
  private:
-  SqliteDbSharedHandle sqlite_db_handle_;
+  cpp::NnSp<SqliteDbHandleVariant> sqlite_db_handle_;
   SqliteStatementHandle sqlite_statement_handle_;
 };
 }  // namespace stonks::sqlite
 
-#endif  // STONKS_SQLITE_SQLITE_PREPARED_STATEMENT_H_
+#endif  // STONKS_SQLITE_SQLITE_PREPARED_STATEMENT_HANDLE_H_

@@ -6,14 +6,16 @@ find_package(spdlog REQUIRED)
 
 add_library(libsqlite
   sqlite_db_facade.cc
-  sqlite_factory.cc
+  sqlite_db_file_handle.cc
+  sqlite_db_handle_variant.cc
+  sqlite_db_handles_factory.cc
   sqlite_db.cc
+  sqlite_file_db_factory.cc
   sqlite_prepared_statement_facade.cc
   sqlite_prepared_statement_handle.cc
   sqlite_query_builder.cc
-  sqlite_read_from_file.cc
+  sqlite_raw_handles.cc
   sqlite_select_statement.cc
-  sqlite_types.cc
   sqlite_update_statement.cc
 )
 

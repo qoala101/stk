@@ -33,11 +33,6 @@ class IDb {
    */
   [[nodiscard]] virtual auto PrepareStatement(std::string query)
       -> cpp::NnUp<IUpdateStatement> = 0;
-
-  /**
-   * @brief Stores this DB to the specified file.
-   */
-  virtual void WriteToFile(std::string_view file_path) const = 0;
 };
 }  // namespace stonks::sqldb
 

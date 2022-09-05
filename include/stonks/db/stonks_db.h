@@ -2,7 +2,6 @@
 #define STONKS_STONKS_DB_STONKS_DB_H_
 
 #include <string>
-#include <string_view>
 #include <vector>
 
 #include "cpp_not_null.h"
@@ -21,12 +20,10 @@ namespace stonks {
 class Db : public IDb {
  public:
   /**
-   * @brief Reads DB from the specified file.
+   * @brief Creates DB over SQL DB used as data storage.
    * @param db_factory SQL DB implementation.
    */
-  Db(std::string_view file_path, const sqldb::IFactory &db_factory);
-
-  [[deprecated]] explicit Db(std::string_view uri = "stonks.db");
+  explicit Db(const sqldb::IFactory &db_factory);
 
   Db(const Db &) = delete;
   Db(Db &&) noexcept;
