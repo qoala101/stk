@@ -1,13 +1,13 @@
 #ifndef STONKS_SQLITE_SQLITE_PREPARED_STATEMENT_FACADE_H_
 #define STONKS_SQLITE_SQLITE_PREPARED_STATEMENT_FACADE_H_
 
-#include <sqlite3.h>
-
 #include <vector>
 
 #include "cpp_not_null.h"
 #include "sqldb_enums.h"
 #include "sqldb_value.h"
+
+class sqlite3_stmt;
 
 namespace stonks::sqlite {
 /**

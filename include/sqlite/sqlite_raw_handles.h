@@ -1,9 +1,10 @@
 #ifndef STONKS_SQLITE_SQLITE_RAW_HANDLES_H_
 #define STONKS_SQLITE_SQLITE_RAW_HANDLES_H_
 
-#include <sqlite3.h>
-
 #include "cpp_not_null.h"
+
+class sqlite3;
+class sqlite3_stmt;
 
 /**
  * @file RAII wrappers of SQLite objects.

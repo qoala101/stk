@@ -1,8 +1,6 @@
 #ifndef STONKS_SQLITE_SQLITE_PREPARED_STATEMENT_HANDLE_H_
 #define STONKS_SQLITE_SQLITE_PREPARED_STATEMENT_HANDLE_H_
 
-#include <sqlite3.h>
-
 #include "cpp_not_null.h"
 #include "sqlite_db_handle_variant.h"
 #include "sqlite_raw_handles.h"

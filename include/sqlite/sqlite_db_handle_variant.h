@@ -1,8 +1,6 @@
 #ifndef STONKS_SQLITE_SQLITE_DB_HANDLE_VARIANT_H_
 #define STONKS_SQLITE_SQLITE_DB_HANDLE_VARIANT_H_
 
-#include <sqlite3.h>
-
 #include <string>
 #include <variant>
 

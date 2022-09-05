@@ -1,8 +1,6 @@
 #ifndef STONKS_SQLITE_SQLITE_DB_FACADE_H_
 #define STONKS_SQLITE_SQLITE_DB_FACADE_H_
 
-#include <sqlite3.h>
-
 #include <string_view>
 
 #include "cpp_not_null.h"

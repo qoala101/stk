@@ -1,8 +1,6 @@
 #ifndef STONKS_SQLITE_SQLITE_DB_FILE_HANDLE_H_
 #define STONKS_SQLITE_SQLITE_DB_FILE_HANDLE_H_
 
-#include <sqlite3.h>
-
 #include <string>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
