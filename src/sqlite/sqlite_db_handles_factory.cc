@@ -57,17 +57,18 @@ auto CreateHandleToFileDb(std::string_view file_path) -> SqliteDbHandle {
 auto LoadDbFromFileToMemory(std::string_view file_path) -> SqliteDbHandle {
   Expects(!file_path.empty());
 
-  auto in_memory_db = CreateInMemoryDb();
+  auto in_memory_db_handle = CreateInMemoryDb();
 
   if (const auto db_is_new = !std::filesystem::exists(file_path)) {
     Logger().info("Created new DB for {}", file_path);
-    return in_memory_db;
+    return in_memory_db_handle;
   }
 
-  auto file_db = CreateHandleToFileDb(file_path.data());
-  DbFacade{cpp::AssumeNn(in_memory_db.get())}.CopyDataFrom(*file_db);
+  auto file_db_handle = CreateHandleToFileDb(file_path.data());
+  DbFacade{cpp::AssumeNn(in_memory_db_handle.get())}.CopyDataFrom(
+      *file_db_handle);
 
   Logger().info("Loaded DB from {}", file_path.data());
-  return in_memory_db;
+  return in_memory_db_handle;
 }
 }  // namespace stonks::sqlite::db_handles_factory

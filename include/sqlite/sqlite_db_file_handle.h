@@ -19,7 +19,7 @@ class SqliteDbFileHandle {
    * @param file_path File from which SQLite DB was read
    * and where it's to be written.
    */
-  SqliteDbFileHandle(SqliteDbHandle sqlite_db, std::string file_path);
+  SqliteDbFileHandle(SqliteDbHandle sqlite_db_handle, std::string file_path);
 
   SqliteDbFileHandle(const SqliteDbFileHandle &) = delete;
   SqliteDbFileHandle(SqliteDbFileHandle &&) noexcept = default;
@@ -54,7 +54,7 @@ class SqliteDbFileHandle {
       cpp::DecaysTo<SqliteDbFileHandle> auto &&t)
       -> cpp::CopyConst<decltype(t), sqlite3 &>;
 
-  SqliteDbHandle sqlite_db_;
+  SqliteDbHandle sqlite_db_handle_;
   std::string file_path_{};
 };
 }  // namespace stonks::sqlite

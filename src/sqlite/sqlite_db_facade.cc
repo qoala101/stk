@@ -52,8 +52,8 @@ DbFacade::DbFacade(cpp::Nn<sqlite3 *> sqlite_db)
 void DbFacade::WriteToFile(std::string_view file_path) const {
   Expects(sqlite_db_ != nullptr);
 
-  auto file_db = db_handles_factory::CreateHandleToFileDb(file_path);
-  DbFacade{cpp::AssumeNn(file_db.get())}.CopyDataFrom(*sqlite_db_);
+  auto file_db_handle = db_handles_factory::CreateHandleToFileDb(file_path);
+  DbFacade{cpp::AssumeNn(file_db_handle.get())}.CopyDataFrom(*sqlite_db_);
 
   Logger().info("Stored DB to {}", file_path.data());
 }

@@ -16,8 +16,8 @@ namespace stonks::sqlite {
  */
 class SqliteDbHandleVariant {
  public:
-  explicit SqliteDbHandleVariant(SqliteDbHandle sqlite_db);
-  explicit SqliteDbHandleVariant(SqliteDbFileHandle sqlite_db);
+  explicit SqliteDbHandleVariant(SqliteDbHandle sqlite_db_handle);
+  explicit SqliteDbHandleVariant(SqliteDbFileHandle sqlite_db_handle);
 
   /**
    * @brief Gives native SQLite handle.
@@ -39,7 +39,7 @@ class SqliteDbHandleVariant {
       cpp::DecaysTo<SqliteDbHandleVariant> auto &&t)
       -> cpp::CopyConst<decltype(t), sqlite3 &>;
 
-  std::variant<SqliteDbHandle, SqliteDbFileHandle> sqlite_db_;
+  std::variant<SqliteDbHandle, SqliteDbFileHandle> sqlite_db_handle_;
 };
 }  // namespace stonks::sqlite
 

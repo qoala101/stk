@@ -7,11 +7,12 @@
 #include "not_null.hpp"
 
 namespace stonks::sqlite {
-SqliteDbHandleVariant::SqliteDbHandleVariant(SqliteDbHandle sqlite_db)
-    : sqlite_db_{std::move(sqlite_db)} {}
+SqliteDbHandleVariant::SqliteDbHandleVariant(SqliteDbHandle sqlite_db_handle)
+    : sqlite_db_handle_{std::move(sqlite_db_handle)} {}
 
-SqliteDbHandleVariant::SqliteDbHandleVariant(SqliteDbFileHandle sqlite_db)
-    : sqlite_db_{std::move(sqlite_db)} {}
+SqliteDbHandleVariant::SqliteDbHandleVariant(
+    SqliteDbFileHandle sqlite_db_handle)
+    : sqlite_db_handle_{std::move(sqlite_db_handle)} {}
 
 auto SqliteDbHandleVariant::GetSqliteDbImpl(
     cpp::DecaysTo<SqliteDbHandleVariant> auto &&t)
@@ -34,7 +35,7 @@ auto SqliteDbHandleVariant::GetSqliteDbImpl(
 
         Expects(false);
       },
-      ft.sqlite_db_);
+      ft.sqlite_db_handle_);
 }
 
 auto SqliteDbHandleVariant::GetSqliteDb() const -> const sqlite3 & {
@@ -61,6 +62,6 @@ auto SqliteDbHandleVariant::GetFilePath() const -> const std::string * {
 
         Expects(false);
       },
-      sqlite_db_);
+      sqlite_db_handle_);
 }
 }  // namespace stonks::sqlite

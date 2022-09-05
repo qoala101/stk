@@ -18,12 +18,13 @@ namespace {
 }
 }  // namespace
 
-SqliteDbFileHandle::SqliteDbFileHandle(SqliteDbHandle sqlite_db,
+SqliteDbFileHandle::SqliteDbFileHandle(SqliteDbHandle sqlite_db_handle,
                                        std::string file_path)
-    : sqlite_db_{std::move(sqlite_db)}, file_path_{std::move(file_path)} {}
+    : sqlite_db_handle_{std::move(sqlite_db_handle)},
+      file_path_{std::move(file_path)} {}
 
 SqliteDbFileHandle::~SqliteDbFileHandle() {
-  auto* sqlite_db = sqlite_db_.get();
+  auto* sqlite_db = sqlite_db_handle_.get();
 
   if (const auto handle_was_moved = sqlite_db == nullptr) {
     return;
@@ -39,7 +40,7 @@ SqliteDbFileHandle::~SqliteDbFileHandle() {
 auto SqliteDbFileHandle::GetSqliteDbImpl(
     cpp::DecaysTo<SqliteDbFileHandle> auto&& t)
     -> cpp::CopyConst<decltype(t), sqlite3&> {
-  return *std::forward<decltype(t)>(t).sqlite_db_;
+  return *std::forward<decltype(t)>(t).sqlite_db_handle_;
 }
 
 auto SqliteDbFileHandle::GetSqliteDb() const -> const sqlite3& {
