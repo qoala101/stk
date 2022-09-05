@@ -22,14 +22,6 @@ class SyncDbProxy : public nosqldb::IDb {
    */
   explicit SyncDbProxy(AsyncDb async_db_);
 
-  SyncDbProxy(const SyncDbProxy &) = delete;
-  SyncDbProxy(SyncDbProxy &&) noexcept;
-
-  auto operator=(const SyncDbProxy &) -> SyncDbProxy & = delete;
-  auto operator=(SyncDbProxy &&) noexcept -> SyncDbProxy &;
-
-  ~SyncDbProxy() override;
-
   /**
    * @copydoc nosqldb::IDb::CreateTableIfNotExists
    */

@@ -32,12 +32,6 @@ void WaitUntil(const std::function<bool()> &predicate) {
 
 SyncDbProxy::SyncDbProxy(AsyncDb async_db) : async_db_{std::move(async_db)} {}
 
-SyncDbProxy::SyncDbProxy(SyncDbProxy &&) noexcept = default;
-
-auto SyncDbProxy::operator=(SyncDbProxy &&) noexcept -> SyncDbProxy & = default;
-
-SyncDbProxy::~SyncDbProxy() = default;
-
 void SyncDbProxy::CreateTableIfNotExists(const nosqldb::Table &table) {
   async_db_.CreateTableIfNotExists(table);
 

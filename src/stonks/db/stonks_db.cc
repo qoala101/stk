@@ -73,12 +73,6 @@ Db::Db(const sqldb::IFactory &db_factory)
   cache_.Update();
 }
 
-Db::Db(Db &&) noexcept = default;
-
-auto Db::operator=(Db &&) noexcept -> Db & = default;
-
-Db::~Db() = default;
-
 auto Db::SelectAssets() const -> std::vector<std::string> {
   auto rows = prepared_statements_->SelectAssets().Execute();
   auto &name_values = rows.GetColumnValues("name");

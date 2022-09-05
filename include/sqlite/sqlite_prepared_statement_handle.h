@@ -17,16 +17,6 @@ class PreparedStatementHandle {
   PreparedStatementHandle(cpp::NnSp<SqliteDbHandleVariant> sqlite_db_handle,
                           SqliteStatementHandle sqlite_statement_handle);
 
-  PreparedStatementHandle(const PreparedStatementHandle &) = delete;
-  PreparedStatementHandle(PreparedStatementHandle &&) noexcept = default;
-
-  auto operator=(const PreparedStatementHandle &)
-      -> PreparedStatementHandle & = delete;
-  auto operator=(PreparedStatementHandle &&) noexcept
-      -> PreparedStatementHandle & = default;
-
-  ~PreparedStatementHandle() = default;
-
   [[nodiscard]] auto GetSqliteStatement() const -> sqlite3_stmt &;
 
  private:

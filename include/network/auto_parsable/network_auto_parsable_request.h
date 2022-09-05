@@ -15,16 +15,6 @@ class AutoParsableRestRequest {
  public:
   explicit AutoParsableRestRequest(RestRequest rest_request);
 
-  AutoParsableRestRequest(const AutoParsableRestRequest &) = delete;
-  AutoParsableRestRequest(AutoParsableRestRequest &&) noexcept = default;
-
-  auto operator=(const AutoParsableRestRequest &)
-      -> AutoParsableRestRequest & = delete;
-  auto operator=(AutoParsableRestRequest &&) noexcept
-      -> AutoParsableRestRequest & = default;
-
-  ~AutoParsableRestRequest() = default;
-
   /**
    * @brief Gives request param by name by moving it into result.
    * @remark Same param should not be requested more than once.

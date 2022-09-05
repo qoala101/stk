@@ -25,17 +25,6 @@ class Db : public IDb {
    */
   explicit Db(const sqldb::IFactory &db_factory);
 
-  Db(const Db &) = delete;
-  Db(Db &&) noexcept;
-
-  auto operator=(const Db &) -> Db & = delete;
-  auto operator=(Db &&) noexcept -> Db &;
-
-  /**
-   * @brief Writes DB to the file specified at construction.
-   */
-  ~Db() override;
-
   /**
    * @copydoc IDb::SelectAssets
    */
