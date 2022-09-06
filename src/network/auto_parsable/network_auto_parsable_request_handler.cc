@@ -2,8 +2,9 @@
 
 #include <gsl/assert>
 #include <optional>
-#include <type_traits>
+#include <utility>
 
+#include "cpp_concepts.h"  // IWYU pragma: keep
 #include "network_auto_parsable_request.h"
 #include "network_enums.h"
 
@@ -11,28 +12,27 @@ namespace stonks::network {
 auto AutoParsableRequestHandler::HandleRequestAndGiveResponse(
     RestRequest request) const -> RestResponse {
   return std::visit(
-      [&request](const auto &variant) -> RestResponse {
-        Expects(variant);
+      [&request](const auto &v) -> RestResponse {
+        Expects(v);
 
-        using T = std::decay_t<decltype(variant)>;
+        using V = decltype(v);
 
-        if constexpr (std::is_same_v<T, Handler>) {
-          variant();
+        if constexpr (cpp::DecaysTo<V, Handler>) {
+          v();
           return {Status::kOk, std::nullopt};
         }
 
-        if constexpr (std::is_same_v<T, HandlerWithRequest>) {
-          variant(AutoParsableRestRequest{std::move(request)});
+        if constexpr (cpp::DecaysTo<V, HandlerWithRequest>) {
+          v(AutoParsableRestRequest{std::move(request)});
           return {Status::kOk, std::nullopt};
         }
 
-        if constexpr (std::is_same_v<T, HandlerWithResponse>) {
-          return {Status::kOk, variant()};
+        if constexpr (cpp::DecaysTo<V, HandlerWithResponse>) {
+          return {Status::kOk, v()};
         }
 
-        if constexpr (std::is_same_v<T, HandlerWithRequestAndResponse>) {
-          return {Status::kOk,
-                  variant(AutoParsableRestRequest{std::move(request)})};
+        if constexpr (cpp::DecaysTo<V, HandlerWithRequestAndResponse>) {
+          return {Status::kOk, v(AutoParsableRestRequest{std::move(request)})};
         }
 
         Expects(false);

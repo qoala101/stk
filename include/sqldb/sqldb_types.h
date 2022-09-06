@@ -45,9 +45,10 @@ struct TableDefinition {
   std::vector<ColumnDefinition> columns{};
 
  private:
-  [[nodiscard]] static auto GetColumnDefinitionImpl(
-      cpp::DecaysTo<TableDefinition> auto &&t, const Column &column)
-      -> cpp::CopyConst<decltype(t), ColumnDefinition &>;
+  template <cpp::DecaysTo<TableDefinition> This>
+  [[nodiscard]] static auto GetColumnDefinitionImpl(This &t,
+                                                    const Column &column)
+      -> cpp::CopyConst<This, ColumnDefinition &>;
 };
 
 struct Cell {

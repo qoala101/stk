@@ -37,10 +37,10 @@ SqliteDbFileHandle::~SqliteDbFileHandle() {
   }
 }
 
-auto SqliteDbFileHandle::GetSqliteDbImpl(
-    cpp::DecaysTo<SqliteDbFileHandle> auto&& t)
-    -> cpp::CopyConst<decltype(t), sqlite3&> {
-  return *std::forward<decltype(t)>(t).sqlite_db_handle_;
+template <cpp::DecaysTo<SqliteDbFileHandle> This>
+auto SqliteDbFileHandle::GetSqliteDbImpl(This& t)
+    -> cpp::CopyConst<This, sqlite3&> {
+  return *t.sqlite_db_handle_;
 }
 
 auto SqliteDbFileHandle::GetSqliteDb() const -> const sqlite3& {

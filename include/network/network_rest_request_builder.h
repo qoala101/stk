@@ -40,9 +40,9 @@ class RestRequestBuilder {
   /**
    * @copydoc RestRequestBuilder::AddParam
    */
-  auto AddParam(std::string key, Convertible auto &&value)
-      -> RestRequestBuilder & {
-    return AddParam(key, ConvertToJson(std::forward<decltype(value)>(value)));
+  template <Convertible Value>
+  auto AddParam(std::string key, Value &&value) -> RestRequestBuilder & {
+    return AddParam(key, ConvertToJson(std::forward<Value>(value)));
   }
 
   /**

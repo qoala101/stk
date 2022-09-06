@@ -11,26 +11,26 @@ namespace stonks::cpp {
 /**
  * @brief Applies rvalue cast to the value if T is rvalue.
  */
-template <typename T>
-auto MoveIfRvalue(auto &&value) -> auto && {
+template <typename T, typename U>
+auto MoveIfRvalue(U &&value) -> auto && {
   if constexpr (Rvalue<T>) {
     // NOLINTNEXTLINE(*-move-forwarding-reference)
     return std::move(value);
   } else {
-    return std::forward<decltype(value)>(value);
+    return std::forward<U>(value);
   }
 }
 
 /**
  * @brief Applies rvalue cast to the value if T is not const.
  */
-template <typename T>
-auto MoveIfNotConst(auto &&value) -> auto && {
+template <typename T, typename U>
+auto MoveIfNotConst(U &&value) -> auto && {
   if constexpr (!Const<T>) {
     // NOLINTNEXTLINE(*-move-forwarding-reference)
     return std::move(value);
   } else {
-    return std::forward<decltype(value)>(value);
+    return std::forward<U>(value);
   }
 }
 }  // namespace stonks::cpp

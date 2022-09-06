@@ -59,11 +59,10 @@ auto Value::GetDouble() const -> double {
   return std::get<double>(value_);
 }
 
-auto Value::GetStringImpl(cpp::DecaysTo<Value> auto&& t)
-    -> cpp::CopyConst<decltype(t), std::string&> {
-  auto&& ft = std::forward<decltype(t)>(t);
-  Expects(std::holds_alternative<std::string>(ft.value_));
-  return std::get<std::string>(ft.value_);
+template <cpp::DecaysTo<Value> This>
+auto Value::GetStringImpl(This& t) -> cpp::CopyConst<This, std::string&> {
+  Expects(std::holds_alternative<std::string>(t.value_));
+  return std::get<std::string>(t.value_);
 }
 
 auto Value::GetString() const -> const std::string& {
@@ -76,26 +75,26 @@ auto Value::GetType() const -> DataType {
   Expects(!IsNull());
 
   return std::visit(
-      [](const auto& variant) -> DataType {
-        using T = std::decay_t<decltype(variant)>;
+      [](const auto& v) -> DataType {
+        using V = decltype(v);
 
-        if constexpr (std::is_same_v<T, bool>) {
+        if constexpr (cpp::DecaysTo<V, bool>) {
           return DataType::kBool;
         }
 
-        if constexpr (std::is_same_v<T, int>) {
+        if constexpr (cpp::DecaysTo<V, int>) {
           return DataType::kInt;
         }
 
-        if constexpr (std::is_same_v<T, int64_t>) {
+        if constexpr (cpp::DecaysTo<V, int64_t>) {
           return DataType::kInt64;
         }
 
-        if constexpr (std::is_same_v<T, double>) {
+        if constexpr (cpp::DecaysTo<V, double>) {
           return DataType::kDouble;
         }
 
-        if constexpr (std::is_same_v<T, std::string>) {
+        if constexpr (cpp::DecaysTo<V, std::string>) {
           return DataType::kString;
         }
 

@@ -13,10 +13,10 @@ namespace stonks::cpp {
 template <typename... Ts>
 using Pv = isocpp_p0201::polymorphic_value<Ts...>;
 
-template <typename... Ts>
-[[nodiscard]] auto MakePv(auto &&...args) {
+template <typename... Ts, typename... Args>
+[[nodiscard]] auto MakePv(Args &&...args) {
   return isocpp_p0201::make_polymorphic_value<Ts...>(
-      std::forward<decltype(args)>(args)...);
+      std::forward<Args>(args)...);
 }
 }  // namespace stonks::cpp
 

@@ -48,9 +48,9 @@ class SqliteDbFileHandle {
   [[nodiscard]] auto GetFilePath() const -> const std::string &;
 
  private:
-  [[nodiscard]] static auto GetSqliteDbImpl(
-      cpp::DecaysTo<SqliteDbFileHandle> auto &&t)
-      -> cpp::CopyConst<decltype(t), sqlite3 &>;
+  template <cpp::DecaysTo<SqliteDbFileHandle> This>
+  [[nodiscard]] static auto GetSqliteDbImpl(This &t)
+      -> cpp::CopyConst<This, sqlite3 &>;
 
   SqliteDbHandle sqlite_db_handle_;
   std::string file_path_{};

@@ -22,9 +22,10 @@ struct S {
   bool move_constructed_{};
 };
 
-void NotConstSetSImpl(auto &&t) {
+template <typename T>
+void NotConstSetSImpl(T &&t) {
   auto s = S{};
-  t.s_ = stonks::cpp::MoveIfNotConst<decltype(t)>(s);
+  t.s_ = stonks::cpp::MoveIfNotConst<T>(s);
 }
 
 TEST(MoveIf, IfNotConst) {
@@ -45,9 +46,10 @@ TEST(MoveIf, IfNotConst) {
   EXPECT_TRUE(a.s_.move_constructed_);
 }
 
-void RvalueSetSImpl(auto &&t) {
+template <typename T>
+void RvalueSetSImpl(T &&t) {
   auto s = S{};
-  t.s_ = stonks::cpp::MoveIfRvalue<decltype(t)>(s);
+  t.s_ = stonks::cpp::MoveIfRvalue<decltype(std::forward<T>(t))>(s);
 }
 
 TEST(MoveIf, IfRvalue) {

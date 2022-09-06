@@ -5,7 +5,6 @@
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
-#include <type_traits>
 #include <variant>
 #include <vector>
 
@@ -14,15 +13,15 @@
 namespace stonks::sqldb::query_builder_facade {
 auto GetTable(const TableVariant &table) -> Table {
   return std::visit(
-      [](const auto &variant) -> const Table & {
-        using T = std::decay_t<decltype(variant)>;
+      [](const auto &v) -> const Table & {
+        using V = decltype(v);
 
-        if constexpr (std::is_same_v<T, Table>) {
-          return variant;
+        if constexpr (cpp::DecaysTo<V, Table>) {
+          return v;
         }
 
-        if constexpr (std::is_same_v<T, TableDefinition>) {
-          return variant.table;
+        if constexpr (cpp::DecaysTo<V, TableDefinition>) {
+          return v.table;
         }
 
         Expects(false);

@@ -3,7 +3,6 @@
 #include <gsl/assert>
 #include <memory>
 #include <string>
-#include <type_traits>
 #include <utility>
 #include <variant>
 
@@ -89,14 +88,14 @@ auto SelectQueryBuilder::Build() const -> std::string {
   Expects(table_.has_value());
 
   const auto *const columns = std::visit(
-      [](const auto &variant) -> const std::vector<Column> * {
-        using T = std::decay_t<decltype(variant)>;
+      [](const auto &v) -> const std::vector<Column> * {
+        using V = decltype(v);
 
-        if constexpr (std::is_same_v<T, std::vector<Column>>) {
-          return &variant;
+        if constexpr (cpp::DecaysTo<V, std::vector<Column>>) {
+          return &v;
         }
 
-        if constexpr (std::is_same_v<T, AllColumnsType>) {
+        if constexpr (cpp::DecaysTo<V, AllColumnsType>) {
           return nullptr;
         }
 
@@ -105,14 +104,14 @@ auto SelectQueryBuilder::Build() const -> std::string {
       columns_);
 
   const auto limit = std::visit(
-      [](const auto &variant) -> std::string {
-        using T = std::decay_t<decltype(variant)>;
+      [](const auto &v) -> std::string {
+        using V = decltype(v);
 
-        if constexpr (std::is_same_v<T, int>) {
-          return " LIMIT " + std::to_string(variant);
+        if constexpr (cpp::DecaysTo<V, int>) {
+          return " LIMIT " + std::to_string(v);
         }
 
-        if constexpr (std::is_same_v<T, LimitedType>) {
+        if constexpr (cpp::DecaysTo<V, LimitedType>) {
           return " LIMIT ?";
         }
 

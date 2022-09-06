@@ -11,9 +11,9 @@ namespace stonks::cpp {
 template <typename... Ts>
 using Opt = std::optional<Ts...>;
 
-template <typename... Ts>
-[[nodiscard]] auto MakeOpt(auto &&...args) {
-  return std::make_optional<Ts...>(std::forward<decltype(args)>(args)...);
+template <typename... Ts, typename... Args>
+[[nodiscard]] auto MakeOpt(Args &&...args) {
+  return std::make_optional<Ts...>(std::forward<Args>(args)...);
 }
 }  // namespace stonks::cpp
 

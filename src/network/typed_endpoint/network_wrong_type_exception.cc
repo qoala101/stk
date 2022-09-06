@@ -6,9 +6,10 @@ namespace stonks::network {
 WrongTypeException::WrongTypeException(std::string message, cpp::Pv<IJson> json)
     : Exception{std::move(message)}, json_{std::move(json)} {}
 
-auto WrongTypeException::GetJsonImpl(cpp::DecaysTo<WrongTypeException> auto&& t)
-    -> cpp::CopyConst<decltype(t), cpp::Pv<IJson>&> {
-  return std::forward<decltype(t)>(t).json_;
+template <cpp::DecaysTo<WrongTypeException> This>
+auto WrongTypeException::GetJsonImpl(This& t)
+    -> cpp::CopyConst<This, cpp::Pv<IJson>&> {
+  return t.json_;
 }
 
 auto WrongTypeException::GetJson() const -> const cpp::Pv<IJson>& {

@@ -8,15 +8,15 @@
  * @file Short aliases for JSON facades.
  */
 
-template <typename T>
-[[nodiscard]] auto P(auto &&...args) -> T {
-  return stonks::network::MakeFromJson<T>(
-      std::forward<decltype(args)>(args)...);
+template <typename T, typename... Args>
+[[nodiscard]] auto P(Args &&...args) -> T {
+  return stonks::network::MakeFromJson<T>(std::forward<Args>(args)...);
 }
 
-[[nodiscard]] auto C(auto &&...args)
+template <typename... Args>
+[[nodiscard]] auto C(Args &&...args)
     -> stonks::cpp::Pv<stonks::network::IJson> {
-  return stonks::network::BuildJsonFrom(std::forward<decltype(args)>(args)...);
+  return stonks::network::BuildJsonFrom(std::forward<Args>(args)...);
 }
 
 #endif  // STONKS_NETWORK_NETWORK_JSON_FACADES_ALIASES_P_C_H_

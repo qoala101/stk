@@ -14,28 +14,24 @@ SqliteDbHandleVariant::SqliteDbHandleVariant(
     SqliteDbFileHandle sqlite_db_handle)
     : sqlite_db_handle_{std::move(sqlite_db_handle)} {}
 
-auto SqliteDbHandleVariant::GetSqliteDbImpl(
-    cpp::DecaysTo<SqliteDbHandleVariant> auto &&t)
-    -> cpp::CopyConst<decltype(t), sqlite3 &> {
-  using T = decltype(t);
-  auto &&ft = std::forward<T>(t);
-
+template <cpp::DecaysTo<SqliteDbHandleVariant> This>
+auto SqliteDbHandleVariant::GetSqliteDbImpl(This &t)
+    -> cpp::CopyConst<This, sqlite3 &> {
   return std::visit(
-      [](auto &&v) -> cpp::CopyConst<T, sqlite3 &> {
+      [](auto &v) -> cpp::CopyConst<This, sqlite3 &> {
         using V = decltype(v);
-        auto &&fv = std::forward<V>(v);
 
         if constexpr (cpp::DecaysTo<V, SqliteDbHandle>) {
-          return *fv;
+          return *v;
         }
 
         if constexpr (cpp::DecaysTo<V, SqliteDbFileHandle>) {
-          return fv.GetSqliteDb();
+          return v.GetSqliteDb();
         }
 
         Expects(false);
       },
-      ft.sqlite_db_handle_);
+      t.sqlite_db_handle_);
 }
 
 auto SqliteDbHandleVariant::GetSqliteDb() const -> const sqlite3 & {
@@ -48,16 +44,15 @@ auto SqliteDbHandleVariant::GetSqliteDb() -> sqlite3 & {
 
 auto SqliteDbHandleVariant::GetFilePath() const -> const std::string * {
   return std::visit(
-      [](auto &&v) -> const std::string * {
+      [](const auto &v) -> const std::string * {
         using V = decltype(v);
-        auto &&fv = std::forward<V>(v);
 
         if constexpr (cpp::DecaysTo<V, SqliteDbHandle>) {
           return nullptr;
         }
 
         if constexpr (cpp::DecaysTo<V, SqliteDbFileHandle>) {
-          return &fv.GetFilePath();
+          return &v.GetFilePath();
         }
 
         Expects(false);

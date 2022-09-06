@@ -13,11 +13,11 @@ Row::Row(std::vector<Cell> cells) {
   Ensures(cells_.size() == cells.size());
 }
 
-auto Row::GetValueImpl(cpp::DecaysTo<Row> auto &&t, const Column &column)
-    -> cpp::CopyConst<decltype(t), Value &> {
-  auto &&ft = std::forward<decltype(t)>(t);
-  Expects(ft.cells_.find(column) != ft.cells_.end());
-  return ft.cells_.at(column);
+template <cpp::DecaysTo<Row> This>
+auto Row::GetValueImpl(This &t, const Column &column)
+    -> cpp::CopyConst<This, Value &> {
+  Expects(t.cells_.find(column) != t.cells_.end());
+  return t.cells_.at(column);
 }
 
 auto Row::GetValue(const Column &column) const -> const Value & {
@@ -28,9 +28,10 @@ auto Row::GetValue(const Column &column) -> Value & {
   return GetValueImpl(*this, column);
 }
 
-auto Row::GetCellsImpl(cpp::DecaysTo<Row> auto &&t)
-    -> cpp::CopyConst<decltype(t), std::map<Column, Value> &> {
-  return std::forward<decltype(t)>(t).cells_;
+template <cpp::DecaysTo<Row> This>
+auto Row::GetCellsImpl(This &t)
+    -> cpp::CopyConst<This, std::map<Column, Value> &> {
+  return t.cells_;
 }
 
 auto Row::GetCells() const -> const std::map<Column, Value> & {

@@ -20,15 +20,14 @@ Rows::Rows(std::vector<Column> columns)
   Ensures(columns_.size() == columns.size());
 }
 
-auto Rows::GetColumnValuesImpl(cpp::DecaysTo<Rows> auto &&t,
-                               const Column &column)
-    -> cpp::CopyConst<decltype(t), std::vector<Value> &> {
-  auto &&ft = std::forward<decltype(t)>(t);
+template <cpp::DecaysTo<Rows> This>
+auto Rows::GetColumnValuesImpl(This &t, const Column &column)
+    -> cpp::CopyConst<This, std::vector<Value> &> {
   const auto iter =
-      ranges::find_if(ft.columns_, [&column](const auto &other_column) {
+      ranges::find_if(t.columns_, [&column](const auto &other_column) {
         return other_column.column == column;
       });
-  Expects(iter != ft.columns_.end());
+  Expects(iter != t.columns_.end());
   return iter->values;
 }
 

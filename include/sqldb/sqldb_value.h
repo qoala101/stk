@@ -54,8 +54,9 @@ class Value {
   [[nodiscard]] friend auto operator==(const Value &, const Value &)
       -> bool = default;
 
-  [[nodiscard]] static auto GetStringImpl(cpp::DecaysTo<Value> auto &&t)
-      -> cpp::CopyConst<decltype(t), std::string &>;
+  template <cpp::DecaysTo<Value> This>
+  [[nodiscard]] static auto GetStringImpl(This &t)
+      -> cpp::CopyConst<This, std::string &>;
 
   std::variant<std::monostate, bool, int, int64_t, double, std::string>
       value_{};

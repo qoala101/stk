@@ -32,9 +32,9 @@ class WrongTypeException : public Exception {
   [[nodiscard]] auto GetJson() -> cpp::Pv<IJson> &;
 
  private:
-  [[nodiscard]] static auto GetJsonImpl(
-      cpp::DecaysTo<WrongTypeException> auto &&t)
-      -> cpp::CopyConst<decltype(t), cpp::Pv<IJson> &>;
+  template <cpp::DecaysTo<WrongTypeException> This>
+  [[nodiscard]] static auto GetJsonImpl(This &t)
+      -> cpp::CopyConst<This, cpp::Pv<IJson> &>;
 
   cpp::Pv<IJson> json_{};
 };

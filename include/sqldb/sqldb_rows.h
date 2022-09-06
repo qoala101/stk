@@ -39,9 +39,9 @@ class Rows {
   [[nodiscard]] friend auto operator==(const Rows &, const Rows &)
       -> bool = default;
 
-  [[nodiscard]] static auto GetColumnValuesImpl(cpp::DecaysTo<Rows> auto &&t,
-                                                const Column &column)
-      -> cpp::CopyConst<decltype(t), std::vector<Value> &>;
+  template <cpp::DecaysTo<Rows> This>
+  [[nodiscard]] static auto GetColumnValuesImpl(This &t, const Column &column)
+      -> cpp::CopyConst<This, std::vector<Value> &>;
 
   std::vector<ColumnValues> columns_{};
 };

@@ -94,18 +94,19 @@ class Json : public network::IJson {
   [[nodiscard]] auto GetImpl() -> IJson::Impl& override;
 
  private:
-  [[nodiscard]] static auto CloneImpl(cpp::DecaysTo<Json> auto&& t)
-      -> cpp::NnUp<IJson>;
+  template <cpp::DecaysTo<Json> This>
+  [[nodiscard]] static auto CloneImpl(This& t) -> cpp::NnUp<IJson>;
 
-  [[nodiscard]] static auto GetChildImpl(cpp::DecaysTo<Json> auto&& t,
-                                         std::string_view key)
+  template <cpp::DecaysTo<Json> This>
+  [[nodiscard]] static auto GetChildImpl(This& t, std::string_view key)
       -> cpp::Pv<IJson>;
 
-  [[nodiscard]] static auto GetChildImpl(cpp::DecaysTo<Json> auto&& t,
-                                         int index) -> cpp::Pv<IJson>;
+  template <cpp::DecaysTo<Json> This>
+  [[nodiscard]] static auto GetChildImpl(This& t, int index) -> cpp::Pv<IJson>;
 
-  [[nodiscard]] static auto GetImplImpl(cpp::DecaysTo<Json> auto&& t)
-      -> cpp::CopyConst<decltype(t), IJson::Impl&>;
+  template <cpp::DecaysTo<Json> This>
+  [[nodiscard]] static auto GetImplImpl(This& t)
+      -> cpp::CopyConst<This, IJson::Impl&>;
 
   network::IJson::Impl impl_;
 };

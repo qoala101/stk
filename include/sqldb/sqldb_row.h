@@ -23,12 +23,13 @@ class Row {
   [[nodiscard]] auto GetCells() -> std::map<Column, Value> &;
 
  private:
-  [[nodiscard]] static auto GetValueImpl(cpp::DecaysTo<Row> auto &&t,
-                                         const Column &column)
-      -> cpp::CopyConst<decltype(t), Value &>;
+  template <cpp::DecaysTo<Row> This>
+  [[nodiscard]] static auto GetValueImpl(This &t, const Column &column)
+      -> cpp::CopyConst<This, Value &>;
 
-  [[nodiscard]] static auto GetCellsImpl(cpp::DecaysTo<Row> auto &&t)
-      -> cpp::CopyConst<decltype(t), std::map<Column, Value> &>;
+  template <cpp::DecaysTo<Row> This>
+  [[nodiscard]] static auto GetCellsImpl(This &t)
+      -> cpp::CopyConst<This, std::map<Column, Value> &>;
 
   std::map<Column, Value> cells_{};
 };

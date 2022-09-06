@@ -17,14 +17,14 @@ using Sp = std::shared_ptr<Ts...>;
 template <typename... Ts>
 using Wp = std::weak_ptr<Ts...>;
 
-template <typename... Ts>
-[[nodiscard]] auto MakeUp(auto &&...args) {
-  return std::make_unique<Ts...>(std::forward<decltype(args)>(args)...);
+template <typename... Ts, typename... Args>
+[[nodiscard]] auto MakeUp(Args &&...args) {
+  return std::make_unique<Ts...>(std::forward<Args>(args)...);
 }
 
-template <typename... Ts>
-[[nodiscard]] auto MakeSp(auto &&...args) {
-  return std::make_shared<Ts...>(std::forward<decltype(args)>(args)...);
+template <typename... Ts, typename... Args>
+[[nodiscard]] auto MakeSp(Args &&...args) {
+  return std::make_shared<Ts...>(std::forward<Args>(args)...);
 }
 }  // namespace stonks::cpp
 

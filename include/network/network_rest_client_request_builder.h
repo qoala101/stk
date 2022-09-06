@@ -27,18 +27,18 @@ class RequestBuilder {
    * @brief Sets request parameter.
    * @remark Overrides the parameter with the same name.
    */
-  auto WithParam(std::string key, Convertible auto &&value)
-      -> RequestBuilder & {
-    return WithParam(std::move(key),
-                     ConvertToJson(std::forward<decltype(value)>(value)));
+  template <Convertible Value>
+  auto WithParam(std::string key, Value &&value) -> RequestBuilder & {
+    return WithParam(std::move(key), ConvertToJson(std::forward<Value>(value)));
   }
 
   /**
    * @brief Sets the body of the request.
    * @remark Can only be called once.
    */
-  auto WithBody(Convertible auto &&value) -> RequestBuilder & {
-    return WithBody(ConvertToJson(std::forward<decltype(value)>(value)));
+  template <Convertible Value>
+  auto WithBody(Value &&value) -> RequestBuilder & {
+    return WithBody(ConvertToJson(std::forward<Value>(value)));
   }
 
   /**
@@ -75,10 +75,12 @@ class RequestBuilder {
   RequestBuilder(Endpoint endpoint,
                  cpp::NnSp<IRestRequestSender> request_sender);
 
-  static void DiscardingResultImpl(cpp::DecaysTo<RequestBuilder> auto &&t);
+  template <cpp::DecaysTo<RequestBuilder> This>
+  static void DiscardingResultImpl(This &t);
 
-  [[nodiscard]] static auto SendRequestAndGetResultImpl(
-      cpp::DecaysTo<RequestBuilder> auto &&t) -> Result::value_type;
+  template <cpp::DecaysTo<RequestBuilder> This>
+  [[nodiscard]] static auto SendRequestAndGetResultImpl(This &t)
+      -> Result::value_type;
 
   [[nodiscard]] auto WithParam(std::string key, Param value)
       -> RequestBuilder &;
