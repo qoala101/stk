@@ -61,24 +61,23 @@ auto ConvertToJson(const AvgPrice &value) -> cpp::Pv<IJson> {
 
 namespace {
 TEST(RestRequestSender, AppendUri) {
-  const auto request = std::move(stonks::network::RestRequestBuilder{}
-                                     .WithBaseUri("base_uri")
-                                     .AppendUri("appended_uri"))
+  const auto request = stonks::network::RestRequestBuilder{}
+                           .WithBaseUri("base_uri")
+                           .AppendUri("appended_uri")
                            .Build();
   EXPECT_EQ(request.endpoint.uri, "base_uri/appended_uri");
 }
 
 TEST(RestRequestSender, ParameterTypesToString) {
   const auto request =
-      std::move(
-          stonks::network::RestRequestBuilder{}
-              .WithBaseUri("")
-              .AddParam("string", "abc")
-              // .AddParam("milliseconds", std::chrono::milliseconds{123456789})
-              .AddParam("int", 123456789)
-              .AddParam("int64_t", int64_t{123456789})
-              .AddParam("float", float{123456789.123456789})
-              .AddParam("double", double{123456789.123456789})
+      stonks::network::RestRequestBuilder{}
+          .WithBaseUri("")
+          .AddParam("string", "abc")
+          // .AddParam("milliseconds", std::chrono::milliseconds{123456789})
+          .AddParam("int", 123456789)
+          .AddParam("int64_t", int64_t{123456789})
+          .AddParam("float", float{123456789.123456789})
+          .AddParam("double", double{123456789.123456789})
           // .AddParam("default_enum_name", DefaultNameEnum::kDefaultEnumName)
           // .AddParam("custom_enum_name", CustomNameEnum::kCustomEnumName)
           // .AddParam("optional_string", std::optional<std::string>{"abc"})
@@ -98,7 +97,6 @@ TEST(RestRequestSender, ParameterTypesToString) {
           //     "optional_custom_enum_name",
           //     std::optional<CustomNameEnum>{CustomNameEnum::kCustomEnumName})
           // .AddParam("no_option", std::optional<int>{std::nullopt})
-          )
           .Build();
   const auto expected_params = std::map<std::string, std::string>{
       {"string", "abc"},
@@ -122,12 +120,11 @@ TEST(RestRequestSender, ParameterTypesToString) {
 }
 
 TEST(RestRequestSender, SendRequest) {
-  const auto request =
-      std::move(stonks::network::RestRequestBuilder{}
-                    .WithBaseUri("https://api.binance.com/api/v3")
-                    .AppendUri("avgPrice")
-                    .AddParam("symbol", "BTCUSDT"))
-          .Build();
+  const auto request = stonks::network::RestRequestBuilder{}
+                           .WithBaseUri("https://api.binance.com/api/v3")
+                           .AppendUri("avgPrice")
+                           .AddParam("symbol", "BTCUSDT")
+                           .Build();
   const auto sender = stonks::restsdk::RestRequestSender{};
   const auto response = sender.SendRequestAndGetResponse(request);
   const auto response_price =

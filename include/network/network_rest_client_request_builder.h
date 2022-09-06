@@ -44,19 +44,19 @@ class RequestBuilder {
   /**
    * @brief Sends the request discarding result.
    */
-  void DiscardingResult() const &;
+  void DiscardingResult() const;
 
   /**
    * @copydoc DiscardingResult
    * @remark Other methods should not be called after this.
    */
-  void DiscardingResult() &&;
+  void DiscardingResult();
 
   /**
    * @brief Sends the request and converts result to the specified type.
    */
   template <Parsable T>
-  [[nodiscard]] auto AndReceive() const & -> T {
+  [[nodiscard]] auto AndReceive() const -> T {
     return ParseFromJson<T>(*SendRequestAndGetResult());
   }
 
@@ -65,8 +65,8 @@ class RequestBuilder {
    * @remark Other methods should not be called after this.
    */
   template <Parsable T>
-  [[nodiscard]] auto AndReceive() && -> T {
-    return ParseFromJson<T>(*std::move(*this).SendRequestAndGetResult());
+  [[nodiscard]] auto AndReceive() -> T {
+    return ParseFromJson<T>(*SendRequestAndGetResult());
   }
 
  private:
@@ -87,8 +87,8 @@ class RequestBuilder {
 
   [[nodiscard]] auto WithBody(Body::value_type body) -> RequestBuilder &;
 
-  [[nodiscard]] auto SendRequestAndGetResult() const & -> Result::value_type;
-  [[nodiscard]] auto SendRequestAndGetResult() && -> Result::value_type;
+  [[nodiscard]] auto SendRequestAndGetResult() const -> Result::value_type;
+  [[nodiscard]] auto SendRequestAndGetResult() -> Result::value_type;
 
   RestRequest request_{};
   cpp::NnSp<IRestRequestSender> request_sender_;

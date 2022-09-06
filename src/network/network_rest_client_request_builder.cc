@@ -15,9 +15,9 @@ void RequestBuilder::DiscardingResultImpl(This& t) {
       cpp::MoveIfNotConst<This>(t.request_));
 }
 
-void RequestBuilder::DiscardingResult() const& { DiscardingResultImpl(*this); }
+void RequestBuilder::DiscardingResult() const { DiscardingResultImpl(*this); }
 
-void RequestBuilder::DiscardingResult() && {
+void RequestBuilder::DiscardingResult() {
   DiscardingResultImpl(*this);
   request_ = RestRequest{};
   Ensures(request_.IsEmpty());
@@ -53,11 +53,11 @@ auto RequestBuilder::WithBody(Body::value_type body) -> RequestBuilder& {
   return *this;
 }
 
-auto RequestBuilder::SendRequestAndGetResult() const& -> Result::value_type {
+auto RequestBuilder::SendRequestAndGetResult() const -> Result::value_type {
   return SendRequestAndGetResultImpl(*this);
 }
 
-auto RequestBuilder::SendRequestAndGetResult() && -> Result::value_type {
+auto RequestBuilder::SendRequestAndGetResult() -> Result::value_type {
   auto result = SendRequestAndGetResultImpl(*this);
   request_ = RestRequest{};
   Ensures(request_.IsEmpty());

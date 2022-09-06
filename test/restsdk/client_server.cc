@@ -105,21 +105,18 @@ class EntityServer {
 
   explicit EntityServer(std::string_view base_uri)
       : request_receiver_{
-            std::move(
-                stonks::network::RestServer{
-                    stonks::cpp::MakeNnUp<stonks::restsdk::Factory>()}
-                    .On(base_uri.data())
-                    .Handling(
-                        PushSymbolEndpointDesc(),
-                        std::bind_front(
-                            &EntityServer::PushSymbolEndpointHandler, this))
-                    .Handling(
-                        GetSymbolEndpointDesc(),
-                        std::bind_front(&EntityServer::GetSymbolEndpointHandler,
-                                        this))
-                    .Handling(GetSizeEndpointDesc(),
-                              std::bind_front(
-                                  &EntityServer::GetSizeEndpointHandler, this)))
+            stonks::network::RestServer{
+                stonks::cpp::MakeNnUp<stonks::restsdk::Factory>()}
+                .On(base_uri.data())
+                .Handling(PushSymbolEndpointDesc(),
+                          std::bind_front(
+                              &EntityServer::PushSymbolEndpointHandler, this))
+                .Handling(GetSymbolEndpointDesc(),
+                          std::bind_front(
+                              &EntityServer::GetSymbolEndpointHandler, this))
+                .Handling(GetSizeEndpointDesc(),
+                          std::bind_front(&EntityServer::GetSizeEndpointHandler,
+                                          this))
                 .Start()} {}
 
  private:
@@ -152,20 +149,19 @@ class EntityClient : public EntityInterface {
                 stonks::restsdk::Factory{}.CreateRestRequestSender()} {}
 
   void PushSymbol(stonks::SymbolName symbol) override {
-    std::move(
-        client_.Call(EntityServer::PushSymbolEndpointDesc()).WithBody(symbol))
+    client_.Call(EntityServer::PushSymbolEndpointDesc())
+        .WithBody(symbol)
         .DiscardingResult();
   }
 
   [[nodiscard]] auto GetSymbol(int index) const -> stonks::SymbolName override {
-    return std::move(client_.Call(EntityServer::GetSymbolEndpointDesc())
-                         .WithParam("index", index))
+    return client_.Call(EntityServer::GetSymbolEndpointDesc())
+        .WithParam("index", index)
         .AndReceive<stonks::SymbolName>();
   }
 
   [[nodiscard]] auto GetSize() const -> int override {
-    return std::move(client_.Call(EntityServer::GetSizeEndpointDesc()))
-        .AndReceive<int>();
+    return client_.Call(EntityServer::GetSizeEndpointDesc()).AndReceive<int>();
   }
 
  private:
@@ -288,23 +284,22 @@ TEST(ClientServerDeathTest, WrongServerTypes) {
   }();
   auto entity_client = EntityClient{kBaseUri};
   auto rest_server =
-      std::move(
-          stonks::network::RestServer{
-              stonks::cpp::MakeNnUp<stonks::restsdk::Factory>()}
-              .On(kBaseUri)
-              .Handling(
-                  EntityServer::PushSymbolEndpointDesc(),
-                  [&entity](stonks::network::AutoParsableRestRequest request) {
-                    entity.PushSymbol(request.Body());
-                    return 55;
-                  })
-              .Handling(
-                  EntityServer::GetSymbolEndpointDesc(),
-                  [&entity](stonks::network::AutoParsableRestRequest request) {
-                    std::ignore = entity.GetSymbol(request.Param("index"));
-                  })
-              .Handling(EntityServer::GetSizeEndpointDesc(),
-                        [&entity]() { return "NOT_INT"; }))
+      stonks::network::RestServer{
+          stonks::cpp::MakeNnUp<stonks::restsdk::Factory>()}
+          .On(kBaseUri)
+          .Handling(
+              EntityServer::PushSymbolEndpointDesc(),
+              [&entity](stonks::network::AutoParsableRestRequest request) {
+                entity.PushSymbol(request.Body());
+                return 55;
+              })
+          .Handling(
+              EntityServer::GetSymbolEndpointDesc(),
+              [&entity](stonks::network::AutoParsableRestRequest request) {
+                std::ignore = entity.GetSymbol(request.Param("index"));
+              })
+          .Handling(EntityServer::GetSizeEndpointDesc(),
+                    [&entity]() { return "NOT_INT"; })
           .Start();
 
   // TODO(vh): EXPECT_DEATH doesn't work here and just blocks the app.
@@ -338,13 +333,11 @@ TEST(ClientServer, ServerReceivedWrongTypeException) {
   auto sender = stonks::restsdk::Factory{}.CreateRestRequestSender();
 
   auto request =
-      std::move(
-          stonks::network::RestRequestBuilder{}
-              .WithMethod(
-                  EntityServer::PushSymbolEndpointDesc().endpoint.method)
-              .WithBaseUri(kBaseUri)
-              .AppendUri(EntityServer::PushSymbolEndpointDesc().endpoint.uri)
-              .WithBody(stonks::network::ConvertToJson(123)))
+      stonks::network::RestRequestBuilder{}
+          .WithMethod(EntityServer::PushSymbolEndpointDesc().endpoint.method)
+          .WithBaseUri(kBaseUri)
+          .AppendUri(EntityServer::PushSymbolEndpointDesc().endpoint.uri)
+          .WithBody(stonks::network::ConvertToJson(123))
           .Build();
 
   auto response = sender->SendRequestAndGetResponse(std::move(request));
@@ -357,13 +350,11 @@ TEST(ClientServer, ServerReceivedWrongTypeException) {
               **response.result));
 
   request =
-      std::move(
-          stonks::network::RestRequestBuilder{}
-              .WithMethod(
-                  EntityServer::PushSymbolEndpointDesc().endpoint.method)
-              .WithBaseUri(kBaseUri)
-              .AppendUri(EntityServer::PushSymbolEndpointDesc().endpoint.uri)
-              .AddParam("UNKNOWN_PARAM", 0))
+      stonks::network::RestRequestBuilder{}
+          .WithMethod(EntityServer::PushSymbolEndpointDesc().endpoint.method)
+          .WithBaseUri(kBaseUri)
+          .AppendUri(EntityServer::PushSymbolEndpointDesc().endpoint.uri)
+          .AddParam("UNKNOWN_PARAM", 0)
           .Build();
 
   response = sender->SendRequestAndGetResponse(std::move(request));

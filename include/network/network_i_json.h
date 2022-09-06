@@ -25,12 +25,12 @@ class IJson {
    * @brief Creates a copy with the same data.
    * @remark Required by the polymorphic_value.
    */
-  [[nodiscard]] virtual auto clone() const& -> cpp::NnUp<IJson> = 0;
+  [[nodiscard]] virtual auto clone() const -> cpp::NnUp<IJson> = 0;
 
   /**
    * @copydoc clone
    */
-  [[nodiscard]] virtual auto clone() && -> cpp::NnUp<IJson> = 0;
+  [[nodiscard]] virtual auto clone() -> cpp::NnUp<IJson> = 0;
 
   virtual ~IJson() = default;
 
@@ -42,14 +42,14 @@ class IJson {
   /**
    * @brief Gives child JSON at the key.
    */
-  [[nodiscard]] virtual auto GetChild(
-      std::string_view key) const& -> cpp::Pv<IJson> = 0;
+  [[nodiscard]] virtual auto GetChild(std::string_view key) const
+      -> cpp::Pv<IJson> = 0;
 
   /**
    * @copydoc GetChild
    */
-  [[nodiscard]] virtual auto GetChild(
-      std::string_view key) && -> cpp::Pv<IJson> = 0;
+  [[nodiscard]] virtual auto GetChild(std::string_view key)
+      -> cpp::Pv<IJson> = 0;
 
   /**
    * @brief Sets child JSON at the key.
@@ -60,12 +60,12 @@ class IJson {
   /**
    * @brief Gives child JSON at index.
    */
-  [[nodiscard]] virtual auto GetChild(int index) const& -> cpp::Pv<IJson> = 0;
+  [[nodiscard]] virtual auto GetChild(int index) const -> cpp::Pv<IJson> = 0;
 
   /**
    * @copydoc GetChild
    */
-  [[nodiscard]] virtual auto GetChild(int index) && -> cpp::Pv<IJson> = 0;
+  [[nodiscard]] virtual auto GetChild(int index) -> cpp::Pv<IJson> = 0;
 
   /**
    * @brief Sets child JSON at index.

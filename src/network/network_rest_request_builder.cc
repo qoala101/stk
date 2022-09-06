@@ -56,12 +56,12 @@ auto RestRequestBuilder::WithBody(Body::value_type body)
   return *this;
 }
 
-auto RestRequestBuilder::Build() const& -> RestRequest {
+auto RestRequestBuilder::Build() const -> RestRequest {
   Expects(uri_is_set_);
   return request_;
 }
 
-auto RestRequestBuilder::Build() && -> RestRequest {
+auto RestRequestBuilder::Build() -> RestRequest {
   Expects(uri_is_set_);
   auto request = RestRequest{std::move(request_)};
   request_ = {};

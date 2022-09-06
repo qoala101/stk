@@ -60,13 +60,13 @@ class RestRequestBuilder {
   /**
    * @brief Build REST request parts from inputs.
    */
-  [[nodiscard]] auto Build() const & -> RestRequest;
+  [[nodiscard]] auto Build() const -> RestRequest;
 
   /**
    * @copydoc Build
    * @remark Other methods should not be called after this.
    */
-  [[nodiscard]] auto Build() && -> RestRequest;
+  [[nodiscard]] auto Build() -> RestRequest;
 
  private:
   RestRequest request_{};

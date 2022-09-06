@@ -23,7 +23,7 @@ auto RestServer::On(std::string base_uri) -> RestServer& {
   return *this;
 }
 
-auto RestServer::Start() && -> cpp::Nn<cpp::Up<IRestRequestReceiver>> {
+auto RestServer::Start() -> cpp::Nn<cpp::Up<IRestRequestReceiver>> {
   Expects(base_uri_.has_value());
   Expects(!endpoint_handlers_.empty());
   auto result = network_factory_->CreateRestRequestReceiver(

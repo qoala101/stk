@@ -44,7 +44,7 @@ class RestServer {
    * @return Keeps handling REST requests while alive.
    * @remark Other methods should not be called after this.
    */
-  [[nodiscard]] auto Start() && -> cpp::NnUp<IRestRequestReceiver>;
+  [[nodiscard]] auto Start() -> cpp::NnUp<IRestRequestReceiver>;
 
  private:
   [[nodiscard]] auto Handling(TypedEndpoint endpoint,

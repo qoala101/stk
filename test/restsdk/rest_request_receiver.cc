@@ -69,14 +69,13 @@ TEST(RestRequestReceiver, SendRequest) {
   const auto receiver = stonks::restsdk::RestRequestReceiver{
       "http://localhost:6506", stonks::cpp::MakeNnUp<Handler>()};
 
-  const auto request =
-      std::move(stonks::network::RestRequestBuilder{}
-                    .WithMethod(stonks::network::Method::kGet)
-                    .WithBaseUri("http://localhost:6506")
-                    .AppendUri("Test")
-                    .WithBody(stonks::network::ConvertToJson("BTCUSDT"))
-                    .AddParam("price", 123.456))
-          .Build();
+  const auto request = stonks::network::RestRequestBuilder{}
+                           .WithMethod(stonks::network::Method::kGet)
+                           .WithBaseUri("http://localhost:6506")
+                           .AppendUri("Test")
+                           .WithBody(stonks::network::ConvertToJson("BTCUSDT"))
+                           .AddParam("price", 123.456)
+                           .Build();
   const auto sender = stonks::restsdk::RestRequestSender{};
   const auto response = sender.SendRequestAndGetResponse(request);
   const auto response_price = ParseFromJson<SymbolPrice>(**response.result);

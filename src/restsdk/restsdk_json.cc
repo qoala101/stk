@@ -32,9 +32,9 @@ auto Json::CloneImpl(This& t) -> cpp::NnUp<IJson> {
   return cpp::MakeNnUp<Json>(cpp::MoveIfNotConst<This>(t.impl_));
 }
 
-auto Json::clone() const& -> cpp::NnUp<IJson> { return CloneImpl(*this); }
+auto Json::clone() const -> cpp::NnUp<IJson> { return CloneImpl(*this); }
 
-auto Json::clone() && -> cpp::NnUp<IJson> { return CloneImpl(*this); }
+auto Json::clone() -> cpp::NnUp<IJson> { return CloneImpl(*this); }
 
 auto Json::IsNull() const -> bool { return impl_.GetJson().is_null(); }
 
@@ -47,11 +47,11 @@ auto Json::GetChildImpl(This& t, std::string_view key) -> cpp::Pv<IJson> {
       IJson::Impl{cpp::MoveIfNotConst<This>(json.at(key.data()))});
 }
 
-auto Json::GetChild(std::string_view key) const& -> cpp::Pv<IJson> {
+auto Json::GetChild(std::string_view key) const -> cpp::Pv<IJson> {
   return GetChildImpl(*this, key);
 }
 
-auto Json::GetChild(std::string_view key) && -> cpp::Pv<IJson> {
+auto Json::GetChild(std::string_view key) -> cpp::Pv<IJson> {
   return GetChildImpl(*this, key);
 }
 
@@ -71,11 +71,11 @@ auto Json::GetChildImpl(This& t, int index) -> cpp::Pv<IJson> {
       IJson::Impl{cpp::MoveIfNotConst<This>(json.as_array().at(index))});
 }
 
-auto Json::GetChild(int index) const& -> cpp::Pv<IJson> {
+auto Json::GetChild(int index) const -> cpp::Pv<IJson> {
   return GetChildImpl(*this, index);
 }
 
-auto Json::GetChild(int index) && -> cpp::Pv<IJson> {
+auto Json::GetChild(int index) -> cpp::Pv<IJson> {
   return GetChildImpl(*this, index);
 }
 
