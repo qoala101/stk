@@ -12,15 +12,15 @@ add_executable(unittests
   # aws/api_handle.cc
   # aws/dynamodb_db.cc
 
-  # cpp/move_if.cc
+  cpp/move_if.cc
 
-  # restsdk/client_server.cc
+  restsdk/client_server.cc
+  restsdk/json_common_conversions.cc
   restsdk/json_facades.cc
-  # restsdk/json_template_conversions.cc
-  # restsdk/rest_request_receiver.cc
-  # restsdk/rest_request_sender.cc
+  restsdk/rest_request_receiver.cc
+  restsdk/rest_request_sender.cc
 
-  # sqlite/sqlite_db.cc
+  sqlite/sqlite_db.cc
 
   # stonks/stonks_db.cc
 )

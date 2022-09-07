@@ -30,7 +30,7 @@
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_i_rest_request_sender.h"
-#include "network_json_basic_conversions.h"
+#include "network_json_common_conversions.h"
 #include "network_rest_client.h"
 #include "network_rest_client_request_builder.h"
 #include "network_rest_request_builder.h"

@@ -1,10 +1,11 @@
 #ifndef STONKS_NETWORK_NETWORK_JSON_FACADES_H_
 #define STONKS_NETWORK_NETWORK_JSON_FACADES_H_
 
-#include "cpp_concepts.h"
+#include "cpp_concepts.h"  // IWYU pragma: keep
 #include "network_auto_parsable.h"
-#include "network_concepts.h"
+#include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_json.h"
+#include "network_json_common_conversions.h"
 
 /**
  * @file Facades for the clients to build and parse JSONs.
@@ -12,10 +13,10 @@
 
 namespace stonks::network {
 namespace details {
-template <cpp::DecaysTo<IJson> Json, typename... Args>
-[[nodiscard]] auto MakeFromJsonImpl(Json &json, Args &&...args)
+template <cpp::DecaysTo<IJson> Json, std::convertible_to<std::string>... Keys>
+[[nodiscard]] auto MakeFromJsonImpl(Json &json, Keys &&...keys)
     -> AutoParsable {
-  return AutoParsable{json.GetChild(std::forward<Args>(args)...)};
+  return AutoParsable{json.GetChild(std::forward<Keys>(keys)...)};
 }
 
 inline void BuildJsonFromImpl(IJson &json) {}
@@ -35,7 +36,7 @@ void BuildJsonFromImpl(IJson &json, Key &&key, Value &&value,
  * as constructor arguments.
  * @param keys List of JSON children names.
  */
-template <typename T, cpp::DecaysTo<IJson> Json,
+template <Parsable T, cpp::DecaysTo<IJson> Json,
           std::convertible_to<std::string>... Keys>
 [[nodiscard]] auto MakeFromJson(Json &json, Keys &&...keys) -> T {
   return T{details::MakeFromJsonImpl(json, std::forward<Keys>(keys))...};

@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <exception>
 #include <stdexcept>
+#include <string_view>
 
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
@@ -19,8 +20,6 @@
  */
 
 namespace stonks::network {
-[[nodiscard]] auto CreateNullJson() -> cpp::Pv<IJson>;
-
 template <typename T>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
 
@@ -39,8 +38,7 @@ template <>
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> std::string;
 
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> cpp::MessageException;
+[[nodiscard]] auto CreateNullJson() -> cpp::Pv<IJson>;
 
 [[nodiscard]] auto ConvertToJson(bool value) -> cpp::Pv<IJson>;
 
@@ -50,11 +48,7 @@ template <>
 
 [[nodiscard]] auto ConvertToJson(double value) -> cpp::Pv<IJson>;
 
-[[nodiscard]] auto ConvertToJson(const char *value) -> cpp::Pv<IJson>;
-
 [[nodiscard]] auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson>;
-
-[[nodiscard]] auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson>;
 }  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_NETWORK_JSON_BASIC_CONVERSIONS_H_

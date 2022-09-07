@@ -8,7 +8,7 @@
 
 #include "cpp_not_null.h"
 #include "network_i_json.h"
-#include "network_json_basic_conversions.h"
+#include "network_json_common_conversions.h"
 #include "network_rest_request_builder.h"
 #include "restsdk_factory.h"
 #include "restsdk_rest_request_sender.h"

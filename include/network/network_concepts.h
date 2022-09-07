@@ -1,10 +1,7 @@
 #ifndef STONKS_NETWORK_NETWORK_CONCEPTS_H_
 #define STONKS_NETWORK_NETWORK_CONCEPTS_H_
 
-#include <polymorphic_value.h>
-
 #include "network_i_json.h"
-#include "network_json_basic_conversions.h"
 
 /**
  * @file Common network library concepts.
@@ -18,7 +15,11 @@ concept Parsable = requires(const IJson &json) {
 
 template <typename T>
 concept Convertible = requires(const T &t) {
-  { ConvertToJson(t) } -> std::same_as<cpp::Pv<IJson>>;
+  true;
+  // TODO(vh): Find requirements for the concept. The one below doesn't work,
+  // because available declarations are searched only among the ones visible
+  // here, meaning that user-defined conversions would not be visible here.
+  // { ConvertToJson(t) } -> std::same_as<cpp::Pv<IJson>>;
 };
 }  // namespace stonks::network
 

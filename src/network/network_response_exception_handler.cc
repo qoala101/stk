@@ -10,7 +10,7 @@
 #include "cpp_optional.h"
 #include "cpp_polymorphic_value.h"
 #include "network_i_json.h"
-#include "network_json_basic_conversions.h"
+#include "network_json_common_conversions.h"
 #include "network_types.h"
 #include "network_wrong_type_exception.h"
 

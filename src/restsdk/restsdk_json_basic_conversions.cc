@@ -1,13 +1,10 @@
-#include <bits/exception.h>
 #include <cpprest/json.h>
-#include <polymorphic_value.h>
 
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <string_view>
 
-#include "cpp_message_exception.h"
 #include "cpp_polymorphic_value.h"
 #include "network_i_json.h"
 #include "network_json_basic_conversions.h"
@@ -15,10 +12,6 @@
 #include "restsdk_json_impl.h"
 
 namespace stonks::network {
-auto CreateNullJson() -> cpp::Pv<IJson> {
-  return cpp::MakePv<IJson, restsdk::Json>();
-}
-
 template <>
 auto ParseFromJson(const IJson &json) -> bool {
   return json.GetImpl().GetJson().as_bool();
@@ -44,10 +37,8 @@ auto ParseFromJson(const IJson &json) -> std::string {
   return json.GetImpl().GetJson().as_string();
 }
 
-template <>
-auto ParseFromJson(const IJson &json) -> cpp::MessageException {
-  return cpp::MessageException{
-      ParseFromJson<std::string>(*json.GetChild("message"))};
+auto CreateNullJson() -> cpp::Pv<IJson> {
+  return cpp::MakePv<IJson, restsdk::Json>();
 }
 
 auto ConvertToJson(bool value) -> cpp::Pv<IJson> {
@@ -66,17 +57,7 @@ auto ConvertToJson(double value) -> cpp::Pv<IJson> {
   return cpp::MakePv<IJson, restsdk::Json>(value);
 }
 
-auto ConvertToJson(const char *value) -> cpp::Pv<IJson> {
-  return cpp::MakePv<IJson, restsdk::Json>(value);
-}
-
 auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson> {
   return cpp::MakePv<IJson, restsdk::Json>(value);
-}
-
-auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson> {
-  auto json = cpp::MakePv<IJson, restsdk::Json>();
-  json->SetChild("message", ConvertToJson(value.what()));
-  return json;
 }
 }  // namespace stonks::network

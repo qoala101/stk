@@ -9,6 +9,7 @@ add_library(libnetwork
   typed_endpoint/network_typed_endpoint_sender.cc
   typed_endpoint/network_wrong_type_exception.cc
   network_endpoint_request_dispatcher.cc
+  network_json_common_conversions.cc
   network_request_exception_handler.cc
   network_response_exception_handler.cc
   network_rest_client_request_builder.cc
@@ -30,5 +31,5 @@ target_include_directories(libnetwork
 
 target_link_libraries(libnetwork
   PUBLIC libcpp
-  PRIVATE Microsoft.GSL::GSL
+  PUBLIC Microsoft.GSL::GSL
 )
