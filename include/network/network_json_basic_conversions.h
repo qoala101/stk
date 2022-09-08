@@ -22,32 +22,26 @@
 namespace stonks::network {
 template <typename T>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
+[[nodiscard]] auto CreateNullJson() -> cpp::Pv<IJson>;
 
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> bool;
+[[nodiscard]] auto ConvertToJson(bool value) -> cpp::Pv<IJson>;
 
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> int;
+[[nodiscard]] auto ConvertToJson(int value) -> cpp::Pv<IJson>;
 
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> int64_t;
+[[nodiscard]] auto ConvertToJson(int64_t value) -> cpp::Pv<IJson>;
 
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> double;
+[[nodiscard]] auto ConvertToJson(double value) -> cpp::Pv<IJson>;
 
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> std::string;
-
-[[nodiscard]] auto CreateNullJson() -> cpp::Pv<IJson>;
-
-[[nodiscard]] auto ConvertToJson(bool value) -> cpp::Pv<IJson>;
-
-[[nodiscard]] auto ConvertToJson(int value) -> cpp::Pv<IJson>;
-
-[[nodiscard]] auto ConvertToJson(int64_t value) -> cpp::Pv<IJson>;
-
-[[nodiscard]] auto ConvertToJson(double value) -> cpp::Pv<IJson>;
-
 [[nodiscard]] auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson>;
 }  // namespace stonks::network
 

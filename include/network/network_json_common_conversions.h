@@ -21,8 +21,30 @@
  */
 
 namespace stonks::network {
+[[nodiscard]] auto ConvertToJson(const char *value) -> cpp::Pv<IJson>;
+
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> cpp::MessageException;
+[[nodiscard]] auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson>;
+
+template <cpp::Optional T>
+requires Parsable<typename T::value_type>
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
+  if (json.IsNull()) {
+    return std::nullopt;
+  }
+
+  return ParseFromJson<typename T::value_type>(json);
+}
+
+template <Convertible T>
+[[nodiscard]] auto ConvertToJson(const cpp::Opt<T> &value) -> cpp::Pv<IJson> {
+  if (!value.has_value()) {
+    return CreateNullJson();
+  }
+
+  return ConvertToJson(*value);
+}
 
 template <cpp::Vector T>
 requires Parsable<typename T::value_type>
@@ -37,20 +59,6 @@ requires Parsable<typename T::value_type>
   Ensures(vector.size() == json.GetSize());
   return vector;
 }
-
-template <cpp::Optional T>
-requires Parsable<typename T::value_type>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
-  if (json.IsNull()) {
-    return std::nullopt;
-  }
-
-  return ParseFromJson<typename T::value_type>(json);
-}
-
-[[nodiscard]] auto ConvertToJson(const char *value) -> cpp::Pv<IJson>;
-
-[[nodiscard]] auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson>;
 
 template <Convertible T>
 [[nodiscard]] auto ConvertToJson(const std::vector<T> &value)
@@ -68,15 +76,6 @@ template <Convertible T>
 template <Convertible T>
 [[nodiscard]] auto ConvertToJson(T *value) -> cpp::Pv<IJson> {
   if (value == nullptr) {
-    return CreateNullJson();
-  }
-
-  return ConvertToJson(*value);
-}
-
-template <Convertible T>
-[[nodiscard]] auto ConvertToJson(const cpp::Opt<T> &value) -> cpp::Pv<IJson> {
-  if (!value.has_value()) {
     return CreateNullJson();
   }
 
