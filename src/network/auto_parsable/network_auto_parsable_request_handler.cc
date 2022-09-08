@@ -1,7 +1,6 @@
 #include "network_auto_parsable_request_handler.h"
 
 #include <gsl/assert>
-#include <optional>
 #include <utility>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
@@ -19,20 +18,21 @@ auto AutoParsableRequestHandler::HandleRequestAndGiveResponse(
 
         if constexpr (cpp::DecaysTo<V, Handler>) {
           v();
-          return {Status::kOk, std::nullopt};
+          return {.status = Status::kOk};
         }
 
         if constexpr (cpp::DecaysTo<V, HandlerWithRequest>) {
           v(AutoParsableRestRequest{std::move(request)});
-          return {Status::kOk, std::nullopt};
+          return {.status = Status::kOk};
         }
 
         if constexpr (cpp::DecaysTo<V, HandlerWithResponse>) {
-          return {Status::kOk, v()};
+          return {.status = Status::kOk, .result = v()};
         }
 
         if constexpr (cpp::DecaysTo<V, HandlerWithRequestAndResponse>) {
-          return {Status::kOk, v(AutoParsableRestRequest{std::move(request)})};
+          return {.status = Status::kOk,
+                  .result = v(AutoParsableRestRequest{std::move(request)})};
         }
 
         Expects(false);
