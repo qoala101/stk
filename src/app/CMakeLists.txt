@@ -1,0 +1,1 @@
+add_subdirectory(public_nosql_db)

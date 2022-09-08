@@ -6,6 +6,7 @@ FetchContent_Declare(NotNull
 
 FetchContent_MakeAvailable(NotNull)
 
+add_subdirectory(app)
 add_subdirectory(aws)
 add_subdirectory(cpp)
 add_subdirectory(network)
