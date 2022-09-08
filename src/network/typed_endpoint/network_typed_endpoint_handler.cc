@@ -31,9 +31,11 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   }
 
   void HandleWrongRequestParamType(
-      const Param &param,
+      std::string_view key, const Param &value,
       const std::exception &parsing_exception) const override {
-    throw WrongTypeException{parsing_exception.what(), param};
+    throw WrongTypeException{std::string{"Request param "} + key.data() +
+                                 " is invalid: " + parsing_exception.what(),
+                             value};
   }
 
   void HandleMissingRequestBody() const override {
@@ -43,7 +45,9 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   void HandleWrongRequestBodyType(
       const Body::value_type &request_body,
       const std::exception &parsing_exception) const override {
-    throw WrongTypeException{parsing_exception.what(), request_body};
+    throw WrongTypeException{
+        std::string{"Request body is invalid: "} + parsing_exception.what(),
+        request_body};
   }
 
   void HandleUnexpectedRequestBody() const override {

@@ -17,6 +17,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <system_error>
 #include <utility>
 
 #include "cpp_not_null.h"
@@ -80,8 +81,15 @@ namespace {
   auto params = network::Params{};
 
   for (const auto &[name, value] : raw_params) {
+    auto error_code = std::error_code{};
+    auto json = web::json::value::parse(value, error_code);
+
+    if (const auto parsing_failed = error_code.value() > 0) {
+      json = web::json::value::string(value);
+    }
+
     params[name] = cpp::MakePv<network::IJson, Json>(
-        network::IJson::Impl{web::json::value::parse(value)});
+        network::IJson::Impl{std::move(json)});
   }
 
   return params;
