@@ -3,19 +3,20 @@
 #include <string>
 #include <string_view>
 
-#include "network_json_facades_aliases_p_c.h"
+#include "network_json_conversions_facades.h"
 
 namespace stonks::network {
 auto ConvertToJson(const char *value) -> cpp::Pv<IJson> {
-  return C(std::string_view{value});
+  return ConvertToJson(std::string_view{value});
 }
 
 template <>
 auto ParseFromJson(const IJson &json) -> cpp::MessageException {
-  return cpp::MessageException{P<std::string>(*json.GetChild("message"))};
+  return cpp::MessageException{
+      ParseFromJsonChild<std::string>(json, "message")};
 }
 
 auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson> {
-  return C("message", value.what());
+  return BuildJsonFrom("message", value.what());
 }
 }  // namespace stonks::network

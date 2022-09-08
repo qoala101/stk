@@ -1,5 +1,7 @@
-#ifndef STONKS_NETWORK_NETWORK_JSON_FACADES_H_
-#define STONKS_NETWORK_NETWORK_JSON_FACADES_H_
+#ifndef STONKS_NETWORK_NETWORK_JSON_CONVERSIONS_FACADES_H_
+#define STONKS_NETWORK_NETWORK_JSON_CONVERSIONS_FACADES_H_
+
+#include <utility>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "network_auto_parsable.h"
@@ -13,7 +15,7 @@
 
 namespace stonks::network {
 namespace details {
-template <cpp::DecaysTo<IJson> Json, std::convertible_to<std::string>... Keys>
+template <cpp::DecaysTo<IJson> Json, typename... Keys>
 [[nodiscard]] auto MakeFromJsonImpl(Json &json, Keys &&...keys)
     -> AutoParsable {
   return AutoParsable{json.GetChild(std::forward<Keys>(keys)...)};
@@ -21,8 +23,7 @@ template <cpp::DecaysTo<IJson> Json, std::convertible_to<std::string>... Keys>
 
 inline void BuildJsonFromImpl(IJson &json) {}
 
-template <std::convertible_to<std::string> Key, Convertible Value,
-          typename... KeyValues>
+template <typename Key, Convertible Value, typename... KeyValues>
 void BuildJsonFromImpl(IJson &json, Key &&key, Value &&value,
                        KeyValues &&...key_values) {
   json.SetChild(std::forward<Key>(key),
@@ -36,10 +37,17 @@ void BuildJsonFromImpl(IJson &json, Key &&key, Value &&value,
  * as constructor arguments.
  * @param keys List of JSON children names.
  */
-template <Parsable T, cpp::DecaysTo<IJson> Json,
-          std::convertible_to<std::string>... Keys>
+template <Parsable T, cpp::DecaysTo<IJson> Json, typename... Keys>
 [[nodiscard]] auto MakeFromJson(Json &json, Keys &&...keys) -> T {
   return T{details::MakeFromJsonImpl(json, std::forward<Keys>(keys))...};
+}
+
+/**
+ * @brief Shortcut for common use case of parsing JSON child.
+ */
+template <Parsable T, typename Key>
+[[nodiscard]] auto ParseFromJsonChild(const IJson &json, Key &&child_key) -> T {
+  return ParseFromJson<T>(*json.GetChild(std::forward<Key>(child_key)));
 }
 
 /**
@@ -55,4 +63,4 @@ template <typename... KeyValues>
 }
 }  // namespace stonks::network
 
-#endif  // STONKS_NETWORK_NETWORK_JSON_FACADES_H_
+#endif  // STONKS_NETWORK_NETWORK_JSON_CONVERSIONS_FACADES_H_

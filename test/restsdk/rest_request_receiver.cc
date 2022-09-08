@@ -11,6 +11,7 @@
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_json_common_conversions.h"
+#include "network_json_conversions_facades.h"
 #include "network_rest_request_builder.h"
 #include "network_types.h"
 #include "restsdk_factory.h"
@@ -36,16 +37,17 @@ struct SymbolPrice {
 namespace stonks::network {
 template <>
 auto ParseFromJson(const IJson &json) -> SymbolPrice {
-  return SymbolPrice{
-      ParseFromJson<SymbolName>(*json.GetChild("symbol")),
-      std::stod(ParseFromJson<std::string>(*json.GetChild("price")))};
+  return SymbolPrice{ParseFromJsonChild<SymbolName>(json, "symbol"),
+                     std::stod(ParseFromJsonChild<std::string>(json, "price"))};
 }
 
 auto ConvertToJson(const SymbolPrice &value) -> cpp::Pv<IJson> {
-  auto json = CreateNullJson();
-  json->SetChild("symbol", ConvertToJson(value.symbol));
-  json->SetChild("price", ConvertToJson(std::to_string(value.price)));
-  return json;
+  // clang-format off
+  return BuildJsonFrom(
+    "symbol", value.symbol,
+    "price", std::to_string(value.price)
+  );
+  // clang-format on
 }
 }  // namespace stonks::network
 
@@ -73,7 +75,7 @@ TEST(RestRequestReceiver, SendRequest) {
                            .WithMethod(stonks::network::Method::kGet)
                            .WithBaseUri("http://localhost:6506")
                            .AppendUri("Test")
-                           .WithBody(stonks::network::ConvertToJson("BTCUSDT"))
+                           .WithBody("BTCUSDT")
                            .AddParam("price", 123.456)
                            .Build();
   const auto sender = stonks::restsdk::RestRequestSender{};

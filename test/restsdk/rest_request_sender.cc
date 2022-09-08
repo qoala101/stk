@@ -9,6 +9,7 @@
 #include "cpp_not_null.h"
 #include "network_i_json.h"
 #include "network_json_common_conversions.h"
+#include "network_json_conversions_facades.h"
 #include "network_rest_request_builder.h"
 #include "restsdk_factory.h"
 #include "restsdk_rest_request_sender.h"
@@ -46,16 +47,17 @@ constexpr auto magic_enum::customize::enum_name<CustomNameEnum>(
 namespace stonks::network {
 template <>
 auto ParseFromJson(const IJson &json) -> AvgPrice {
-  return {
-      .mins = ParseFromJson<int>(*json.GetChild("mins")),
-      .price = std::stod(ParseFromJson<std::string>(*json.GetChild("price")))};
+  return {.mins = ParseFromJsonChild<int>(json, "mins"),
+          .price = std::stod(ParseFromJsonChild<std::string>(json, "price"))};
 }
 
 auto ConvertToJson(const AvgPrice &value) -> cpp::Pv<IJson> {
-  auto json = stonks::network::CreateNullJson();
-  json->SetChild("mins", ConvertToJson(value.mins));
-  json->SetChild("price", ConvertToJson(std::to_string(value.price)));
-  return json;
+  // clang-format off
+  return BuildJsonFrom(
+    "mins", value.mins,
+    "price", std::to_string(value.price)
+  );
+  // clang-format on
 }
 }  // namespace stonks::network
 

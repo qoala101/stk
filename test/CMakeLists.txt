@@ -16,7 +16,7 @@ add_executable(unittests
 
   restsdk/client_server.cc
   restsdk/json_common_conversions.cc
-  restsdk/json_facades.cc
+  restsdk/json_conversions_facades.cc
   restsdk/rest_request_receiver.cc
   restsdk/rest_request_sender.cc
 

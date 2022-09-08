@@ -22,6 +22,7 @@
 namespace stonks::network {
 template <typename T>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
+
 [[nodiscard]] auto CreateNullJson() -> cpp::Pv<IJson>;
 
 template <>

@@ -337,7 +337,7 @@ TEST(ClientServer, ServerReceivedWrongTypeException) {
           .WithMethod(EntityServer::PushSymbolEndpointDesc().endpoint.method)
           .WithBaseUri(kBaseUri)
           .AppendUri(EntityServer::PushSymbolEndpointDesc().endpoint.uri)
-          .WithBody(stonks::network::ConvertToJson(123))
+          .WithBody(123)
           .Build();
 
   auto response = sender->SendRequestAndGetResponse(std::move(request));

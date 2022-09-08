@@ -57,6 +57,14 @@ class RestRequestBuilder {
   auto WithBody(Body::value_type body) -> RestRequestBuilder &;
 
   /**
+   * @copydoc RestRequestBuilder::WithBody
+   */
+  template <Convertible Value>
+  auto WithBody(Value &&value) -> RestRequestBuilder & {
+    return WithBody(ConvertToJson(std::forward<Value>(value)));
+  }
+
+  /**
    * @brief Build REST request parts from inputs.
    */
   [[nodiscard]] auto Build() const -> RestRequest;
