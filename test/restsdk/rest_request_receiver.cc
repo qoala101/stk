@@ -68,8 +68,11 @@ TEST(RestRequestReceiver, SendRequest) {
     }
   };
 
-  const auto receiver = stonks::restsdk::RestRequestReceiver{
-      "http://localhost:6506", stonks::cpp::MakeNnUp<Handler>()};
+  const auto receiver = []() {
+    auto receiver = stonks::restsdk::RestRequestReceiver{};
+    receiver.Receive("http://localhost:6506", stonks::cpp::MakeNnUp<Handler>());
+    return receiver;
+  }();
 
   const auto request = stonks::network::RestRequestBuilder{}
                            .WithMethod(stonks::network::Method::kGet)

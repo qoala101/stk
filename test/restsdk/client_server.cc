@@ -39,7 +39,9 @@
 #include "network_types.h"
 #include "not_null.hpp"
 #include "restsdk_factory.h"
+#include "restsdk_rest_request_receiver.h"
 #include "stonks_types.h"
+#include "test_restsdk_injector.h"
 
 namespace {
 const auto kBaseUri = "http://localhost:6506/Entity";
@@ -105,8 +107,8 @@ class EntityServer {
 
   explicit EntityServer(std::string_view base_uri)
       : request_receiver_{
-            stonks::network::RestServer{
-                stonks::cpp::MakeNnUp<stonks::restsdk::Factory>()}
+            test::restsdk::Injector()
+                .create<stonks::network::RestServer>()
                 .On(base_uri.data())
                 .Handling(PushSymbolEndpointDesc(),
                           std::bind_front(
@@ -266,10 +268,14 @@ TEST(ClientServerDeathTest, WrongClientTypesReceived) {
                 .result = stonks::network::ConvertToJson("NOT_INT")};
           }));
 
-  auto entity_server = stonks::restsdk::Factory{}.CreateRestRequestReceiver(
-      kBaseUri,
-      stonks::cpp::MakeNnUp<stonks::network::EndpointRequestDispatcher>(
-          std::move(handlers)));
+  const auto entity_server = [&handlers]() {
+    auto entity_server = stonks::restsdk::RestRequestReceiver{};
+    entity_server.Receive(
+        kBaseUri,
+        stonks::cpp::MakeNnUp<stonks::network::EndpointRequestDispatcher>(
+            std::move(handlers)));
+    return entity_server;
+  }();
 
   EXPECT_ANY_THROW(entity_client.PushSymbol("BTC"));
   EXPECT_ANY_THROW(std::ignore = entity_client.GetSymbol(0));
@@ -284,8 +290,8 @@ TEST(ClientServerDeathTest, WrongServerTypes) {
   }();
   auto entity_client = EntityClient{kBaseUri};
   auto rest_server =
-      stonks::network::RestServer{
-          stonks::cpp::MakeNnUp<stonks::restsdk::Factory>()}
+      test::restsdk::Injector()
+          .create<stonks::network::RestServer>()
           .On(kBaseUri)
           .Handling(
               EntityServer::PushSymbolEndpointDesc(),
@@ -380,9 +386,12 @@ TEST(ClientServer, ClientReceivedWrongTypeException) {
     mutable Entity entity_{};
   };
 
-  auto handler = stonks::restsdk::Factory{}.CreateRestRequestReceiver(
-      kBaseUri, stonks::cpp::MakeNnUp<Handler>());
-  auto entity_client = EntityClient{kBaseUri};
+  const auto handler = []() {
+    auto handler = stonks::restsdk::RestRequestReceiver{};
+    handler.Receive(kBaseUri, stonks::cpp::MakeNnUp<Handler>());
+    return handler;
+  }();
+  const auto entity_client = EntityClient{kBaseUri};
 
   EXPECT_ANY_THROW(std::ignore = entity_client.GetSize());
 }
