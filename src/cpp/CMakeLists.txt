@@ -1,4 +1,5 @@
 find_package(polymorphic_value REQUIRED)
+find_package(di REQUIRED)
 
 add_library(libcpp
   cpp_message_exception.cc
@@ -16,4 +17,5 @@ target_include_directories(libcpp
 target_link_libraries(libcpp
   PUBLIC NotNull
   PUBLIC polymorphic_value::polymorphic_value
+  PUBLIC di::di
 )

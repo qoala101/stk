@@ -38,6 +38,7 @@ aws-sdk-cpp:sts=False
 aws-sdk-cpp:text-to-speech=False
 aws-sdk-cpp:transfer=False
 aws-sdk-cpp:dynamodb=True
+di:with_extensions=True
 
 [generators]
 cmake_find_package
