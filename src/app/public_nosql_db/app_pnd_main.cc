@@ -12,29 +12,23 @@
 #include "cpp_factory.h"
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
-#include "network_i_factory.h"
 #include "network_i_rest_request_receiver.h"
 #include "nosqldb_i_factory.h"
 #include "nosqldb_i_items_interface.h"
 #include "not_null.hpp"
-#include "restsdk_factory.h"
 #include "restsdk_rest_request_receiver.h"
 
 namespace {
-auto MakeNetworkInjector() {
+[[nodiscard]] auto MakeNetworkInjector() {
   // clang-format off
   return make_injector(
-    boost::di::bind<stonks::network::IFactory>().to<stonks::restsdk::Factory>(),
-    stonks::cpp::di::EnableNn<stonks::cpp::Up<stonks::network::IFactory>>(),
-    stonks::cpp::di::EnableNn<stonks::cpp::Sp<stonks::network::IFactory>>(),
-
     boost::di::bind<stonks::cpp::IFactory<stonks::network::IRestRequestReceiver>>().to(stonks::cpp::Factory<stonks::restsdk::RestRequestReceiver>{}),
     stonks::cpp::di::EnableNn<stonks::cpp::Sp<stonks::cpp::IFactory<stonks::network::IRestRequestReceiver>>>()
   );
   // clang-format on
 }
 
-auto MakeAwsInjector() {
+[[nodiscard]] auto MakeAwsInjector() {
   // clang-format off
   return make_injector(
     boost::di::bind<stonks::cpp::NnSp<stonks::aws::ApiHandle>>.to([]() {
@@ -44,7 +38,7 @@ auto MakeAwsInjector() {
   // clang-format on
 }
 
-auto MakeNosqldbInjector() {
+[[nodiscard]] auto MakeNosqldbInjector() {
   // clang-format off
   return make_injector(
     MakeAwsInjector(),

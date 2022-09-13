@@ -1,23 +1,29 @@
-#include <gtest/gtest.h>
+#include <gtest/gtest-message.h>
+#include <gtest/gtest-test-part.h>
 #include <polymorphic_value.h>
 
-#include <cstdint>
-#include <magic_enum.hpp>
+#include <boost/di.hpp>
+#include <map>
+#include <memory>
 #include <ostream>
 #include <string>
-#include <thread>
 
 #include "cpp_not_null.h"
+#include "cpp_polymorphic_value.h"
+#include "gtest/gtest_pred_impl.h"
 #include "network_enums.h"
 #include "network_i_json.h"
+#include "network_i_rest_request_handler.h"
+#include "network_i_rest_request_receiver.h"
+#include "network_json_basic_conversions.h"
 #include "network_json_common_conversions.h"
 #include "network_json_conversions_facades.h"
 #include "network_rest_request_builder.h"
 #include "network_types.h"
-#include "restsdk_factory.h"
-#include "restsdk_rest_request_receiver.h"
+#include "not_null.hpp"
 #include "restsdk_rest_request_sender.h"
 #include "stonks_types.h"
+#include "test_restsdk_injector.h"
 
 namespace {
 struct SymbolPrice {
@@ -69,8 +75,11 @@ TEST(RestRequestReceiver, SendRequest) {
   };
 
   const auto receiver = []() {
-    auto receiver = stonks::restsdk::RestRequestReceiver{};
-    receiver.Receive("http://localhost:6506", stonks::cpp::MakeNnUp<Handler>());
+    auto receiver =
+        test::restsdk::Injector()
+            .create<stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
+    receiver->Receive("http://localhost:6506",
+                      stonks::cpp::MakeNnUp<Handler>());
     return receiver;
   }();
 

@@ -4,7 +4,6 @@ find_package(Microsoft.GSL REQUIRED)
 find_package(spdlog REQUIRED)
 
 add_library(librestsdk
-  restsdk_factory.cc
   restsdk_json_basic_conversions.cc
   restsdk_json_impl.cc
   restsdk_json.cc
