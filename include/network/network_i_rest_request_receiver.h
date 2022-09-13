@@ -1,16 +1,26 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_REQUEST_RECEIVER_H_
 #define STONKS_NETWORK_NETWORK_REST_REQUEST_RECEIVER_H_
 
+#include <string>
+
+#include "network_i_rest_request_handler.h"
+
 namespace stonks::network {
 /**
  * @brief Receives REST requests at the specified URI and redirects
- * to the handler.
- * @remark URI and handler are specified during construction.
+ * them to the handler.
  */
 // NOLINTNEXTLINE(*-special-member-functions)
 class IRestRequestReceiver {
  public:
   virtual ~IRestRequestReceiver() = default;
+
+  /**
+   * @brief Start receiving REST requests on the specified URI
+   * and forwarding them to the handler.
+   */
+  virtual void Receive(std::string local_uri,
+                       cpp::NnUp<IRestRequestHandler> handler) = 0;
 };
 }  // namespace stonks::network
 

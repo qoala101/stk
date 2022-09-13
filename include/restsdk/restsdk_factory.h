@@ -1,11 +1,8 @@
 #ifndef STONKS_RESTSDK_RESTSDK_FACTORY_H_
 #define STONKS_RESTSDK_RESTSDK_FACTORY_H_
 
-#include <string>
-
 #include "cpp_not_null.h"
 #include "network_i_factory.h"
-#include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_i_rest_request_sender.h"
 
@@ -24,9 +21,7 @@ class Factory : public network::IFactory {
   /**
    * @copydoc network::IFactory::CreateRestRequestReceiver
    */
-  [[nodiscard]] auto CreateRestRequestReceiver(
-      std::string local_uri,
-      cpp::NnUp<network::IRestRequestHandler> handler) const
+  [[nodiscard]] auto CreateRestRequestReceiver() const
       -> cpp::NnUp<network::IRestRequestReceiver> override;
 };
 }  // namespace stonks::restsdk

@@ -1,7 +1,5 @@
 #include "restsdk_factory.h"
 
-#include <utility>
-
 #include "cpp_not_null.h"
 #include "restsdk_rest_request_receiver.h"
 #include "restsdk_rest_request_sender.h"
@@ -12,10 +10,8 @@ auto Factory::CreateRestRequestSender() const
   return cpp::MakeNnUp<RestRequestSender>();
 }
 
-auto Factory::CreateRestRequestReceiver(
-    std::string local_uri,
-    cpp::NnUp<network::IRestRequestHandler> handler) const
+auto Factory::CreateRestRequestReceiver() const
     -> cpp::NnUp<network::IRestRequestReceiver> {
-  return cpp::MakeNnUp<RestRequestReceiver>(local_uri, std::move(handler));
+  return cpp::MakeNnUp<RestRequestReceiver>();
 }
 }  // namespace stonks::restsdk

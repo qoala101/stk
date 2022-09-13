@@ -18,6 +18,7 @@
 #include <optional>
 #include <string>
 #include <system_error>
+#include <type_traits>
 #include <utility>
 
 #include "cpp_not_null.h"
@@ -26,7 +27,6 @@
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_types.h"
-#include "not_null.hpp"
 #include "restsdk_json.h"
 #include "restsdk_json_impl.h"
 
@@ -139,17 +139,7 @@ namespace {
 }
 }  // namespace
 
-RestRequestReceiver::RestRequestReceiver(
-    std::string_view local_uri, cpp::NnUp<network::IRestRequestHandler> handler)
-    : handler_{std::move(handler)}, http_listener_{[this, local_uri]() {
-        auto http_listener =
-            cpp::MakeNnUp<web::http::experimental::listener::http_listener>(
-                local_uri.data());
-        http_listener->support(
-            std::bind_front(&RestRequestReceiver::HandleHttpRequest, this));
-        http_listener->open().wait();
-        return http_listener;
-      }()} {}
+RestRequestReceiver::RestRequestReceiver() = default;
 
 RestRequestReceiver::RestRequestReceiver(RestRequestReceiver &&) noexcept =
     default;
@@ -159,8 +149,28 @@ auto RestRequestReceiver::operator=(RestRequestReceiver &&) noexcept
 
 RestRequestReceiver::~RestRequestReceiver() = default;
 
+void RestRequestReceiver::Receive(
+    std::string local_uri, cpp::NnUp<network::IRestRequestHandler> handler) {
+  Expects(handler_ == nullptr);
+  Expects(http_listener_ == nullptr);
+
+  handler_ = std::move(handler).as_nullable();
+
+  http_listener_ =
+      cpp::MakeUp<web::http::experimental::listener::http_listener>(
+          std::move(local_uri));
+  http_listener_->support(
+      std::bind_front(&RestRequestReceiver::HandleHttpRequest, this));
+  http_listener_->open().wait();
+
+  Ensures(handler_ != nullptr);
+  Ensures(http_listener_ != nullptr);
+}
+
 void RestRequestReceiver::HandleHttpRequest(
     const web::http::http_request &request) const {
+  Expects(handler_ != nullptr);
+
   Logger().info("Received {} request on {}", request.method(),
                 request.absolute_uri().path());
 
