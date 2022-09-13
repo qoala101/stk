@@ -4,7 +4,6 @@ find_package(spdlog REQUIRED)
 
 add_library(libaws
   dynamodb/aws_dynamodb_async_db.cc
-  dynamodb/aws_dynamodb_factory.cc
   dynamodb/aws_dynamodb_sync_db_proxy.cc
   aws_api_handle.cc
 )

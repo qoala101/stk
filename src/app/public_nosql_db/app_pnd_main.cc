@@ -6,14 +6,12 @@
 
 #include "app_pnd_items_interface_server.h"
 #include "aws_api_handle.h"
-#include "aws_dynamodb_factory.h"
 #include "aws_dynamodb_sync_db_proxy.h"
 #include "cpp_di_enable_not_null.h"
 #include "cpp_factory.h"
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
 #include "network_i_rest_request_receiver.h"
-#include "nosqldb_i_factory.h"
 #include "nosqldb_i_items_interface.h"
 #include "not_null.hpp"
 #include "restsdk_rest_request_receiver.h"
@@ -45,11 +43,7 @@ namespace {
 
     boost::di::bind<stonks::nosqldb::IItemsInterface>().to<stonks::aws::dynamodb::SyncDbProxy>(),
     stonks::cpp::di::EnableNn<stonks::cpp::Up<stonks::nosqldb::IItemsInterface>>(),
-    stonks::cpp::di::EnableNn<stonks::cpp::Sp<stonks::nosqldb::IItemsInterface>>(),
-
-    boost::di::bind<stonks::nosqldb::IFactory>().to<stonks::aws::dynamodb::Factory>(),
-    stonks::cpp::di::EnableNn<stonks::cpp::Up<stonks::nosqldb::IFactory>>(),
-    stonks::cpp::di::EnableNn<stonks::cpp::Sp<stonks::nosqldb::IFactory>>()
+    stonks::cpp::di::EnableNn<stonks::cpp::Sp<stonks::nosqldb::IItemsInterface>>()
   );
   // clang-format on
 }
