@@ -91,7 +91,8 @@ TEST(RestRequestReceiver, SendRequest) {
                            .WithBody("BTCUSDT")
                            .AddParam("price", 123.456)
                            .Build();
-  const auto sender = stonks::restsdk::RestRequestSender{};
+  const auto sender =
+      test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
   const auto response = sender.SendRequestAndGetResponse(request);
   const auto response_price = ParseFromJson<SymbolPrice>(**response.result);
   EXPECT_EQ(response.status, stonks::network::Status::kOk);

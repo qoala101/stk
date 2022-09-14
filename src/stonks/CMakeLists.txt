@@ -1,6 +1,5 @@
 find_package(Microsoft.GSL REQUIRED)
 find_package(range-v3 REQUIRED)
-find_package(spdlog REQUIRED)
 
 add_library(libstonks
   db/stonks_cache.cc
@@ -23,5 +22,4 @@ target_link_libraries(libstonks
   PRIVATE libsqlite
   PRIVATE Microsoft.GSL::GSL
   PRIVATE range-v3::range-v3
-  PRIVATE spdlog::spdlog
 )

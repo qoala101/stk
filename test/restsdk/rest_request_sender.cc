@@ -18,6 +18,7 @@
 #include "network_rest_request_builder.h"
 #include "network_types.h"
 #include "restsdk_rest_request_sender.h"
+#include "test_restsdk_injector.h"
 
 namespace {
 enum class DefaultNameEnum { kDefaultEnumName };
@@ -132,7 +133,8 @@ TEST(RestRequestSender, SendRequest) {
                            .AppendUri("avgPrice")
                            .AddParam("symbol", "BTCUSDT")
                            .Build();
-  const auto sender = stonks::restsdk::RestRequestSender{};
+  const auto sender =
+      test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
   const auto response = sender.SendRequestAndGetResponse(request);
   const auto response_price =
       stonks::network::ParseFromJson<AvgPrice>(**response.result);

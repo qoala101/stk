@@ -1,6 +1,5 @@
 find_package(AWSSDK REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
-find_package(spdlog REQUIRED)
 
 add_library(libaws
   dynamodb/aws_dynamodb_async_db.cc

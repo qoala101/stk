@@ -1,6 +1,5 @@
 #include "restsdk_rest_request_sender.h"
 
-#include <bits/exception.h>
 #include <cpprest/asyncrt_utils.h>
 #include <cpprest/base_uri.h>
 #include <cpprest/http_client.h>
@@ -9,14 +8,10 @@
 #include <cpprest/json.h>
 #include <cpprest/uri_builder.h>
 #include <fmt/core.h>
-#include <fmt/format.h>
 #include <polymorphic_value.h>
 #include <pplx/pplxtasks.h>
-#include <spdlog/logger.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
-
-#include <gsl/assert>
 #include <magic_enum.hpp>
+#include <gsl/assert>
 #include <map>
 #include <memory>
 #include <string>
@@ -31,11 +26,6 @@
 
 namespace stonks::restsdk {
 namespace {
-[[nodiscard]] auto Logger() -> spdlog::logger & {
-  static auto logger = spdlog::stdout_color_mt("Client");
-  return *logger;
-}
-
 [[nodiscard]] auto HttpMethodFromNetworkMethod(network::Method method)
     -> web::http::method {
   switch (method) {
@@ -134,13 +124,16 @@ namespace {
 }
 }  // namespace
 
+RestRequestSender::RestRequestSender(cpp::NnUp<log::ILogger> logger)
+    : logger_{std::move(logger)} {}
+
 auto RestRequestSender::SendRequestAndGetResponse(
     network::RestRequest request) const -> network::RestResponse {
   const auto full_uri = FetchWebUriFromRequest(request);
 
-  Logger().info("Sending {} request to {}",
-                magic_enum::enum_name(request.endpoint.method),
-                full_uri.to_string());
+  logger_->LogImportantEvent(fmt::format(
+      "Sending {} request to {}",
+      magic_enum::enum_name(request.endpoint.method), full_uri.to_string()));
 
   auto http_client = web::http::client::http_client{full_uri};
   const auto http_request = HttpRequestFromNetworkRequest(request);
