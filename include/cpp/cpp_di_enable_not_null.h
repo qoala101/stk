@@ -6,12 +6,12 @@
 #include "cpp_not_null.h"
 
 namespace stonks::cpp::di {
-namespace details {
+namespace detail {
 template <typename T>
 struct AssumedNn : public Nn<T> {
   explicit AssumedNn(T t) : Nn<T>{AssumeNn(std::move(t))} {}
 };
-}  // namespace details
+}  // namespace detail
 
 /**
  * @brief Enables not null injection for the type.
@@ -21,7 +21,7 @@ struct AssumedNn : public Nn<T> {
  */
 template <typename T>
 auto EnableNn() {
-  return ::boost::di::bind<Nn<T>>().template to<details::AssumedNn<T>>();
+  return ::boost::di::bind<Nn<T>>().template to<detail::AssumedNn<T>>();
 }
 }  // namespace stonks::cpp::di
 

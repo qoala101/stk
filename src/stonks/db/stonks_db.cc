@@ -22,7 +22,6 @@
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 #include "not_null.hpp"
-#include "sqldb_i_factory.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_rows.h"
@@ -63,9 +62,9 @@ namespace {
 }
 }  // namespace
 
-Db::Db(const sqldb::IFactory &db_factory)
-    : db_{db_factory.CreateDb()},
-      query_builder_{db_factory.CreateQueryBuilder()},
+Db::Db(cpp::NnSp<sqldb::IDb> db, cpp::NnSp<sqldb::IQueryBuilder> query_builder)
+    : db_{std::move(db)},
+      query_builder_{std::move(query_builder)},
       prepared_statements_{
           cpp::MakeNnSp<db::PreparedStatements>(db_, query_builder_)},
       cache_{prepared_statements_} {

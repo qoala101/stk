@@ -6,7 +6,6 @@
 
 #include "cpp_not_null.h"
 #include "sqldb_i_db.h"
-#include "sqldb_i_factory.h"
 #include "sqldb_i_query_builder.h"
 #include "stonks_cache.h"
 #include "stonks_i_db.h"
@@ -21,9 +20,11 @@ class Db : public IDb {
  public:
   /**
    * @brief Creates DB over SQL DB used as data storage.
-   * @param db_factory SQL DB implementation.
+   * @param db SQL DB implementation.
+   * @param query_builder Query builder for SQL DB.
    */
-  explicit Db(const sqldb::IFactory &db_factory);
+  explicit Db(cpp::NnSp<sqldb::IDb> db,
+              cpp::NnSp<sqldb::IQueryBuilder> query_builder);
 
   /**
    * @copydoc IDb::SelectAssets

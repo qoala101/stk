@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <boost/di.hpp>
 #include <cstdint>
 #include <filesystem>
 #include <range/v3/range/conversion.hpp>
@@ -8,28 +9,25 @@
 #include "cpp_not_null.h"
 #include "not_null.hpp"
 #include "sqldb_i_db.h"
-#include "sqldb_i_factory.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_query_builder_facade.h"
 #include "sqldb_row_definition_alias_rd.h"
 #include "sqldb_types.h"
 #include "sqldb_value_alias_v.h"
-#include "sqlite_file_db_factory.h"
+#include "test_sqlite_injector.h"
 
 namespace {
 const auto kTestDbFileName = "sqlite_db_test.db";
 
-auto db_factory = stonks::cpp::Up<stonks::sqldb::IFactory>{};
 auto db = stonks::cpp::Up<stonks::sqldb::IDb>{};
 auto query_builder = stonks::cpp::Sp<stonks::sqldb::IQueryBuilder>{};
 auto query_builder_facade = std::optional<stonks::sqldb::QueryBuilderFacade>{};
 
 TEST(SqliteDb, CreateAndDropTable) {
   std::ignore = std::filesystem::remove(kTestDbFileName);
-  db_factory =
-      stonks::cpp::MakeUp<stonks::sqlite::FileDbFactory>(kTestDbFileName);
-  db = db_factory->CreateDb().as_nullable();
-  query_builder = db_factory->CreateQueryBuilder().as_nullable();
+  db = test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
+  query_builder = test::sqlite::Injector()
+                      .create<stonks::cpp::Sp<stonks::sqldb::IQueryBuilder>>();
   query_builder_facade.emplace(stonks::cpp::AssumeNn(query_builder));
 
   const auto table = stonks::sqldb::Table{"TestTable"};
@@ -194,8 +192,9 @@ TEST(SqliteDb, FileWriteAndRead) {
   db.reset();
   EXPECT_TRUE(std::filesystem::exists(kTestDbFileName));
 
-  db = db_factory->CreateDb().as_nullable();
-  auto db_copy = db_factory->CreateDb().as_nullable();
+  db = test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
+  auto db_copy =
+      test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
 
   const auto select_query = query_builder_facade->Select()
                                 .AllColumns()

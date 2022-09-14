@@ -11,7 +11,7 @@ class sqlite3_stmt;
  */
 
 namespace stonks::sqlite {
-namespace details {
+namespace detail {
 struct SqliteDbCloser {
   void operator()(sqlite3 *sqlite_db) noexcept;
 };
@@ -19,18 +19,18 @@ struct SqliteDbCloser {
 struct SqliteStatementFinalizer {
   void operator()(sqlite3_stmt *sqlite_statement) noexcept;
 };
-}  // namespace details
+}  // namespace detail
 
 /**
  * @remark Closes connection when destroyed.
  */
-using SqliteDbHandle = cpp::NnUp<sqlite3, details::SqliteDbCloser>;
+using SqliteDbHandle = cpp::NnUp<sqlite3, detail::SqliteDbCloser>;
 
 /**
  * @remark Finalizes statement when destroyed.
  */
 using SqliteStatementHandle =
-    cpp::NnUp<sqlite3_stmt, details::SqliteStatementFinalizer>;
+    cpp::NnUp<sqlite3_stmt, detail::SqliteStatementFinalizer>;
 }  // namespace stonks::sqlite
 
 #endif  // STONKS_SQLITE_SQLITE_RAW_HANDLES_H_

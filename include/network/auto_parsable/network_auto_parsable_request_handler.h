@@ -10,7 +10,7 @@
 #include "network_types.h"
 
 namespace stonks::network {
-namespace details {
+namespace detail {
 template <typename T>
 concept Callable = requires(const T &t) {
   { t() } -> std::same_as<void>;
@@ -32,7 +32,7 @@ concept CallableWithRequestAndResponse =
     requires(const T &t, AutoParsableRestRequest request) {
   { t(std::move(request)) } -> Convertible;
 };
-}  // namespace details
+}  // namespace detail
 
 /**
  * @brief Convenient request handler constructible from any callable which may
@@ -40,22 +40,21 @@ concept CallableWithRequestAndResponse =
  */
 class AutoParsableRequestHandler : public IRestRequestHandler {
  public:
-  explicit AutoParsableRequestHandler(details::Callable auto handler)
+  explicit AutoParsableRequestHandler(detail::Callable auto handler)
       : handler_{std::in_place_type_t<Handler>{}, std::move(handler)} {}
 
-  explicit AutoParsableRequestHandler(details::CallableWithRequest auto handler)
+  explicit AutoParsableRequestHandler(detail::CallableWithRequest auto handler)
       : handler_{std::in_place_type_t<HandlerWithRequest>{},
                  std::move(handler)} {}
 
-  explicit AutoParsableRequestHandler(
-      details::CallableWithResponse auto handler)
+  explicit AutoParsableRequestHandler(detail::CallableWithResponse auto handler)
       : handler_{std::in_place_type_t<HandlerWithResponse>{},
                  [handler = std::move(handler)]() {
                    return ConvertToJson(handler());
                  }} {}
 
   explicit AutoParsableRequestHandler(
-      details::CallableWithRequestAndResponse auto handler)
+      detail::CallableWithRequestAndResponse auto handler)
       : handler_{
             std::in_place_type_t<HandlerWithRequestAndResponse>{},
             [handler = std::move(handler)](AutoParsableRestRequest request) {

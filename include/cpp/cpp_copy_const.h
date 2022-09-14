@@ -4,7 +4,7 @@
 #include "cpp_concepts.h"  // IWYU pragma: keep
 
 namespace stonks::cpp {
-namespace details {
+namespace detail {
 template <typename From, typename To>
 struct CopyConstImpl {
   using T = To;
@@ -24,13 +24,13 @@ template <Const From, Rvalue To>
 struct CopyConstImpl<From, To> {
   using T = const std::remove_reference_t<To> &&;
 };
-}  // namespace details
+}  // namespace detail
 
 /**
  * @brief Applies const specifier to second type if the first one is const.
  */
 template <typename From, typename To>
-using CopyConst = typename details::CopyConstImpl<From, To>::T;
+using CopyConst = typename detail::CopyConstImpl<From, To>::T;
 }  // namespace stonks::cpp
 
 #endif  // STONKS_CPP_CPP_COPY_CONST_H_

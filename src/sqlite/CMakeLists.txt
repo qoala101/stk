@@ -10,7 +10,6 @@ add_library(libsqlite
   sqlite_db_handle_variant.cc
   sqlite_db_handles_factory.cc
   sqlite_db.cc
-  sqlite_file_db_factory.cc
   sqlite_prepared_statement_facade.cc
   sqlite_prepared_statement_handle.cc
   sqlite_query_builder.cc

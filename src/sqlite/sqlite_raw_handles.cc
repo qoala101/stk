@@ -17,7 +17,7 @@ namespace {
 }
 }  // namespace
 
-namespace details {
+namespace detail {
 void SqliteDbCloser::operator()(sqlite3* sqlite_db) noexcept try {
   DbFacade{cpp::CheckNn(sqlite_db)}.Close();
 } catch (const std::exception& e) {
@@ -30,5 +30,5 @@ void SqliteStatementFinalizer::operator()(
 } catch (const std::exception& e) {
   Logger().error(e.what());
 }
-}  // namespace details
+}  // namespace detail
 }  // namespace stonks::sqlite

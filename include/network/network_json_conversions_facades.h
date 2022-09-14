@@ -14,7 +14,7 @@
  */
 
 namespace stonks::network {
-namespace details {
+namespace detail {
 template <cpp::DecaysTo<IJson> Json, typename... Keys>
 [[nodiscard]] auto MakeFromJsonImpl(Json &json, Keys &&...keys)
     -> AutoParsable {
@@ -30,7 +30,7 @@ void BuildJsonFromImpl(IJson &json, Key &&key, Value &&value,
                 ConvertToJson(std::forward<Value>(value)));
   BuildJsonFromImpl(json, std::forward<KeyValues>(key_values)...);
 }
-}  // namespace details
+}  // namespace detail
 
 /**
  * @brief Constructs object of type T by passing parsed JSON children
@@ -39,7 +39,7 @@ void BuildJsonFromImpl(IJson &json, Key &&key, Value &&value,
  */
 template <Parsable T, cpp::DecaysTo<IJson> Json, typename... Keys>
 [[nodiscard]] auto MakeFromJson(Json &json, Keys &&...keys) -> T {
-  return T{details::MakeFromJsonImpl(json, std::forward<Keys>(keys))...};
+  return T{detail::MakeFromJsonImpl(json, std::forward<Keys>(keys))...};
 }
 
 /**
@@ -58,7 +58,7 @@ template <Parsable T, typename Key>
 template <typename... KeyValues>
 [[nodiscard]] auto BuildJsonFrom(KeyValues &&...key_values) -> cpp::Pv<IJson> {
   auto json = stonks::network::CreateNullJson();
-  details::BuildJsonFromImpl(*json, std::forward<KeyValues>(key_values)...);
+  detail::BuildJsonFromImpl(*json, std::forward<KeyValues>(key_values)...);
   return json;
 }
 }  // namespace stonks::network
