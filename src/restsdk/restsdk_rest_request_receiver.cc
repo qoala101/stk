@@ -1,15 +1,12 @@
 #include "restsdk_rest_request_receiver.h"
 
-#include <bits/exception.h>
 #include <cpprest/base_uri.h>
 #include <cpprest/http_headers.h>
 #include <cpprest/http_listener.h>
 #include <cpprest/json.h>
-#include <fmt/format.h>
+#include <fmt/core.h>
 #include <polymorphic_value.h>
 #include <pplx/pplxtasks.h>
-#include <spdlog/logger.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <functional>
 #include <gsl/assert>
@@ -27,16 +24,12 @@
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_types.h"
+#include "not_null.hpp"
 #include "restsdk_json.h"
 #include "restsdk_json_impl.h"
 
 namespace stonks::restsdk {
 namespace {
-[[nodiscard]] auto Logger() -> spdlog::logger & {
-  static auto logger = spdlog::stdout_color_mt("RestRequestReceiver");
-  return *logger;
-}
-
 [[nodiscard]] auto NetworkMethodFromHttpMethod(const web::http::method &method)
     -> network::Method {
   if (method == web::http::methods::GET) {
@@ -139,7 +132,8 @@ namespace {
 }
 }  // namespace
 
-RestRequestReceiver::RestRequestReceiver() = default;
+RestRequestReceiver::RestRequestReceiver(cpp::NnUp<log::ILogger> logger)
+    : logger_{std::move(logger)} {}
 
 RestRequestReceiver::RestRequestReceiver(RestRequestReceiver &&) noexcept =
     default;
@@ -171,8 +165,9 @@ void RestRequestReceiver::HandleHttpRequest(
     const web::http::http_request &request) const {
   Expects(handler_ != nullptr);
 
-  Logger().info("Received {} request on {}", request.method(),
-                request.absolute_uri().path());
+  logger_->LogImportantEvent(fmt::format("Received {} request on {}",
+                                         request.method(),
+                                         request.absolute_uri().path()));
 
   auto rest_request = RestRequestFromHttpRequest(request);
   const auto rest_response =

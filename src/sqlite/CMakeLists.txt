@@ -28,6 +28,7 @@ target_include_directories(libsqlite
 
 target_link_libraries(libsqlite
   PUBLIC libsqldb
+  PUBLIC liblog
   PRIVATE SQLite::SQLite3
   PRIVATE magic_enum::magic_enum
   PRIVATE Microsoft.GSL::GSL

@@ -1,6 +1,7 @@
 #include "sqlite_db_facade.h"
 
 #include <bits/exception.h>
+#include <fmt/core.h>
 #include <fmt/format.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>

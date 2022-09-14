@@ -19,7 +19,7 @@ target_include_directories(libaws
 
 target_link_libraries(libaws
   PUBLIC libnosqldb
+  PUBLIC liblog
   PRIVATE AWS::dynamodb
   PRIVATE Microsoft.GSL::GSL
-  PRIVATE spdlog::spdlog
 )

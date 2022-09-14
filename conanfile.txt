@@ -12,6 +12,7 @@ abseil/20211102.0
 aws-sdk-cpp/1.9.234
 di/1.2.0
 polymorphic_value/1.3.0
+fmt/9.1.0
 
 # Added to fix clashes between dependencies
 openssl/1.1.1n

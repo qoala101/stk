@@ -1,0 +1,21 @@
+find_package(spdlog REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
+
+add_library(libspdlog
+  spdlog_logger.cc
+)
+
+set_target_properties(libspdlog PROPERTIES
+  OUTPUT_NAME spdlog
+)
+
+target_include_directories(libspdlog
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/spdlog
+)
+
+target_link_libraries(libspdlog
+  PUBLIC liblog
+  PUBLIC libcpp
+  PRIVATE spdlog::spdlog
+  PRIVATE Microsoft.GSL::GSL
+)

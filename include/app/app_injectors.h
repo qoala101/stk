@@ -7,9 +7,11 @@
 #include "cpp_di_enable_not_null.h"
 #include "cpp_di_factory.h"
 #include "cpp_smart_pointers.h"
+#include "log_i_logger.h"
 #include "network_i_rest_request_receiver.h"
 #include "nosqldb_i_items_interface.h"
 #include "restsdk_rest_request_receiver.h"
+#include "spdlog_logger.h"
 
 namespace stonks::app::injectors {
 [[nodiscard]] inline auto MakeNetworkInjector() {
@@ -27,6 +29,16 @@ namespace stonks::app::injectors {
     boost::di::bind<nosqldb::IItemsInterface>().to<aws::dynamodb::SyncDbProxy>(),
     cpp::di::EnableNn<cpp::Up<nosqldb::IItemsInterface>>(),
     cpp::di::EnableNn<cpp::Sp<nosqldb::IItemsInterface>>()
+  );
+  // clang-format on
+}
+
+[[nodiscard]] inline auto MakeLogInjector() {
+  // clang-format off
+  return make_injector(
+    boost::di::bind<log::ILogger>().to<spdlog::Logger>(),
+    cpp::di::EnableNn<cpp::Up<log::ILogger>>(),
+    cpp::di::EnableNn<cpp::Sp<log::ILogger>>()
   );
   // clang-format on
 }

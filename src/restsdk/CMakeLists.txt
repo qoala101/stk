@@ -21,6 +21,7 @@ target_include_directories(librestsdk
 
 target_link_libraries(librestsdk
   PUBLIC libnetwork
+  PUBLIC liblog
   PRIVATE cpprestsdk::cpprest
   PRIVATE magic_enum::magic_enum
   PRIVATE Microsoft.GSL::GSL

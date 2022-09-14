@@ -8,6 +8,7 @@
 #include <cpprest/http_msg.h>
 #include <cpprest/json.h>
 #include <cpprest/uri_builder.h>
+#include <fmt/core.h>
 #include <fmt/format.h>
 #include <polymorphic_value.h>
 #include <pplx/pplxtasks.h>

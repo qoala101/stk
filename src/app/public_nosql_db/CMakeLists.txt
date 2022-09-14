@@ -13,4 +13,5 @@ target_include_directories(public_nosql_db
 target_link_libraries(public_nosql_db
   PRIVATE libaws
   PRIVATE librestsdk
+  PRIVATE libspdlog
 )

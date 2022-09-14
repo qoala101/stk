@@ -48,6 +48,7 @@ target_link_libraries(unittests
   PRIVATE libcpp
   PRIVATE librestsdk
   PRIVATE libsqlite
+  PRIVATE libspdlog
 
   PRIVATE libstonks
 

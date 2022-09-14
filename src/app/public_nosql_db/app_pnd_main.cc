@@ -14,6 +14,8 @@ auto main(int /*unused*/, char* /*unused*/[]) -> int {
   const auto injector = make_injector(
     stonks::app::injectors::MakeNetworkInjector(),
     stonks::app::injectors::MakeNosqldbInjector(),
+    stonks::app::injectors::MakeLogInjector(),
+
     boost::di::bind<std::string>.to("http://localhost:6506/Entity")
   );
   // clang-format on

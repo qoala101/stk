@@ -7,6 +7,7 @@
 #include "cpp_smart_pointers.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
+#include "log_i_logger.h"
 
 namespace web::http {
 class http_request;
@@ -22,7 +23,7 @@ namespace stonks::restsdk {
  */
 class RestRequestReceiver : public network::IRestRequestReceiver {
  public:
-  RestRequestReceiver();
+  explicit RestRequestReceiver(cpp::NnUp<log::ILogger> logger);
 
   RestRequestReceiver(const RestRequestReceiver &) = delete;
   RestRequestReceiver(RestRequestReceiver &&) noexcept;
@@ -43,6 +44,7 @@ class RestRequestReceiver : public network::IRestRequestReceiver {
 
   cpp::Up<network::IRestRequestHandler> handler_;
   cpp::Up<web::http::experimental::listener::http_listener> http_listener_;
+  cpp::NnUp<log::ILogger> logger_;
 };
 }  // namespace stonks::restsdk
 
