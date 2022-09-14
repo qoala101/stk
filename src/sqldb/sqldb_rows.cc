@@ -10,6 +10,8 @@
 #include <range/v3/view/transform.hpp>
 #include <utility>
 
+#include "cpp_typed_struct.h"
+
 namespace stonks::sqldb {
 Rows::Rows(std::vector<Column> columns)
     : columns_{

@@ -9,6 +9,7 @@
 #include "cpp_not_null.h"
 #include "sqlite_prepared_statement_facade.h"
 #include "sqlite_prepared_statement_handle.h"
+#include "sqlite_types.h"
 
 namespace stonks::sqlite {
 UpdateStatement::UpdateStatement(

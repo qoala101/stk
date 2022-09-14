@@ -116,7 +116,7 @@ void PreparedStatementFacade::BindParams(
 
 auto PreparedStatementFacade::Step() -> ResultCode {
   Expects(sqlite_statement_ != nullptr);
-  return sqlite3_step(sqlite_statement_);
+  return {sqlite3_step(sqlite_statement_)};
 }
 
 auto PreparedStatementFacade::GetStepValues(

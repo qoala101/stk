@@ -10,6 +10,7 @@
 #include <range/v3/view/drop.hpp>
 #include <range/v3/view/filter.hpp>
 #include <range/v3/view/subrange.hpp>
+#include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
 #include <string>
 #include <utility>
@@ -30,7 +31,7 @@ auto IsColumnForeignKey(const sqldb::ColumnDefinition &column) -> bool {
 
 auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
     const sqldb::TableDefinition &table_definition) const -> std::string {
-  Expects(!table_definition.table.empty());
+  Expects(!table_definition.table.value.empty());
   Expects(!table_definition.columns.empty());
 
   const auto has_primary_keys =
@@ -40,10 +41,10 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
   const auto has_keys = has_primary_keys || has_foreign_keys;
 
   auto query = std::string{"CREATE TABLE IF NOT EXISTS \"" +
-                           table_definition.table + "\"(\n"};
+                           table_definition.table.value + "\"(\n"};
 
   for (const auto &column_def : table_definition.columns) {
-    query += "\t\"" + column_def.column + "\" " +
+    query += "\t\"" + column_def.column.value + "\" " +
              std::string{magic_enum::enum_name(column_def.data_type)} +
              " NOT NULL";
 
@@ -63,7 +64,7 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
         table_definition.columns | ranges::views::filter(&IsColumnPrimaryKey);
 
     for (const auto &column_def : primary_key_columns) {
-      query += "\"" + column_def.column + "\"";
+      query += "\"" + column_def.column.value + "\"";
 
       if (column_def.auto_increment) {
         query += " AUTOINCREMENT";
@@ -88,9 +89,9 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
 
     for (const auto &column_def : foreign_key_columns) {
       const auto &foreign_key = *column_def.foreign_key;
-      query += "FOREIGN KEY(\"" + column_def.column + "\") REFERENCES \"" +
-               foreign_key.table + "\"(\"" + foreign_key.column +
-               "\") ON DELETE CASCADE";
+      query += "FOREIGN KEY(\"" + column_def.column.value +
+               "\") REFERENCES \"" + foreign_key.table.value + "\"(\"" +
+               foreign_key.column.value + "\") ON DELETE CASCADE";
 
       if (const auto query_not_done =
               &column_def != &foreign_key_columns.back()) {
@@ -107,9 +108,9 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
 
 auto QueryBuilder::BuildDropTableQuery(const sqldb::Table &table) const
     -> std::string {
-  Expects(!table.empty());
+  Expects(!table.value.empty());
 
-  auto query = "DROP TABLE \"" + table + "\"";
+  auto query = "DROP TABLE \"" + table.value + "\"";
 
   Ensures(!query.empty());
   return query;
@@ -119,7 +120,7 @@ auto QueryBuilder::BuildSelectQuery(const sqldb::Table &table,
                                     const std::vector<sqldb::Column> *columns,
                                     std::string_view where_clause) const
     -> std::string {
-  Expects(!table.empty());
+  Expects(!table.value.empty());
 
   auto query = std::string{"SELECT "};
 
@@ -127,14 +128,17 @@ auto QueryBuilder::BuildSelectQuery(const sqldb::Table &table,
     query += "*";
   } else {
     Expects(!columns->empty());
-    query +=
-        ranges::accumulate(*columns | ranges::views::drop(1), columns->front(),
-                           [](const auto &query, const auto &column) {
-                             return query + ", " + column;
-                           });
+    const auto column_values =
+        *columns | ranges::views::transform(
+                       [](const auto &column) { return column.value; });
+    query += ranges::accumulate(column_values | ranges::views::drop(1),
+                                column_values.front(),
+                                [](const auto &query, const auto &column) {
+                                  return query + ", " + column;
+                                });
   }
 
-  query += " FROM \"" + table + "\"";
+  query += " FROM \"" + table.value + "\"";
 
   if (!where_clause.empty()) {
     query += std::string{" "} + where_clause.data();
@@ -147,14 +151,14 @@ auto QueryBuilder::BuildSelectQuery(const sqldb::Table &table,
 auto QueryBuilder::BuildInsertQuery(
     const sqldb::Table &table, const std::vector<sqldb::Column> &columns) const
     -> std::string {
-  Expects(!table.empty());
+  Expects(!table.value.empty());
   Expects(!columns.empty());
 
   auto column_names = std::string{};
   auto placeholders = std::string{};
 
   for (const auto &column : columns) {
-    column_names += "\"" + column + "\"";
+    column_names += "\"" + column.value + "\"";
     placeholders += "?";
 
     if (const auto not_last_column = &column != &columns.back()) {
@@ -163,8 +167,8 @@ auto QueryBuilder::BuildInsertQuery(
     }
   }
 
-  auto query = "INSERT INTO \"" + table + "\"(" + column_names + ") VALUES (" +
-               placeholders + ")";
+  auto query = "INSERT INTO \"" + table.value + "\"(" + column_names +
+               ") VALUES (" + placeholders + ")";
 
   Ensures(!query.empty());
   return query;
@@ -174,13 +178,13 @@ auto QueryBuilder::BuildUpdateQuery(const sqldb::Table &table,
                                     const std::vector<sqldb::Column> &columns,
                                     std::string_view where_clause) const
     -> std::string {
-  Expects(!table.empty());
+  Expects(!table.value.empty());
   Expects(!columns.empty());
 
-  auto query = "UPDATE \"" + table + "\" SET ";
+  auto query = "UPDATE \"" + table.value + "\" SET ";
 
   for (const auto &column : columns) {
-    query += "\"" + column + "\" = ?";
+    query += "\"" + column.value + "\" = ?";
 
     if (const auto not_last_column = &column != &columns.back()) {
       query += ", ";
@@ -198,9 +202,9 @@ auto QueryBuilder::BuildUpdateQuery(const sqldb::Table &table,
 auto QueryBuilder::BuildDeleteQuery(const sqldb::Table &table,
                                     std::string_view where_clause) const
     -> std::string {
-  Expects(!table.empty());
+  Expects(!table.value.empty());
 
-  auto query = "DELETE FROM \"" + table + "\"";
+  auto query = "DELETE FROM \"" + table.value + "\"";
 
   if (!where_clause.empty()) {
     query += std::string{" "} + where_clause.data();

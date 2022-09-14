@@ -47,8 +47,6 @@ class SelectQueryBuilder {
 
   struct LimitedType {};
 
-  using LimitVariant = std::variant<std::monostate, int, LimitedType>;
-
   explicit SelectQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder);
 
   cpp::NnSp<IQueryBuilder> query_builder_;
@@ -56,7 +54,7 @@ class SelectQueryBuilder {
   cpp::Opt<Table> table_{};
   ColumnsVariant columns_{};
   cpp::Opt<std::string> where_clause_{};
-  LimitVariant limit_{};
+  std::variant<std::monostate, int, LimitedType> limit_{};
 };
 }  // namespace query_builder_facade
 }  // namespace stonks::sqldb

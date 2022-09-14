@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 
+#include "cpp_typed_struct.h"
 #include "not_null.hpp"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_rows.h"
@@ -46,8 +47,8 @@ void Cache::Update() {
 
 void Cache::UpdateAssetMap() {
   auto rows = prepared_statements_->SelectAssetsWithIds().Execute();
-  auto &ids = rows.GetColumnValues("id");
-  auto &names = rows.GetColumnValues("name");
+  auto &ids = rows.GetColumnValues({"id"});
+  auto &names = rows.GetColumnValues({"name"});
 
   asset_to_asset_id_map_.clear();
 
@@ -58,8 +59,8 @@ void Cache::UpdateAssetMap() {
 
 void Cache::UpdateSymbolMaps() {
   auto rows = prepared_statements_->SelectSymbolsWithIds().Execute();
-  auto &ids = rows.GetColumnValues("id");
-  auto &names = rows.GetColumnValues("name");
+  auto &ids = rows.GetColumnValues({"id"});
+  auto &names = rows.GetColumnValues({"name"});
 
   symbol_to_symbol_id_map_.clear();
   symbol_id_to_symbol_map_.clear();
@@ -68,8 +69,8 @@ void Cache::UpdateSymbolMaps() {
     const auto id = ids[i].GetInt64();
     auto &name = names[i].GetString();
 
-    symbol_to_symbol_id_map_[name] = id;
-    symbol_id_to_symbol_map_[id] = std::move(name);
+    symbol_to_symbol_id_map_[{name}] = id;
+    symbol_id_to_symbol_map_[id] = {std::move(name)};
   }
 }
 }  // namespace stonks::db

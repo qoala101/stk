@@ -172,14 +172,14 @@ class EntityClient : public EntityInterface {
 
 TEST(ClientServerDeathTest, ApiTest) {
   auto entity = Entity{};
-  entity.PushSymbol("ETHUSDT");
-  entity.PushSymbol("BTCUSDT");
+  entity.PushSymbol({"ETHUSDT"});
+  entity.PushSymbol({"BTCUSDT"});
 
   auto entity_server = EntityServer{kBaseUri};
 
   auto entity_client = EntityClient{kBaseUri};
-  entity_client.PushSymbol("ETHUSDT");
-  entity_client.PushSymbol("BTCUSDT");
+  entity_client.PushSymbol({"ETHUSDT"});
+  entity_client.PushSymbol({"BTCUSDT"});
 
   EXPECT_EQ(entity.GetSize(), entity_client.GetSize());
   EXPECT_EQ(entity.GetSymbol(0), entity_client.GetSymbol(0));
@@ -281,7 +281,7 @@ TEST(ClientServerDeathTest, WrongClientTypesReceived) {
     return entity_server;
   }();
 
-  EXPECT_ANY_THROW(entity_client.PushSymbol("BTC"));
+  EXPECT_ANY_THROW(entity_client.PushSymbol({"BTC"}));
   EXPECT_ANY_THROW(std::ignore = entity_client.GetSymbol(0));
   EXPECT_ANY_THROW(std::ignore = entity_client.GetSize());
 }
@@ -289,7 +289,7 @@ TEST(ClientServerDeathTest, WrongClientTypesReceived) {
 TEST(ClientServerDeathTest, WrongServerTypes) {
   auto entity = []() {
     auto entity = Entity{};
-    entity.PushSymbol("ETH");
+    entity.PushSymbol({"ETH"});
     return entity;
   }();
   auto entity_client = EntityClient{kBaseUri};

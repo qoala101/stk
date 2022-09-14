@@ -6,6 +6,7 @@
 
 #include "cpp_copy_const.h"
 #include "cpp_optional.h"
+#include "cpp_typed_struct.h"
 #include "cpp_views.h"
 #include "sqldb_enums.h"
 #include "sqldb_value.h"
@@ -15,8 +16,9 @@
  */
 
 namespace stonks::sqldb {
-using Table = std::string;
-using Column = std::string;
+struct Table : public cpp::TypedStruct<std::string> {};
+
+struct Column : public cpp::TypedStruct<std::string> {};
 
 struct ForeignKey {
   Table table{};

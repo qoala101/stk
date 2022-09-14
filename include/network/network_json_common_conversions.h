@@ -27,6 +27,18 @@ template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> cpp::MessageException;
 [[nodiscard]] auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson>;
 
+template <cpp::IsTypedStruct T>
+requires Parsable<typename T::ValueType>
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
+  return {ParseFromJson<typename T::ValueType>(json)};
+}
+
+template <Convertible T>
+[[nodiscard]] auto ConvertToJson(const cpp::TypedStruct<T> &value)
+    -> cpp::Pv<IJson> {
+  return ConvertToJson(value.value);
+}
+
 template <cpp::Optional T>
 requires Parsable<typename T::value_type>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T {

@@ -1,0 +1,31 @@
+
+
+// class Config : public config {
+//  public:
+//   template<typename T>
+//   static auto provider(T *t) noexcept { return CustomProvider{t}; }
+// };
+
+// template<typename WHAT>
+// struct CustomProvider {
+//   explicit CustomProvider(WHAT *what) : what_{what} {}
+
+//   template <typename... Ts>
+//   struct is_creatable {
+//     // static constexpr auto value = providers::stack_over_heap::is_creatable<Ts...>::value;
+//     static constexpr auto value = true;
+//   };
+
+//   template <class T, typename DirectUniform, typename StackHeap, class... TArgs>
+//   [[nodiscard]] auto get(const DirectUniform& direct_uniform, const StackHeap& stack_heap, TArgs&&... args) const {
+//     return providers::stack_over_heap{}.get<T>(direct_uniform, stack_heap, std::forward<TArgs>(args)...);
+//   }
+
+//   template <NotNull T, typename DirectUniform, class... TArgs>
+//   [[nodiscard]] auto get(const DirectUniform&, const type_traits::stack&, TArgs&&... args) const {
+//     return AssumeNn(what_->template create<Up<typename T::element_type>>(std::forward<TArgs>(args)...));
+//   }
+
+//  private:
+//   WHAT *what_{};
+// };

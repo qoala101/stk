@@ -12,6 +12,9 @@
 
 namespace stonks::cpp {
 template <typename T>
+class TypedStruct;
+
+template <typename T>
 concept Const = std::is_const_v<std::remove_reference_t<T>>;
 
 template <typename T>
@@ -25,6 +28,10 @@ concept DecaysTo = std::same_as<std::decay_t<T>, U>;
 
 template <typename T>
 concept Optional = std::same_as<T, Opt<typename T::value_type>>;
+
+template <typename T>
+concept IsTypedStruct =
+    std::derived_from<T, TypedStruct<typename T::ValueType>>;
 
 template <typename T>
 concept Vector = std::same_as<T, std::vector<typename T::value_type>>;

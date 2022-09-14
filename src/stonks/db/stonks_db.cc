@@ -21,6 +21,7 @@
 
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
+#include "cpp_typed_struct.h"
 #include "not_null.hpp"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
@@ -74,7 +75,7 @@ Db::Db(cpp::NnSp<sqldb::IDb> db, cpp::NnSp<sqldb::IQueryBuilder> query_builder)
 
 auto Db::SelectAssets() const -> std::vector<std::string> {
   auto rows = prepared_statements_->SelectAssets().Execute();
-  auto &name_values = rows.GetColumnValues("name");
+  auto &name_values = rows.GetColumnValues({"name"});
   return name_values | ranges::views::transform([](auto &asset) {
            return std::move(asset.GetString());
          }) |
@@ -106,9 +107,9 @@ void Db::UpdateAssets(const std::vector<std::string> &assets) {
 
 auto Db::SelectSymbols() const -> std::vector<SymbolName> {
   auto rows = prepared_statements_->SelectSymbols().Execute();
-  auto &name_values = rows.GetColumnValues("name");
+  auto &name_values = rows.GetColumnValues({"name"});
   return name_values | ranges::views::transform([](auto &asset) {
-           return std::move(asset.GetString());
+           return SymbolName{std::move(asset.GetString())};
          }) |
          ranges::to_vector;
 }
@@ -116,13 +117,13 @@ auto Db::SelectSymbols() const -> std::vector<SymbolName> {
 auto Db::SelectSymbolsInfo() const -> std::vector<SymbolInfo> {
   auto rows = prepared_statements_->SelectSymbolsInfo().Execute();
 
-  auto &symbol = rows.GetColumnValues("name");
-  const auto &min_base_amount = rows.GetColumnValues("min_base_amount");
-  const auto &min_quote_amount = rows.GetColumnValues("min_quote_amount");
-  const auto &base_step = rows.GetColumnValues("base_step");
-  const auto &quote_step = rows.GetColumnValues("quote_step");
-  auto &base_asset = rows.GetColumnValues("base_asset");
-  auto &quote_asset = rows.GetColumnValues("quote_asset");
+  auto &symbol = rows.GetColumnValues({"name"});
+  const auto &min_base_amount = rows.GetColumnValues({"min_base_amount"});
+  const auto &min_quote_amount = rows.GetColumnValues({"min_quote_amount"});
+  const auto &base_step = rows.GetColumnValues({"base_step"});
+  const auto &quote_step = rows.GetColumnValues({"quote_step"});
+  auto &base_asset = rows.GetColumnValues({"base_asset"});
+  auto &quote_asset = rows.GetColumnValues({"quote_asset"});
 
   const auto num_rows = rows.GetSize();
 
@@ -131,7 +132,7 @@ auto Db::SelectSymbolsInfo() const -> std::vector<SymbolInfo> {
 
   for (auto i = 0; i < num_rows; ++i) {
     symbols_info.emplace_back(
-        SymbolInfo{.symbol = std::move(symbol[i].GetString()),
+        SymbolInfo{.symbol = {std::move(symbol[i].GetString())},
                    .base_asset = std::move(base_asset[i].GetString()),
                    .quote_asset = std::move(quote_asset[i].GetString()),
                    .min_base_amount = min_base_amount[i].GetDouble(),
@@ -199,10 +200,10 @@ auto Db::SelectSymbolPriceTicks(const SymbolName *symbol, const Period *period,
 
   const auto rows = statement->Execute(std::move(values));
 
-  const auto &symbol_id = rows.GetColumnValues("symbol_id");
-  const auto &time = rows.GetColumnValues("time");
-  const auto &buy_price = rows.GetColumnValues("buy_price");
-  const auto &sell_price = rows.GetColumnValues("sell_price");
+  const auto &symbol_id = rows.GetColumnValues({"symbol_id"});
+  const auto &time = rows.GetColumnValues({"time"});
+  const auto &buy_price = rows.GetColumnValues({"buy_price"});
+  const auto &sell_price = rows.GetColumnValues({"sell_price"});
 
   const auto num_rows = rows.GetSize();
 

@@ -11,6 +11,7 @@
 
 namespace stonks::nosqldb {
 struct Table : public cpp::TypedStruct<std::string> {};
+
 struct Key : public cpp::TypedStruct<std::string> {};
 
 /**

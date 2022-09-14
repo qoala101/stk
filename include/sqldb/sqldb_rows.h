@@ -1,7 +1,6 @@
 #ifndef STONKS_SQLDB_SQLDB_ROWS_H_
 #define STONKS_SQLDB_SQLDB_ROWS_H_
 
-#include <string>
 #include <vector>
 
 #include "cpp_copy_const.h"

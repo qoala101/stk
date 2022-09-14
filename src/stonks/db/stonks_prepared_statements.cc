@@ -2,6 +2,7 @@
 
 #include <gsl/assert>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -41,7 +42,7 @@ auto PreparedStatements::SelectAssets() const
     -> const sqldb::ISelectStatement& {
   if (select_assets_ == nullptr) {
     const auto& table = table_definitions::Asset();
-    const auto columns = table.GetColumnDefinitions({"name"});
+    const auto columns = table.GetColumnDefinitions({{"name"}});
     const auto query = query_builder_facade_->Select()
                            .Columns(columns)
                            .FromTable(table)
@@ -84,7 +85,7 @@ auto PreparedStatements::InsertAsset() const -> const sqldb::IUpdateStatement& {
   if (insert_asset_ == nullptr) {
     const auto query = query_builder_facade_->Insert()
                            .IntoTable(table_definitions::Asset())
-                           .IntoColumns({"name"})
+                           .IntoColumns({{"name"}})
                            .Build();
     insert_asset_ = db_->PrepareStatement(query).as_nullable();
   }
@@ -97,7 +98,7 @@ auto PreparedStatements::SelectSymbols() const
     -> const sqldb::ISelectStatement& {
   if (select_symbols_ == nullptr) {
     const auto& table = table_definitions::Symbol();
-    const auto columns = table.GetColumnDefinitions({"name"});
+    const auto columns = table.GetColumnDefinitions({{"name"}});
     const auto query = query_builder_facade_->Select()
                            .Columns(columns)
                            .FromTable(table)
@@ -113,7 +114,7 @@ auto PreparedStatements::SelectSymbolsWithIds() const
     -> const sqldb::ISelectStatement& {
   if (select_symbols_with_ids_ == nullptr) {
     const auto& table = table_definitions::Symbol();
-    const auto columns = table.GetColumnDefinitions({"id", "name"});
+    const auto columns = table.GetColumnDefinitions({{"id"}, {"name"}});
     const auto query = query_builder_facade_->Select()
                            .Columns(columns)
                            .FromTable(table)
@@ -129,22 +130,25 @@ auto PreparedStatements::SelectSymbolsWithIds() const
 auto PreparedStatements::SelectSymbolsInfo() const
     -> const sqldb::ISelectStatement& {
   if (select_symbols_info_ == nullptr) {
-    auto symbol_columns = table_definitions::Symbol().GetColumnDefinitions(
-        {"name", "min_base_amount", "min_quote_amount", "base_step",
-         "quote_step"});
+    auto symbol_columns =
+        table_definitions::Symbol().GetColumnDefinitions({{"name"},
+                                                          {"min_base_amount"},
+                                                          {"min_quote_amount"},
+                                                          {"base_step"},
+                                                          {"quote_step"}});
 
     const auto base_asset_column = []() {
       auto base_asset_column =
-          table_definitions::Asset().GetColumnDefinition("name");
-      base_asset_column.column = "base_asset";
+          table_definitions::Asset().GetColumnDefinition({"name"});
+      base_asset_column.column.value = "base_asset";
       return base_asset_column;
     }();
     symbol_columns.emplace_back(cpp::AssumeNn(&base_asset_column));
 
     const auto quote_asset_column = []() {
       auto quote_asset_column =
-          table_definitions::Asset().GetColumnDefinition("name");
-      quote_asset_column.column = "quote_asset";
+          table_definitions::Asset().GetColumnDefinition({"name"});
+      quote_asset_column.column.value = "quote_asset";
       return quote_asset_column;
     }();
     symbol_columns.emplace_back(cpp::AssumeNn(&quote_asset_column));
@@ -175,9 +179,13 @@ auto PreparedStatements::InsertSymbolInfo() const
     -> const sqldb::IUpdateStatement& {
   if (insert_symbol_info_ == nullptr) {
     const auto& table = table_definitions::Symbol();
-    const auto columns = table.GetColumnDefinitions(
-        {"name", "base_asset_id", "quote_asset_id", "min_base_amount",
-         "min_quote_amount", "base_step", "quote_step"});
+    const auto columns = table.GetColumnDefinitions({{"name"},
+                                                     {"base_asset_id"},
+                                                     {"quote_asset_id"},
+                                                     {"min_base_amount"},
+                                                     {"min_quote_amount"},
+                                                     {"base_step"},
+                                                     {"quote_step"}});
     const auto query = query_builder_facade_->Insert()
                            .IntoTable(table)
                            .IntoColumns(columns)
@@ -192,13 +200,16 @@ auto PreparedStatements::InsertSymbolInfo() const
 auto PreparedStatements::UpdateSymbolInfo() const
     -> const sqldb::IUpdateStatement& {
   if (update_symbol_info_ == nullptr) {
-    const auto query =
-        query_builder_facade_->Update()
-            .Columns({"base_asset_id", "quote_asset_id", "min_base_amount",
-                      "min_quote_amount", "base_step", "quote_step"})
-            .OfTable(table_definitions::Symbol())
-            .Where("Symbol.name = ?")
-            .Build();
+    const auto query = query_builder_facade_->Update()
+                           .Columns({{"base_asset_id"},
+                                     {"quote_asset_id"},
+                                     {"min_base_amount"},
+                                     {"min_quote_amount"},
+                                     {"base_step"},
+                                     {"quote_step"}})
+                           .OfTable(table_definitions::Symbol())
+                           .Where("Symbol.name = ?")
+                           .Build();
     update_symbol_info_ = db_->PrepareStatement(query).as_nullable();
   }
 

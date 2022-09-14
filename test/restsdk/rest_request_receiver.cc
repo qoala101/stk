@@ -31,9 +31,10 @@ struct SymbolPrice {
   double price{};
 
  private:
-  friend auto operator==(const SymbolPrice &, const SymbolPrice &)
+  [[nodiscard]] friend auto operator==(const SymbolPrice &, const SymbolPrice &)
       -> bool = default;
-  friend auto operator<<(std::ostream &stream, const SymbolPrice &avg_price)
+  [[nodiscard]] friend auto operator<<(std::ostream &stream,
+                                       const SymbolPrice &avg_price)
       -> std::ostream & {
     return stream << avg_price.symbol << " " << avg_price.price;
   }
@@ -94,7 +95,7 @@ TEST(RestRequestReceiver, SendRequest) {
   const auto response = sender.SendRequestAndGetResponse(request);
   const auto response_price = ParseFromJson<SymbolPrice>(**response.result);
   EXPECT_EQ(response.status, stonks::network::Status::kOk);
-  EXPECT_EQ(response_price.symbol, "BTCUSDT");
+  EXPECT_EQ(response_price.symbol, stonks::SymbolName{"BTCUSDT"});
   EXPECT_EQ(response_price.price, 123.456);
 }
 }  // namespace

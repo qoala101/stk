@@ -6,6 +6,7 @@
 #include "cpp_not_null.h"
 #include "sqldb_enums.h"
 #include "sqldb_value.h"
+#include "sqlite_types.h"
 
 class sqlite3_stmt;
 
@@ -15,11 +16,6 @@ namespace stonks::sqlite {
  */
 class PreparedStatementFacade {
  public:
-  /**
-   * @brief SQLite result code.
-   */
-  using ResultCode = int;
-
   explicit PreparedStatementFacade(cpp::Nn<sqlite3_stmt *> sqlite_statement);
 
   /**

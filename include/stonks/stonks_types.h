@@ -5,9 +5,10 @@
 #include <string>
 
 #include "cpp_optional.h"
+#include "cpp_typed_struct.h"
 
 namespace stonks {
-using SymbolName = std::string;
+struct SymbolName : public cpp::TypedStruct<std::string> {};
 
 struct SymbolInfo {
   SymbolName symbol;
