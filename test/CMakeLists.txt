@@ -12,6 +12,7 @@ add_executable(unittests
   # aws/dynamodb_db.cc
 
   cpp/move_if.cc
+  cpp/typed_struct.cc
 
   restsdk/client_server.cc
   restsdk/json_common_conversions.cc

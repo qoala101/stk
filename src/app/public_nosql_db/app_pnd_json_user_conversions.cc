@@ -6,12 +6,29 @@
 
 namespace stonks::network {
 template <>
+auto ParseFromJson(const IJson &json) -> nosqldb::Table {
+  return nosqldb::Table{ParseFromJson<std::string>(json)};
+}
+template <>
+auto ParseFromJson(const IJson &json) -> nosqldb::Key {
+  return nosqldb::Key{ParseFromJson<std::string>(json)};
+}
+
+template <>
 auto ParseFromJson(const IJson &json) -> nosqldb::Item {
   return MakeFromJson<nosqldb::Item>(json, "key", "value");
 }
 }  // namespace stonks::network
 
 namespace stonks::nosqldb {
+auto ConvertToJson(const nosqldb::Table &value) -> cpp::Pv<network::IJson> {
+  return network::ConvertToJson(value.value);
+}
+
+auto ConvertToJson(const nosqldb::Key &value) -> cpp::Pv<network::IJson> {
+  return network::ConvertToJson(value.value);
+}
+
 auto ConvertToJson(const nosqldb::Item &value) -> cpp::Pv<network::IJson> {
   return network::BuildJsonFrom("key", value.key, "value", value.value);
 }

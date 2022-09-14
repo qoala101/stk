@@ -82,7 +82,8 @@ auto SyncDbProxy::GetTableStatus(const nosqldb::Table &table) const
       return std::nullopt;
     }
 
-    throw cpp::MessageException{"Couldn't get table status " + table + ": " +
+    throw cpp::MessageException{"Couldn't get table status " +
+                                std::string{table} + ": " +
                                 result.GetError().GetMessage()};
   }
 

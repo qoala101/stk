@@ -10,10 +10,20 @@ template <typename T>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
 
 template <>
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> nosqldb::Table;
+
+template <>
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> nosqldb::Key;
+
+template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> nosqldb::Item;
 }  // namespace stonks::network
 
 namespace stonks::nosqldb {
+[[nodiscard]] auto ConvertToJson(const Table &value) -> cpp::Pv<network::IJson>;
+
+[[nodiscard]] auto ConvertToJson(const Key &value) -> cpp::Pv<network::IJson>;
+
 [[nodiscard]] auto ConvertToJson(const Item &value) -> cpp::Pv<network::IJson>;
 }  // namespace stonks::nosqldb
 

@@ -10,6 +10,10 @@
 namespace stonks::cpp {
 /**
  * @brief Applies rvalue cast to the value if T is rvalue.
+ * @remark Proper usage with forwarding reference:
+ * @code {.cpp}
+ * MoveIfRvalue<decltype(std::forward<This>(t))>(t.member);
+ * @endcode
  */
 template <typename T, typename U>
 auto MoveIfRvalue(U &&value) -> auto && {
