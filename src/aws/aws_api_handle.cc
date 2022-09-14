@@ -15,41 +15,53 @@
 
 namespace stonks::aws {
 namespace {
-[[nodiscard]] auto Logger() -> spdlog::logger& {
+[[nodiscard]] auto Logger() -> spdlog::logger & {
   static auto logger = spdlog::stdout_color_mt("aws::ApiHandle");
   return *logger;
 }
 
-[[nodiscard]] auto Options() -> const Aws::SDKOptions& {
+[[nodiscard]] auto Options() -> const Aws::SDKOptions & {
   static const auto kOptions = Aws::SDKOptions{};
   return kOptions;
 }
 }  // namespace
 
-auto ApiHandle::Instance() -> cpp::NnSp<ApiHandle> {
-  static auto last_instance = cpp::Wp<ApiHandle>{};
+class ApiHandle::ApiHandleImpl {
+ public:
+  static auto Instance() -> cpp::NnSp<ApiHandleImpl> {
+    static auto last_instance = cpp::Wp<ApiHandleImpl>{};
 
-  auto last_instance_lock = last_instance.lock();
+    auto last_instance_lock = last_instance.lock();
 
-  if (const auto last_instance_is_alive = last_instance_lock != nullptr) {
+    if (const auto last_instance_is_alive = last_instance_lock != nullptr) {
+      Ensures(!last_instance.expired());
+      return cpp::AssumeNn(last_instance_lock);
+    }
+
+    class EnableMakeSp : public ApiHandleImpl {};
+    auto new_instance = cpp::MakeNnSp<EnableMakeSp>();
+
+    last_instance = new_instance.as_nullable();
     Ensures(!last_instance.expired());
-    return cpp::AssumeNn(last_instance_lock);
+
+    return new_instance;
   }
 
-  class EnableMakeSp : public ApiHandle {};
-  auto new_instance = cpp::MakeNnSp<EnableMakeSp>();
+  ApiHandleImpl(const ApiHandleImpl &) = delete;
+  ApiHandleImpl(ApiHandleImpl &&) noexcept = delete;
 
-  last_instance = new_instance.as_nullable();
-  Ensures(!last_instance.expired());
+  auto operator=(const ApiHandleImpl &) -> ApiHandleImpl & = delete;
+  auto operator=(ApiHandleImpl &&) noexcept -> ApiHandleImpl & = delete;
 
-  return new_instance;
-}
+  ~ApiHandleImpl() try {
+    Aws::ShutdownAPI(Options());
+  } catch (const std::exception &e) {
+    Logger().error(e.what());
+  }
 
-ApiHandle::~ApiHandle() try {
-  Aws::ShutdownAPI(Options());
-} catch (const std::exception& e) {
-  Logger().error(e.what());
-}
+ private:
+  ApiHandleImpl() { Aws::InitAPI(Options()); }
+};
 
-ApiHandle::ApiHandle() { Aws::InitAPI(Options()); }
+ApiHandle::ApiHandle() : impl_{ApiHandleImpl::Instance()} {}
 }  // namespace stonks::aws

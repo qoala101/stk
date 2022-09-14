@@ -10,28 +10,12 @@ namespace stonks::aws {
  */
 class ApiHandle {
  public:
-  /**
-   * @remark Keeps weak reference to the given instance
-   * and returns it if its alive.
-   */
-  [[nodiscard]] static auto Instance() -> cpp::NnSp<ApiHandle>;
-
-  ApiHandle(const ApiHandle &) = delete;
-  ApiHandle(ApiHandle &&) noexcept = delete;
-
-  auto operator=(const ApiHandle &) -> ApiHandle & = delete;
-  auto operator=(ApiHandle &&) noexcept -> ApiHandle & = delete;
-
-  /**
-   * @brief Shuts the API down.
-   */
-  ~ApiHandle();
+  ApiHandle();
 
  private:
-  /**
-   * @brief Initializes the API.
-   */
-  ApiHandle();
+  class ApiHandleImpl;
+
+  cpp::NnSp<ApiHandleImpl> impl_;
 };
 }  // namespace stonks::aws
 

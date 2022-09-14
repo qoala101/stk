@@ -9,7 +9,6 @@ enable_testing()
 add_executable(unittests
 
   # Disabled in order to not waste AWS API credits.
-  # aws/api_handle.cc
   # aws/dynamodb_db.cc
 
   cpp/move_if.cc

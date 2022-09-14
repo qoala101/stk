@@ -5,15 +5,12 @@
 #include <tuple>
 
 #include "app_pnd_items_interface_server.h"
-#include "aws_api_handle.h"
 #include "aws_dynamodb_sync_db_proxy.h"
 #include "cpp_di_enable_not_null.h"
 #include "cpp_factory.h"
-#include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
 #include "network_i_rest_request_receiver.h"
 #include "nosqldb_i_items_interface.h"
-#include "not_null.hpp"
 #include "restsdk_rest_request_receiver.h"
 
 namespace {
@@ -26,21 +23,9 @@ namespace {
   // clang-format on
 }
 
-[[nodiscard]] auto MakeAwsInjector() {
-  // clang-format off
-  return make_injector(
-    boost::di::bind<stonks::cpp::NnSp<stonks::aws::ApiHandle>>.to([]() {
-      return stonks::aws::ApiHandle::Instance();
-    })
-  );
-  // clang-format on
-}
-
 [[nodiscard]] auto MakeNosqldbInjector() {
   // clang-format off
   return make_injector(
-    MakeAwsInjector(),
-
     boost::di::bind<stonks::nosqldb::IItemsInterface>().to<stonks::aws::dynamodb::SyncDbProxy>(),
     stonks::cpp::di::EnableNn<stonks::cpp::Up<stonks::nosqldb::IItemsInterface>>(),
     stonks::cpp::di::EnableNn<stonks::cpp::Sp<stonks::nosqldb::IItemsInterface>>()

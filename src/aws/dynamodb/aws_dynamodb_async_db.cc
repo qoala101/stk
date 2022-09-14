@@ -28,7 +28,7 @@
 #include "not_null.hpp"
 
 namespace stonks::aws::dynamodb {
-AsyncDb::AsyncDb(cpp::NnSp<ApiHandle> api_handle)
+AsyncDb::AsyncDb(ApiHandle api_handle)
     : api_handle_{std::move(api_handle)},
       db_client_{cpp::MakeNnUp<Aws::DynamoDB::DynamoDBClient>()} {}
 

@@ -27,7 +27,7 @@ namespace stonks::aws::dynamodb {
  */
 class AsyncDb : public nosqldb::IDb {
  public:
-  explicit AsyncDb(cpp::NnSp<ApiHandle> api_handle);
+  explicit AsyncDb(ApiHandle api_handle);
 
   AsyncDb(const AsyncDb &) = delete;
   AsyncDb(AsyncDb &&) noexcept;
@@ -73,7 +73,7 @@ class AsyncDb : public nosqldb::IDb {
       -> const Aws::DynamoDB::DynamoDBClient &;
 
  private:
-  cpp::NnSp<ApiHandle> api_handle_;
+  ApiHandle api_handle_;
   cpp::NnUp<Aws::DynamoDB::DynamoDBClient> db_client_;
 };
 }  // namespace stonks::aws::dynamodb

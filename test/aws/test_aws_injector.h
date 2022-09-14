@@ -16,7 +16,6 @@ namespace test::aws {
 [[nodiscard]] inline auto Injector() -> auto& {
   // clang-format off
   static auto injector = make_injector(
-    boost::di::bind<stonks::cpp::NnSp<stonks::aws::ApiHandle>>().to([]() { return stonks::aws::ApiHandle::Instance(); }),
     boost::di::bind<stonks::nosqldb::ITablesInterface>().to<stonks::aws::dynamodb::SyncDbProxy>(),
     stonks::cpp::di::EnableNn<stonks::cpp::Up<stonks::nosqldb::ITablesInterface>>(),
     boost::di::bind<stonks::nosqldb::IItemsInterface>().to<stonks::aws::dynamodb::SyncDbProxy>(),
