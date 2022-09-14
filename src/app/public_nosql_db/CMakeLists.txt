@@ -6,6 +6,7 @@ add_executable(public_nosql_db
 )
 
 target_include_directories(public_nosql_db
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/app
   PUBLIC ${PROJECT_SOURCE_DIR}/include/app/public_nosql_db
 )
 
