@@ -5,7 +5,7 @@
 
 #include "aws_dynamodb_sync_db_proxy.h"
 #include "cpp_di_enable_not_null.h"
-#include "cpp_factory.h"
+#include "cpp_di_factory.h"
 #include "cpp_smart_pointers.h"
 #include "network_i_rest_request_receiver.h"
 #include "nosqldb_i_items_interface.h"
@@ -15,8 +15,8 @@ namespace stonks::app::injectors {
 [[nodiscard]] inline auto MakeNetworkInjector() {
   // clang-format off
   return make_injector(
-    boost::di::bind<cpp::IFactory<network::IRestRequestReceiver>>().to(cpp::Factory<restsdk::RestRequestReceiver>{}),
-    cpp::di::EnableNn<cpp::Sp<cpp::IFactory<network::IRestRequestReceiver>>>()
+    boost::di::bind<cpp::di::IFactory<network::IRestRequestReceiver>>().to(cpp::di::Factory<restsdk::RestRequestReceiver>{}),
+    cpp::di::EnableNn<cpp::Sp<cpp::di::IFactory<network::IRestRequestReceiver>>>()
   );
   // clang-format on
 }

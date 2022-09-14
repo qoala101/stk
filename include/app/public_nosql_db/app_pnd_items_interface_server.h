@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "cpp_factory.h"
+#include "cpp_di_factory.h"
 #include "cpp_not_null.h"
 #include "network_i_rest_request_receiver.h"
 #include "nosqldb_i_items_interface.h"
@@ -13,7 +13,7 @@ class ItemsInterfaceServer {
  public:
   explicit ItemsInterfaceServer(
       const cpp::NnSp<nosqldb::IItemsInterface> &items_interface,
-      cpp::NnSp<cpp::IFactory<network::IRestRequestReceiver>>
+      cpp::NnSp<cpp::di::IFactory<network::IRestRequestReceiver>>
           request_receiver_factory,
       std::string base_uri);
 

@@ -13,7 +13,7 @@
 
 namespace stonks::network {
 RestServer::RestServer(
-    cpp::NnSp<cpp::IFactory<IRestRequestReceiver>> request_receiver_factory)
+    cpp::NnSp<cpp::di::IFactory<IRestRequestReceiver>> request_receiver_factory)
     : request_receiver_factory_{std::move(request_receiver_factory)} {}
 
 auto RestServer::On(std::string base_uri) -> RestServer& {

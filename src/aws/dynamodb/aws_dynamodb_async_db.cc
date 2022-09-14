@@ -127,9 +127,9 @@ void AsyncDb::InsertOrUpdateItem(const nosqldb::Table &table,
   const auto &result = db_client_->UpdateItem(request);
 
   if (!result.IsSuccess()) {
-    throw cpp::MessageException{"Couldn't insert or update item " + item.key +
-                                " in table " + table + ": " +
-                                result.GetError().GetMessage()};
+    throw cpp::MessageException{"Couldn't insert or update item " +
+                                item.key.value + " in table " + table.value +
+                                ": " + result.GetError().GetMessage()};
   }
 }
 

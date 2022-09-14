@@ -5,13 +5,15 @@
 
 #include "cpp_typed_struct.h"
 
-/**
- * @file Common NoSQL DB related types.
- */
-
 namespace stonks::nosqldb {
+/**
+ * @brief Name of NoSQL table which stores string key-value pairs.
+ */
 struct Table : public cpp::TypedStruct<std::string> {};
 
+/**
+ * @brief NoSQL table key.
+ */
 struct Key : public cpp::TypedStruct<std::string> {};
 
 /**

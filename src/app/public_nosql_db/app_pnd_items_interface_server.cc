@@ -14,7 +14,7 @@
 namespace stonks::app::pnd {
 ItemsInterfaceServer::ItemsInterfaceServer(
     const cpp::NnSp<nosqldb::IItemsInterface> &items_interface,
-    cpp::NnSp<cpp::IFactory<network::IRestRequestReceiver>>
+    cpp::NnSp<cpp::di::IFactory<network::IRestRequestReceiver>>
         request_receiver_factory,
     std::string base_uri)
     : request_receiver_{

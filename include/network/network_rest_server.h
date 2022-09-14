@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-#include "cpp_factory.h"
+#include "cpp_di_factory.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 #include "network_auto_parsable_request_handler.h"
@@ -20,8 +20,8 @@ namespace stonks::network {
  */
 class RestServer {
  public:
-  explicit RestServer(
-      cpp::NnSp<cpp::IFactory<IRestRequestReceiver>> request_receiver_factory);
+  explicit RestServer(cpp::NnSp<cpp::di::IFactory<IRestRequestReceiver>>
+                          request_receiver_factory);
 
   /**
    * @brief Sets base URI on which requests are to be handled.
@@ -52,7 +52,7 @@ class RestServer {
                               cpp::NnUp<IRestRequestHandler> handler)
       -> RestServer &;
 
-  cpp::NnSp<cpp::IFactory<IRestRequestReceiver>> request_receiver_factory_;
+  cpp::NnSp<cpp::di::IFactory<IRestRequestReceiver>> request_receiver_factory_;
   cpp::Opt<std::string> base_uri_{};
   std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };

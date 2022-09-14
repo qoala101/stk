@@ -5,7 +5,7 @@
 
 #include "aws_dynamodb_sync_db_proxy.h"
 #include "cpp_di_enable_not_null.h"
-#include "cpp_factory.h"
+#include "cpp_di_factory.h"
 #include "network_i_rest_request_sender.h"
 #include "nosqldb_i_items_interface.h"
 #include "nosqldb_i_tables_interface.h"

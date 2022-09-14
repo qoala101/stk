@@ -18,8 +18,8 @@ class RestClient {
    * @param base_uri Base resource URI.
    * @param request_sender Executes REST requests.
    */
-  RestClient(std::string base_uri,
-             cpp::NnSp<IRestRequestSender> request_sender);
+  RestClient(cpp::NnSp<IRestRequestSender> request_sender,
+             std::string base_uri);
 
   /**
    * @brief Creates request builder which provides a further API for request
@@ -30,8 +30,8 @@ class RestClient {
       -> rest_client::RequestBuilder;
 
  private:
-  std::string base_uri_{};
   cpp::NnSp<IRestRequestSender> request_sender_;
+  std::string base_uri_{};
 };
 }  // namespace stonks::network
 

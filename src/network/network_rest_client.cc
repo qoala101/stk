@@ -10,10 +10,10 @@
 #include "network_types.h"
 
 namespace stonks::network {
-RestClient::RestClient(std::string base_uri,
-                       cpp::NnSp<IRestRequestSender> request_sender)
-    : base_uri_{std::move(base_uri)},
-      request_sender_{std::move(request_sender)} {}
+RestClient::RestClient(cpp::NnSp<IRestRequestSender> request_sender,
+                       std::string base_uri)
+    : request_sender_{std::move(request_sender)},
+      base_uri_{std::move(base_uri)} {}
 
 auto RestClient::Call(TypedEndpoint endpoint) const
     -> rest_client::RequestBuilder {

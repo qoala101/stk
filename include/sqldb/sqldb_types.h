@@ -11,20 +11,28 @@
 #include "sqldb_enums.h"
 #include "sqldb_value.h"
 
-/**
- * @file Common DB related types.
- */
-
 namespace stonks::sqldb {
+/**
+ * @brief Name of SQL table which has columns with different value types.
+ */
 struct Table : public cpp::TypedStruct<std::string> {};
 
+/**
+ * @brief Name of the SQL table column.
+ */
 struct Column : public cpp::TypedStruct<std::string> {};
 
+/**
+ * @brief Foreign key to the column in the table.
+ */
 struct ForeignKey {
   Table table{};
   Column column{};
 };
 
+/**
+ * @brief Description of SQL table column.
+ */
 struct ColumnDefinition {
   Column column{};
   DataType data_type{};
@@ -34,6 +42,10 @@ struct ColumnDefinition {
   cpp::Opt<ForeignKey> foreign_key{};
 };
 
+/**
+ * @brief Description of SQL table which is table name
+ * and description of its columns.
+ */
 struct TableDefinition {
   [[nodiscard]] auto GetColumnDefinition(const Column &column) const
       -> const ColumnDefinition &;
@@ -53,11 +65,17 @@ struct TableDefinition {
       -> cpp::CopyConst<This, ColumnDefinition &>;
 };
 
+/**
+ * @brief Value of single column cell.
+ */
 struct Cell {
   Column column{};
   Value value{};
 };
 
+/**
+ * @brief Description of SQL table cell.
+ */
 struct CellDefinition {
   Column column{};
   DataType data_type{};
