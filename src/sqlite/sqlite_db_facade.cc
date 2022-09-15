@@ -11,7 +11,7 @@
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
-#include "log_format.h"
+#include "cpp_format.h"
 #include "not_null.hpp"
 #include "sqlite_db_handles_factory.h"
 #include "sqlite_raw_handles.h"
@@ -53,7 +53,7 @@ void DbFacade::WriteToFile(const FilePath &file_path) const {
   DbFacade{logger_, cpp::AssumeNn(file_db_handle.get())}.CopyDataFrom(
       *sqlite_db_);
 
-  logger_->LogImportantEvent(log::Format("Stored DB to {}", file_path.value));
+  logger_->LogImportantEvent(cpp::Format("Stored DB to {}", file_path.value));
 }
 
 void DbFacade::CopyDataFrom(sqlite3 &other_db) const {
@@ -85,7 +85,7 @@ auto DbFacade::CreatePreparedStatement(const sqldb::Query &query) const
   }
 
   logger_->LogImportantEvent(
-      log::Format("Prepared statement for query: {}", query.value));
+      cpp::Format("Prepared statement for query: {}", query.value));
 
   return SqliteStatementHandle{
       cpp::AssumeNn(cpp::Up<sqlite3_stmt, detail::SqliteStatementFinalizer>{
@@ -114,7 +114,7 @@ void DbFacade::Close() {
     throw cpp::MessageException{"Couldn't close DB from " + file_name};
   }
 
-  logger_->LogImportantEvent(log::Format("Closed DB from {}", file_name));
+  logger_->LogImportantEvent(cpp::Format("Closed DB from {}", file_name));
 
   sqlite_db_ = nullptr;
   Ensures(sqlite_db_ == nullptr);

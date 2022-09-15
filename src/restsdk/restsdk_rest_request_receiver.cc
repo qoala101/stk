@@ -20,7 +20,7 @@
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 #include "cpprest/http_msg.h"
-#include "log_format.h"
+#include "cpp_format.h"
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_types.h"
@@ -165,7 +165,7 @@ void RestRequestReceiver::HandleHttpRequest(
     const web::http::http_request &request) const {
   Expects(handler_ != nullptr);
 
-  logger_->LogImportantEvent(log::Format("Received {} request on {}",
+  logger_->LogImportantEvent(cpp::Format("Received {} request on {}",
                                          request.method(),
                                          request.absolute_uri().path()));
 

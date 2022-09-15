@@ -11,7 +11,7 @@
 
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
-#include "log_format.h"
+#include "cpp_format.h"
 #include "not_null.hpp"
 #include "sqlite_db_facade.h"
 #include "sqlite_raw_handles.h"
@@ -65,7 +65,7 @@ auto DbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
 
   if (const auto db_is_new = !std::filesystem::exists(file_path.value)) {
     logger_->LogImportantEvent(
-        log::Format("Created new DB for {}", file_path.value));
+        cpp::Format("Created new DB for {}", file_path.value));
     return in_memory_db_handle;
   }
 
@@ -73,7 +73,7 @@ auto DbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
   DbFacade{logger_, cpp::AssumeNn(in_memory_db_handle.get())}.CopyDataFrom(
       *file_db_handle);
 
-  logger_->LogImportantEvent(log::Format("Loaded DB from {}", file_path.value));
+  logger_->LogImportantEvent(cpp::Format("Loaded DB from {}", file_path.value));
   return in_memory_db_handle;
 }
 }  // namespace stonks::sqlite
