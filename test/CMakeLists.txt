@@ -11,16 +11,16 @@ add_executable(unittests
   # Disabled in order to not waste AWS API credits.
   # aws/dynamodb_db.cc
 
-  cpp/move_if.cc
-  cpp/typed_struct.cc
+  cpp/test_cpp_move_if.cc
+  cpp/test_cpp_typed_struct.cc
 
-  restsdk/client_server.cc
-  restsdk/json_common_conversions.cc
-  restsdk/json_conversions_facades.cc
-  restsdk/rest_request_receiver.cc
-  restsdk/rest_request_sender.cc
+  restsdk/test_restsdk_client_server.cc
+  restsdk/test_restsdk_json_common_conversions.cc
+  restsdk/test_restsdk_json_conversions_facades.cc
+  restsdk/test_restsdk_rest_request_receiver.cc
+  restsdk/test_restsdk_rest_request_sender.cc
 
-  sqlite/sqlite_db.cc
+  sqlite/test_sqlite_db.cc
 
   # stonks/stonks_db.cc
 )
@@ -28,11 +28,6 @@ add_executable(unittests
 # Disables IWYU.
 set_property(TARGET unittests
   PROPERTY CXX_INCLUDE_WHAT_YOU_USE
-)
-
-target_include_directories(unittests
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/aliases
 )
 
 target_link_libraries(unittests
