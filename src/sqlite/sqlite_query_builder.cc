@@ -62,7 +62,7 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
 
   if (has_primary_keys) {
     query += "PRIMARY KEY(";
-    
+
     auto primary_key_columns =
         table_definition.columns | ranges::views::filter(&IsColumnPrimaryKey);
 
@@ -148,7 +148,7 @@ auto QueryBuilder::BuildSelectQuery(const sqldb::Table &table,
   query += cpp::Format(R"( FROM "{}")", table.value);
 
   if (!where_clause.empty()) {
-    query += cpp::Format(" {}", where_clause.data());
+    query += cpp::Format(" {}", where_clause);
   }
 
   Ensures(!query.empty());

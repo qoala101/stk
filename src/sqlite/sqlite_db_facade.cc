@@ -64,8 +64,8 @@ void DbFacade::CopyDataFrom(sqlite3 &other_db) const {
   const auto result_code = sqlite3_backup_finish(backup);
 
   if (result_code != SQLITE_OK) {
-    throw cpp::MessageException{cpp::Format(
-        "Couldn't copy data from other DB: {}", std::to_string(result_code))};
+    throw cpp::MessageException{
+        cpp::Format("Couldn't copy data from other DB: {}", result_code)};
   }
 }
 
@@ -98,9 +98,8 @@ void DbFacade::EnableForeignKeys() const {
                                         nullptr, nullptr, nullptr);
 
   if (result_code != SQLITE_OK) {
-    throw cpp::MessageException{
-        cpp::Format("Couldn't set foreign_keys pragma on new DB: {}",
-                    std::to_string(result_code))};
+    throw cpp::MessageException{cpp::Format(
+        "Couldn't set foreign_keys pragma on new DB: {}", result_code)};
   }
 }
 

@@ -1,7 +1,6 @@
 #include "aws_dynamodb_sync_db_proxy.h"
 
 #include <aws/core/utils/Outcome.h>
-#include <aws/core/utils/memory/stl/AWSString.h>
 #include <aws/dynamodb/DynamoDBClient.h>
 #include <aws/dynamodb/DynamoDBErrors.h>
 #include <aws/dynamodb/model/DescribeTableRequest.h>
@@ -12,7 +11,6 @@
 #include <functional>
 #include <gsl/assert>
 #include <optional>
-#include <string>
 #include <utility>
 
 #include "aws_dynamodb_async_db.h"

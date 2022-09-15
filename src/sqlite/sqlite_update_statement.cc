@@ -2,7 +2,6 @@
 
 #include <sqlite3.h>
 
-#include <string>
 #include <utility>
 
 #include "cpp_format.h"

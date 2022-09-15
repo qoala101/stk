@@ -6,6 +6,7 @@
 #include <gsl/assert>
 #include <gsl/util>
 #include <string>
+#include <utility>
 
 #include "cpp_format.h"
 #include "cpp_message_exception.h"

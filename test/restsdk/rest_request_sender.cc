@@ -9,6 +9,7 @@
 #include <string>
 #include <string_view>
 
+#include "cpp_format.h"
 #include "cpp_polymorphic_value.h"
 #include "gtest/gtest_pred_impl.h"
 #include "network_i_json.h"
@@ -61,7 +62,7 @@ auto ConvertToJson(const AvgPrice &value) -> cpp::Pv<IJson> {
   // clang-format off
   return BuildJsonFrom(
     "mins", value.mins,
-    "price", std::to_string(value.price)
+    "price", cpp::Format("{}", value.price)
   );
   // clang-format on
 }
