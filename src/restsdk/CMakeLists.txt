@@ -1,7 +1,6 @@
 find_package(cpprestsdk REQUIRED)
 find_package(magic_enum REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
-find_package(fmt REQUIRED)
 
 add_library(librestsdk
   restsdk_json_basic_conversions.cc
@@ -25,5 +24,4 @@ target_link_libraries(librestsdk
   PRIVATE cpprestsdk::cpprest
   PRIVATE magic_enum::magic_enum
   PRIVATE Microsoft.GSL::GSL
-  PRIVATE fmt::fmt
 )

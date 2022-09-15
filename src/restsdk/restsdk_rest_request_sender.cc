@@ -7,17 +7,18 @@
 #include <cpprest/http_msg.h>
 #include <cpprest/json.h>
 #include <cpprest/uri_builder.h>
-#include <fmt/core.h>
 #include <polymorphic_value.h>
 #include <pplx/pplxtasks.h>
-#include <magic_enum.hpp>
+
 #include <gsl/assert>
+#include <magic_enum.hpp>
 #include <map>
 #include <memory>
 #include <string>
 #include <utility>
 
 #include "cpp_polymorphic_value.h"
+#include "log_format.h"
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_types.h"
@@ -131,7 +132,7 @@ auto RestRequestSender::SendRequestAndGetResponse(
     network::RestRequest request) const -> network::RestResponse {
   const auto full_uri = FetchWebUriFromRequest(request);
 
-  logger_->LogImportantEvent(fmt::format(
+  logger_->LogImportantEvent(log::Format(
       "Sending {} request to {}",
       magic_enum::enum_name(request.endpoint.method), full_uri.to_string()));
 
