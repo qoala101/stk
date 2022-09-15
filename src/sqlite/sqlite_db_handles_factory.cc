@@ -30,8 +30,8 @@ auto DbHandlesFactory::CreateInMemoryDb() const -> SqliteDbHandle {
   const auto result_code = sqlite3_open(":memory:", &in_memory_db);
 
   if ((in_memory_db == nullptr) || (result_code != SQLITE_OK)) {
-    throw cpp::MessageException{"Couldn't create in memory DB: " +
-                                std::to_string(result_code)};
+    throw cpp::MessageException{
+        cpp::Format("Couldn't create in memory DB: {}", result_code)};
   }
 
   DbFacade{logger_, cpp::AssumeNn(in_memory_db)}.EnableForeignKeys();

@@ -11,7 +11,7 @@
 namespace stonks::app::pnd::endpoints {
 auto SelectItem() -> const network::TypedEndpoint& {
   static const auto endpoint = network::TypedEndpoint{
-      .endpoint = {.method = network::Method::kGet, .uri = "/SelectItem"},
+      .endpoint = {.method = network::Method::kGet, .uri = {"/SelectItem"}},
       .expected_types = {
           .params = {{"table", network::ExpectedType<nosqldb::Table>()},
                      {"key", network::ExpectedType<nosqldb::Key>()}},
@@ -22,7 +22,7 @@ auto SelectItem() -> const network::TypedEndpoint& {
 auto InsertOrUpdateItem() -> const network::TypedEndpoint& {
   static const auto endpoint = network::TypedEndpoint{
       .endpoint = {.method = network::Method::kPost,
-                   .uri = "/InsertOrUpdateItem"},
+                   .uri = {"/InsertOrUpdateItem"}},
       .expected_types = {
           .params = {{"table", network::ExpectedType<nosqldb::Table>()},
                      {"item", network::ExpectedType<nosqldb::Item>()}}}};

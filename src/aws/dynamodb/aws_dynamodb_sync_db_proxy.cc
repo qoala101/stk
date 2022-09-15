@@ -16,6 +16,7 @@
 #include <utility>
 
 #include "aws_dynamodb_async_db.h"
+#include "cpp_format.h"
 #include "cpp_message_exception.h"
 #include "cpp_optional.h"
 #include "nosqldb_types.h"
@@ -82,8 +83,9 @@ auto SyncDbProxy::GetTableStatus(const nosqldb::Table &table) const
       return std::nullopt;
     }
 
-    throw cpp::MessageException{"Couldn't get table status " + table.value +
-                                ": " + result.GetError().GetMessage()};
+    throw cpp::MessageException{cpp::Format("Couldn't get table status {}: {}",
+                                            table.value,
+                                            result.GetError().GetMessage())};
   }
 
   return result.GetResult().GetTable().GetTableStatus();

@@ -28,7 +28,7 @@ TEST(DynamoDb, Test1) {
   tables_interface->CreateTableIfNotExists(kTable);
 
   const auto item1 =
-      stonks::nosqldb::Item{.key = "TestKey1", .value = "TestValue1"};
+      stonks::nosqldb::Item{.key = {"TestKey1"}, .value = "TestValue1"};
   ASSERT_EQ(items_interface->SelectItem(kTable, item1.key), std::nullopt);
 
   items_interface->InsertOrUpdateItem(kTable, item1);
@@ -40,7 +40,7 @@ TEST(DynamoDb, Test1) {
   ASSERT_EQ(items_interface->SelectItem(kTable, item1.key), item1_new_value);
 
   const auto item2 =
-      stonks::nosqldb::Item{.key = "TestKey2", .value = "TestValue2"};
+      stonks::nosqldb::Item{.key = {"TestKey2"}, .value = "TestValue2"};
   items_interface->InsertOrUpdateItem(kTable, item2);
   ASSERT_EQ(items_interface->SelectItem(kTable, item2.key), item2);
 

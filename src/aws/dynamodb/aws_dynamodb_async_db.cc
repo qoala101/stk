@@ -24,6 +24,7 @@
 #include <utility>
 
 #include "aws_api_handle.h"
+#include "cpp_format.h"
 #include "cpp_message_exception.h"
 #include "not_null.hpp"
 
@@ -61,8 +62,9 @@ void AsyncDb::CreateTableIfNotExists(const nosqldb::Table &table) {
   const auto result = db_client_->CreateTable(request);
 
   if (!result.IsSuccess()) {
-    throw cpp::MessageException{"Couldn't create table " + table.value + ": " +
-                                result.GetError().GetMessage()};
+    throw cpp::MessageException{cpp::Format("Couldn't create table {}: {}",
+                                            table.value,
+                                            result.GetError().GetMessage())};
   }
 }
 
@@ -79,8 +81,9 @@ void AsyncDb::DropTableIfExists(const nosqldb::Table &table) {
       return;
     }
 
-    throw cpp::MessageException{"Couldn't drop table " + table.value + ": " +
-                                result.GetError().GetMessage()};
+    throw cpp::MessageException{cpp::Format("Couldn't drop table {}: {}",
+                                            table.value,
+                                            result.GetError().GetMessage())};
   }
 }
 
@@ -96,9 +99,9 @@ auto AsyncDb::SelectItem(const nosqldb::Table &table,
   const auto &result = db_client_->GetItem(request);
 
   if (!result.IsSuccess()) {
-    throw cpp::MessageException{"Couldn't select item " + key.value +
-                                " from table " + table.value + ": " +
-                                result.GetError().GetMessage()};
+    throw cpp::MessageException{
+        cpp::Format("Couldn't select item {} from table {}: ", key.value,
+                    table.value, result.GetError().GetMessage())};
   }
 
   const auto &result_map = result.GetResult().GetItem();
@@ -127,9 +130,9 @@ void AsyncDb::InsertOrUpdateItem(const nosqldb::Table &table,
   const auto &result = db_client_->UpdateItem(request);
 
   if (!result.IsSuccess()) {
-    throw cpp::MessageException{"Couldn't insert or update item " +
-                                item.key.value + " in table " + table.value +
-                                ": " + result.GetError().GetMessage()};
+    throw cpp::MessageException{cpp::Format(
+        "Couldn't insert or update item {} in table {}: {}", item.key.value,
+        table.value, result.GetError().GetMessage())};
   }
 }
 
@@ -144,9 +147,9 @@ void AsyncDb::DeleteItemIfExists(const nosqldb::Table &table,
   const auto &result = db_client_->DeleteItem(request);
 
   if (!result.IsSuccess()) {
-    throw cpp::MessageException{"Couldn't delete item " + key.value +
-                                " from table " + table.value + ": " +
-                                result.GetError().GetMessage()};
+    throw cpp::MessageException{
+        cpp::Format("Couldn't delete item {} from table {}: {}", key.value,
+                    table.value, result.GetError().GetMessage())};
   }
 }
 

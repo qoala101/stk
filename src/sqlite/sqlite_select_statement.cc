@@ -10,6 +10,7 @@
 #include <string>
 #include <utility>
 
+#include "cpp_format.h"
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "sqldb_types.h"
@@ -73,8 +74,8 @@ auto SelectStatement::Execute(std::vector<sqldb::Value> params) const
         return result_rows;
 
       default:
-        throw cpp::MessageException{"Unexpected select statement result: " +
-                                    std::to_string(result_code)};
+        throw cpp::MessageException{
+            cpp::Format("Unexpected select statement result: {}", result_code)};
     }
   }
 }

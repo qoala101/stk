@@ -34,13 +34,13 @@ TEST(SqliteDb, CreateAndDropTable) {
   const auto table_definition = stonks::sqldb::TableDefinition{
       .table = table,
       .columns = {stonks::sqldb::ColumnDefinition{
-                      .column = "IntTrue",
+                      .column = {"IntTrue"},
                       .data_type = stonks::sqldb::DataType::kInt,
                       .primary_key = true,
                       .auto_increment = true,
                       .unique = true},
                   stonks::sqldb::ColumnDefinition{
-                      .column = "TextFalse",
+                      .column = {"TextFalse"},
                       .data_type = stonks::sqldb::DataType::kString}}};
   db->PrepareStatement(
         query_builder->BuildCreateTableIfNotExistsQuery(table_definition))
@@ -58,13 +58,13 @@ const auto kAssetTableDefinition = stonks::sqldb::TableDefinition{
     .table = stonks::sqldb::Table{"Asset"},
     .columns = {
         stonks::sqldb::ColumnDefinition{
-            .column = "id",
+            .column = {"id"},
             .data_type = stonks::sqldb::DataType::kInt64,
             .primary_key = true,
             .auto_increment = true,
             .unique = true},
         stonks::sqldb::ColumnDefinition{
-            .column = "name",
+            .column = {"name"},
             .data_type = stonks::sqldb::DataType::kString,
             .unique = true},
     }};
@@ -107,36 +107,37 @@ TEST(SqliteDb, InsertNull) {
 }
 
 const auto kSymbolTableDefinition = stonks::sqldb::TableDefinition{
-    .table = "Symbol",
+    .table = {"Symbol"},
     .columns = {stonks::sqldb::ColumnDefinition{
-                    .column = "id",
+                    .column = {"id"},
                     .data_type = stonks::sqldb::DataType::kInt64,
                     .primary_key = true,
                     .auto_increment = true,
                     .unique = true},
                 stonks::sqldb::ColumnDefinition{
-                    .column = "base_asset_id",
+                    .column = {"base_asset_id"},
                     .data_type = stonks::sqldb::DataType::kInt64,
-                    .foreign_key = stonks::sqldb::ForeignKey{.table = "Asset",
-                                                             .column = "id"}},
+                    .foreign_key = stonks::sqldb::ForeignKey{.table = {"Asset"},
+                                                             .column = {"id"}}},
                 stonks::sqldb::ColumnDefinition{
-                    .column = "quote_asset_id",
+                    .column = {"quote_asset_id"},
                     .data_type = stonks::sqldb::DataType::kInt64,
-                    .foreign_key = stonks::sqldb::ForeignKey{.table = "Asset",
-                                                             .column = "id"}}}};
+                    .foreign_key = stonks::sqldb::ForeignKey{
+                        .table = {"Asset"}, .column = {"id"}}}}};
 
 const auto kSymbolPriceTableDefinition = stonks::sqldb::TableDefinition{
-    .table = "SymbolPrice",
+    .table = {"SymbolPrice"},
     .columns = {
         stonks::sqldb::ColumnDefinition{
-            .column = "symbol_id",
+            .column = {"symbol_id"},
             .data_type = stonks::sqldb::DataType::kInt64,
-            .foreign_key =
-                stonks::sqldb::ForeignKey{.table = "Symbol", .column = "id"}},
+            .foreign_key = stonks::sqldb::ForeignKey{.table = {"Symbol"},
+                                                     .column = {"id"}}},
         stonks::sqldb::ColumnDefinition{
-            .column = "time", .data_type = stonks::sqldb::DataType::kInt64},
+            .column = {"time"}, .data_type = stonks::sqldb::DataType::kInt64},
         stonks::sqldb::ColumnDefinition{
-            .column = "price", .data_type = stonks::sqldb::DataType::kDouble}}};
+            .column = {"price"},
+            .data_type = stonks::sqldb::DataType::kDouble}}};
 
 TEST(SqliteDb, ForeignKey) {
   db->PrepareStatement(
@@ -167,17 +168,17 @@ TEST(SqliteDb, ForeignKey) {
 TEST(SqliteDb, SelectJoin) {
   const auto cell_definitions = std::vector<stonks::sqldb::CellDefinition>{
       stonks::sqldb::CellDefinition{
-          .column = "base_asset",
+          .column = {"base_asset"},
           .data_type = stonks::sqldb::DataType::kString},
       stonks::sqldb::CellDefinition{
-          .column = "quote_asset",
+          .column = {"quote_asset"},
           .data_type = stonks::sqldb::DataType::kString}};
 
-  auto select_statement = db->PrepareStatement({
-      "SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS quote_asset "
-      "FROM Symbol "
-      "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
-      "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id=QuoteAsset.id;"},
+  auto select_statement = db->PrepareStatement(
+      {"SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS quote_asset "
+       "FROM Symbol "
+       "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
+       "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id=QuoteAsset.id;"},
       Rd{cell_definitions});
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
@@ -216,7 +217,7 @@ TEST(SqliteDb, FileWriteAndRead) {
 TEST(SqliteDb, CascadeForeignKeyDelete) {
   db->PrepareStatement(query_builder_facade->Delete()
                            .FromTable(kAssetTableDefinition.table)
-                           .Where("Asset.name = \"USDT\"")
+                           .Where(R"(Asset.name = "USDT")")
                            .Build())
       ->Execute();
 

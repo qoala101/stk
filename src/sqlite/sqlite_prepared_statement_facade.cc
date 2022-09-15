@@ -7,6 +7,7 @@
 #include <gsl/util>
 #include <string>
 
+#include "cpp_format.h"
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 
@@ -45,9 +46,8 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
   }
 
   if (result_code != SQLITE_OK) {
-    throw cpp::MessageException{
-        "Couldn't bind parameter to prepared statement: " +
-        std::to_string(result_code)};
+    throw cpp::MessageException{cpp::Format(
+        "Couldn't bind parameter to prepared statement: {}", result_code)};
   }
 }
 
@@ -91,8 +91,8 @@ void PreparedStatementFacade::Reset() {
   const auto result_code = sqlite3_reset(sqlite_statement_);
 
   if (result_code != SQLITE_OK) {
-    throw cpp::MessageException{"Couldn't reset prepared statement: " +
-                                std::to_string(result_code)};
+    throw cpp::MessageException{
+        cpp::Format("Couldn't reset prepared statement: {}", result_code)};
   }
 }
 
@@ -134,8 +134,8 @@ void PreparedStatementFacade::Finalize() {
   const auto result_code = sqlite3_finalize(sqlite_statement_);
 
   if (result_code != SQLITE_OK) {
-    throw cpp::MessageException{"Couldn't finalize prepared statement: " +
-                                std::to_string(result_code)};
+    throw cpp::MessageException{
+        cpp::Format("Couldn't finalize prepared statement: {}", result_code)};
   }
 
   sqlite_statement_ = nullptr;

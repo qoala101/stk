@@ -64,8 +64,8 @@ void DbFacade::CopyDataFrom(sqlite3 &other_db) const {
   const auto result_code = sqlite3_backup_finish(backup);
 
   if (result_code != SQLITE_OK) {
-    throw cpp::MessageException{"Couldn't copy data from other DB: " +
-                                std::to_string(result_code)};
+    throw cpp::MessageException{cpp::Format(
+        "Couldn't copy data from other DB: {}", std::to_string(result_code))};
   }
 }
 
@@ -98,8 +98,9 @@ void DbFacade::EnableForeignKeys() const {
                                         nullptr, nullptr, nullptr);
 
   if (result_code != SQLITE_OK) {
-    throw cpp::MessageException{"Couldn't set foreign_keys pragma on new DB: " +
-                                std::to_string(result_code)};
+    throw cpp::MessageException{
+        cpp::Format("Couldn't set foreign_keys pragma on new DB: {}",
+                    std::to_string(result_code))};
   }
 }
 
@@ -110,7 +111,8 @@ void DbFacade::Close() {
   const auto result_code = sqlite3_close(sqlite_db_);
 
   if (result_code != SQLITE_OK) {
-    throw cpp::MessageException{"Couldn't close DB from " + file_name};
+    throw cpp::MessageException{
+        cpp::Format("Couldn't close DB from {}", file_name)};
   }
 
   logger_->LogImportantEvent(cpp::Format("Closed DB from {}", file_name));

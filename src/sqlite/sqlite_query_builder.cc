@@ -62,6 +62,7 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
 
   if (has_primary_keys) {
     query += "PRIMARY KEY(";
+    
     auto primary_key_columns =
         table_definition.columns | ranges::views::filter(&IsColumnPrimaryKey);
 
