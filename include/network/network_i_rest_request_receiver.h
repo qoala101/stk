@@ -19,7 +19,7 @@ class IRestRequestReceiver {
    * @brief Start receiving REST requests on the specified URI
    * and forwarding them to the handler.
    */
-  virtual void Receive(std::string local_uri,
+  virtual void Receive(Uri local_uri,
                        cpp::NnUp<IRestRequestHandler> handler) = 0;
 };
 }  // namespace stonks::network

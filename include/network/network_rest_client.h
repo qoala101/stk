@@ -1,12 +1,11 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_CLIENT_H_
 #define STONKS_NETWORK_NETWORK_REST_CLIENT_H_
 
-#include <string>
-
 #include "cpp_not_null.h"
 #include "network_i_rest_request_sender.h"
 #include "network_rest_client_request_builder.h"
 #include "network_typed_endpoint.h"
+#include "network_types.h"
 
 namespace stonks::network {
 /**
@@ -15,11 +14,10 @@ namespace stonks::network {
 class RestClient {
  public:
   /**
-   * @param base_uri Base resource URI.
    * @param request_sender Executes REST requests.
+   * @param base_uri Base resource URI.
    */
-  RestClient(cpp::NnSp<IRestRequestSender> request_sender,
-             std::string base_uri);
+  RestClient(cpp::NnSp<IRestRequestSender> request_sender, Uri base_uri);
 
   /**
    * @brief Creates request builder which provides a further API for request
@@ -31,7 +29,7 @@ class RestClient {
 
  private:
   cpp::NnSp<IRestRequestSender> request_sender_;
-  std::string base_uri_{};
+  Uri base_uri_{};
 };
 }  // namespace stonks::network
 

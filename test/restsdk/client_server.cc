@@ -42,7 +42,7 @@
 #include "test_restsdk_injector.h"
 
 namespace {
-const auto kBaseUri = "http://localhost:6506/Entity";
+const auto kBaseUri = stonks::network::Uri{"http://localhost:6506/Entity"};
 const auto kIndexOutOfBoundsMessage = "Index out of bounds";
 
 class EntityInterface {
@@ -80,7 +80,7 @@ class EntityServer {
       -> stonks::network::TypedEndpoint {
     return stonks::network::TypedEndpoint{
         .endpoint = {.method = stonks::network::Method::kPost,
-                     .uri = "/PushSymbol"},
+                     .uri = {"/PushSymbol"}},
         .expected_types = {
             .body = stonks::network::ExpectedType<stonks::SymbolName>()}};
   }
@@ -89,7 +89,7 @@ class EntityServer {
       -> stonks::network::TypedEndpoint {
     return stonks::network::TypedEndpoint{
         .endpoint = {.method = stonks::network::Method::kGet,
-                     .uri = "/GetSymbol"},
+                     .uri = {"/GetSymbol"}},
         .expected_types = {
             .params = {{"index", stonks::network::ExpectedType<int>()}},
             .result = stonks::network::ExpectedType<stonks::SymbolName>()}};
@@ -99,15 +99,15 @@ class EntityServer {
       -> stonks::network::TypedEndpoint {
     return stonks::network::TypedEndpoint{
         .endpoint = {.method = stonks::network::Method::kGet,
-                     .uri = "/GetSize"},
+                     .uri = {"/GetSize"}},
         .expected_types = {.result = stonks::network::ExpectedType<int>()}};
   }
 
-  explicit EntityServer(std::string_view base_uri)
+  explicit EntityServer(stonks::network::Uri base_uri)
       : request_receiver_{
             test::restsdk::Injector()
                 .create<stonks::network::RestServer>()
-                .On(base_uri.data())
+                .On(std::move(base_uri))
                 .Handling(PushSymbolEndpointDesc(),
                           std::bind_front(
                               &EntityServer::PushSymbolEndpointHandler, this))
@@ -144,7 +144,7 @@ class EntityServer {
 
 class EntityClient : public EntityInterface {
  public:
-  explicit EntityClient(std::string base_uri)
+  explicit EntityClient(stonks::network::Uri base_uri)
       : client_{
             test::restsdk::Injector()
                 .create<

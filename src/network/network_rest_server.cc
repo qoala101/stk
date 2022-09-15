@@ -16,7 +16,7 @@ RestServer::RestServer(
     cpp::NnSp<cpp::di::IFactory<IRestRequestReceiver>> request_receiver_factory)
     : request_receiver_factory_{std::move(request_receiver_factory)} {}
 
-auto RestServer::On(std::string base_uri) -> RestServer& {
+auto RestServer::On(Uri base_uri) -> RestServer& {
   Expects(!base_uri_.has_value());
   base_uri_.emplace(std::move(base_uri));
   Ensures(base_uri_.has_value());

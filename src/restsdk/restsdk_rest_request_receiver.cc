@@ -64,7 +64,7 @@ namespace {
 [[nodiscard]] auto FetchEndpoint(const web::http::http_request &request)
     -> network::Endpoint {
   return {.method = NetworkMethodFromHttpMethod(request.method()),
-          .uri = request.relative_uri().path()};
+          .uri = {request.relative_uri().path()}};
 }
 
 [[nodiscard]] auto FetchParams(const std::string &request_query)
@@ -144,7 +144,7 @@ auto RestRequestReceiver::operator=(RestRequestReceiver &&) noexcept
 RestRequestReceiver::~RestRequestReceiver() = default;
 
 void RestRequestReceiver::Receive(
-    std::string local_uri, cpp::NnUp<network::IRestRequestHandler> handler) {
+    network::Uri local_uri, cpp::NnUp<network::IRestRequestHandler> handler) {
   Expects(handler_ == nullptr);
   Expects(http_listener_ == nullptr);
 
@@ -152,7 +152,7 @@ void RestRequestReceiver::Receive(
 
   http_listener_ =
       cpp::MakeUp<web::http::experimental::listener::http_listener>(
-          std::move(local_uri));
+          std::move(local_uri.value));
   http_listener_->support(
       std::bind_front(&RestRequestReceiver::HandleHttpRequest, this));
   http_listener_->open().wait();

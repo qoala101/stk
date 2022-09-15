@@ -2,6 +2,7 @@
 
 #include <gsl/assert>
 #include <string>
+#include <type_traits>
 #include <utility>
 
 #include "network_types.h"
@@ -12,8 +13,7 @@ auto RestRequestBuilder::WithMethod(Method method) -> RestRequestBuilder& {
   return *this;
 }
 
-auto RestRequestBuilder::WithBaseUri(std::string base_uri)
-    -> RestRequestBuilder& {
+auto RestRequestBuilder::WithBaseUri(Uri base_uri) -> RestRequestBuilder& {
   Expects(!uri_is_set_);
   request_.endpoint.uri = std::move(base_uri);
   uri_is_set_ = true;
@@ -21,16 +21,15 @@ auto RestRequestBuilder::WithBaseUri(std::string base_uri)
   return *this;
 }
 
-auto RestRequestBuilder::AppendUri(std::string_view uri)
-    -> RestRequestBuilder& {
+auto RestRequestBuilder::AppendUri(Uri uri) -> RestRequestBuilder& {
   Expects(uri_is_set_);
 
-  if (!uri.starts_with("/")) {
-    request_.endpoint.uri += "/";
+  if (!uri.value.starts_with("/")) {
+    request_.endpoint.uri.value += "/";
   }
 
-  request_.endpoint.uri += uri.data();
-  Ensures(!request_.endpoint.uri.empty());
+  request_.endpoint.uri.value += std::move(uri);
+  Ensures(!request_.endpoint.uri.value.empty());
   return *this;
 }
 

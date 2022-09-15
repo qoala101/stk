@@ -70,16 +70,17 @@ auto ConvertToJson(const AvgPrice &value) -> cpp::Pv<IJson> {
 namespace {
 TEST(RestRequestSender, AppendUri) {
   const auto request = stonks::network::RestRequestBuilder{}
-                           .WithBaseUri("base_uri")
-                           .AppendUri("appended_uri")
+                           .WithBaseUri({"base_uri"})
+                           .AppendUri({"appended_uri"})
                            .Build();
-  EXPECT_EQ(request.endpoint.uri, "base_uri/appended_uri");
+  EXPECT_EQ(request.endpoint.uri,
+            stonks::network::Uri{"base_uri/appended_uri"});
 }
 
 TEST(RestRequestSender, ParameterTypesToString) {
   const auto request =
       stonks::network::RestRequestBuilder{}
-          .WithBaseUri("")
+          .WithBaseUri({})
           .AddParam("string", "abc")
           // .AddParam("milliseconds", std::chrono::milliseconds{123456789})
           .AddParam("int", 123456789)
@@ -129,8 +130,8 @@ TEST(RestRequestSender, ParameterTypesToString) {
 
 TEST(RestRequestSender, SendRequest) {
   const auto request = stonks::network::RestRequestBuilder{}
-                           .WithBaseUri("https://api.binance.com/api/v3")
-                           .AppendUri("avgPrice")
+                           .WithBaseUri({"https://api.binance.com/api/v3"})
+                           .AppendUri({"avgPrice"})
                            .AddParam("symbol", "BTCUSDT")
                            .Build();
   const auto sender =

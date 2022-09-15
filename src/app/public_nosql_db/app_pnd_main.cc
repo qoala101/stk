@@ -6,6 +6,7 @@
 
 #include "app_injectors.h"
 #include "app_pnd_items_interface_server.h"
+#include "network_types.h"
 
 auto main(int /*unused*/, char* /*unused*/[]) -> int {
   std::cout << "Started: public_nosql_db\n";
@@ -16,7 +17,7 @@ auto main(int /*unused*/, char* /*unused*/[]) -> int {
     stonks::app::injectors::MakeNosqldbInjector(),
     stonks::app::injectors::MakeLogInjector(),
 
-    boost::di::bind<std::string>.to("http://localhost:6506/Entity")
+    boost::di::bind<stonks::network::Uri>.to(stonks::network::Uri{"http://localhost:6506/Entity"})
   );
   // clang-format on
 

@@ -115,7 +115,7 @@ namespace {
 
 [[nodiscard]] auto FetchWebUriFromRequest(const network::RestRequest &request)
     -> web::uri {
-  auto uri_builder = web::http::uri_builder{request.endpoint.uri};
+  auto uri_builder = web::http::uri_builder{request.endpoint.uri.value};
 
   for (const auto &[key, value] : request.params) {
     uri_builder.append_query(key, ConvertToRequestParam(*value));

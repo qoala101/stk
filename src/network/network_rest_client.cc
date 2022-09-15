@@ -1,5 +1,6 @@
 #include "network_rest_client.h"
 
+#include <string>
 #include <utility>
 
 #include "cpp_expose_private_constructors.h"
@@ -11,13 +12,13 @@
 
 namespace stonks::network {
 RestClient::RestClient(cpp::NnSp<IRestRequestSender> request_sender,
-                       std::string base_uri)
+                       Uri base_uri)
     : request_sender_{std::move(request_sender)},
       base_uri_{std::move(base_uri)} {}
 
 auto RestClient::Call(TypedEndpoint endpoint) const
     -> rest_client::RequestBuilder {
-  endpoint.endpoint.uri = base_uri_ + endpoint.endpoint.uri;
+  endpoint.endpoint.uri = {base_uri_.value + endpoint.endpoint.uri.value};
 
   auto decorated_sender = cpp::MakeNnUp<ResponseExceptionHandler>(
       cpp::MakeNnUp<TypedEndpointSender>(std::move(endpoint.expected_types),

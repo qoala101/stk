@@ -1,13 +1,12 @@
 #ifndef STONKS_RESTSDK_RESTSDK_REST_REQUEST_RECEIVER_H_
 #define STONKS_RESTSDK_RESTSDK_REST_REQUEST_RECEIVER_H_
 
-#include <string>
-
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
+#include "log_i_logger.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
-#include "log_i_logger.h"
+#include "network_types.h"
 
 namespace web::http {
 class http_request;
@@ -36,7 +35,7 @@ class RestRequestReceiver : public network::IRestRequestReceiver {
   /**
    * @copydoc network::IRestRequestReceiver::Receive
    */
-  void Receive(std::string local_uri,
+  void Receive(network::Uri local_uri,
                cpp::NnUp<network::IRestRequestHandler> handler) override;
 
  private:

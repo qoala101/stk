@@ -65,7 +65,7 @@ TEST(RestRequestReceiver, SendRequest) {
         stonks::network::RestRequest request) const
         -> stonks::network::RestResponse override {
       EXPECT_EQ(request.endpoint.method, stonks::network::Method::kGet);
-      EXPECT_EQ(request.endpoint.uri, "/Test");
+      EXPECT_EQ(request.endpoint.uri, stonks::network::Uri{"/Test"});
       return {stonks::network::Status::kOk,
               stonks::network::ConvertToJson(SymbolPrice{
                   .symbol = stonks::network::ParseFromJson<stonks::SymbolName>(
@@ -79,15 +79,15 @@ TEST(RestRequestReceiver, SendRequest) {
     auto receiver =
         test::restsdk::Injector()
             .create<stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
-    receiver->Receive("http://localhost:6506",
+    receiver->Receive({"http://localhost:6506"},
                       stonks::cpp::MakeNnUp<Handler>());
     return receiver;
   }();
 
   const auto request = stonks::network::RestRequestBuilder{}
                            .WithMethod(stonks::network::Method::kGet)
-                           .WithBaseUri("http://localhost:6506")
-                           .AppendUri("Test")
+                           .WithBaseUri({"http://localhost:6506"})
+                           .AppendUri({"Test"})
                            .WithBody("BTCUSDT")
                            .AddParam("price", 123.456)
                            .Build();

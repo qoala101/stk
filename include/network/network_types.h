@@ -7,10 +7,16 @@
 
 #include "cpp_optional.h"
 #include "cpp_polymorphic_value.h"
+#include "cpp_typed_struct.h"
 #include "network_enums.h"
 #include "network_i_json.h"
 
 namespace stonks::network {
+/**
+ * @brief Full or partial HTTP URI.
+ */
+struct Uri : public cpp::TypedStruct<std::string> {};
+
 /**
  * @brief REST response body.
  */
@@ -41,7 +47,7 @@ using Body = cpp::Opt<cpp::Pv<IJson>>;
  */
 struct Endpoint {
   Method method{};
-  std::string uri{};
+  Uri uri{};
 
  private:
   [[nodiscard]] friend auto operator==(const Endpoint &, const Endpoint &)

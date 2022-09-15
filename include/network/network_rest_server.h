@@ -2,7 +2,6 @@
 #define STONKS_NETWORK_NETWORK_REST_SERVER_H_
 
 #include <map>
-#include <string>
 #include <utility>
 
 #include "cpp_di_factory.h"
@@ -26,7 +25,7 @@ class RestServer {
   /**
    * @brief Sets base URI on which requests are to be handled.
    */
-  auto On(std::string base_uri) -> RestServer &;
+  auto On(Uri base_uri) -> RestServer &;
 
   /**
    * @brief Registers handler for particular endpoint.
@@ -53,7 +52,7 @@ class RestServer {
       -> RestServer &;
 
   cpp::NnSp<cpp::di::IFactory<IRestRequestReceiver>> request_receiver_factory_;
-  cpp::Opt<std::string> base_uri_{};
+  cpp::Opt<Uri> base_uri_{};
   std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
 }  // namespace stonks::network

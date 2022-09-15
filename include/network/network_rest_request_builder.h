@@ -2,7 +2,6 @@
 #define STONKS_NETWORK_NETWORK_REST_REQUEST_BUILDER_H_
 
 #include <string>
-#include <string_view>
 #include <utility>
 
 #include "network_concepts.h"  // IWYU pragma: keep
@@ -23,12 +22,12 @@ class RestRequestBuilder {
   /**
    * @brief Set beginning of URI which usually starts with http://.
    */
-  auto WithBaseUri(std::string base_uri) -> RestRequestBuilder &;
+  auto WithBaseUri(Uri base_uri) -> RestRequestBuilder &;
 
   /**
    * @brief Appends one more string to the base URI separated with /.
    */
-  auto AppendUri(std::string_view uri) -> RestRequestBuilder &;
+  auto AppendUri(Uri uri) -> RestRequestBuilder &;
 
   /**
    * @brief Adds parameter to be send by request.
