@@ -2,6 +2,8 @@
 #define STONKS_SQLITE_SQLITE_RAW_HANDLES_H_
 
 #include "cpp_not_null.h"
+#include "cpp_smart_pointers.h"
+#include "log_i_logger.h"
 
 class sqlite3;
 class sqlite3_stmt;
@@ -12,12 +14,34 @@ class sqlite3_stmt;
 
 namespace stonks::sqlite {
 namespace detail {
-struct SqliteDbCloser {
+class SqliteDbCloser {
+ public:
+  /**
+   * @remark Not for use. Added for not null to compile.
+   */
+  SqliteDbCloser() = default;
+
+  explicit SqliteDbCloser(cpp::NnSp<log::ILogger> logger);
+
   void operator()(sqlite3 *sqlite_db) noexcept;
+
+ private:
+  cpp::Sp<log::ILogger> logger_;
 };
 
-struct SqliteStatementFinalizer {
+class SqliteStatementFinalizer {
+ public:
+  /**
+   * @remark Not for use. Added for not null to compile.
+   */
+  SqliteStatementFinalizer() = default;
+
+  explicit SqliteStatementFinalizer(cpp::NnSp<log::ILogger> logger);
+
   void operator()(sqlite3_stmt *sqlite_statement) noexcept;
+
+ private:
+  cpp::Sp<log::ILogger> logger_;
 };
 }  // namespace detail
 

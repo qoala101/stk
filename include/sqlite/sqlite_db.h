@@ -4,6 +4,7 @@
 #include <string>
 
 #include "cpp_not_null.h"
+#include "log_i_logger.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
@@ -20,7 +21,8 @@ class Db : public sqldb::IDb {
   /**
    * @brief Creates wrapper for SQLite DB.
    */
-  explicit Db(cpp::NnSp<SqliteDbHandleVariant> sqlite_db_handle);
+  explicit Db(cpp::NnSp<log::ILogger> logger,
+              cpp::NnSp<SqliteDbHandleVariant> sqlite_db_handle);
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement

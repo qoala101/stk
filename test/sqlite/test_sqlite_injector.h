@@ -4,6 +4,7 @@
 #include <boost/di.hpp>
 
 #include "cpp_di_enable_not_null.h"
+#include "spdlog_logger.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"
 #include "sqlite_db.h"
@@ -19,8 +20,11 @@ namespace test::sqlite {
   static auto injector = make_injector(
     boost::di::bind<std::string>().to("sqlite_db_test.db"),
     boost::di::bind<std::string_view>().to("sqlite_db_test.db"),
+    boost::di::bind<stonks::log::ILogger>().to<stonks::spdlog::Logger>(),
+    stonks::cpp::di::EnableNn<stonks::cpp::Up<stonks::log::ILogger>>(),
+    stonks::cpp::di::EnableNn<stonks::cpp::Sp<stonks::log::ILogger>>(),
     boost::di::bind<stonks::sqlite::SqliteDbHandle>().to([](const auto &injector) {
-      return stonks::sqlite::db_handles_factory::LoadDbFromFileToMemory(injector.template create<std::string>());
+      return injector.template create<stonks::sqlite::DbHandlesFactory>().LoadDbFromFileToMemory(injector.template create<std::string_view>());
     }),
     boost::di::bind<stonks::sqlite::SqliteDbHandleVariant>().to([](const auto &injector) -> std::shared_ptr<stonks::sqlite::SqliteDbHandleVariant> {
       return std::make_shared<stonks::sqlite::SqliteDbHandleVariant>(injector.template create<stonks::sqlite::SqliteDbFileHandle>());

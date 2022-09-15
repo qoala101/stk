@@ -5,6 +5,8 @@
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_copy_const.h"
+#include "cpp_not_null.h"
+#include "log_i_logger.h"
 #include "sqlite_raw_handles.h"
 
 namespace stonks::sqlite {
@@ -17,7 +19,8 @@ class SqliteDbFileHandle {
    * @param file_path File from which SQLite DB was read
    * and where it's to be written.
    */
-  SqliteDbFileHandle(SqliteDbHandle sqlite_db_handle, std::string file_path);
+  SqliteDbFileHandle(cpp::NnSp<log::ILogger> logger,
+                     SqliteDbHandle sqlite_db_handle, std::string file_path);
 
   SqliteDbFileHandle(const SqliteDbFileHandle &) = delete;
   SqliteDbFileHandle(SqliteDbFileHandle &&) noexcept = default;
@@ -52,6 +55,7 @@ class SqliteDbFileHandle {
   [[nodiscard]] static auto GetSqliteDbImpl(This &t)
       -> cpp::CopyConst<This, sqlite3 &>;
 
+  cpp::NnSp<log::ILogger> logger_;
   SqliteDbHandle sqlite_db_handle_;
   std::string file_path_{};
 };

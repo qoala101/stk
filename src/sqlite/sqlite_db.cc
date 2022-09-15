@@ -5,7 +5,6 @@
 
 #include "cpp_not_null.h"
 #include "not_null.hpp"
-#include "sqldb_enums_to_string.h"  // IWYU pragma: keep
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqlite_db_facade.h"
@@ -15,9 +14,11 @@
 #include "sqlite_update_statement.h"
 
 namespace stonks::sqlite {
-Db::Db(cpp::NnSp<SqliteDbHandleVariant> sqlite_db_handle)
+Db::Db(cpp::NnSp<log::ILogger> logger,
+       cpp::NnSp<SqliteDbHandleVariant> sqlite_db_handle)
     : sqlite_db_handle_{std::move(sqlite_db_handle)},
-      sqlite_db_facade_{cpp::AssumeNn(&sqlite_db_handle_->GetSqliteDb())} {}
+      sqlite_db_facade_{std::move(logger),
+                        cpp::AssumeNn(&sqlite_db_handle_->GetSqliteDb())} {}
 
 auto Db::PrepareStatement(std::string query,
                           sqldb::RowDefinition result_definition)

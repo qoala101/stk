@@ -1,13 +1,10 @@
 #include "sqlite_prepared_statement_facade.h"
 
-#include <spdlog/logger.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <sqlite3.h>
 
 #include <cstdint>
 #include <gsl/assert>
 #include <gsl/util>
-#include <memory>
 #include <string>
 
 #include "cpp_message_exception.h"
@@ -15,12 +12,6 @@
 
 namespace stonks::sqlite {
 namespace {
-[[nodiscard]] auto Logger() -> spdlog::logger & {
-  static auto logger =
-      spdlog::stdout_color_mt("sqlite::PreparedStatementFacade");
-  return *logger;
-}
-
 void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
   Expects(index > 0);
 

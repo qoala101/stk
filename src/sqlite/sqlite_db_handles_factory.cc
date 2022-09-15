@@ -1,16 +1,14 @@
 #include "sqlite_db_handles_factory.h"
 
-#include <bits/exception.h>
 #include <fmt/core.h>
-#include <fmt/format.h>
-#include <spdlog/logger.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <sqlite3.h>
 
 #include <filesystem>
 #include <gsl/assert>
 #include <memory>
 #include <string>
+#include <type_traits>
+#include <utility>
 
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
@@ -18,15 +16,16 @@
 #include "sqlite_db_facade.h"
 #include "sqlite_raw_handles.h"
 
-namespace stonks::sqlite::db_handles_factory {
+namespace stonks::sqlite {
 namespace {
-[[nodiscard]] auto Logger() -> spdlog::logger & {
-  static auto logger = spdlog::stdout_color_mt("sqlite::ReadFromFile");
-  return *logger;
-}
+using NullableSqliteDbHandle =
+    std::decay_t<decltype(std::declval<SqliteDbHandle>().as_nullable())>;
 }  // namespace
 
-auto CreateInMemoryDb() -> SqliteDbHandle {
+DbHandlesFactory::DbHandlesFactory(cpp::NnSp<log::ILogger> logger)
+    : logger_{std::move(logger)} {}
+
+auto DbHandlesFactory::CreateInMemoryDb() const -> SqliteDbHandle {
   auto *in_memory_db = (sqlite3 *){};
   const auto result_code = sqlite3_open(":memory:", &in_memory_db);
 
@@ -35,12 +34,14 @@ auto CreateInMemoryDb() -> SqliteDbHandle {
                                 std::to_string(result_code)};
   }
 
-  DbFacade{cpp::AssumeNn(in_memory_db)}.EnableForeignKeys();
+  DbFacade{logger_, cpp::AssumeNn(in_memory_db)}.EnableForeignKeys();
 
-  return SqliteDbHandle{cpp::AssumeNn(in_memory_db)};
+  return {cpp::AssumeNn(
+      NullableSqliteDbHandle{in_memory_db, detail::SqliteDbCloser{logger_}})};
 }
 
-auto CreateHandleToFileDb(std::string_view file_path) -> SqliteDbHandle {
+auto DbHandlesFactory::CreateHandleToFileDb(std::string_view file_path) const
+    -> SqliteDbHandle {
   Expects(!file_path.empty());
 
   auto *file_db = (sqlite3 *){};
@@ -52,24 +53,27 @@ auto CreateHandleToFileDb(std::string_view file_path) -> SqliteDbHandle {
                                 std::to_string(result_code)};
   }
 
-  return SqliteDbHandle{cpp::AssumeNn(file_db)};
+  return {cpp::AssumeNn(
+      NullableSqliteDbHandle{file_db, detail::SqliteDbCloser{logger_}})};
 }
 
-auto LoadDbFromFileToMemory(std::string_view file_path) -> SqliteDbHandle {
+auto DbHandlesFactory::LoadDbFromFileToMemory(std::string_view file_path) const
+    -> SqliteDbHandle {
   Expects(!file_path.empty());
 
   auto in_memory_db_handle = CreateInMemoryDb();
 
   if (const auto db_is_new = !std::filesystem::exists(file_path)) {
-    Logger().info("Created new DB for {}", file_path);
+    logger_->LogImportantEvent(fmt::format("Created new DB for {}", file_path));
     return in_memory_db_handle;
   }
 
   auto file_db_handle = CreateHandleToFileDb(file_path.data());
-  DbFacade{cpp::AssumeNn(in_memory_db_handle.get())}.CopyDataFrom(
+  DbFacade{logger_, cpp::AssumeNn(in_memory_db_handle.get())}.CopyDataFrom(
       *file_db_handle);
 
-  Logger().info("Loaded DB from {}", file_path.data());
+  logger_->LogImportantEvent(
+      fmt::format("Loaded DB from {}", file_path.data()));
   return in_memory_db_handle;
 }
-}  // namespace stonks::sqlite::db_handles_factory
+}  // namespace stonks::sqlite

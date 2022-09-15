@@ -4,6 +4,8 @@
 #include <string_view>
 
 #include "cpp_not_null.h"
+#include "log_i_logger.h"
+#include "sqlite_db_handles_factory.h"
 #include "sqlite_raw_handles.h"
 
 namespace stonks::sqlite {
@@ -12,7 +14,8 @@ namespace stonks::sqlite {
  */
 class DbFacade {
  public:
-  explicit DbFacade(cpp::Nn<sqlite3 *> sqlite_db);
+  explicit DbFacade(cpp::NnSp<log::ILogger> logger,
+                    cpp::Nn<sqlite3 *> sqlite_db);
 
   /**
    * @brief Writes DB to file.
@@ -43,7 +46,9 @@ class DbFacade {
   void Close();
 
  private:
+  cpp::NnSp<log::ILogger> logger_;
   sqlite3 *sqlite_db_{};
+  DbHandlesFactory handles_factory_;
 };
 }  // namespace stonks::sqlite
 

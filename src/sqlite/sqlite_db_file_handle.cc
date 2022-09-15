@@ -1,26 +1,20 @@
 #include "sqlite_db_file_handle.h"
 
 #include <bits/exception.h>
-#include <spdlog/logger.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <memory>
 #include <utility>
 
 #include "cpp_not_null.h"
+#include "not_null.hpp"
 #include "sqlite_db_facade.h"
 
 namespace stonks::sqlite {
-namespace {
-[[nodiscard]] auto Logger() -> spdlog::logger& {
-  static auto logger = spdlog::stdout_color_mt("sqlite::RawHandles");
-  return *logger;
-}
-}  // namespace
-
-SqliteDbFileHandle::SqliteDbFileHandle(SqliteDbHandle sqlite_db_handle,
+SqliteDbFileHandle::SqliteDbFileHandle(cpp::NnSp<log::ILogger> logger,
+                                       SqliteDbHandle sqlite_db_handle,
                                        std::string file_path)
-    : sqlite_db_handle_{std::move(sqlite_db_handle)},
+    : logger_{std::move(logger)},
+      sqlite_db_handle_{std::move(sqlite_db_handle)},
       file_path_{std::move(file_path)} {}
 
 SqliteDbFileHandle::~SqliteDbFileHandle() {
@@ -31,9 +25,9 @@ SqliteDbFileHandle::~SqliteDbFileHandle() {
   }
 
   try {
-    DbFacade{cpp::AssumeNn(sqlite_db)}.WriteToFile(file_path_);
+    DbFacade{logger_, cpp::AssumeNn(sqlite_db)}.WriteToFile(file_path_);
   } catch (const std::exception& e) {
-    Logger().error(e.what());
+    logger_->LogErrorCondition(e.what());
   }
 }
 

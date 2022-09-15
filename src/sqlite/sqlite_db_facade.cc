@@ -1,30 +1,23 @@
 #include "sqlite_db_facade.h"
 
-#include <bits/exception.h>
 #include <fmt/core.h>
-#include <fmt/format.h>
-#include <spdlog/logger.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <sqlite3.h>
 
 #include <gsl/assert>
 #include <gsl/util>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
+#include "cpp_smart_pointers.h"
 #include "not_null.hpp"
 #include "sqlite_db_handles_factory.h"
 #include "sqlite_raw_handles.h"
 
 namespace stonks::sqlite {
 namespace {
-[[nodiscard]] auto Logger() -> spdlog::logger & {
-  static auto logger = spdlog::stdout_color_mt("sqlite::DbFacade");
-  return *logger;
-}
-
 [[nodiscard]] auto GetAssociatedFileName(sqlite3 &sqlite_db) -> std::string {
   const auto *const file_name = sqlite3_db_filename(&sqlite_db, nullptr);
 
@@ -46,18 +39,21 @@ namespace {
 }
 }  // namespace
 
-DbFacade::DbFacade(cpp::Nn<sqlite3 *> sqlite_db)
-    : sqlite_db_{sqlite_db.as_nullable()} {
+DbFacade::DbFacade(cpp::NnSp<log::ILogger> logger, cpp::Nn<sqlite3 *> sqlite_db)
+    : logger_{std::move(logger)},
+      sqlite_db_{sqlite_db.as_nullable()},
+      handles_factory_{logger_} {
   Ensures(sqlite_db_ != nullptr);
 }
 
 void DbFacade::WriteToFile(std::string_view file_path) const {
   Expects(sqlite_db_ != nullptr);
 
-  auto file_db_handle = db_handles_factory::CreateHandleToFileDb(file_path);
-  DbFacade{cpp::AssumeNn(file_db_handle.get())}.CopyDataFrom(*sqlite_db_);
+  auto file_db_handle = handles_factory_.CreateHandleToFileDb(file_path);
+  DbFacade{logger_, cpp::AssumeNn(file_db_handle.get())}.CopyDataFrom(
+      *sqlite_db_);
 
-  Logger().info("Stored DB to {}", file_path.data());
+  logger_->LogImportantEvent(fmt::format("Stored DB to {}", file_path.data()));
 }
 
 void DbFacade::CopyDataFrom(sqlite3 &other_db) const {
@@ -88,8 +84,12 @@ auto DbFacade::CreatePreparedStatement(std::string_view query) const
         query.data()};
   }
 
-  Logger().info("Prepared statement for query: {}", query.data());
-  return SqliteStatementHandle{cpp::AssumeNn(sqlite_statement)};
+  logger_->LogImportantEvent(
+      fmt::format("Prepared statement for query: {}", query.data()));
+
+  return SqliteStatementHandle{
+      cpp::AssumeNn(cpp::Up<sqlite3_stmt, detail::SqliteStatementFinalizer>{
+          sqlite_statement, detail::SqliteStatementFinalizer{logger_}})};
 }
 
 void DbFacade::EnableForeignKeys() const {
@@ -114,7 +114,7 @@ void DbFacade::Close() {
     throw cpp::MessageException{"Couldn't close DB from " + file_name};
   }
 
-  Logger().info("Closed DB from {}", file_name);
+  logger_->LogImportantEvent(fmt::format("Closed DB from {}", file_name));
 
   sqlite_db_ = nullptr;
   Ensures(sqlite_db_ == nullptr);
