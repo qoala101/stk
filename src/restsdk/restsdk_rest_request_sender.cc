@@ -125,7 +125,7 @@ namespace {
 }
 }  // namespace
 
-RestRequestSender::RestRequestSender(cpp::NnUp<log::ILogger> logger)
+RestRequestSender::RestRequestSender(cpp::NnSp<log::ILogger> logger)
     : logger_{std::move(logger)} {}
 
 auto RestRequestSender::SendRequestAndGetResponse(

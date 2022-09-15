@@ -35,7 +35,7 @@ class RestServer {
   auto Handling(TypedEndpoint endpoint, T handler) -> RestServer & {
     return Handling(
         std::move(endpoint),
-        cpp::MakeNnUp<AutoParsableRequestHandler>(std::move(handler)));
+        cpp::MakeNnSp<AutoParsableRequestHandler>(std::move(handler)));
   }
 
   /**
@@ -48,12 +48,12 @@ class RestServer {
 
  private:
   [[nodiscard]] auto Handling(TypedEndpoint endpoint,
-                              cpp::NnUp<IRestRequestHandler> handler)
+                              cpp::NnSp<IRestRequestHandler> handler)
       -> RestServer &;
 
   cpp::NnSp<cpp::di::IFactory<IRestRequestReceiver>> request_receiver_factory_;
   cpp::Opt<Uri> base_uri_{};
-  std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
+  std::map<Endpoint, cpp::NnSp<IRestRequestHandler>> endpoint_handlers_{};
 };
 }  // namespace stonks::network
 

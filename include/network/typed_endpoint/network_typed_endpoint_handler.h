@@ -19,7 +19,7 @@ class TypedEndpointHandler : public IRestRequestHandler {
    * those.
    */
   TypedEndpointHandler(EndpointTypes endpoint_types,
-                       cpp::NnUp<IRestRequestHandler> handler);
+                       cpp::NnSp<IRestRequestHandler> handler);
 
   /**
    * @brief Validates request prior forwarding it to the handler and response
@@ -30,7 +30,7 @@ class TypedEndpointHandler : public IRestRequestHandler {
 
  private:
   cpp::NnUp<EndpointTypesValidatorTemplate> type_checker_;
-  cpp::NnUp<IRestRequestHandler> handler_;
+  cpp::NnSp<IRestRequestHandler> handler_;
 };
 }  // namespace stonks::network
 

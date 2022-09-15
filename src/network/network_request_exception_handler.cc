@@ -13,7 +13,7 @@
 
 namespace stonks::network {
 RequestExceptionHandler::RequestExceptionHandler(
-    cpp::NnUp<IRestRequestHandler> handler)
+    cpp::NnSp<IRestRequestHandler> handler)
     : handler_{std::move(handler)} {}
 
 auto RequestExceptionHandler::HandleRequestAndGiveResponse(

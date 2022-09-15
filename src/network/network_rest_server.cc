@@ -30,7 +30,7 @@ auto RestServer::Start() -> cpp::NnUp<IRestRequestReceiver> {
   auto request_receiver = cpp::AssumeNn(request_receiver_factory_->create());
   request_receiver->Receive(
       std::move(*base_uri_),
-      cpp::MakeNnUp<EndpointRequestDispatcher>(std::move(endpoint_handlers_)));
+      cpp::MakeNnSp<EndpointRequestDispatcher>(std::move(endpoint_handlers_)));
 
   base_uri_.reset();
   endpoint_handlers_.clear();
@@ -41,10 +41,10 @@ auto RestServer::Start() -> cpp::NnUp<IRestRequestReceiver> {
 }
 
 auto RestServer::Handling(TypedEndpoint endpoint,
-                          cpp::NnUp<IRestRequestHandler> handler)
+                          cpp::NnSp<IRestRequestHandler> handler)
     -> RestServer& {
-  auto decorated_handler = cpp::MakeNnUp<RequestExceptionHandler>(
-      cpp::MakeNnUp<TypedEndpointHandler>(std::move(endpoint.expected_types),
+  auto decorated_handler = cpp::MakeNnSp<RequestExceptionHandler>(
+      cpp::MakeNnSp<TypedEndpointHandler>(std::move(endpoint.expected_types),
                                           std::move(handler)));
 
   endpoint_handlers_.emplace(std::move(endpoint.endpoint),

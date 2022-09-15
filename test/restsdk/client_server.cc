@@ -1,4 +1,4 @@
-#include <assert.h>
+#include <cassert>
 #include <bits/exception.h>
 #include <gtest/gtest-death-test.h>
 #include <gtest/gtest-message.h>
@@ -247,24 +247,24 @@ TEST(ClientServerDeathTest, WrongClientTypesReceived) {
 
   auto handlers =
       std::map<stonks::network::Endpoint,
-               stonks::cpp::NnUp<stonks::network::IRestRequestHandler>>{};
+               stonks::cpp::NnSp<stonks::network::IRestRequestHandler>>{};
 
   handlers.emplace(EntityServer::PushSymbolEndpointDesc().endpoint,
-                   stonks::cpp::MakeNnUp<FunctionHandler>(
+                   stonks::cpp::MakeNnSp<FunctionHandler>(
                        [](const stonks::network::RestRequest& /*unused*/) {
                          return stonks::network::RestResponse{
                              .status = stonks::network::Status::kOk,
                              .result = stonks::network::ConvertToJson(0)};
                        }));
   handlers.emplace(EntityServer::GetSymbolEndpointDesc().endpoint,
-                   stonks::cpp::MakeNnUp<FunctionHandler>(
+                   stonks::cpp::MakeNnSp<FunctionHandler>(
                        [](const stonks::network::RestRequest& /*unused*/) {
                          return stonks::network::RestResponse{
                              .status = stonks::network::Status::kOk};
                        }));
   handlers.emplace(
       EntityServer::PushSymbolEndpointDesc().endpoint,
-      stonks::cpp::MakeNnUp<FunctionHandler>(
+      stonks::cpp::MakeNnSp<FunctionHandler>(
           [](const stonks::network::RestRequest& /*unused*/) {
             return stonks::network::RestResponse{
                 .status = stonks::network::Status::kOk,
@@ -277,7 +277,7 @@ TEST(ClientServerDeathTest, WrongClientTypesReceived) {
             .create<stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
     entity_server->Receive(
         kBaseUri,
-        stonks::cpp::MakeNnUp<stonks::network::EndpointRequestDispatcher>(
+        stonks::cpp::MakeNnSp<stonks::network::EndpointRequestDispatcher>(
             std::move(handlers)));
     return entity_server;
   }();
@@ -397,7 +397,7 @@ TEST(ClientServer, ClientReceivedWrongTypeException) {
     auto handler =
         test::restsdk::Injector()
             .create<stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
-    handler->Receive(kBaseUri, stonks::cpp::MakeNnUp<Handler>());
+    handler->Receive(kBaseUri, stonks::cpp::MakeNnSp<Handler>());
     return handler;
   }();
   const auto entity_client = EntityClient{kBaseUri};

@@ -18,6 +18,9 @@
 
 namespace stonks::sqlite {
 namespace {
+using NullableSqliteStatementHandle =
+    std::decay_t<decltype(std::declval<SqliteStatementHandle>().as_nullable())>;
+
 [[nodiscard]] auto GetAssociatedFileName(sqlite3 &sqlite_db) -> std::string {
   const auto *const file_name = sqlite3_db_filename(&sqlite_db, nullptr);
 
@@ -86,9 +89,8 @@ auto DbFacade::CreatePreparedStatement(const sqldb::Query &query) const
   logger_->LogImportantEvent(
       cpp::Format("Prepared statement for query: {}", query.value));
 
-  return SqliteStatementHandle{
-      cpp::AssumeNn(cpp::Up<sqlite3_stmt, detail::SqliteStatementFinalizer>{
-          sqlite_statement, detail::SqliteStatementFinalizer{logger_}})};
+  return SqliteStatementHandle{cpp::AssumeNn(NullableSqliteStatementHandle{
+      sqlite_statement, detail::SqliteStatementFinalizer{logger_}})};
 }
 
 void DbFacade::EnableForeignKeys() const {

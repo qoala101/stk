@@ -20,8 +20,8 @@ auto RestClient::Call(TypedEndpoint endpoint) const
     -> rest_client::RequestBuilder {
   endpoint.endpoint.uri = {base_uri_.value + endpoint.endpoint.uri.value};
 
-  auto decorated_sender = cpp::MakeNnUp<ResponseExceptionHandler>(
-      cpp::MakeNnUp<TypedEndpointSender>(std::move(endpoint.expected_types),
+  auto decorated_sender = cpp::MakeNnSp<ResponseExceptionHandler>(
+      cpp::MakeNnSp<TypedEndpointSender>(std::move(endpoint.expected_types),
                                          request_sender_));
 
   return cpp::CallExposedPrivateConstructorOf<rest_client::RequestBuilder,

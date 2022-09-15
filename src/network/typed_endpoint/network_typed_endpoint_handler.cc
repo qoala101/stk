@@ -69,7 +69,7 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
 }  // namespace
 
 TypedEndpointHandler::TypedEndpointHandler(
-    EndpointTypes endpoint_types, cpp::NnUp<IRestRequestHandler> handler)
+    EndpointTypes endpoint_types, cpp::NnSp<IRestRequestHandler> handler)
     : type_checker_{cpp::MakeNnUp<TypeChecker>(std::move(endpoint_types))},
       handler_{std::move(handler)} {}
 

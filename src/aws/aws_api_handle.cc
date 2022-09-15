@@ -23,7 +23,7 @@ namespace {
 namespace detail {
 class ApiHandleImpl {
  public:
-  explicit ApiHandleImpl(cpp::NnUp<log::ILogger> logger)
+  explicit ApiHandleImpl(cpp::NnSp<log::ILogger> logger)
       : logger_{std::move(logger)} {
     Aws::InitAPI(Options());
   }
@@ -43,12 +43,12 @@ class ApiHandleImpl {
   }
 
  private:
-  cpp::NnUp<log::ILogger> logger_;
+  cpp::NnSp<log::ILogger> logger_;
 };
 }  // namespace detail
 
 namespace {
-[[nodiscard]] auto GetCachedApiHandle(cpp::NnUp<log::ILogger> logger)
+[[nodiscard]] auto GetCachedApiHandle(cpp::NnSp<log::ILogger> logger)
     -> cpp::NnSp<detail::ApiHandleImpl> {
   static auto last_instance = cpp::Wp<detail::ApiHandleImpl>{};
 
@@ -68,6 +68,6 @@ namespace {
 }
 }  // namespace
 
-ApiHandle::ApiHandle(cpp::NnUp<log::ILogger> logger)
+ApiHandle::ApiHandle(cpp::NnSp<log::ILogger> logger)
     : impl_{GetCachedApiHandle(std::move(logger))} {}
 }  // namespace stonks::aws
