@@ -5,6 +5,7 @@
 #include <utility>
 #include <variant>
 
+#include "cpp_format.h"
 #include "sqldb_query_builders_common.h"
 
 namespace stonks::sqldb::query_builder_facade {
@@ -50,7 +51,7 @@ auto UpdateQueryBuilder::AllColumns() -> UpdateQueryBuilder& {
 auto UpdateQueryBuilder::Where(std::string_view where_clause)
     -> UpdateQueryBuilder& {
   Expects(!where_clause_.has_value());
-  where_clause_.emplace(std::string{"WHERE "} + where_clause.data());
+  where_clause_.emplace(cpp::Format("WHERE {}", where_clause));
   Ensures(where_clause_.has_value());
   return *this;
 }

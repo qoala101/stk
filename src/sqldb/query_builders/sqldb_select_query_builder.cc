@@ -6,6 +6,7 @@
 #include <utility>
 #include <variant>
 
+#include "cpp_format.h"
 #include "sqldb_query_builders_common.h"
 #include "sqldb_types.h"
 
@@ -52,7 +53,7 @@ auto SelectQueryBuilder::FromTable(const TableDefinition &table_definition)
 auto SelectQueryBuilder::Where(std::string_view where_clause)
     -> SelectQueryBuilder & {
   Expects(!where_clause_.has_value());
-  where_clause_.emplace(std::string{"WHERE "} + where_clause.data());
+  where_clause_.emplace(cpp::Format("WHERE {}", where_clause));
   Ensures(where_clause_.has_value());
   return *this;
 }
@@ -60,13 +61,13 @@ auto SelectQueryBuilder::Where(std::string_view where_clause)
 auto SelectQueryBuilder::And(std::string_view where_clause)
     -> SelectQueryBuilder & {
   Expects(where_clause_.has_value());
-  (*where_clause_) += std::string{" AND "} + where_clause.data();
+  (*where_clause_) += cpp::Format(" AND {}", where_clause);
   return *this;
 }
 auto SelectQueryBuilder::Or(std::string_view where_clause)
     -> SelectQueryBuilder & {
   Expects(where_clause_.has_value());
-  (*where_clause_) += std::string{" OR "} + where_clause.data();
+  (*where_clause_) += cpp::Format(" OR {}", where_clause);
   return *this;
 }
 
@@ -108,7 +109,7 @@ auto SelectQueryBuilder::Build() const -> Query {
         using V = decltype(v);
 
         if constexpr (cpp::DecaysTo<V, int>) {
-          return " LIMIT " + std::to_string(v);
+          return cpp::Format(" LIMIT {}", v);
         }
 
         if constexpr (cpp::DecaysTo<V, LimitedType>) {

@@ -15,6 +15,7 @@
 #include <string>
 #include <utility>
 
+#include "cpp_format.h"
 #include "cpp_optional.h"
 #include "sqldb_enums_to_string.h"  // IWYU pragma: keep
 
@@ -40,13 +41,13 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
       ranges::any_of(table_definition.columns, &IsColumnForeignKey);
   const auto has_keys = has_primary_keys || has_foreign_keys;
 
-  auto query = std::string{"CREATE TABLE IF NOT EXISTS \"" +
-                           table_definition.table.value + "\"(\n"};
+  auto query = cpp::Format(R"(CREATE TABLE IF NOT EXISTS "{}"(
+)",
+                           table_definition.table.value);
 
   for (const auto &column_def : table_definition.columns) {
-    query += "\t\"" + column_def.column.value + "\" " +
-             std::string{magic_enum::enum_name(column_def.data_type)} +
-             " NOT NULL";
+    query += cpp::Format(R"(	"{}" {} NOT NULL)", column_def.column.value,
+                         magic_enum::enum_name(column_def.data_type));
 
     if (column_def.unique) {
       query += " UNIQUE";
@@ -54,7 +55,8 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
 
     if (const auto query_not_done =
             (&column_def != &table_definition.columns.back()) || has_keys) {
-      query += ",\n";
+      query += R"(,
+)";
     }
   }
 
@@ -64,7 +66,7 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
         table_definition.columns | ranges::views::filter(&IsColumnPrimaryKey);
 
     for (const auto &column_def : primary_key_columns) {
-      query += "\"" + column_def.column.value + "\"";
+      query += cpp::Format(R"("{}")", column_def.column.value);
 
       if (column_def.auto_increment) {
         query += " AUTOINCREMENT";
@@ -79,7 +81,8 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
     query += ")";
 
     if (has_foreign_keys) {
-      query += ",\n";
+      query += R"(,
+)";
     }
   }
 
@@ -89,18 +92,21 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
 
     for (const auto &column_def : foreign_key_columns) {
       const auto &foreign_key = *column_def.foreign_key;
-      query += "FOREIGN KEY(\"" + column_def.column.value +
-               "\") REFERENCES \"" + foreign_key.table.value + "\"(\"" +
-               foreign_key.column.value + "\") ON DELETE CASCADE";
+      query += cpp::Format(
+          R"(FOREIGN KEY("{}") REFERENCES "{}"("{}") ON DELETE CASCADE)",
+          column_def.column.value, foreign_key.table.value,
+          foreign_key.column.value);
 
       if (const auto query_not_done =
               &column_def != &foreign_key_columns.back()) {
-        query += ",\n";
+        query += R"(,
+)";
       }
     }
   }
 
-  query += "\n)";
+  query += R"(
+))";
 
   Ensures(!query.empty());
   return {std::move(query)};
@@ -110,7 +116,7 @@ auto QueryBuilder::BuildDropTableQuery(const sqldb::Table &table) const
     -> sqldb::Query {
   Expects(!table.value.empty());
 
-  auto query = "DROP TABLE \"" + table.value + "\"";
+  auto query = cpp::Format(R"(DROP TABLE "{}")", table.value);
 
   Ensures(!query.empty());
   return {std::move(query)};
@@ -134,14 +140,14 @@ auto QueryBuilder::BuildSelectQuery(const sqldb::Table &table,
     query += ranges::accumulate(column_values | ranges::views::drop(1),
                                 column_values.front(),
                                 [](const auto &query, const auto &column) {
-                                  return query + ", " + column;
+                                  return cpp::Format("{}, {}", query, column);
                                 });
   }
 
-  query += " FROM \"" + table.value + "\"";
+  query += cpp::Format(R"( FROM "{}")", table.value);
 
   if (!where_clause.empty()) {
-    query += std::string{" "} + where_clause.data();
+    query += cpp::Format(" {}", where_clause.data());
   }
 
   Ensures(!query.empty());
@@ -158,7 +164,7 @@ auto QueryBuilder::BuildInsertQuery(
   auto placeholders = std::string{};
 
   for (const auto &column : columns) {
-    column_names += "\"" + column.value + "\"";
+    column_names += cpp::Format(R"("{}")", column.value);
     placeholders += "?";
 
     if (const auto not_last_column = &column != &columns.back()) {
@@ -167,8 +173,8 @@ auto QueryBuilder::BuildInsertQuery(
     }
   }
 
-  auto query = "INSERT INTO \"" + table.value + "\"(" + column_names +
-               ") VALUES (" + placeholders + ")";
+  auto query = cpp::Format(R"(INSERT INTO "{}"({}) VALUES ({}))", table.value,
+                           column_names, placeholders);
 
   Ensures(!query.empty());
   return {std::move(query)};
@@ -181,10 +187,10 @@ auto QueryBuilder::BuildUpdateQuery(const sqldb::Table &table,
   Expects(!table.value.empty());
   Expects(!columns.empty());
 
-  auto query = "UPDATE \"" + table.value + "\" SET ";
+  auto query = cpp::Format(R"(UPDATE "{}" SET )", table.value);
 
   for (const auto &column : columns) {
-    query += "\"" + column.value + "\" = ?";
+    query += cpp::Format(R"("{}" = ?)", column.value);
 
     if (const auto not_last_column = &column != &columns.back()) {
       query += ", ";
@@ -192,7 +198,7 @@ auto QueryBuilder::BuildUpdateQuery(const sqldb::Table &table,
   }
 
   if (!where_clause.empty()) {
-    query += std::string{" "} + where_clause.data();
+    query += cpp::Format(" {}", where_clause);
   }
 
   Ensures(!query.empty());
@@ -204,10 +210,10 @@ auto QueryBuilder::BuildDeleteQuery(const sqldb::Table &table,
     -> sqldb::Query {
   Expects(!table.value.empty());
 
-  auto query = "DELETE FROM \"" + table.value + "\"";
+  auto query = cpp::Format(R"(DELETE FROM "{}")", table.value);
 
   if (!where_clause.empty()) {
-    query += std::string{" "} + where_clause.data();
+    query += cpp::Format(" {}", where_clause);
   }
 
   Ensures(!query.empty());

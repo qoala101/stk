@@ -8,6 +8,7 @@
 #include <string_view>
 #include <utility>
 
+#include "cpp_format.h"
 #include "network_endpoint_types_validator_template.h"
 #include "network_exception.h"
 #include "network_typed_endpoint.h"
@@ -27,15 +28,16 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   }
 
   void HandleUnknownParam(std::string_view param_name) const override {
-    throw Exception{std::string{"Unknown request param: "} + param_name.data()};
+    throw Exception{cpp::Format("Unknown request param: {}", param_name)};
   }
 
   void HandleWrongRequestParamType(
       std::string_view param_name, const Param &value,
       const std::exception &parsing_exception) const override {
-    throw WrongTypeException{std::string{"Request param "} + param_name.data() +
-                                 " is invalid: " + parsing_exception.what(),
-                             value};
+    throw WrongTypeException{
+        cpp::Format("Request param {} is invalid: {}", param_name.data(),
+                    parsing_exception.what()),
+        value};
   }
 
   void HandleMissingRequestBody() const override {
@@ -46,7 +48,7 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
       const Body::value_type &request_body,
       const std::exception &parsing_exception) const override {
     throw WrongTypeException{
-        std::string{"Request body is invalid: "} + parsing_exception.what(),
+        cpp::Format("Request body is invalid: {}", parsing_exception.what()),
         request_body};
   }
 

@@ -9,9 +9,9 @@
 #include <type_traits>
 #include <utility>
 
+#include "cpp_format.h"
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
-#include "cpp_format.h"
 #include "not_null.hpp"
 #include "sqlite_db_facade.h"
 #include "sqlite_raw_handles.h"
@@ -48,9 +48,8 @@ auto DbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
   const auto result_code = sqlite3_open(file_path.value.c_str(), &file_db);
 
   if ((file_db == nullptr) || (result_code != SQLITE_OK)) {
-    throw cpp::MessageException{std::string{"Couldn't read DB from file "} +
-                                file_path.value + ": " +
-                                std::to_string(result_code)};
+    throw cpp::MessageException{cpp::Format("Couldn't read DB from file {}: {}",
+                                            file_path.value, result_code)};
   }
 
   return {cpp::AssumeNn(

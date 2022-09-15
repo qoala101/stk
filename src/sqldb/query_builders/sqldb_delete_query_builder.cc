@@ -5,6 +5,8 @@
 #include <string>
 #include <utility>
 
+#include "cpp_format.h"
+
 namespace stonks::sqldb::query_builder_facade {
 DeleteQueryBuilder::DeleteQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
@@ -24,7 +26,7 @@ auto DeleteQueryBuilder::FromTable(const TableDefinition& table_definition)
 auto DeleteQueryBuilder::Where(std::string_view where_clause)
     -> DeleteQueryBuilder& {
   Expects(!where_clause_.has_value());
-  where_clause_.emplace(std::string{"WHERE "} + where_clause.data());
+  where_clause_.emplace(cpp::Format("WHERE {}", where_clause));
   Ensures(where_clause_.has_value());
   return *this;
 }
