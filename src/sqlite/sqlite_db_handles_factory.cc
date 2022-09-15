@@ -40,16 +40,16 @@ auto DbHandlesFactory::CreateInMemoryDb() const -> SqliteDbHandle {
       NullableSqliteDbHandle{in_memory_db, detail::SqliteDbCloser{logger_}})};
 }
 
-auto DbHandlesFactory::CreateHandleToFileDb(std::string_view file_path) const
+auto DbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
     -> SqliteDbHandle {
-  Expects(!file_path.empty());
+  Expects(!file_path.value.empty());
 
   auto *file_db = (sqlite3 *){};
-  const auto result_code = sqlite3_open(file_path.data(), &file_db);
+  const auto result_code = sqlite3_open(file_path.value.c_str(), &file_db);
 
   if ((file_db == nullptr) || (result_code != SQLITE_OK)) {
     throw cpp::MessageException{std::string{"Couldn't read DB from file "} +
-                                file_path.data() + ": " +
+                                file_path.value + ": " +
                                 std::to_string(result_code)};
   }
 
@@ -57,23 +57,23 @@ auto DbHandlesFactory::CreateHandleToFileDb(std::string_view file_path) const
       NullableSqliteDbHandle{file_db, detail::SqliteDbCloser{logger_}})};
 }
 
-auto DbHandlesFactory::LoadDbFromFileToMemory(std::string_view file_path) const
+auto DbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
     -> SqliteDbHandle {
-  Expects(!file_path.empty());
+  Expects(!file_path.value.empty());
 
   auto in_memory_db_handle = CreateInMemoryDb();
 
-  if (const auto db_is_new = !std::filesystem::exists(file_path)) {
-    logger_->LogImportantEvent(log::Format("Created new DB for {}", file_path));
+  if (const auto db_is_new = !std::filesystem::exists(file_path.value)) {
+    logger_->LogImportantEvent(
+        log::Format("Created new DB for {}", file_path.value));
     return in_memory_db_handle;
   }
 
-  auto file_db_handle = CreateHandleToFileDb(file_path.data());
+  auto file_db_handle = CreateHandleToFileDb(file_path);
   DbFacade{logger_, cpp::AssumeNn(in_memory_db_handle.get())}.CopyDataFrom(
       *file_db_handle);
 
-  logger_->LogImportantEvent(
-      log::Format("Loaded DB from {}", file_path.data()));
+  logger_->LogImportantEvent(log::Format("Loaded DB from {}", file_path.value));
   return in_memory_db_handle;
 }
 }  // namespace stonks::sqlite

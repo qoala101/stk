@@ -154,7 +154,7 @@ auto PreparedStatements::SelectSymbolsInfo() const
     symbol_columns.emplace_back(cpp::AssumeNn(&quote_asset_column));
 
     const auto& columns = symbol_columns;
-    const auto* query =
+    auto query = sqldb::Query{
         "SELECT "
         "Symbol.name, "
         "Symbol.min_base_amount, "
@@ -165,10 +165,10 @@ auto PreparedStatements::SelectSymbolsInfo() const
         "QuoteAsset.name AS quote_asset "
         "FROM Symbol "
         "JOIN Asset AS BaseAsset ON Symbol.base_asset_id = BaseAsset.id "
-        "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id = QuoteAsset.id";
+        "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id = QuoteAsset.id"};
 
     select_symbols_info_ =
-        db_->PrepareStatement(query, Rd{columns}).as_nullable();
+        db_->PrepareStatement(std::move(query), Rd{columns}).as_nullable();
   }
 
   Ensures(select_symbols_info_ != nullptr);

@@ -1,7 +1,6 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDERS_SQLDB_INSERT_QUERY_BUILDER_H_
 #define STONKS_SQLDB_QUERY_BUILDERS_SQLDB_INSERT_QUERY_BUILDER_H_
 
-#include <string>
 #include <vector>
 
 #include "cpp_expose_private_constructors.h"
@@ -27,7 +26,7 @@ class InsertQueryBuilder {
   auto IntoColumns(const cpp::ConstView<ColumnDefinition> &column_definitions)
       -> InsertQueryBuilder &;
 
-  [[nodiscard]] auto Build() const -> std::string;
+  [[nodiscard]] auto Build() const -> Query;
 
  private:
   friend class cpp::ExposePrivateConstructorsTo<QueryBuilderFacade,

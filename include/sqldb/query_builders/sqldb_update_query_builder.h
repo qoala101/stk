@@ -32,7 +32,7 @@ class UpdateQueryBuilder {
 
   auto Where(std::string_view where_clause) -> UpdateQueryBuilder &;
 
-  [[nodiscard]] auto Build() const -> std::string;
+  [[nodiscard]] auto Build() const -> Query;
 
  private:
   friend class cpp::ExposePrivateConstructorsTo<QueryBuilderFacade,

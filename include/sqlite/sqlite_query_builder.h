@@ -1,7 +1,6 @@
 #ifndef STONKS_SQLITE_SQLITE_QUERY_BUILDER_H_
 #define STONKS_SQLITE_SQLITE_QUERY_BUILDER_H_
 
-#include <string>
 #include <string_view>
 #include <vector>
 
@@ -19,13 +18,13 @@ class QueryBuilder : public sqldb::IQueryBuilder {
    */
   [[nodiscard]] auto BuildCreateTableIfNotExistsQuery(
       const sqldb::TableDefinition &table_definition) const
-      -> std::string override;
+      -> sqldb::Query override;
 
   /**
    * @copydoc sqldb::IQueryBuilder::BuildDropTableQuery
    */
   [[nodiscard]] auto BuildDropTableQuery(const sqldb::Table &table) const
-      -> std::string override;
+      -> sqldb::Query override;
 
   /**
    * @copydoc sqldb::IQueryBuilder::BuildSelectQuery
@@ -33,14 +32,14 @@ class QueryBuilder : public sqldb::IQueryBuilder {
   [[nodiscard]] auto BuildSelectQuery(const sqldb::Table &table,
                                       const std::vector<sqldb::Column> *columns,
                                       std::string_view where_clause) const
-      -> std::string override;
+      -> sqldb::Query override;
 
   /**
    * @copydoc sqldb::IQueryBuilder::BuildInsertQuery
    */
   [[nodiscard]] auto BuildInsertQuery(
       const sqldb::Table &table,
-      const std::vector<sqldb::Column> &columns) const -> std::string override;
+      const std::vector<sqldb::Column> &columns) const -> sqldb::Query override;
 
   /**
    * @copydoc sqldb::IQueryBuilder::BuildUpdateQuery
@@ -48,14 +47,14 @@ class QueryBuilder : public sqldb::IQueryBuilder {
   [[nodiscard]] auto BuildUpdateQuery(const sqldb::Table &table,
                                       const std::vector<sqldb::Column> &columns,
                                       std::string_view where_clause) const
-      -> std::string override;
+      -> sqldb::Query override;
 
   /**
    * @copydoc sqldb::IQueryBuilder::BuildDeleteQuery
    */
   [[nodiscard]] auto BuildDeleteQuery(const sqldb::Table &table,
                                       std::string_view where_clause) const
-      -> std::string override;
+      -> sqldb::Query override;
 };
 }  // namespace stonks::sqlite
 

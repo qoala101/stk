@@ -12,7 +12,7 @@
 namespace stonks::sqlite {
 SqliteDbFileHandle::SqliteDbFileHandle(cpp::NnSp<log::ILogger> logger,
                                        SqliteDbHandle sqlite_db_handle,
-                                       std::string file_path)
+                                       FilePath file_path)
     : logger_{std::move(logger)},
       sqlite_db_handle_{std::move(sqlite_db_handle)},
       file_path_{std::move(file_path)} {}
@@ -45,7 +45,7 @@ auto SqliteDbFileHandle::GetSqliteDb() -> sqlite3& {
   return GetSqliteDbImpl(*this);
 }
 
-auto SqliteDbFileHandle::GetFilePath() const -> const std::string& {
+auto SqliteDbFileHandle::GetFilePath() const -> const FilePath& {
   return file_path_;
 }
 }  // namespace stonks::sqlite

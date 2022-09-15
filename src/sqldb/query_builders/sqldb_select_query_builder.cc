@@ -84,7 +84,7 @@ auto SelectQueryBuilder::Limited() -> SelectQueryBuilder & {
   return *this;
 }
 
-auto SelectQueryBuilder::Build() const -> std::string {
+auto SelectQueryBuilder::Build() const -> Query {
   Expects(table_.has_value());
 
   const auto *const columns = std::visit(

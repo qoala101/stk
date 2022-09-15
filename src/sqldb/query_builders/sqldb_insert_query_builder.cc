@@ -47,7 +47,7 @@ auto InsertQueryBuilder::IntoColumns(
   return IntoColumns(GetColumns(column_definitions));
 }
 
-auto InsertQueryBuilder::Build() const -> std::string {
+auto InsertQueryBuilder::Build() const -> Query {
   const auto& table = GetTable(table_);
   const auto columns_are_specified =
       !std::holds_alternative<std::monostate>(columns_);

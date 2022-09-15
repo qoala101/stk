@@ -42,9 +42,9 @@ auto SqliteDbHandleVariant::GetSqliteDb() -> sqlite3 & {
   return GetSqliteDbImpl(*this);
 }
 
-auto SqliteDbHandleVariant::GetFilePath() const -> const std::string * {
+auto SqliteDbHandleVariant::GetFilePath() const -> const FilePath * {
   return std::visit(
-      [](const auto &v) -> const std::string * {
+      [](const auto &v) -> const FilePath * {
         using V = decltype(v);
 
         if constexpr (cpp::DecaysTo<V, SqliteDbHandle>) {

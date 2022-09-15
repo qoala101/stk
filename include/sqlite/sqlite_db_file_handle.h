@@ -1,13 +1,12 @@
 #ifndef STONKS_SQLITE_SQLITE_DB_FILE_HANDLE_H_
 #define STONKS_SQLITE_SQLITE_DB_FILE_HANDLE_H_
 
-#include <string>
-
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_copy_const.h"
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
 #include "sqlite_raw_handles.h"
+#include "sqlite_types.h"
 
 namespace stonks::sqlite {
 /**
@@ -20,7 +19,7 @@ class SqliteDbFileHandle {
    * and where it's to be written.
    */
   SqliteDbFileHandle(cpp::NnSp<log::ILogger> logger,
-                     SqliteDbHandle sqlite_db_handle, std::string file_path);
+                     SqliteDbHandle sqlite_db_handle, FilePath file_path);
 
   SqliteDbFileHandle(const SqliteDbFileHandle &) = delete;
   SqliteDbFileHandle(SqliteDbFileHandle &&) noexcept = default;
@@ -48,7 +47,7 @@ class SqliteDbFileHandle {
    * @brief Gives file path DB was read from and would be stored to
    * when handle is destroyed.
    */
-  [[nodiscard]] auto GetFilePath() const -> const std::string &;
+  [[nodiscard]] auto GetFilePath() const -> const FilePath &;
 
  private:
   template <cpp::DecaysTo<SqliteDbFileHandle> This>
@@ -57,7 +56,7 @@ class SqliteDbFileHandle {
 
   cpp::NnSp<log::ILogger> logger_;
   SqliteDbHandle sqlite_db_handle_;
-  std::string file_path_{};
+  FilePath file_path_{};
 };
 }  // namespace stonks::sqlite
 

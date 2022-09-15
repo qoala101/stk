@@ -1,14 +1,13 @@
 #ifndef STONKS_SQLITE_SQLITE_DB_H_
 #define STONKS_SQLITE_SQLITE_DB_H_
 
-#include <string>
-
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_row_definition.h"
+#include "sqldb_types.h"
 #include "sqlite_db_facade.h"
 #include "sqlite_db_handle_variant.h"
 
@@ -27,14 +26,14 @@ class Db : public sqldb::IDb {
   /**
    * @copydoc sqldb::IDb::PrepareStatement
    */
-  [[nodiscard]] auto PrepareStatement(std::string query,
+  [[nodiscard]] auto PrepareStatement(sqldb::Query query,
                                       sqldb::RowDefinition result_definition)
       -> cpp::NnUp<sqldb::ISelectStatement> override;
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement
    */
-  [[nodiscard]] auto PrepareStatement(std::string query)
+  [[nodiscard]] auto PrepareStatement(sqldb::Query query)
       -> cpp::NnUp<sqldb::IUpdateStatement> override;
 
  private:

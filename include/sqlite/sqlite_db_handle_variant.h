@@ -1,12 +1,12 @@
 #ifndef STONKS_SQLITE_SQLITE_DB_HANDLE_VARIANT_H_
 #define STONKS_SQLITE_SQLITE_DB_HANDLE_VARIANT_H_
 
-#include <string>
 #include <variant>
 
 #include "cpp_copy_const.h"
 #include "sqlite_db_file_handle.h"
 #include "sqlite_raw_handles.h"
+#include "sqlite_types.h"
 
 namespace stonks::sqlite {
 /**
@@ -30,7 +30,7 @@ class SqliteDbHandleVariant {
   /**
    * @brief Gives DB file path or null if DB is in-memory one.
    */
-  [[nodiscard]] auto GetFilePath() const -> const std::string *;
+  [[nodiscard]] auto GetFilePath() const -> const FilePath *;
 
  private:
   template <cpp::DecaysTo<SqliteDbHandleVariant> This>

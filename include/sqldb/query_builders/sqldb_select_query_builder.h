@@ -39,7 +39,7 @@ class SelectQueryBuilder {
   auto Limit(int limit) -> SelectQueryBuilder &;
   auto Limited() -> SelectQueryBuilder &;
 
-  [[nodiscard]] auto Build() const -> std::string;
+  [[nodiscard]] auto Build() const -> Query;
 
  private:
   friend class cpp::ExposePrivateConstructorsTo<QueryBuilderFacade,

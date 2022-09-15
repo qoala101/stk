@@ -31,9 +31,9 @@ class TypeChecker : public EndpointTypesValidatorTemplate {
   }
 
   void HandleWrongRequestParamType(
-      std::string_view key, const Param &value,
+      std::string_view param_name, const Param &value,
       const std::exception &parsing_exception) const override {
-    throw WrongTypeException{std::string{"Request param "} + key.data() +
+    throw WrongTypeException{std::string{"Request param "} + param_name.data() +
                                  " is invalid: " + parsing_exception.what(),
                              value};
   }

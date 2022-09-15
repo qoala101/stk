@@ -20,7 +20,7 @@ Db::Db(cpp::NnSp<log::ILogger> logger,
       sqlite_db_facade_{std::move(logger),
                         cpp::AssumeNn(&sqlite_db_handle_->GetSqliteDb())} {}
 
-auto Db::PrepareStatement(std::string query,
+auto Db::PrepareStatement(sqldb::Query query,
                           sqldb::RowDefinition result_definition)
     -> cpp::NnUp<sqldb::ISelectStatement> {
   return cpp::MakeNnUp<SelectStatement>(
@@ -29,7 +29,7 @@ auto Db::PrepareStatement(std::string query,
       result_definition);
 }
 
-auto Db::PrepareStatement(std::string query)
+auto Db::PrepareStatement(sqldb::Query query)
     -> cpp::NnUp<sqldb::IUpdateStatement> {
   return cpp::MakeNnUp<UpdateStatement>(PreparedStatementHandle{
       sqlite_db_handle_, sqlite_db_facade_.CreatePreparedStatement(query)});

@@ -173,11 +173,11 @@ TEST(SqliteDb, SelectJoin) {
           .column = "quote_asset",
           .data_type = stonks::sqldb::DataType::kString}};
 
-  auto select_statement = db->PrepareStatement(
+  auto select_statement = db->PrepareStatement({
       "SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS quote_asset "
       "FROM Symbol "
       "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
-      "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id=QuoteAsset.id;",
+      "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id=QuoteAsset.id;"},
       Rd{cell_definitions});
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);

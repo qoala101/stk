@@ -1,12 +1,12 @@
 #ifndef STONKS_SQLITE_SQLITE_DB_FACADE_H_
 #define STONKS_SQLITE_SQLITE_DB_FACADE_H_
 
-#include <string_view>
-
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
+#include "sqldb_types.h"
 #include "sqlite_db_handles_factory.h"
 #include "sqlite_raw_handles.h"
+#include "sqlite_types.h"
 
 namespace stonks::sqlite {
 /**
@@ -20,7 +20,7 @@ class DbFacade {
   /**
    * @brief Writes DB to file.
    */
-  void WriteToFile(std::string_view file_path) const;
+  void WriteToFile(const FilePath &file_path) const;
 
   /**
    * @brief Replaces current data with the contents of the other DB.
@@ -30,7 +30,7 @@ class DbFacade {
   /**
    * @brief Creates prepared statement for the query.
    */
-  [[nodiscard]] auto CreatePreparedStatement(std::string_view query) const
+  [[nodiscard]] auto CreatePreparedStatement(const sqldb::Query &query) const
       -> SqliteStatementHandle;
 
   /**

@@ -55,7 +55,7 @@ auto UpdateQueryBuilder::Where(std::string_view where_clause)
   return *this;
 }
 
-auto UpdateQueryBuilder::Build() const -> std::string {
+auto UpdateQueryBuilder::Build() const -> Query {
   const auto& table = GetTable(table_);
   const auto columns = GetColumns(table_, columns_);
   return query_builder_->BuildUpdateQuery(

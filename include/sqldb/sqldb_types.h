@@ -23,6 +23,11 @@ struct Table : public cpp::TypedStruct<std::string> {};
 struct Column : public cpp::TypedStruct<std::string> {};
 
 /**
+ * @brief SQL query.
+ */
+struct Query : public cpp::TypedStruct<std::string> {};
+
+/**
  * @brief Foreign key to the column in the table.
  */
 struct ForeignKey {

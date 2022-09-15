@@ -1,11 +1,10 @@
 #ifndef STONKS_SQLITE_SQLITE_DB_HANDLES_FACTORY_H_
 #define STONKS_SQLITE_SQLITE_DB_HANDLES_FACTORY_H_
 
-#include <string_view>
-
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
 #include "sqlite_raw_handles.h"
+#include "sqlite_types.h"
 
 /**
  * @file Constructors of SQLite handles.
@@ -24,7 +23,7 @@ class DbHandlesFactory {
   /**
    * @brief Creates SQLite handle to DB from file.
    */
-  [[nodiscard]] auto CreateHandleToFileDb(std::string_view file_path) const
+  [[nodiscard]] auto CreateHandleToFileDb(const FilePath &file_path) const
       -> SqliteDbHandle;
 
   /**
@@ -32,7 +31,7 @@ class DbHandlesFactory {
    * DB.
    * @return Handle to in-memory DB.
    */
-  [[nodiscard]] auto LoadDbFromFileToMemory(std::string_view file_path) const
+  [[nodiscard]] auto LoadDbFromFileToMemory(const FilePath &file_path) const
       -> SqliteDbHandle;
 
  private:

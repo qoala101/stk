@@ -5,6 +5,11 @@
 
 namespace stonks::sqlite {
 /**
+ * @brief Path to DB file.
+ */
+struct FilePath : public cpp::TypedStruct<std::string> {};
+
+/**
  * @brief SQLite result code.
  */
 struct ResultCode : public cpp::TypedStruct<int> {};

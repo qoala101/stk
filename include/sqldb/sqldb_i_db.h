@@ -23,7 +23,7 @@ class IDb {
    * @brief Creates prepared statement which can then be called to execute the
    * select query on DB.
    */
-  [[nodiscard]] virtual auto PrepareStatement(std::string query,
+  [[nodiscard]] virtual auto PrepareStatement(Query query,
                                               RowDefinition result_definition)
       -> cpp::NnUp<ISelectStatement> = 0;
 
@@ -31,7 +31,7 @@ class IDb {
    * @brief Creates prepared statement which can then be called to execute the
    * update query on DB.
    */
-  [[nodiscard]] virtual auto PrepareStatement(std::string query)
+  [[nodiscard]] virtual auto PrepareStatement(Query query)
       -> cpp::NnUp<IUpdateStatement> = 0;
 };
 }  // namespace stonks::sqldb

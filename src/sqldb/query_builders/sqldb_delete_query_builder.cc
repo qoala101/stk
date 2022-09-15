@@ -29,7 +29,7 @@ auto DeleteQueryBuilder::Where(std::string_view where_clause)
   return *this;
 }
 
-auto DeleteQueryBuilder::Build() const -> std::string {
+auto DeleteQueryBuilder::Build() const -> Query {
   Expects(table_.has_value());
   return query_builder_->BuildDeleteQuery(
       *table_, where_clause_.value_or(std::string{}));

@@ -30,7 +30,7 @@ auto IsColumnForeignKey(const sqldb::ColumnDefinition &column) -> bool {
 }  // namespace
 
 auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
-    const sqldb::TableDefinition &table_definition) const -> std::string {
+    const sqldb::TableDefinition &table_definition) const -> sqldb::Query {
   Expects(!table_definition.table.value.empty());
   Expects(!table_definition.columns.empty());
 
@@ -103,23 +103,23 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
   query += "\n)";
 
   Ensures(!query.empty());
-  return query;
+  return {std::move(query)};
 }
 
 auto QueryBuilder::BuildDropTableQuery(const sqldb::Table &table) const
-    -> std::string {
+    -> sqldb::Query {
   Expects(!table.value.empty());
 
   auto query = "DROP TABLE \"" + table.value + "\"";
 
   Ensures(!query.empty());
-  return query;
+  return {std::move(query)};
 }
 
 auto QueryBuilder::BuildSelectQuery(const sqldb::Table &table,
                                     const std::vector<sqldb::Column> *columns,
                                     std::string_view where_clause) const
-    -> std::string {
+    -> sqldb::Query {
   Expects(!table.value.empty());
 
   auto query = std::string{"SELECT "};
@@ -145,12 +145,12 @@ auto QueryBuilder::BuildSelectQuery(const sqldb::Table &table,
   }
 
   Ensures(!query.empty());
-  return query;
+  return {std::move(query)};
 }
 
 auto QueryBuilder::BuildInsertQuery(
     const sqldb::Table &table, const std::vector<sqldb::Column> &columns) const
-    -> std::string {
+    -> sqldb::Query {
   Expects(!table.value.empty());
   Expects(!columns.empty());
 
@@ -171,13 +171,13 @@ auto QueryBuilder::BuildInsertQuery(
                ") VALUES (" + placeholders + ")";
 
   Ensures(!query.empty());
-  return query;
+  return {std::move(query)};
 }
 
 auto QueryBuilder::BuildUpdateQuery(const sqldb::Table &table,
                                     const std::vector<sqldb::Column> &columns,
                                     std::string_view where_clause) const
-    -> std::string {
+    -> sqldb::Query {
   Expects(!table.value.empty());
   Expects(!columns.empty());
 
@@ -196,12 +196,12 @@ auto QueryBuilder::BuildUpdateQuery(const sqldb::Table &table,
   }
 
   Ensures(!query.empty());
-  return query;
+  return {std::move(query)};
 }
 
 auto QueryBuilder::BuildDeleteQuery(const sqldb::Table &table,
                                     std::string_view where_clause) const
-    -> std::string {
+    -> sqldb::Query {
   Expects(!table.value.empty());
 
   auto query = "DELETE FROM \"" + table.value + "\"";
@@ -211,6 +211,6 @@ auto QueryBuilder::BuildDeleteQuery(const sqldb::Table &table,
   }
 
   Ensures(!query.empty());
-  return query;
+  return {std::move(query)};
 }
 }  // namespace stonks::sqlite
