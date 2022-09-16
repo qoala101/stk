@@ -99,7 +99,7 @@ auto AsyncDb::SelectItem(const nosqldb::Table &table,
 
   if (!result.IsSuccess()) {
     throw cpp::MessageException{
-        cpp::Format("Couldn't select item {} from table {}: ", key.value,
+        cpp::Format("Couldn't select item {} from table {}: {}", key.value,
                     table.value, result.GetError().GetMessage())};
   }
 

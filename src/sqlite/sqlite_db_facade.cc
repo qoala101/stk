@@ -6,12 +6,12 @@
 #include <gsl/util>
 #include <memory>
 #include <string>
+#include <type_traits>
 #include <utility>
 
 #include "cpp_format.h"
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
-#include "cpp_smart_pointers.h"
 #include "not_null.hpp"
 #include "sqlite_db_handles_factory.h"
 #include "sqlite_raw_handles.h"

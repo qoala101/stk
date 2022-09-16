@@ -13,7 +13,8 @@
 template <>
 [[nodiscard]] constexpr auto
 magic_enum::customize::enum_name<stonks::sqldb::DataType>(
-    stonks::sqldb::DataType value) noexcept -> std::string_view {
+    stonks::sqldb::DataType value) noexcept
+    -> magic_enum::customize::customize_t {
   switch (value) {
     case stonks::sqldb::DataType::kBool:
     case stonks::sqldb::DataType::kInt:
@@ -25,7 +26,7 @@ magic_enum::customize::enum_name<stonks::sqldb::DataType>(
       return "TEXT";
   }
 
-  return {};
+  return invalid_tag;
 }
 
 #endif  // STONKS_SQLDB_SQLDB_ENUMS_TO_STRING_H_

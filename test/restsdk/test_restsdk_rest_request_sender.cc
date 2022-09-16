@@ -40,7 +40,7 @@ struct AvgPrice {
 
 template <>
 constexpr auto magic_enum::customize::enum_name<CustomNameEnum>(
-    CustomNameEnum value) noexcept -> std::string_view {
+    CustomNameEnum value) noexcept -> magic_enum::customize::customize_t {
   switch (value) {
     case CustomNameEnum::kCustomEnumName:
       return "CUSTOM_ENUM_NAME";
@@ -48,7 +48,7 @@ constexpr auto magic_enum::customize::enum_name<CustomNameEnum>(
       break;
   }
 
-  return {};
+  return invalid_tag;
 }
 
 namespace stonks::network {

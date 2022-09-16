@@ -29,7 +29,7 @@ target_include_directories(libsqldb
 
 target_link_libraries(libsqldb
   PUBLIC libcpp
-  PRIVATE magic_enum::magic_enum
+  PUBLIC magic_enum::magic_enum
   PRIVATE Microsoft.GSL::GSL
   PRIVATE range-v3::range-v3
 )
