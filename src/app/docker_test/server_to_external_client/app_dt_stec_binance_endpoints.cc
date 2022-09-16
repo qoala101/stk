@@ -9,7 +9,7 @@
 #include "network_json_basic_conversions.h"
 #include "network_typed_endpoint.h"
 
-namespace stonks::app::dt::binance::endpoints {
+namespace stonks::app::dt::stec::binance::endpoints {
 auto GetCurrentAveragePrice() -> const network::TypedEndpoint& {
   static const auto endpoint = network::TypedEndpoint{
       .endpoint = {.method = network::Method::kGet, .uri = {"/avgPrice"}},
@@ -18,4 +18,4 @@ auto GetCurrentAveragePrice() -> const network::TypedEndpoint& {
           .result = network::ExpectedType<AvgPrice>()}};
   return endpoint;
 }
-}  // namespace stonks::app::dt::binance::endpoints
+}  // namespace stonks::app::dt::stec::binance::endpoints

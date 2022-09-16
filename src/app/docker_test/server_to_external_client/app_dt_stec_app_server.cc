@@ -10,7 +10,7 @@
 #include "network_json_common_conversions.h"
 #include "network_rest_server.h"
 
-namespace stonks::app::dt {
+namespace stonks::app::dt::stec {
 AppServer::AppServer(const cpp::NnSp<App> &app,
                      cpp::NnSp<cpp::di::IFactory<network::IRestRequestReceiver>>
                          request_receiver_factory,
@@ -23,4 +23,4 @@ AppServer::AppServer(const cpp::NnSp<App> &app,
                           return app->GetAveragePrice(request.Param("symbol"));
                         })
               .Start()} {}
-}  // namespace stonks::app::dt
+}  // namespace stonks::app::dt::stec

@@ -7,7 +7,7 @@
 #include "network_i_rest_request_sender.h"
 #include "network_rest_client.h"
 
-namespace stonks::app::dt::binance {
+namespace stonks::app::dt::stec::binance {
 class Client {
  public:
   explicit Client(cpp::NnSp<network::IRestRequestSender> request_sender);
@@ -18,6 +18,6 @@ class Client {
  private:
   network::RestClient rest_client_;
 };
-}  // namespace stonks::app::dt::binance
+}  // namespace stonks::app::dt::stec::binance
 
 #endif  // STONKS_APP_DOCKER_TEST_SERVER_TO_EXTERNAL_CLIENT_APP_DT_STEC_BINANCE_CLIENT_H_

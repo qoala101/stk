@@ -7,7 +7,7 @@
 
 namespace stonks::network {
 template <>
-auto ParseFromJson(const IJson &json) -> app::dt::binance::AvgPrice {
+auto ParseFromJson(const IJson &json) -> app::dt::stec::binance::AvgPrice {
   return {.mins = ParseFromJsonChild<int>(json, "mins"),
           .price = std::stod(ParseFromJsonChild<std::string>(json, "price"))};
 }

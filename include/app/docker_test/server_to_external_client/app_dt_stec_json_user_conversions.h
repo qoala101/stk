@@ -10,7 +10,7 @@ template <typename T>
 
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json)
-    -> app::dt::binance::AvgPrice;
+    -> app::dt::stec::binance::AvgPrice;
 }  // namespace stonks::network
 
 #endif  // STONKS_APP_DOCKER_TEST_SERVER_TO_EXTERNAL_CLIENT_APP_DT_STEC_JSON_USER_CONVERSIONS_H_

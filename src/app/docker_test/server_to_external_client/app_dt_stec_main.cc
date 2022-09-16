@@ -20,7 +20,7 @@ auto main(int /*unused*/, char* /*unused*/[]) -> int {
     stonks::app::injectors::MakeNetworkRestsdkInjector(),
     stonks::app::injectors::MakeLogSpdlogInjector(),
 
-    stonks::cpp::di::EnableNn<stonks::cpp::Sp<stonks::app::dt::App>>(),
+    stonks::cpp::di::EnableNn<stonks::cpp::Sp<stonks::app::dt::stec::App>>(),
     boost::di::bind<stonks::network::Uri>.to(stonks::network::Uri{"http://localhost:6506"})
   );
   // clang-format on
@@ -29,7 +29,7 @@ auto main(int /*unused*/, char* /*unused*/[]) -> int {
       injector.create<stonks::cpp::NnUp<stonks::log::ILogger>>();
   logger->LogImportantEvent("Started: server_to_external_client");
 
-  const auto server = injector.create<stonks::app::dt::AppServer>();
+  const auto server = injector.create<stonks::app::dt::stec::AppServer>();
 
   std::ignore = getchar();
   logger->LogImportantEvent("Ended: server_to_external_client");

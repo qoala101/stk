@@ -9,7 +9,7 @@
 #include "cpp_not_null.h"
 #include "network_rest_client_request_builder.h"
 
-namespace stonks::app::dt::binance {
+namespace stonks::app::dt::stec::binance {
 Client::Client(cpp::NnSp<network::IRestRequestSender> request_sender)
     : rest_client_{std::move(request_sender),
                    {"https://api.binance.com/api/v3"}} {}
@@ -19,4 +19,4 @@ auto Client::GetCurrentAveragePrice(const Symbol &symbol) const -> AvgPrice {
       .WithParam("symbol", symbol)
       .AndReceive<AvgPrice>();
 }
-}  // namespace stonks::app::dt::binance
+}  // namespace stonks::app::dt::stec::binance

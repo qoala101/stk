@@ -7,7 +7,7 @@
 #include "network_enums.h"
 #include "network_typed_endpoint.h"
 
-namespace stonks::app::dt::endpoints {
+namespace stonks::app::dt::stec::endpoints {
 auto GetAveragePrice() -> const network::TypedEndpoint& {
   static const auto endpoint = network::TypedEndpoint{
       .endpoint = {.method = network::Method::kGet,
@@ -17,4 +17,4 @@ auto GetAveragePrice() -> const network::TypedEndpoint& {
           .result = network::ExpectedType<Price>()}};
   return endpoint;
 }
-}  // namespace stonks::app::dt::endpoints
+}  // namespace stonks::app::dt::stec::endpoints

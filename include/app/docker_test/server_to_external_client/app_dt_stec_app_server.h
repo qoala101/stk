@@ -7,7 +7,7 @@
 #include "network_i_rest_request_receiver.h"
 #include "network_types.h"
 
-namespace stonks::app::dt {
+namespace stonks::app::dt::stec {
 class AppServer {
  public:
   AppServer(const cpp::NnSp<App> &app,
@@ -18,6 +18,6 @@ class AppServer {
  private:
   cpp::NnUp<network::IRestRequestReceiver> request_receiver_;
 };
-}  // namespace stonks::app::dt
+}  // namespace stonks::app::dt::stec
 
 #endif  // STONKS_APP_DOCKER_TEST_SERVER_TO_EXTERNAL_CLIENT_APP_DT_STEC_APP_SERVER_H_

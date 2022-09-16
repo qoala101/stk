@@ -4,7 +4,7 @@
 #include "app_dt_stec_binance_client.h"
 #include "app_dt_stec_types.h"
 
-namespace stonks::app::dt {
+namespace stonks::app::dt::stec {
 class App {
  public:
   explicit App(binance::Client binance_client);
@@ -14,6 +14,6 @@ class App {
  private:
   binance::Client binance_client_;
 };
-}  // namespace stonks::app::dt
+}  // namespace stonks::app::dt::stec
 
 #endif  // STONKS_APP_DOCKER_TEST_SERVER_TO_EXTERNAL_CLIENT_APP_DT_STEC_APP_H_
