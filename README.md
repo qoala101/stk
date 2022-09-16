@@ -92,6 +92,7 @@ Fix includes in changed files via VS Code Include What You Use command in source
 ## Docker
 
 ### Installation
+TODO(vh): Rewrite with the install-from-repository approach
 
 ```bash
 sudo mkdir -p /etc/apt/keyrings

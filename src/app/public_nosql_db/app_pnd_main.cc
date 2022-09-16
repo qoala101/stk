@@ -3,7 +3,9 @@
 #include <memory>
 #include <tuple>
 
-#include "app_injectors.h"
+#include "app_log_spdlog_injector.h"
+#include "app_network_restsdk_injector.h"
+#include "app_nosqldb_aws_injector.h"
 #include "app_pnd_items_interface_server.h"
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
@@ -13,9 +15,9 @@
 auto main(int /*unused*/, char* /*unused*/[]) -> int {
   // clang-format off
   const auto injector = make_injector(
-    stonks::app::injectors::MakeNetworkInjector(),
-    stonks::app::injectors::MakeNosqldbInjector(),
-    stonks::app::injectors::MakeLogInjector(),
+    stonks::app::injectors::MakeNetworkRestsdkInjector(),
+    stonks::app::injectors::MakeNosqldbAwsInjector(),
+    stonks::app::injectors::MakeLogSpdlogInjector(),
 
     boost::di::bind<stonks::network::Uri>.to(stonks::network::Uri{"http://localhost:6506/Entity"})
   );
