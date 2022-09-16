@@ -2,7 +2,6 @@
 
 #include <chrono>
 #include <compare>
-#include <functional>
 #include <limits>
 #include <memory>
 #include <range/v3/action/action.hpp>
