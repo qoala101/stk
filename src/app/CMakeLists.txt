@@ -1,1 +1,2 @@
+add_subdirectory(docker_test)
 add_subdirectory(public_nosql_db)

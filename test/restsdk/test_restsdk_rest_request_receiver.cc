@@ -45,8 +45,8 @@ struct SymbolPrice {
 namespace stonks::network {
 template <>
 auto ParseFromJson(const IJson &json) -> SymbolPrice {
-  return SymbolPrice{ParseFromJsonChild<SymbolName>(json, "symbol"),
-                     std::stod(ParseFromJsonChild<std::string>(json, "price"))};
+  return {.symbol = ParseFromJsonChild<SymbolName>(json, "symbol"),
+          .price = std::stod(ParseFromJsonChild<std::string>(json, "price"))};
 }
 
 auto ConvertToJson(const SymbolPrice &value) -> cpp::Pv<IJson> {
