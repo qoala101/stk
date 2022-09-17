@@ -1,2 +1,3 @@
+add_subdirectory(common)
 add_subdirectory(persistent_db_server)
 add_subdirectory(server_to_external_client)

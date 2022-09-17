@@ -11,7 +11,7 @@ auto ParseFromJson(const IJson &json) -> nosqldb::Item {
 }  // namespace stonks::network
 
 namespace stonks::nosqldb {
-auto ConvertToJson(const nosqldb::Item &value) -> cpp::Pv<network::IJson> {
+auto ConvertToJson(const Item &value) -> cpp::Pv<network::IJson> {
   return network::BuildJsonFrom("key", value.key, "value", value.value);
 }
 }  // namespace stonks::nosqldb

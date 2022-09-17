@@ -5,7 +5,7 @@
 
 #include "app_dt_stec_binance_endpoints.h"
 #include "app_dt_stec_binance_types.h"
-#include "app_dt_stec_types.h"
+#include "app_dt_types.h"
 #include "cpp_not_null.h"
 #include "network_rest_client_request_builder.h"
 

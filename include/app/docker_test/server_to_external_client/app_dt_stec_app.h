@@ -2,7 +2,7 @@
 #define STONKS_APP_DOCKER_TEST_SERVER_TO_EXTERNAL_CLIENT_APP_DT_STEC_APP_H_
 
 #include "app_dt_stec_binance_client.h"
-#include "app_dt_stec_types.h"
+#include "app_dt_types.h"
 
 namespace stonks::app::dt::stec {
 class App {

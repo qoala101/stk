@@ -3,7 +3,7 @@
 #include <string>
 
 #include "app_dt_stec_binance_types.h"
-#include "app_dt_stec_types.h"
+#include "app_dt_types.h"
 #include "cpp_optional.h"
 #include "network_enums.h"
 #include "network_json_basic_conversions.h"
