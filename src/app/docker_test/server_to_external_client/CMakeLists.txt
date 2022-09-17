@@ -10,6 +10,7 @@ add_executable(server_to_external_client
 
 target_include_directories(server_to_external_client
   PUBLIC ${PROJECT_SOURCE_DIR}/include/app
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/app/docker_test
   PUBLIC ${PROJECT_SOURCE_DIR}/include/app/docker_test/server_to_external_client
 )
 

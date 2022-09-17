@@ -2,7 +2,6 @@
 abseil/20220623.0
 aws-sdk-cpp/1.9.234
 cpprestsdk/2.10.18
-date/3.0.1
 di/1.2.0
 fmt/9.1.0
 gtest/cci.20210126
@@ -20,8 +19,10 @@ zlib/1.2.12
 
 [options]
 aws-sdk-cpp:dynamodb=True
+
 # Explicitly turned off because requires lots of installed dependencies
 aws-sdk-cpp:text-to-speech=False
+
 di:with_extensions=True
 
 [generators]

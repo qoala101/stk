@@ -7,7 +7,9 @@
 #include "cpp_di_factory.h"
 #include "cpp_smart_pointers.h"
 #include "network_i_rest_request_receiver.h"
+#include "network_i_rest_request_sender.h"
 #include "restsdk_rest_request_receiver.h"
+#include "restsdk_rest_request_sender.h"
 
 namespace stonks::app::injectors {
 [[nodiscard]] inline auto MakeNetworkRestsdkInjector() {
@@ -15,7 +17,10 @@ namespace stonks::app::injectors {
   return make_injector(
     boost::di::bind<cpp::di::IFactory<network::IRestRequestReceiver>>().to(cpp::di::Factory<restsdk::RestRequestReceiver>{}),
     cpp::di::EnableNn<cpp::Up<cpp::di::IFactory<network::IRestRequestReceiver>>>(),
-    cpp::di::EnableNn<cpp::Sp<cpp::di::IFactory<network::IRestRequestReceiver>>>()
+    cpp::di::EnableNn<cpp::Sp<cpp::di::IFactory<network::IRestRequestReceiver>>>(),
+    boost::di::bind<network::IRestRequestSender>().to<restsdk::RestRequestSender>(),
+    cpp::di::EnableNn<cpp::Up<network::IRestRequestSender>>(),
+    cpp::di::EnableNn<cpp::Sp<network::IRestRequestSender>>()
   );
   // clang-format on
 }
