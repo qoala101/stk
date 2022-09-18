@@ -5,6 +5,7 @@ find_package(fmt REQUIRED)
 find_package(function2 REQUIRED)
 
 add_library(libcpp
+  aliases/cpp_chrono.cc
   cpp_message_exception.cc
 )
 

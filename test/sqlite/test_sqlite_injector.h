@@ -19,6 +19,15 @@
 
 namespace test::sqlite {
 [[nodiscard]] inline auto Injector() -> auto & {
+  struct SqliteDbHandleFactory {
+    [[nodiscard]] auto operator()(
+        const stonks::sqlite::DbHandlesFactory &factory,
+        const stonks::sqlite::FilePath &file_path)
+        -> stonks::sqlite::SqliteDbHandle {
+      return factory.LoadDbFromFileToMemory(file_path);
+    }
+  };
+
   static auto injector = stonks::cpp::di::MakeInjector(
       stonks::cpp::di::BindTypeToValue<stonks::sqlite::FilePath>(
           stonks::sqlite::FilePath{"sqlite_db_test.db"}),
@@ -32,11 +41,8 @@ namespace test::sqlite {
           stonks::sqlite::SqliteDbHandleVariant,
           stonks::sqlite::SqliteDbFileHandle>(),
       stonks::cpp::di::BindTypeToFactoryFunction<
-          stonks::sqlite::SqliteDbHandle>([](const auto &injector) {
-        return injector.template create<stonks::sqlite::DbHandlesFactory>()
-            .LoadDbFromFileToMemory(
-                injector.template create<stonks::sqlite::FilePath>());
-      }));
+          stonks::sqlite::SqliteDbHandle, SqliteDbHandleFactory,
+          stonks::sqlite::DbHandlesFactory, stonks::sqlite::FilePath>());
   return injector;
 }
 }  // namespace test::sqlite
