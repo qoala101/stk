@@ -101,8 +101,7 @@ namespace {
 
 [[nodiscard]] auto FetchBody(const web::http::http_request &request)
     -> network::Body {
-  const auto ignore_content_type = true;
-  auto json = request.extract_json(ignore_content_type).get();
+  auto json = request.extract_json().get();
 
   if (json.is_null()) {
     return std::nullopt;
