@@ -1,10 +1,10 @@
-#include <cassert>
 #include <bits/exception.h>
 #include <gtest/gtest-death-test.h>
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
 #include <polymorphic_value.h>
 
+#include <cassert>
 #include <exception>
 #include <functional>
 #include <map>
@@ -170,7 +170,7 @@ class EntityClient : public EntityInterface {
   stonks::network::RestClient client_;
 };
 
-TEST(ClientServerDeathTest, ApiTest) {
+TEST(ClientServer, ApiTest) {
   auto entity = Entity{};
   entity.PushSymbol({"ETHUSDT"});
   entity.PushSymbol({"BTCUSDT"});
@@ -241,7 +241,7 @@ class FunctionHandler : public stonks::network::IRestRequestHandler {
       handler_{};
 };
 
-TEST(ClientServerDeathTest, WrongClientTypesReceived) {
+TEST(ClientServer, WrongClientTypesReceived) {
   auto entity_client = EntityClient{kBaseUri};
 
   auto handlers =
@@ -321,7 +321,7 @@ TEST(ClientServerDeathTest, WrongServerTypes) {
   // std::ignore = entity_client.GetSize();
 }
 
-TEST(ClientServerDeathTest, HandlingException) {
+TEST(ClientServer, HandlingException) {
   auto entity_server = EntityServer{kBaseUri};
   auto entity_client = EntityClient{kBaseUri};
 

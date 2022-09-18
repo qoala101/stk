@@ -7,10 +7,8 @@
 namespace stonks::cpp::di {
 namespace detail {
 template <typename Type, std::convertible_to<Type> Injected>
-struct InjectedFactory {
-  [[nodiscard]] auto operator()(const auto &injector) const -> Type {
-    return injector.template create<Injected>();
-  }
+struct TypeInjector : public Type {
+  explicit TypeInjector(Injected injected) : Type{std::move(injected)} {}
 };
 }  // namespace detail
 
@@ -20,7 +18,8 @@ struct InjectedFactory {
  */
 template <typename Type, std::convertible_to<Type> Injected>
 [[nodiscard]] auto BindTypeToOtherType() {
-  return boost::di::bind<Type>().to(detail::InjectedFactory<Type, Injected>{});
+  return boost::di::bind<Type>()
+      .template to<detail::TypeInjector<Type, Injected>>();
 }
 }  // namespace stonks::cpp::di
 

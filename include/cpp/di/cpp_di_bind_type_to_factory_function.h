@@ -2,30 +2,32 @@
 #define STONKS_CPP_DI_CPP_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_
 
 #include <boost/di.hpp>
+#include <type_traits>
 
 namespace stonks::cpp::di {
 namespace detail {
-template <typename Type, typename FactoryFunction>
-struct FactoryFunctionFactory {
-  [[nodiscard]] auto operator()(const auto &injector) const -> Type {
-    return factory_function_(injector);
-  }
-
-  FactoryFunction factory_function_{};
+template <typename Type, typename FactoryFunction, typename... Args>
+requires std::is_invocable_r_v<Type, FactoryFunction, Args...>
+struct FactoryFunctionInjector : public Type {
+  explicit FactoryFunctionInjector(Args... args)
+      : Type{FactoryFunction{}(std::move(args)...)} {}
 };
 }  // namespace detail
 
 /**
  * @brief Binds type to the factory function.
+ * @tparam FactoryFunction Callable which accepts list of Args.
+ * Can accept by both, value and reference.
+ * @tparam Args Arguments used by the factory function.
+ * Typically those would be factory and arguments to its create method.
  * @remark Can be used for types which don't have public constructors.
- * @remark Factory function accepts single injector argument,
- * which should be used to create all the entities inside the function.
  */
-template <typename Type, typename FactoryFunction>
-[[nodiscard]] auto BindTypeToFactoryFunction(FactoryFunction factory_function) {
-  return boost::di::bind<Type>().to(
-      detail::FactoryFunctionFactory<Type, FactoryFunction>{
-          std::move(factory_function)});
+template <typename Type, typename FactoryFunction, typename... Args>
+requires std::is_invocable_r_v<Type, FactoryFunction, Args...>
+[[nodiscard]] auto BindTypeToFactoryFunction() {
+  return boost::di::bind<Type>()
+      .template to<
+          detail::FactoryFunctionInjector<Type, FactoryFunction, Args...>>();
 }
 }  // namespace stonks::cpp::di
 

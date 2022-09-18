@@ -4,29 +4,27 @@
 #include <boost/di.hpp>
 
 #include "cpp_di_factory.h"
+#include "cpp_di_make_injector.h"
 #include "cpp_not_null.h"
 
 namespace stonks::cpp::di {
 namespace detail {
 template <typename T>
-struct NnFactory {
-  [[nodiscard]] auto operator()(const auto &injector) const -> Nn<T> {
-    return AssumeNn(injector.template create<T>());
-  }
+struct AssumedNn : public Nn<T> {
+  explicit AssumedNn(T t) : Nn<T>{AssumeNn(std::move(t))} {}
 };
 
 template <typename Interface>
 [[nodiscard]] auto EnableNn() {
-  return boost::di::make_injector(
-      boost::di::bind<NnUp<Interface>>().template to(
-          detail::NnFactory<Up<Interface>>{}),
-      boost::di::bind<NnSp<Interface>>().template to(
-          detail::NnFactory<Sp<Interface>>{}));
+  return MakeInjector(::boost::di::bind<NnUp<Interface>>()
+                          .template to<detail::AssumedNn<Up<Interface>>>(),
+                      ::boost::di::bind<NnSp<Interface>>()
+                          .template to<detail::AssumedNn<Sp<Interface>>>());
 }
 
 template <typename Interface, std::derived_from<Interface> Implementation>
 [[nodiscard]] auto EnableFactory() {
-  return boost::di::make_injector(
+  return MakeInjector(
       boost::di::bind<IFactory<Interface>>().to(Factory<Implementation>{}),
       detail::EnableNn<IFactory<Interface>>());
 }
@@ -38,7 +36,7 @@ template <typename Interface, std::derived_from<Interface> Implementation>
  */
 template <typename Interface, std::derived_from<Interface> Implementation>
 [[nodiscard]] auto BindInterfaceToImplementation() {
-  return boost::di::make_injector(
+  return MakeInjector(
       boost::di::bind<Interface>().template to<Implementation>(),
       detail::EnableNn<Interface>(),
       detail::EnableFactory<Interface, Implementation>());

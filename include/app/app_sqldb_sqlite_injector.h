@@ -12,16 +12,21 @@
 
 namespace stonks::app::injectors {
 [[nodiscard]] inline auto MakeSqldbSqliteInjector() {
+  struct SqliteDbHandleFactory {
+    [[nodiscard]] auto operator()(const sqlite::DbHandlesFactory &factory,
+                                  const sqlite::FilePath &file_path)
+        -> sqlite::SqliteDbHandle {
+      return factory.LoadDbFromFileToMemory(file_path);
+    }
+  };
+
   return cpp::di::MakeInjector(
       cpp::di::BindInterfaceToImplementation<sqldb::IDb, sqlite::Db>(),
       cpp::di::BindInterfaceToImplementation<sqldb::IQueryBuilder,
                                              sqlite::QueryBuilder>(),
-      cpp::di::BindTypeToFactoryFunction<sqlite::SqliteDbHandle>(
-          [](const auto &injector) {
-            return injector.template create<sqlite::DbHandlesFactory>()
-                .LoadDbFromFileToMemory(
-                    injector.template create<sqlite::FilePath>());
-          }),
+      cpp::di::BindTypeToFactoryFunction<
+          sqlite::SqliteDbHandle, SqliteDbHandleFactory,
+          sqlite::DbHandlesFactory, sqlite::FilePath>(),
       cpp::di::BindTypeToOtherType<sqlite::SqliteDbHandleVariant,
                                    sqlite::SqliteDbFileHandle>());
 }
