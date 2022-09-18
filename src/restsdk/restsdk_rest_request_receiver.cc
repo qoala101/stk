@@ -17,10 +17,10 @@
 #include <type_traits>
 #include <utility>
 
+#include "cpp_format.h"
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 #include "cpprest/http_msg.h"
-#include "cpp_format.h"
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_types.h"
@@ -101,7 +101,8 @@ namespace {
 
 [[nodiscard]] auto FetchBody(const web::http::http_request &request)
     -> network::Body {
-  auto json = request.extract_json().get();
+  const auto ignore_content_type = true;
+  auto json = request.extract_json(ignore_content_type).get();
 
   if (json.is_null()) {
     return std::nullopt;
