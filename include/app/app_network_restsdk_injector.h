@@ -1,11 +1,8 @@
 #ifndef STONKS_APP_APP_NETWORK_RESTSDK_INJECTOR_H_
 #define STONKS_APP_APP_NETWORK_RESTSDK_INJECTOR_H_
 
-#include <boost/di.hpp>
-
-#include "cpp_di_enable_not_null.h"
-#include "cpp_di_factory.h"
-#include "cpp_smart_pointers.h"
+#include "cpp_di_bind_interface_to_implementation.h"
+#include "cpp_di_make_injector.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_i_rest_request_sender.h"
 #include "restsdk_rest_request_receiver.h"
@@ -13,16 +10,11 @@
 
 namespace stonks::app::injectors {
 [[nodiscard]] inline auto MakeNetworkRestsdkInjector() {
-  // clang-format off
-  return make_injector(
-    boost::di::bind<cpp::di::IFactory<network::IRestRequestReceiver>>().to(cpp::di::Factory<restsdk::RestRequestReceiver>{}),
-    cpp::di::EnableNn<cpp::Up<cpp::di::IFactory<network::IRestRequestReceiver>>>(),
-    cpp::di::EnableNn<cpp::Sp<cpp::di::IFactory<network::IRestRequestReceiver>>>(),
-    boost::di::bind<network::IRestRequestSender>().to<restsdk::RestRequestSender>(),
-    cpp::di::EnableNn<cpp::Up<network::IRestRequestSender>>(),
-    cpp::di::EnableNn<cpp::Sp<network::IRestRequestSender>>()
-  );
-  // clang-format on
+  return cpp::di::MakeInjector(
+      cpp::di::BindInterfaceToImplementation<network::IRestRequestReceiver,
+                                             restsdk::RestRequestReceiver>(),
+      cpp::di::BindInterfaceToImplementation<network::IRestRequestSender,
+                                             restsdk::RestRequestSender>());
 }
 }  // namespace stonks::app::injectors
 

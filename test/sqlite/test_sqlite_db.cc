@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <boost/di.hpp>
 #include <cstdint>
 #include <filesystem>
 #include <range/v3/range/conversion.hpp>

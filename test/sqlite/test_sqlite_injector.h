@@ -1,9 +1,11 @@
 #ifndef STONKS_SQLITE_TEST_SQLITE_INJECTOR_H_
 #define STONKS_SQLITE_TEST_SQLITE_INJECTOR_H_
 
-#include <boost/di.hpp>
-
-#include "cpp_di_enable_not_null.h"
+#include "cpp_di_bind_interface_to_implementation.h"
+#include "cpp_di_bind_type_to_factory_function.h"
+#include "cpp_di_bind_type_to_other_type.h"
+#include "cpp_di_bind_type_to_value.h"
+#include "cpp_di_make_injector.h"
 #include "spdlog_logger.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"
@@ -17,26 +19,24 @@
 
 namespace test::sqlite {
 [[nodiscard]] inline auto Injector() -> auto & {
-  // clang-format off
-  static auto injector = make_injector(
-    boost::di::bind<stonks::sqlite::FilePath>().to(stonks::sqlite::FilePath{"sqlite_db_test.db"}),
-    boost::di::bind<stonks::log::ILogger>().to<stonks::spdlog::Logger>(),
-    stonks::cpp::di::EnableNn<stonks::cpp::Up<stonks::log::ILogger>>(),
-    stonks::cpp::di::EnableNn<stonks::cpp::Sp<stonks::log::ILogger>>(),
-    boost::di::bind<stonks::sqlite::SqliteDbHandle>().to([](const auto &injector) {
-      return injector.template create<stonks::sqlite::DbHandlesFactory>().LoadDbFromFileToMemory(injector.template create<stonks::sqlite::FilePath>());
-    }),
-    boost::di::bind<stonks::sqlite::SqliteDbHandleVariant>().to([](const auto &injector) -> std::shared_ptr<stonks::sqlite::SqliteDbHandleVariant> {
-      return std::make_shared<stonks::sqlite::SqliteDbHandleVariant>(injector.template create<stonks::sqlite::SqliteDbFileHandle>());
-    })
-    ,
-    stonks::cpp::di::EnableNn<stonks::cpp::Sp<stonks::sqlite::SqliteDbHandleVariant>>(), 
-    boost::di::bind<stonks::sqldb::IDb>().to<stonks::sqlite::Db>(),
-
-    boost::di::bind<stonks::sqldb::IQueryBuilder>().to<stonks::sqlite::QueryBuilder>(),
-    stonks::cpp::di::EnableNn<stonks::cpp::Up<stonks::sqldb::IQueryBuilder>>()
-  );
-  // clang-format on
+  static auto injector = stonks::cpp::di::MakeInjector(
+      stonks::cpp::di::BindTypeToValue<stonks::sqlite::FilePath>(
+          stonks::sqlite::FilePath{"sqlite_db_test.db"}),
+      stonks::cpp::di::BindInterfaceToImplementation<stonks::log::ILogger,
+                                                     stonks::spdlog::Logger>(),
+      stonks::cpp::di::BindInterfaceToImplementation<stonks::sqldb::IDb,
+                                                     stonks::sqlite::Db>(),
+      stonks::cpp::di::BindInterfaceToImplementation<
+          stonks::sqldb::IQueryBuilder, stonks::sqlite::QueryBuilder>(),
+      stonks::cpp::di::BindTypeToOtherType<
+          stonks::sqlite::SqliteDbHandleVariant,
+          stonks::sqlite::SqliteDbFileHandle>(),
+      stonks::cpp::di::BindTypeToFactoryFunction<
+          stonks::sqlite::SqliteDbHandle>([](const auto &injector) {
+        return injector.template create<stonks::sqlite::DbHandlesFactory>()
+            .LoadDbFromFileToMemory(
+                injector.template create<stonks::sqlite::FilePath>());
+      }));
   return injector;
 }
 }  // namespace test::sqlite

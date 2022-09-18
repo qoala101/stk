@@ -2,7 +2,6 @@
 #include <gtest/gtest-test-part.h>
 #include <polymorphic_value.h>
 
-#include <boost/di.hpp>
 #include <map>
 #include <memory>
 #include <ostream>

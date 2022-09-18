@@ -5,7 +5,6 @@
 #include <gtest/gtest-test-part.h>
 #include <polymorphic_value.h>
 
-#include <boost/di.hpp>
 #include <exception>
 #include <functional>
 #include <map>
