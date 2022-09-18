@@ -11,7 +11,7 @@ namespace stonks::network {
 auto AutoParsableRequestHandler::HandleRequestAndGiveResponse(
     RestRequest request) const -> RestResponse {
   return std::visit(
-      [&request](const auto &v) -> RestResponse {
+      [&request](auto &v) -> RestResponse {
         Expects(v);
 
         using V = decltype(v);

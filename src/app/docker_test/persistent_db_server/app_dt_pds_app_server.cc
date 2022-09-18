@@ -20,8 +20,8 @@ AppServer::AppServer(App app,
               .On(std::move(base_uri))
               .Handling(endpoints::RecordSymbolPrice(),
                         [app = std::move(app)](
-                            network::AutoParsableRestRequest request) {
-                          return app.RecordSymbolPrice(request.Body());
+                            network::AutoParsableRestRequest request) mutable {
+                          app.RecordSymbolPrice(request.Body());
                         })
               .Start()} {}
 }  // namespace stonks::app::dt::pds

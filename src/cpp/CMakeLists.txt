@@ -2,6 +2,7 @@ find_package(Microsoft.GSL REQUIRED)
 find_package(polymorphic_value REQUIRED)
 find_package(di REQUIRED)
 find_package(fmt REQUIRED)
+find_package(function2 REQUIRED)
 
 add_library(libcpp
   cpp_message_exception.cc
@@ -23,4 +24,5 @@ target_link_libraries(libcpp
   PUBLIC polymorphic_value::polymorphic_value
   PUBLIC di::di
   PUBLIC fmt::fmt
+  PUBLIC function2::function2
 )

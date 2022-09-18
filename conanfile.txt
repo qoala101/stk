@@ -4,6 +4,7 @@ aws-sdk-cpp/1.9.234
 cpprestsdk/2.10.18
 di/1.2.0
 fmt/9.1.0
+function2/4.2.1
 gtest/cci.20210126
 magic_enum/0.8.0
 ms-gsl/4.0.0

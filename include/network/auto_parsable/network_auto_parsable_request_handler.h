@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_H_
 #define STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_H_
 
+#include <function2/function2.hpp>
 #include <functional>
 #include <utility>
 #include <variant>
@@ -12,24 +13,23 @@
 namespace stonks::network {
 namespace detail {
 template <typename T>
-concept Callable = requires(const T &t) {
+concept Callable = requires(T &t) {
   { t() } -> std::same_as<void>;
 };
 
 template <typename T>
-concept CallableWithRequest = requires(const T &t,
-                                       AutoParsableRestRequest request) {
+concept CallableWithRequest = requires(T &t, AutoParsableRestRequest request) {
   { t(std::move(request)) } -> std::same_as<void>;
 };
 
 template <typename T>
-concept CallableWithResponse = requires(const T &t) {
+concept CallableWithResponse = requires(T &t) {
   { t() } -> Convertible;
 };
 
 template <typename T>
 concept CallableWithRequestAndResponse =
-    requires(const T &t, AutoParsableRestRequest request) {
+    requires(T &t, AutoParsableRestRequest request) {
   { t(std::move(request)) } -> Convertible;
 };
 }  // namespace detail
@@ -68,14 +68,15 @@ class AutoParsableRequestHandler : public IRestRequestHandler {
       -> RestResponse override;
 
  private:
-  using Handler = std::function<void()>;
-  using HandlerWithRequest = std::function<void(AutoParsableRestRequest)>;
-  using HandlerWithResponse = std::function<Result::value_type()>;
+  using Handler = fu2::unique_function<void()>;
+  using HandlerWithRequest =
+      fu2::unique_function<void(AutoParsableRestRequest)>;
+  using HandlerWithResponse = fu2::unique_function<Result::value_type()>;
   using HandlerWithRequestAndResponse =
-      std::function<Result::value_type(AutoParsableRestRequest)>;
+      fu2::unique_function<Result::value_type(AutoParsableRestRequest)>;
 
-  std::variant<Handler, HandlerWithRequest, HandlerWithResponse,
-               HandlerWithRequestAndResponse>
+  mutable std::variant<Handler, HandlerWithRequest, HandlerWithResponse,
+                       HandlerWithRequestAndResponse>
       handler_{};
 };
 }  // namespace stonks::network
