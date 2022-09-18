@@ -1,5 +1,4 @@
 find_package(magic_enum REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
 find_package(range-v3 REQUIRED)
 
 add_library(libsqldb
@@ -30,6 +29,5 @@ target_include_directories(libsqldb
 target_link_libraries(libsqldb
   PUBLIC libcpp
   PUBLIC magic_enum::magic_enum
-  PRIVATE Microsoft.GSL::GSL
   PRIVATE range-v3::range-v3
 )

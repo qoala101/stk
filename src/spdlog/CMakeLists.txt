@@ -1,5 +1,4 @@
 find_package(spdlog REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
 
 add_library(libspdlog
   spdlog_logger.cc
@@ -17,5 +16,4 @@ target_link_libraries(libspdlog
   PUBLIC liblog
   PUBLIC libcpp
   PRIVATE spdlog::spdlog
-  PRIVATE Microsoft.GSL::GSL
 )

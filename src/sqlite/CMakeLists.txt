@@ -1,5 +1,4 @@
 find_package(SQLite3 REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
 find_package(range-v3 REQUIRED)
 
 add_library(libsqlite
@@ -28,6 +27,5 @@ target_link_libraries(libsqlite
   PUBLIC libsqldb
   PUBLIC liblog
   PRIVATE SQLite::SQLite3
-  PRIVATE Microsoft.GSL::GSL
   PRIVATE range-v3::range-v3
 )

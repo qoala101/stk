@@ -1,5 +1,4 @@
 find_package(AWSSDK REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
 
 add_library(libaws
   dynamodb/aws_dynamodb_async_db.cc
@@ -20,5 +19,4 @@ target_link_libraries(libaws
   PUBLIC libnosqldb
   PUBLIC liblog
   PRIVATE AWS::dynamodb
-  PRIVATE Microsoft.GSL::GSL
 )

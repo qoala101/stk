@@ -1,4 +1,3 @@
-find_package(Microsoft.GSL REQUIRED)
 find_package(range-v3 REQUIRED)
 
 add_library(libstonks
@@ -20,6 +19,5 @@ target_include_directories(libstonks
 target_link_libraries(libstonks
   PRIVATE librestsdk
   PRIVATE libsqlite
-  PRIVATE Microsoft.GSL::GSL
   PRIVATE range-v3::range-v3
 )

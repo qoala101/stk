@@ -1,5 +1,3 @@
-find_package(Microsoft.GSL REQUIRED)
-
 add_library(libnetwork
   auto_parsable/network_auto_parsable_request_handler.cc
   auto_parsable/network_auto_parsable_request.cc
@@ -31,5 +29,4 @@ target_include_directories(libnetwork
 
 target_link_libraries(libnetwork
   PUBLIC libcpp
-  PUBLIC Microsoft.GSL::GSL
 )
