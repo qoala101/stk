@@ -11,7 +11,7 @@
 #include "network_rest_server.h"
 
 namespace stonks::app::dt::stec {
-AppServer::AppServer(const cpp::NnSp<App> &app,
+AppServer::AppServer(App app,
                      cpp::NnSp<cpp::di::IFactory<network::IRestRequestReceiver>>
                          request_receiver_factory,
                      network::Uri base_uri)
@@ -19,8 +19,9 @@ AppServer::AppServer(const cpp::NnSp<App> &app,
           network::RestServer{std::move(request_receiver_factory)}
               .On(std::move(base_uri))
               .Handling(endpoints::GetAveragePrice(),
-                        [app](network::AutoParsableRestRequest request) {
-                          return app->GetAveragePrice(request.Param("symbol"));
+                        [app = std::move(app)](
+                            network::AutoParsableRestRequest request) {
+                          return app.GetAveragePrice(request.Param("symbol"));
                         })
               .Start()} {}
 }  // namespace stonks::app::dt::stec

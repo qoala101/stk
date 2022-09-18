@@ -10,7 +10,7 @@
 namespace stonks::app::dt::stec {
 class AppServer {
  public:
-  AppServer(const cpp::NnSp<App> &app,
+  AppServer(App app,
             cpp::NnSp<cpp::di::IFactory<network::IRestRequestReceiver>>
                 request_receiver_factory,
             network::Uri base_uri);
