@@ -21,7 +21,7 @@ class Db : public sqldb::IDb {
    * @brief Creates wrapper for SQLite DB.
    */
   explicit Db(cpp::NnSp<log::ILogger> logger,
-              cpp::NnSp<SqliteDbHandleVariant> sqlite_db_handle);
+              SqliteDbHandleVariant sqlite_db_handle);
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement
