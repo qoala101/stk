@@ -10,9 +10,5 @@ target_include_directories(libapp
   PUBLIC ${PROJECT_SOURCE_DIR}/include/app
 )
 
-target_link_libraries(libapp
-  PRIVATE libcpp
-)
-
 add_subdirectory(docker_test)
 add_subdirectory(public_nosql_db)
