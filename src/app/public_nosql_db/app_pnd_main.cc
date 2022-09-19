@@ -7,6 +7,7 @@
 #include "app_network_restsdk_injector.h"
 #include "app_nosqldb_aws_injector.h"
 #include "app_pnd_items_interface_server.h"
+#include "app_wait_for_interrupt.h"
 #include "cpp_di_bind_type_to_value.h"
 #include "cpp_di_make_injector.h"
 #include "cpp_not_null.h"
@@ -28,6 +29,6 @@ auto main(int /*unused*/, char* /*unused*/[]) -> int {
 
   const auto server = injector.create<stonks::app::pnd::ItemsInterfaceServer>();
 
-  std::ignore = getchar();
+  stonks::app::WaitForInterrupt();
   logger->LogImportantEvent("Ended: public_nosql_db");
 }

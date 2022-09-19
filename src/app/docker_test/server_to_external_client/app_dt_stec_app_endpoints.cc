@@ -10,7 +10,8 @@
 namespace stonks::app::dt::stec::endpoints {
 auto GetAveragePrice() -> const network::TypedEndpoint& {
   static const auto endpoint = network::TypedEndpoint{
-      .endpoint = {.method = network::Method::kGet, .uri = {"/AveragePrice"}},
+      .endpoint = {.method = network::Method::kGet,
+                   .uri = {"/GetAveragePrice"}},
       .expected_types = {
           .params = {{"symbol", network::ExpectedType<Symbol>()}},
           .result = network::ExpectedType<Price>()}};

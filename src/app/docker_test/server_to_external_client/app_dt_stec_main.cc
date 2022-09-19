@@ -1,12 +1,11 @@
 #include <boost/di.hpp>
-#include <cstdio>
 #include <memory>
-#include <tuple>
 
 #include "app_dt_stec_app_server.h"
 #include "app_dt_stec_pds_app_client.h"
 #include "app_log_spdlog_injector.h"
 #include "app_network_restsdk_injector.h"
+#include "app_wait_for_interrupt.h"
 #include "cpp_di_bind_type_to_value.h"
 #include "cpp_di_make_injector.h"
 #include "cpp_di_override_bindings_for_type.h"
@@ -20,12 +19,12 @@ auto main(int /*unused*/, char* /*unused*/[]) -> int {
       stonks::app::injectors::MakeNetworkRestsdkInjector(),
       stonks::app::injectors::MakeLogSpdlogInjector(),
       stonks::cpp::di::BindTypeToValue<stonks::network::Uri>(
-          stonks::network::Uri{"http://localhost:6507"}));
+          stonks::network::Uri{"http://0.0.0.0:6507"}));
 
   const auto injector = stonks::cpp::di::OverrideBindingsForType<
       stonks::app::dt::stec::PdsAppClient>(
       default_injector, stonks::cpp::di::BindTypeToValue<stonks::network::Uri>(
-                            stonks::network::Uri{"http://localhost:6506"}));
+                            stonks::network::Uri{"http://0.0.0.0:6506"}));
 
   const auto logger =
       injector.create<stonks::cpp::NnUp<stonks::log::ILogger>>();
@@ -33,6 +32,6 @@ auto main(int /*unused*/, char* /*unused*/[]) -> int {
 
   const auto server = injector.create<stonks::app::dt::stec::AppServer>();
 
-  std::ignore = getchar();
+  stonks::app::WaitForInterrupt();
   logger->LogImportantEvent("Ended: server_to_external_client");
 }

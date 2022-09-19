@@ -12,5 +12,6 @@ target_include_directories(libdockertestcommon
 )
 
 target_link_libraries(libdockertestcommon
+  PRIVATE libapp
   PRIVATE libnetwork
 )
