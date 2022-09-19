@@ -1,5 +1,4 @@
 add_executable(persistent_db_server
-  app_dt_pds_app_endpoints.cc
   app_dt_pds_app_server.cc
   app_dt_pds_app.cc
   app_dt_pds_db.cc

@@ -6,6 +6,7 @@ add_executable(server_to_external_client
   app_dt_stec_binance_endpoints.cc
   app_dt_stec_json_user_conversions.cc
   app_dt_stec_main.cc
+  app_dt_stec_pds_app_client.cc
 )
 
 target_include_directories(server_to_external_client

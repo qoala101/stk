@@ -9,6 +9,7 @@
 #include "app_dt_types.h"
 #include "cpp_not_null.h"
 #include "network_rest_client_request_builder.h"
+#include "app_dt_json_user_conversions.h"
 
 namespace stonks::app::dt::stec {
 PdsAppClient::PdsAppClient(network::RestClient rest_client)

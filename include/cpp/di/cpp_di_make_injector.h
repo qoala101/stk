@@ -5,11 +5,17 @@
 
 namespace stonks::cpp::di {
 /**
- * @brief Makes injector.
+ * @brief Overrides binding by appending [Override] to it.
  */
-template <typename... Args>
+constexpr boost::di::core::override Override{};
+
+/**
+ * @brief Makes injector.
+ * @tparam Args Boost DI bindings or other injectors.
+ */
+template <typename... Ts, typename... Args>
 [[nodiscard]] auto MakeInjector(Args &&...args) {
-  return boost::di::make_injector(std::forward<Args>(args)...);
+  return boost::di::make_injector<Ts...>(std::forward<Args>(args)...);
 }
 }  // namespace stonks::cpp::di
 
