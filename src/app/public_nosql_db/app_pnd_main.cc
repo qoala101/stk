@@ -1,3 +1,4 @@
+#include <boost/di.hpp>
 #include <cstdio>
 #include <memory>
 #include <tuple>
@@ -7,6 +8,7 @@
 #include "app_nosqldb_aws_injector.h"
 #include "app_pnd_items_interface_server.h"
 #include "cpp_di_bind_type_to_value.h"
+#include "cpp_di_make_injector.h"
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
 #include "network_types.h"

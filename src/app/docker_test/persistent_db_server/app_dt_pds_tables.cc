@@ -1,5 +1,9 @@
 #include "app_dt_pds_tables.h"
 
+#include <string>
+
+#include "sqldb_enums.h"
+
 namespace stonks::app::dt::pds::tables {
 auto SymbolPriceRecord() -> const sqldb::TableDefinition& {
   static const auto table = sqldb::TableDefinition{

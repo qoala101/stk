@@ -1,6 +1,5 @@
 #include "app_dt_stec_app_server.h"
 
-#include <memory>
 #include <utility>
 
 #include "app_dt_stec_app_endpoints.h"

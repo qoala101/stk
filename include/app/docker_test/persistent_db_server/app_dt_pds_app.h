@@ -3,8 +3,6 @@
 
 #include "app_dt_pds_db.h"
 #include "app_dt_types.h"
-#include "cpp_not_null.h"
-#include "sqldb_i_db.h"
 
 namespace stonks::app::dt::pds {
 class App {
