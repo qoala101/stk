@@ -20,10 +20,28 @@ zlib/1.2.12
 [options]
 aws-sdk-cpp:dynamodb=True
 
-# Explicitly turned off because requires lots of installed dependencies
+aws-sdk-cpp:access-management=False
+aws-sdk-cpp:cognito-identity=False
+aws-sdk-cpp:iam=False
+aws-sdk-cpp:identity-management=False
+aws-sdk-cpp:kms=False
+aws-sdk-cpp:monitoring=False
+aws-sdk-cpp:polly=False
+aws-sdk-cpp:queues=False
+aws-sdk-cpp:s3=False
+aws-sdk-cpp:s3-encryption=False
+aws-sdk-cpp:sqs=False
+aws-sdk-cpp:sts=False
 aws-sdk-cpp:text-to-speech=False
+aws-sdk-cpp:transfer=False
 
 di:with_extensions=True
+
+sqlite3:build_executable=False
+sqlite3:enable_column_metadata=False
+sqlite3:enable_math_functions=False
+sqlite3:enable_rtree=False
+sqlite3:enable_unlock_notify=False
 
 [generators]
 cmake_find_package
