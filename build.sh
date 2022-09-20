@@ -10,5 +10,10 @@ docker push qoala101/stonks:stonks-stec
 docker push qoala101/stonks:stonks-pds
 
 # run kubernetes deployment
+kompose convert
+kubectl apply -f pds-tcp-service.yaml,pds-pod.yaml,stec-tcp-service.yaml,stec-pod.yaml
 
 # run ngrok which opens port to kubernetes
+
+# stop deployment
+kubectl delete -f pds-tcp-service.yaml,pds-pod.yaml,stec-tcp-service.yaml,stec-pod.yaml

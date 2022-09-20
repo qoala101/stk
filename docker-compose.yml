@@ -2,20 +2,24 @@ version: "3.8"
 
 services:
   pds:
-    # image: persistent_db_server
-    build:
-      dockerfile: ./src/app/docker_test/persistent_db_server/Dockerfile
-      context: ./
+    image: qoala101/stonks:stonks-pds
+    # build:
+    #   dockerfile: ./src/app/docker_test/persistent_db_server/Dockerfile
+    #   context: ./
     restart: on-failure
     container_name: pds
     ports:
       - "6506:6506"
+    labels:
+      kompose.service.type: LoadBalancer
   stec:
-    # image: server_to_external_client
-    build:
-      dockerfile: ./src/app/docker_test/server_to_external_client/Dockerfile
-      context: ./
+    image: qoala101/stonks:stonks-stec
+    # build:
+    #   dockerfile: ./src/app/docker_test/server_to_external_client/Dockerfile
+    #   context: ./
     restart: on-failure
     container_name: stec
     ports:
       - "6507:6507"
+    labels:
+      kompose.service.type: LoadBalancer
