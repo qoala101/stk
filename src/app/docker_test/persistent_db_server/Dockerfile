@@ -1,5 +1,4 @@
-FROM stonks_dependencies_image:latest
-RUN apt -y install curl
+FROM stonks-dependencies:latest
 WORKDIR /app
 COPY ./include       ./include
 COPY ./src           ./src

@@ -24,7 +24,7 @@ auto main(int /*unused*/, char* /*unused*/[]) -> int {
   const auto injector = stonks::cpp::di::OverrideBindingsForType<
       stonks::app::dt::stec::PdsAppClient>(
       default_injector, stonks::cpp::di::BindTypeToValue<stonks::network::Uri>(
-                            stonks::network::Uri{"http://0.0.0.0:6506"}));
+                            stonks::network::Uri{"http://pds:6506"}));
 
   const auto logger =
       injector.create<stonks::cpp::NnUp<stonks::log::ILogger>>();

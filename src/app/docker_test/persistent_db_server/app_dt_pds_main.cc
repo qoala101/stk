@@ -22,7 +22,7 @@ auto main(int /*unused*/, char* /*unused*/[]) -> int {
       stonks::app::injectors::MakeSqldbSqliteInjector(),
       stonks::app::injectors::MakeLogSpdlogInjector(),
       stonks::cpp::di::BindTypeToValue<stonks::network::Uri>(
-          stonks::network::Uri{"http://localhost:6506"}),
+          stonks::network::Uri{"http://0.0.0.0:6506"}),
       stonks::cpp::di::BindTypeToValue<stonks::sqlite::FilePath>(
           stonks::sqlite::FilePath{"persistent_db_server.db"}));
 

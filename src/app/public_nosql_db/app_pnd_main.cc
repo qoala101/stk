@@ -21,7 +21,7 @@ auto main(int /*unused*/, char* /*unused*/[]) -> int {
       stonks::app::injectors::MakeNosqldbAwsInjector(),
       stonks::app::injectors::MakeLogSpdlogInjector(),
       stonks::cpp::di::BindTypeToValue<stonks::network::Uri>(
-          stonks::network::Uri{"http://localhost:6506/Entity"}));
+          stonks::network::Uri{"http://0.0.0.0:6506/Entity"}));
 
   const auto logger =
       injector.create<stonks::cpp::NnUp<stonks::log::ILogger>>();

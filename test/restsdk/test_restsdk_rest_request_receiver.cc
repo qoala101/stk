@@ -86,7 +86,7 @@ TEST(RestRequestReceiver, SendRequest) {
 
   const auto request = stonks::network::RestRequestBuilder{}
                            .WithMethod(stonks::network::Method::kGet)
-                           .WithBaseUri({"http://localhost:6506"})
+                           .WithBaseUri({"http://0.0.0.0:6506"})
                            .AppendUri({"Test"})
                            .WithBody("BTCUSDT")
                            .AddParam("price", 123.456)

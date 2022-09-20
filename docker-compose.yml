@@ -1,0 +1,13 @@
+services:
+  pds:
+    build:
+      dockerfile: ./src/app/docker_test/persistent_db_server/Dockerfile
+      context: ./
+    ports:
+      - "6506:6506"
+  stec:
+    build:
+      dockerfile: ./src/app/docker_test/server_to_external_client/Dockerfile
+      context: ./
+    ports:
+      - "6507:6507"
