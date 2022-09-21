@@ -1,6 +1,6 @@
 bin
-lib
 build
-.vscode
-.TODO
+lib
 .cache
+.TODO
+.vscode

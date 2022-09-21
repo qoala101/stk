@@ -1,8 +1,17 @@
 FROM debian:latest
 WORKDIR /app
+COPY CMakeLists.txt  .
 COPY conanfile.txt  .
 RUN apt update && \
-  apt -y install cmake git iwyu pip && \
+  apt -y install \
+  cmake \
+  git \
+  iwyu \
+  pip && \
+  apt autoclean && \
+  apt autoremove && \
+  apt clean && \
+  rm -rf /var/lib/apt/lists/* &&\
   pip --no-input install conan && \
   conan profile new default || true && \
   conan profile update settings.os=Linux default && \
@@ -15,4 +24,6 @@ RUN apt update && \
   conan profile update env.CXX=/usr/bin/clang++-11 default && \
   mkdir build && \
   cd build && \
-  conan install .. --build=missing -pr=default
+  conan install .. --build=missing -pr=default && \
+  conan remove "*" -s -b -f && \
+  cmake .. -DFETCH_DEPENDENCIES_ONLY=ON

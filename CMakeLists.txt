@@ -7,9 +7,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(
   "stonks"
-  VERSION 0.0.1
+  VERSION 0.1.0
   LANGUAGES CXX
 )
+
+option(FETCH_DEPENDENCIES_ONLY "If true, CMake would stop after making dependencies declared in the main CMakeFile.txt available.")
+option(BUILD_TESTS "Whether to include the test folder to the build." ON)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -23,20 +26,32 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
+include(FetchContent)
+
+FetchContent_Declare(NotNull
+  GIT_REPOSITORY https://github.com/bitwizeshift/not_null
+  GIT_TAG c839cb1bb4cf988bd17a4c363263997275f508b8)
+
+FetchContent_MakeAvailable(NotNull)
+
+if(FETCH_DEPENDENCIES_ONLY)
+  return()
+endif(FETCH_DEPENDENCIES_ONLY)
+
 find_program(iwyu NAMES iwyu include-what-you-use REQUIRED)
 set(iwyu ${iwyu}
-    -Xiwyu
-    --no_comments
-    -Xiwyu
-    --no_fwd_decls
-    -Xiwyu
-    --cxx17ns)
+  -Xiwyu --no_comments
+  -Xiwyu --no_fwd_decls
+  -Xiwyu --cxx17ns
+)
 set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu})
 
 # Removes the clash of U macro between cpprestsdk and gtest libs.
 add_compile_definitions(_TURN_OFF_PLATFORM_STRING)
 
-include(CTest)
-
 add_subdirectory(src)
-add_subdirectory(test)
+
+if(BUILD_TESTS)
+  include(CTest)
+  add_subdirectory(test)
+endif(BUILD_TESTS)
