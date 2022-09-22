@@ -7,12 +7,11 @@
 
 #include "cpp_not_null.h"
 #include "not_null.hpp"
+#include "sqldb_as_values.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_query_builder_facade.h"
-#include "sqldb_row_definition_alias_rd.h"
 #include "sqldb_types.h"
-#include "sqldb_value_alias_v.h"
 #include "test_sqlite_injector.h"
 
 namespace {
@@ -78,16 +77,16 @@ TEST(SqliteDb, InsertAndSelect) {
                                .IntoTable(kAssetTableDefinition)
                                .IntoColumns({{"name"}})
                                .Build());
-  insert_statement->Execute({V{"BTC"}});
-  insert_statement->Execute({V{"ETH"}});
-  insert_statement->Execute({V{"USDT"}});
+  insert_statement->Execute(stonks::sqldb::AsValues("BTC"));
+  insert_statement->Execute(stonks::sqldb::AsValues("ETH"));
+  insert_statement->Execute(stonks::sqldb::AsValues("USDT"));
 
   auto select_statement =
       db->PrepareStatement(query_builder_facade->Select()
                                .AllColumns()
                                .FromTable(kAssetTableDefinition.table)
                                .Build(),
-                           Rd{kAssetTableDefinition});
+                           kAssetTableDefinition);
 
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 3);
@@ -148,9 +147,10 @@ TEST(SqliteDb, ForeignKey) {
           .IntoTable(kSymbolTableDefinition.table)
           .IntoColumns({{"base_asset_id"}, {"quote_asset_id"}})
           .Build());
-  insert_symbol_statement->Execute({V{1}, V{3}});
-  insert_symbol_statement->Execute({V{2}, V{3}});
-  EXPECT_ANY_THROW(insert_symbol_statement->Execute({V{5}, V{6}}));
+  insert_symbol_statement->Execute(stonks::sqldb::AsValues(1, 3));
+  insert_symbol_statement->Execute(stonks::sqldb::AsValues(2, 3));
+  EXPECT_ANY_THROW(
+      insert_symbol_statement->Execute(stonks::sqldb::AsValues(5, 6)));
 
   db->PrepareStatement(query_builder->BuildCreateTableIfNotExistsQuery(
                            kSymbolPriceTableDefinition))
@@ -160,8 +160,10 @@ TEST(SqliteDb, ForeignKey) {
       db->PrepareStatement(query_builder_facade->Insert()
                                .IntoTable(kSymbolPriceTableDefinition)
                                .Build());
-  insert_symbol_price_statement->Execute({V{1}, V{1661787828796}, V{12345}});
-  insert_symbol_price_statement->Execute({V{2}, V{1661787828796}, V{0.12345}});
+  insert_symbol_price_statement->Execute(
+      stonks::sqldb::AsValues(1, 1661787828796, 12345));
+  insert_symbol_price_statement->Execute(
+      stonks::sqldb::AsValues(2, 1661787828796, 0.12345));
 }
 
 TEST(SqliteDb, SelectJoin) {
@@ -178,7 +180,7 @@ TEST(SqliteDb, SelectJoin) {
        "FROM Symbol "
        "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
        "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id=QuoteAsset.id;"},
-      Rd{cell_definitions});
+    cell_definitions);
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
   EXPECT_EQ(rows.GetColumnValues({"base_asset"})[0].GetString(), "BTC");
@@ -201,10 +203,10 @@ TEST(SqliteDb, FileWriteAndRead) {
                                 .FromTable(kSymbolPriceTableDefinition.table)
                                 .Build();
   const auto db_rows =
-      db->PrepareStatement(select_query, Rd{kSymbolPriceTableDefinition})
+      db->PrepareStatement(select_query, kSymbolPriceTableDefinition)
           ->Execute();
   const auto db_copy_rows =
-      db_copy->PrepareStatement(select_query, Rd{kSymbolPriceTableDefinition})
+      db_copy->PrepareStatement(select_query, kSymbolPriceTableDefinition)
           ->Execute();
   EXPECT_GT(db_rows.GetSize(), 0);
   EXPECT_EQ(db_rows, db_copy_rows);
@@ -225,7 +227,7 @@ TEST(SqliteDb, CascadeForeignKeyDelete) {
                                .AllColumns()
                                .FromTable(kAssetTableDefinition.table)
                                .Build(),
-                           Rd{kAssetTableDefinition});
+                           kAssetTableDefinition);
   auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
 
@@ -234,7 +236,7 @@ TEST(SqliteDb, CascadeForeignKeyDelete) {
                                .AllColumns()
                                .FromTable(kSymbolTableDefinition.table)
                                .Build(),
-                           Rd{kSymbolTableDefinition});
+                           kSymbolTableDefinition);
   rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 0);
 
@@ -243,7 +245,7 @@ TEST(SqliteDb, CascadeForeignKeyDelete) {
                                .AllColumns()
                                .FromTable(kSymbolPriceTableDefinition.table)
                                .Build(),
-                           Rd{kSymbolPriceTableDefinition});
+                           kSymbolPriceTableDefinition);
   rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 0);
 }

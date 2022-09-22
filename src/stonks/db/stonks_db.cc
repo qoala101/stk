@@ -22,11 +22,11 @@
 #include "cpp_optional.h"
 #include "cpp_typed_struct.h"
 #include "not_null.hpp"
+#include "sqldb_as_values.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_rows.h"
 #include "sqldb_value.h"
-#include "sqldb_value_alias_v.h"
 #include "stonks_cache.h"
 #include "stonks_prepared_statements.h"
 #include "stonks_table_definitions.h"
@@ -185,8 +185,8 @@ auto Db::SelectSymbolPriceTicks(const SymbolName *symbol, const Period *period,
                               ? &prepared_statements_->SelectSymbolPriceTicks()
                               : &prepared_statements_->SelectPriceTicks();
   auto values = [this, symbol, period, limit]() {
-    auto values = std::vector<sqldb::Value>{V{GetStartTime(period).count()},
-                                            V{GetEndTime(period).count()}};
+    auto values = sqldb::AsValues(GetStartTime(period).count(),
+                                  GetEndTime(period).count());
 
     if (symbol != nullptr) {
       values.emplace_back(cache_.GetSymbolIdBySymbol(*symbol));
@@ -221,10 +221,10 @@ auto Db::SelectSymbolPriceTicks(const SymbolName *symbol, const Period *period,
 }
 
 void Db::InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick) {
-  prepared_statements_->InsertPriceTick().Execute(
-      {V{cache_.GetSymbolIdBySymbol(symbol_price_tick.symbol)},
-       V{symbol_price_tick.time.count()}, V{symbol_price_tick.buy_price},
-       V{symbol_price_tick.sell_price}});
+  prepared_statements_->InsertPriceTick().Execute(sqldb::AsValues(
+      cache_.GetSymbolIdBySymbol(symbol_price_tick.symbol),
+      symbol_price_tick.time.count(), symbol_price_tick.buy_price,
+      symbol_price_tick.sell_price));
 }
 
 void Db::CreateTablesIfNotExist() {
@@ -240,20 +240,18 @@ void Db::CreateTablesIfNotExist() {
 }
 
 void Db::InsertSymbolInfo(const SymbolInfo &symbol_info) {
-  prepared_statements_->InsertSymbolInfo().Execute(
-      {V{symbol_info.symbol},
-       V{cache_.GetAssetIdByAsset(symbol_info.base_asset)},
-       V{cache_.GetAssetIdByAsset(symbol_info.quote_asset)},
-       V{symbol_info.min_base_amount}, V{symbol_info.min_quote_amount},
-       V{symbol_info.base_step}, V{symbol_info.quote_step}});
+  prepared_statements_->InsertSymbolInfo().Execute(sqldb::AsValues(
+      symbol_info.symbol, cache_.GetAssetIdByAsset(symbol_info.base_asset),
+      cache_.GetAssetIdByAsset(symbol_info.quote_asset),
+      symbol_info.min_base_amount, symbol_info.min_quote_amount,
+      symbol_info.base_step, symbol_info.quote_step));
 }
 
 void Db::UpdateSymbolInfo(const SymbolInfo &symbol_info) {
-  prepared_statements_->UpdateSymbolInfo().Execute(
-      {V{cache_.GetAssetIdByAsset(symbol_info.base_asset)},
-       V{cache_.GetAssetIdByAsset(symbol_info.quote_asset)},
-       V{symbol_info.min_base_amount}, V{symbol_info.min_quote_amount},
-       V{symbol_info.base_step}, V{symbol_info.quote_step},
-       V{symbol_info.symbol}});
+  prepared_statements_->UpdateSymbolInfo().Execute(sqldb::AsValues(
+      cache_.GetAssetIdByAsset(symbol_info.base_asset),
+      cache_.GetAssetIdByAsset(symbol_info.quote_asset),
+      symbol_info.min_base_amount, symbol_info.min_quote_amount,
+      symbol_info.base_step, symbol_info.quote_step, symbol_info.symbol));
 }
 }  // namespace stonks
