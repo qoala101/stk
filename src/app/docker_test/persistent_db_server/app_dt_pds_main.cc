@@ -10,8 +10,8 @@
 #include "app_network_restsdk_injector.h"
 #include "app_sqldb_sqlite_injector.h"
 #include "app_wait_for_interrupt.h"
-#include "cpp_di_bind_type_to_value.h"
-#include "cpp_di_make_injector.h"
+#include "di_bind_type_to_value.h"
+#include "di_make_injector.h"
 #include "cpp_format.h"
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
@@ -29,13 +29,13 @@ auto main(int argc, char* argv[]) -> int {
 
   const auto app_name = app.get_name();
 
-  const auto injector = stonks::cpp::di::MakeInjector(
+  const auto injector = stonks::di::MakeInjector(
       stonks::app::injectors::MakeNetworkRestsdkInjector(),
       stonks::app::injectors::MakeSqldbSqliteInjector(),
       stonks::app::injectors::MakeLogSpdlogInjector(),
-      stonks::cpp::di::BindTypeToValue<stonks::network::Uri>(
+      stonks::di::BindTypeToValue<stonks::network::Uri>(
           stonks::network::Uri{stonks::cpp::Format("http://0.0.0.0:{}", port)}),
-      stonks::cpp::di::BindTypeToValue<stonks::sqlite::FilePath>(
+      stonks::di::BindTypeToValue<stonks::sqlite::FilePath>(
           stonks::sqlite::FilePath{"persistent_db_server.db"}));
 
   const auto logger =

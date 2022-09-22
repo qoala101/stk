@@ -11,9 +11,9 @@
 #include "app_log_spdlog_injector.h"
 #include "app_network_restsdk_injector.h"
 #include "app_wait_for_interrupt.h"
-#include "cpp_di_bind_type_to_value.h"
-#include "cpp_di_make_injector.h"
-#include "cpp_di_override_bindings_for_type.h"
+#include "di_bind_type_to_value.h"
+#include "di_make_injector.h"
+#include "di_override_bindings_for_type.h"
 #include "cpp_format.h"
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
@@ -36,16 +36,16 @@ auto main(int argc, char* argv[]) -> int {
 
   const auto app_name = app.get_name();
 
-  auto default_injector = stonks::cpp::di::MakeInjector(
+  auto default_injector = stonks::di::MakeInjector(
       stonks::app::injectors::MakeNetworkRestsdkInjector(),
       stonks::app::injectors::MakeLogSpdlogInjector(),
-      stonks::cpp::di::BindTypeToValue<stonks::network::Uri>(
+      stonks::di::BindTypeToValue<stonks::network::Uri>(
           stonks::network::Uri{
               stonks::cpp::Format("http://0.0.0.0:{}", port)}));
 
-  const auto injector = stonks::cpp::di::OverrideBindingsForType<
+  const auto injector = stonks::di::OverrideBindingsForType<
       stonks::app::dt::stec::PdsAppClient>(
-      default_injector, stonks::cpp::di::BindTypeToValue<stonks::network::Uri>(
+      default_injector, stonks::di::BindTypeToValue<stonks::network::Uri>(
                             stonks::network::Uri{stonks::cpp::Format(
                                 "http://{}:{}", pds_host, pds_port)}));
 

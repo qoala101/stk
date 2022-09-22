@@ -13,6 +13,7 @@ target_include_directories(libapp
 )
 
 target_link_libraries(libapp
+  PUBLIC libdi
   PUBLIC CLI11::CLI11
 )
 

@@ -4,7 +4,7 @@
 #include <boost/di.hpp>
 #include <type_traits>
 
-namespace stonks::cpp::di {
+namespace stonks::di {
 namespace detail {
 template <typename Type, std::convertible_to<Type> Injected>
 struct TypeInjector : public Type {
@@ -21,6 +21,6 @@ template <typename Type, std::convertible_to<Type> Injected>
   return boost::di::bind<Type>()
       .template to<detail::TypeInjector<Type, Injected>>();
 }
-}  // namespace stonks::cpp::di
+}  // namespace stonks::di
 
 #endif  // STONKS_CPP_DI_CPP_DI_BIND_TYPE_TO_OTHER_TYPE_H_

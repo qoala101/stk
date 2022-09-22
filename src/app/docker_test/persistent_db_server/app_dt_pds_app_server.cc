@@ -11,7 +11,7 @@
 
 namespace stonks::app::dt::pds {
 AppServer::AppServer(App app,
-                     cpp::NnSp<cpp::di::IFactory<network::IRestRequestReceiver>>
+                     cpp::NnSp<di::IFactory<network::IRestRequestReceiver>>
                          request_receiver_factory,
                      network::Uri base_uri)
     : request_receiver_{

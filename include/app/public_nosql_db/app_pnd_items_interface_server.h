@@ -1,7 +1,7 @@
 #ifndef STONKS_APP_PUBLIC_NOSQL_DB_APP_PND_ITEMS_INTERFACE_SERVER_H_
 #define STONKS_APP_PUBLIC_NOSQL_DB_APP_PND_ITEMS_INTERFACE_SERVER_H_
 
-#include "cpp_di_factory.h"
+#include "di_factory.h"
 #include "cpp_not_null.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_types.h"
@@ -12,7 +12,7 @@ class ItemsInterfaceServer {
  public:
   explicit ItemsInterfaceServer(
       const cpp::NnSp<nosqldb::IItemsInterface> &items_interface,
-      cpp::NnSp<cpp::di::IFactory<network::IRestRequestReceiver>>
+      cpp::NnSp<di::IFactory<network::IRestRequestReceiver>>
           request_receiver_factory,
       network::Uri base_uri);
 

@@ -1,6 +1,7 @@
 add_subdirectory(app)
 add_subdirectory(aws)
 add_subdirectory(cpp)
+add_subdirectory(di)
 add_subdirectory(log)
 add_subdirectory(network)
 add_subdirectory(nosqldb)

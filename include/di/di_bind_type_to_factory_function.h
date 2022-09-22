@@ -4,7 +4,7 @@
 #include <boost/di.hpp>
 #include <type_traits>
 
-namespace stonks::cpp::di {
+namespace stonks::di {
 namespace detail {
 template <typename Type, typename FactoryFunction, typename... Args>
 requires std::is_invocable_r_v<Type, FactoryFunction, Args...>
@@ -29,6 +29,6 @@ requires std::is_invocable_r_v<Type, FactoryFunction, Args...>
       .template to<
           detail::FactoryFunctionInjector<Type, FactoryFunction, Args...>>();
 }
-}  // namespace stonks::cpp::di
+}  // namespace stonks::di
 
 #endif  // STONKS_CPP_DI_CPP_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_

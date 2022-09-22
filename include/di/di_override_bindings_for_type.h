@@ -3,9 +3,9 @@
 
 #include <boost/di/extension/injections/extensible_injector.hpp>
 
-#include "cpp_di_make_injector.h"
+#include "di_make_injector.h"
 
-namespace stonks::cpp::di {
+namespace stonks::di {
 /**
  * @brief Creates injector proxy with overriden bindings for type.
  * @tparam T When creating this type, specified bindings would be used
@@ -21,6 +21,6 @@ auto OverrideBindingsForType(auto& injector, Args&&... args) {
                           boost::di::extension::make_extensible(injector),
                           std::forward<Args>(args)[Override]...)});
 }
-}  // namespace stonks::cpp::di
+}  // namespace stonks::di
 
 #endif  // STONKS_CPP_DI_CPP_DI_OVERRIDE_BINDINGS_FOR_TYPE_H_
