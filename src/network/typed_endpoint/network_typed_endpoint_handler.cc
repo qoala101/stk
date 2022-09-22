@@ -9,15 +9,15 @@
 #include <utility>
 
 #include "cpp_format.h"
-#include "network_endpoint_types_validator_template.h"
 #include "network_exception.h"
+#include "network_te_endpoint_types_validator_template.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 #include "network_wrong_type_exception.h"
 
 namespace stonks::network {
 namespace {
-class TypeChecker : public EndpointTypesValidatorTemplate {
+class TypeChecker : public te::EndpointTypesValidatorTemplate {
  public:
   explicit TypeChecker(EndpointTypes endpoint_types)
       : EndpointTypesValidatorTemplate{std::move(endpoint_types)} {}

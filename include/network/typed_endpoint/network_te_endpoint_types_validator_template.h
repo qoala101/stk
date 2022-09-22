@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_ENDPOINT_TYPES_VALIDATOR_TEMPLATE_H_
-#define STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_ENDPOINT_TYPES_VALIDATOR_TEMPLATE_H_
+#ifndef STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TE_ENDPOINT_TYPES_VALIDATOR_TEMPLATE_H_
+#define STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TE_ENDPOINT_TYPES_VALIDATOR_TEMPLATE_H_
 
 #include <bits/exception.h>
 
@@ -8,7 +8,7 @@
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace stonks::network::te {
 /**
  * @brief Template of REST request-response type checking algorithm.
  * Client would extend and handle the detected errors.
@@ -59,6 +59,6 @@ class EndpointTypesValidatorTemplate {
 
   EndpointTypes endpoint_types_{};
 };
-}  // namespace stonks::network
+}  // namespace stonks::network::te
 
-#endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_ENDPOINT_TYPES_VALIDATOR_TEMPLATE_H_
+#endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TE_ENDPOINT_TYPES_VALIDATOR_TEMPLATE_H_

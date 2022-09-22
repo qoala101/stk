@@ -15,7 +15,7 @@
 
 namespace stonks::network {
 namespace {
-class TypeChecker : public EndpointTypesValidatorTemplate {
+class TypeChecker : public te::EndpointTypesValidatorTemplate {
  public:
   explicit TypeChecker(EndpointTypes endpoint_types)
       : EndpointTypesValidatorTemplate{std::move(endpoint_types)} {}

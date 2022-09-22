@@ -2,7 +2,7 @@
 #define STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_ENDPOINT_HANDLER_H_
 
 #include "cpp_not_null.h"
-#include "network_endpoint_types_validator_template.h"
+#include "network_te_endpoint_types_validator_template.h"
 #include "network_i_rest_request_handler.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
@@ -29,7 +29,7 @@ class TypedEndpointHandler : public IRestRequestHandler {
       -> RestResponse override;
 
  private:
-  cpp::NnUp<EndpointTypesValidatorTemplate> type_checker_;
+  cpp::NnUp<te::EndpointTypesValidatorTemplate> type_checker_;
   cpp::NnSp<IRestRequestHandler> handler_;
 };
 }  // namespace stonks::network

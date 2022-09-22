@@ -1,4 +1,4 @@
-#include "network_endpoint_types_validator_template.h"
+#include "network_te_endpoint_types_validator_template.h"
 
 #include <polymorphic_value.h>
 
@@ -10,7 +10,7 @@
 
 #include "cpp_optional.h"
 
-namespace stonks::network {
+namespace stonks::network::te {
 EndpointTypesValidatorTemplate::EndpointTypesValidatorTemplate(
     EndpointTypes endpoint_types)
     : endpoint_types_{std::move(endpoint_types)} {}
@@ -107,4 +107,4 @@ void EndpointTypesValidatorTemplate::ValidateResponse(
     HandleUnexpectedResponseBody();
   }
 }
-}  // namespace stonks::network
+}  // namespace stonks::network::te
