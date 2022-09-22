@@ -7,21 +7,21 @@
 #include <vector>
 
 #include "cpp_not_null.h"
-#include "sqldb_delete_query_builder.h"
 #include "sqldb_i_query_builder.h"
-#include "sqldb_insert_query_builder.h"
+#include "sqldb_qbf_delete_query_builder.h"
+#include "sqldb_qbf_insert_query_builder.h"
+#include "sqldb_qbf_select_query_builder.h"
+#include "sqldb_qbf_update_query_builder.h"
 #include "sqldb_query_builder_facade.h"
 #include "sqldb_row_definition_alias_rd.h"
-#include "sqldb_select_query_builder.h"
 #include "sqldb_types.h"
-#include "sqldb_update_query_builder.h"
 #include "stonks_table_definitions.h"
 
 namespace stonks::db {
 namespace {
 [[nodiscard]] auto InitSelectPriceTicksQuery(
     const sqldb::QueryBuilderFacade& query_builder_facade)
-    -> sqldb::query_builder_facade::SelectQueryBuilder {
+    -> sqldb::qbf::SelectQueryBuilder {
   return query_builder_facade.Select()
       .AllColumns()
       .FromTable(table_definitions::SymbolPriceTick())

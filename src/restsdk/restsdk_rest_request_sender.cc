@@ -145,8 +145,8 @@ auto RestRequestSender::SendRequestAndGetResponse(
   auto http_response_json = http_response.extract_json().get();
 
   if (!http_response_json.is_null()) {
-    response.result.emplace(cpp::MakePv<network::IJson, Json>(
-        network::IJson::Impl{std::move(http_response_json)}));
+    response.result = cpp::MakePv<network::IJson, Json>(
+        network::IJson::Impl{std::move(http_response_json)});
   }
 
   return response;

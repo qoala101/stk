@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDERS_SQLDB_DELETE_QUERY_BUILDER_H_
-#define STONKS_SQLDB_QUERY_BUILDERS_SQLDB_DELETE_QUERY_BUILDER_H_
+#ifndef STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_DELETE_QUERY_BUILDER_H_
+#define STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_DELETE_QUERY_BUILDER_H_
 
 #include <string>
 #include <string_view>
@@ -13,7 +13,7 @@
 namespace stonks::sqldb {
 class QueryBuilderFacade;
 
-namespace query_builder_facade {
+namespace qbf {
 /**
  * @brief Part of query builder facade.
  */
@@ -37,7 +37,7 @@ class DeleteQueryBuilder {
   cpp::Opt<Table> table_{};
   cpp::Opt<std::string> where_clause_{};
 };
-}  // namespace query_builder_facade
+}  // namespace qbf
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDERS_SQLDB_DELETE_QUERY_BUILDER_H_
+#endif  // STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_DELETE_QUERY_BUILDER_H_

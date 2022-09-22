@@ -9,13 +9,17 @@
 #include "sqlite_types.h"
 
 namespace stonks::sqlite {
+namespace detail {
+using SqliteDbHandleVariantType =
+    std::variant<std::monostate, SqliteDbHandle, SqliteDbFileHandle>;
+}  // namespace detail
+
 /**
  * @brief Variant of SQLite DB handle which keeps connection alive.
  */
-class SqliteDbHandleVariant {
+class SqliteDbHandleVariant : public detail::SqliteDbHandleVariantType {
  public:
-  explicit SqliteDbHandleVariant(SqliteDbHandle sqlite_db_handle);
-  explicit SqliteDbHandleVariant(SqliteDbFileHandle sqlite_db_handle);
+  using detail::SqliteDbHandleVariantType::variant;
 
   /**
    * @brief Gives native SQLite handle.
@@ -23,21 +27,25 @@ class SqliteDbHandleVariant {
   [[nodiscard]] auto GetSqliteDb() const -> const sqlite3 &;
 
   /**
-   * @brief Gives native SQLite handle.
+   * @copydoc GetSqliteDb
    */
   [[nodiscard]] auto GetSqliteDb() -> sqlite3 &;
 
   /**
-   * @brief Gives DB file path or null if DB is in-memory one.
+   * @brief Gives DB file path.
+   * @remark Should only be called if variant has file path.
    */
-  [[nodiscard]] auto GetFilePath() const -> const FilePath *;
+  [[nodiscard]] auto GetFilePath() const -> const FilePath &;
+
+  /**
+   * @brief Whether variant has file path.
+   */
+  [[nodiscard]] auto HasFilePath() const -> bool;
 
  private:
   template <cpp::DecaysTo<SqliteDbHandleVariant> This>
   [[nodiscard]] static auto GetSqliteDbImpl(This &t)
       -> cpp::CopyConst<This, sqlite3 &>;
-
-  std::variant<SqliteDbHandle, SqliteDbFileHandle> sqlite_db_handle_;
 };
 }  // namespace stonks::sqlite
 

@@ -18,7 +18,7 @@ RestServer::RestServer(
 
 auto RestServer::On(Uri base_uri) -> RestServer& {
   Expects(!base_uri_.has_value());
-  base_uri_.emplace(std::move(base_uri));
+  base_uri_ = std::move(base_uri);
   Ensures(base_uri_.has_value());
   return *this;
 }

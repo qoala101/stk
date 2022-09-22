@@ -1,4 +1,4 @@
-#include "sqldb_select_query_builder.h"
+#include "sqldb_qbf_select_query_builder.h"
 
 #include <gsl/assert>
 #include <memory>
@@ -7,18 +7,18 @@
 #include <variant>
 
 #include "cpp_format.h"
-#include "sqldb_query_builders_common.h"
+#include "sqldb_qbf_common.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::query_builder_facade {
+namespace stonks::sqldb::qbf {
 SelectQueryBuilder::SelectQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto SelectQueryBuilder::Columns(std::vector<Column> columns)
     -> SelectQueryBuilder & {
-  Expects(std::holds_alternative<std::monostate>(columns_));
-  columns_.emplace<std::vector<Column>>(std::move(columns));
-  Ensures(!std::holds_alternative<std::monostate>(columns_));
+  Expects(!columns_.HasColumns());
+  columns_ = std::move(columns);
+  Ensures(columns_.HasColumns());
   return *this;
 }
 
@@ -29,15 +29,15 @@ auto SelectQueryBuilder::Columns(
 }
 
 auto SelectQueryBuilder::AllColumns() -> SelectQueryBuilder & {
-  Expects(std::holds_alternative<std::monostate>(columns_));
+  Expects(!columns_.HasColumns());
   columns_.emplace<AllColumnsType>();
-  Ensures(!std::holds_alternative<std::monostate>(columns_));
+  Ensures(columns_.HasColumns());
   return *this;
 }
 
 auto SelectQueryBuilder::FromTable(Table table) -> SelectQueryBuilder & {
   Expects(!table_.has_value());
-  table_.emplace(std::move(table));
+  table_ = std::move(table);
   Ensures(table_.has_value());
   return *this;
 }
@@ -45,7 +45,7 @@ auto SelectQueryBuilder::FromTable(Table table) -> SelectQueryBuilder & {
 auto SelectQueryBuilder::FromTable(const TableDefinition &table_definition)
     -> SelectQueryBuilder & {
   Expects(!table_.has_value());
-  table_.emplace(table_definition.table);
+  table_ = table_definition.table;
   Ensures(table_.has_value());
   return *this;
 }
@@ -53,7 +53,7 @@ auto SelectQueryBuilder::FromTable(const TableDefinition &table_definition)
 auto SelectQueryBuilder::Where(std::string_view where_clause)
     -> SelectQueryBuilder & {
   Expects(!where_clause_.has_value());
-  where_clause_.emplace(cpp::Format("WHERE {}", where_clause));
+  where_clause_ = cpp::Format("WHERE {}", where_clause);
   Ensures(where_clause_.has_value());
   return *this;
 }
@@ -87,40 +87,10 @@ auto SelectQueryBuilder::Limited() -> SelectQueryBuilder & {
 
 auto SelectQueryBuilder::Build() const -> Query {
   Expects(table_.has_value());
-
-  const auto *const columns = std::visit(
-      [](const auto &v) -> const std::vector<Column> * {
-        using V = decltype(v);
-
-        if constexpr (cpp::DecaysTo<V, std::vector<Column>>) {
-          return &v;
-        }
-
-        if constexpr (cpp::DecaysTo<V, AllColumnsType>) {
-          return nullptr;
-        }
-
-        Expects(false);
-      },
-      columns_);
-
-  const auto limit = std::visit(
-      [](const auto &v) -> std::string {
-        using V = decltype(v);
-
-        if constexpr (cpp::DecaysTo<V, int>) {
-          return cpp::Format(" LIMIT {}", v);
-        }
-
-        if constexpr (cpp::DecaysTo<V, LimitedType>) {
-          return " LIMIT ?";
-        }
-
-        return {};
-      },
-      limit_);
-
+  Expects(columns_.HasColumns());
+  const auto *const columns = columns_.GetColumns();
   return query_builder_->BuildSelectQuery(
-      *table_, columns, where_clause_.value_or(std::string{}) + limit);
+      *table_, columns,
+      where_clause_.value_or(std::string{}) + limit_.GetLimitClause());
 }
-}  // namespace stonks::sqldb::query_builder_facade
+}  // namespace stonks::sqldb::qbf

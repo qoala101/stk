@@ -1,43 +1,43 @@
-#include "sqldb_insert_query_builder.h"
+#include "sqldb_qbf_insert_query_builder.h"
 
 #include <gsl/assert>
 #include <memory>
 #include <utility>
 #include <variant>
 
-#include "sqldb_query_builders_common.h"
+#include "sqldb_qbf_common.h"
 
-namespace stonks::sqldb::query_builder_facade {
+namespace stonks::sqldb::qbf {
 InsertQueryBuilder::InsertQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto InsertQueryBuilder::WholeRow() -> InsertQueryBuilder& {
-  Expects(std::holds_alternative<std::monostate>(columns_));
+  Expects(!columns_.HasColumns());
   columns_.emplace<AllColumnsType>();
-  Ensures(!std::holds_alternative<std::monostate>(columns_));
+  Ensures(columns_.HasColumns());
   return *this;
 }
 
 auto InsertQueryBuilder::IntoTable(Table table) -> InsertQueryBuilder& {
-  Expects(std::holds_alternative<std::monostate>(table_));
-  table_ = {std::move(table)};
-  Ensures(!std::holds_alternative<std::monostate>(table_));
+  Expects(!table_.HasTable());
+  table_ = std::move(table);
+  Ensures(table_.HasTable());
   return *this;
 }
 
 auto InsertQueryBuilder::IntoTable(TableDefinition table_definition)
     -> InsertQueryBuilder& {
-  Expects(std::holds_alternative<std::monostate>(table_));
-  table_ = {std::move(table_definition)};
-  Ensures(!std::holds_alternative<std::monostate>(table_));
+  Expects(!table_.HasTable());
+  table_ = std::move(table_definition);
+  Ensures(table_.HasTable());
   return *this;
 }
 
 auto InsertQueryBuilder::IntoColumns(std::vector<Column> columns)
     -> InsertQueryBuilder& {
-  Expects(std::holds_alternative<std::monostate>(columns_));
-  columns_.emplace<std::vector<Column>>(std::move(columns));
-  Ensures(!std::holds_alternative<std::monostate>(columns_));
+  Expects(!columns_.HasColumns());
+  columns_ = std::move(columns);
+  Ensures(columns_.HasColumns());
   return *this;
 }
 
@@ -48,12 +48,12 @@ auto InsertQueryBuilder::IntoColumns(
 }
 
 auto InsertQueryBuilder::Build() const -> Query {
-  const auto& table = GetTable(table_);
-  const auto columns_are_specified =
-      !std::holds_alternative<std::monostate>(columns_);
+  Expects(table_.HasTable());
+  const auto& table = table_.GetTable();
+  const auto columns_are_specified = columns_.HasColumns();
   const auto columns = columns_are_specified
                            ? GetColumns(table_, columns_)
                            : GetColumns(table_, AllColumnsType{});
   return query_builder_->BuildInsertQuery(table, columns);
 }
-}  // namespace stonks::sqldb::query_builder_facade
+}  // namespace stonks::sqldb::qbf

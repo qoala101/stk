@@ -8,61 +8,52 @@
 #include "sqldb_enums.h"
 
 namespace stonks::sqldb {
+Value::Value(const char* value) : Value{std::string{value}} {}
+
 Value::Value(std::string_view value, DataType data_type) {
+  // NOLINTNEXTLINE(*-simplify-boolean-expr)
   Expects(!value.empty() || (data_type == DataType::kString));
 
   switch (data_type) {
     case DataType::kBool:
-      value_ = static_cast<bool>(std::stoi(value.data()));
+      *this = static_cast<bool>(std::stoi(value.data()));
     case DataType::kInt:
-      value_ = std::stoi(value.data());
+      *this = std::stoi(value.data());
     case DataType::kInt64:
-      value_ = std::stoll(value.data());
+      *this = std::stoll(value.data());
     case DataType::kDouble:
-      value_ = std::stod(value.data());
+      *this = std::stod(value.data());
     case DataType::kString:
-      value_ = value.data();
+      *this = value.data();
   }
 
   Ensures(!IsNull());
 }
 
-Value::Value(bool value) : value_{value} {}
-
-Value::Value(int value) : value_{value} {}
-
-Value::Value(int64_t value) : value_{value} {}
-
-Value::Value(double value) : value_{value} {}
-
-Value::Value(const char* value) : Value{std::string{value}} {}
-
-Value::Value(std::string value) : value_{std::move(value)} {}
-
 auto Value::GetBool() const -> bool {
-  Expects(std::holds_alternative<bool>(value_));
-  return std::get<bool>(value_);
+  Expects(std::holds_alternative<bool>(*this));
+  return std::get<bool>(*this);
 }
 
 auto Value::GetInt() const -> int {
-  Expects(std::holds_alternative<int>(value_));
-  return std::get<int>(value_);
+  Expects(std::holds_alternative<int>(*this));
+  return std::get<int>(*this);
 }
 
 auto Value::GetInt64() const -> int64_t {
-  Expects(std::holds_alternative<int64_t>(value_));
-  return std::get<int64_t>(value_);
+  Expects(std::holds_alternative<int64_t>(*this));
+  return std::get<int64_t>(*this);
 }
 
 auto Value::GetDouble() const -> double {
-  Expects(std::holds_alternative<double>(value_));
-  return std::get<double>(value_);
+  Expects(std::holds_alternative<double>(*this));
+  return std::get<double>(*this);
 }
 
 template <cpp::DecaysTo<Value> This>
 auto Value::GetStringImpl(This& t) -> cpp::CopyConst<This, std::string&> {
-  Expects(std::holds_alternative<std::string>(t.value_));
-  return std::get<std::string>(t.value_);
+  Expects(std::holds_alternative<std::string>(t));
+  return std::get<std::string>(t);
 }
 
 auto Value::GetString() const -> const std::string& {
@@ -73,7 +64,6 @@ auto Value::GetString() -> std::string& { return GetStringImpl(*this); }
 
 auto Value::GetType() const -> DataType {
   Expects(!IsNull());
-
   return std::visit(
       [](const auto& v) -> DataType {
         using V = decltype(v);
@@ -100,10 +90,10 @@ auto Value::GetType() const -> DataType {
 
         return {};
       },
-      value_);
+      static_cast<const detail::ValueVariantType&>(*this));
 }
 
 auto Value::IsNull() const -> bool {
-  return std::holds_alternative<std::monostate>(value_);
+  return std::holds_alternative<std::monostate>(*this);
 }
 }  // namespace stonks::sqldb

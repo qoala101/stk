@@ -36,8 +36,8 @@ class PreparedStatementFacade {
   auto Step() -> ResultCode;
 
   /**
-   * @brief Gets the values of provided types from the current step in the order
-   * they are refined in the statement.
+   * @brief Gives the values of provided types from the current step
+   * in the order they are refined in the statement.
    */
   [[nodiscard]] auto GetStepValues(
       const std::vector<sqldb::DataType> &value_types) const

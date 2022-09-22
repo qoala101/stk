@@ -1,4 +1,5 @@
 add_library(libnetwork
+  auto_parsable/request_handler/network_aprh_handler_variant.cc
   auto_parsable/network_auto_parsable_request_handler.cc
   auto_parsable/network_auto_parsable_request.cc
   auto_parsable/network_auto_parsable.cc
@@ -24,6 +25,7 @@ set_target_properties(libnetwork PROPERTIES
 target_include_directories(libnetwork
   PUBLIC ${PROJECT_SOURCE_DIR}/include/network
   PUBLIC ${PROJECT_SOURCE_DIR}/include/network/auto_parsable
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/network/auto_parsable/request_handler
   PUBLIC ${PROJECT_SOURCE_DIR}/include/network/typed_endpoint
 )
 

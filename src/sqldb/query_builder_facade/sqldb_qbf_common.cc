@@ -1,4 +1,4 @@
-#include "sqldb_query_builders_common.h"
+#include "sqldb_qbf_common.h"
 
 #include <gsl/assert>
 #include <range/v3/iterator/basic_iterator.hpp>
@@ -10,28 +10,10 @@
 
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::query_builder_facade {
-auto GetTable(const TableVariant &table) -> Table {
-  return std::visit(
-      [](const auto &v) -> const Table & {
-        using V = decltype(v);
-
-        if constexpr (cpp::DecaysTo<V, Table>) {
-          return v;
-        }
-
-        if constexpr (cpp::DecaysTo<V, TableDefinition>) {
-          return v.table;
-        }
-
-        Expects(false);
-      },
-      table);
-}
-
+namespace stonks::sqldb::qbf {
 auto GetColumns(const TableVariant &table, const ColumnsVariant &columns)
     -> std::vector<Column> {
-  Expects(!std::holds_alternative<std::monostate>(columns));
+  Expects(columns.HasColumns());
 
   if (const auto columns_are_specified =
           std::holds_alternative<std::vector<Column>>(columns)) {
@@ -61,4 +43,4 @@ auto GetColumns(const cpp::ConstView<ColumnDefinition> &column_definitions)
   Expects(columns.size() == column_definitions.size());
   return columns;
 }
-}  // namespace stonks::sqldb::query_builder_facade
+}  // namespace stonks::sqldb::qbf

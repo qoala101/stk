@@ -50,7 +50,7 @@ auto RestRequestBuilder::AddHeader(std::string key, std::string value)
 auto RestRequestBuilder::WithBody(Body::value_type body)
     -> RestRequestBuilder& {
   Expects(!request_.body.has_value());
-  request_.body.emplace(std::move(body));
+  request_.body = std::move(body);
   Ensures(request_.body.has_value());
   return *this;
 }

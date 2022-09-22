@@ -5,57 +5,37 @@
 #include <utility>
 #include <variant>
 
+#include "network_aprh_concepts.h"
+#include "network_aprh_handler_variant.h"
 #include "network_auto_parsable_request.h"
+#include "network_concepts.h"
 #include "network_i_rest_request_handler.h"
 #include "network_types.h"
 
 namespace stonks::network {
-namespace detail {
-template <typename T>
-concept Callable = requires(T &t) {
-  { t() } -> std::same_as<void>;
-};
-
-template <typename T>
-concept CallableWithRequest = requires(T &t, AutoParsableRestRequest request) {
-  { t(std::move(request)) } -> std::same_as<void>;
-};
-
-template <typename T>
-concept CallableWithResponse = requires(T &t) {
-  { t() } -> Convertible;
-};
-
-template <typename T>
-concept CallableWithRequestAndResponse =
-    requires(T &t, AutoParsableRestRequest request) {
-  { t(std::move(request)) } -> Convertible;
-};
-}  // namespace detail
-
 /**
  * @brief Convenient request handler constructible from any callable which may
  * take auto-parsable request and return any convertible value.
  */
 class AutoParsableRequestHandler : public IRestRequestHandler {
  public:
-  explicit AutoParsableRequestHandler(detail::Callable auto handler)
-      : handler_{std::in_place_type_t<Handler>{}, std::move(handler)} {}
+  explicit AutoParsableRequestHandler(aprh::Callable auto handler)
+      : handler_{std::in_place_type_t<aprh::Handler>{}, std::move(handler)} {}
 
-  explicit AutoParsableRequestHandler(detail::CallableWithRequest auto handler)
-      : handler_{std::in_place_type_t<HandlerWithRequest>{},
+  explicit AutoParsableRequestHandler(aprh::CallableWithRequest auto handler)
+      : handler_{std::in_place_type_t<aprh::HandlerWithRequest>{},
                  std::move(handler)} {}
 
-  explicit AutoParsableRequestHandler(detail::CallableWithResponse auto handler)
-      : handler_{std::in_place_type_t<HandlerWithResponse>{},
+  explicit AutoParsableRequestHandler(aprh::CallableWithResponse auto handler)
+      : handler_{std::in_place_type_t<aprh::HandlerWithResponse>{},
                  [handler = std::move(handler)]() {
                    return ConvertToJson(handler());
                  }} {}
 
   explicit AutoParsableRequestHandler(
-      detail::CallableWithRequestAndResponse auto handler)
+      aprh::CallableWithRequestAndResponse auto handler)
       : handler_{
-            std::in_place_type_t<HandlerWithRequestAndResponse>{},
+            std::in_place_type_t<aprh::HandlerWithRequestAndResponse>{},
             [handler = std::move(handler)](AutoParsableRestRequest request) {
               return ConvertToJson(handler(std::move(request)));
             }} {}
@@ -67,16 +47,7 @@ class AutoParsableRequestHandler : public IRestRequestHandler {
       -> RestResponse override;
 
  private:
-  using Handler = fu2::unique_function<void()>;
-  using HandlerWithRequest =
-      fu2::unique_function<void(AutoParsableRestRequest)>;
-  using HandlerWithResponse = fu2::unique_function<Result::value_type()>;
-  using HandlerWithRequestAndResponse =
-      fu2::unique_function<Result::value_type(AutoParsableRestRequest)>;
-
-  mutable std::variant<Handler, HandlerWithRequest, HandlerWithResponse,
-                       HandlerWithRequestAndResponse>
-      handler_{};
+  mutable aprh::HandlerVariant handler_{};
 };
 }  // namespace stonks::network
 

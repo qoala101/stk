@@ -48,7 +48,7 @@ auto RequestBuilder::WithParam(std::string key, Param value)
 
 auto RequestBuilder::WithBody(Body::value_type body) -> RequestBuilder& {
   Expects(!request_.body.has_value());
-  request_.body.emplace(std::move(body));
+  request_.body = std::move(body);
   Ensures(request_.body.has_value());
   return *this;
 }

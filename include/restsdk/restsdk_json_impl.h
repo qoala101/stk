@@ -27,7 +27,7 @@ class IJson::Impl {
   ~Impl();
 
   /**
-   * @brief Get native handle.
+   * @brief Gives native handle.
    */
   [[nodiscard]] auto GetJson() const -> const web::json::value &;
 
