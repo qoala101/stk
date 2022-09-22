@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_REST_SERVER_H_
-#define STONKS_NETWORK_NETWORK_REST_SERVER_H_
+#ifndef STONKS_NETWORK_NETWORK_REST_SERVER_BUILDER_H_
+#define STONKS_NETWORK_NETWORK_REST_SERVER_BUILDER_H_
 
 #include <map>
 #include <utility>
@@ -17,22 +17,22 @@ namespace stonks::network {
 /**
  * @brief Convenience API for building server-like REST request listener.
  */
-class RestServer {
+class RestServerBuilder {
  public:
-  explicit RestServer(cpp::NnSp<di::IFactory<IRestRequestReceiver>>
+  explicit RestServerBuilder(cpp::NnSp<di::IFactory<IRestRequestReceiver>>
                           request_receiver_factory);
 
   /**
    * @brief Sets base URI on which requests are to be handled.
    */
-  auto On(Uri base_uri) -> RestServer &;
+  auto On(Uri base_uri) -> RestServerBuilder &;
 
   /**
    * @brief Registers handler for particular endpoint.
    */
   template <typename T>
   requires std::constructible_from<AutoParsableRequestHandler, T>
-  auto Handling(TypedEndpoint endpoint, T handler) -> RestServer & {
+  auto Handling(TypedEndpoint endpoint, T handler) -> RestServerBuilder & {
     return Handling(
         std::move(endpoint),
         cpp::MakeNnSp<AutoParsableRequestHandler>(std::move(handler)));
@@ -49,7 +49,7 @@ class RestServer {
  private:
   [[nodiscard]] auto Handling(TypedEndpoint endpoint,
                               cpp::NnSp<IRestRequestHandler> handler)
-      -> RestServer &;
+      -> RestServerBuilder &;
 
   cpp::NnSp<di::IFactory<IRestRequestReceiver>> request_receiver_factory_;
   cpp::Opt<Uri> base_uri_{};
@@ -57,4 +57,4 @@ class RestServer {
 };
 }  // namespace stonks::network
 
-#endif  // STONKS_NETWORK_NETWORK_REST_SERVER_H_
+#endif  // STONKS_NETWORK_NETWORK_REST_SERVER_BUILDER_H_

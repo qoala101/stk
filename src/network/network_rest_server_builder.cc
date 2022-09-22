@@ -1,4 +1,4 @@
-#include "network_rest_server.h"
+#include "network_rest_server_builder.h"
 
 #include <gsl/assert>
 #include <memory>
@@ -12,18 +12,18 @@
 #include "not_null.hpp"
 
 namespace stonks::network {
-RestServer::RestServer(
+RestServerBuilder::RestServerBuilder(
     cpp::NnSp<di::IFactory<IRestRequestReceiver>> request_receiver_factory)
     : request_receiver_factory_{std::move(request_receiver_factory)} {}
 
-auto RestServer::On(Uri base_uri) -> RestServer& {
+auto RestServerBuilder::On(Uri base_uri) -> RestServerBuilder& {
   Expects(!base_uri_.has_value());
   base_uri_ = std::move(base_uri);
   Ensures(base_uri_.has_value());
   return *this;
 }
 
-auto RestServer::Start() -> cpp::NnUp<IRestRequestReceiver> {
+auto RestServerBuilder::Start() -> cpp::NnUp<IRestRequestReceiver> {
   Expects(base_uri_.has_value());
   Expects(!endpoint_handlers_.empty());
 
@@ -40,9 +40,9 @@ auto RestServer::Start() -> cpp::NnUp<IRestRequestReceiver> {
   return request_receiver;
 }
 
-auto RestServer::Handling(TypedEndpoint endpoint,
+auto RestServerBuilder::Handling(TypedEndpoint endpoint,
                           cpp::NnSp<IRestRequestHandler> handler)
-    -> RestServer& {
+    -> RestServerBuilder& {
   auto decorated_handler = cpp::MakeNnSp<RequestExceptionHandler>(
       cpp::MakeNnSp<TypedEndpointHandler>(std::move(endpoint.expected_types),
                                           std::move(handler)));

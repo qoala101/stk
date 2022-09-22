@@ -33,7 +33,7 @@
 #include "network_rest_client.h"
 #include "network_rest_client_request_builder.h"
 #include "network_rest_request_builder.h"
-#include "network_rest_server.h"
+#include "network_rest_server_builder.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 #include "not_null.hpp"
@@ -105,7 +105,7 @@ class EntityServer {
   explicit EntityServer(stonks::network::Uri base_uri)
       : request_receiver_{
             test::restsdk::Injector()
-                .create<stonks::network::RestServer>()
+                .create<stonks::network::RestServerBuilder>()
                 .On(std::move(base_uri))
                 .Handling(PushSymbolEndpointDesc(),
                           std::bind_front(
@@ -296,7 +296,7 @@ TEST(ClientServerDeathTest, WrongServerTypes) {
   auto entity_client = EntityClient{kBaseUri};
   auto rest_server =
       test::restsdk::Injector()
-          .create<stonks::network::RestServer>()
+          .create<stonks::network::RestServerBuilder>()
           .On(kBaseUri)
           .Handling(
               EntityServer::PushSymbolEndpointDesc(),

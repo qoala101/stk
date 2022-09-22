@@ -7,7 +7,7 @@
 #include "network_auto_parsable.h"
 #include "network_auto_parsable_request.h"
 #include "network_json_basic_conversions.h"
-#include "network_rest_server.h"
+#include "network_rest_server_builder.h"
 
 namespace stonks::app::dt::pds {
 AppServer::AppServer(App app,
@@ -15,7 +15,7 @@ AppServer::AppServer(App app,
                          request_receiver_factory,
                      network::Uri base_uri)
     : request_receiver_{
-          network::RestServer{std::move(request_receiver_factory)}
+          network::RestServerBuilder{std::move(request_receiver_factory)}
               .On(std::move(base_uri))
               .Handling(endpoints::RecordSymbolPrice(),
                         [app = std::move(app)](
