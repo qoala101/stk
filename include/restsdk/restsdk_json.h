@@ -10,7 +10,7 @@
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 #include "network_i_json.h"
-#include "restsdk_json_impl.h"
+#include "restsdk_json_native_handle.h"
 
 namespace stonks::restsdk {
 /**
@@ -29,7 +29,7 @@ class Json : public network::IJson {
   explicit Json(double value);
   explicit Json(const char* value);
   explicit Json(std::string_view value);
-  explicit Json(IJson::Impl impl);
+  explicit Json(IJson::NativeHandle impl);
 
   /**
    * @copydoc network::IJson::clone
@@ -85,12 +85,13 @@ class Json : public network::IJson {
   /**
    * @copydoc network::IJson::GetImpl
    */
-  [[nodiscard]] auto GetImpl() const -> const IJson::Impl& override;
+  [[nodiscard]] auto GetNativeHandle() const
+      -> const IJson::NativeHandle& override;
 
   /**
    * @copydoc network::IJson::GetImpl
    */
-  [[nodiscard]] auto GetImpl() -> IJson::Impl& override;
+  [[nodiscard]] auto GetNativeHandle() -> IJson::NativeHandle& override;
 
  private:
   template <cpp::DecaysTo<Json> This>
@@ -104,10 +105,10 @@ class Json : public network::IJson {
   [[nodiscard]] static auto GetChildImpl(This& t, int index) -> cpp::Pv<IJson>;
 
   template <cpp::DecaysTo<Json> This>
-  [[nodiscard]] static auto GetImplImpl(This& t)
-      -> cpp::CopyConst<This, IJson::Impl&>;
+  [[nodiscard]] static auto GetNativeHandleImpl(This& t)
+      -> cpp::CopyConst<This, IJson::NativeHandle&>;
 
-  network::IJson::Impl impl_;
+  network::IJson::NativeHandle native_handle_;
 };
 }  // namespace stonks::restsdk
 

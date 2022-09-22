@@ -4,7 +4,7 @@ find_package(fmt REQUIRED)
 
 add_library(librestsdk
   restsdk_json_basic_conversions.cc
-  restsdk_json_impl.cc
+  restsdk_json_native_handle.cc
   restsdk_json.cc
   restsdk_rest_request_receiver.cc
   restsdk_rest_request_sender.cc

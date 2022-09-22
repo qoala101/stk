@@ -7,6 +7,7 @@
 #include <cpprest/http_msg.h>
 #include <cpprest/json.h>
 #include <cpprest/uri_builder.h>
+#include <fmt/core.h>
 #include <polymorphic_value.h>
 #include <pplx/pplxtasks.h>
 
@@ -17,13 +18,12 @@
 #include <string>
 #include <utility>
 
-#include <fmt/core.h>
 #include "cpp_polymorphic_value.h"
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_types.h"
 #include "restsdk_json.h"
-#include "restsdk_json_impl.h"
+#include "restsdk_json_native_handle.h"
 
 namespace stonks::restsdk {
 namespace {
@@ -88,13 +88,13 @@ namespace {
 
 [[nodiscard]] auto ConvertToRequestParam(const network::IJson &json)
     -> std::string {
-  const auto &rest_json = json.GetImpl().GetJson();
+  const auto &rest_json = json.GetNativeHandle();
 
-  if (rest_json.is_string()) {
-    return rest_json.as_string();
+  if (rest_json->is_string()) {
+    return rest_json->as_string();
   }
 
-  return rest_json.serialize();
+  return rest_json->serialize();
 }
 
 [[nodiscard]] auto HttpRequestFromNetworkRequest(
@@ -107,7 +107,7 @@ namespace {
   }
 
   if (request.body) {
-    http_request.set_body((*request.body)->GetImpl().GetJson());
+    http_request.set_body(*(*request.body)->GetNativeHandle());
   }
 
   return http_request;
@@ -146,7 +146,7 @@ auto RestRequestSender::SendRequestAndGetResponse(
 
   if (!http_response_json.is_null()) {
     response.result = cpp::MakePv<network::IJson, Json>(
-        network::IJson::Impl{std::move(http_response_json)});
+        network::IJson::NativeHandle{std::move(http_response_json)});
   }
 
   return response;

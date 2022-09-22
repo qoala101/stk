@@ -19,7 +19,7 @@ class IJson {
    * @remark Can be used by other implementer entities to access the
    * implementation details.
    */
-  class Impl;
+  class NativeHandle;
 
   /**
    * @brief Creates a copy with the same data.
@@ -81,12 +81,12 @@ class IJson {
   /**
    * @brief Gives implementation details.
    */
-  [[nodiscard]] virtual auto GetImpl() const -> const Impl& = 0;
+  [[nodiscard]] virtual auto GetNativeHandle() const -> const NativeHandle& = 0;
 
   /**
    * @copydoc GetImpl
    */
-  [[nodiscard]] virtual auto GetImpl() -> Impl& = 0;
+  [[nodiscard]] virtual auto GetNativeHandle() -> NativeHandle& = 0;
 };
 }  // namespace stonks::network
 
