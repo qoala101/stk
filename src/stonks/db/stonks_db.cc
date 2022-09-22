@@ -27,9 +27,9 @@
 #include "sqldb_i_update_statement.h"
 #include "sqldb_rows.h"
 #include "sqldb_value.h"
-#include "stonks_cache.h"
-#include "stonks_prepared_statements.h"
-#include "stonks_table_definitions.h"
+#include "stonks_db_cache.h"
+#include "stonks_db_prepared_statements.h"
+#include "stonks_db_tables.h"
 
 namespace stonks {
 namespace {
@@ -229,13 +229,13 @@ void Db::InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick) {
 
 void Db::CreateTablesIfNotExist() {
   db_->PrepareStatement(query_builder_->BuildCreateTableIfNotExistsQuery(
-                            db::table_definitions::Asset()))
+                            db::tables::Asset()))
       ->Execute();
   db_->PrepareStatement(query_builder_->BuildCreateTableIfNotExistsQuery(
-                            db::table_definitions::Symbol()))
+                            db::tables::Symbol()))
       ->Execute();
   db_->PrepareStatement(query_builder_->BuildCreateTableIfNotExistsQuery(
-                            db::table_definitions::SymbolPriceTick()))
+                            db::tables::SymbolPriceTick()))
       ->Execute();
 }
 

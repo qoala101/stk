@@ -7,9 +7,9 @@
 #include "cpp_not_null.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"
-#include "stonks_cache.h"
+#include "stonks_db_cache.h"
+#include "stonks_db_prepared_statements.h"
 #include "stonks_i_db.h"
-#include "stonks_prepared_statements.h"
 #include "stonks_types.h"
 
 namespace stonks {
@@ -70,6 +70,7 @@ class Db : public IDb {
   void InsertSymbolInfo(const SymbolInfo &symbol_info);
   void UpdateSymbolInfo(const SymbolInfo &symbol_info);
 
+  // TODO(vh): remove I fields, they are needed only in constructor
   cpp::NnSp<sqldb::IDb> db_;
   cpp::NnSp<sqldb::IQueryBuilder> query_builder_;
   cpp::NnSp<db::PreparedStatements> prepared_statements_;
