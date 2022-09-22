@@ -99,7 +99,7 @@ auto Json::GetSize() const -> int {
 
 template <cpp::DecaysTo<Json> This>
 auto Json::GetNativeHandleImpl(This& t)
-    -> cpp::CopyConst<This, IJson::NativeHandle&> {
+    -> cpp::CopyConst<This, IJson::NativeHandle> & {
   return t.native_handle_;
 }
 

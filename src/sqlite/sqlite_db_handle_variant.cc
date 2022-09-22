@@ -9,9 +9,9 @@
 namespace stonks::sqlite {
 template <cpp::DecaysTo<SqliteDbHandleVariant> This>
 auto SqliteDbHandleVariant::GetSqliteDbImpl(This &t)
-    -> cpp::CopyConst<This, sqlite3 &> {
+    -> cpp::CopyConst<This, sqlite3> & {
   return std::visit(
-      [](auto &v) -> cpp::CopyConst<This, sqlite3 &> {
+      [](auto &v) -> cpp::CopyConst<This, sqlite3> & {
         using V = decltype(v);
 
         if constexpr (cpp::DecaysTo<V, SqliteDbHandle>) {
@@ -25,7 +25,7 @@ auto SqliteDbHandleVariant::GetSqliteDbImpl(This &t)
         Expects(false);
       },
       static_cast<
-          cpp::CopyConst<decltype(t), detail::SqliteDbHandleVariantType &>>(t));
+          cpp::CopyConst<decltype(t), detail::SqliteDbHandleVariantType> &>(t));
 }
 
 auto SqliteDbHandleVariant::GetSqliteDb() const -> const sqlite3 & {

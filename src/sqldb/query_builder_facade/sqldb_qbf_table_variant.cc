@@ -7,10 +7,10 @@
 
 namespace stonks::sqldb::qbf {
 template <cpp::DecaysTo<TableVariant> This>
-auto TableVariant::GetTableImpl(This &t) -> cpp::CopyConst<This, Table &> {
+auto TableVariant::GetTableImpl(This &t) -> cpp::CopyConst<This, Table> & {
   Expects(t.HasTable());
   return std::visit(
-      [](auto &v) -> cpp::CopyConst<This, Table &> {
+      [](auto &v) -> cpp::CopyConst<This, Table> & {
         using V = decltype(v);
 
         if constexpr (cpp::DecaysTo<V, Table>) {
@@ -23,7 +23,7 @@ auto TableVariant::GetTableImpl(This &t) -> cpp::CopyConst<This, Table &> {
 
         Expects(false);
       },
-      static_cast<cpp::CopyConst<decltype(t), detail::TableVariantType &>>(t));
+      static_cast<cpp::CopyConst<decltype(t), detail::TableVariantType> &>(t));
 }
 
 auto TableVariant::GetTable() const -> const Table & {

@@ -75,7 +75,7 @@ class Value : public detail::ValueVariantType {
 
   template <cpp::DecaysTo<Value> This>
   [[nodiscard]] static auto GetStringImpl(This &t)
-      -> cpp::CopyConst<This, std::string &>;
+      -> cpp::CopyConst<This, std::string> &;
 };
 }  // namespace stonks::sqldb
 

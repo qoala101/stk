@@ -25,11 +25,11 @@ class Row {
  private:
   template <cpp::DecaysTo<Row> This>
   [[nodiscard]] static auto GetValueImpl(This &t, const Column &column)
-      -> cpp::CopyConst<This, Value &>;
+      -> cpp::CopyConst<This, Value> &;
 
   template <cpp::DecaysTo<Row> This>
   [[nodiscard]] static auto GetCellsImpl(This &t)
-      -> cpp::CopyConst<This, std::map<Column, Value> &>;
+      -> cpp::CopyConst<This, std::map<Column, Value>> &;
 
   std::map<Column, Value> cells_{};
 };

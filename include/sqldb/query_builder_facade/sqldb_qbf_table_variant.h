@@ -37,7 +37,7 @@ class TableVariant : public detail::TableVariantType {
  private:
   template <cpp::DecaysTo<TableVariant> This>
   [[nodiscard]] static auto GetTableImpl(This &t)
-      -> cpp::CopyConst<This, Table &>;
+      -> cpp::CopyConst<This, Table> &;
 };
 
 }  // namespace stonks::sqldb::qbf

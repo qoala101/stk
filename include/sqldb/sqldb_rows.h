@@ -40,7 +40,7 @@ class Rows {
 
   template <cpp::DecaysTo<Rows> This>
   [[nodiscard]] static auto GetColumnValuesImpl(This &t, const Column &column)
-      -> cpp::CopyConst<This, std::vector<Value> &>;
+      -> cpp::CopyConst<This, std::vector<Value>> &;
 
   std::vector<ColumnValues> columns_{};
 };

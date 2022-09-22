@@ -16,7 +16,7 @@ Row::Row(std::vector<Cell> cells) {
 
 template <cpp::DecaysTo<Row> This>
 auto Row::GetValueImpl(This &t, const Column &column)
-    -> cpp::CopyConst<This, Value &> {
+    -> cpp::CopyConst<This, Value> & {
   Expects(t.cells_.find(column) != t.cells_.end());
   return t.cells_.at(column);
 }
@@ -31,7 +31,7 @@ auto Row::GetValue(const Column &column) -> Value & {
 
 template <cpp::DecaysTo<Row> This>
 auto Row::GetCellsImpl(This &t)
-    -> cpp::CopyConst<This, std::map<Column, Value> &> {
+    -> cpp::CopyConst<This, std::map<Column, Value>> & {
   return t.cells_;
 }
 

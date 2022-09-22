@@ -52,7 +52,7 @@ class SqliteDbFileHandle {
  private:
   template <cpp::DecaysTo<SqliteDbFileHandle> This>
   [[nodiscard]] static auto GetSqliteDbImpl(This &t)
-      -> cpp::CopyConst<This, sqlite3 &>;
+      -> cpp::CopyConst<This, sqlite3> &;
 
   cpp::NnSp<log::ILogger> logger_;
   SqliteDbHandle sqlite_db_handle_;

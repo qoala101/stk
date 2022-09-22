@@ -67,7 +67,7 @@ struct TableDefinition {
   template <cpp::DecaysTo<TableDefinition> This>
   [[nodiscard]] static auto GetColumnDefinitionImpl(This &t,
                                                     const Column &column)
-      -> cpp::CopyConst<This, ColumnDefinition &>;
+      -> cpp::CopyConst<This, ColumnDefinition> &;
 };
 
 /**

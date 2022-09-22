@@ -106,7 +106,7 @@ class Json : public network::IJson {
 
   template <cpp::DecaysTo<Json> This>
   [[nodiscard]] static auto GetNativeHandleImpl(This& t)
-      -> cpp::CopyConst<This, IJson::NativeHandle&>;
+      -> cpp::CopyConst<This, IJson::NativeHandle> &;
 
   network::IJson::NativeHandle native_handle_;
 };

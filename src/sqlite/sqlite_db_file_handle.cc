@@ -33,7 +33,7 @@ SqliteDbFileHandle::~SqliteDbFileHandle() {
 
 template <cpp::DecaysTo<SqliteDbFileHandle> This>
 auto SqliteDbFileHandle::GetSqliteDbImpl(This& t)
-    -> cpp::CopyConst<This, sqlite3&> {
+    -> cpp::CopyConst<This, sqlite3> & {
   return *t.sqlite_db_handle_;
 }
 

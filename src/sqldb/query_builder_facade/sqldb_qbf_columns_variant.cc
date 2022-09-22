@@ -24,7 +24,7 @@ auto ColumnsVariant::GetColumnsImpl(This &t)
 
         Expects(false);
       },
-      static_cast<cpp::CopyConst<decltype(t), detail::ColumnsVariantType &>>(
+      static_cast<cpp::CopyConst<decltype(t), detail::ColumnsVariantType> &>(
           t));
 }
 

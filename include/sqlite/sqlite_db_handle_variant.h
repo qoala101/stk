@@ -45,7 +45,7 @@ class SqliteDbHandleVariant : public detail::SqliteDbHandleVariantType {
  private:
   template <cpp::DecaysTo<SqliteDbHandleVariant> This>
   [[nodiscard]] static auto GetSqliteDbImpl(This &t)
-      -> cpp::CopyConst<This, sqlite3 &>;
+      -> cpp::CopyConst<This, sqlite3> &;
 };
 }  // namespace stonks::sqlite
 
