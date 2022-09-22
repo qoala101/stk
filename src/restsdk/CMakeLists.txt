@@ -1,5 +1,6 @@
 find_package(cpprestsdk REQUIRED)
 find_package(magic_enum REQUIRED)
+find_package(fmt REQUIRED)
 
 add_library(librestsdk
   restsdk_json_basic_conversions.cc
@@ -18,8 +19,10 @@ target_include_directories(librestsdk
 )
 
 target_link_libraries(librestsdk
-  PUBLIC libnetwork
   PUBLIC liblog
+  PUBLIC libnetwork
+
   PRIVATE cpprestsdk::cpprest
+  PRIVATE fmt::fmt
   PRIVATE magic_enum::magic_enum
 )

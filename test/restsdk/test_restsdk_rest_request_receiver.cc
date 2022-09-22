@@ -7,7 +7,7 @@
 #include <ostream>
 #include <string>
 
-#include "cpp_format.h"
+#include <fmt/core.h>
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 #include "gtest/gtest_pred_impl.h"
@@ -52,7 +52,7 @@ auto ConvertToJson(const SymbolPrice &value) -> cpp::Pv<IJson> {
   // clang-format off
   return BuildJsonFrom(
     "symbol", value.symbol,
-    "price", cpp::Format("{}", value.price)
+    "price", fmt::format("{}", value.price)
   );
   // clang-format on
 }

@@ -4,6 +4,7 @@
 #include <polymorphic_value.h>
 
 #include <compare>
+#include <function2/function2.hpp>
 #include <functional>
 #include <map>
 #include <string>
@@ -20,7 +21,7 @@ namespace stonks::network {
  * @brief Tries to parse JSON.
  * @throw Rethrows parsing error if any happens.
  */
-using ParseTypeCheck = std::function<void(const IJson &)>;
+using ParseTypeCheck = fu2::function<void(const IJson &) const>;
 
 /**
  * @brief Convenience API to create parse type check.

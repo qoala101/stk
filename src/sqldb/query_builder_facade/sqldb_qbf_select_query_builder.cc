@@ -6,7 +6,7 @@
 #include <utility>
 #include <variant>
 
-#include "cpp_format.h"
+#include <fmt/core.h>
 #include "sqldb_qbf_common.h"
 #include "sqldb_types.h"
 
@@ -53,7 +53,7 @@ auto SelectQueryBuilder::FromTable(const TableDefinition &table_definition)
 auto SelectQueryBuilder::Where(std::string_view where_clause)
     -> SelectQueryBuilder & {
   Expects(!where_clause_.has_value());
-  where_clause_ = cpp::Format("WHERE {}", where_clause);
+  where_clause_ = fmt::format("WHERE {}", where_clause);
   Ensures(where_clause_.has_value());
   return *this;
 }
@@ -61,13 +61,13 @@ auto SelectQueryBuilder::Where(std::string_view where_clause)
 auto SelectQueryBuilder::And(std::string_view where_clause)
     -> SelectQueryBuilder & {
   Expects(where_clause_.has_value());
-  (*where_clause_) += cpp::Format(" AND {}", where_clause);
+  (*where_clause_) += fmt::format(" AND {}", where_clause);
   return *this;
 }
 auto SelectQueryBuilder::Or(std::string_view where_clause)
     -> SelectQueryBuilder & {
   Expects(where_clause_.has_value());
-  (*where_clause_) += cpp::Format(" OR {}", where_clause);
+  (*where_clause_) += fmt::format(" OR {}", where_clause);
   return *this;
 }
 

@@ -1,5 +1,6 @@
 find_package(magic_enum REQUIRED)
 find_package(range-v3 REQUIRED)
+find_package(fmt REQUIRED)
 
 add_library(libsqldb
   query_builder_facade/sqldb_qbf_columns_variant.cc
@@ -32,5 +33,7 @@ target_include_directories(libsqldb
 target_link_libraries(libsqldb
   PUBLIC libcpp
   PUBLIC magic_enum::magic_enum
+
+  PRIVATE fmt::fmt
   PRIVATE range-v3::range-v3
 )

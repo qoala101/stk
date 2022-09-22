@@ -1,4 +1,6 @@
 find_package(AWSSDK REQUIRED)
+find_package(fmt REQUIRED)
+find_package(function2 REQUIRED)
 
 add_library(libaws
   dynamodb/aws_dynamodb_async_db.cc
@@ -16,7 +18,10 @@ target_include_directories(libaws
 )
 
 target_link_libraries(libaws
-  PUBLIC libnosqldb
   PUBLIC liblog
+  PUBLIC libnosqldb
+
   PRIVATE AWS::dynamodb
+  PRIVATE fmt::fmt
+  PRIVATE function2::function2
 )

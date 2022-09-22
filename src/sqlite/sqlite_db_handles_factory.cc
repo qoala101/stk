@@ -9,7 +9,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "cpp_format.h"
+#include <fmt/core.h>
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "not_null.hpp"
@@ -31,7 +31,7 @@ auto DbHandlesFactory::CreateInMemoryDb() const -> SqliteDbHandle {
 
   if ((in_memory_db == nullptr) || (result_code != SQLITE_OK)) {
     throw cpp::MessageException{
-        cpp::Format("Couldn't create in memory DB: {}", result_code)};
+        fmt::format("Couldn't create in memory DB: {}", result_code)};
   }
 
   DbFacade{logger_, cpp::AssumeNn(in_memory_db)}.EnableForeignKeys();
@@ -48,7 +48,7 @@ auto DbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
   const auto result_code = sqlite3_open(file_path.value.c_str(), &file_db);
 
   if ((file_db == nullptr) || (result_code != SQLITE_OK)) {
-    throw cpp::MessageException{cpp::Format("Couldn't read DB from file {}: {}",
+    throw cpp::MessageException{fmt::format("Couldn't read DB from file {}: {}",
                                             file_path.value, result_code)};
   }
 
@@ -64,7 +64,7 @@ auto DbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
 
   if (const auto db_is_new = !std::filesystem::exists(file_path.value)) {
     logger_->LogImportantEvent(
-        cpp::Format("Created new DB for {}", file_path.value));
+        fmt::format("Created new DB for {}", file_path.value));
     return in_memory_db_handle;
   }
 
@@ -72,7 +72,7 @@ auto DbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
   DbFacade{logger_, cpp::AssumeNn(in_memory_db_handle.get())}.CopyDataFrom(
       *file_db_handle);
 
-  logger_->LogImportantEvent(cpp::Format("Loaded DB from {}", file_path.value));
+  logger_->LogImportantEvent(fmt::format("Loaded DB from {}", file_path.value));
   return in_memory_db_handle;
 }
 }  // namespace stonks::sqlite

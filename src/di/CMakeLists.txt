@@ -7,6 +7,6 @@ target_include_directories(libdi
 )
 
 target_link_libraries(libdi
-  INTERFACE libcpp
   INTERFACE di::di
+  INTERFACE libcpp
 )

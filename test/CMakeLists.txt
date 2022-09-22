@@ -1,6 +1,8 @@
 find_package(GTest REQUIRED)
 find_package(magic_enum REQUIRED)
 find_package(range-v3 REQUIRED)
+find_package(fmt REQUIRED)
+find_package(function2 REQUIRED)
 
 include(GoogleTest)
 
@@ -42,11 +44,11 @@ target_link_libraries(unittests
   PRIVATE libaws
   PRIVATE libcpp
   PRIVATE librestsdk
-  PRIVATE libsqlite
   PRIVATE libspdlog
-
+  PRIVATE libsqlite
   PRIVATE libstonks
-
+  PRIVATE fmt::fmt
+  PRIVATE function2::function2
   PRIVATE magic_enum::magic_enum
   PRIVATE range-v3::range-v3
 )

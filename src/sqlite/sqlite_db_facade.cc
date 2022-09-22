@@ -9,7 +9,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "cpp_format.h"
+#include <fmt/core.h>
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "not_null.hpp"
@@ -56,7 +56,7 @@ void DbFacade::WriteToFile(const FilePath &file_path) const {
   DbFacade{logger_, cpp::AssumeNn(file_db_handle.get())}.CopyDataFrom(
       *sqlite_db_);
 
-  logger_->LogImportantEvent(cpp::Format("Stored DB to {}", file_path.value));
+  logger_->LogImportantEvent(fmt::format("Stored DB to {}", file_path.value));
 }
 
 void DbFacade::CopyDataFrom(sqlite3 &other_db) const {
@@ -68,7 +68,7 @@ void DbFacade::CopyDataFrom(sqlite3 &other_db) const {
 
   if (result_code != SQLITE_OK) {
     throw cpp::MessageException{
-        cpp::Format("Couldn't copy data from other DB: {}", result_code)};
+        fmt::format("Couldn't copy data from other DB: {}", result_code)};
   }
 }
 
@@ -84,12 +84,12 @@ auto DbFacade::CreatePreparedStatement(const sqldb::Query &query) const
 
   if (sqlite_statement == nullptr) {
     throw cpp::MessageException{
-        cpp::Format("Couldn't prepare the statement for query: {}, {}",
+        fmt::format("Couldn't prepare the statement for query: {}, {}",
                     query.value, result_code)};
   }
 
   logger_->LogImportantEvent(
-      cpp::Format("Prepared statement for query: {}", query.value));
+      fmt::format("Prepared statement for query: {}", query.value));
 
   return SqliteStatementHandle{cpp::AssumeNn(NullableSqliteStatementHandle{
       sqlite_statement, detail::SqliteStatementFinalizer{logger_}})};
@@ -102,7 +102,7 @@ void DbFacade::EnableForeignKeys() const {
                                         nullptr, nullptr, nullptr);
 
   if (result_code != SQLITE_OK) {
-    throw cpp::MessageException{cpp::Format(
+    throw cpp::MessageException{fmt::format(
         "Couldn't set foreign_keys pragma on new DB: {}", result_code)};
   }
 }
@@ -115,10 +115,10 @@ void DbFacade::Close() {
 
   if (result_code != SQLITE_OK) {
     throw cpp::MessageException{
-        cpp::Format("Couldn't close DB from {}", file_name)};
+        fmt::format("Couldn't close DB from {}", file_name)};
   }
 
-  logger_->LogImportantEvent(cpp::Format("Closed DB from {}", file_name));
+  logger_->LogImportantEvent(fmt::format("Closed DB from {}", file_name));
 
   sqlite_db_ = nullptr;
   Ensures(sqlite_db_ == nullptr);

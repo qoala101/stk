@@ -4,7 +4,7 @@
 
 #include <utility>
 
-#include "cpp_format.h"
+#include <fmt/core.h>
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "sqlite_prepared_statement_facade.h"
@@ -27,7 +27,7 @@ void UpdateStatement::Execute(std::vector<sqldb::Value> params) const {
 
   if (result_code != SQLITE_DONE) {
     throw cpp::MessageException{
-        cpp::Format("Unexpected update statement result: {}", result_code)};
+        fmt::format("Unexpected update statement result: {}", result_code)};
   }
 }
 }  // namespace stonks::sqlite

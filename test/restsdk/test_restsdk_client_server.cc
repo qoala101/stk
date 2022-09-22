@@ -225,9 +225,9 @@ TEST(ClientServerDeathTest, WrongClientTypes) {
 
 class FunctionHandler : public stonks::network::IRestRequestHandler {
  public:
-  explicit FunctionHandler(
-      std::function<stonks::network::RestResponse(stonks::network::RestRequest)>
-          handler)
+  explicit FunctionHandler(fu2::unique_function<stonks::network::RestResponse(
+                               stonks::network::RestRequest) const>
+                               handler)
       : handler_{std::move(handler)} {}
 
   [[nodiscard]] auto HandleRequestAndGiveResponse(
@@ -237,7 +237,8 @@ class FunctionHandler : public stonks::network::IRestRequestHandler {
   }
 
  private:
-  std::function<stonks::network::RestResponse(stonks::network::RestRequest)>
+  fu2::unique_function<stonks::network::RestResponse(
+      stonks::network::RestRequest) const>
       handler_{};
 };
 

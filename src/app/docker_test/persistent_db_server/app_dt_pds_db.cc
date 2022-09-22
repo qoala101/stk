@@ -5,7 +5,7 @@
 #include "app_dt_pds_tables.h"
 #include "cpp_chrono.h"
 #include "not_null.hpp"
-#include "sqldb_insert_query_builder.h"
+#include "sqldb_qbf_insert_query_builder.h"
 #include "sqldb_query_builder_facade.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"

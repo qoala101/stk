@@ -7,21 +7,22 @@
 #include <aws/dynamodb/model/DescribeTableResult.h>
 #include <aws/dynamodb/model/TableDescription.h>
 #include <aws/dynamodb/model/TableStatus.h>
+#include <fmt/core.h>
 
+#include <function2/function2.hpp>
 #include <functional>
 #include <gsl/assert>
 #include <optional>
 #include <utility>
 
 #include "aws_dynamodb_async_db.h"
-#include "cpp_format.h"
 #include "cpp_message_exception.h"
 #include "cpp_optional.h"
 #include "nosqldb_types.h"
 
 namespace stonks::aws::dynamodb {
 namespace {
-void WaitUntil(const std::function<bool()> &predicate) {
+void WaitUntil(const fu2::unique_function<bool() const> &predicate) {
   while (!predicate()) {
   }
 
@@ -81,7 +82,7 @@ auto SyncDbProxy::GetTableStatus(const nosqldb::Table &table) const
       return std::nullopt;
     }
 
-    throw cpp::MessageException{cpp::Format("Couldn't get table status {}: {}",
+    throw cpp::MessageException{fmt::format("Couldn't get table status {}: {}",
                                             table.value,
                                             result.GetError().GetMessage())};
   }

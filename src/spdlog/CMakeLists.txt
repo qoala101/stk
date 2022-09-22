@@ -13,7 +13,8 @@ target_include_directories(libspdlog
 )
 
 target_link_libraries(libspdlog
-  PUBLIC liblog
   PUBLIC libcpp
+  PUBLIC liblog
+
   PRIVATE spdlog::spdlog
 )

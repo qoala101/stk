@@ -1,3 +1,5 @@
+find_package(fmt REQUIRED)
+
 add_executable(persistent_db_server
   app_dt_pds_app_server.cc
   app_dt_pds_app.cc
@@ -13,8 +15,10 @@ target_include_directories(persistent_db_server
 )
 
 target_link_libraries(persistent_db_server
+  PRIVATE libapp
   PRIVATE libdockertestcommon
   PRIVATE librestsdk
-  PRIVATE libsqlite
   PRIVATE libspdlog
+  PRIVATE libsqlite
+  PRIVATE fmt::fmt
 )

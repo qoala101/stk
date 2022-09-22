@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 
-#include "cpp_format.h"
+#include <fmt/core.h>
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 
@@ -47,7 +47,7 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
   }
 
   if (result_code != SQLITE_OK) {
-    throw cpp::MessageException{cpp::Format(
+    throw cpp::MessageException{fmt::format(
         "Couldn't bind parameter to prepared statement: {}", result_code)};
   }
 }
@@ -93,7 +93,7 @@ void PreparedStatementFacade::Reset() {
 
   if (result_code != SQLITE_OK) {
     throw cpp::MessageException{
-        cpp::Format("Couldn't reset prepared statement: {}", result_code)};
+        fmt::format("Couldn't reset prepared statement: {}", result_code)};
   }
 }
 
@@ -136,7 +136,7 @@ void PreparedStatementFacade::Finalize() {
 
   if (result_code != SQLITE_OK) {
     throw cpp::MessageException{
-        cpp::Format("Couldn't finalize prepared statement: {}", result_code)};
+        fmt::format("Couldn't finalize prepared statement: {}", result_code)};
   }
 
   sqlite_statement_ = nullptr;

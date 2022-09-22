@@ -17,7 +17,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "cpp_format.h"
+#include <fmt/core.h>
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 #include "cpprest/http_msg.h"
@@ -165,7 +165,7 @@ void RestRequestReceiver::HandleHttpRequest(
     const web::http::http_request &request) const {
   Expects(handler_ != nullptr);
 
-  logger_->LogImportantEvent(cpp::Format("Received {} request on {}",
+  logger_->LogImportantEvent(fmt::format("Received {} request on {}",
                                          request.method(),
                                          request.absolute_uri().path()));
 

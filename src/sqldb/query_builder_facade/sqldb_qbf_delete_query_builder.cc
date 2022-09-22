@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-#include "cpp_format.h"
+#include <fmt/core.h>
 
 namespace stonks::sqldb::qbf {
 DeleteQueryBuilder::DeleteQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
@@ -26,7 +26,7 @@ auto DeleteQueryBuilder::FromTable(const TableDefinition& table_definition)
 auto DeleteQueryBuilder::Where(std::string_view where_clause)
     -> DeleteQueryBuilder& {
   Expects(!where_clause_.has_value());
-  where_clause_ = cpp::Format("WHERE {}", where_clause);
+  where_clause_ = fmt::format("WHERE {}", where_clause);
   Ensures(where_clause_.has_value());
   return *this;
 }

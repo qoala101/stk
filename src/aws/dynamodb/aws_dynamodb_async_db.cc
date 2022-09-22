@@ -23,7 +23,7 @@
 #include <utility>
 
 #include "aws_api_handle.h"
-#include "cpp_format.h"
+#include <fmt/core.h>
 #include "cpp_message_exception.h"
 #include "not_null.hpp"
 
@@ -61,7 +61,7 @@ void AsyncDb::CreateTableIfNotExists(const nosqldb::Table &table) {
   const auto result = db_client_->CreateTable(request);
 
   if (!result.IsSuccess()) {
-    throw cpp::MessageException{cpp::Format("Couldn't create table {}: {}",
+    throw cpp::MessageException{fmt::format("Couldn't create table {}: {}",
                                             table.value,
                                             result.GetError().GetMessage())};
   }
@@ -80,7 +80,7 @@ void AsyncDb::DropTableIfExists(const nosqldb::Table &table) {
       return;
     }
 
-    throw cpp::MessageException{cpp::Format("Couldn't drop table {}: {}",
+    throw cpp::MessageException{fmt::format("Couldn't drop table {}: {}",
                                             table.value,
                                             result.GetError().GetMessage())};
   }
@@ -99,7 +99,7 @@ auto AsyncDb::SelectItem(const nosqldb::Table &table,
 
   if (!result.IsSuccess()) {
     throw cpp::MessageException{
-        cpp::Format("Couldn't select item {} from table {}: {}", key.value,
+        fmt::format("Couldn't select item {} from table {}: {}", key.value,
                     table.value, result.GetError().GetMessage())};
   }
 
@@ -129,7 +129,7 @@ void AsyncDb::InsertOrUpdateItem(const nosqldb::Table &table,
   const auto &result = db_client_->UpdateItem(request);
 
   if (!result.IsSuccess()) {
-    throw cpp::MessageException{cpp::Format(
+    throw cpp::MessageException{fmt::format(
         "Couldn't insert or update item {} in table {}: {}", item.key.value,
         table.value, result.GetError().GetMessage())};
   }
@@ -147,7 +147,7 @@ void AsyncDb::DeleteItemIfExists(const nosqldb::Table &table,
 
   if (!result.IsSuccess()) {
     throw cpp::MessageException{
-        cpp::Format("Couldn't delete item {} from table {}: {}", key.value,
+        fmt::format("Couldn't delete item {} from table {}: {}", key.value,
                     table.value, result.GetError().GetMessage())};
   }
 }

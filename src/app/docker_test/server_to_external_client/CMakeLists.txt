@@ -1,3 +1,5 @@
+find_package(fmt REQUIRED)
+
 add_executable(server_to_external_client
   app_dt_stec_app_endpoints.cc
   app_dt_stec_app_server.cc
@@ -16,7 +18,9 @@ target_include_directories(server_to_external_client
 )
 
 target_link_libraries(server_to_external_client
+  PRIVATE libapp
   PRIVATE libdockertestcommon
   PRIVATE librestsdk
   PRIVATE libspdlog
+  PRIVATE fmt::fmt
 )

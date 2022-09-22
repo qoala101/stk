@@ -17,7 +17,7 @@
 #include <string>
 #include <utility>
 
-#include "cpp_format.h"
+#include <fmt/core.h>
 #include "cpp_polymorphic_value.h"
 #include "network_enums.h"
 #include "network_i_json.h"
@@ -132,7 +132,7 @@ auto RestRequestSender::SendRequestAndGetResponse(
     network::RestRequest request) const -> network::RestResponse {
   const auto full_uri = FetchWebUriFromRequest(request);
 
-  logger_->LogImportantEvent(cpp::Format(
+  logger_->LogImportantEvent(fmt::format(
       "Sending {} request to {}",
       magic_enum::enum_name(request.endpoint.method), full_uri.to_string()));
 

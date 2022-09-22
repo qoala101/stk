@@ -9,7 +9,7 @@
 #include <range/v3/view/view.hpp>
 #include <utility>
 
-#include "cpp_format.h"
+#include <fmt/core.h>
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "sqldb_types.h"
@@ -74,7 +74,7 @@ auto SelectStatement::Execute(std::vector<sqldb::Value> params) const
 
       default:
         throw cpp::MessageException{
-            cpp::Format("Unexpected select statement result: {}", result_code)};
+            fmt::format("Unexpected select statement result: {}", result_code)};
     }
   }
 }

@@ -1,5 +1,6 @@
 find_package(SQLite3 REQUIRED)
 find_package(range-v3 REQUIRED)
+find_package(fmt REQUIRED)
 
 add_library(libsqlite
   sqlite_db_facade.cc
@@ -24,8 +25,10 @@ target_include_directories(libsqlite
 )
 
 target_link_libraries(libsqlite
-  PUBLIC libsqldb
   PUBLIC liblog
-  PRIVATE SQLite::SQLite3
+  PUBLIC libsqldb
+
+  PRIVATE fmt::fmt
   PRIVATE range-v3::range-v3
+  PRIVATE SQLite::SQLite3
 )

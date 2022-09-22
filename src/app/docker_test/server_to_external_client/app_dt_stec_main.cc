@@ -14,7 +14,7 @@
 #include "di_bind_type_to_value.h"
 #include "di_make_injector.h"
 #include "di_override_bindings_for_type.h"
-#include "cpp_format.h"
+#include <fmt/core.h>
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
 #include "network_types.h"
@@ -41,20 +41,20 @@ auto main(int argc, char* argv[]) -> int {
       stonks::app::injectors::MakeLogSpdlogInjector(),
       stonks::di::BindTypeToValue<stonks::network::Uri>(
           stonks::network::Uri{
-              stonks::cpp::Format("http://0.0.0.0:{}", port)}));
+              fmt::format("http://0.0.0.0:{}", port)}));
 
   const auto injector = stonks::di::OverrideBindingsForType<
       stonks::app::dt::stec::PdsAppClient>(
       default_injector, stonks::di::BindTypeToValue<stonks::network::Uri>(
-                            stonks::network::Uri{stonks::cpp::Format(
+                            stonks::network::Uri{fmt::format(
                                 "http://{}:{}", pds_host, pds_port)}));
 
   const auto logger =
       injector.create<stonks::cpp::NnUp<stonks::log::ILogger>>();
-  logger->LogImportantEvent(stonks::cpp::Format("Started: {}", app_name));
+  logger->LogImportantEvent(fmt::format("Started: {}", app_name));
 
   const auto server = injector.create<stonks::app::dt::stec::AppServer>();
 
   stonks::app::WaitForInterrupt();
-  logger->LogImportantEvent(stonks::cpp::Format("Ended: {}", app_name));
+  logger->LogImportantEvent(fmt::format("Ended: {}", app_name));
 }

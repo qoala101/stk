@@ -1,3 +1,6 @@
+find_package(function2 REQUIRED)
+find_package(fmt REQUIRED)
+
 add_library(libnetwork
   auto_parsable/request_handler/network_aprh_handler_variant.cc
   auto_parsable/network_auto_parsable_request_handler.cc
@@ -31,4 +34,7 @@ target_include_directories(libnetwork
 
 target_link_libraries(libnetwork
   PUBLIC libdi
+  PUBLIC function2::function2
+
+  PRIVATE fmt::fmt
 )

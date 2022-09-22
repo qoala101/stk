@@ -1,6 +1,6 @@
 #include "sqldb_qbf_limit_variant.h"
 
-#include "cpp_format.h"
+#include <fmt/core.h>
 
 namespace stonks::sqldb::qbf {
 auto LimitVariant::GetLimitClause() const -> std::string {
@@ -9,7 +9,7 @@ auto LimitVariant::GetLimitClause() const -> std::string {
         using V = decltype(v);
 
         if constexpr (cpp::DecaysTo<V, int>) {
-          return cpp::Format(" LIMIT {}", v);
+          return fmt::format(" LIMIT {}", v);
         }
 
         if constexpr (cpp::DecaysTo<V, LimitedType>) {
