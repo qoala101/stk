@@ -3,8 +3,8 @@
 
 #include <concepts>
 
-#include "cpp_concepts.h"  // IWYU pragma: keep
-#include "network_auto_parsable_request.h"
+#include "cpp_concepts.h"      // IWYU pragma: keep
+#include "network_concepts.h"  // IWYU pragma: keep
 
 /**
  * @file Concepts used by auto-parsable request handler.

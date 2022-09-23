@@ -1,7 +1,6 @@
 #ifndef STONKS_NOSQLDB_NOSQLDB_I_TABLES_INTERFACE_H_
 #define STONKS_NOSQLDB_NOSQLDB_I_TABLES_INTERFACE_H_
 
-#include "cpp_optional.h"
 #include "nosqldb_types.h"
 
 namespace stonks::nosqldb {

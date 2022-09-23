@@ -76,7 +76,7 @@ auto DbFacade::CreatePreparedStatement(const sqldb::Query &query) const
     -> SqliteStatementHandle {
   Expects(sqlite_db_ != nullptr);
 
-  auto *sqlite_statement = (sqlite3_stmt *){};
+  auto *sqlite_statement = static_cast<sqlite3_stmt *>(nullptr);
   const auto result_code =
       sqlite3_prepare_v3(sqlite_db_, query.value.c_str(),
                          gsl::narrow_cast<int>(query.value.length()) + 1,

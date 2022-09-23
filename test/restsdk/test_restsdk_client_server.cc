@@ -63,7 +63,7 @@ class Entity : public EntityInterface {
   }
 
   [[nodiscard]] auto GetSymbol(int index) const -> stonks::SymbolName override {
-    assert(symbols_.size() > index);
+    EXPECT_GT(symbols_.size(), index);
     return symbols_[index];
   }
 
@@ -310,7 +310,7 @@ TEST(ClientServerDeathTest, WrongServerTypes) {
                 std::ignore = entity.GetSymbol(request.Param("index"));
               })
           .Handling(EntityServer::GetSizeEndpointDesc(),
-                    [&entity]() { return "NOT_INT"; })
+                    []() { return "NOT_INT"; })
           .Start();
 
   // TODO(vh): EXPECT_DEATH doesn't work here and just blocks the app.
@@ -384,7 +384,7 @@ TEST(ClientServer, ClientReceivedWrongTypeException) {
   class Handler : public stonks::network::IRestRequestHandler {
    public:
     [[nodiscard]] auto HandleRequestAndGiveResponse(
-        stonks::network::RestRequest request) const
+        stonks::network::RestRequest /*request*/) const
         -> stonks::network::RestResponse override {
       return {.status = stonks::network::Status::kOk};
     }

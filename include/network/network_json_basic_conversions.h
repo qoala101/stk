@@ -8,10 +8,7 @@
 #include <stdexcept>
 #include <string_view>
 
-#include "cpp_message_exception.h"
-#include "cpp_not_null.h"
 #include "network_i_json.h"
-#include "not_null.hpp"
 
 /**
  * @file List of basic type conversions which should be provided by the network

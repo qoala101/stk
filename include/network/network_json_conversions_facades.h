@@ -21,7 +21,7 @@ template <cpp::DecaysTo<IJson> Json, typename... Keys>
   return AutoParsable{json.GetChild(std::forward<Keys>(keys)...)};
 }
 
-inline void BuildJsonFromImpl(IJson &json) {}
+inline void BuildJsonFromImpl(IJson & /*json*/) {}
 
 template <typename Key, Convertible Value, typename... KeyValues>
 void BuildJsonFromImpl(IJson &json, Key &&key, Value &&value,

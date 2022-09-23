@@ -12,7 +12,7 @@ enable_testing()
 add_executable(unittests
 
   # Disabled in order to not waste AWS API credits.
-  # aws/dynamodb_db.cc
+  # aws/test_aws_dynamodb_db.cc
   cpp/test_cpp_move_if.cc
   cpp/test_cpp_typed_struct.cc
 

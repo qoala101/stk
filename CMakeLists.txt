@@ -49,6 +49,15 @@ set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu})
 # Removes the clash of U macro between cpprestsdk and gtest libs.
 add_compile_definitions(_TURN_OFF_PLATFORM_STRING)
 
+add_compile_options(
+  -Wall
+  -Wextra
+  -Werror
+  -pedantic
+  -pedantic-errors
+  -Wno-missing-braces
+)
+
 add_subdirectory(src)
 
 if(BUILD_TESTS)

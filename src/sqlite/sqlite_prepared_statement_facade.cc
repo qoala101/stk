@@ -100,7 +100,7 @@ void PreparedStatementFacade::BindParams(
     const std::vector<sqldb::Value> &params) {
   Expects(sqlite_statement_ != nullptr);
 
-  for (auto i = 0; i < params.size(); ++i) {
+  for (auto i = 0; i < gsl::narrow_cast<int>(params.size()); ++i) {
     BindParam(*sqlite_statement_, i + 1, params[i]);
   }
 }
@@ -120,7 +120,7 @@ auto PreparedStatementFacade::GetStepValues(
   auto values = std::vector<sqldb::Value>{};
   values.reserve(num_values);
 
-  for (auto i = 0; i < num_values; ++i) {
+  for (auto i = 0; i < gsl::narrow_cast<int>(num_values); ++i) {
     values.emplace_back(GetValue(*sqlite_statement_, i, value_types[i]));
   }
 

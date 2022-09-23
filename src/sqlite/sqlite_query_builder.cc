@@ -93,7 +93,9 @@ auto QueryBuilder::BuildCreateTableIfNotExistsQuery(
         table_definition.columns | ranges::views::filter(&IsColumnForeignKey);
 
     for (const auto &column_def : foreign_key_columns) {
+      Expects(column_def.foreign_key.has_value());
       const auto &foreign_key = *column_def.foreign_key;
+
       query += fmt::format(
           R"(FOREIGN KEY("{}") REFERENCES "{}"("{}") ON DELETE CASCADE)",
           column_def.column.value, foreign_key.table.value,

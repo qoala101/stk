@@ -6,16 +6,19 @@
 #include "di_make_injector.h"
 #include "nosqldb_i_items_interface.h"
 #include "nosqldb_i_tables_interface.h"
+#include "spdlog_logger.h"
 
 namespace test::aws {
 [[nodiscard]] inline auto Injector() -> auto& {
-  static auto injector =
-      stonks::di::MakeInjector(stonks::di::BindInterfaceToImplementation<
-                                   stonks::nosqldb::ITablesInterface,
-                                   stonks::aws::dynamodb::SyncDbProxy>(),
-                               stonks::di::BindInterfaceToImplementation<
-                                   stonks::nosqldb::IItemsInterface,
-                                   stonks::aws::dynamodb::SyncDbProxy>());
+  static auto injector = stonks::di::MakeInjector(
+      stonks::di::BindInterfaceToImplementation<stonks::log::ILogger,
+                                                stonks::spdlog::Logger>(),
+      stonks::di::BindInterfaceToImplementation<
+          stonks::nosqldb::ITablesInterface,
+          stonks::aws::dynamodb::SyncDbProxy>(),
+      stonks::di::BindInterfaceToImplementation<
+          stonks::nosqldb::IItemsInterface,
+          stonks::aws::dynamodb::SyncDbProxy>());
   return injector;
 }
 }  // namespace test::aws

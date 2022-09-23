@@ -3,12 +3,10 @@
 #include <gtest/gtest-test-part.h>
 #include <polymorphic_value.h>
 
+#include <boost/di.hpp>
 #include <cstdint>
-#include <magic_enum.hpp>
 #include <map>
-#include <ostream>
 #include <string>
-#include <string_view>
 
 #include "cpp_polymorphic_value.h"
 #include "gtest/gtest_pred_impl.h"
@@ -31,25 +29,25 @@ struct AvgPrice {
 
  private:
   friend auto operator==(const AvgPrice &, const AvgPrice &) -> bool = default;
-  friend auto operator<<(std::ostream &stream, const AvgPrice &avg_price)
-      -> std::ostream & {
-    return stream << avg_price.mins << " " << avg_price.price;
-  }
+  //   friend auto operator<<(std::ostream &stream, const AvgPrice &avg_price)
+  //       -> std::ostream & {
+  //     return stream << avg_price.mins << " " << avg_price.price;
+  //   }
 };
 }  // namespace
 
-template <>
-constexpr auto magic_enum::customize::enum_name<CustomNameEnum>(
-    CustomNameEnum value) noexcept -> magic_enum::customize::customize_t {
-  switch (value) {
-    case CustomNameEnum::kCustomEnumName:
-      return "CUSTOM_ENUM_NAME";
-    default:
-      break;
-  }
+// template <>
+// constexpr auto magic_enum::customize::enum_name<CustomNameEnum>(
+//     CustomNameEnum value) noexcept -> magic_enum::customize::customize_t {
+//   switch (value) {
+//     case CustomNameEnum::kCustomEnumName:
+//       return "CUSTOM_ENUM_NAME";
+//     default:
+//       break;
+//   }
 
-  return invalid_tag;
-}
+//   return invalid_tag;
+// }
 
 namespace stonks::network {
 template <>

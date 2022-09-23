@@ -17,9 +17,9 @@ struct AssumedNn : public cpp::Nn<T> {
 template <typename Interface>
 [[nodiscard]] auto EnableNn() {
   return MakeInjector(
-      ::boost::di::bind<cpp::NnUp<Interface>>()
+      boost::di::bind<cpp::NnUp<Interface>>()
           .template to<detail::AssumedNn<cpp::Up<Interface>>>(),
-      ::boost::di::bind<cpp::NnSp<Interface>>()
+      boost::di::bind<cpp::NnSp<Interface>>()
           .template to<detail::AssumedNn<cpp::Sp<Interface>>>());
 }
 

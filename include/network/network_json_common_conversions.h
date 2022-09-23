@@ -5,6 +5,7 @@
 #include <polymorphic_value.h>
 
 #include <gsl/assert>
+#include <gsl/util>
 #include <optional>
 #include <vector>
 
@@ -68,7 +69,7 @@ template <cpp::Vector T>
         ParseFromJson<typename T::value_type>(*json.GetChild(i)));
   }
 
-  Ensures(vector.size() == json.GetSize());
+  Ensures(gsl::narrow_cast<int>(vector.size()) == json.GetSize());
   return vector;
 }
 
@@ -77,11 +78,11 @@ template <Convertible T>
     -> cpp::Pv<IJson> {
   auto json = CreateNullJson();
 
-  for (auto i = 0; i < value.size(); ++i) {
+  for (auto i = 0; i < gsl::narrow_cast<int>(value.size()); ++i) {
     json->SetChild(i, ConvertToJson(value[i]));
   }
 
-  Ensures(json->GetSize() == value.size());
+  Ensures(json->GetSize() == gsl::narrow_cast<int>(value.size()));
   return json;
 }
 

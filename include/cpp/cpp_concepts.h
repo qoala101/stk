@@ -12,7 +12,7 @@
 
 namespace stonks::cpp {
 template <typename T>
-class TypedStruct;
+struct TypedStruct;
 
 template <typename T>
 concept Const = std::is_const_v<std::remove_reference_t<T>>;

@@ -6,7 +6,6 @@
 #include <string_view>
 #include <vector>
 
-#include "cpp_not_null.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb {

@@ -53,7 +53,7 @@ auto Rows::GetSize() const -> int {
 void Rows::Push(std::vector<Value> values) {
   Expects(values.size() == columns_.size());
 
-  for (auto i = 0; i < values.size(); ++i) {
+  for (auto i = 0; i < gsl::narrow_cast<int>(values.size()); ++i) {
     columns_[i].values.emplace_back(std::move(values[i]));
   }
 }

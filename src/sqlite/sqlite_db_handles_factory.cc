@@ -26,7 +26,7 @@ DbHandlesFactory::DbHandlesFactory(cpp::NnSp<log::ILogger> logger)
     : logger_{std::move(logger)} {}
 
 auto DbHandlesFactory::CreateInMemoryDb() const -> SqliteDbHandle {
-  auto *in_memory_db = (sqlite3 *){};
+  auto *in_memory_db = static_cast<sqlite3 *>(nullptr);
   const auto result_code = sqlite3_open(":memory:", &in_memory_db);
 
   if ((in_memory_db == nullptr) || (result_code != SQLITE_OK)) {
@@ -44,7 +44,7 @@ auto DbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
     -> SqliteDbHandle {
   Expects(!file_path.value.empty());
 
-  auto *file_db = (sqlite3 *){};
+  auto *file_db = static_cast<sqlite3 *>(nullptr);
   const auto result_code = sqlite3_open(file_path.value.c_str(), &file_db);
 
   if ((file_db == nullptr) || (result_code != SQLITE_OK)) {
