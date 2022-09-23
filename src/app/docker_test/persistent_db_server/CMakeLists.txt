@@ -16,6 +16,7 @@ target_include_directories(persistent_db_server
 
 target_link_libraries(persistent_db_server
   PRIVATE libapp
+  PRIVATE libcli
   PRIVATE libdockertestcommon
   PRIVATE librestsdk
   PRIVATE libspdlog

@@ -1,6 +1,6 @@
-find_package(SQLite3 REQUIRED)
-find_package(range-v3 REQUIRED)
 find_package(fmt REQUIRED)
+find_package(range-v3 REQUIRED)
+find_package(SQLite3 REQUIRED)
 
 add_library(libsqlite
   sqlite_db_facade.cc

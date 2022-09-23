@@ -1,6 +1,6 @@
+find_package(fmt REQUIRED)
 find_package(magic_enum REQUIRED)
 find_package(range-v3 REQUIRED)
-find_package(fmt REQUIRED)
 
 add_library(libsqldb
   query_builder_facade/sqldb_qbf_columns_variant.cc

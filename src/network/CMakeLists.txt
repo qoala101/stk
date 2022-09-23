@@ -1,5 +1,5 @@
-find_package(function2 REQUIRED)
 find_package(fmt REQUIRED)
+find_package(function2 REQUIRED)
 
 add_library(libnetwork
   auto_parsable/request_handler/network_aprh_handler_variant.cc

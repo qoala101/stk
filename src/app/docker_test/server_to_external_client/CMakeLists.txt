@@ -19,6 +19,7 @@ target_include_directories(server_to_external_client
 
 target_link_libraries(server_to_external_client
   PRIVATE libapp
+  PRIVATE libcli
   PRIVATE libdockertestcommon
   PRIVATE librestsdk
   PRIVATE libspdlog

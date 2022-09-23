@@ -1,8 +1,8 @@
+find_package(fmt REQUIRED)
+find_package(function2 REQUIRED)
 find_package(GTest REQUIRED)
 find_package(magic_enum REQUIRED)
 find_package(range-v3 REQUIRED)
-find_package(fmt REQUIRED)
-find_package(function2 REQUIRED)
 
 include(GoogleTest)
 

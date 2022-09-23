@@ -1,20 +1,11 @@
-find_package(CLI11 REQUIRED)
-
-add_library(libapp
-  app_wait_for_interrupt.cc
-)
-
-set_target_properties(libapp PROPERTIES
-  OUTPUT_NAME app
-)
+add_library(libapp INTERFACE)
 
 target_include_directories(libapp
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/app
+  INTERFACE ${PROJECT_SOURCE_DIR}/include/app
 )
 
 target_link_libraries(libapp
-  PUBLIC libdi
-  PUBLIC CLI11::CLI11
+  INTERFACE libdi
 )
 
 add_subdirectory(docker_test)

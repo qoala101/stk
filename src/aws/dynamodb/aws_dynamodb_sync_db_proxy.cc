@@ -9,8 +9,6 @@
 #include <aws/dynamodb/model/TableStatus.h>
 #include <fmt/core.h>
 
-#include <function2/function2.hpp>
-#include <functional>
 #include <gsl/assert>
 #include <optional>
 #include <utility>
@@ -22,11 +20,12 @@
 
 namespace stonks::aws::dynamodb {
 namespace {
-void WaitUntil(const fu2::unique_function<bool() const> &predicate) {
+template <std::predicate Predicate>
+void WaitUntil(const Predicate &predicate) {
   while (!predicate()) {
   }
 
-  Ensures(predicate);
+  Ensures(predicate());
 }
 }  // namespace
 

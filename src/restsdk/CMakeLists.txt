@@ -1,6 +1,6 @@
 find_package(cpprestsdk REQUIRED)
-find_package(magic_enum REQUIRED)
 find_package(fmt REQUIRED)
+find_package(magic_enum REQUIRED)
 
 add_library(librestsdk
   restsdk_json_basic_conversions.cc
