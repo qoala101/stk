@@ -1,15 +1,17 @@
 #ifndef STONKS_CLI_CLI_APP_H_
 #define STONKS_CLI_CLI_APP_H_
 
+#include <type_traits>
+
 #include "cli_options.h"
 #include "cli_run_scope.h"
-#include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
+#include "cpp_optional.h"
 
 namespace stonks::cli {
 /**
  * @brief Command line application util.
- * Provides access to command line options, logs its lifetime
+ * Provides access to command line options, logs its lifetime,
  * and handles interrupts.
  */
 class App {
@@ -20,32 +22,52 @@ class App {
   App(int argc, const char *const *argv);
 
   /**
-   * @brief Runs the application until it's interrupted.
-   * @tparam Main Function to execute inside application.
-   * Has access to application options and must produce an instance.
+   * @brief Runs the function until interrupted.
    */
-  template <std::invocable<const Options &> Main>
+  template <cpp::VoidInvocable Main>
   void Run(const Main &main) {
-    const auto run_scope =
-        cpp::CallExposedPrivateConstructorOf<RunScope, App>{}(app_);
-    const auto options =
-        cpp::CallExposedPrivateConstructorOf<Options, App>{}(app_);
-    const auto instance = main(options);
+    const auto run_scope = CreateRunScope();
+    main();
   }
 
   /**
-   * @brief Runs the application until it's interrupted.
-   * @tparam Main Function to execute inside application.
-   * Must produce an instance.
+   * @brief Runs the function until interrupted.
+   * @tparam Main Callable with access to command line options.
    */
-  template <std::invocable Main>
+  template <cpp::VoidInvocableTakes<const Options &> Main>
   void Run(const Main &main) {
-    const auto run_scope =
-        cpp::CallExposedPrivateConstructorOf<RunScope, App>{}(app_);
-    const auto instance = main();
+    const auto run_scope = CreateRunScope();
+    main(CreateOptions());
+  }
+
+  /**
+   * @brief Runs the main function until interrupted.
+   * @tparam Main Callable which returns an instance which would be kept alive
+   * until interrupt occurs.
+   */
+  template <cpp::NonVoidInvocable Main>
+  void Run(const Main &main) {
+    auto instance = cpp::Opt<decltype(main())>{};
+    const auto run_scope = CreateRunScope();
+    instance = main();
+  }
+
+  /**
+   * @brief Runs the function until interrupted.
+   * @tparam Main Callable with access to command line options.
+   * Returns an instance which would be kept alive until interrupt occurs.
+   */
+  template <cpp::NonVoidInvocableTakes<const Options &> Main>
+  void Run(const Main &main) {
+    auto instance = cpp::Opt<decltype(main(std::declval<Options>()))>{};
+    const auto run_scope = CreateRunScope();
+    instance = main(CreateOptions());
   }
 
  private:
+  [[nodiscard]] auto CreateRunScope() const -> RunScope;
+  [[nodiscard]] auto CreateOptions() const -> Options;
+
   cpp::NnSp<CLI::App> app_;
 };
 }  // namespace stonks::cli

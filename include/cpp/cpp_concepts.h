@@ -35,6 +35,27 @@ concept IsTypedStruct =
 
 template <typename T>
 concept Vector = std::same_as<T, std::vector<typename T::value_type>>;
+
+template <typename T>
+concept VoidInvocable = requires(T &t) {
+                          { t() } -> std::same_as<void>;
+                        };
+
+template <typename T>
+concept NonVoidInvocable = requires(T &t) { t(); } && !
+VoidInvocable<T>;
+
+template <typename T, typename... Args>
+concept VoidInvocableTakes = requires(T &t, Args &&...args) {
+                               {
+                                 t(std::forward<Args>(args)...)
+                                 } -> std::same_as<void>;
+                             };
+
+template <typename T, typename... Args>
+concept NonVoidInvocableTakes =
+    requires(T &t, Args &&...args) { t(std::forward<Args>(args)...); } && !
+VoidInvocableTakes<T, Args...>;
 }  // namespace stonks::cpp
 
 #endif  // STONKS_CPP_CPP_CONCEPTS_H_

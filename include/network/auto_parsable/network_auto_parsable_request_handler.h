@@ -16,21 +16,22 @@ namespace stonks::network {
  */
 class AutoParsableRequestHandler : public IRestRequestHandler {
  public:
-  explicit AutoParsableRequestHandler(aprh::Callable auto handler)
+  explicit AutoParsableRequestHandler(cpp::VoidInvocable auto handler)
       : handler_{std::in_place_type_t<aprh::Handler>{}, std::move(handler)} {}
 
-  explicit AutoParsableRequestHandler(aprh::CallableWithRequest auto handler)
+  explicit AutoParsableRequestHandler(
+      cpp::VoidInvocableTakes<AutoParsableRestRequest> auto handler)
       : handler_{std::in_place_type_t<aprh::HandlerWithRequest>{},
                  std::move(handler)} {}
 
-  explicit AutoParsableRequestHandler(aprh::CallableWithResponse auto handler)
+  explicit AutoParsableRequestHandler(aprh::ConvertibleInvocable auto handler)
       : handler_{std::in_place_type_t<aprh::HandlerWithResponse>{},
                  [handler = std::move(handler)]() {
                    return ConvertToJson(handler());
                  }} {}
 
   explicit AutoParsableRequestHandler(
-      aprh::CallableWithRequestAndResponse auto handler)
+      aprh::ConvertibleInvocableTakes<AutoParsableRestRequest> auto handler)
       : handler_{
             std::in_place_type_t<aprh::HandlerWithRequestAndResponse>{},
             [handler = std::move(handler)](AutoParsableRestRequest request) {
