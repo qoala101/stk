@@ -384,7 +384,7 @@ TEST(ClientServer, ClientReceivedWrongTypeException) {
   class Handler : public stonks::network::IRestRequestHandler {
    public:
     [[nodiscard]] auto HandleRequestAndGiveResponse(
-        stonks::network::RestRequest /*request*/) const
+        stonks::network::RestRequest /*unused*/) const
         -> stonks::network::RestResponse override {
       return {.status = stonks::network::Status::kOk};
     }

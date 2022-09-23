@@ -24,25 +24,25 @@ void EndpointTypesValidatorTemplate::ValidateRequest(
 void EndpointTypesValidatorTemplate::HandleWrongParamsSize() const {}
 
 void EndpointTypesValidatorTemplate::HandleUnknownParam(
-    std::string_view /*param_name*/) const {}
+    std::string_view /*unused*/) const {}
 
 void EndpointTypesValidatorTemplate::HandleWrongRequestParamType(
-    std::string_view /*param_name*/, const Param & /*value*/,
-    const std::exception & /*parsing_exception*/) const {}
+    std::string_view /*unused*/, const Param & /*unused*/,
+    const std::exception & /*unused*/) const {}
 
 void EndpointTypesValidatorTemplate::HandleMissingRequestBody() const {}
 
 void EndpointTypesValidatorTemplate::HandleWrongRequestBodyType(
-    const Body::value_type & /*request_body*/,
-    const std::exception & /*parsing_exception*/) const {}
+    const Body::value_type & /*unused*/,
+    const std::exception & /*unused*/) const {}
 
 void EndpointTypesValidatorTemplate::HandleUnexpectedRequestBody() const {}
 
 void EndpointTypesValidatorTemplate::HandleMissingResponseBody() const {}
 
 void EndpointTypesValidatorTemplate::HandleWrongResponseBodyType(
-    const Body::value_type & /*response_body*/,
-    const std::exception & /*parsing_exception*/) const {}
+    const Body::value_type & /*unused*/,
+    const std::exception & /*unused*/) const {}
 
 void EndpointTypesValidatorTemplate::HandleUnexpectedResponseBody() const {}
 

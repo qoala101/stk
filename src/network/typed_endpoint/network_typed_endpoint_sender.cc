@@ -23,21 +23,21 @@ class TypeChecker : public te::EndpointTypesValidatorTemplate {
  private:
   void HandleWrongParamsSize() const override { Expects(false); }
 
-  void HandleUnknownParam(std::string_view /*param_name*/) const override {
+  void HandleUnknownParam(std::string_view /*unused*/) const override {
     Expects(false);
   }
 
   void HandleWrongRequestParamType(
-      std::string_view /*param_name*/, const Param & /*value*/,
-      const std::exception & /*parsing_exception*/) const override {
+      std::string_view /*unused*/, const Param & /*unused*/,
+      const std::exception & /*unused*/) const override {
     Expects(false);
   }
 
   void HandleMissingRequestBody() const override { Expects(false); }
 
   void HandleWrongRequestBodyType(
-      const Body::value_type & /*request_body*/,
-      const std::exception & /*parsing_exception*/) const override {
+      const Body::value_type & /*unused*/,
+      const std::exception & /*unused*/) const override {
     Expects(false);
   }
 

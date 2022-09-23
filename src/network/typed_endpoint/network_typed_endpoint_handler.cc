@@ -59,8 +59,8 @@ class TypeChecker : public te::EndpointTypesValidatorTemplate {
   void HandleMissingResponseBody() const override { Expects(false); }
 
   void HandleWrongResponseBodyType(
-      const Body::value_type & /*response_body*/,
-      const std::exception & /*parsing_exception*/) const override {
+      const Body::value_type & /*unused*/,
+      const std::exception & /*unused*/) const override {
     Expects(false);
   }
 
