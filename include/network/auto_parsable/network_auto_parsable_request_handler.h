@@ -1,14 +1,11 @@
 #ifndef STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_H_
 #define STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_H_
 
-#include <function2/function2.hpp>
 #include <utility>
-#include <variant>
 
-#include "network_aprh_concepts.h"
+#include "network_aprh_concepts.h"  // IWYU pragma: keep
 #include "network_aprh_handler_variant.h"
 #include "network_auto_parsable_request.h"
-#include "network_concepts.h"
 #include "network_i_rest_request_handler.h"
 #include "network_types.h"
 

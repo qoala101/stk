@@ -32,14 +32,13 @@ namespace test::sqlite {
       stonks::di::BindTypeToValue<stonks::sqlite::FilePath>(
           stonks::sqlite::FilePath{"sqlite_db_test.db"}),
       stonks::di::BindInterfaceToImplementation<stonks::log::ILogger,
-                                                     stonks::spdlog::Logger>(),
+                                                stonks::spdlog::Logger>(),
       stonks::di::BindInterfaceToImplementation<stonks::sqldb::IDb,
-                                                     stonks::sqlite::Db>(),
-      stonks::di::BindInterfaceToImplementation<
-          stonks::sqldb::IQueryBuilder, stonks::sqlite::QueryBuilder>(),
-      stonks::di::BindTypeToOtherType<
-          stonks::sqlite::SqliteDbHandleVariant,
-          stonks::sqlite::SqliteDbFileHandle>(),
+                                                stonks::sqlite::Db>(),
+      stonks::di::BindInterfaceToImplementation<stonks::sqldb::IQueryBuilder,
+                                                stonks::sqlite::QueryBuilder>(),
+      stonks::di::BindTypeToOtherType<stonks::sqlite::SqliteDbHandleVariant,
+                                      stonks::sqlite::SqliteDbFileHandle>(),
       stonks::di::BindTypeToFactoryFunction<
           stonks::sqlite::SqliteDbHandle, SqliteDbHandleFactory,
           stonks::sqlite::DbHandlesFactory, stonks::sqlite::FilePath>());

@@ -12,9 +12,9 @@ namespace stonks::app::injectors {
 [[nodiscard]] inline auto MakeNetworkRestsdkInjector() {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<network::IRestRequestReceiver,
-                                             restsdk::RestRequestReceiver>(),
+                                        restsdk::RestRequestReceiver>(),
       di::BindInterfaceToImplementation<network::IRestRequestSender,
-                                             restsdk::RestRequestSender>());
+                                        restsdk::RestRequestSender>());
 }
 }  // namespace stonks::app::injectors
 

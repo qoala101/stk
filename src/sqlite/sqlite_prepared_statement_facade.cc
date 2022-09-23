@@ -1,14 +1,13 @@
 #include "sqlite_prepared_statement_facade.h"
 
+#include <fmt/core.h>
 #include <sqlite3.h>
 
 #include <cstdint>
 #include <gsl/assert>
 #include <gsl/util>
 #include <string>
-#include <utility>
 
-#include <fmt/core.h>
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 

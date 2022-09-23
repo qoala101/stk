@@ -15,6 +15,7 @@
 #include <aws/dynamodb/model/ProvisionedThroughput.h>
 #include <aws/dynamodb/model/ScalarAttributeType.h>
 #include <aws/dynamodb/model/UpdateItemRequest.h>
+#include <fmt/core.h>
 
 #include <map>
 #include <memory>
@@ -23,7 +24,6 @@
 #include <utility>
 
 #include "aws_api_handle.h"
-#include <fmt/core.h>
 #include "cpp_message_exception.h"
 #include "not_null.hpp"
 

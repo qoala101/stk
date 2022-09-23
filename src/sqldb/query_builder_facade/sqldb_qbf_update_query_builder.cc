@@ -1,11 +1,11 @@
 #include "sqldb_qbf_update_query_builder.h"
 
+#include <fmt/core.h>
+
 #include <gsl/assert>
 #include <memory>
 #include <utility>
-#include <variant>
 
-#include <fmt/core.h>
 #include "sqldb_qbf_common.h"
 
 namespace stonks::sqldb::qbf {

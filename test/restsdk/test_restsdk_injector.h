@@ -19,7 +19,7 @@ namespace test::restsdk {
           stonks::network::IRestRequestReceiver,
           stonks::restsdk::RestRequestReceiver>(),
       stonks::di::BindInterfaceToImplementation<stonks::log::ILogger,
-                                                     stonks::spdlog::Logger>());
+                                                stonks::spdlog::Logger>());
   return injector;
 }
 }  // namespace test::restsdk

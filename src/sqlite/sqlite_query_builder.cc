@@ -1,5 +1,7 @@
 #include "sqlite_query_builder.h"
 
+#include <fmt/core.h>
+
 #include <gsl/assert>
 #include <magic_enum.hpp>
 #include <range/v3/algorithm/any_of.hpp>
@@ -15,7 +17,6 @@
 #include <string>
 #include <utility>
 
-#include <fmt/core.h>
 #include "cpp_optional.h"
 #include "sqldb_enums_to_string.h"  // IWYU pragma: keep
 

@@ -2,6 +2,8 @@
 
 #include <fmt/core.h>
 
+#include "cpp_concepts.h"  // IWYU pragma: keep
+
 namespace stonks::sqldb::qbf {
 auto LimitVariant::GetLimitClause() const -> std::string {
   return std::visit(

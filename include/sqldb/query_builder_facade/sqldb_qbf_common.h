@@ -1,7 +1,6 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_COMMON_H_
 #define STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_COMMON_H_
 
-#include <variant>
 #include <vector>
 
 #include "cpp_views.h"

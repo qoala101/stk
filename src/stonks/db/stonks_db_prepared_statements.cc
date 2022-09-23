@@ -130,22 +130,20 @@ auto PreparedStatements::SelectSymbolsInfo() const
   if (select_symbols_info_ == nullptr) {
     auto symbol_columns =
         tables::Symbol().GetColumnDefinitions({{"name"},
-                                                          {"min_base_amount"},
-                                                          {"min_quote_amount"},
-                                                          {"base_step"},
-                                                          {"quote_step"}});
+                                               {"min_base_amount"},
+                                               {"min_quote_amount"},
+                                               {"base_step"},
+                                               {"quote_step"}});
 
     const auto base_asset_column = []() {
-      auto base_asset_column =
-          tables::Asset().GetColumnDefinition({"name"});
+      auto base_asset_column = tables::Asset().GetColumnDefinition({"name"});
       base_asset_column.column.value = "base_asset";
       return base_asset_column;
     }();
     symbol_columns.emplace_back(cpp::AssumeNn(&base_asset_column));
 
     const auto quote_asset_column = []() {
-      auto quote_asset_column =
-          tables::Asset().GetColumnDefinition({"name"});
+      auto quote_asset_column = tables::Asset().GetColumnDefinition({"name"});
       quote_asset_column.column.value = "quote_asset";
       return quote_asset_column;
     }();
@@ -235,8 +233,7 @@ auto PreparedStatements::SelectPriceTicks() const
     const auto query =
         InitSelectPriceTicksQuery(*query_builder_facade_).Build();
     select_price_ticks_ =
-        db_->PrepareStatement(query, tables::SymbolPriceTick())
-            .as_nullable();
+        db_->PrepareStatement(query, tables::SymbolPriceTick()).as_nullable();
   }
 
   Ensures(select_price_ticks_ != nullptr);
@@ -250,8 +247,7 @@ auto PreparedStatements::SelectSymbolPriceTicks() const
                            .And("SymbolPriceTick.symbol_id = ?")
                            .Build();
     select_symbol_price_ticks_ =
-        db_->PrepareStatement(query, tables::SymbolPriceTick())
-            .as_nullable();
+        db_->PrepareStatement(query, tables::SymbolPriceTick()).as_nullable();
   }
 
   Ensures(select_symbol_price_ticks_ != nullptr);

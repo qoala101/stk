@@ -4,9 +4,9 @@
 #include <map>
 #include <utility>
 
-#include "di_factory.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
+#include "di_factory.h"
 #include "network_auto_parsable_request_handler.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
@@ -19,8 +19,8 @@ namespace stonks::network {
  */
 class RestServerBuilder {
  public:
-  explicit RestServerBuilder(cpp::NnSp<di::IFactory<IRestRequestReceiver>>
-                          request_receiver_factory);
+  explicit RestServerBuilder(
+      cpp::NnSp<di::IFactory<IRestRequestReceiver>> request_receiver_factory);
 
   /**
    * @brief Sets base URI on which requests are to be handled.
@@ -31,7 +31,7 @@ class RestServerBuilder {
    * @brief Registers handler for particular endpoint.
    */
   template <typename T>
-  requires std::constructible_from<AutoParsableRequestHandler, T>
+    requires std::constructible_from<AutoParsableRequestHandler, T>
   auto Handling(TypedEndpoint endpoint, T handler) -> RestServerBuilder & {
     return Handling(
         std::move(endpoint),

@@ -1,11 +1,8 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_LIMIT_VARIANT_H_
 #define STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_LIMIT_VARIANT_H_
 
+#include <string>
 #include <variant>
-#include <vector>
-
-#include "cpp_copy_const.h"
-#include "sqldb_types.h"
 
 namespace stonks::sqldb::qbf {
 /**

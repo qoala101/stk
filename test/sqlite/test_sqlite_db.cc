@@ -180,7 +180,7 @@ TEST(SqliteDb, SelectJoin) {
        "FROM Symbol "
        "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
        "JOIN Asset AS QuoteAsset ON Symbol.quote_asset_id=QuoteAsset.id;"},
-    cell_definitions);
+      cell_definitions);
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
   EXPECT_EQ(rows.GetColumnValues({"base_asset"})[0].GetString(), "BTC");

@@ -1,12 +1,13 @@
 #include "sqldb_qbf_select_query_builder.h"
 
+#include <fmt/core.h>
+
 #include <gsl/assert>
 #include <memory>
 #include <string>
 #include <utility>
 #include <variant>
 
-#include <fmt/core.h>
 #include "sqldb_qbf_common.h"
 #include "sqldb_types.h"
 

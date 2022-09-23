@@ -1,11 +1,11 @@
 #include "sqldb_qbf_delete_query_builder.h"
 
+#include <fmt/core.h>
+
 #include <gsl/assert>
 #include <memory>
 #include <string>
 #include <utility>
-
-#include <fmt/core.h>
 
 namespace stonks::sqldb::qbf {
 DeleteQueryBuilder::DeleteQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)

@@ -1,10 +1,10 @@
 #ifndef STONKS_RESTSDK_RESTSDK_REST_REQUEST_SENDER_H_
 #define STONKS_RESTSDK_RESTSDK_REST_REQUEST_SENDER_H_
 
+#include "cpp_not_null.h"
 #include "log_i_logger.h"
 #include "network_i_rest_request_sender.h"
 #include "network_types.h"
-#include "cpp_not_null.h"
 
 namespace stonks::restsdk {
 /**

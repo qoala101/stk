@@ -8,7 +8,7 @@ WrongTypeException::WrongTypeException(std::string message, cpp::Pv<IJson> json)
 
 template <cpp::DecaysTo<WrongTypeException> This>
 auto WrongTypeException::GetJsonImpl(This& t)
-    -> cpp::CopyConst<This, cpp::Pv<IJson>> & {
+    -> cpp::CopyConst<This, cpp::Pv<IJson>>& {
   return t.json_;
 }
 

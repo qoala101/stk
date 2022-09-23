@@ -9,13 +9,13 @@
 
 namespace test::aws {
 [[nodiscard]] inline auto Injector() -> auto& {
-  static auto injector = stonks::di::MakeInjector(
-      stonks::di::BindInterfaceToImplementation<
-          stonks::nosqldb::ITablesInterface,
-          stonks::aws::dynamodb::SyncDbProxy>(),
-      stonks::di::BindInterfaceToImplementation<
-          stonks::nosqldb::IItemsInterface,
-          stonks::aws::dynamodb::SyncDbProxy>());
+  static auto injector =
+      stonks::di::MakeInjector(stonks::di::BindInterfaceToImplementation<
+                                   stonks::nosqldb::ITablesInterface,
+                                   stonks::aws::dynamodb::SyncDbProxy>(),
+                               stonks::di::BindInterfaceToImplementation<
+                                   stonks::nosqldb::IItemsInterface,
+                                   stonks::aws::dynamodb::SyncDbProxy>());
   return injector;
 }
 }  // namespace test::aws

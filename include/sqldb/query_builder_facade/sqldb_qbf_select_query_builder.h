@@ -3,7 +3,6 @@
 
 #include <string>
 #include <string_view>
-#include <variant>
 #include <vector>
 
 #include "cpp_expose_private_constructors.h"
@@ -11,7 +10,7 @@
 #include "cpp_optional.h"
 #include "cpp_views.h"
 #include "sqldb_i_query_builder.h"
-#include "sqldb_qbf_common.h"
+#include "sqldb_qbf_columns_variant.h"
 #include "sqldb_qbf_limit_variant.h"
 #include "sqldb_types.h"
 

@@ -1,10 +1,10 @@
 #include "sqlite_update_statement.h"
 
+#include <fmt/core.h>
 #include <sqlite3.h>
 
 #include <utility>
 
-#include <fmt/core.h>
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "sqlite_prepared_statement_facade.h"

@@ -1,5 +1,6 @@
 #include "sqlite_db_handles_factory.h"
 
+#include <fmt/core.h>
 #include <sqlite3.h>
 
 #include <filesystem>
@@ -9,7 +10,6 @@
 #include <type_traits>
 #include <utility>
 
-#include <fmt/core.h>
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "not_null.hpp"

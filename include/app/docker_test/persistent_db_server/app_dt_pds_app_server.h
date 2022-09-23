@@ -2,8 +2,8 @@
 #define STONKS_APP_DOCKER_TEST_PERSISTENT_DB_SERVER_APP_DT_PDS_APP_SERVER_H_
 
 #include "app_dt_pds_app.h"
-#include "di_factory.h"
 #include "cpp_not_null.h"
+#include "di_factory.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_types.h"
 

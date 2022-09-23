@@ -33,7 +33,7 @@ template <>
 [[nodiscard]] auto ConvertToJson(cpp::TimePoint value) -> cpp::Pv<IJson>;
 
 template <cpp::IsTypedStruct T>
-requires Parsable<typename T::ValueType>
+  requires Parsable<typename T::ValueType>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
   return {ParseFromJson<typename T::ValueType>(json)};
 }
@@ -45,7 +45,7 @@ template <Convertible T>
 }
 
 template <cpp::Optional T>
-requires Parsable<typename T::value_type>
+  requires Parsable<typename T::value_type>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
   if (json.IsNull()) {
     return std::nullopt;
@@ -64,7 +64,7 @@ template <Convertible T>
 }
 
 template <cpp::Vector T>
-requires Parsable<typename T::value_type>
+  requires Parsable<typename T::value_type>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
   auto vector = T{};
 

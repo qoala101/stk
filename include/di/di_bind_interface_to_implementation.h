@@ -3,9 +3,9 @@
 
 #include <boost/di.hpp>
 
+#include "cpp_not_null.h"
 #include "di_factory.h"
 #include "di_make_injector.h"
-#include "cpp_not_null.h"
 
 namespace stonks::di {
 namespace detail {
@@ -16,10 +16,11 @@ struct AssumedNn : public cpp::Nn<T> {
 
 template <typename Interface>
 [[nodiscard]] auto EnableNn() {
-  return MakeInjector(::boost::di::bind<cpp::NnUp<Interface>>()
-                          .template to<detail::AssumedNn<cpp::Up<Interface>>>(),
-                      ::boost::di::bind<cpp::NnSp<Interface>>()
-                          .template to<detail::AssumedNn<cpp::Sp<Interface>>>());
+  return MakeInjector(
+      ::boost::di::bind<cpp::NnUp<Interface>>()
+          .template to<detail::AssumedNn<cpp::Up<Interface>>>(),
+      ::boost::di::bind<cpp::NnSp<Interface>>()
+          .template to<detail::AssumedNn<cpp::Sp<Interface>>>());
 }
 
 template <typename Interface, std::derived_from<Interface> Implementation>

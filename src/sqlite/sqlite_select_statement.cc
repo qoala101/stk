@@ -1,5 +1,6 @@
 #include "sqlite_select_statement.h"
 
+#include <fmt/core.h>
 #include <sqlite3.h>
 
 #include <gsl/assert>
@@ -9,7 +10,6 @@
 #include <range/v3/view/view.hpp>
 #include <utility>
 
-#include <fmt/core.h>
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "sqldb_types.h"

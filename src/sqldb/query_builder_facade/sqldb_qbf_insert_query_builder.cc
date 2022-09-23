@@ -3,7 +3,6 @@
 #include <gsl/assert>
 #include <memory>
 #include <utility>
-#include <variant>
 
 #include "sqldb_qbf_common.h"
 

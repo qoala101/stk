@@ -1,6 +1,7 @@
 #include "network_typed_endpoint_handler.h"
 
 #include <bits/exception.h>
+#include <fmt/core.h>
 
 #include <gsl/assert>
 #include <memory>
@@ -8,7 +9,6 @@
 #include <string_view>
 #include <utility>
 
-#include <fmt/core.h>
 #include "network_exception.h"
 #include "network_te_endpoint_types_validator_template.h"
 #include "network_typed_endpoint.h"

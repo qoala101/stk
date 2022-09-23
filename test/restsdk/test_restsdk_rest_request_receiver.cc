@@ -1,3 +1,4 @@
+#include <fmt/core.h>
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
 #include <polymorphic_value.h>
@@ -7,7 +8,6 @@
 #include <ostream>
 #include <string>
 
-#include <fmt/core.h>
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 #include "gtest/gtest_pred_impl.h"

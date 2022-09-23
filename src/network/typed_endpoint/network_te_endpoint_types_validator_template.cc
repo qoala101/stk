@@ -2,7 +2,7 @@
 
 #include <polymorphic_value.h>
 
-#include <functional>
+#include <function2/function2.hpp>
 #include <map>
 #include <string>
 #include <type_traits>

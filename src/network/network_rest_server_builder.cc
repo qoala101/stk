@@ -41,7 +41,7 @@ auto RestServerBuilder::Start() -> cpp::NnUp<IRestRequestReceiver> {
 }
 
 auto RestServerBuilder::Handling(TypedEndpoint endpoint,
-                          cpp::NnSp<IRestRequestHandler> handler)
+                                 cpp::NnSp<IRestRequestHandler> handler)
     -> RestServerBuilder& {
   auto decorated_handler = cpp::MakeNnSp<RequestExceptionHandler>(
       cpp::MakeNnSp<TypedEndpointHandler>(std::move(endpoint.expected_types),

@@ -1,5 +1,3 @@
-#include "stonks_db.h"
-
 #include <gtest/gtest.h>
 
 #include <chrono>
@@ -7,6 +5,7 @@
 
 #include "cpp_not_null.h"
 #include "sqlite_factory.h"
+#include "stonks_db.h"
 #include "stonks_db_updater_symbols_info.h"
 #include "stonks_types.h"
 
@@ -158,9 +157,9 @@ TEST(StonksDb, SelectPeriod) {
   price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
   EXPECT_EQ(price_ticks.size(), 2);
 
-  period = stonks::Period{
-      .start_time = std::nullopt,
-      .end_time = cpp::MakeOpt<std::chrono::milliseconds>(2999)};
+  period =
+      stonks::Period{.start_time = std::nullopt,
+                     .end_time = cpp::MakeOpt<std::chrono::milliseconds>(2999)};
   price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
   EXPECT_EQ(price_ticks.size(), 2);
 

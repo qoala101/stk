@@ -18,12 +18,9 @@ docker compose -f ./src/app/docker_test/docker-compose.yml build
 # Upload Docker test app images to Docker Hub.
 docker compose -f ./src/app/docker_test/docker-compose.yml push
 
-
-
-
 # run kubernetes deployment
 kompose convert
-# use something like all yaml files 
+# use something like all yaml files
 kubectl apply -f pds-tcp-service.yaml,pds-pod.yaml,stec-tcp-service.yaml,stec-pod.yaml
 
 # run ngrok which opens port to kubernetes

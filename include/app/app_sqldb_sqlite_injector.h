@@ -23,12 +23,12 @@ namespace stonks::app::injectors {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<sqldb::IDb, sqlite::Db>(),
       di::BindInterfaceToImplementation<sqldb::IQueryBuilder,
-                                             sqlite::QueryBuilder>(),
+                                        sqlite::QueryBuilder>(),
       di::BindTypeToFactoryFunction<
           sqlite::SqliteDbHandle, SqliteDbHandleFactory,
           sqlite::DbHandlesFactory, sqlite::FilePath>(),
       di::BindTypeToOtherType<sqlite::SqliteDbHandleVariant,
-                                   sqlite::SqliteDbFileHandle>());
+                              sqlite::SqliteDbFileHandle>());
 }
 }  // namespace stonks::app::injectors
 

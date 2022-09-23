@@ -1,5 +1,7 @@
 #include "network_rest_client_request_builder.h"
 
+#include <polymorphic_value.h>
+
 #include <gsl/assert>
 #include <string>
 #include <tuple>

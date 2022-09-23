@@ -228,11 +228,11 @@ void Db::InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick) {
 }
 
 void Db::CreateTablesIfNotExist() {
-  db_->PrepareStatement(query_builder_->BuildCreateTableIfNotExistsQuery(
-                            db::tables::Asset()))
+  db_->PrepareStatement(
+         query_builder_->BuildCreateTableIfNotExistsQuery(db::tables::Asset()))
       ->Execute();
-  db_->PrepareStatement(query_builder_->BuildCreateTableIfNotExistsQuery(
-                            db::tables::Symbol()))
+  db_->PrepareStatement(
+         query_builder_->BuildCreateTableIfNotExistsQuery(db::tables::Symbol()))
       ->Execute();
   db_->PrepareStatement(query_builder_->BuildCreateTableIfNotExistsQuery(
                             db::tables::SymbolPriceTick()))

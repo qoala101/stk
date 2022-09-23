@@ -9,7 +9,6 @@
 #include "sqldb_qbf_insert_query_builder.h"
 #include "sqldb_query_builder_facade.h"
 #include "sqldb_types.h"
-#include "sqldb_value.h"
 
 namespace stonks::app::dt::pds {
 Db::Db(sqldb::IDb &db, const cpp::NnSp<sqldb::IQueryBuilder> &query_builder)
@@ -29,6 +28,6 @@ Db::Db(sqldb::IDb &db, const cpp::NnSp<sqldb::IQueryBuilder> &query_builder)
 
 void Db::InsertSymbolPriceRecord(const SymbolPriceRecord &record) {
   insert_symbol_price_record_statement_->Execute(
-      AsValues(record.time.count(), record.symbol, record.price));
+      sqldb::AsValues(record.time.count(), record.symbol, record.price));
 }
 }  // namespace stonks::app::dt::pds

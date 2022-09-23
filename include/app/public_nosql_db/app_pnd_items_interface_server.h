@@ -1,8 +1,8 @@
 #ifndef STONKS_APP_PUBLIC_NOSQL_DB_APP_PND_ITEMS_INTERFACE_SERVER_H_
 #define STONKS_APP_PUBLIC_NOSQL_DB_APP_PND_ITEMS_INTERFACE_SERVER_H_
 
-#include "di_factory.h"
 #include "cpp_not_null.h"
+#include "di_factory.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_types.h"
 #include "nosqldb_i_items_interface.h"

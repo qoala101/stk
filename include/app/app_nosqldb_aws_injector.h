@@ -10,11 +10,11 @@ namespace stonks::app::injectors {
 [[nodiscard]] inline auto MakeNosqldbAwsInjector() {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<nosqldb::ITablesInterface,
-                                             aws::dynamodb::SyncDbProxy>(),
+                                        aws::dynamodb::SyncDbProxy>(),
       di::BindInterfaceToImplementation<nosqldb::IItemsInterface,
-                                             aws::dynamodb::SyncDbProxy>(),
+                                        aws::dynamodb::SyncDbProxy>(),
       di::BindInterfaceToImplementation<nosqldb::IDb,
-                                             aws::dynamodb::SyncDbProxy>());
+                                        aws::dynamodb::SyncDbProxy>());
 }
 }  // namespace stonks::app::injectors
 

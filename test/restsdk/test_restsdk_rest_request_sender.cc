@@ -1,3 +1,4 @@
+#include <fmt/core.h>
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
 #include <polymorphic_value.h>
@@ -9,7 +10,6 @@
 #include <string>
 #include <string_view>
 
-#include <fmt/core.h>
 #include "cpp_polymorphic_value.h"
 #include "gtest/gtest_pred_impl.h"
 #include "network_i_json.h"

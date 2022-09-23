@@ -1,7 +1,6 @@
 #ifndef STONKS_RESTSDK_RESTSDK_JSON_NATIVE_HANDLE_H_
 #define STONKS_RESTSDK_RESTSDK_JSON_NATIVE_HANDLE_H_
 
-#include "cpp_concepts.h"
 #include "cpp_copy_const.h"
 #include "cpp_not_null.h"
 #include "network_i_json.h"

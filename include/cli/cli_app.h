@@ -20,9 +20,9 @@ class App {
   App(int argc, const char *const *argv);
 
   /**
-   * @brief Runs the application until it's interrupted
-   * @tparam Main Function to execute inside application. Has access to
-   * application options and must produce an instance.
+   * @brief Runs the application until it's interrupted.
+   * @tparam Main Function to execute inside application.
+   * Has access to application options and must produce an instance.
    */
   template <std::invocable<const Options &> Main>
   void Run(const Main &main) {
@@ -31,6 +31,18 @@ class App {
     const auto options =
         cpp::CallExposedPrivateConstructorOf<Options, App>{}(app_);
     const auto instance = main(options);
+  }
+
+  /**
+   * @brief Runs the application until it's interrupted.
+   * @tparam Main Function to execute inside application.
+   * Must produce an instance.
+   */
+  template <std::invocable Main>
+  void Run(const Main &main) {
+    const auto run_scope =
+        cpp::CallExposedPrivateConstructorOf<RunScope, App>{}(app_);
+    const auto instance = main();
   }
 
  private:

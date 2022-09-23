@@ -7,7 +7,8 @@
 #include "cpp_not_null.h"
 #include "cpp_views.h"
 #include "sqldb_i_query_builder.h"
-#include "sqldb_qbf_common.h"
+#include "sqldb_qbf_columns_variant.h"
+#include "sqldb_qbf_table_variant.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb {

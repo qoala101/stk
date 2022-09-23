@@ -1,8 +1,6 @@
 #include "sqldb_value.h"
 
 #include <gsl/assert>
-#include <type_traits>
-#include <utility>
 #include <variant>
 
 #include "sqldb_enums.h"
@@ -51,7 +49,7 @@ auto Value::GetDouble() const -> double {
 }
 
 template <cpp::DecaysTo<Value> This>
-auto Value::GetStringImpl(This& t) -> cpp::CopyConst<This, std::string> & {
+auto Value::GetStringImpl(This& t) -> cpp::CopyConst<This, std::string>& {
   Expects(std::holds_alternative<std::string>(t));
   return std::get<std::string>(t);
 }

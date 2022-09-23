@@ -7,7 +7,7 @@
 namespace stonks::di {
 namespace detail {
 template <typename Type, typename FactoryFunction, typename... Args>
-requires std::is_invocable_r_v<Type, FactoryFunction, Args...>
+  requires std::is_invocable_r_v<Type, FactoryFunction, Args...>
 struct FactoryFunctionInjector : public Type {
   explicit FactoryFunctionInjector(Args... args)
       : Type{FactoryFunction{}(std::move(args)...)} {}
@@ -23,7 +23,7 @@ struct FactoryFunctionInjector : public Type {
  * @remark Can be used for types which don't have public constructors.
  */
 template <typename Type, typename FactoryFunction, typename... Args>
-requires std::is_invocable_r_v<Type, FactoryFunction, Args...>
+  requires std::is_invocable_r_v<Type, FactoryFunction, Args...>
 [[nodiscard]] auto BindTypeToFactoryFunction() {
   return boost::di::bind<Type>()
       .template to<
