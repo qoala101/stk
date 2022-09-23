@@ -1,3 +1,5 @@
+find_package(absl REQUIRED)
+
 add_library(libdockertestcommon
   app_dt_json_user_conversions.cc
   app_dt_pds_app_endpoints.cc
@@ -12,6 +14,8 @@ target_include_directories(libdockertestcommon
 )
 
 target_link_libraries(libdockertestcommon
+  PUBLIC absl::absl
+
   PRIVATE libapp
   PRIVATE libnetwork
 )

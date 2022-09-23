@@ -1,9 +1,10 @@
 #include "app_dt_stec_app.h"
 
+#include <absl/time/clock.h>
+
 #include <utility>
 
 #include "app_dt_stec_binance_types.h"
-#include "cpp_chrono.h"
 
 namespace stonks::app::dt::stec {
 App::App(binance::Client binance_client, PdsAppClient pds_app_client)
@@ -13,9 +14,8 @@ App::App(binance::Client binance_client, PdsAppClient pds_app_client)
 auto App::GetAveragePrice(Symbol symbol) const -> Price {
   auto price = Price{binance_client_.GetCurrentAveragePrice(symbol).price};
 
-  pds_app_client_.RecordSymbolPrice({.time = cpp::GetCurrentTime(),
-                                     .symbol = std::move(symbol),
-                                     .price = price});
+  pds_app_client_.RecordSymbolPrice(
+      {.time = absl::Now(), .symbol = std::move(symbol), .price = price});
 
   return price;
 }

@@ -1,3 +1,4 @@
+find_package(absl REQUIRED)
 find_package(fmt REQUIRED)
 find_package(function2 REQUIRED)
 find_package(GTest REQUIRED)
@@ -46,6 +47,7 @@ target_link_libraries(unittests
   PRIVATE libspdlog
   PRIVATE libsqlite
   PRIVATE libstonks
+  PRIVATE absl::absl
   PRIVATE fmt::fmt
   PRIVATE function2::function2
   PRIVATE magic_enum::magic_enum

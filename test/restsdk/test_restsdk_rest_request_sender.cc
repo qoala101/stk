@@ -83,7 +83,7 @@ TEST(RestRequestSender, ParameterTypesToString) {
       stonks::network::RestRequestBuilder{}
           .WithBaseUri({})
           .AddParam("string", "abc")
-          // .AddParam("milliseconds", std::chrono::milliseconds{123456789})
+          // .AddParam("milliseconds", absl::Time{123456789})
           .AddParam("int", 123456789)
           .AddParam("int64_t", int64_t{123456789})
           .AddParam("float", float{123456789.123456789})
@@ -92,7 +92,7 @@ TEST(RestRequestSender, ParameterTypesToString) {
           // .AddParam("custom_enum_name", CustomNameEnum::kCustomEnumName)
           // .AddParam("optional_string", std::optional<std::string>{"abc"})
           // .AddParam("optional_milliseconds",
-          //           std::optional<std::chrono::milliseconds>{123456789})
+          //           std::optional<absl::Time>{123456789})
           // .AddParam("optional_int", std::optional<int>{123456789})
           // .AddParam("optional_int64_t",
           //           std::optional<int64_t>{int64_t{123456789}})

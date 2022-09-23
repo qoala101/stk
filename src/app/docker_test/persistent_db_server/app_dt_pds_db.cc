@@ -1,9 +1,10 @@
 #include "app_dt_pds_db.h"
 
+#include <absl/time/time.h>
+
 #include <memory>
 
 #include "app_dt_pds_tables.h"
-#include "cpp_chrono.h"
 #include "not_null.hpp"
 #include "sqldb_as_values.h"
 #include "sqldb_qbf_insert_query_builder.h"
@@ -27,7 +28,7 @@ Db::Db(sqldb::IDb &db, const cpp::NnSp<sqldb::IQueryBuilder> &query_builder)
       }()} {}
 
 void Db::InsertSymbolPriceRecord(const SymbolPriceRecord &record) {
-  insert_symbol_price_record_statement_->Execute(
-      sqldb::AsValues(record.time.count(), record.symbol, record.price));
+  insert_symbol_price_record_statement_->Execute(sqldb::AsValues(
+      absl::ToUnixMillis(record.time), record.symbol, record.price));
 }
 }  // namespace stonks::app::dt::pds

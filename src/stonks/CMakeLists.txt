@@ -1,3 +1,4 @@
+find_package(absl REQUIRED)
 find_package(range-v3 REQUIRED)
 
 add_library(libstonks
@@ -19,5 +20,6 @@ target_include_directories(libstonks
 target_link_libraries(libstonks
   PRIVATE librestsdk
   PRIVATE libsqlite
+  PRIVATE absl::absl
   PRIVATE range-v3::range-v3
 )

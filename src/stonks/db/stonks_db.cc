@@ -1,6 +1,7 @@
 #include "stonks_db.h"
 
-#include <chrono>
+#include <absl/time/time.h>
+
 #include <compare>
 #include <limits>
 #include <memory>
@@ -33,22 +34,20 @@
 
 namespace stonks {
 namespace {
-[[nodiscard]] auto GetStartTime(const Period *period)
-    -> std::chrono::milliseconds {
+[[nodiscard]] auto GetStartTime(const Period *period) -> absl::Time {
   if ((period != nullptr) && period->start_time.has_value()) {
     return *period->start_time;
   }
 
-  return std::chrono::milliseconds::min();
+  return absl::InfinitePast();
 }
 
-[[nodiscard]] auto GetEndTime(const Period *period)
-    -> std::chrono::milliseconds {
+[[nodiscard]] auto GetEndTime(const Period *period) -> absl::Time {
   if ((period != nullptr) && period->end_time.has_value()) {
     return *period->end_time;
   }
 
-  return std::chrono::milliseconds::max();
+  return absl::InfiniteFuture();
 }
 
 [[nodiscard]] auto SymbolLess(const SymbolInfo &left, const SymbolInfo &right)
@@ -185,8 +184,8 @@ auto Db::SelectSymbolPriceTicks(const SymbolName *symbol, const Period *period,
                               ? &prepared_statements_->SelectSymbolPriceTicks()
                               : &prepared_statements_->SelectPriceTicks();
   auto values = [this, symbol, period, limit]() {
-    auto values = sqldb::AsValues(GetStartTime(period).count(),
-                                  GetEndTime(period).count());
+    auto values = sqldb::AsValues(absl::ToUnixMillis(GetStartTime(period)),
+                                  absl::ToUnixMillis(GetEndTime(period)));
 
     if (symbol != nullptr) {
       values.emplace_back(cache_.GetSymbolIdBySymbol(*symbol));
@@ -212,7 +211,7 @@ auto Db::SelectSymbolPriceTicks(const SymbolName *symbol, const Period *period,
   for (auto i = 0; i < num_rows; ++i) {
     price_ticks.emplace_back(SymbolPriceTick{
         .symbol = cache_.GetSymbolBySymbolId(symbol_id[i].GetInt64()),
-        .time = std::chrono::milliseconds{time[i].GetInt64()},
+        .time = absl::FromUnixMillis(time[i].GetInt64()),
         .buy_price = buy_price[i].GetDouble(),
         .sell_price = sell_price[i].GetDouble()});
   }
@@ -223,7 +222,7 @@ auto Db::SelectSymbolPriceTicks(const SymbolName *symbol, const Period *period,
 void Db::InsertSymbolPriceTick(const SymbolPriceTick &symbol_price_tick) {
   prepared_statements_->InsertPriceTick().Execute(sqldb::AsValues(
       cache_.GetSymbolIdBySymbol(symbol_price_tick.symbol),
-      symbol_price_tick.time.count(), symbol_price_tick.buy_price,
+      absl::ToUnixMillis(symbol_price_tick.time), symbol_price_tick.buy_price,
       symbol_price_tick.sell_price));
 }
 

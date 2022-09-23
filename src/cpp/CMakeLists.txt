@@ -2,7 +2,6 @@ find_package(Microsoft.GSL REQUIRED)
 find_package(polymorphic_value REQUIRED)
 
 add_library(libcpp
-  aliases/cpp_chrono.cc
   cpp_message_exception.cc
 )
 

@@ -8,7 +8,6 @@
 #include <optional>
 #include <vector>
 
-#include "cpp_chrono.h"
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_message_exception.h"
 #include "cpp_optional.h"
@@ -27,10 +26,6 @@ namespace stonks::network {
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> cpp::MessageException;
 [[nodiscard]] auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson>;
-
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> cpp::TimePoint;
-[[nodiscard]] auto ConvertToJson(cpp::TimePoint value) -> cpp::Pv<IJson>;
 
 template <cpp::IsTypedStruct T>
   requires Parsable<typename T::ValueType>

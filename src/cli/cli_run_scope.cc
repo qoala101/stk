@@ -12,12 +12,14 @@
 
 namespace stonks::cli {
 RunScope::RunScope(cpp::NnSp<CLI::App> app) : app_{std::move(app)} {
-  fmt::print(R"(Started: {}
+  fmt::print(R"(Starting: {}
 )",
              app_->get_name());
 }
 
 RunScope::~RunScope() {
+  fmt::print(R"(Started. Waiting for interrupt.
+)");
   WaitForInterrupt();
   fmt::print(R"(Stopped: {}
 )",

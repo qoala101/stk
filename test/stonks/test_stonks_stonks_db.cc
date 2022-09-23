@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <chrono>
 #include <optional>
 
 #include "cpp_not_null.h"
@@ -96,15 +95,15 @@ TEST(StonksDb, InsertAndSelectSymbolPriceTicks) {
 
   const auto eth_price_ticks = std::vector<stonks::SymbolPriceTick>{
       stonks::SymbolPriceTick{.symbol = eth_usdt,
-                              .time = std::chrono::milliseconds{1000},
+                              .time = absl::Time{1000},
                               .buy_price = 0.1,
                               .sell_price = 0.01},
       stonks::SymbolPriceTick{.symbol = eth_usdt,
-                              .time = std::chrono::milliseconds{2000},
+                              .time = absl::Time{2000},
                               .buy_price = 0.2,
                               .sell_price = 0.02},
       stonks::SymbolPriceTick{.symbol = eth_usdt,
-                              .time = std::chrono::milliseconds{3000},
+                              .time = absl::Time{3000},
                               .buy_price = 0.3,
                               .sell_price = 0.03}};
 
@@ -114,15 +113,15 @@ TEST(StonksDb, InsertAndSelectSymbolPriceTicks) {
 
   const auto btc_price_ticks = std::vector<stonks::SymbolPriceTick>{
       stonks::SymbolPriceTick{.symbol = btc_usdt,
-                              .time = std::chrono::milliseconds{10000},
+                              .time = absl::Time{10000},
                               .buy_price = 0.01,
                               .sell_price = 0.001},
       stonks::SymbolPriceTick{.symbol = btc_usdt,
-                              .time = std::chrono::milliseconds{20000},
+                              .time = absl::Time{20000},
                               .buy_price = 0.02,
                               .sell_price = 0.002},
       stonks::SymbolPriceTick{.symbol = btc_usdt,
-                              .time = std::chrono::milliseconds{30000},
+                              .time = absl::Time{30000},
                               .buy_price = 0.03,
                               .sell_price = 0.003}};
 
@@ -150,22 +149,19 @@ TEST(StonksDb, SelectPeriod) {
   auto price_ticks = db->SelectSymbolPriceTicks(nullptr, &period, nullptr);
   EXPECT_EQ(price_ticks.size(), 6);
 
-  period = stonks::Period{
-      .start_time = cpp::MakeOpt<std::chrono::milliseconds>(1001),
-      .end_time = std::nullopt};
+  period = stonks::Period{.start_time = cpp::MakeOpt<absl::Time>(1001),
+                          .end_time = std::nullopt};
   auto symbol = stonks::SymbolName{"ETHUSDT"};
   price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
   EXPECT_EQ(price_ticks.size(), 2);
 
-  period =
-      stonks::Period{.start_time = std::nullopt,
-                     .end_time = cpp::MakeOpt<std::chrono::milliseconds>(2999)};
+  period = stonks::Period{.start_time = std::nullopt,
+                          .end_time = cpp::MakeOpt<absl::Time>(2999)};
   price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
   EXPECT_EQ(price_ticks.size(), 2);
 
-  period = stonks::Period{
-      .start_time = cpp::MakeOpt<std::chrono::milliseconds>(1001),
-      .end_time = cpp::MakeOpt<std::chrono::milliseconds>(2999)};
+  period = stonks::Period{.start_time = cpp::MakeOpt<absl::Time>(1001),
+                          .end_time = cpp::MakeOpt<absl::Time>(2999)};
   price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
   EXPECT_EQ(price_ticks.size(), 1);
 }

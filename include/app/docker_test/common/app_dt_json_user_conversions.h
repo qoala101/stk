@@ -1,6 +1,8 @@
 #ifndef STONKS_APP_DOCKER_TEST_COMMON_APP_DT_JSON_USER_CONVERSIONS_H_
 #define STONKS_APP_DOCKER_TEST_COMMON_APP_DT_JSON_USER_CONVERSIONS_H_
 
+#include <absl/time/time.h>
+
 #include "app_dt_types.h"
 #include "cpp_polymorphic_value.h"
 #include "network_i_json.h"
@@ -8,6 +10,10 @@
 namespace stonks::network {
 template <typename T>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
+
+template <>
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> absl::Time;
+[[nodiscard]] auto ConvertToJson(absl::Time value) -> cpp::Pv<IJson>;
 
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json)

@@ -1,7 +1,8 @@
 #ifndef STONKS_STONKS_STONKS_TYPES_H_
 #define STONKS_STONKS_STONKS_TYPES_H_
 
-#include <chrono>
+#include <absl/time/time.h>
+
 #include <string>
 
 #include "cpp_optional.h"
@@ -28,7 +29,7 @@ struct SymbolInfo {
 
 struct SymbolPriceTick {
   SymbolName symbol{};
-  std::chrono::milliseconds time{};
+  absl::Time time{};
   double buy_price{};
   double sell_price{};
 
@@ -42,8 +43,8 @@ struct SymbolPriceTick {
 };
 
 struct Period {
-  cpp::Opt<std::chrono::milliseconds> start_time{};
-  cpp::Opt<std::chrono::milliseconds> end_time{};
+  cpp::Opt<absl::Time> start_time{};
+  cpp::Opt<absl::Time> end_time{};
 };
 }  // namespace stonks
 
