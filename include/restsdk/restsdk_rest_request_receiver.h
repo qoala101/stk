@@ -35,7 +35,7 @@ class RestRequestReceiver : public network::IRestRequestReceiver {
   /**
    * @copydoc network::IRestRequestReceiver::Receive
    */
-  void Receive(network::Uri local_uri,
+  void Receive(network::Uri uri,
                cpp::NnSp<network::IRestRequestHandler> handler) override;
 
  private:

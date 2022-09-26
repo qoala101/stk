@@ -52,9 +52,9 @@ add_compile_definitions(_TURN_OFF_PLATFORM_STRING)
 add_compile_options(
   -Wall
   -Wextra
-  -Werror
+  # -Werror
   -pedantic
-  -pedantic-errors
+  # -pedantic-errors
   -Wno-missing-braces
 )
 

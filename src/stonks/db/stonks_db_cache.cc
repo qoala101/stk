@@ -10,6 +10,7 @@
 #include "sqldb_i_select_statement.h"
 #include "sqldb_rows.h"
 #include "stonks_db_prepared_statements.h"
+#include "stonks_types.h"
 
 namespace stonks::db {
 namespace {
@@ -53,7 +54,8 @@ void Cache::UpdateAssetMap() {
   asset_to_asset_id_map_.clear();
 
   for (auto i = 0; i < rows.GetSize(); ++i) {
-    asset_to_asset_id_map_[std::move(names[i].GetString())] = ids[i].GetInt64();
+    asset_to_asset_id_map_.emplace(std::move(names[i].GetString()),
+                                   ids[i].GetInt64());
   }
 }
 
@@ -69,8 +71,8 @@ void Cache::UpdateSymbolMaps() {
     const auto id = ids[i].GetInt64();
     auto &name = names[i].GetString();
 
-    symbol_to_symbol_id_map_[{name}] = id;
-    symbol_id_to_symbol_map_[id] = {std::move(name)};
+    symbol_to_symbol_id_map_.emplace(SymbolName{name}, id);
+    symbol_id_to_symbol_map_.emplace(id, SymbolName{std::move(name)});
   }
 }
 }  // namespace stonks::db

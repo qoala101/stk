@@ -210,8 +210,8 @@ TEST(ClientServerDeathTest, WrongClientTypes) {
       .DiscardingResult();
 
   auto endpoint_with_added_param = EntityServer::GetSymbolEndpointDesc();
-  endpoint_with_added_param.expected_types.params["NOT_SENT_PARAM"] =
-      stonks::network::ExpectedType<int>();
+  endpoint_with_added_param.expected_types.params.emplace(
+      "NOT_SENT_PARAM", stonks::network::ExpectedType<int>());
   EXPECT_DEATH(std::ignore = rest_client.Call(endpoint_with_added_param)
                                  .WithParam("index", 0)
                                  .AndReceive<stonks::SymbolName>(),

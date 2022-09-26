@@ -27,6 +27,7 @@
 #include "not_null.hpp"
 #include "restsdk_json.h"
 #include "restsdk_json_native_handle.h"
+#include "restsdk_parse_json_fom_string.h"
 
 namespace stonks::restsdk {
 namespace {
@@ -74,15 +75,7 @@ namespace {
   auto params = network::Params{};
 
   for (const auto &[name, value] : raw_params) {
-    auto error_code = std::error_code{};
-    auto json = web::json::value::parse(value, error_code);
-
-    if (const auto parsing_failed = error_code.value() > 0) {
-      json = web::json::value::string(value);
-    }
-
-    params[name] = cpp::MakePv<network::IJson, Json>(
-        network::IJson::NativeHandle{std::move(json)});
+    params.emplace(name, ParseJsonFromString(value));
   }
 
   return params;
@@ -93,7 +86,7 @@ namespace {
   auto headers = std::map<std::string, std::string>{};
 
   for (const auto &header : request_headers) {
-    headers[header.first] = header.second;
+    headers.emplace(header.first, header.second);
   }
 
   return headers;
@@ -144,7 +137,7 @@ auto RestRequestReceiver::operator=(RestRequestReceiver &&) noexcept
 RestRequestReceiver::~RestRequestReceiver() = default;
 
 void RestRequestReceiver::Receive(
-    network::Uri local_uri, cpp::NnSp<network::IRestRequestHandler> handler) {
+    network::Uri uri, cpp::NnSp<network::IRestRequestHandler> handler) {
   Expects(handler_ == nullptr);
   Expects(http_listener_ == nullptr);
 
@@ -152,7 +145,7 @@ void RestRequestReceiver::Receive(
 
   http_listener_ =
       cpp::MakeUp<web::http::experimental::listener::http_listener>(
-          std::move(local_uri.value));
+          std::move(uri.value));
   http_listener_->support(
       std::bind_front(&RestRequestReceiver::HandleHttpRequest, this));
   http_listener_->open().wait();
