@@ -41,7 +41,6 @@ auto Json::IsNull() const -> bool { return native_handle_->is_null(); }
 
 template <cpp::DecaysTo<Json> This>
 auto Json::GetChildImpl(This& t, std::string_view key) -> cpp::Pv<IJson> {
-  Expects(!t.native_handle_->is_array());
   return cpp::MakePv<IJson, restsdk::Json>(IJson::NativeHandle{
       cpp::MoveIfNotConst<This>(t.native_handle_->at(key.data()))});
 }
@@ -61,7 +60,6 @@ void Json::SetChild(std::string key, cpp::Pv<IJson> child) {
 
 template <cpp::DecaysTo<Json> This>
 auto Json::GetChildImpl(This& t, int index) -> cpp::Pv<IJson> {
-  Expects(t.native_handle_->is_array());
   return cpp::MakePv<IJson, restsdk::Json>(IJson::NativeHandle{
       cpp::MoveIfNotConst<This>(t.native_handle_->as_array().at(index))});
 }

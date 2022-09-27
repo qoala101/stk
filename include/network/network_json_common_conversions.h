@@ -7,6 +7,8 @@
 #include <gsl/assert>
 #include <gsl/util>
 #include <optional>
+#include <string>
+#include <variant>
 #include <vector>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
@@ -22,11 +24,29 @@
  */
 
 namespace stonks::network {
+namespace detail {
+template <cpp::Variant T, int Index>
+  requires Parsable<std::variant_alternative_t<Index, T>>
+[[nodiscard]] auto ParseVariantFromJson(const IJson &json) -> T try {
+  return ParseFromJson<std::variant_alternative_t<Index, T>>(json);
+} catch (const std::exception &) {
+  if constexpr (Index > 0) {
+    return ParseVariantFromJson<T, Index - 1>(json);
+  } else {
+    throw cpp::MessageException{"Couldn't parse any variant type"};
+  }
+}
+}  // namespace detail
+
 [[nodiscard]] auto ConvertToJson(const char *value) -> cpp::Pv<IJson>;
 
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> cpp::MessageException;
 [[nodiscard]] auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson>;
+
+template <>
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> std::monostate;
+[[nodiscard]] auto ConvertToJson(std::monostate value) -> cpp::Pv<IJson>;
 
 template <cpp::IsTypedStruct T>
   requires Parsable<typename T::ValueType>
@@ -38,6 +58,17 @@ template <Convertible T>
 [[nodiscard]] auto ConvertToJson(const cpp::TypedStruct<T> &value)
     -> cpp::Pv<IJson> {
   return ConvertToJson(value.value);
+}
+
+template <cpp::Variant T>
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
+  return detail::ParseVariantFromJson<T, std::variant_size_v<T> - 1>(json);
+}
+
+template <Convertible... Ts>
+[[nodiscard]] auto ConvertToJson(const std::variant<Ts...> &value)
+    -> cpp::Pv<IJson> {
+  return std::visit([](const auto &v) { return ConvertToJson(v); }, value);
 }
 
 template <cpp::Optional T>

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <string_view>
+#include <variant>
 
 #include "network_json_basic_conversions.h"
 #include "network_json_conversions_facades.h"
@@ -19,5 +20,18 @@ auto ParseFromJson(const IJson &json) -> cpp::MessageException {
 
 auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson> {
   return BuildJsonFrom("message", value.what());
+}
+
+template <>
+auto ParseFromJson(const IJson &json) -> std::monostate {
+  if (!json.IsNull()) {
+    throw cpp::MessageException{"JSON is not null"};
+  }
+
+  return {};
+}
+
+auto ConvertToJson(std::monostate /*unused*/) -> cpp::Pv<IJson> {
+  return CreateNullJson();
 }
 }  // namespace stonks::network

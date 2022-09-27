@@ -23,7 +23,7 @@ using HandlerVariantType =
 /**
  * @brief Variant of auto-parsable request handler.
  */
-struct HandlerVariant : public detail::HandlerVariantType {
+class HandlerVariant : public detail::HandlerVariantType {
  public:
   using detail::HandlerVariantType::variant;
 

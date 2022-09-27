@@ -1,13 +1,16 @@
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
+#include <gtest/gtest.h>
 #include <polymorphic_value.h>
 
 #include <optional>
 #include <string>
+#include <variant>
 #include <vector>
 
 #include "cpp_optional.h"
 #include "gtest/gtest_pred_impl.h"
+#include "network_json_basic_conversions.h"
 #include "network_json_common_conversions.h"
 
 namespace {
@@ -64,5 +67,30 @@ TEST(JsonSpecializedConversions, ConvertAndParseOptionalVector) {
       stonks::cpp::Opt<std::vector<std::string>>>(*items_null_json);
 
   EXPECT_FALSE(parsed_items_null.has_value());
+}
+
+TEST(JsonSpecializedConversions, ConvertAndParseVariant) {
+  using Variant = std::variant<std::string, int, bool>;
+
+  const auto values = std::vector<Variant>{{"Text"}, {32}, {true}};
+  const auto jsons = stonks::network::ConvertToJson(values);
+  const auto parsed_values =
+      stonks::network::ParseFromJson<std::vector<Variant>>(*jsons);
+
+  EXPECT_EQ(parsed_values, values);
+}
+
+TEST(JsonSpecializedConversions, ConvertAndParseVariantMonostate) {
+  using Variant = std::variant<std::string, int, bool>;
+  using VariantMonostate = std::variant<std::monostate, std::string, int, bool>;
+
+  const auto null_json = stonks::network::CreateNullJson();
+
+  EXPECT_ANY_THROW(const auto parsed_value =
+                       stonks::network::ParseFromJson<Variant>(*null_json));
+
+  const auto parsed_value =
+      stonks::network::ParseFromJson<VariantMonostate>(*null_json);
+  EXPECT_EQ(parsed_value.index(), 0);
 }
 }  // namespace

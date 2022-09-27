@@ -2,6 +2,7 @@
 #define STONKS_CPP_CPP_CONCEPTS_H_
 
 #include <type_traits>
+#include <variant>
 #include <vector>
 
 #include "cpp_optional.h"
@@ -28,6 +29,10 @@ concept DecaysTo = std::same_as<std::decay_t<T>, U>;
 
 template <typename T>
 concept Optional = std::same_as<T, Opt<typename T::value_type>>;
+
+template <typename T>
+concept Variant =
+    requires { std::declval<std::variant_alternative_t<0, T>>(); };
 
 template <typename T>
 concept IsTypedStruct =
