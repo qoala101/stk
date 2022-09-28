@@ -43,6 +43,11 @@ using Headers = std::map<std::string, std::string>;
 using Body = cpp::Opt<cpp::Pv<IJson>>;
 
 /**
+ * @brief Web socket message.
+ */
+using Message = cpp::Pv<IJson>;
+
+/**
  * @brief HTTP endpoint.
  */
 struct Endpoint {

@@ -2,6 +2,10 @@
 
 #include <cpprest/json.h>
 
+#include <memory>
+#include <system_error>
+#include <utility>
+
 #include "restsdk_json.h"
 #include "restsdk_json_native_handle.h"
 

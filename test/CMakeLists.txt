@@ -21,6 +21,7 @@ add_executable(unittests
   restsdk/test_restsdk_json_conversions_facades.cc
   restsdk/test_restsdk_rest_request_receiver.cc
   restsdk/test_restsdk_rest_request_sender.cc
+  restsdk/test_restsdk_web_socket.cc
 
   sqlite/test_sqlite_db.cc
 
