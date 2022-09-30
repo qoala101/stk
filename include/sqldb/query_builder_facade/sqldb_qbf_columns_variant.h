@@ -4,7 +4,9 @@
 #include <variant>
 #include <vector>
 
+#include "cpp_concepts.h"
 #include "cpp_copy_const.h"
+#include "cpp_variant_struct.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qbf {
@@ -13,18 +15,13 @@ namespace stonks::sqldb::qbf {
  */
 struct AllColumnsType {};
 
-namespace detail {
-using ColumnsVariantType =
-    std::variant<std::monostate, std::vector<Column>, AllColumnsType>;
-}  // namespace detail
-
 /**
  * @brief Stores columns value in query builders.
  */
-class ColumnsVariant : public detail::ColumnsVariantType {
+class ColumnsVariant
+    : public cpp::VariantStruct<std::monostate, std::vector<Column>,
+                                AllColumnsType> {
  public:
-  using detail::ColumnsVariantType::variant;
-
   /**
    * @brief Gives columns from variant. Null if all columns variant is used.
    * @remark Should only be called if variant has columns.

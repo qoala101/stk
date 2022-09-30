@@ -16,8 +16,8 @@ auto GetColumns(const TableVariant &table, const ColumnsVariant &columns)
   Expects(columns.HasColumns());
 
   if (const auto columns_are_specified =
-          std::holds_alternative<std::vector<Column>>(columns)) {
-    return std::get<std::vector<Column>>(columns);
+          std::holds_alternative<std::vector<Column>>(columns.value)) {
+    return std::get<std::vector<Column>>(columns.value);
   }
 
   Expects(std::holds_alternative<TableDefinition>(table));

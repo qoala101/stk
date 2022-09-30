@@ -19,13 +19,19 @@ struct TypedStruct {
   using ValueType = T;
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  operator T() const & { return OperatorTImpl(*this); }
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  operator T() & { return OperatorTImpl(*this); }
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  operator T() && { return OperatorTImpl(std::move(*this)); }
+  [[nodiscard]] operator ValueType() const & {
+    return OperatorValueTypeImpl(*this);
+  }
 
-  T value{};
+  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
+  [[nodiscard]] operator ValueType() & { return OperatorValueTypeImpl(*this); }
+
+  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
+  [[nodiscard]] operator ValueType() && {
+    return OperatorValueTypeImpl(std::move(*this));
+  }
+
+  ValueType value{};
 
  private:
   [[nodiscard]] friend auto operator==(const TypedStruct &, const TypedStruct &)
@@ -40,7 +46,7 @@ struct TypedStruct {
   }
 
   template <DecaysTo<TypedStruct> This>
-  [[nodiscard]] static auto OperatorTImpl(This &&t) -> T {
+  [[nodiscard]] static auto OperatorValueTypeImpl(This &&t) -> T {
     return MoveIfRvalue<decltype(std::forward<This>(t))>(t.value);
   }
 };

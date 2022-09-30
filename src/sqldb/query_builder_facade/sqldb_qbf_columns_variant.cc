@@ -24,8 +24,7 @@ auto ColumnsVariant::GetColumnsImpl(This &t)
 
         Expects(false);
       },
-      static_cast<cpp::CopyConst<decltype(t), detail::ColumnsVariantType> &>(
-          t));
+      t.value);
 }
 
 auto ColumnsVariant::GetColumns() const -> const std::vector<Column> * {
@@ -37,6 +36,6 @@ auto ColumnsVariant::GetColumns() -> std::vector<Column> * {
 }
 
 auto ColumnsVariant::HasColumns() const -> bool {
-  return !std::holds_alternative<std::monostate>(*this);
+  return !std::holds_alternative<std::monostate>(value);
 }
 }  // namespace stonks::sqldb::qbf

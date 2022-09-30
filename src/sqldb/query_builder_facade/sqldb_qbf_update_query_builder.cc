@@ -30,7 +30,7 @@ auto UpdateQueryBuilder::OfTable(TableDefinition table_definition)
 auto UpdateQueryBuilder::Columns(std::vector<Column> columns)
     -> UpdateQueryBuilder& {
   Expects(!columns_.HasColumns());
-  columns_ = std::move(columns);
+  columns_ = {std::move(columns)};
   Ensures(columns_.HasColumns());
   return *this;
 }
@@ -43,7 +43,7 @@ auto UpdateQueryBuilder::Columns(
 
 auto UpdateQueryBuilder::AllColumns() -> UpdateQueryBuilder& {
   Expects(!columns_.HasColumns());
-  columns_.emplace<AllColumnsType>();
+  columns_.value.emplace<AllColumnsType>();
   Ensures(columns_.HasColumns());
   return *this;
 }

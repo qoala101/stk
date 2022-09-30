@@ -12,7 +12,7 @@ InsertQueryBuilder::InsertQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
 
 auto InsertQueryBuilder::WholeRow() -> InsertQueryBuilder& {
   Expects(!columns_.HasColumns());
-  columns_.emplace<AllColumnsType>();
+  columns_.value.emplace<AllColumnsType>();
   Ensures(columns_.HasColumns());
   return *this;
 }
@@ -35,7 +35,7 @@ auto InsertQueryBuilder::IntoTable(TableDefinition table_definition)
 auto InsertQueryBuilder::IntoColumns(std::vector<Column> columns)
     -> InsertQueryBuilder& {
   Expects(!columns_.HasColumns());
-  columns_ = std::move(columns);
+  columns_ = {std::move(columns)};
   Ensures(columns_.HasColumns());
   return *this;
 }
@@ -52,7 +52,7 @@ auto InsertQueryBuilder::Build() const -> Query {
   const auto columns_are_specified = columns_.HasColumns();
   const auto columns = columns_are_specified
                            ? GetColumns(table_, columns_)
-                           : GetColumns(table_, AllColumnsType{});
+                           : GetColumns(table_, {AllColumnsType{}});
   return query_builder_->BuildInsertQuery(table, columns);
 }
 }  // namespace stonks::sqldb::qbf

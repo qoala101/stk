@@ -18,7 +18,7 @@ SelectQueryBuilder::SelectQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
 auto SelectQueryBuilder::Columns(std::vector<Column> columns)
     -> SelectQueryBuilder & {
   Expects(!columns_.HasColumns());
-  columns_ = std::move(columns);
+  columns_ = {std::move(columns)};
   Ensures(columns_.HasColumns());
   return *this;
 }
@@ -31,7 +31,7 @@ auto SelectQueryBuilder::Columns(
 
 auto SelectQueryBuilder::AllColumns() -> SelectQueryBuilder & {
   Expects(!columns_.HasColumns());
-  columns_.emplace<AllColumnsType>();
+  columns_.value.emplace<AllColumnsType>();
   Ensures(columns_.HasColumns());
   return *this;
 }
