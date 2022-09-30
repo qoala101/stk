@@ -1,14 +1,9 @@
 #ifndef STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_ENDPOINT_H_
 #define STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_ENDPOINT_H_
 
-#include <polymorphic_value.h>
-
-#include <compare>
 #include <function2/function2.hpp>
-#include <functional>
 #include <map>
 #include <string>
-#include <tuple>
 
 #include "cpp_optional.h"
 #include "network_concepts.h"  // IWYU pragma: keep
@@ -41,12 +36,29 @@ struct EndpointTypes {
 };
 
 /**
+ * @brief Expected web socket message types.
+ */
+struct WsEndpointTypes {
+  ParseTypeCheck received_message{};
+  ParseTypeCheck sent_message{};
+};
+
+/**
  * @brief Endpoint which request and response to be validated
  * to have expected types prior to processing.
  */
 struct TypedEndpoint {
   Endpoint endpoint{};
   EndpointTypes expected_types{};
+};
+
+/**
+ * @brief Web socket endpoint which received and sent messages to be validated
+ * to have expected types prior to processing.
+ */
+struct TypedWsEndpoint {
+  WsEndpoint endpoint{};
+  WsEndpointTypes expected_types{};
 };
 }  // namespace stonks::network
 

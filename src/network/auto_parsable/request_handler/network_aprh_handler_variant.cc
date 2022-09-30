@@ -5,12 +5,13 @@
 
 #include "network_auto_parsable_request.h"
 #include "network_enums.h"
+#include "network_types.h"
 
 namespace stonks::network::aprh {
 auto HandlerVariant::operator()(RestRequest request) -> RestResponse {
   return std::visit(
       [&request](auto &v) -> RestResponse {
-        Expects(v);
+        Expects(!v.empty());
 
         using V = decltype(v);
 
@@ -36,5 +37,27 @@ auto HandlerVariant::operator()(RestRequest request) -> RestResponse {
         Expects(false);
       },
       static_cast<detail::HandlerVariantType &>(*this));
+}
+
+void WsHandlerVariant::TODO(WsMessage message) {
+  std::visit(
+      [&message](auto &v) {
+        Expects(!v.empty());
+
+        using V = decltype(v);
+
+        if constexpr (cpp::DecaysTo<V, Handler>) {
+          v();
+          return;
+        }
+
+        if constexpr (cpp::DecaysTo<V, HandlerWithWsMessage>) {
+          v(AutoParsable{std::move(message)});
+          return;
+        }
+
+        Expects(false);
+      },
+      static_cast<detail::WsHandlerVariantType &>(*this));
 }
 }  // namespace stonks::network::aprh

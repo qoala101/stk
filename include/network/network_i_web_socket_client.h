@@ -15,15 +15,19 @@ class IWebSocketClient {
   virtual ~IWebSocketClient() = default;
 
   /**
-   * @brief Connects to the web socket on the specified URI
-   * and redirects received messages to the handler.
+   * @brief Connects to the web socket on the specified URI.
    */
-  virtual void Connect(Uri uri, cpp::NnSp<IWebSocketHandler> handler) = 0;
+  virtual void Connect(WsEndpoint endpoint) = 0;
+
+  /**
+   * @brief Redirects received messages to the handler.
+   */
+  virtual void SetMessageHandler(cpp::NnSp<IWebSocketHandler> handler) = 0;
 
   /**
    * @brief Sends the message to the connected socket.
    */
-  virtual void SendMessage(Message message) const = 0;
+  virtual void SendMessage(WsMessage message) const = 0;
 };
 }  // namespace stonks::network
 

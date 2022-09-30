@@ -15,7 +15,7 @@ class IWebSocketHandler {
   /**
    * @param message Message received from the web socket.
    */
-  virtual void HandleMessage(Message message) const = 0;
+  virtual void HandleMessage(WsMessage message) const = 0;
 };
 }  // namespace stonks::network
 

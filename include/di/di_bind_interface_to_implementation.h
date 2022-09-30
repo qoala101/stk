@@ -38,7 +38,8 @@ template <typename Interface, std::derived_from<Interface> Implementation>
 template <typename Interface, std::derived_from<Interface> Implementation>
 [[nodiscard]] auto BindInterfaceToImplementation() {
   return MakeInjector(
-      boost::di::bind<Interface>().template to<Implementation>(),
+      boost::di::bind<Interface>().template to<Implementation>().in(
+          boost::di::unique),
       detail::EnableNn<Interface>(),
       detail::EnableFactory<Interface, Implementation>());
 }

@@ -21,11 +21,28 @@ WebSocketClient::WebSocketClient(cpp::NnSp<log::ILogger> logger)
           web::websockets::client::websocket_callback_client>()},
       logger_{std::move(logger)} {}
 
-void WebSocketClient::Connect(network::Uri uri,
-                              cpp::NnSp<network::IWebSocketHandler> handler) {
+WebSocketClient::WebSocketClient(WebSocketClient &&) noexcept = default;
+
+auto WebSocketClient::operator=(WebSocketClient &&) noexcept
+    -> WebSocketClient & = default;
+
+WebSocketClient::~WebSocketClient() = default;
+
+void WebSocketClient::Connect(network::WsEndpoint endpoint) {
+  logger_->LogImportantEvent(
+      fmt::format("Connecting to web socket: {}...", endpoint.value.value));
+
+  web_socket_client_->connect(endpoint.value.value).wait();
+
+  logger_->LogImportantEvent(
+      fmt::format("Connected to web socket: {}", endpoint.value.value));
+}
+
+void WebSocketClient::SetMessageHandler(
+    cpp::NnSp<network::IWebSocketHandler> handler) {
   web_socket_client_->set_message_handler(
       [handler = std::move(handler)](
-          const web::websockets::client::websocket_incoming_message& message) {
+          const web::websockets::client::websocket_incoming_message &message) {
         if (const auto non_text_message =
                 message.message_type() !=
                 web::websockets::client::websocket_message_type::text_message) {
@@ -35,14 +52,9 @@ void WebSocketClient::Connect(network::Uri uri,
         const auto message_text = message.extract_string().get();
         handler->HandleMessage(ParseJsonFromString(message_text));
       });
-
-  web_socket_client_->connect(uri.value).wait();
-
-  logger_->LogImportantEvent(
-      fmt::format("Connected to web socket: {}", uri.value));
 }
 
-void WebSocketClient::SendMessage(network::Message message) const {
+void WebSocketClient::SendMessage(network::WsMessage message) const {
   auto web_socket_message =
       web::websockets::client::websocket_outgoing_message{};
   web_socket_message.set_utf8_message(message->GetNativeHandle()->serialize());

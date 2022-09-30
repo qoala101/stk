@@ -27,18 +27,18 @@ class RequestBuilder {
    * @brief Sets request parameter.
    * @remark Overrides the parameter with the same name.
    */
-  template <Convertible Value>
-  auto WithParam(std::string key, Value &&value) -> RequestBuilder & {
-    return WithParam(std::move(key), ConvertToJson(std::forward<Value>(value)));
+  template <Convertible T>
+  auto WithParam(std::string key, T &&value) -> RequestBuilder & {
+    return WithParam(std::move(key), ConvertToJson(std::forward<T>(value)));
   }
 
   /**
    * @brief Sets the body of the request.
    * @remark Can only be called once.
    */
-  template <Convertible Value>
-  auto WithBody(Value &&value) -> RequestBuilder & {
-    return WithBody(ConvertToJson(std::forward<Value>(value)));
+  template <Convertible T>
+  auto WithBody(T &&t) -> RequestBuilder & {
+    return WithBody(ConvertToJson(std::forward<T>(t)));
   }
 
   /**

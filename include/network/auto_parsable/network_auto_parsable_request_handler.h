@@ -16,30 +16,37 @@ namespace stonks::network {
  */
 class AutoParsableRequestHandler : public IRestRequestHandler {
  public:
-  explicit AutoParsableRequestHandler(cpp::VoidInvocable auto handler)
-      : handler_{std::in_place_type_t<aprh::Handler>{}, std::move(handler)} {}
+  template <cpp::VoidInvocable T>
+  // NOLINTNEXTLINE(*-forwarding-reference-overload)
+  explicit AutoParsableRequestHandler(T &&handler)
+      : handler_{std::in_place_type_t<aprh::Handler>{},
+                 std::forward<T>(handler)} {}
 
-  explicit AutoParsableRequestHandler(
-      cpp::VoidInvocableTakes<AutoParsableRestRequest> auto handler)
+  template <cpp::VoidInvocableTakes<AutoParsableRestRequest> T>
+  // NOLINTNEXTLINE(*-forwarding-reference-overload)
+  explicit AutoParsableRequestHandler(T &&handler)
       : handler_{std::in_place_type_t<aprh::HandlerWithRequest>{},
-                 std::move(handler)} {}
+                 std::forward<T>(handler)} {}
 
-  explicit AutoParsableRequestHandler(aprh::ConvertibleInvocable auto handler)
+  template <aprh::ConvertibleInvocable T>
+  // NOLINTNEXTLINE(*-forwarding-reference-overload)
+  explicit AutoParsableRequestHandler(T &&handler)
       : handler_{std::in_place_type_t<aprh::HandlerWithResponse>{},
-                 [handler = std::move(handler)]() {
+                 [handler = std::forward<T>(handler)]() {
                    return ConvertToJson(handler());
                  }} {}
 
-  explicit AutoParsableRequestHandler(
-      aprh::ConvertibleInvocableTakes<AutoParsableRestRequest> auto handler)
-      : handler_{
-            std::in_place_type_t<aprh::HandlerWithRequestAndResponse>{},
-            [handler = std::move(handler)](AutoParsableRestRequest request) {
-              return ConvertToJson(handler(std::move(request)));
-            }} {}
+  template <aprh::ConvertibleInvocableTakes<AutoParsableRestRequest> T>
+  // NOLINTNEXTLINE(*-forwarding-reference-overload)
+  explicit AutoParsableRequestHandler(T &&handler)
+      : handler_{std::in_place_type_t<aprh::HandlerWithRequestAndResponse>{},
+                 [handler = std::forward<T>(handler)](
+                     AutoParsableRestRequest request) {
+                   return ConvertToJson(handler(std::move(request)));
+                 }} {}
 
   /**
-   * @brief Wraps request in auto-convertible and forwards it to the handler.
+   * @brief Wraps request in auto-parsable and forwards it to the handler.
    */
   [[nodiscard]] auto HandleRequestAndGiveResponse(RestRequest request) const
       -> RestResponse override;

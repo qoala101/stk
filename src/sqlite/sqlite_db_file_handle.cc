@@ -20,7 +20,7 @@ SqliteDbFileHandle::SqliteDbFileHandle(cpp::NnSp<log::ILogger> logger,
 SqliteDbFileHandle::~SqliteDbFileHandle() {
   auto* sqlite_db = sqlite_db_handle_.get();
 
-  if (const auto handle_was_moved = sqlite_db == nullptr) {
+  if (const auto object_was_moved = sqlite_db == nullptr) {
     return;
   }
 

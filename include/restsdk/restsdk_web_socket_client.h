@@ -19,16 +19,29 @@ class WebSocketClient : public network::IWebSocketClient {
  public:
   explicit WebSocketClient(cpp::NnSp<log::ILogger> logger);
 
+  WebSocketClient(const WebSocketClient &) = delete;
+  WebSocketClient(WebSocketClient &&) noexcept;
+
+  auto operator=(const WebSocketClient &) -> WebSocketClient & = delete;
+  auto operator=(WebSocketClient &&) noexcept -> WebSocketClient &;
+
+  ~WebSocketClient() override;
+
   /**
    * @copydoc network::IWebSocketClient::Connect
    */
-  void Connect(network::Uri uri,
-               cpp::NnSp<network::IWebSocketHandler> handler) override;
+  void Connect(network::WsEndpoint endpoint) override;
+
+  /**
+   * @copydoc network::IWebSocketClient::SetMessagesHandler
+   */
+  void SetMessageHandler(
+      cpp::NnSp<network::IWebSocketHandler> handler) override;
 
   /**
    * @copydoc network::IWebSocketClient::SendMessage
    */
-  void SendMessage(network::Message message) const override;
+  void SendMessage(network::WsMessage message) const override;
 
  private:
   cpp::NnUp<web::websockets::client::websocket_callback_client>

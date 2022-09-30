@@ -165,6 +165,6 @@ void RestRequestReceiver::HandleHttpRequest(
   const auto rest_response =
       handler_->HandleRequestAndGiveResponse(std::move(rest_request));
   const auto http_response = HttpResponseFromRestResponse(rest_response);
-  request.reply(http_response);
+  request.reply(http_response).wait();
 }
 }  // namespace stonks::restsdk

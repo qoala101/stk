@@ -36,7 +36,7 @@ auto RequestBuilder::SendRequestAndGetResultImpl(This& t)
       t.request_sender_
           ->SendRequestAndGetResponse(cpp::MoveIfNotConst<This>(t.request_))
           .result;
-  Expects(result);
+  Expects(result.has_value());
   return std::move(*result);
 }
 

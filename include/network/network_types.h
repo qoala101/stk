@@ -45,7 +45,7 @@ using Body = cpp::Opt<cpp::Pv<IJson>>;
 /**
  * @brief Web socket message.
  */
-using Message = cpp::Pv<IJson>;
+using WsMessage = cpp::Pv<IJson>;
 
 /**
  * @brief HTTP endpoint.
@@ -60,6 +60,11 @@ struct Endpoint {
   [[nodiscard]] friend auto operator<=>(const Endpoint &, const Endpoint &)
       -> std::partial_ordering = default;
 };
+
+/**
+ * @brief Web socket endpoint.
+ */
+struct WsEndpoint : public cpp::TypedStruct<Uri> {};
 
 /**
  * @brief Where and what to send via REST API call.
