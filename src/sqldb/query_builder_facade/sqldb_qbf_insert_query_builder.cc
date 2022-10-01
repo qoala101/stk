@@ -4,6 +4,7 @@
 #include <memory>
 #include <utility>
 
+#include "sqldb_qbf_columns_variant.h"
 #include "sqldb_qbf_common.h"
 
 namespace stonks::sqldb::qbf {
@@ -19,7 +20,7 @@ auto InsertQueryBuilder::WholeRow() -> InsertQueryBuilder& {
 
 auto InsertQueryBuilder::IntoTable(Table table) -> InsertQueryBuilder& {
   Expects(!table_.HasTable());
-  table_ = std::move(table);
+  table_.value = std::move(table);
   Ensures(table_.HasTable());
   return *this;
 }
@@ -27,7 +28,7 @@ auto InsertQueryBuilder::IntoTable(Table table) -> InsertQueryBuilder& {
 auto InsertQueryBuilder::IntoTable(TableDefinition table_definition)
     -> InsertQueryBuilder& {
   Expects(!table_.HasTable());
-  table_ = std::move(table_definition);
+  table_.value = std::move(table_definition);
   Ensures(table_.HasTable());
   return *this;
 }
@@ -35,7 +36,7 @@ auto InsertQueryBuilder::IntoTable(TableDefinition table_definition)
 auto InsertQueryBuilder::IntoColumns(std::vector<Column> columns)
     -> InsertQueryBuilder& {
   Expects(!columns_.HasColumns());
-  columns_ = {std::move(columns)};
+  columns_.value = std::move(columns);
   Ensures(columns_.HasColumns());
   return *this;
 }

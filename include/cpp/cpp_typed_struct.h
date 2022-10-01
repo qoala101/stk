@@ -2,7 +2,6 @@
 #define STONKS_CPP_CPP_TYPED_STRUCT_H_
 
 #include <compare>
-#include <ostream>
 #include <utility>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
@@ -17,6 +16,7 @@ namespace stonks::cpp {
 template <typename T>
 struct TypedStruct {
   using ValueType = T;
+  using BaseType = TypedStruct<ValueType>;
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   [[nodiscard]] operator ValueType() const & {
@@ -39,14 +39,9 @@ struct TypedStruct {
   [[nodiscard]] friend auto operator<=>(const TypedStruct &,
                                         const TypedStruct &)
       -> std::partial_ordering = default;
-  [[nodiscard]] friend auto operator<<(std::ostream &stream,
-                                       const TypedStruct &typed_struct)
-      -> std::ostream & {
-    return stream << typed_struct.value;
-  }
 
   template <DecaysTo<TypedStruct> This>
-  [[nodiscard]] static auto OperatorValueTypeImpl(This &&t) -> T {
+  [[nodiscard]] static auto OperatorValueTypeImpl(This &&t) -> ValueType {
     return MoveIfRvalue<decltype(std::forward<This>(t))>(t.value);
   }
 };

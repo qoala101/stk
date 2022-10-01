@@ -2,7 +2,8 @@
 #define STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_LIMIT_VARIANT_H_
 
 #include <string>
-#include <variant>
+
+#include "cpp_variant_struct.h"
 
 namespace stonks::sqldb::qbf {
 /**
@@ -10,17 +11,12 @@ namespace stonks::sqldb::qbf {
  */
 struct LimitedType {};
 
-namespace detail {
-using LimitVariantType = std::variant<std::monostate, int, LimitedType>;
-}  // namespace detail
-
 /**
  * @brief Stores limit value in query builders.
  */
-class LimitVariant : public detail::LimitVariantType {
+class LimitVariant
+    : public cpp::VariantStruct<std::monostate, int, LimitedType> {
  public:
-  using detail::LimitVariantType::variant;
-
   /**
    * @brief Gives limit clause which can be used in queries.
    */

@@ -23,7 +23,7 @@ auto TableVariant::GetTableImpl(This &t) -> cpp::CopyConst<This, Table> & {
 
         Expects(false);
       },
-      static_cast<cpp::CopyConst<decltype(t), detail::TableVariantType> &>(t));
+      t.value);
 }
 
 auto TableVariant::GetTable() const -> const Table & {
@@ -33,6 +33,6 @@ auto TableVariant::GetTable() const -> const Table & {
 auto TableVariant::GetTable() -> Table & { return GetTableImpl(*this); }
 
 auto TableVariant::HasTable() const -> bool {
-  return !std::holds_alternative<std::monostate>(*this);
+  return !std::holds_alternative<std::monostate>(value);
 }
 }  // namespace stonks::sqldb::qbf

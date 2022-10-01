@@ -18,14 +18,15 @@ class AutoParsableWebSocketHandler : public IWebSocketHandler {
   template <cpp::VoidInvocable T>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableWebSocketHandler(T &&handler)
-      : handler_{std::in_place_type_t<aprh::Handler>{},
-                 std::forward<T>(handler)} {}
+      : handler_{aprh::WsHandlerVariant::ValueType{
+            std::in_place_type_t<aprh::Handler>{}, std::forward<T>(handler)}} {}
 
   template <cpp::VoidInvocableTakes<AutoParsable> T>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableWebSocketHandler(T &&handler)
-      : handler_{std::in_place_type_t<aprh::HandlerWithWsMessage>{},
-                 std::forward<T>(handler)} {}
+      : handler_{aprh::WsHandlerVariant::ValueType{
+            std::in_place_type_t<aprh::HandlerWithWsMessage>{},
+            std::forward<T>(handler)}} {}
 
   /**
    * @brief Wraps request in auto-parsable and forwards it to the handler.

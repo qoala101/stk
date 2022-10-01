@@ -1,23 +1,17 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_TABLE_VARIANT_H_
 #define STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_TABLE_VARIANT_H_
 
-#include <variant>
-
 #include "cpp_copy_const.h"
+#include "cpp_variant_struct.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qbf {
-namespace detail {
-using TableVariantType = std::variant<std::monostate, Table, TableDefinition>;
-}  // namespace detail
-
 /**
  * @brief Stores table value in query builders.
  */
-class TableVariant : public detail::TableVariantType {
+class TableVariant
+    : public cpp::VariantStruct<std::monostate, Table, TableDefinition> {
  public:
-  using detail::TableVariantType::variant;
-
   /**
    * @brief Gives table from variant.
    * @remark Should only be called if variant has table.

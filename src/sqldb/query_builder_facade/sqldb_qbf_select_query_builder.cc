@@ -18,7 +18,7 @@ SelectQueryBuilder::SelectQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
 auto SelectQueryBuilder::Columns(std::vector<Column> columns)
     -> SelectQueryBuilder & {
   Expects(!columns_.HasColumns());
-  columns_ = {std::move(columns)};
+  columns_.value = std::move(columns);
   Ensures(columns_.HasColumns());
   return *this;
 }
@@ -73,16 +73,16 @@ auto SelectQueryBuilder::Or(std::string_view where_clause)
 }
 
 auto SelectQueryBuilder::Limit(int limit) -> SelectQueryBuilder & {
-  Expects(std::holds_alternative<std::monostate>(limit_));
-  limit_.emplace<int>(limit);
-  Ensures(!std::holds_alternative<std::monostate>(limit_));
+  Expects(std::holds_alternative<std::monostate>(limit_.value));
+  limit_.value.emplace<int>(limit);
+  Ensures(!std::holds_alternative<std::monostate>(limit_.value));
   return *this;
 }
 
 auto SelectQueryBuilder::Limited() -> SelectQueryBuilder & {
-  Expects(std::holds_alternative<std::monostate>(limit_));
-  limit_.emplace<LimitedType>();
-  Ensures(!std::holds_alternative<std::monostate>(limit_));
+  Expects(std::holds_alternative<std::monostate>(limit_.value));
+  limit_.value.emplace<LimitedType>();
+  Ensures(!std::holds_alternative<std::monostate>(limit_.value));
   return *this;
 }
 

@@ -61,6 +61,13 @@ template <typename T, typename... Args>
 concept NonVoidInvocableTakes =
     requires(T &t, Args &&...args) { t(std::forward<Args>(args)...); } && !
 VoidInvocableTakes<T, Args...>;
+
+template <typename T, typename... Args>
+concept ConstructibleFrom =
+    requires(Args &&...args) { T{std::forward<Args>(args)...}; };
+
+template <typename T, typename U>
+concept AssignableFrom = requires(T t, U &&u) { t = std::forward<U>(u); };
 }  // namespace stonks::cpp
 
 #endif  // STONKS_CPP_CPP_CONCEPTS_H_

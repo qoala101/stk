@@ -20,6 +20,6 @@ auto LimitVariant::GetLimitClause() const -> std::string {
 
         return {};
       },
-      static_cast<const detail::LimitVariantType &>(*this));
+      value);
 }
 }  // namespace stonks::sqldb::qbf

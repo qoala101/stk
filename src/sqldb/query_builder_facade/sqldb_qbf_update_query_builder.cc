@@ -14,7 +14,7 @@ UpdateQueryBuilder::UpdateQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
 
 auto UpdateQueryBuilder::OfTable(Table table) -> UpdateQueryBuilder& {
   Expects(!table_.HasTable());
-  table_ = std::move(table);
+  table_.value = std::move(table);
   Ensures(table_.HasTable());
   return *this;
 }
@@ -22,7 +22,7 @@ auto UpdateQueryBuilder::OfTable(Table table) -> UpdateQueryBuilder& {
 auto UpdateQueryBuilder::OfTable(TableDefinition table_definition)
     -> UpdateQueryBuilder& {
   Expects(!table_.HasTable());
-  table_ = std::move(table_definition);
+  table_.value = std::move(table_definition);
   Ensures(table_.HasTable());
   return *this;
 }
@@ -30,7 +30,7 @@ auto UpdateQueryBuilder::OfTable(TableDefinition table_definition)
 auto UpdateQueryBuilder::Columns(std::vector<Column> columns)
     -> UpdateQueryBuilder& {
   Expects(!columns_.HasColumns());
-  columns_ = {std::move(columns)};
+  columns_.value = std::move(columns);
   Ensures(columns_.HasColumns());
   return *this;
 }

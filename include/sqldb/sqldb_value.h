@@ -1,28 +1,28 @@
 #ifndef STONKS_SQLDB_SQLDB_VALUE_H_
 #define STONKS_SQLDB_SQLDB_VALUE_H_
 
+#include <concepts>
 #include <cstdint>
 #include <string>
 #include <string_view>
 #include <variant>
 
 #include "cpp_copy_const.h"
+#include "cpp_variant_struct.h"
 #include "sqldb_enums.h"
 
 namespace stonks::sqldb {
-namespace detail {
-using ValueVariantType =
-    std::variant<std::monostate, bool, int, int64_t, double, std::string>;
-}  // namespace detail
-
 /**
  * @brief Value which can be stored or retrieved from DB.
  */
-class Value : public detail::ValueVariantType {
+class Value : public cpp::VariantStruct<std::monostate, bool, int, int64_t,
+                                        double, std::string> {
  public:
-  using detail::ValueVariantType::variant;
+  Value() = default;
 
-  explicit Value(const char *value);
+  template <typename... Args>
+    requires cpp::ConstructibleFrom<ValueType, Args...>
+  explicit Value(Args &&...args) : BaseType{std::forward<Args>(args)...} {}
 
   /**
    * @brief Parses value of specified type from string.
@@ -70,9 +70,6 @@ class Value : public detail::ValueVariantType {
   [[nodiscard]] auto IsNull() const -> bool;
 
  private:
-  [[nodiscard]] friend auto operator==(const Value &, const Value &)
-      -> bool = default;
-
   template <cpp::DecaysTo<Value> This>
   [[nodiscard]] static auto GetStringImpl(This &t)
       -> cpp::CopyConst<This, std::string> &;

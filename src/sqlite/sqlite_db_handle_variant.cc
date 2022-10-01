@@ -24,8 +24,7 @@ auto SqliteDbHandleVariant::GetSqliteDbImpl(This &t)
 
         Expects(false);
       },
-      static_cast<
-          cpp::CopyConst<decltype(t), detail::SqliteDbHandleVariantType> &>(t));
+      t.value);
 }
 
 auto SqliteDbHandleVariant::GetSqliteDb() const -> const sqlite3 & {
@@ -48,10 +47,10 @@ auto SqliteDbHandleVariant::GetFilePath() const -> const FilePath & {
 
         Expects(false);
       },
-      static_cast<const detail::SqliteDbHandleVariantType &>(*this));
+      value);
 }
 
 auto SqliteDbHandleVariant::HasFilePath() const -> bool {
-  return std::holds_alternative<SqliteDbFileHandle>(*this);
+  return std::holds_alternative<SqliteDbFileHandle>(value);
 }
 }  // namespace stonks::sqlite

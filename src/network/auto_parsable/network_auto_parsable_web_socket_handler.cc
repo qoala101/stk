@@ -4,6 +4,6 @@
 
 namespace stonks::network {
 void AutoParsableWebSocketHandler::HandleMessage(WsMessage message) const {
-  handler_.TODO(std::move(message));
+  handler_(std::move(message));
 }
 }  // namespace stonks::network

@@ -18,7 +18,7 @@ RestClient::RestClient(cpp::NnSp<IRestRequestSender> request_sender,
 
 auto RestClient::Call(TypedEndpoint endpoint) const
     -> rest_client::RequestBuilder {
-  endpoint.endpoint.uri = {base_uri_.value + endpoint.endpoint.uri.value};
+  endpoint.endpoint.uri.value = base_uri_.value + endpoint.endpoint.uri.value;
 
   auto decorated_sender = cpp::MakeNnSp<ResponseExceptionHandler>(
       cpp::MakeNnSp<TypedEndpointSender>(std::move(endpoint.expected_types),

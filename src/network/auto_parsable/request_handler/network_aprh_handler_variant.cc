@@ -36,10 +36,10 @@ auto HandlerVariant::operator()(RestRequest request) -> RestResponse {
 
         Expects(false);
       },
-      static_cast<detail::HandlerVariantType &>(*this));
+      value);
 }
 
-void WsHandlerVariant::TODO(WsMessage message) {
+void WsHandlerVariant::operator()(WsMessage message) {
   std::visit(
       [&message](auto &v) {
         Expects(!v.empty());
@@ -58,6 +58,6 @@ void WsHandlerVariant::TODO(WsMessage message) {
 
         Expects(false);
       },
-      static_cast<detail::WsHandlerVariantType &>(*this));
+      value);
 }
 }  // namespace stonks::network::aprh

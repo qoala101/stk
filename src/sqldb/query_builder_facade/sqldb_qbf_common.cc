@@ -20,8 +20,8 @@ auto GetColumns(const TableVariant &table, const ColumnsVariant &columns)
     return std::get<std::vector<Column>>(columns.value);
   }
 
-  Expects(std::holds_alternative<TableDefinition>(table));
-  const auto &table_definition = std::get<TableDefinition>(table);
+  Expects(std::holds_alternative<TableDefinition>(table.value));
+  const auto &table_definition = std::get<TableDefinition>(table.value);
 
   auto table_columns =
       table_definition.columns |
