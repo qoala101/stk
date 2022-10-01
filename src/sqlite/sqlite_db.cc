@@ -14,7 +14,7 @@
 #include "sqlite_update_statement.h"
 
 namespace stonks::sqlite {
-Db::Db(cpp::NnSp<di::IFactory<log::ILogger>> logger_factory,
+Db::Db(di::Factory<log::ILogger> logger_factory,
        SqliteDbHandleVariant sqlite_db_handle)
     : sqlite_db_handle_{cpp::MakeNnSp<SqliteDbHandleVariant>(
           std::move(sqlite_db_handle))},

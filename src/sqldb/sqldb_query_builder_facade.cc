@@ -8,30 +8,30 @@
 
 namespace stonks::sqldb {
 QueryBuilderFacade::QueryBuilderFacade(
-    cpp::NnSp<di::IFactory<IQueryBuilder>> query_builder_factory)
+    di::Factory<IQueryBuilder> query_builder_factory)
     : query_builder_factory_{std::move(query_builder_factory)} {}
 
 auto QueryBuilderFacade::Select() const -> qbf::SelectQueryBuilder {
   return cpp::CallExposedPrivateConstructorOf<qbf::SelectQueryBuilder,
                                               QueryBuilderFacade>{}(
-      cpp::AssumeNn(query_builder_factory_->create()));
+      query_builder_factory_.Create());
 }
 
 auto QueryBuilderFacade::Insert() const -> qbf::InsertQueryBuilder {
   return cpp::CallExposedPrivateConstructorOf<qbf::InsertQueryBuilder,
                                               QueryBuilderFacade>{}(
-      cpp::AssumeNn(query_builder_factory_->create()));
+      query_builder_factory_.Create());
 }
 
 auto QueryBuilderFacade::Update() const -> qbf::UpdateQueryBuilder {
   return cpp::CallExposedPrivateConstructorOf<qbf::UpdateQueryBuilder,
                                               QueryBuilderFacade>{}(
-      cpp::AssumeNn(query_builder_factory_->create()));
+      query_builder_factory_.Create());
 }
 
 auto QueryBuilderFacade::Delete() const -> qbf::DeleteQueryBuilder {
   return cpp::CallExposedPrivateConstructorOf<qbf::DeleteQueryBuilder,
                                               QueryBuilderFacade>{}(
-      cpp::AssumeNn(query_builder_factory_->create()));
+      query_builder_factory_.Create());
 }
 }  // namespace stonks::sqldb

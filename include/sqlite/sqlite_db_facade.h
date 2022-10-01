@@ -14,7 +14,7 @@ namespace stonks::sqlite {
  */
 class DbFacade {
  public:
-  explicit DbFacade(cpp::NnSp<di::IFactory<log::ILogger>> logger_factory,
+  explicit DbFacade(di::Factory<log::ILogger> logger_factory,
                     cpp::Nn<sqlite3 *> sqlite_db);
 
   /**
@@ -46,7 +46,7 @@ class DbFacade {
   void Close();
 
  private:
-  cpp::NnSp<di::IFactory<log::ILogger>> logger_factory_;
+  di::Factory<log::ILogger> logger_factory_;
   cpp::NnUp<log::ILogger> logger_;
   sqlite3 *sqlite_db_{};
   DbHandlesFactory handles_factory_;

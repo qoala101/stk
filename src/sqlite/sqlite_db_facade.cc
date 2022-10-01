@@ -42,10 +42,10 @@ using NullableSqliteStatementHandle =
 }
 }  // namespace
 
-DbFacade::DbFacade(cpp::NnSp<di::IFactory<log::ILogger>> logger_factory,
+DbFacade::DbFacade(di::Factory<log::ILogger> logger_factory,
                    cpp::Nn<sqlite3 *> sqlite_db)
     : logger_factory_{std::move(logger_factory)},
-      logger_{cpp::AssumeNn(logger_factory_->create())},
+      logger_{logger_factory_.Create()},
       sqlite_db_{sqlite_db.as_nullable()},
       handles_factory_{logger_factory_} {
   Ensures(sqlite_db_ != nullptr);
@@ -94,8 +94,8 @@ auto DbFacade::CreatePreparedStatement(const sqldb::Query &query) const
       fmt::format("Prepared statement for query: {}", query.value));
 
   return SqliteStatementHandle{cpp::AssumeNn(NullableSqliteStatementHandle{
-      sqlite_statement, detail::SqliteStatementFinalizer{
-                            cpp::AssumeNn(logger_factory_->create())}})};
+      sqlite_statement,
+      detail::SqliteStatementFinalizer{logger_factory_.Create()}})};
 }
 
 void DbFacade::EnableForeignKeys() const {

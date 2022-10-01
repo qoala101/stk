@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_DI_CPP_DI_MAKE_INJECTOR_H_
-#define STONKS_CPP_DI_CPP_DI_MAKE_INJECTOR_H_
+#ifndef STONKS_DI_DI_MAKE_INJECTOR_H_
+#define STONKS_DI_DI_MAKE_INJECTOR_H_
 
 #include <boost/di.hpp>
 
@@ -19,4 +19,4 @@ template <typename... Ts, typename... Args>
 }
 }  // namespace stonks::di
 
-#endif  // STONKS_CPP_DI_CPP_DI_MAKE_INJECTOR_H_
+#endif  // STONKS_DI_DI_MAKE_INJECTOR_H_

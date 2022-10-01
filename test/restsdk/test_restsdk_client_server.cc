@@ -145,10 +145,11 @@ class EntityServer {
 class EntityClient : public EntityInterface {
  public:
   explicit EntityClient(stonks::network::Uri base_uri)
-      : client_{test::restsdk::Injector()
-                    .create<stonks::cpp::NnSp<stonks::di::IFactory<
-                        stonks::network::IRestRequestSender>>>(),
-                std::move(base_uri)} {}
+      : client_{
+            test::restsdk::Injector()
+                .create<
+                    stonks::di::Factory<stonks::network::IRestRequestSender>>(),
+            std::move(base_uri)} {}
 
   void PushSymbol(stonks::SymbolName symbol) override {
     client_.Call(EntityServer::PushSymbolEndpointDesc())
@@ -190,8 +191,7 @@ TEST(ClientServerDeathTest, WrongClientTypes) {
   auto entity_server = EntityServer{kBaseUri};
   auto rest_client = stonks::network::RestClient{
       test::restsdk::Injector()
-          .create<stonks::cpp::NnSp<
-              stonks::di::IFactory<stonks::network::IRestRequestSender>>>(),
+          .create<stonks::di::Factory<stonks::network::IRestRequestSender>>(),
       kBaseUri};
 
   EXPECT_DEATH(rest_client.Call(EntityServer::PushSymbolEndpointDesc())

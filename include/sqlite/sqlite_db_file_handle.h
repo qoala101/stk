@@ -18,7 +18,7 @@ class SqliteDbFileHandle {
    * @param file_path File from which SQLite DB was read
    * and where it's to be written.
    */
-  SqliteDbFileHandle(cpp::NnSp<di::IFactory<log::ILogger>> logger_factory,
+  SqliteDbFileHandle(di::Factory<log::ILogger> logger_factory,
                      SqliteDbHandle sqlite_db_handle, FilePath file_path);
 
   SqliteDbFileHandle(const SqliteDbFileHandle &) = delete;
@@ -54,7 +54,7 @@ class SqliteDbFileHandle {
   [[nodiscard]] static auto GetSqliteDbImpl(This &t)
       -> cpp::CopyConst<This, sqlite3> &;
 
-  cpp::NnSp<di::IFactory<log::ILogger>> logger_factory_;
+  di::Factory<log::ILogger> logger_factory_;
   SqliteDbHandle sqlite_db_handle_;
   FilePath file_path_{};
 };

@@ -2,6 +2,7 @@
 #define STONKS_SQLITE_SQLITE_RAW_HANDLES_H_
 
 #include "cpp_not_null.h"
+#include "cpp_optional.h"
 #include "cpp_smart_pointers.h"
 #include "di_factory.h"
 #include "log_i_logger.h"
@@ -22,12 +23,12 @@ class SqliteDbCloser {
    */
   SqliteDbCloser() = default;
 
-  explicit SqliteDbCloser(cpp::NnSp<di::IFactory<log::ILogger>> logger_factory);
+  explicit SqliteDbCloser(di::Factory<log::ILogger> logger_factory);
 
   void operator()(sqlite3 *sqlite_db) noexcept;
 
  private:
-  cpp::Sp<di::IFactory<log::ILogger>> logger_factory_;
+  cpp::Opt<di::Factory<log::ILogger>> logger_factory_{};
 };
 
 class SqliteStatementFinalizer {

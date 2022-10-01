@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_DI_CPP_DI_BIND_TYPE_TO_OTHER_TYPE_H_
-#define STONKS_CPP_DI_CPP_DI_BIND_TYPE_TO_OTHER_TYPE_H_
+#ifndef STONKS_DI_DI_BIND_TYPE_TO_OTHER_TYPE_H_
+#define STONKS_DI_DI_BIND_TYPE_TO_OTHER_TYPE_H_
 
 #include <boost/di.hpp>
 #include <type_traits>
@@ -27,4 +27,4 @@ template <typename Type, typename Injected>
 }
 }  // namespace stonks::di
 
-#endif  // STONKS_CPP_DI_CPP_DI_BIND_TYPE_TO_OTHER_TYPE_H_
+#endif  // STONKS_DI_DI_BIND_TYPE_TO_OTHER_TYPE_H_

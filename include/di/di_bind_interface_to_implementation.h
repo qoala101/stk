@@ -2,9 +2,9 @@
 #define STONKS_DI_DI_BIND_INTERFACE_TO_IMPLEMENTATION_H_
 
 #include <boost/di.hpp>
+#include <boost/di/extension/injections/factory.hpp>
 
 #include "cpp_not_null.h"
-#include "di_factory.h"
 #include "di_make_injector.h"
 
 namespace stonks::di {
@@ -26,8 +26,9 @@ template <typename Interface>
 template <typename Interface, std::derived_from<Interface> Implementation>
 [[nodiscard]] auto EnableFactory() {
   return MakeInjector(
-      boost::di::bind<IFactory<Interface>>().to(Factory<Implementation>{}),
-      detail::EnableNn<IFactory<Interface>>());
+      boost::di::bind<boost::di::extension::ifactory<Interface>>().to(
+          boost::di::extension::factory<Implementation>{}),
+      detail::EnableNn<boost::di::extension::ifactory<Interface>>());
 }
 }  // namespace detail
 

@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_DI_CPP_DI_OVERRIDE_BINDINGS_FOR_TYPE_H_
-#define STONKS_CPP_DI_CPP_DI_OVERRIDE_BINDINGS_FOR_TYPE_H_
+#ifndef STONKS_DI_DI_OVERRIDE_BINDINGS_FOR_TYPE_H_
+#define STONKS_DI_DI_OVERRIDE_BINDINGS_FOR_TYPE_H_
 
 #include <boost/di/extension/injections/extensible_injector.hpp>
 
@@ -23,4 +23,4 @@ auto OverrideBindingsForType(auto& injector, Args&&... args) {
 }
 }  // namespace stonks::di
 
-#endif  // STONKS_CPP_DI_CPP_DI_OVERRIDE_BINDINGS_FOR_TYPE_H_
+#endif  // STONKS_DI_DI_OVERRIDE_BINDINGS_FOR_TYPE_H_

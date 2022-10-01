@@ -14,8 +14,7 @@
 namespace stonks::sqlite {
 class DbHandlesFactory {
  public:
-  explicit DbHandlesFactory(
-      cpp::NnSp<di::IFactory<log::ILogger>> logger_factory);
+  explicit DbHandlesFactory(di::Factory<log::ILogger> logger_factory);
 
   /**
    * @brief Creates in-memory SQLite DB.
@@ -37,7 +36,7 @@ class DbHandlesFactory {
       -> SqliteDbHandle;
 
  private:
-  cpp::NnSp<di::IFactory<log::ILogger>> logger_factory_;
+  di::Factory<log::ILogger> logger_factory_;
   cpp::NnUp<log::ILogger> logger_;
 };
 }  // namespace stonks::sqlite

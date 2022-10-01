@@ -26,9 +26,8 @@ TEST(SqliteDb, CreateAndDropTable) {
   db = test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
   auto query_builder_factory =
       test::sqlite::Injector()
-          .create<stonks::cpp::NnSp<
-              stonks::di::IFactory<stonks::sqldb::IQueryBuilder>>>();
-  query_builder = query_builder_factory->create();
+          .create<stonks::di::Factory<stonks::sqldb::IQueryBuilder>>();
+  query_builder = query_builder_factory.Create().as_nullable();
   query_builder_facade.emplace(std::move(query_builder_factory));
 
   const auto table = stonks::sqldb::Table{"TestTable"};

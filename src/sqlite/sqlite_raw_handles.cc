@@ -12,27 +12,22 @@
 #include "sqlite_prepared_statement_facade.h"
 
 namespace stonks::sqlite::detail {
-SqliteDbCloser::SqliteDbCloser(
-    cpp::NnSp<di::IFactory<log::ILogger>> logger_factory)
-    : logger_factory_{std::move(logger_factory).as_nullable()} {
-  Ensures(logger_factory != nullptr);
+SqliteDbCloser::SqliteDbCloser(di::Factory<log::ILogger> logger_factory)
+    : logger_factory_{std::move(logger_factory)} {
+  Ensures(logger_factory_.has_value());
 }
 
 void SqliteDbCloser::operator()(sqlite3* sqlite_db) noexcept {
   Expects(sqlite_db != nullptr);
-  Expects(logger_factory_ != nullptr);
+  Expects(logger_factory_.has_value());
 
-  auto logger = cpp::AssumeNn(logger_factory_->create());
+  auto logger = logger_factory_->Create();
 
   try {
-    DbFacade{cpp::AssumeNn(std::move(logger_factory_)),
-             cpp::AssumeNn(sqlite_db)}
-        .Close();
+    DbFacade{std::move(*logger_factory_), cpp::AssumeNn(sqlite_db)}.Close();
   } catch (const std::exception& e) {
     logger->LogErrorCondition(e.what());
   }
-
-  Ensures(logger_factory_ == nullptr);
 }
 
 SqliteStatementFinalizer::SqliteStatementFinalizer(

@@ -12,9 +12,9 @@
 #include "sqlite_db_facade.h"
 
 namespace stonks::sqlite {
-SqliteDbFileHandle::SqliteDbFileHandle(
-    cpp::NnSp<di::IFactory<log::ILogger>> logger_factory,
-    SqliteDbHandle sqlite_db_handle, FilePath file_path)
+SqliteDbFileHandle::SqliteDbFileHandle(di::Factory<log::ILogger> logger_factory,
+                                       SqliteDbHandle sqlite_db_handle,
+                                       FilePath file_path)
     : logger_factory_{std::move(logger_factory)},
       sqlite_db_handle_{std::move(sqlite_db_handle)},
       file_path_{std::move(file_path)} {}
@@ -26,7 +26,7 @@ SqliteDbFileHandle::~SqliteDbFileHandle() {
     return;
   }
 
-  auto logger = cpp::AssumeNn(logger_factory_->create());
+  auto logger = logger_factory_.Create();
 
   try {
     DbFacade{std::move(logger_factory_), cpp::AssumeNn(sqlite_db)}.WriteToFile(
@@ -34,8 +34,6 @@ SqliteDbFileHandle::~SqliteDbFileHandle() {
   } catch (const std::exception& e) {
     logger->LogErrorCondition(e.what());
   }
-
-  Ensures(logger_factory_.get() == nullptr);
 }
 
 template <cpp::DecaysTo<SqliteDbFileHandle> This>

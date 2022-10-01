@@ -63,9 +63,9 @@ namespace {
 }  // namespace
 
 Db::Db(cpp::NnUp<sqldb::IDb> db,
-       cpp::NnSp<di::IFactory<sqldb::IQueryBuilder>> query_builder_factory)
+       di::Factory<sqldb::IQueryBuilder> query_builder_factory)
     : db_{std::move(db)},
-      query_builder_{cpp::AssumeNn(query_builder_factory->create())},
+      query_builder_{query_builder_factory.Create()},
       prepared_statements_{cpp::MakeNnSp<db::PreparedStatements>(
           db_, sqldb::QueryBuilderFacade{std::move(query_builder_factory)})},
       cache_{prepared_statements_} {

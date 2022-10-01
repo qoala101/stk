@@ -16,8 +16,7 @@ namespace stonks::sqldb {
  */
 class QueryBuilderFacade {
  public:
-  explicit QueryBuilderFacade(
-      cpp::NnSp<di::IFactory<IQueryBuilder>> query_builder_factory);
+  explicit QueryBuilderFacade(di::Factory<IQueryBuilder> query_builder_factory);
 
   /**
    * @brief Start building select statement.
@@ -40,7 +39,7 @@ class QueryBuilderFacade {
   [[nodiscard]] auto Delete() const -> qbf::DeleteQueryBuilder;
 
  private:
-  cpp::NnSp<di::IFactory<IQueryBuilder>> query_builder_factory_;
+  di::Factory<IQueryBuilder> query_builder_factory_;
 };
 }  // namespace stonks::sqldb
 

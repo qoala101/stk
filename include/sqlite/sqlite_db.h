@@ -20,7 +20,7 @@ class Db : public sqldb::IDb {
   /**
    * @brief Creates wrapper for SQLite DB.
    */
-  explicit Db(cpp::NnSp<di::IFactory<log::ILogger>> logger_factory,
+  explicit Db(di::Factory<log::ILogger> logger_factory,
               SqliteDbHandleVariant sqlite_db_handle);
 
   /**

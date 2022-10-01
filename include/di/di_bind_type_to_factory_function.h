@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_DI_CPP_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_
-#define STONKS_CPP_DI_CPP_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_
+#ifndef STONKS_DI_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_
+#define STONKS_DI_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_
 
 #include <boost/di.hpp>
 #include <type_traits>
@@ -31,4 +31,4 @@ template <typename Type, typename FactoryFunction, typename... Args>
 }
 }  // namespace stonks::di
 
-#endif  // STONKS_CPP_DI_CPP_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_
+#endif  // STONKS_DI_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_

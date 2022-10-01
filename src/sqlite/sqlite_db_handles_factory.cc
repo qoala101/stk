@@ -22,10 +22,9 @@ using NullableSqliteDbHandle =
     std::decay_t<decltype(std::declval<SqliteDbHandle>().as_nullable())>;
 }  // namespace
 
-DbHandlesFactory::DbHandlesFactory(
-    cpp::NnSp<di::IFactory<log::ILogger>> logger_factory)
+DbHandlesFactory::DbHandlesFactory(di::Factory<log::ILogger> logger_factory)
     : logger_factory_{std::move(logger_factory)},
-      logger_{cpp::AssumeNn(logger_factory_->create())} {}
+      logger_{logger_factory_.Create()} {}
 
 auto DbHandlesFactory::CreateInMemoryDb() const -> SqliteDbHandle {
   auto *in_memory_db = static_cast<sqlite3 *>(nullptr);
