@@ -11,11 +11,10 @@
 
 namespace stonks::app::dt::stec {
 AppServer::AppServer(App app,
-                     cpp::NnSp<di::IFactory<network::IRestRequestReceiver>>
-                         request_receiver_factory,
+                     cpp::NnSp<network::IRestRequestReceiver> request_receiver,
                      network::Uri base_uri)
     : request_receiver_{
-          network::RestServerBuilder{std::move(request_receiver_factory)}
+          network::RestServerBuilder{std::move(request_receiver)}
               .On(std::move(base_uri))
               .Handling(endpoints::GetAveragePrice(),
                         [app = std::move(app)](

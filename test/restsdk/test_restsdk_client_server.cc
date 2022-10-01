@@ -138,7 +138,7 @@ class EntityServer {
   auto GetSizeEndpointHandler() -> int { return entity_.GetSize(); }
 
   Entity entity_{};
-  stonks::cpp::NnUp<stonks::network::IRestRequestReceiver> request_receiver_;
+  stonks::cpp::NnSp<stonks::network::IRestRequestReceiver> request_receiver_;
 };
 
 class EntityClient : public EntityInterface {

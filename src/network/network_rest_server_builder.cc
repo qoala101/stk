@@ -13,8 +13,10 @@
 
 namespace stonks::network {
 RestServerBuilder::RestServerBuilder(
-    cpp::NnSp<di::IFactory<IRestRequestReceiver>> request_receiver_factory)
-    : request_receiver_factory_{std::move(request_receiver_factory)} {}
+    cpp::NnSp<IRestRequestReceiver> request_receiver)
+    : request_receiver_{std::move(request_receiver).as_nullable()} {
+  Ensures(request_receiver_ != nullptr);
+}
 
 auto RestServerBuilder::On(Uri base_uri) -> RestServerBuilder& {
   Expects(!base_uri_.has_value());
@@ -23,11 +25,12 @@ auto RestServerBuilder::On(Uri base_uri) -> RestServerBuilder& {
   return *this;
 }
 
-auto RestServerBuilder::Start() -> cpp::NnUp<IRestRequestReceiver> {
+auto RestServerBuilder::Start() -> cpp::NnSp<IRestRequestReceiver> {
+  Expects(request_receiver_ != nullptr);
   Expects(base_uri_.has_value());
   Expects(!endpoint_handlers_.empty());
 
-  auto request_receiver = cpp::AssumeNn(request_receiver_factory_->create());
+  auto request_receiver = cpp::AssumeNn(std::move(request_receiver_));
   request_receiver->Receive(
       std::move(*base_uri_),
       cpp::MakeNnSp<EndpointRequestDispatcher>(std::move(endpoint_handlers_)));
@@ -35,6 +38,7 @@ auto RestServerBuilder::Start() -> cpp::NnUp<IRestRequestReceiver> {
   base_uri_.reset();
   endpoint_handlers_.clear();
 
+  Ensures(request_receiver_ == nullptr);
   Ensures(!base_uri_.has_value());
   Ensures(endpoint_handlers_.empty());
   return request_receiver;

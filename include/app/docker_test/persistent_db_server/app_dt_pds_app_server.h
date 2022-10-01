@@ -10,13 +10,11 @@
 namespace stonks::app::dt::pds {
 class AppServer {
  public:
-  AppServer(App app,
-            cpp::NnSp<di::IFactory<network::IRestRequestReceiver>>
-                request_receiver_factory,
+  AppServer(App app, cpp::NnSp<network::IRestRequestReceiver> request_receiver,
             network::Uri base_uri);
 
  private:
-  cpp::NnUp<network::IRestRequestReceiver> request_receiver_;
+  cpp::NnSp<network::IRestRequestReceiver> request_receiver_;
 };
 }  // namespace stonks::app::dt::pds
 
