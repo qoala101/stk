@@ -15,7 +15,6 @@ namespace stonks::network {
 class RestClient {
  public:
   /**
-   * @param request_sender_factory Creates executers of REST requests.
    * @param base_uri Base resource URI.
    */
   RestClient(cpp::NnSp<di::IFactory<IRestRequestSender>> request_sender_factory,

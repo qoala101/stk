@@ -21,7 +21,7 @@ class Db : public IDb {
   /**
    * @brief Creates DB over SQL DB used as data storage.
    * @param db SQL DB implementation.
-   * @param query_builder Query builder for SQL DB.
+   * @param query_builder_factory Creates query builders for the DB.
    */
   explicit Db(
       cpp::NnUp<sqldb::IDb> db,
