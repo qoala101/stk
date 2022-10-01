@@ -27,7 +27,7 @@ namespace {
 }  // namespace
 
 ResponseExceptionHandler::ResponseExceptionHandler(
-    cpp::NnSp<IRestRequestSender> request_sender)
+    cpp::NnUp<IRestRequestSender> request_sender)
     : request_sender_{std::move(request_sender)} {}
 
 auto ResponseExceptionHandler::SendRequestAndGetResponse(

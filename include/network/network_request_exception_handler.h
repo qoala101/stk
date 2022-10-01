@@ -12,7 +12,7 @@ namespace stonks::network {
  */
 class RequestExceptionHandler : public IRestRequestHandler {
  public:
-  explicit RequestExceptionHandler(cpp::NnSp<IRestRequestHandler> handler);
+  explicit RequestExceptionHandler(cpp::NnUp<IRestRequestHandler> handler);
 
   /**
    * @brief Catches exception thrown by the handler and transforms it
@@ -22,7 +22,7 @@ class RequestExceptionHandler : public IRestRequestHandler {
       -> RestResponse override;
 
  private:
-  cpp::NnSp<IRestRequestHandler> handler_;
+  cpp::NnUp<IRestRequestHandler> handler_;
 };
 }  // namespace stonks::network
 

@@ -60,7 +60,7 @@ class TypeChecker : public te::EndpointTypesValidatorTemplate {
 }  // namespace
 
 TypedEndpointSender::TypedEndpointSender(
-    EndpointTypes endpoint_types, cpp::NnSp<IRestRequestSender> request_sender)
+    EndpointTypes endpoint_types, cpp::NnUp<IRestRequestSender> request_sender)
     : type_checker_{cpp::MakeNnUp<TypeChecker>(std::move(endpoint_types))},
       request_sender_{std::move(request_sender)} {}
 

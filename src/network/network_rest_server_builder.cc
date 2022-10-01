@@ -13,7 +13,7 @@
 
 namespace stonks::network {
 RestServerBuilder::RestServerBuilder(
-    cpp::NnSp<IRestRequestReceiver> request_receiver)
+    cpp::NnUp<IRestRequestReceiver> request_receiver)
     : request_receiver_{std::move(request_receiver).as_nullable()} {
   Ensures(request_receiver_ != nullptr);
 }
@@ -25,7 +25,7 @@ auto RestServerBuilder::On(Uri base_uri) -> RestServerBuilder& {
   return *this;
 }
 
-auto RestServerBuilder::Start() -> cpp::NnSp<IRestRequestReceiver> {
+auto RestServerBuilder::Start() -> cpp::NnUp<IRestRequestReceiver> {
   Expects(request_receiver_ != nullptr);
   Expects(base_uri_.has_value());
   Expects(!endpoint_handlers_.empty());
@@ -33,7 +33,7 @@ auto RestServerBuilder::Start() -> cpp::NnSp<IRestRequestReceiver> {
   auto request_receiver = cpp::AssumeNn(std::move(request_receiver_));
   request_receiver->Receive(
       std::move(*base_uri_),
-      cpp::MakeNnSp<EndpointRequestDispatcher>(std::move(endpoint_handlers_)));
+      cpp::MakeNnUp<EndpointRequestDispatcher>(std::move(endpoint_handlers_)));
 
   base_uri_.reset();
   endpoint_handlers_.clear();
@@ -45,10 +45,10 @@ auto RestServerBuilder::Start() -> cpp::NnSp<IRestRequestReceiver> {
 }
 
 auto RestServerBuilder::Handling(TypedEndpoint endpoint,
-                                 cpp::NnSp<IRestRequestHandler> handler)
+                                 cpp::NnUp<IRestRequestHandler> handler)
     -> RestServerBuilder& {
-  auto decorated_handler = cpp::MakeNnSp<RequestExceptionHandler>(
-      cpp::MakeNnSp<TypedEndpointHandler>(std::move(endpoint.expected_types),
+  auto decorated_handler = cpp::MakeNnUp<RequestExceptionHandler>(
+      cpp::MakeNnUp<TypedEndpointHandler>(std::move(endpoint.expected_types),
                                           std::move(handler)));
 
   endpoint_handlers_.emplace(std::move(endpoint.endpoint),

@@ -12,7 +12,7 @@ namespace stonks::restsdk {
  */
 class RestRequestSender : public network::IRestRequestSender {
  public:
-  explicit RestRequestSender(cpp::NnSp<log::ILogger> logger);
+  explicit RestRequestSender(cpp::NnUp<log::ILogger> logger);
 
   /**
    * @copydoc network::IRestRequestSender::SendRequestAndGetResponse
@@ -21,7 +21,7 @@ class RestRequestSender : public network::IRestRequestSender {
       network::RestRequest request) const -> network::RestResponse override;
 
  private:
-  cpp::NnSp<log::ILogger> logger_;
+  cpp::NnUp<log::ILogger> logger_;
 };
 }  // namespace stonks::restsdk
 

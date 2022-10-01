@@ -14,7 +14,7 @@ namespace stonks::network {
 class TypedWebSocketClient : public IWebSocketClient {
  public:
   explicit TypedWebSocketClient(WsEndpointTypes endpoint_types,
-                                cpp::NnSp<IWebSocketClient> web_socket_client);
+                                cpp::NnUp<IWebSocketClient> web_socket_client);
 
   /**
    * @copydoc IWebSocketClient::Connect
@@ -24,7 +24,7 @@ class TypedWebSocketClient : public IWebSocketClient {
   /**
    * @copydoc IWebSocketClient::SetMessagesHandler
    */
-  void SetMessageHandler(cpp::NnSp<IWebSocketHandler> handler) override;
+  void SetMessageHandler(cpp::NnUp<IWebSocketHandler> handler) override;
 
   /**
    * @copydoc IWebSocketClient::SendMessage
@@ -33,7 +33,7 @@ class TypedWebSocketClient : public IWebSocketClient {
 
  private:
   WsEndpointTypes endpoint_types_{};
-  cpp::NnSp<IWebSocketClient> web_socket_client_;
+  cpp::NnUp<IWebSocketClient> web_socket_client_;
 };
 }  // namespace stonks::network
 

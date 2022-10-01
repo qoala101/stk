@@ -13,7 +13,7 @@
 
 namespace stonks::network {
 WebSocketClientBuilder::WebSocketClientBuilder(
-    cpp::NnSp<IWebSocketClient> web_socket_client)
+    cpp::NnUp<IWebSocketClient> web_socket_client)
     : web_socket_client_{std::move(web_socket_client).as_nullable()} {
   Ensures(web_socket_client_ != nullptr);
 }

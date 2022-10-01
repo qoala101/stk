@@ -73,7 +73,7 @@ class RequestBuilder {
   friend class cpp::ExposePrivateConstructorsTo<RestClient, RequestBuilder>;
 
   RequestBuilder(Endpoint endpoint,
-                 cpp::NnSp<IRestRequestSender> request_sender);
+                 cpp::NnUp<IRestRequestSender> request_sender);
 
   template <cpp::DecaysTo<RequestBuilder> This>
   static void DiscardingResultImpl(This &t);
@@ -91,7 +91,7 @@ class RequestBuilder {
   [[nodiscard]] auto SendRequestAndGetResult() -> Result::value_type;
 
   RestRequest request_{};
-  cpp::NnSp<IRestRequestSender> request_sender_;
+  cpp::NnUp<IRestRequestSender> request_sender_;
 };
 }  // namespace rest_client
 }  // namespace stonks::network

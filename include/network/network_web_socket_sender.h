@@ -29,11 +29,11 @@ class WebSocketSender {
   friend class cpp::ExposePrivateConstructorsTo<WebSocketClientBuilder,
                                                 WebSocketSender>;
 
-  explicit WebSocketSender(cpp::NnSp<IWebSocketClient> web_socket_client);
+  explicit WebSocketSender(cpp::NnUp<IWebSocketClient> web_socket_client);
 
   void Send(WsMessage message) const;
 
-  cpp::NnSp<IWebSocketClient> web_socket_client_;
+  cpp::NnUp<IWebSocketClient> web_socket_client_;
 };
 }  // namespace stonks::network
 

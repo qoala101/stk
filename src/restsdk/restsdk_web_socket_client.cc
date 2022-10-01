@@ -6,6 +6,8 @@
 #include <fmt/core.h>
 #include <pplx/pplxtasks.h>
 
+#include <functional>
+#include <gsl/assert>
 #include <memory>
 #include <utility>
 
@@ -16,7 +18,7 @@
 #include "restsdk_parse_json_fom_string.h"
 
 namespace stonks::restsdk {
-WebSocketClient::WebSocketClient(cpp::NnSp<log::ILogger> logger)
+WebSocketClient::WebSocketClient(cpp::NnUp<log::ILogger> logger)
     : web_socket_client_{cpp::MakeNnUp<
           web::websockets::client::websocket_callback_client>()},
       logger_{std::move(logger)} {}
@@ -39,19 +41,13 @@ void WebSocketClient::Connect(network::WsEndpoint endpoint) {
 }
 
 void WebSocketClient::SetMessageHandler(
-    cpp::NnSp<network::IWebSocketHandler> handler) {
-  web_socket_client_->set_message_handler(
-      [handler = std::move(handler)](
-          const web::websockets::client::websocket_incoming_message &message) {
-        if (const auto non_text_message =
-                message.message_type() !=
-                web::websockets::client::websocket_message_type::text_message) {
-          return;
-        }
+    cpp::NnUp<network::IWebSocketHandler> handler) {
+  handler_ = std::move(handler).as_nullable();
 
-        const auto message_text = message.extract_string().get();
-        handler->HandleMessage(ParseJsonFromString(message_text));
-      });
+  web_socket_client_->set_message_handler(
+      std::bind_front(&WebSocketClient::HandleWsMessage, this));
+
+  Ensures(handler_ != nullptr);
 }
 
 void WebSocketClient::SendMessage(network::WsMessage message) const {
@@ -60,5 +56,19 @@ void WebSocketClient::SendMessage(network::WsMessage message) const {
   web_socket_message.set_utf8_message(message->GetNativeHandle()->serialize());
 
   web_socket_client_->send(std::move(web_socket_message)).wait();
+}
+
+void WebSocketClient::HandleWsMessage(
+    const web::websockets::client::websocket_incoming_message &message) {
+  Expects(handler_ != nullptr);
+
+  if (const auto non_text_message =
+          message.message_type() !=
+          web::websockets::client::websocket_message_type::text_message) {
+    return;
+  }
+
+  const auto message_text = message.extract_string().get();
+  handler_->HandleMessage(ParseJsonFromString(message_text));
 }
 }  // namespace stonks::restsdk

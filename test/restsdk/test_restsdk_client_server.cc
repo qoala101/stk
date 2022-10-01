@@ -20,6 +20,7 @@
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 #include "cpp_polymorphic_value.h"
+#include "di_factory.h"
 #include "gtest/gtest_pred_impl.h"
 #include "network_auto_parsable.h"
 #include "network_auto_parsable_request.h"
@@ -138,17 +139,16 @@ class EntityServer {
   auto GetSizeEndpointHandler() -> int { return entity_.GetSize(); }
 
   Entity entity_{};
-  stonks::cpp::NnSp<stonks::network::IRestRequestReceiver> request_receiver_;
+  stonks::cpp::NnUp<stonks::network::IRestRequestReceiver> request_receiver_;
 };
 
 class EntityClient : public EntityInterface {
  public:
   explicit EntityClient(stonks::network::Uri base_uri)
-      : client_{
-            test::restsdk::Injector()
-                .create<
-                    stonks::cpp::NnUp<stonks::network::IRestRequestSender>>(),
-            std::move(base_uri)} {}
+      : client_{test::restsdk::Injector()
+                    .create<stonks::cpp::NnSp<stonks::di::IFactory<
+                        stonks::network::IRestRequestSender>>>(),
+                std::move(base_uri)} {}
 
   void PushSymbol(stonks::SymbolName symbol) override {
     client_.Call(EntityServer::PushSymbolEndpointDesc())
@@ -190,7 +190,8 @@ TEST(ClientServerDeathTest, WrongClientTypes) {
   auto entity_server = EntityServer{kBaseUri};
   auto rest_client = stonks::network::RestClient{
       test::restsdk::Injector()
-          .create<stonks::cpp::NnUp<stonks::network::IRestRequestSender>>(),
+          .create<stonks::cpp::NnSp<
+              stonks::di::IFactory<stonks::network::IRestRequestSender>>>(),
       kBaseUri};
 
   EXPECT_DEATH(rest_client.Call(EntityServer::PushSymbolEndpointDesc())
@@ -247,24 +248,24 @@ TEST(ClientServer, WrongClientTypesReceived) {
 
   auto handlers =
       std::map<stonks::network::Endpoint,
-               stonks::cpp::NnSp<stonks::network::IRestRequestHandler>>{};
+               stonks::cpp::NnUp<stonks::network::IRestRequestHandler>>{};
 
   handlers.emplace(EntityServer::PushSymbolEndpointDesc().endpoint,
-                   stonks::cpp::MakeNnSp<FunctionHandler>(
+                   stonks::cpp::MakeNnUp<FunctionHandler>(
                        [](const stonks::network::RestRequest& /*unused*/) {
                          return stonks::network::RestResponse{
                              .status = stonks::network::Status::kOk,
                              .result = stonks::network::ConvertToJson(0)};
                        }));
   handlers.emplace(EntityServer::GetSymbolEndpointDesc().endpoint,
-                   stonks::cpp::MakeNnSp<FunctionHandler>(
+                   stonks::cpp::MakeNnUp<FunctionHandler>(
                        [](const stonks::network::RestRequest& /*unused*/) {
                          return stonks::network::RestResponse{
                              .status = stonks::network::Status::kOk};
                        }));
   handlers.emplace(
       EntityServer::PushSymbolEndpointDesc().endpoint,
-      stonks::cpp::MakeNnSp<FunctionHandler>(
+      stonks::cpp::MakeNnUp<FunctionHandler>(
           [](const stonks::network::RestRequest& /*unused*/) {
             return stonks::network::RestResponse{
                 .status = stonks::network::Status::kOk,
@@ -277,7 +278,7 @@ TEST(ClientServer, WrongClientTypesReceived) {
             .create<stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
     entity_server->Receive(
         kBaseUri,
-        stonks::cpp::MakeNnSp<stonks::network::EndpointRequestDispatcher>(
+        stonks::cpp::MakeNnUp<stonks::network::EndpointRequestDispatcher>(
             std::move(handlers)));
     return entity_server;
   }();
@@ -397,7 +398,7 @@ TEST(ClientServer, ClientReceivedWrongTypeException) {
     auto handler =
         test::restsdk::Injector()
             .create<stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
-    handler->Receive(kBaseUri, stonks::cpp::MakeNnSp<Handler>());
+    handler->Receive(kBaseUri, stonks::cpp::MakeNnUp<Handler>());
     return handler;
   }();
   const auto entity_client = EntityClient{kBaseUri};

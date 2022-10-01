@@ -54,21 +54,20 @@ auto ConvertToJson(const BinanceWebSocketMessage &value)
 
 class WebSocketHandler : public stonks::network::IWebSocketHandler {
  public:
+  explicit WebSocketHandler(
+      stonks::cpp::Nn<std::vector<MessageVariant> *> messages)
+      : messages_{messages} {}
+
   void HandleMessage(stonks::network::WsMessage message) const override {
     try {
-      messages_.emplace_back(
+      messages_->emplace_back(
           stonks::network::ParseFromJson<MessageVariant>(*message));
     } catch (const std::exception &) {
     }
   }
 
-  [[nodiscard]] auto GetMessages() const
-      -> const std::vector<MessageVariant> & {
-    return messages_;
-  }
-
  private:
-  mutable std::vector<MessageVariant> messages_{};
+  mutable stonks::cpp::Nn<std::vector<MessageVariant> *> messages_;
 };
 
 const auto kEndpoint = stonks::network::WsEndpoint{
@@ -79,7 +78,9 @@ const auto kMessage1 = BinanceWebSocketMessage{.method = "SUBSCRIBE"};
 const auto kMessage2 = BinanceWebSocketMessage{.method = "UNSUBSCRIBE"};
 
 TEST(WebSocket, SendAndReceive) {
-  const auto handler = stonks::cpp::MakeNnSp<WebSocketHandler>();
+  auto received_messages = std::vector<MessageVariant>{};
+  auto handler_up = stonks::cpp::MakeNnUp<WebSocketHandler>(
+      stonks::cpp::AssumeNn(&received_messages));
 
   {
     auto web_socket =
@@ -87,14 +88,12 @@ TEST(WebSocket, SendAndReceive) {
             .create<stonks::cpp::NnUp<stonks::network::IWebSocketClient>>();
 
     web_socket->Connect(kEndpoint);
-    web_socket->SetMessageHandler(handler);
+    web_socket->SetMessageHandler(std::move(handler_up));
 
     web_socket->SendMessage(ConvertToJson(kMessage1));
     web_socket->SendMessage(ConvertToJson(kMessage2));
     absl::SleepFor(absl::Seconds(2));
   }
-
-  const auto &received_messages = handler->GetMessages();
 
   const auto message1_received =
       ranges::find_if(received_messages, [](const auto &message) {

@@ -14,7 +14,7 @@
 namespace stonks::network {
 TypedWebSocketClient::TypedWebSocketClient(
     WsEndpointTypes endpoint_types,
-    cpp::NnSp<IWebSocketClient> web_socket_client)
+    cpp::NnUp<IWebSocketClient> web_socket_client)
     : endpoint_types_{std::move(endpoint_types)},
       web_socket_client_{std::move(web_socket_client)} {}
 
@@ -23,9 +23,9 @@ void TypedWebSocketClient::Connect(WsEndpoint endpoint) {
 }
 
 void TypedWebSocketClient::SetMessageHandler(
-    cpp::NnSp<IWebSocketHandler> handler) {
+    cpp::NnUp<IWebSocketHandler> handler) {
   Expects(!endpoint_types_.received_message.empty());
-  web_socket_client_->SetMessageHandler(cpp::MakeNnSp<TypedWebSocketHandler>(
+  web_socket_client_->SetMessageHandler(cpp::MakeNnUp<TypedWebSocketHandler>(
       std::move(endpoint_types_.received_message), std::move(handler)));
   Ensures(endpoint_types_.received_message.empty());
 }

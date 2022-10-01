@@ -22,7 +22,7 @@ class IWebSocketClient {
   /**
    * @brief Redirects received messages to the handler.
    */
-  virtual void SetMessageHandler(cpp::NnSp<IWebSocketHandler> handler) = 0;
+  virtual void SetMessageHandler(cpp::NnUp<IWebSocketHandler> handler) = 0;
 
   /**
    * @brief Sends the message to the connected socket.

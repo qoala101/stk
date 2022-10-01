@@ -124,7 +124,7 @@ namespace {
 }
 }  // namespace
 
-RestRequestReceiver::RestRequestReceiver(cpp::NnSp<log::ILogger> logger)
+RestRequestReceiver::RestRequestReceiver(cpp::NnUp<log::ILogger> logger)
     : logger_{std::move(logger)} {}
 
 RestRequestReceiver::RestRequestReceiver(RestRequestReceiver &&) noexcept =
@@ -136,7 +136,7 @@ auto RestRequestReceiver::operator=(RestRequestReceiver &&) noexcept
 RestRequestReceiver::~RestRequestReceiver() = default;
 
 void RestRequestReceiver::Receive(
-    network::Uri uri, cpp::NnSp<network::IRestRequestHandler> handler) {
+    network::Uri uri, cpp::NnUp<network::IRestRequestHandler> handler) {
   Expects(handler_ == nullptr);
   Expects(http_listener_ == nullptr);
 

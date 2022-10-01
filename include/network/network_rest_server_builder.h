@@ -18,7 +18,7 @@ namespace stonks::network {
  */
 class RestServerBuilder {
  public:
-  explicit RestServerBuilder(cpp::NnSp<IRestRequestReceiver> request_receiver);
+  explicit RestServerBuilder(cpp::NnUp<IRestRequestReceiver> request_receiver);
 
   /**
    * @brief Sets base URI on which requests are to be handled.
@@ -33,7 +33,7 @@ class RestServerBuilder {
   auto Handling(TypedEndpoint endpoint, T &&handler) -> RestServerBuilder & {
     return Handling(
         std::move(endpoint),
-        cpp::MakeNnSp<AutoParsableRequestHandler>(std::forward<T>(handler)));
+        cpp::MakeNnUp<AutoParsableRequestHandler>(std::forward<T>(handler)));
   }
 
   /**
@@ -42,16 +42,16 @@ class RestServerBuilder {
    * @return Keeps handling REST requests while alive.
    * @remark Other methods should not be called after this.
    */
-  [[nodiscard]] auto Start() -> cpp::NnSp<IRestRequestReceiver>;
+  [[nodiscard]] auto Start() -> cpp::NnUp<IRestRequestReceiver>;
 
  private:
   [[nodiscard]] auto Handling(TypedEndpoint endpoint,
-                              cpp::NnSp<IRestRequestHandler> handler)
+                              cpp::NnUp<IRestRequestHandler> handler)
       -> RestServerBuilder &;
 
-  cpp::Sp<IRestRequestReceiver> request_receiver_;
+  cpp::Up<IRestRequestReceiver> request_receiver_;
   cpp::Opt<Uri> base_uri_{};
-  std::map<Endpoint, cpp::NnSp<IRestRequestHandler>> endpoint_handlers_{};
+  std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
 }  // namespace stonks::network
 

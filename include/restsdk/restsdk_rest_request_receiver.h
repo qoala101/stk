@@ -22,7 +22,7 @@ namespace stonks::restsdk {
  */
 class RestRequestReceiver : public network::IRestRequestReceiver {
  public:
-  explicit RestRequestReceiver(cpp::NnSp<log::ILogger> logger);
+  explicit RestRequestReceiver(cpp::NnUp<log::ILogger> logger);
 
   RestRequestReceiver(const RestRequestReceiver &) = delete;
   RestRequestReceiver(RestRequestReceiver &&) noexcept;
@@ -36,14 +36,14 @@ class RestRequestReceiver : public network::IRestRequestReceiver {
    * @copydoc network::IRestRequestReceiver::Receive
    */
   void Receive(network::Uri uri,
-               cpp::NnSp<network::IRestRequestHandler> handler) override;
+               cpp::NnUp<network::IRestRequestHandler> handler) override;
 
  private:
   void HandleHttpRequest(const web::http::http_request &request) const;
 
-  cpp::Sp<network::IRestRequestHandler> handler_;
+  cpp::Up<network::IRestRequestHandler> handler_;
   cpp::Up<web::http::experimental::listener::http_listener> http_listener_;
-  cpp::NnSp<log::ILogger> logger_;
+  cpp::NnUp<log::ILogger> logger_;
 };
 }  // namespace stonks::restsdk
 

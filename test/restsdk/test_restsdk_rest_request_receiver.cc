@@ -80,7 +80,7 @@ TEST(RestRequestReceiver, SendRequest) {
         test::restsdk::Injector()
             .create<stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
     receiver->Receive({"http://0.0.0.0:6506"},
-                      stonks::cpp::MakeNnSp<Handler>());
+                      stonks::cpp::MakeNnUp<Handler>());
     return receiver;
   }();
 

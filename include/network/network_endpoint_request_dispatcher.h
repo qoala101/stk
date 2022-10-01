@@ -20,7 +20,7 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
    * the remaining part of the requested URI.
    */
   explicit EndpointRequestDispatcher(
-      std::map<Endpoint, cpp::NnSp<IRestRequestHandler>> endpoint_handlers);
+      std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers);
 
   /**
    * @brief Forwards the request to the appropriate handler.
@@ -29,7 +29,7 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
       -> RestResponse override;
 
  private:
-  std::map<Endpoint, cpp::NnSp<IRestRequestHandler>> endpoint_handlers_{};
+  std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
 }  // namespace stonks::network
 

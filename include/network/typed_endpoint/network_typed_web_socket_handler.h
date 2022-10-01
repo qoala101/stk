@@ -16,7 +16,7 @@ class TypedWebSocketHandler : public IWebSocketHandler {
    * @param message_type Expected message type. Others will be invalidated.
    */
   TypedWebSocketHandler(ParseTypeCheck received_message_type,
-                        cpp::NnSp<IWebSocketHandler> handler);
+                        cpp::NnUp<IWebSocketHandler> handler);
 
   /**
    * @brief Validates request prior forwarding it to the handler.
@@ -25,7 +25,7 @@ class TypedWebSocketHandler : public IWebSocketHandler {
 
  private:
   ParseTypeCheck received_message_type_{};
-  cpp::NnSp<IWebSocketHandler> handler_;
+  cpp::NnUp<IWebSocketHandler> handler_;
 };
 }  // namespace stonks::network
 

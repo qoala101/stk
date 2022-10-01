@@ -13,7 +13,7 @@ namespace stonks::network {
 class ResponseExceptionHandler : public IRestRequestSender {
  public:
   explicit ResponseExceptionHandler(
-      cpp::NnSp<IRestRequestSender> request_sender);
+      cpp::NnUp<IRestRequestSender> request_sender);
 
   /**
    * @brief Checks whether response is an exception, parses, and throws it.
@@ -22,7 +22,7 @@ class ResponseExceptionHandler : public IRestRequestSender {
       -> RestResponse override;
 
  private:
-  cpp::NnSp<IRestRequestSender> request_sender_;
+  cpp::NnUp<IRestRequestSender> request_sender_;
 };
 }  // namespace stonks::network
 

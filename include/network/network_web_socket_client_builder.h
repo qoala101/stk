@@ -19,7 +19,7 @@ namespace stonks::network {
 class WebSocketClientBuilder {
  public:
   explicit WebSocketClientBuilder(
-      cpp::NnSp<IWebSocketClient> web_socket_client);
+      cpp::NnUp<IWebSocketClient> web_socket_client);
 
   /**
    * @brief Sets web socket URI and expected types.
@@ -47,7 +47,7 @@ class WebSocketClientBuilder {
   [[nodiscard]] auto Handling(cpp::NnUp<IWebSocketHandler> handler)
       -> WebSocketClientBuilder &;
 
-  cpp::Sp<IWebSocketClient> web_socket_client_{};
+  cpp::Up<IWebSocketClient> web_socket_client_{};
   cpp::Opt<TypedWsEndpoint> endpoint_{};
   cpp::Up<IWebSocketHandler> handler_{};
 };

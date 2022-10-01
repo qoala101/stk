@@ -9,6 +9,7 @@
 
 namespace web::websockets::client {
 class websocket_callback_client;
+class websocket_incoming_message;
 }  // namespace web::websockets::client
 
 namespace stonks::restsdk {
@@ -17,7 +18,7 @@ namespace stonks::restsdk {
  */
 class WebSocketClient : public network::IWebSocketClient {
  public:
-  explicit WebSocketClient(cpp::NnSp<log::ILogger> logger);
+  explicit WebSocketClient(cpp::NnUp<log::ILogger> logger);
 
   WebSocketClient(const WebSocketClient &) = delete;
   WebSocketClient(WebSocketClient &&) noexcept;
@@ -36,7 +37,7 @@ class WebSocketClient : public network::IWebSocketClient {
    * @copydoc network::IWebSocketClient::SetMessagesHandler
    */
   void SetMessageHandler(
-      cpp::NnSp<network::IWebSocketHandler> handler) override;
+      cpp::NnUp<network::IWebSocketHandler> handler) override;
 
   /**
    * @copydoc network::IWebSocketClient::SendMessage
@@ -44,9 +45,13 @@ class WebSocketClient : public network::IWebSocketClient {
   void SendMessage(network::WsMessage message) const override;
 
  private:
+  void HandleWsMessage(
+      const web::websockets::client::websocket_incoming_message &message);
+
   cpp::NnUp<web::websockets::client::websocket_callback_client>
       web_socket_client_;
-  cpp::NnSp<log::ILogger> logger_;
+  cpp::NnUp<log::ILogger> logger_;
+  cpp::Up<network::IWebSocketHandler> handler_{};
 };
 }  // namespace stonks::restsdk
 
