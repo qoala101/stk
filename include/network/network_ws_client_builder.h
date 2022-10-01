@@ -10,7 +10,7 @@
 #include "network_i_ws_client.h"
 #include "network_i_ws_message_handler.h"
 #include "network_typed_ws_endpoint.h"
-#include "network_ws_sender.h"
+#include "network_ws_connection.h"
 
 namespace stonks::network {
 /**
@@ -40,7 +40,7 @@ class WsClientBuilder {
    * @return Keeps web socket connection while alive.
    * @remark Other methods should not be called after this.
    */
-  [[nodiscard]] auto Connect() -> WsSender;
+  [[nodiscard]] auto Connect() -> WsConnection;
 
  private:
   [[nodiscard]] auto Handling(cpp::NnUp<IWsMessageHandler> handler)

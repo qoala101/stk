@@ -24,7 +24,7 @@ add_library(libnetwork
   network_rest_server_builder.cc
   network_types.cc
   network_ws_client_builder.cc
-  network_ws_sender.cc
+  network_ws_connection.cc
 )
 
 set_target_properties(libnetwork PROPERTIES

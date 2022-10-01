@@ -13,9 +13,10 @@ namespace stonks::network {
 class WsClientBuilder;
 
 /**
- * @brief Web socket message sender.
+ * @brief Web socket facade which allows sending of objects
+ * and keeps connection alive.
  */
-class WsSender {
+class WsConnection {
  public:
   /**
    * @brief Sends the object to the previously connected web socket.
@@ -26,9 +27,9 @@ class WsSender {
   }
 
  private:
-  friend class cpp::ExposePrivateConstructorsTo<WsClientBuilder, WsSender>;
+  friend class cpp::ExposePrivateConstructorsTo<WsClientBuilder, WsConnection>;
 
-  explicit WsSender(cpp::NnUp<IWsClient> ws_client);
+  explicit WsConnection(cpp::NnUp<IWsClient> ws_client);
 
   void Send(WsMessage message) const;
 

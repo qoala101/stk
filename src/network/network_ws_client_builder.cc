@@ -7,7 +7,7 @@
 #include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
 #include "network_typed_ws_client.h"
-#include "network_ws_sender.h"
+#include "network_ws_connection.h"
 #include "not_null.hpp"
 
 namespace stonks::network {
@@ -23,7 +23,7 @@ auto WsClientBuilder::On(TypedWsEndpoint endpoint) -> WsClientBuilder& {
   return *this;
 }
 
-auto WsClientBuilder::Connect() -> WsSender {
+auto WsClientBuilder::Connect() -> WsConnection {
   Expects(ws_client_ != nullptr);
   Expects(endpoint_.has_value());
 
@@ -45,7 +45,7 @@ auto WsClientBuilder::Connect() -> WsSender {
   Ensures(!endpoint_.has_value());
   Ensures(handler_ == nullptr);
 
-  return cpp::CallExposedPrivateConstructorOf<WsSender, WsClientBuilder>{}(
+  return cpp::CallExposedPrivateConstructorOf<WsConnection, WsClientBuilder>{}(
       std::move(typed_client));
 }
 

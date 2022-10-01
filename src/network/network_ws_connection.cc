@@ -1,12 +1,12 @@
-#include "network_ws_sender.h"
+#include "network_ws_connection.h"
 
 #include <memory>
 
 namespace stonks::network {
-WsSender::WsSender(cpp::NnUp<IWsClient> ws_client)
+WsConnection::WsConnection(cpp::NnUp<IWsClient> ws_client)
     : ws_client_{std::move(ws_client)} {}
 
-void WsSender::Send(WsMessage message) const {
+void WsConnection::Send(WsMessage message) const {
   ws_client_->SendMessage(std::move(message));
 }
 }  // namespace stonks::network
