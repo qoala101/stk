@@ -15,7 +15,7 @@ class ApiHandleImpl;
  */
 class ApiHandle {
  public:
-  explicit ApiHandle(cpp::NnSp<log::ILogger> logger);
+  explicit ApiHandle(cpp::NnUp<log::ILogger> logger);
 
  private:
   cpp::NnSp<detail::ApiHandleImpl> impl_;
