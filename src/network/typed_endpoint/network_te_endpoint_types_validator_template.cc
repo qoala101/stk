@@ -3,6 +3,7 @@
 #include <polymorphic_value.h>
 
 #include <function2/function2.hpp>
+#include <gsl/assert>
 #include <map>
 #include <string>
 #include <type_traits>

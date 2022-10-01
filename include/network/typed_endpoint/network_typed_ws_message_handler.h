@@ -4,7 +4,7 @@
 #include "cpp_not_null.h"
 #include "network_i_ws_message_handler.h"
 #include "network_typed_endpoint.h"
-#include "network_types.h"
+#include "network_ws_types.h"
 
 namespace stonks::network {
 /**

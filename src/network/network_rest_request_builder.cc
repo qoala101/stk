@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <utility>
 
+#include "cpp_typed_struct.h"
 #include "network_types.h"
 
 namespace stonks::network {

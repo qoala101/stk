@@ -3,11 +3,11 @@
 #include <bits/exception.h>
 
 #include <function2/function2.hpp>
+#include <gsl/assert>
 #include <memory>
 #include <utility>
 
 #include "network_typed_endpoint.h"
-#include "network_types.h"
 
 namespace stonks::network {
 TypedWsMessageHandler::TypedWsMessageHandler(

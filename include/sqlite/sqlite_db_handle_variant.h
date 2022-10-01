@@ -1,6 +1,8 @@
 #ifndef STONKS_SQLITE_SQLITE_DB_HANDLE_VARIANT_H_
 #define STONKS_SQLITE_SQLITE_DB_HANDLE_VARIANT_H_
 
+#include <variant>
+
 #include "cpp_copy_const.h"
 #include "cpp_variant_struct.h"
 #include "sqlite_db_file_handle.h"

@@ -4,7 +4,6 @@
 #include <variant>
 #include <vector>
 
-#include "cpp_concepts.h"
 #include "cpp_copy_const.h"
 #include "cpp_variant_struct.h"
 #include "sqldb_types.h"

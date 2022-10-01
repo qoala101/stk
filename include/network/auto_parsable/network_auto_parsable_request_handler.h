@@ -3,6 +3,7 @@
 
 #include <utility>
 
+#include "cpp_typed_struct.h"
 #include "network_aprh_concepts.h"  // IWYU pragma: keep
 #include "network_aprh_handler_variant.h"
 #include "network_auto_parsable_request.h"

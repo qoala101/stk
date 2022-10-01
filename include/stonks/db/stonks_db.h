@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "cpp_not_null.h"
+#include "di_factory.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"
 #include "stonks_db_cache.h"

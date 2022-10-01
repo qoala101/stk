@@ -2,12 +2,11 @@
 
 #include <gsl/assert>
 #include <memory>
-#include <string>
 #include <utility>
 #include <vector>
 
 #include "cpp_not_null.h"
-#include "sqldb_i_query_builder.h"
+#include "cpp_typed_struct.h"
 #include "sqldb_qbf_delete_query_builder.h"
 #include "sqldb_qbf_insert_query_builder.h"
 #include "sqldb_qbf_select_query_builder.h"

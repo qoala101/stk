@@ -1,7 +1,11 @@
 #ifndef STONKS_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_NETWORK_APRH_WS_HANDLER_VARIANT_H_
 #define STONKS_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_NETWORK_APRH_WS_HANDLER_VARIANT_H_
 
+#include <function2/function2.hpp>
+
+#include "cpp_variant_struct.h"
 #include "network_aprh_handler_variant.h"
+#include "network_auto_parsable.h"
 #include "network_ws_types.h"
 
 namespace stonks::network::aprh {

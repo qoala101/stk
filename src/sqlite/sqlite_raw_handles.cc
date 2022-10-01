@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "cpp_not_null.h"
+#include "not_null.hpp"
 #include "sqlite_db_facade.h"
 #include "sqlite_prepared_statement_facade.h"
 

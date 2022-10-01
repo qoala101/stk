@@ -1,6 +1,8 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_TABLE_VARIANT_H_
 #define STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_TABLE_VARIANT_H_
 
+#include <variant>
+
 #include "cpp_copy_const.h"
 #include "cpp_variant_struct.h"
 #include "sqldb_types.h"

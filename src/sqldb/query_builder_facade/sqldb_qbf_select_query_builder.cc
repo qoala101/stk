@@ -8,6 +8,7 @@
 #include <utility>
 #include <variant>
 
+#include "cpp_typed_struct.h"
 #include "sqldb_qbf_common.h"
 #include "sqldb_types.h"
 

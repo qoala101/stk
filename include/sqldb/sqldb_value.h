@@ -1,13 +1,14 @@
 #ifndef STONKS_SQLDB_SQLDB_VALUE_H_
 #define STONKS_SQLDB_SQLDB_VALUE_H_
 
-#include <concepts>
 #include <cstdint>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <variant>
 
 #include "cpp_copy_const.h"
+#include "cpp_typed_struct.h"
 #include "cpp_variant_struct.h"
 #include "sqldb_enums.h"
 

@@ -2,10 +2,7 @@
 
 #include <gsl/assert>
 #include <utility>
-
-#include "network_auto_parsable_request.h"
-#include "network_enums.h"
-#include "network_types.h"
+#include <variant>
 
 namespace stonks::network::aprh {
 void WsHandlerVariant::operator()(WsMessage message) {

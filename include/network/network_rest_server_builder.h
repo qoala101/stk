@@ -6,6 +6,7 @@
 
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
+#include "cpp_smart_pointers.h"
 #include "network_auto_parsable_request_handler.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"

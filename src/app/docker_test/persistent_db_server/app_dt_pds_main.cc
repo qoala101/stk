@@ -1,9 +1,7 @@
 #include <fmt/core.h>
 
-#include <boost/di.hpp>
 #include <memory>
 
-#include "app_dt_pds_app_server.h"
 #include "app_log_spdlog_injector.h"
 #include "app_network_restsdk_injector.h"
 #include "app_sqldb_sqlite_injector.h"
@@ -26,6 +24,7 @@ auto main(int argc, const char* const* argv) -> int {
         stonks::di::BindTypeToValue<stonks::sqlite::FilePath>(
             stonks::sqlite::FilePath{"persistent_db_server.db"}));
 
-    return injector.create<stonks::app::dt::pds::AppServer>();
+    // return injector.create<stonks::app::dt::pds::AppServer>();
+    return 0;
   });
 }

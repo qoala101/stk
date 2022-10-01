@@ -2,6 +2,7 @@
 
 #include <gsl/assert>
 #include <memory>
+#include <type_traits>
 
 #include "cpp_not_null.h"
 #include "network_endpoint_request_dispatcher.h"

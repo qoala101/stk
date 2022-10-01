@@ -26,8 +26,7 @@ class WsSender {
   }
 
  private:
-  friend class cpp::ExposePrivateConstructorsTo<WsClientBuilder,
-                                                WsSender>;
+  friend class cpp::ExposePrivateConstructorsTo<WsClientBuilder, WsSender>;
 
   explicit WsSender(cpp::NnUp<IWsClient> ws_client);
 

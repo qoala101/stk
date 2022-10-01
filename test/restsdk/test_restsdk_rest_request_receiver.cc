@@ -30,14 +30,15 @@ struct SymbolPrice {
   stonks::SymbolName symbol{};
   double price{};
 
-//  private:
-//   [[nodiscard]] friend auto operator==(const SymbolPrice &, const SymbolPrice &)
-//       -> bool = default;
-//   [[nodiscard]] friend auto operator<<(std::ostream &stream,
-//                                        const SymbolPrice &avg_price)
-//       -> std::ostream & {
-//     return stream << avg_price.symbol << " " << avg_price.price;
-//   }
+  //  private:
+  //   [[nodiscard]] friend auto operator==(const SymbolPrice &, const
+  //   SymbolPrice &)
+  //       -> bool = default;
+  //   [[nodiscard]] friend auto operator<<(std::ostream &stream,
+  //                                        const SymbolPrice &avg_price)
+  //       -> std::ostream & {
+  //     return stream << avg_price.symbol << " " << avg_price.price;
+  //   }
 };
 }  // namespace
 

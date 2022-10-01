@@ -1,7 +1,6 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_CLIENT_H_
 #define STONKS_NETWORK_NETWORK_REST_CLIENT_H_
 
-#include "cpp_not_null.h"
 #include "di_factory.h"
 #include "network_i_rest_request_sender.h"
 #include "network_rest_client_request_builder.h"

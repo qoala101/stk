@@ -2,6 +2,7 @@
 #define STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_LIMIT_VARIANT_H_
 
 #include <string>
+#include <variant>
 
 #include "cpp_variant_struct.h"
 

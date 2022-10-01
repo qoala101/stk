@@ -12,9 +12,8 @@
 #include "not_null.hpp"
 
 namespace stonks::network {
-TypedWsClient::TypedWsClient(
-    WsEndpointTypes endpoint_types,
-    cpp::NnUp<IWsClient> ws_client)
+TypedWsClient::TypedWsClient(WsEndpointTypes endpoint_types,
+                             cpp::NnUp<IWsClient> ws_client)
     : endpoint_types_{std::move(endpoint_types)},
       ws_client_{std::move(ws_client)} {}
 
@@ -22,8 +21,7 @@ void TypedWsClient::Connect(WsEndpoint endpoint) {
   ws_client_->Connect(std::move(endpoint));
 }
 
-void TypedWsClient::SetMessageHandler(
-    cpp::NnUp<IWsMessageHandler> handler) {
+void TypedWsClient::SetMessageHandler(cpp::NnUp<IWsMessageHandler> handler) {
   Expects(!endpoint_types_.received_message.empty());
   ws_client_->SetMessageHandler(cpp::MakeNnUp<TypedWsMessageHandler>(
       std::move(endpoint_types_.received_message), std::move(handler)));

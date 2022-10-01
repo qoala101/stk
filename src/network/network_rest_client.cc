@@ -5,6 +5,7 @@
 
 #include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
+#include "cpp_typed_struct.h"
 #include "di_factory.h"
 #include "network_i_rest_request_sender.h"
 #include "network_response_exception_handler.h"

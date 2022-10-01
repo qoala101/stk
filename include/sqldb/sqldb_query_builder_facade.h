@@ -1,7 +1,6 @@
 #ifndef STONKS_SQLDB_SQLDB_QUERY_BUILDER_FACADE_H_
 #define STONKS_SQLDB_SQLDB_QUERY_BUILDER_FACADE_H_
 
-#include "cpp_not_null.h"
 #include "di_factory.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_qbf_delete_query_builder.h"

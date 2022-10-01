@@ -18,8 +18,7 @@ namespace stonks::network {
  */
 class WsClientBuilder {
  public:
-  explicit WsClientBuilder(
-      cpp::NnUp<IWsClient> ws_client);
+  explicit WsClientBuilder(cpp::NnUp<IWsClient> ws_client);
 
   /**
    * @brief Sets web socket URI and expected types.

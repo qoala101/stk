@@ -11,7 +11,7 @@
 
 namespace stonks::app::dt::stec {
 AppServer::AppServer(App app,
-                     cpp::NnSp<network::IRestRequestReceiver> request_receiver,
+                     cpp::NnUp<network::IRestRequestReceiver> request_receiver,
                      network::Uri base_uri)
     : request_receiver_{
           network::RestServerBuilder{std::move(request_receiver)}

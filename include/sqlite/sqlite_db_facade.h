@@ -2,6 +2,7 @@
 #define STONKS_SQLITE_SQLITE_DB_FACADE_H_
 
 #include "cpp_not_null.h"
+#include "di_factory.h"
 #include "log_i_logger.h"
 #include "sqldb_types.h"
 #include "sqlite_db_handles_factory.h"

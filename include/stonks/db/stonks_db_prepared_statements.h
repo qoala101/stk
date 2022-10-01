@@ -3,9 +3,7 @@
 
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
-#include "di_factory.h"
 #include "sqldb_i_db.h"
-#include "sqldb_i_query_builder.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_query_builder_facade.h"

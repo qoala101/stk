@@ -2,10 +2,11 @@
 #define STONKS_RESTSDK_RESTSDK_WS_CLIENT_H_
 
 #include "cpp_not_null.h"
+#include "cpp_smart_pointers.h"
 #include "log_i_logger.h"
 #include "network_i_ws_client.h"
 #include "network_i_ws_message_handler.h"
-#include "network_types.h"
+#include "network_ws_types.h"
 
 namespace web::websockets::client {
 class websocket_callback_client;

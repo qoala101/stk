@@ -2,8 +2,6 @@
 
 #include <memory>
 
-#include "network_types.h"
-
 namespace stonks::network {
 WsSender::WsSender(cpp::NnUp<IWsClient> ws_client)
     : ws_client_{std::move(ws_client)} {}

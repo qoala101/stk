@@ -5,7 +5,7 @@
 #include "network_i_ws_client.h"
 #include "network_i_ws_message_handler.h"
 #include "network_typed_ws_endpoint.h"
-#include "network_types.h"
+#include "network_ws_types.h"
 
 namespace stonks::network {
 /**
@@ -13,8 +13,7 @@ namespace stonks::network {
  */
 class TypedWsClient : public IWsClient {
  public:
-  TypedWsClient(WsEndpointTypes endpoint_types,
-                cpp::NnUp<IWsClient> ws_client);
+  TypedWsClient(WsEndpointTypes endpoint_types, cpp::NnUp<IWsClient> ws_client);
 
   /**
    * @copydoc IWsClient::Connect

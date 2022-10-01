@@ -3,7 +3,7 @@
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_copy_const.h"
-#include "cpp_not_null.h"
+#include "di_factory.h"
 #include "log_i_logger.h"
 #include "sqlite_raw_handles.h"
 #include "sqlite_types.h"

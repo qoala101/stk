@@ -2,7 +2,6 @@
 
 #include <bits/exception.h>
 
-#include <gsl/assert>
 #include <memory>
 #include <utility>
 

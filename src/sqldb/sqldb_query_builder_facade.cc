@@ -3,7 +3,6 @@
 #include <utility>
 
 #include "cpp_expose_private_constructors.h"
-#include "cpp_not_null.h"
 #include "sqldb_i_query_builder.h"
 
 namespace stonks::sqldb {

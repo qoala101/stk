@@ -6,20 +6,17 @@
 
 #include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
-#include "network_typed_endpoint.h"
 #include "network_typed_ws_client.h"
 #include "network_ws_sender.h"
 #include "not_null.hpp"
 
 namespace stonks::network {
-WsClientBuilder::WsClientBuilder(
-    cpp::NnUp<IWsClient> ws_client)
+WsClientBuilder::WsClientBuilder(cpp::NnUp<IWsClient> ws_client)
     : ws_client_{std::move(ws_client).as_nullable()} {
   Ensures(ws_client_ != nullptr);
 }
 
-auto WsClientBuilder::On(TypedWsEndpoint endpoint)
-    -> WsClientBuilder& {
+auto WsClientBuilder::On(TypedWsEndpoint endpoint) -> WsClientBuilder& {
   Expects(!endpoint_.has_value());
   endpoint_ = std::move(endpoint);
   Ensures(endpoint_.has_value());
@@ -30,9 +27,9 @@ auto WsClientBuilder::Connect() -> WsSender {
   Expects(ws_client_ != nullptr);
   Expects(endpoint_.has_value());
 
-  auto typed_client = cpp::MakeNnUp<TypedWsClient>(
-      std::move(endpoint_->expected_types),
-      cpp::AssumeNn(std::move(ws_client_)));
+  auto typed_client =
+      cpp::MakeNnUp<TypedWsClient>(std::move(endpoint_->expected_types),
+                                   cpp::AssumeNn(std::move(ws_client_)));
 
   if (handler_ != nullptr) {
     typed_client->SetMessageHandler(cpp::AssumeNn(std::move(handler_)));
@@ -48,8 +45,7 @@ auto WsClientBuilder::Connect() -> WsSender {
   Ensures(!endpoint_.has_value());
   Ensures(handler_ == nullptr);
 
-  return cpp::CallExposedPrivateConstructorOf<WsSender,
-                                              WsClientBuilder>{}(
+  return cpp::CallExposedPrivateConstructorOf<WsSender, WsClientBuilder>{}(
       std::move(typed_client));
 }
 

@@ -20,9 +20,8 @@ namespace test::restsdk {
       stonks::di::BindInterfaceToImplementation<
           stonks::network::IRestRequestReceiver,
           stonks::restsdk::RestRequestReceiver>(),
-      stonks::di::BindInterfaceToImplementation<
-          stonks::network::IWsClient,
-          stonks::restsdk::WsClient>(),
+      stonks::di::BindInterfaceToImplementation<stonks::network::IWsClient,
+                                                stonks::restsdk::WsClient>(),
       stonks::di::BindInterfaceToImplementation<stonks::log::ILogger,
                                                 stonks::spdlog::Logger>());
   return injector;
