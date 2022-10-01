@@ -59,6 +59,7 @@ void EndpointTypesValidatorTemplate::ValidateRequestParamTypes(
     }
 
     try {
+      Expects(!param_type->second.empty());
       param_type->second(*value);
     } catch (const std::exception &e) {
       HandleWrongRequestParamType(key, value, e);
@@ -75,6 +76,7 @@ void EndpointTypesValidatorTemplate::ValidateRequestBodyType(
     }
 
     try {
+      Expects(!endpoint_types_.body->empty());
       (*endpoint_types_.body)(**body);
     } catch (const std::exception &e) {
       HandleWrongRequestBodyType(*body, e);
@@ -97,6 +99,7 @@ void EndpointTypesValidatorTemplate::ValidateResponse(
     }
 
     try {
+      Expects(!endpoint_types_.result->empty());
       (*endpoint_types_.result)(**response.result);
     } catch (const std::exception &e) {
       HandleWrongResponseBodyType(*response.result, e);

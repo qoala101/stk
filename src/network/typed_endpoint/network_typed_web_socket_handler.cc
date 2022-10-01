@@ -11,8 +11,11 @@
 
 namespace stonks::network {
 TypedWebSocketHandler::TypedWebSocketHandler(
-    ParseTypeCheck message_type, cpp::NnSp<IWebSocketHandler> handler)
-    : received_message_type_{std::move(message_type)},
+    ParseTypeCheck received_message_type, cpp::NnSp<IWebSocketHandler> handler)
+    : received_message_type_{[&received_message_type]() {
+        Expects(!received_message_type.empty());
+        return std::move(received_message_type);
+      }()},
       handler_{std::move(handler)} {}
 
 void TypedWebSocketHandler::HandleMessage(WsMessage message) const {
