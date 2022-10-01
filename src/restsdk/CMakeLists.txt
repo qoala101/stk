@@ -9,7 +9,7 @@ add_library(librestsdk
   restsdk_parse_json_fom_string.cc
   restsdk_rest_request_receiver.cc
   restsdk_rest_request_sender.cc
-  restsdk_web_socket_client.cc
+  restsdk_ws_client.cc
 )
 
 set_target_properties(librestsdk PROPERTIES

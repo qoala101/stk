@@ -5,10 +5,10 @@
 #include "di_make_injector.h"
 #include "log_i_logger.h"
 #include "network_i_rest_request_sender.h"
-#include "network_i_web_socket_client.h"
+#include "network_i_ws_client.h"
 #include "restsdk_rest_request_receiver.h"
 #include "restsdk_rest_request_sender.h"
-#include "restsdk_web_socket_client.h"
+#include "restsdk_ws_client.h"
 #include "spdlog_logger.h"
 
 namespace test::restsdk {
@@ -21,8 +21,8 @@ namespace test::restsdk {
           stonks::network::IRestRequestReceiver,
           stonks::restsdk::RestRequestReceiver>(),
       stonks::di::BindInterfaceToImplementation<
-          stonks::network::IWebSocketClient,
-          stonks::restsdk::WebSocketClient>(),
+          stonks::network::IWsClient,
+          stonks::restsdk::WsClient>(),
       stonks::di::BindInterfaceToImplementation<stonks::log::ILogger,
                                                 stonks::spdlog::Logger>());
   return injector;

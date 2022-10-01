@@ -41,8 +41,8 @@ class RestRequestReceiver : public network::IRestRequestReceiver {
  private:
   void HandleHttpRequest(const web::http::http_request &request) const;
 
-  cpp::Up<network::IRestRequestHandler> handler_;
-  cpp::Up<web::http::experimental::listener::http_listener> http_listener_;
+  cpp::Up<network::IRestRequestHandler> handler_{};
+  cpp::Up<web::http::experimental::listener::http_listener> http_listener_{};
   cpp::NnUp<log::ILogger> logger_;
 };
 }  // namespace stonks::restsdk

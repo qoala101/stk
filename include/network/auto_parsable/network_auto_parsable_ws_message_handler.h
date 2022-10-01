@@ -1,11 +1,11 @@
-#ifndef STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_WEB_SOCKET_HANDLER_H_
-#define STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_WEB_SOCKET_HANDLER_H_
+#ifndef STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_WS_MESSAGE_HANDLER_H_
+#define STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_WS_MESSAGE_HANDLER_H_
 
 #include <utility>
 
-#include "network_aprh_handler_variant.h"
+#include "network_aprh_ws_handler_variant.h"
 #include "network_auto_parsable.h"
-#include "network_i_web_socket_handler.h"
+#include "network_i_ws_message_handler.h"
 #include "network_types.h"
 
 namespace stonks::network {
@@ -13,17 +13,17 @@ namespace stonks::network {
  * @brief Convenient request handler constructible from any callable which may
  * take auto-parsable request and return any convertible value.
  */
-class AutoParsableWebSocketHandler : public IWebSocketHandler {
+class AutoParsableWsMessageHandler : public IWsMessageHandler {
  public:
   template <cpp::VoidInvocable T>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
-  explicit AutoParsableWebSocketHandler(T &&handler)
+  explicit AutoParsableWsMessageHandler(T &&handler)
       : handler_{aprh::WsHandlerVariant::ValueType{
             std::in_place_type_t<aprh::Handler>{}, std::forward<T>(handler)}} {}
 
   template <cpp::VoidInvocableTakes<AutoParsable> T>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
-  explicit AutoParsableWebSocketHandler(T &&handler)
+  explicit AutoParsableWsMessageHandler(T &&handler)
       : handler_{aprh::WsHandlerVariant::ValueType{
             std::in_place_type_t<aprh::HandlerWithWsMessage>{},
             std::forward<T>(handler)}} {}
@@ -38,4 +38,4 @@ class AutoParsableWebSocketHandler : public IWebSocketHandler {
 };
 }  // namespace stonks::network
 
-#endif  // STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_WEB_SOCKET_HANDLER_H_
+#endif  // STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_WS_MESSAGE_HANDLER_H_

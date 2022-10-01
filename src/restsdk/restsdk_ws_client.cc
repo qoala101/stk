@@ -1,4 +1,4 @@
-#include "restsdk_web_socket_client.h"
+#include "restsdk_ws_client.h"
 
 #include <cpprest/json.h>
 #include <cpprest/ws_client.h>
@@ -18,47 +18,46 @@
 #include "restsdk_parse_json_fom_string.h"
 
 namespace stonks::restsdk {
-WebSocketClient::WebSocketClient(cpp::NnUp<log::ILogger> logger)
-    : web_socket_client_{cpp::MakeNnUp<
+WsClient::WsClient(cpp::NnUp<log::ILogger> logger)
+    : native_ws_client_{cpp::MakeNnUp<
           web::websockets::client::websocket_callback_client>()},
       logger_{std::move(logger)} {}
 
-WebSocketClient::WebSocketClient(WebSocketClient &&) noexcept = default;
+WsClient::WsClient(WsClient &&) noexcept = default;
 
-auto WebSocketClient::operator=(WebSocketClient &&) noexcept
-    -> WebSocketClient & = default;
+auto WsClient::operator=(WsClient &&) noexcept -> WsClient & = default;
 
-WebSocketClient::~WebSocketClient() = default;
+WsClient::~WsClient() = default;
 
-void WebSocketClient::Connect(network::WsEndpoint endpoint) {
+void WsClient::Connect(network::WsEndpoint endpoint) {
   logger_->LogImportantEvent(
       fmt::format("Connecting to web socket: {}...", endpoint.value.value));
 
-  web_socket_client_->connect(endpoint.value.value).wait();
+  native_ws_client_->connect(endpoint.value.value).wait();
 
   logger_->LogImportantEvent(
       fmt::format("Connected to web socket: {}", endpoint.value.value));
 }
 
-void WebSocketClient::SetMessageHandler(
-    cpp::NnUp<network::IWebSocketHandler> handler) {
+void WsClient::SetMessageHandler(
+    cpp::NnUp<network::IWsMessageHandler> handler) {
   handler_ = std::move(handler).as_nullable();
 
-  web_socket_client_->set_message_handler(
-      std::bind_front(&WebSocketClient::HandleWsMessage, this));
+  native_ws_client_->set_message_handler(
+      std::bind_front(&WsClient::HandleWsMessage, this));
 
   Ensures(handler_ != nullptr);
 }
 
-void WebSocketClient::SendMessage(network::WsMessage message) const {
-  auto web_socket_message =
+void WsClient::SendMessage(network::WsMessage message) const {
+  auto native_ws_message =
       web::websockets::client::websocket_outgoing_message{};
-  web_socket_message.set_utf8_message(message->GetNativeHandle()->serialize());
+  native_ws_message.set_utf8_message(message->GetNativeHandle()->serialize());
 
-  web_socket_client_->send(std::move(web_socket_message)).wait();
+  native_ws_client_->send(std::move(native_ws_message)).wait();
 }
 
-void WebSocketClient::HandleWsMessage(
+void WsClient::HandleWsMessage(
     const web::websockets::client::websocket_incoming_message &message) {
   Expects(handler_ != nullptr);
 

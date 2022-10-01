@@ -12,15 +12,15 @@
 #include "cpp_polymorphic_value.h"
 #include "log_i_logger.h"
 #include "network_i_json.h"
-#include "network_i_web_socket_client.h"
-#include "network_i_web_socket_handler.h"
+#include "network_i_ws_client.h"
+#include "network_i_ws_message_handler.h"
 #include "network_json_basic_conversions.h"
 #include "network_json_common_conversions.h"
 #include "network_json_conversions_facades.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
-#include "network_web_socket_client_builder.h"
-#include "restsdk_web_socket_client.h"
+#include "network_ws_client_builder.h"
+#include "restsdk_ws_client.h"
 #include "test_restsdk_injector.h"
 
 namespace {
@@ -52,7 +52,7 @@ auto ConvertToJson(const BinanceWebSocketMessage &value)
                                         value.params, "id", value.id);
 }
 
-class WebSocketHandler : public stonks::network::IWebSocketHandler {
+class WebSocketHandler : public stonks::network::IWsMessageHandler {
  public:
   explicit WebSocketHandler(
       stonks::cpp::Nn<std::vector<MessageVariant> *> messages)
@@ -85,7 +85,7 @@ TEST(WebSocket, SendAndReceive) {
   {
     auto web_socket =
         test::restsdk::Injector()
-            .create<stonks::cpp::NnUp<stonks::network::IWebSocketClient>>();
+            .create<stonks::cpp::NnUp<stonks::network::IWsClient>>();
 
     web_socket->Connect(kEndpoint);
     web_socket->SetMessageHandler(std::move(handler_up));
@@ -122,7 +122,7 @@ TEST(WebSocket, Facade) {
   auto received_messages = std::vector<BinanceWebSocketMessage>{};
 
   const auto client = test::restsdk::Injector()
-                          .create<stonks::network::WebSocketClientBuilder>()
+                          .create<stonks::network::WsClientBuilder>()
                           .Handling([&received_messages](
                                         stonks::network::AutoParsable message) {
                             received_messages.emplace_back(message);

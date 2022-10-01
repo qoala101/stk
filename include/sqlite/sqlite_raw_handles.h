@@ -43,7 +43,7 @@ class SqliteStatementFinalizer {
   void operator()(sqlite3_stmt *sqlite_statement) noexcept;
 
  private:
-  cpp::Up<log::ILogger> logger_;
+  cpp::Up<log::ILogger> logger_{};
 };
 }  // namespace detail
 

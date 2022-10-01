@@ -46,19 +46,19 @@ class PreparedStatements {
   cpp::NnSp<sqldb::IDb> db_;
   sqldb::QueryBuilderFacade query_builder_facade_;
 
-  mutable cpp::Up<sqldb::ISelectStatement> select_assets_;
-  mutable cpp::Up<sqldb::ISelectStatement> select_assets_with_ids_;
-  mutable cpp::Up<sqldb::IUpdateStatement> delete_asset_;
-  mutable cpp::Up<sqldb::IUpdateStatement> insert_asset_;
-  mutable cpp::Up<sqldb::ISelectStatement> select_symbols_;
-  mutable cpp::Up<sqldb::ISelectStatement> select_symbols_with_ids_;
-  mutable cpp::Up<sqldb::ISelectStatement> select_symbols_info_;
-  mutable cpp::Up<sqldb::IUpdateStatement> insert_symbol_info_;
-  mutable cpp::Up<sqldb::IUpdateStatement> update_symbol_info_;
-  mutable cpp::Up<sqldb::IUpdateStatement> delete_symbol_info_;
-  mutable cpp::Up<sqldb::ISelectStatement> select_price_ticks_;
-  mutable cpp::Up<sqldb::ISelectStatement> select_symbol_price_ticks_;
-  mutable cpp::Up<sqldb::IUpdateStatement> insert_price_tick_;
+  mutable cpp::Up<sqldb::ISelectStatement> select_assets_{};
+  mutable cpp::Up<sqldb::ISelectStatement> select_assets_with_ids_{};
+  mutable cpp::Up<sqldb::IUpdateStatement> delete_asset_{};
+  mutable cpp::Up<sqldb::IUpdateStatement> insert_asset_{};
+  mutable cpp::Up<sqldb::ISelectStatement> select_symbols_{};
+  mutable cpp::Up<sqldb::ISelectStatement> select_symbols_with_ids_{};
+  mutable cpp::Up<sqldb::ISelectStatement> select_symbols_info_{};
+  mutable cpp::Up<sqldb::IUpdateStatement> insert_symbol_info_{};
+  mutable cpp::Up<sqldb::IUpdateStatement> update_symbol_info_{};
+  mutable cpp::Up<sqldb::IUpdateStatement> delete_symbol_info_{};
+  mutable cpp::Up<sqldb::ISelectStatement> select_price_ticks_{};
+  mutable cpp::Up<sqldb::ISelectStatement> select_symbol_price_ticks_{};
+  mutable cpp::Up<sqldb::IUpdateStatement> insert_price_tick_{};
 };
 }  // namespace stonks::db
 

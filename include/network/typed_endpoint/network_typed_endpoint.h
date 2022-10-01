@@ -36,29 +36,12 @@ struct EndpointTypes {
 };
 
 /**
- * @brief Expected web socket message types.
- */
-struct WsEndpointTypes {
-  ParseTypeCheck received_message{};
-  ParseTypeCheck sent_message{};
-};
-
-/**
  * @brief Endpoint which request and response to be validated
  * to have expected types prior to processing.
  */
 struct TypedEndpoint {
   Endpoint endpoint{};
   EndpointTypes expected_types{};
-};
-
-/**
- * @brief Web socket endpoint which received and sent messages to be validated
- * to have expected types prior to processing.
- */
-struct TypedWsEndpoint {
-  WsEndpoint endpoint{};
-  WsEndpointTypes expected_types{};
 };
 }  // namespace stonks::network
 

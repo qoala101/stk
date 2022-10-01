@@ -1,4 +1,4 @@
-#include "network_typed_web_socket_handler.h"
+#include "network_typed_ws_message_handler.h"
 
 #include <bits/exception.h>
 
@@ -10,15 +10,15 @@
 #include "network_types.h"
 
 namespace stonks::network {
-TypedWebSocketHandler::TypedWebSocketHandler(
-    ParseTypeCheck received_message_type, cpp::NnUp<IWebSocketHandler> handler)
+TypedWsMessageHandler::TypedWsMessageHandler(
+    ParseTypeCheck received_message_type, cpp::NnUp<IWsMessageHandler> handler)
     : received_message_type_{[&received_message_type]() {
         Expects(!received_message_type.empty());
         return std::move(received_message_type);
       }()},
       handler_{std::move(handler)} {}
 
-void TypedWebSocketHandler::HandleMessage(WsMessage message) const {
+void TypedWsMessageHandler::HandleMessage(WsMessage message) const {
   try {
     received_message_type_(*message);
   } catch (const std::exception &) {

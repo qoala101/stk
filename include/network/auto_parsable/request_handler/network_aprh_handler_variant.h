@@ -15,7 +15,6 @@ using HandlerWithRequest = fu2::unique_function<void(AutoParsableRestRequest)>;
 using HandlerWithResponse = fu2::unique_function<Result::value_type()>;
 using HandlerWithRequestAndResponse =
     fu2::unique_function<Result::value_type(AutoParsableRestRequest)>;
-using HandlerWithWsMessage = fu2::unique_function<void(AutoParsable)>;
 
 /**
  * @brief Variant of auto-parsable request handler.
@@ -28,17 +27,6 @@ struct HandlerVariant
    * @brief Calls operator of the current handler variant.
    */
   [[nodiscard]] auto operator()(RestRequest request) -> RestResponse;
-};
-
-/**
- * @brief Variant of auto-parsable web socket message handler.
- */
-struct WsHandlerVariant
-    : public cpp::VariantStruct<Handler, HandlerWithWsMessage> {
-  /**
-   * @brief Calls operator of the current handler variant.
-   */
-  void operator()(WsMessage message);
 };
 }  // namespace stonks::network::aprh
 

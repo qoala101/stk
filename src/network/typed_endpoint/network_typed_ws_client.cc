@@ -1,4 +1,4 @@
-#include "network_typed_web_socket_client.h"
+#include "network_typed_ws_client.h"
 
 #include <bits/exception.h>
 
@@ -8,29 +8,29 @@
 #include <utility>
 
 #include "network_typed_endpoint.h"
-#include "network_typed_web_socket_handler.h"
+#include "network_typed_ws_message_handler.h"
 #include "not_null.hpp"
 
 namespace stonks::network {
-TypedWebSocketClient::TypedWebSocketClient(
+TypedWsClient::TypedWsClient(
     WsEndpointTypes endpoint_types,
-    cpp::NnUp<IWebSocketClient> web_socket_client)
+    cpp::NnUp<IWsClient> ws_client)
     : endpoint_types_{std::move(endpoint_types)},
-      web_socket_client_{std::move(web_socket_client)} {}
+      ws_client_{std::move(ws_client)} {}
 
-void TypedWebSocketClient::Connect(WsEndpoint endpoint) {
-  web_socket_client_->Connect(std::move(endpoint));
+void TypedWsClient::Connect(WsEndpoint endpoint) {
+  ws_client_->Connect(std::move(endpoint));
 }
 
-void TypedWebSocketClient::SetMessageHandler(
-    cpp::NnUp<IWebSocketHandler> handler) {
+void TypedWsClient::SetMessageHandler(
+    cpp::NnUp<IWsMessageHandler> handler) {
   Expects(!endpoint_types_.received_message.empty());
-  web_socket_client_->SetMessageHandler(cpp::MakeNnUp<TypedWebSocketHandler>(
+  ws_client_->SetMessageHandler(cpp::MakeNnUp<TypedWsMessageHandler>(
       std::move(endpoint_types_.received_message), std::move(handler)));
   Ensures(endpoint_types_.received_message.empty());
 }
 
-void TypedWebSocketClient::SendMessage(WsMessage message) const {
+void TypedWsClient::SendMessage(WsMessage message) const {
   Expects(!endpoint_types_.sent_message.empty());
 
   try {
@@ -39,6 +39,6 @@ void TypedWebSocketClient::SendMessage(WsMessage message) const {
     Expects(false);
   }
 
-  web_socket_client_->SendMessage(std::move(message));
+  ws_client_->SendMessage(std::move(message));
 }
 }  // namespace stonks::network

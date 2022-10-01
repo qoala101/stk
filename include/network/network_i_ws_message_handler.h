@@ -1,16 +1,16 @@
-#ifndef STONKS_NETWORK_NETWORK_I_WEB_SOCKET_HANDLER_H_
-#define STONKS_NETWORK_NETWORK_I_WEB_SOCKET_HANDLER_H_
+#ifndef STONKS_NETWORK_NETWORK_I_WS_MESSAGE_HANDLER_H_
+#define STONKS_NETWORK_NETWORK_I_WS_MESSAGE_HANDLER_H_
 
-#include "network_types.h"
+#include "network_ws_types.h"
 
 namespace stonks::network {
 /**
  * @brief Handles web socket messages.
  */
 // NOLINTNEXTLINE(*-special-member-functions)
-class IWebSocketHandler {
+class IWsMessageHandler {
  public:
-  virtual ~IWebSocketHandler() = default;
+  virtual ~IWsMessageHandler() = default;
 
   /**
    * @param message Message received from the web socket.
@@ -19,4 +19,4 @@ class IWebSocketHandler {
 };
 }  // namespace stonks::network
 
-#endif  // STONKS_NETWORK_NETWORK_I_WEB_SOCKET_HANDLER_H_
+#endif  // STONKS_NETWORK_NETWORK_I_WS_MESSAGE_HANDLER_H_

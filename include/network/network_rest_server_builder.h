@@ -49,7 +49,7 @@ class RestServerBuilder {
                               cpp::NnUp<IRestRequestHandler> handler)
       -> RestServerBuilder &;
 
-  cpp::Up<IRestRequestReceiver> request_receiver_;
+  cpp::Up<IRestRequestReceiver> request_receiver_{};
   cpp::Opt<Uri> base_uri_{};
   std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
