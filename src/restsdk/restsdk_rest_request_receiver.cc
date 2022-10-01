@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <gsl/assert>
+#include <magic_enum.hpp>
 #include <map>
 #include <memory>
 #include <optional>
@@ -133,7 +134,18 @@ RestRequestReceiver::RestRequestReceiver(RestRequestReceiver &&) noexcept =
 auto RestRequestReceiver::operator=(RestRequestReceiver &&) noexcept
     -> RestRequestReceiver & = default;
 
-RestRequestReceiver::~RestRequestReceiver() = default;
+RestRequestReceiver::~RestRequestReceiver() {
+  if (const auto object_was_moved = http_listener_ == nullptr) {
+    return;
+  }
+
+  const auto uri = http_listener_->uri().to_string();
+  logger_->LogImportantEvent(fmt::format("Stopping REST receiver: {}...", uri));
+
+  http_listener_->close().wait();
+
+  logger_->LogImportantEvent(fmt::format("Stopped REST receiver: {}", uri));
+}
 
 void RestRequestReceiver::Receive(
     network::Uri uri, cpp::NnUp<network::IRestRequestHandler> handler) {
@@ -147,7 +159,14 @@ void RestRequestReceiver::Receive(
           std::move(uri.value));
   http_listener_->support(
       std::bind_front(&RestRequestReceiver::HandleHttpRequest, this));
+
+  logger_->LogImportantEvent(
+      fmt::format("Starting REST receiver: {}...", uri.value));
+
   http_listener_->open().wait();
+
+  logger_->LogImportantEvent(
+      fmt::format("Started REST receiver: {}", uri.value));
 
   Ensures(handler_ != nullptr);
   Ensures(http_listener_ != nullptr);
@@ -157,14 +176,18 @@ void RestRequestReceiver::HandleHttpRequest(
     const web::http::http_request &request) const {
   Expects(handler_ != nullptr);
 
-  logger_->LogImportantEvent(fmt::format("Received {} request on {}",
-                                         request.method(),
-                                         request.absolute_uri().path()));
+  const auto request_uri = request.absolute_uri().path();
+  logger_->LogEvent(
+      fmt::format("Received {} request on {}", request.method(), request_uri));
 
   auto rest_request = RestRequestFromHttpRequest(request);
   const auto rest_response =
       handler_->HandleRequestAndGiveResponse(std::move(rest_request));
   const auto http_response = HttpResponseFromRestResponse(rest_response);
   request.reply(http_response).wait();
+
+  logger_->LogEvent(fmt::format("Replied {} on {}",
+                                magic_enum::enum_name(rest_response.status),
+                                request_uri));
 }
 }  // namespace stonks::restsdk

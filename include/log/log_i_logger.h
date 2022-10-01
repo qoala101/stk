@@ -10,19 +10,24 @@ class ILogger {
   virtual ~ILogger() = default;
 
   /**
+   * @brief Log not important event.
+   */
+  virtual void LogEvent(std::string message) = 0;
+
+  /**
    * @brief Log important event.
    */
-  virtual void LogImportantEvent(std::string message) = 0;
+  virtual void LogImportantEvent(std::string message);
 
   /**
    * @brief Log unexpected event.
    */
-  virtual void LogStrangeEvent(std::string message) = 0;
+  virtual void LogStrangeEvent(std::string message);
 
   /**
    * @brief Log error condition.
    */
-  virtual void LogErrorCondition(std::string message) = 0;
+  virtual void LogErrorCondition(std::string message);
 };
 }  // namespace stonks::log
 

@@ -3,7 +3,7 @@
 #include <spdlog/spdlog.h>
 
 namespace stonks::spdlog {
-void Logger::LogImportantEvent(std::string message) { ::spdlog::info(message); }
+void Logger::LogEvent(std::string message) { ::spdlog::info(message); }
 
 void Logger::LogStrangeEvent(std::string message) { ::spdlog::warn(message); }
 

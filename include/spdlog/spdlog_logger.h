@@ -9,17 +9,17 @@ namespace stonks::spdlog {
 class Logger : public log::ILogger {
  public:
   /**
-   * @brief Log important event.
+   * @copydoc log::ILogger::LogEvent
    */
-  void LogImportantEvent(std::string message) override;
+  void LogEvent(std::string message) override;
 
   /**
-   * @brief Log unexpected event.
+   * @copydoc log::ILogger::LogStrangeEvent
    */
   void LogStrangeEvent(std::string message) override;
 
   /**
-   * @brief Log error condition.
+   * @copydoc log::ILogger::LogErrorCondition
    */
   void LogErrorCondition(std::string message) override;
 };

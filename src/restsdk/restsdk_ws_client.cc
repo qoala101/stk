@@ -30,7 +30,20 @@ WsClient::WsClient(WsClient &&) noexcept = default;
 
 auto WsClient::operator=(WsClient &&) noexcept -> WsClient & = default;
 
-WsClient::~WsClient() = default;
+WsClient::~WsClient() {
+  if (const auto object_was_moved = native_ws_client_ == nullptr) {
+    return;
+  }
+
+  const auto uri = native_ws_client_->uri().to_string();
+  logger_->LogImportantEvent(
+      fmt::format("Disconnecting from web socket: {}...", uri));
+
+  native_ws_client_->close().wait();
+
+  logger_->LogImportantEvent(
+      fmt::format("Disconnected from web socket: {}", uri));
+}
 
 void WsClient::Connect(network::WsEndpoint endpoint) {
   logger_->LogImportantEvent(
