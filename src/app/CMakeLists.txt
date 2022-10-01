@@ -10,3 +10,4 @@ target_link_libraries(libapp
 
 add_subdirectory(docker_test)
 add_subdirectory(public_nosql_db)
+add_subdirectory(symbol_prices_stream)
