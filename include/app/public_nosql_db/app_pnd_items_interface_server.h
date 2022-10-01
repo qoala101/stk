@@ -10,7 +10,7 @@
 namespace stonks::app::pnd {
 class ItemsInterfaceServer {
  public:
-  explicit ItemsInterfaceServer(
+  ItemsInterfaceServer(
       const cpp::NnSp<nosqldb::IItemsInterface> &items_interface,
       cpp::NnSp<network::IRestRequestReceiver> request_receiver,
       network::Uri base_uri);

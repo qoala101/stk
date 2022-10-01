@@ -23,8 +23,8 @@ class Db : public IDb {
    * @param db SQL DB implementation.
    * @param query_builder_factory Creates query builders for the DB.
    */
-  explicit Db(cpp::NnUp<sqldb::IDb> db,
-              di::Factory<sqldb::IQueryBuilder> query_builder_factory);
+  Db(cpp::NnUp<sqldb::IDb> db,
+     di::Factory<sqldb::IQueryBuilder> query_builder_factory);
 
   /**
    * @copydoc IDb::SelectAssets

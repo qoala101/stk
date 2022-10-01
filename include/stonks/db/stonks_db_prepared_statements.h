@@ -17,8 +17,8 @@ namespace stonks::db {
  */
 class PreparedStatements {
  public:
-  explicit PreparedStatements(cpp::NnSp<sqldb::IDb> db,
-                              sqldb::QueryBuilderFacade query_builder_facade);
+  PreparedStatements(cpp::NnSp<sqldb::IDb> db,
+                     sqldb::QueryBuilderFacade query_builder_facade);
 
   [[nodiscard]] auto SelectAssets() const -> const sqldb::ISelectStatement &;
   [[nodiscard]] auto SelectAssetsWithIds() const

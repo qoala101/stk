@@ -10,8 +10,7 @@
 namespace stonks::app::dt::pds {
 class Db {
  public:
-  explicit Db(sqldb::IDb &db,
-              const cpp::NnSp<sqldb::IQueryBuilder> &query_builder);
+  Db(sqldb::IDb &db, const cpp::NnSp<sqldb::IQueryBuilder> &query_builder);
 
   void InsertSymbolPriceRecord(const SymbolPriceRecord &record);
 

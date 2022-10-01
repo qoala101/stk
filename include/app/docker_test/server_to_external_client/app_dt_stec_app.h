@@ -8,7 +8,7 @@
 namespace stonks::app::dt::stec {
 class App {
  public:
-  explicit App(binance::Client binance_client, PdsAppClient pds_app_client);
+  App(binance::Client binance_client, PdsAppClient pds_app_client);
 
   [[nodiscard]] auto GetAveragePrice(Symbol symbol) const -> Price;
 

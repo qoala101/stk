@@ -14,8 +14,8 @@ namespace stonks::sqlite {
  */
 class DbFacade {
  public:
-  explicit DbFacade(di::Factory<log::ILogger> logger_factory,
-                    cpp::Nn<sqlite3 *> sqlite_db);
+  DbFacade(di::Factory<log::ILogger> logger_factory,
+           cpp::Nn<sqlite3 *> sqlite_db);
 
   /**
    * @brief Writes DB to file.

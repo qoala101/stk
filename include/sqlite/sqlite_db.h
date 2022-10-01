@@ -20,8 +20,8 @@ class Db : public sqldb::IDb {
   /**
    * @brief Creates wrapper for SQLite DB.
    */
-  explicit Db(di::Factory<log::ILogger> logger_factory,
-              SqliteDbHandleVariant sqlite_db_handle);
+  Db(di::Factory<log::ILogger> logger_factory,
+     SqliteDbHandleVariant sqlite_db_handle);
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement

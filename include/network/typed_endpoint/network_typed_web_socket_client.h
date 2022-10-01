@@ -13,8 +13,8 @@ namespace stonks::network {
  */
 class TypedWebSocketClient : public IWebSocketClient {
  public:
-  explicit TypedWebSocketClient(WsEndpointTypes endpoint_types,
-                                cpp::NnUp<IWebSocketClient> web_socket_client);
+  TypedWebSocketClient(WsEndpointTypes endpoint_types,
+                       cpp::NnUp<IWebSocketClient> web_socket_client);
 
   /**
    * @copydoc IWebSocketClient::Connect
