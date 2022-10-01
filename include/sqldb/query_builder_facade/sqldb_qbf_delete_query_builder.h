@@ -30,9 +30,9 @@ class DeleteQueryBuilder {
   friend class cpp::ExposePrivateConstructorsTo<QueryBuilderFacade,
                                                 DeleteQueryBuilder>;
 
-  explicit DeleteQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder);
+  explicit DeleteQueryBuilder(cpp::NnUp<IQueryBuilder> query_builder);
 
-  cpp::NnSp<IQueryBuilder> query_builder_;
+  cpp::NnUp<IQueryBuilder> query_builder_;
 
   cpp::Opt<Table> table_{};
   cpp::Opt<std::string> where_clause_{};

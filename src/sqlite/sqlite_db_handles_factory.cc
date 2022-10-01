@@ -22,8 +22,10 @@ using NullableSqliteDbHandle =
     std::decay_t<decltype(std::declval<SqliteDbHandle>().as_nullable())>;
 }  // namespace
 
-DbHandlesFactory::DbHandlesFactory(cpp::NnSp<log::ILogger> logger)
-    : logger_{std::move(logger)} {}
+DbHandlesFactory::DbHandlesFactory(
+    cpp::NnSp<di::IFactory<log::ILogger>> logger_factory)
+    : logger_factory_{std::move(logger_factory)},
+      logger_{cpp::AssumeNn(logger_factory_->create())} {}
 
 auto DbHandlesFactory::CreateInMemoryDb() const -> SqliteDbHandle {
   auto *in_memory_db = static_cast<sqlite3 *>(nullptr);
@@ -34,10 +36,10 @@ auto DbHandlesFactory::CreateInMemoryDb() const -> SqliteDbHandle {
         fmt::format("Couldn't create in memory DB: {}", result_code)};
   }
 
-  DbFacade{logger_, cpp::AssumeNn(in_memory_db)}.EnableForeignKeys();
+  DbFacade{logger_factory_, cpp::AssumeNn(in_memory_db)}.EnableForeignKeys();
 
-  return {cpp::AssumeNn(
-      NullableSqliteDbHandle{in_memory_db, detail::SqliteDbCloser{logger_}})};
+  return {cpp::AssumeNn(NullableSqliteDbHandle{
+      in_memory_db, detail::SqliteDbCloser{logger_factory_}})};
 }
 
 auto DbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
@@ -52,8 +54,8 @@ auto DbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
                                             file_path.value, result_code)};
   }
 
-  return {cpp::AssumeNn(
-      NullableSqliteDbHandle{file_db, detail::SqliteDbCloser{logger_}})};
+  return {cpp::AssumeNn(NullableSqliteDbHandle{
+      file_db, detail::SqliteDbCloser{logger_factory_}})};
 }
 
 auto DbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
@@ -69,8 +71,8 @@ auto DbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
   }
 
   auto file_db_handle = CreateHandleToFileDb(file_path);
-  DbFacade{logger_, cpp::AssumeNn(in_memory_db_handle.get())}.CopyDataFrom(
-      *file_db_handle);
+  DbFacade{logger_factory_, cpp::AssumeNn(in_memory_db_handle.get())}
+      .CopyDataFrom(*file_db_handle);
 
   logger_->LogImportantEvent(fmt::format("Loaded DB from {}", file_path.value));
   return in_memory_db_handle;

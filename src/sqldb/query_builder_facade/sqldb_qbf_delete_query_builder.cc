@@ -8,7 +8,7 @@
 #include <utility>
 
 namespace stonks::sqldb::qbf {
-DeleteQueryBuilder::DeleteQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
+DeleteQueryBuilder::DeleteQueryBuilder(cpp::NnUp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto DeleteQueryBuilder::FromTable(Table table) -> DeleteQueryBuilder& {

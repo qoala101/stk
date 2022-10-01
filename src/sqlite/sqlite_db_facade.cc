@@ -42,10 +42,12 @@ using NullableSqliteStatementHandle =
 }
 }  // namespace
 
-DbFacade::DbFacade(cpp::NnSp<log::ILogger> logger, cpp::Nn<sqlite3 *> sqlite_db)
-    : logger_{std::move(logger)},
+DbFacade::DbFacade(cpp::NnSp<di::IFactory<log::ILogger>> logger_factory,
+                   cpp::Nn<sqlite3 *> sqlite_db)
+    : logger_factory_{std::move(logger_factory)},
+      logger_{cpp::AssumeNn(logger_factory_->create())},
       sqlite_db_{sqlite_db.as_nullable()},
-      handles_factory_{logger_} {
+      handles_factory_{logger_factory_} {
   Ensures(sqlite_db_ != nullptr);
 }
 
@@ -53,7 +55,7 @@ void DbFacade::WriteToFile(const FilePath &file_path) const {
   Expects(sqlite_db_ != nullptr);
 
   auto file_db_handle = handles_factory_.CreateHandleToFileDb(file_path);
-  DbFacade{logger_, cpp::AssumeNn(file_db_handle.get())}.CopyDataFrom(
+  DbFacade{logger_factory_, cpp::AssumeNn(file_db_handle.get())}.CopyDataFrom(
       *sqlite_db_);
 
   logger_->LogImportantEvent(fmt::format("Stored DB to {}", file_path.value));
@@ -92,7 +94,8 @@ auto DbFacade::CreatePreparedStatement(const sqldb::Query &query) const
       fmt::format("Prepared statement for query: {}", query.value));
 
   return SqliteStatementHandle{cpp::AssumeNn(NullableSqliteStatementHandle{
-      sqlite_statement, detail::SqliteStatementFinalizer{logger_}})};
+      sqlite_statement, detail::SqliteStatementFinalizer{
+                            cpp::AssumeNn(logger_factory_->create())}})};
 }
 
 void DbFacade::EnableForeignKeys() const {

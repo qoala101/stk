@@ -39,9 +39,9 @@ class UpdateQueryBuilder {
   friend class cpp::ExposePrivateConstructorsTo<QueryBuilderFacade,
                                                 UpdateQueryBuilder>;
 
-  explicit UpdateQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder);
+  explicit UpdateQueryBuilder(cpp::NnUp<IQueryBuilder> query_builder);
 
-  cpp::NnSp<IQueryBuilder> query_builder_;
+  cpp::NnUp<IQueryBuilder> query_builder_;
 
   TableVariant table_{};
   ColumnsVariant columns_{};

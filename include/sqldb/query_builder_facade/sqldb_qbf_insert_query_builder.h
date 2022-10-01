@@ -33,9 +33,9 @@ class InsertQueryBuilder {
   friend class cpp::ExposePrivateConstructorsTo<QueryBuilderFacade,
                                                 InsertQueryBuilder>;
 
-  explicit InsertQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder);
+  explicit InsertQueryBuilder(cpp::NnUp<IQueryBuilder> query_builder);
 
-  cpp::NnSp<IQueryBuilder> query_builder_;
+  cpp::NnUp<IQueryBuilder> query_builder_;
 
   TableVariant table_{};
   ColumnsVariant columns_{};

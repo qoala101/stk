@@ -32,6 +32,7 @@ target_include_directories(libsqldb
 
 target_link_libraries(libsqldb
   PUBLIC libcpp
+  PUBLIC libdi
   PUBLIC magic_enum::magic_enum
 
   PRIVATE fmt::fmt

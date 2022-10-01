@@ -9,7 +9,7 @@
 #include "sqldb_qbf_common.h"
 
 namespace stonks::sqldb::qbf {
-UpdateQueryBuilder::UpdateQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
+UpdateQueryBuilder::UpdateQueryBuilder(cpp::NnUp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto UpdateQueryBuilder::OfTable(Table table) -> UpdateQueryBuilder& {

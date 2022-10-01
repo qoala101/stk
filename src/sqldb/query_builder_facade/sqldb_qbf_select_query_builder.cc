@@ -12,7 +12,7 @@
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qbf {
-SelectQueryBuilder::SelectQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
+SelectQueryBuilder::SelectQueryBuilder(cpp::NnUp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto SelectQueryBuilder::Columns(std::vector<Column> columns)

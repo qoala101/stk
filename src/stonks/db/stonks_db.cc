@@ -26,6 +26,7 @@
 #include "sqldb_as_values.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
+#include "sqldb_query_builder_facade.h"
 #include "sqldb_rows.h"
 #include "sqldb_value.h"
 #include "stonks_db_cache.h"
@@ -61,11 +62,12 @@ namespace {
 }
 }  // namespace
 
-Db::Db(cpp::NnSp<sqldb::IDb> db, cpp::NnSp<sqldb::IQueryBuilder> query_builder)
+Db::Db(cpp::NnUp<sqldb::IDb> db,
+       cpp::NnSp<di::IFactory<sqldb::IQueryBuilder>> query_builder_factory)
     : db_{std::move(db)},
-      query_builder_{std::move(query_builder)},
-      prepared_statements_{
-          cpp::MakeNnSp<db::PreparedStatements>(db_, query_builder_)},
+      query_builder_{cpp::AssumeNn(query_builder_factory->create())},
+      prepared_statements_{cpp::MakeNnSp<db::PreparedStatements>(
+          db_, sqldb::QueryBuilderFacade{std::move(query_builder_factory)})},
       cache_{prepared_statements_} {
   CreateTablesIfNotExist();
   cache_.Update();

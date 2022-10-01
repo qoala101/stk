@@ -23,8 +23,9 @@ class Db : public IDb {
    * @param db SQL DB implementation.
    * @param query_builder Query builder for SQL DB.
    */
-  explicit Db(cpp::NnSp<sqldb::IDb> db,
-              cpp::NnSp<sqldb::IQueryBuilder> query_builder);
+  explicit Db(
+      cpp::NnUp<sqldb::IDb> db,
+      cpp::NnSp<di::IFactory<sqldb::IQueryBuilder>> query_builder_factory);
 
   /**
    * @copydoc IDb::SelectAssets
@@ -72,7 +73,7 @@ class Db : public IDb {
 
   // TODO(vh): remove I fields, they are needed only in constructor
   cpp::NnSp<sqldb::IDb> db_;
-  cpp::NnSp<sqldb::IQueryBuilder> query_builder_;
+  cpp::NnUp<sqldb::IQueryBuilder> query_builder_;
   cpp::NnSp<db::PreparedStatements> prepared_statements_;
   db::Cache cache_;
 };

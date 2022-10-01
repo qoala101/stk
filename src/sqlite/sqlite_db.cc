@@ -14,10 +14,11 @@
 #include "sqlite_update_statement.h"
 
 namespace stonks::sqlite {
-Db::Db(cpp::NnSp<log::ILogger> logger, SqliteDbHandleVariant sqlite_db_handle)
+Db::Db(cpp::NnSp<di::IFactory<log::ILogger>> logger_factory,
+       SqliteDbHandleVariant sqlite_db_handle)
     : sqlite_db_handle_{cpp::MakeNnSp<SqliteDbHandleVariant>(
           std::move(sqlite_db_handle))},
-      sqlite_db_facade_{std::move(logger),
+      sqlite_db_facade_{std::move(logger_factory),
                         cpp::AssumeNn(&sqlite_db_handle_->GetSqliteDb())} {}
 
 auto Db::PrepareStatement(sqldb::Query query,

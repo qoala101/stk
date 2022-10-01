@@ -8,7 +8,7 @@
 #include "sqldb_qbf_common.h"
 
 namespace stonks::sqldb::qbf {
-InsertQueryBuilder::InsertQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder)
+InsertQueryBuilder::InsertQueryBuilder(cpp::NnUp<IQueryBuilder> query_builder)
     : query_builder_{std::move(query_builder)} {}
 
 auto InsertQueryBuilder::WholeRow() -> InsertQueryBuilder& {

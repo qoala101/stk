@@ -45,9 +45,9 @@ class SelectQueryBuilder {
   friend class cpp::ExposePrivateConstructorsTo<QueryBuilderFacade,
                                                 SelectQueryBuilder>;
 
-  explicit SelectQueryBuilder(cpp::NnSp<IQueryBuilder> query_builder);
+  explicit SelectQueryBuilder(cpp::NnUp<IQueryBuilder> query_builder);
 
-  cpp::NnSp<IQueryBuilder> query_builder_;
+  cpp::NnUp<IQueryBuilder> query_builder_;
 
   cpp::Opt<Table> table_{};
   ColumnsVariant columns_{};

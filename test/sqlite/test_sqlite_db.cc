@@ -18,15 +18,18 @@ namespace {
 const auto kTestDbFileName = "sqlite_db_test.db";
 
 auto db = stonks::cpp::Up<stonks::sqldb::IDb>{};
-auto query_builder = stonks::cpp::Sp<stonks::sqldb::IQueryBuilder>{};
+auto query_builder = stonks::cpp::Up<stonks::sqldb::IQueryBuilder>{};
 auto query_builder_facade = std::optional<stonks::sqldb::QueryBuilderFacade>{};
 
 TEST(SqliteDb, CreateAndDropTable) {
   std::ignore = std::filesystem::remove(kTestDbFileName);
   db = test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
-  query_builder = test::sqlite::Injector()
-                      .create<stonks::cpp::Sp<stonks::sqldb::IQueryBuilder>>();
-  query_builder_facade.emplace(stonks::cpp::AssumeNn(query_builder));
+  auto query_builder_factory =
+      test::sqlite::Injector()
+          .create<stonks::cpp::NnSp<
+              stonks::di::IFactory<stonks::sqldb::IQueryBuilder>>>();
+  query_builder = query_builder_factory->create();
+  query_builder_facade.emplace(std::move(query_builder_factory));
 
   const auto table = stonks::sqldb::Table{"TestTable"};
   const auto table_definition = stonks::sqldb::TableDefinition{

@@ -1,8 +1,9 @@
-#ifndef STONKS_STONKS_DB_STONKS_PREPARED_STATEMENTS_H_
-#define STONKS_STONKS_DB_STONKS_PREPARED_STATEMENTS_H_
+#ifndef STONKS_STONKS_DB_STONKS_DB_PREPARED_STATEMENTS_H_
+#define STONKS_STONKS_DB_STONKS_DB_PREPARED_STATEMENTS_H_
 
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
+#include "di_factory.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"
 #include "sqldb_i_select_statement.h"
@@ -17,7 +18,7 @@ namespace stonks::db {
 class PreparedStatements {
  public:
   explicit PreparedStatements(cpp::NnSp<sqldb::IDb> db,
-                              cpp::NnSp<sqldb::IQueryBuilder> query_builder);
+                              sqldb::QueryBuilderFacade query_builder_facade);
 
   [[nodiscard]] auto SelectAssets() const -> const sqldb::ISelectStatement &;
   [[nodiscard]] auto SelectAssetsWithIds() const
@@ -43,8 +44,7 @@ class PreparedStatements {
 
  private:
   cpp::NnSp<sqldb::IDb> db_;
-  cpp::NnSp<sqldb::IQueryBuilder> query_builder_;
-  cpp::NnUp<sqldb::QueryBuilderFacade> query_builder_facade_;
+  sqldb::QueryBuilderFacade query_builder_facade_;
 
   mutable cpp::Up<sqldb::ISelectStatement> select_assets_;
   mutable cpp::Up<sqldb::ISelectStatement> select_assets_with_ids_;
@@ -62,4 +62,4 @@ class PreparedStatements {
 };
 }  // namespace stonks::db
 
-#endif  // STONKS_STONKS_DB_STONKS_PREPARED_STATEMENTS_H_
+#endif  // STONKS_STONKS_DB_STONKS_DB_PREPARED_STATEMENTS_H_

@@ -3,6 +3,7 @@
 
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
+#include "di_factory.h"
 #include "log_i_logger.h"
 
 class sqlite3;
@@ -21,12 +22,12 @@ class SqliteDbCloser {
    */
   SqliteDbCloser() = default;
 
-  explicit SqliteDbCloser(cpp::NnSp<log::ILogger> logger);
+  explicit SqliteDbCloser(cpp::NnSp<di::IFactory<log::ILogger>> logger_factory);
 
   void operator()(sqlite3 *sqlite_db) noexcept;
 
  private:
-  cpp::Sp<log::ILogger> logger_;
+  cpp::Sp<di::IFactory<log::ILogger>> logger_factory_;
 };
 
 class SqliteStatementFinalizer {
@@ -36,12 +37,12 @@ class SqliteStatementFinalizer {
    */
   SqliteStatementFinalizer() = default;
 
-  explicit SqliteStatementFinalizer(cpp::NnSp<log::ILogger> logger);
+  explicit SqliteStatementFinalizer(cpp::NnUp<log::ILogger> logger);
 
   void operator()(sqlite3_stmt *sqlite_statement) noexcept;
 
  private:
-  cpp::Sp<log::ILogger> logger_;
+  cpp::Up<log::ILogger> logger_;
 };
 }  // namespace detail
 

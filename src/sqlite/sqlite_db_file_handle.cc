@@ -2,18 +2,20 @@
 
 #include <bits/exception.h>
 
+#include <gsl/assert>
 #include <memory>
 #include <utility>
 
 #include "cpp_not_null.h"
+#include "di_factory.h"
 #include "not_null.hpp"
 #include "sqlite_db_facade.h"
 
 namespace stonks::sqlite {
-SqliteDbFileHandle::SqliteDbFileHandle(cpp::NnSp<log::ILogger> logger,
-                                       SqliteDbHandle sqlite_db_handle,
-                                       FilePath file_path)
-    : logger_{std::move(logger)},
+SqliteDbFileHandle::SqliteDbFileHandle(
+    cpp::NnSp<di::IFactory<log::ILogger>> logger_factory,
+    SqliteDbHandle sqlite_db_handle, FilePath file_path)
+    : logger_factory_{std::move(logger_factory)},
       sqlite_db_handle_{std::move(sqlite_db_handle)},
       file_path_{std::move(file_path)} {}
 
@@ -24,11 +26,16 @@ SqliteDbFileHandle::~SqliteDbFileHandle() {
     return;
   }
 
+  auto logger = cpp::AssumeNn(logger_factory_->create());
+
   try {
-    DbFacade{logger_, cpp::AssumeNn(sqlite_db)}.WriteToFile(file_path_);
+    DbFacade{std::move(logger_factory_), cpp::AssumeNn(sqlite_db)}.WriteToFile(
+        file_path_);
   } catch (const std::exception& e) {
-    logger_->LogErrorCondition(e.what());
+    logger->LogErrorCondition(e.what());
   }
+
+  Ensures(logger_factory_.get() == nullptr);
 }
 
 template <cpp::DecaysTo<SqliteDbFileHandle> This>

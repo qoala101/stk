@@ -2,6 +2,7 @@
 #define STONKS_SQLITE_SQLITE_DB_HANDLES_FACTORY_H_
 
 #include "cpp_not_null.h"
+#include "di_factory.h"
 #include "log_i_logger.h"
 #include "sqlite_raw_handles.h"
 #include "sqlite_types.h"
@@ -13,7 +14,8 @@
 namespace stonks::sqlite {
 class DbHandlesFactory {
  public:
-  explicit DbHandlesFactory(cpp::NnSp<log::ILogger> logger);
+  explicit DbHandlesFactory(
+      cpp::NnSp<di::IFactory<log::ILogger>> logger_factory);
 
   /**
    * @brief Creates in-memory SQLite DB.
@@ -35,7 +37,8 @@ class DbHandlesFactory {
       -> SqliteDbHandle;
 
  private:
-  cpp::NnSp<log::ILogger> logger_;
+  cpp::NnSp<di::IFactory<log::ILogger>> logger_factory_;
+  cpp::NnUp<log::ILogger> logger_;
 };
 }  // namespace stonks::sqlite
 

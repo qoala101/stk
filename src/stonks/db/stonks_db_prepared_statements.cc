@@ -21,28 +21,26 @@ namespace {
 [[nodiscard]] auto InitSelectPriceTicksQuery(
     const sqldb::QueryBuilderFacade& query_builder_facade)
     -> sqldb::qbf::SelectQueryBuilder {
-  return query_builder_facade.Select()
-      .AllColumns()
-      .FromTable(tables::SymbolPriceTick())
-      .Where("SymbolPriceTick.time >= ?")
-      .And("SymbolPriceTick.time <= ?")
-      .Limited();
+  return std::move(query_builder_facade.Select()
+                       .AllColumns()
+                       .FromTable(tables::SymbolPriceTick())
+                       .Where("SymbolPriceTick.time >= ?")
+                       .And("SymbolPriceTick.time <= ?")
+                       .Limited());
 }
 }  // namespace
 
 PreparedStatements::PreparedStatements(
-    cpp::NnSp<sqldb::IDb> db, cpp::NnSp<sqldb::IQueryBuilder> query_builder)
+    cpp::NnSp<sqldb::IDb> db, sqldb::QueryBuilderFacade query_builder_facade)
     : db_{std::move(db)},
-      query_builder_{std::move(query_builder)},
-      query_builder_facade_{
-          cpp::MakeNnUp<sqldb::QueryBuilderFacade>(query_builder_)} {}
+      query_builder_facade_{std::move(query_builder_facade)} {}
 
 auto PreparedStatements::SelectAssets() const
     -> const sqldb::ISelectStatement& {
   if (select_assets_ == nullptr) {
     const auto& table = tables::Asset();
     const auto columns = table.GetColumnDefinitions({{"name"}});
-    const auto query = query_builder_facade_->Select()
+    const auto query = query_builder_facade_.Select()
                            .Columns(columns)
                            .FromTable(table)
                            .Build();
@@ -58,7 +56,7 @@ auto PreparedStatements::SelectAssetsWithIds() const
   if (select_assets_with_ids_ == nullptr) {
     const auto& table = tables::Asset();
     const auto query =
-        query_builder_facade_->Select().AllColumns().FromTable(table).Build();
+        query_builder_facade_.Select().AllColumns().FromTable(table).Build();
     select_assets_with_ids_ = db_->PrepareStatement(query, table).as_nullable();
   }
 
@@ -68,7 +66,7 @@ auto PreparedStatements::SelectAssetsWithIds() const
 
 auto PreparedStatements::DeleteAsset() const -> const sqldb::IUpdateStatement& {
   if (delete_asset_ == nullptr) {
-    const auto query = query_builder_facade_->Delete()
+    const auto query = query_builder_facade_.Delete()
                            .FromTable(tables::Asset())
                            .Where("Asset.name = ?")
                            .Build();
@@ -81,7 +79,7 @@ auto PreparedStatements::DeleteAsset() const -> const sqldb::IUpdateStatement& {
 
 auto PreparedStatements::InsertAsset() const -> const sqldb::IUpdateStatement& {
   if (insert_asset_ == nullptr) {
-    const auto query = query_builder_facade_->Insert()
+    const auto query = query_builder_facade_.Insert()
                            .IntoTable(tables::Asset())
                            .IntoColumns({{"name"}})
                            .Build();
@@ -97,7 +95,7 @@ auto PreparedStatements::SelectSymbols() const
   if (select_symbols_ == nullptr) {
     const auto& table = tables::Symbol();
     const auto columns = table.GetColumnDefinitions({{"name"}});
-    const auto query = query_builder_facade_->Select()
+    const auto query = query_builder_facade_.Select()
                            .Columns(columns)
                            .FromTable(table)
                            .Build();
@@ -113,7 +111,7 @@ auto PreparedStatements::SelectSymbolsWithIds() const
   if (select_symbols_with_ids_ == nullptr) {
     const auto& table = tables::Symbol();
     const auto columns = table.GetColumnDefinitions({{"id"}, {"name"}});
-    const auto query = query_builder_facade_->Select()
+    const auto query = query_builder_facade_.Select()
                            .Columns(columns)
                            .FromTable(table)
                            .Build();
@@ -182,7 +180,7 @@ auto PreparedStatements::InsertSymbolInfo() const
                                                      {"min_quote_amount"},
                                                      {"base_step"},
                                                      {"quote_step"}});
-    const auto query = query_builder_facade_->Insert()
+    const auto query = query_builder_facade_.Insert()
                            .IntoTable(table)
                            .IntoColumns(columns)
                            .Build();
@@ -196,7 +194,7 @@ auto PreparedStatements::InsertSymbolInfo() const
 auto PreparedStatements::UpdateSymbolInfo() const
     -> const sqldb::IUpdateStatement& {
   if (update_symbol_info_ == nullptr) {
-    const auto query = query_builder_facade_->Update()
+    const auto query = query_builder_facade_.Update()
                            .Columns({{"base_asset_id"},
                                      {"quote_asset_id"},
                                      {"min_base_amount"},
@@ -216,7 +214,7 @@ auto PreparedStatements::UpdateSymbolInfo() const
 auto PreparedStatements::DeleteSymbolInfo() const
     -> const sqldb::IUpdateStatement& {
   if (delete_symbol_info_ == nullptr) {
-    const auto query = query_builder_facade_->Delete()
+    const auto query = query_builder_facade_.Delete()
                            .FromTable(tables::Symbol())
                            .Where("Symbol.name = ?")
                            .Build();
@@ -230,8 +228,7 @@ auto PreparedStatements::DeleteSymbolInfo() const
 auto PreparedStatements::SelectPriceTicks() const
     -> const sqldb::ISelectStatement& {
   if (select_price_ticks_ == nullptr) {
-    const auto query =
-        InitSelectPriceTicksQuery(*query_builder_facade_).Build();
+    const auto query = InitSelectPriceTicksQuery(query_builder_facade_).Build();
     select_price_ticks_ =
         db_->PrepareStatement(query, tables::SymbolPriceTick()).as_nullable();
   }
@@ -243,7 +240,7 @@ auto PreparedStatements::SelectPriceTicks() const
 auto PreparedStatements::SelectSymbolPriceTicks() const
     -> const sqldb::ISelectStatement& {
   if (select_symbol_price_ticks_ == nullptr) {
-    const auto query = InitSelectPriceTicksQuery(*query_builder_facade_)
+    const auto query = InitSelectPriceTicksQuery(query_builder_facade_)
                            .And("SymbolPriceTick.symbol_id = ?")
                            .Build();
     select_symbol_price_ticks_ =
@@ -257,7 +254,7 @@ auto PreparedStatements::SelectSymbolPriceTicks() const
 auto PreparedStatements::InsertPriceTick() const
     -> const sqldb::IUpdateStatement& {
   if (insert_price_tick_ == nullptr) {
-    const auto query = query_builder_facade_->Insert()
+    const auto query = query_builder_facade_.Insert()
                            .WholeRow()
                            .IntoTable(tables::SymbolPriceTick())
                            .Build();
