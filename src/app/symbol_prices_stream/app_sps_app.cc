@@ -1,7 +1,6 @@
 #include "app_sps_app.h"
 
 #include <absl/time/clock.h>
-#include <fmt/core.h>
 
 #include <utility>
 
@@ -14,21 +13,31 @@
 #include "network_ws_client_builder.h"
 
 namespace stonks::app::sps {
-App::App(cpp::NnUp<network::IWsClient> ws_client, core::Symbol symbol,
-         SdbClient sdb_client)
+namespace {
+[[nodiscard]] auto SymbolPriceRecordFrom(core::Symbol symbol,
+                                         const BinanceSymbolBookTick &book_tick)
+    -> core::SymbolPriceRecord {
+  return {.symbol = std::move(symbol),
+          .price = {(book_tick.best_bid_price + book_tick.best_ask_price) / 2},
+          .time = absl::Now()};
+}
+}  // namespace
+
+App::App(core::Symbol symbol, SdbClient sdb_client,
+         cpp::NnUp<network::IWsClient> ws_client)
     : ws_connection_{network::WsClientBuilder{std::move(ws_client)}
                          .On(endpoints::BinanceSymbolBookTickerStream(symbol))
-                         .Handling([sdb_client = std::move(sdb_client), symbol](
-                                       network::AutoParsable message) mutable {
-                           const auto book_tick =
-                               static_cast<BinanceSymbolBookTick>(message);
-
-                           sdb_client.InsertSymbolPriceRecord(
-                               {.symbol = symbol,
-                                .price = {(book_tick.best_bid_price +
-                                           book_tick.best_ask_price) /
-                                          2},
-                                .time = absl::Now()});
-                         })
+                         .Handling(BinanceSymbolBookTickerStream(
+                             std::move(symbol), std::move(sdb_client)))
                          .Connect()} {}
+
+auto App::BinanceSymbolBookTickerStream(core::Symbol symbol,
+                                        SdbClient sdb_client)
+    -> network::aprh::HandlerWithWsMessage {
+  return [symbol = std::move(symbol), sdb_client = std::move(sdb_client)](
+             network::AutoParsable message) mutable {
+    auto record = SymbolPriceRecordFrom(symbol, message);
+    sdb_client.InsertSymbolPriceRecord(std::move(record));
+  };
+}
 }  // namespace stonks::app::sps

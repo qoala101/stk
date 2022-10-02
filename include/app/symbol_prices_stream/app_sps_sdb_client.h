@@ -5,6 +5,9 @@
 #include "network_rest_client.h"
 
 namespace stonks::app::sps {
+/**
+ * @copydoc sdb::App
+ */
 class SdbClient {
  public:
   explicit SdbClient(network::RestClient rest_client);
@@ -12,7 +15,7 @@ class SdbClient {
   /**
    * @copydoc sdb::App::InsertSymbolPriceRecord
    */
-  void InsertSymbolPriceRecord(const core::SymbolPriceRecord &record);
+  void InsertSymbolPriceRecord(core::SymbolPriceRecord record);
 
  private:
   network::RestClient rest_client_;

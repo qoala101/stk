@@ -3,11 +3,9 @@
 
 #include "app_sps_types.h"
 #include "network_i_json.h"
+#include "network_json_basic_conversions.h"  // IWYU pragma: keep
 
 namespace stonks::network {
-template <typename T>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
-
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json)
     -> app::sps::BinanceSymbolBookTick;

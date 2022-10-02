@@ -4,16 +4,28 @@
 #include "app_sps_sdb_client.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
+#include "network_aprh_ws_handler_variant.h"
 #include "network_i_ws_client.h"
 #include "network_ws_connection.h"
 
 namespace stonks::app::sps {
+/**
+ * @brief Receives single symbol prices from Binance
+ * and sends them to the Symbols DB.
+ */
 class App {
  public:
-  App(cpp::NnUp<network::IWsClient> ws_client, core::Symbol symbol,
-      SdbClient sdb_client);
+  App(core::Symbol symbol, SdbClient sdb_client,
+      cpp::NnUp<network::IWsClient> ws_client);
 
  private:
+  /**
+   * @copydoc endpoints::BinanceSymbolBookTickerStream
+   */
+  [[nodiscard]] static auto BinanceSymbolBookTickerStream(core::Symbol symbol,
+                                                          SdbClient sdb_client)
+      -> network::aprh::HandlerWithWsMessage;
+
   network::WsConnection ws_connection_;
 };
 }  // namespace stonks::app::sps
