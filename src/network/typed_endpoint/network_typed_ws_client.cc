@@ -7,7 +7,7 @@
 #include <memory>
 #include <utility>
 
-#include "network_typed_endpoint.h"
+#include "cpp_optional.h"
 #include "network_typed_ws_message_handler.h"
 #include "not_null.hpp"
 
