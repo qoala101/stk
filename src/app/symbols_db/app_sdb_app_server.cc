@@ -14,7 +14,7 @@
 namespace stonks::app::sdb {
 AppServer::AppServer(App app, network::Uri base_uri,
                      cpp::NnUp<network::IRestRequestReceiver> request_receiver)
-    : request_receiver_{[&app, &base_uri, &request_receiver]() {
+    : rest_server_{[&app, &base_uri, &request_receiver]() {
         auto shared_app = cpp::MakeNnSp<App>(std::move(app));
 
         return network::RestServerBuilder{std::move(request_receiver)}

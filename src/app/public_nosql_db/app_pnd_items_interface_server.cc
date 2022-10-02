@@ -16,7 +16,7 @@ ItemsInterfaceServer::ItemsInterfaceServer(
     const cpp::NnSp<nosqldb::IItemsInterface> &items_interface,
     cpp::NnUp<network::IRestRequestReceiver> request_receiver,
     network::Uri base_uri)
-    : request_receiver_{
+    : rest_server_{
           network::RestServerBuilder{std::move(request_receiver)}
               .On(std::move(base_uri))
               .Handling(

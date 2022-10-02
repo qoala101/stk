@@ -22,6 +22,7 @@ add_library(libnetwork
   network_rest_client.cc
   network_rest_request_builder.cc
   network_rest_server_builder.cc
+  network_rest_server.cc
   network_types.cc
   network_ws_client_builder.cc
   network_ws_connection.cc

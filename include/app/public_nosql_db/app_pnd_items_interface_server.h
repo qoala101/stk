@@ -3,6 +3,7 @@
 
 #include "cpp_not_null.h"
 #include "network_i_rest_request_receiver.h"
+#include "network_rest_server.h"
 #include "network_types.h"
 #include "nosqldb_i_items_interface.h"
 
@@ -15,7 +16,7 @@ class ItemsInterfaceServer {
       network::Uri base_uri);
 
  private:
-  cpp::NnUp<network::IRestRequestReceiver> request_receiver_;
+  network::RestServer rest_server_;
 };
 }  // namespace stonks::app::pnd
 

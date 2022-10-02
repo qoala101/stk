@@ -3,10 +3,14 @@
 #include <absl/time/time.h>
 #include <fmt/core.h>
 
+#include <memory>
+#include <utility>
+
 #include "app_sdb_tables.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
 #include "cpp_views.h"
+#include "not_null.hpp"
 #include "sqldb_types.h"
 
 namespace stonks::app::sdb {

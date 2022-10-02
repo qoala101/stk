@@ -10,6 +10,7 @@
 #include "network_auto_parsable_request_handler.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
+#include "network_rest_server.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 
@@ -38,12 +39,11 @@ class RestServerBuilder {
   }
 
   /**
-   * @brief Starts the server and returns request receiver
-   * responsible for handling of requests.
+   * @brief Starts the server and returns the handle which keeps it alive.
    * @return Keeps handling REST requests while alive.
    * @remark Other methods should not be called after this.
    */
-  [[nodiscard]] auto Start() -> cpp::NnUp<IRestRequestReceiver>;
+  [[nodiscard]] auto Start() -> RestServer;
 
  private:
   [[nodiscard]] auto Handling(TypedEndpoint endpoint,

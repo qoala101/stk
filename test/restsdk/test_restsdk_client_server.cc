@@ -34,6 +34,7 @@
 #include "network_rest_client.h"
 #include "network_rest_client_request_builder.h"
 #include "network_rest_request_builder.h"
+#include "network_rest_server.h"
 #include "network_rest_server_builder.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
@@ -104,7 +105,7 @@ class EntityServer {
   }
 
   explicit EntityServer(stonks::network::Uri base_uri)
-      : request_receiver_{
+      : rest_server_{
             test::restsdk::Injector()
                 .create<stonks::network::RestServerBuilder>()
                 .On(std::move(base_uri))
@@ -139,7 +140,7 @@ class EntityServer {
   auto GetSizeEndpointHandler() -> int { return entity_.GetSize(); }
 
   Entity entity_{};
-  stonks::cpp::NnUp<stonks::network::IRestRequestReceiver> request_receiver_;
+  stonks::network::RestServer rest_server_;
 };
 
 class EntityClient : public EntityInterface {

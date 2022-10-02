@@ -4,6 +4,7 @@
 #include "app_dt_pds_app.h"
 #include "cpp_not_null.h"
 #include "network_i_rest_request_receiver.h"
+#include "network_rest_server.h"
 #include "network_types.h"
 
 namespace stonks::app::dt::pds {
@@ -13,7 +14,7 @@ class AppServer {
             network::Uri base_uri);
 
  private:
-  cpp::NnUp<network::IRestRequestReceiver> request_receiver_;
+  network::RestServer rest_server_;
 };
 }  // namespace stonks::app::dt::pds
 

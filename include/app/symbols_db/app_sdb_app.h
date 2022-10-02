@@ -1,6 +1,10 @@
 #ifndef STONKS_APP_SYMBOLS_DB_APP_SDB_APP_H_
 #define STONKS_APP_SYMBOLS_DB_APP_SDB_APP_H_
 
+#include <absl/time/time.h>
+
+#include <vector>
+
 #include "core_types.h"
 #include "cpp_not_null.h"
 #include "sqldb_i_db.h"

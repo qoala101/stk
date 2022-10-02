@@ -4,13 +4,13 @@
 #include <memory>
 #include <type_traits>
 
+#include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
 #include "network_endpoint_request_dispatcher.h"
 #include "network_request_exception_handler.h"
 #include "network_typed_endpoint.h"
 #include "network_typed_endpoint_handler.h"
 #include "network_types.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 RestServerBuilder::RestServerBuilder(
@@ -26,15 +26,18 @@ auto RestServerBuilder::On(Uri base_uri) -> RestServerBuilder& {
   return *this;
 }
 
-auto RestServerBuilder::Start() -> cpp::NnUp<IRestRequestReceiver> {
+auto RestServerBuilder::Start() -> RestServer {
   Expects(request_receiver_ != nullptr);
   Expects(base_uri_.has_value());
   Expects(!endpoint_handlers_.empty());
 
-  auto request_receiver = cpp::AssumeNn(std::move(request_receiver_));
-  request_receiver->Receive(
+  request_receiver_->Receive(
       std::move(*base_uri_),
       cpp::MakeNnUp<EndpointRequestDispatcher>(std::move(endpoint_handlers_)));
+
+  auto server =
+      cpp::CallExposedPrivateConstructorOf<RestServer, RestServerBuilder>{}(
+          cpp::AssumeNn(std::move(request_receiver_)));
 
   base_uri_.reset();
   endpoint_handlers_.clear();
@@ -42,7 +45,7 @@ auto RestServerBuilder::Start() -> cpp::NnUp<IRestRequestReceiver> {
   Ensures(request_receiver_ == nullptr);
   Ensures(!base_uri_.has_value());
   Ensures(endpoint_handlers_.empty());
-  return request_receiver;
+  return server;
 }
 
 auto RestServerBuilder::Handling(TypedEndpoint endpoint,
