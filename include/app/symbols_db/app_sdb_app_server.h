@@ -9,8 +9,8 @@
 namespace stonks::app::sdb {
 class AppServer {
  public:
-  AppServer(App app, cpp::NnUp<network::IRestRequestReceiver> request_receiver,
-            network::Uri base_uri);
+  AppServer(App app, network::Uri base_uri,
+            cpp::NnUp<network::IRestRequestReceiver> request_receiver);
 
  private:
   cpp::NnUp<network::IRestRequestReceiver> request_receiver_;

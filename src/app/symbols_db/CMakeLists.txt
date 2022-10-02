@@ -4,6 +4,7 @@ add_executable(symbols_db
   app_sdb_app_server.cc
   app_sdb_app.cc
   app_sdb_main.cc
+  app_sdb_tables.cc
 )
 
 target_include_directories(symbols_db

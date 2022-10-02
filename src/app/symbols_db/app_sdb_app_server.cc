@@ -1,7 +1,7 @@
 #include "app_sdb_app_server.h"
 
-#include <utility>
 #include <memory>
+#include <utility>
 
 #include "app_endpoints.h"
 #include "cpp_not_null.h"
@@ -12,10 +12,9 @@
 #include "not_null.hpp"
 
 namespace stonks::app::sdb {
-AppServer::AppServer(App app,
-                     cpp::NnUp<network::IRestRequestReceiver> request_receiver,
-                     network::Uri base_uri)
-    : request_receiver_{[&app, &request_receiver, &base_uri]() {
+AppServer::AppServer(App app, network::Uri base_uri,
+                     cpp::NnUp<network::IRestRequestReceiver> request_receiver)
+    : request_receiver_{[&app, &base_uri, &request_receiver]() {
         auto shared_app = cpp::MakeNnSp<App>(std::move(app));
 
         return network::RestServerBuilder{std::move(request_receiver)}
