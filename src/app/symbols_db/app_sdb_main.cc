@@ -5,26 +5,28 @@
 
 #include "app_log_spdlog_injector.h"
 #include "app_network_restsdk_injector.h"
-#include "app_sps_app.h"
+#include "app_sdb_app.h"
+#include "app_sdb_app_server.h"
+#include "app_sqldb_sqlite_injector.h"
 #include "cli_app.h"
 #include "cli_options.h"
-#include "core_types.h"
 #include "di_bind_type_to_value.h"
 #include "di_make_injector.h"
 #include "network_types.h"
+#include "sqlite_types.h"
 
 auto main(int argc, const char *const *argv) -> int {
   stonks::cli::App{argc, argv}.Run([](const stonks::cli::Options &options) {
     const auto injector = stonks::di::MakeInjector(
         stonks::app::injectors::MakeNetworkRestsdkInjector(),
+        stonks::app::injectors::MakeSqldbSqliteInjector(),
         stonks::app::injectors::MakeLogSpdlogInjector(),
-        stonks::di::BindTypeToValue<stonks::core::Symbol>(
-            stonks::core::Symbol{options.GetOptionOr("symbol", "btcusdt")}),
         stonks::di::BindTypeToValue<stonks::network::Uri>(
             stonks::network::Uri{fmt::format(
-                "http://{}:{}", options.GetOptionOr("sdb_host", "0.0.0.0"),
-                options.GetOptionOr("sdb_port", 6506))}));
+                "http://0.0.0.0:{}", options.GetOptionOr("port", 6506))}),
+        stonks::di::BindTypeToValue<stonks::sqlite::FilePath>(
+            stonks::sqlite::FilePath{"symbols_db.db"}));
 
-    return injector.create<stonks::app::sps::App>();
+    return injector.create<stonks::app::sdb::AppServer>();
   });
 }

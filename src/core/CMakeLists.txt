@@ -1,3 +1,5 @@
+find_package(absl REQUIRED)
+
 add_library(libcore INTERFACE)
 
 target_include_directories(libcore
@@ -6,4 +8,5 @@ target_include_directories(libcore
 
 target_link_libraries(libcore
   INTERFACE libcpp
+  INTERFACE absl::absl
 )
