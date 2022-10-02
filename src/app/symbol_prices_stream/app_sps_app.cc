@@ -5,7 +5,7 @@
 #include <utility>
 
 #include "app_sps_endpoints.h"
-#include "app_sps_sdb_client.h"
+#include "app_sps_sdb_app_client.h"
 #include "app_sps_types.h"
 #include "core_types.h"
 #include "network_auto_parsable.h"
@@ -23,18 +23,18 @@ namespace {
 }
 }  // namespace
 
-App::App(core::Symbol symbol, SdbClient sdb_client,
+App::App(core::Symbol symbol, SdbAppClient sdb_app_client,
          cpp::NnUp<network::IWsClient> ws_client)
     : ws_connection_{network::WsClientBuilder{std::move(ws_client)}
                          .On(endpoints::BinanceSymbolBookTickerStream(symbol))
                          .Handling(BinanceSymbolBookTickerStream(
-                             std::move(symbol), std::move(sdb_client)))
+                             std::move(symbol), std::move(sdb_app_client)))
                          .Connect()} {}
 
 auto App::BinanceSymbolBookTickerStream(core::Symbol symbol,
-                                        SdbClient sdb_client)
+                                        SdbAppClient sdb_app_client)
     -> network::aprh::HandlerWithWsMessage {
-  return [symbol = std::move(symbol), sdb_client = std::move(sdb_client)](
+  return [symbol = std::move(symbol), sdb_client = std::move(sdb_app_client)](
              network::AutoParsable message) mutable {
     auto record = SymbolPriceRecordFrom(symbol, message);
     sdb_client.InsertSymbolPriceRecord(std::move(record));

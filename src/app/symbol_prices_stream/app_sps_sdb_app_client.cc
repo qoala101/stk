@@ -1,4 +1,4 @@
-#include "app_sps_sdb_client.h"
+#include "app_sps_sdb_app_client.h"
 
 #include <utility>
 
@@ -8,10 +8,10 @@
 #include "network_rest_client_request_builder.h"
 
 namespace stonks::app::sps {
-SdbClient::SdbClient(network::RestClient rest_client)
+SdbAppClient::SdbAppClient(network::RestClient rest_client)
     : rest_client_{std::move(rest_client)} {}
 
-void SdbClient::InsertSymbolPriceRecord(core::SymbolPriceRecord record) {
+void SdbAppClient::InsertSymbolPriceRecord(core::SymbolPriceRecord record) {
   rest_client_.Call(endpoints::InsertSymbolPriceRecord())
       .WithBody(std::move(record))
       .DiscardingResult();
