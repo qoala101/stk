@@ -3,19 +3,15 @@
 #include <utility>
 
 #include "app_dt_pds_app_endpoints.h"
-#include "cpp_not_null.h"
 #include "network_auto_parsable.h"
 #include "network_auto_parsable_request.h"
 #include "network_json_basic_conversions.h"
 #include "network_rest_server_builder.h"
 
 namespace stonks::app::dt::pds {
-AppServer::AppServer(App app,
-                     cpp::NnUp<network::IRestRequestReceiver> request_receiver,
-                     network::Uri base_uri)
+AppServer::AppServer(App app, network::RestServerBuilder rest_server_builder)
     : rest_server_{
-          network::RestServerBuilder{std::move(request_receiver)}
-              .On(std::move(base_uri))
+          rest_server_builder
               .Handling(endpoints::RecordSymbolPrice(),
                         [app = std::move(app)](
                             network::AutoParsableRestRequest request) mutable {

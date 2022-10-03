@@ -8,7 +8,6 @@ add_executable(symbols_db
 )
 
 target_include_directories(symbols_db
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/app
   PUBLIC ${PROJECT_SOURCE_DIR}/include/app/symbols_db
 )
 

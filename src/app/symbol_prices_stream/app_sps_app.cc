@@ -4,7 +4,6 @@
 
 #include <utility>
 
-#include "app_sps_endpoints.h"
 #include "app_sps_sdb_app_client.h"
 #include "app_sps_types.h"
 #include "core_types.h"
@@ -23,10 +22,9 @@ namespace {
 }
 }  // namespace
 
-App::App(core::Symbol symbol, SdbAppClient sdb_app_client,
-         cpp::NnUp<network::IWsClient> ws_client)
-    : ws_connection_{network::WsClientBuilder{std::move(ws_client)}
-                         .On(endpoints::BinanceSymbolBookTickerStream(symbol))
+App::App(core::Symbol symbol, network::WsClientBuilder ws_client_builder,
+         SdbAppClient sdb_app_client)
+    : ws_connection_{ws_client_builder
                          .Handling(BinanceSymbolBookTickerStream(
                              std::move(symbol), std::move(sdb_app_client)))
                          .Connect()} {}

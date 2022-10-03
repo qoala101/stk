@@ -14,16 +14,11 @@
 
 namespace stonks::network {
 RestServerBuilder::RestServerBuilder(
-    cpp::NnUp<IRestRequestReceiver> request_receiver)
-    : request_receiver_{std::move(request_receiver).as_nullable()} {
-  Ensures(request_receiver_ != nullptr);
-}
-
-auto RestServerBuilder::On(Uri base_uri) -> RestServerBuilder& {
-  Expects(!base_uri_.has_value());
-  base_uri_ = std::move(base_uri);
+    Uri base_uri, cpp::NnUp<IRestRequestReceiver> request_receiver)
+    : base_uri_{std::move(base_uri)},
+      request_receiver_{std::move(request_receiver).as_nullable()} {
   Ensures(base_uri_.has_value());
-  return *this;
+  Ensures(request_receiver_ != nullptr);
 }
 
 auto RestServerBuilder::Start() -> RestServer {

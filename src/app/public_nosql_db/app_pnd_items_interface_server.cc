@@ -1,7 +1,6 @@
 #include "app_pnd_items_interface_server.h"
 
 #include <memory>
-#include <utility>
 
 #include "app_pnd_items_interface_endpoints.h"
 #include "app_pnd_json_user_conversions.h"
@@ -14,11 +13,9 @@
 namespace stonks::app::pnd {
 ItemsInterfaceServer::ItemsInterfaceServer(
     const cpp::NnSp<nosqldb::IItemsInterface> &items_interface,
-    cpp::NnUp<network::IRestRequestReceiver> request_receiver,
-    network::Uri base_uri)
+    network::RestServerBuilder rest_server_builder)
     : rest_server_{
-          network::RestServerBuilder{std::move(request_receiver)}
-              .On(std::move(base_uri))
+          rest_server_builder
               .Handling(
                   endpoints::SelectItem(),
                   [items_interface](network::AutoParsableRestRequest request) {

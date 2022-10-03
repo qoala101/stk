@@ -9,7 +9,6 @@ add_executable(symbol_prices_stream
 )
 
 target_include_directories(symbol_prices_stream
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/app
   PUBLIC ${PROJECT_SOURCE_DIR}/include/app/symbol_prices_stream
 )
 

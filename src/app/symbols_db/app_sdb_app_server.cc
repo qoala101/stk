@@ -12,13 +12,11 @@
 #include "not_null.hpp"
 
 namespace stonks::app::sdb {
-AppServer::AppServer(App app, network::Uri base_uri,
-                     cpp::NnUp<network::IRestRequestReceiver> request_receiver)
-    : rest_server_{[&app, &base_uri, &request_receiver]() {
+AppServer::AppServer(App app, network::RestServerBuilder rest_server_builder)
+    : rest_server_{[&app, &rest_server_builder]() {
         auto shared_app = cpp::MakeNnSp<App>(std::move(app));
 
-        return network::RestServerBuilder{std::move(request_receiver)}
-            .On(std::move(base_uri))
+        return rest_server_builder
             .Handling(
                 endpoints::InsertSymbolPriceRecord(),
                 [shared_app](network::AutoParsableRestRequest request) mutable {

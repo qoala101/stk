@@ -20,12 +20,11 @@ namespace stonks::network {
  */
 class RestServerBuilder {
  public:
-  explicit RestServerBuilder(cpp::NnUp<IRestRequestReceiver> request_receiver);
-
   /**
-   * @brief Sets base URI on which requests are to be handled.
+   * @param base_uri Base URI on which requests are to be handled.
    */
-  auto On(Uri base_uri) -> RestServerBuilder &;
+  explicit RestServerBuilder(Uri base_uri,
+                             cpp::NnUp<IRestRequestReceiver> request_receiver);
 
   /**
    * @brief Registers handler for particular endpoint.
@@ -50,8 +49,8 @@ class RestServerBuilder {
                               cpp::NnUp<IRestRequestHandler> handler)
       -> RestServerBuilder &;
 
-  cpp::Up<IRestRequestReceiver> request_receiver_{};
   cpp::Opt<Uri> base_uri_{};
+  cpp::Up<IRestRequestReceiver> request_receiver_{};
   std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
 }  // namespace stonks::network

@@ -11,8 +11,8 @@
 
 namespace stonks::app::dt::stec::binance {
 Client::Client(di::Factory<network::IRestRequestSender> request_sender_factory)
-    : rest_client_{std::move(request_sender_factory),
-                   {"https://api.binance.com/api/v3"}} {}
+    : rest_client_{{"https://api.binance.com/api/v3"},
+                   std::move(request_sender_factory)} {}
 
 auto Client::GetCurrentAveragePrice(const Symbol &symbol) const -> AvgPrice {
   return rest_client_.Call(endpoints::GetCurrentAveragePrice())

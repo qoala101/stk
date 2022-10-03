@@ -121,14 +121,16 @@ static const auto kTypedSocket = stonks::network::TypedWsEndpoint{
 TEST(WebSocket, Facade) {
   auto received_messages = std::vector<BinanceWebSocketMessage>{};
 
-  const auto client = test::restsdk::Injector()
-                          .create<stonks::network::WsClientBuilder>()
-                          .Handling([&received_messages](
-                                        stonks::network::AutoParsable message) {
-                            received_messages.emplace_back(message);
-                          })
-                          .On(kTypedSocket)
-                          .Connect();
+  const auto client =
+      stonks::network::WsClientBuilder{
+          kTypedSocket,
+          test::restsdk::Injector()
+              .create<stonks::cpp::NnUp<stonks::network::IWsClient>>()}
+          .Handling(
+              [&received_messages](stonks::network::AutoParsable message) {
+                received_messages.emplace_back(message);
+              })
+          .Connect();
   client.Send(kMessage1);
   client.Send(kMessage2);
   absl::SleepFor(absl::Seconds(2));

@@ -13,10 +13,10 @@
 #include "network_types.h"
 
 namespace stonks::network {
-RestClient::RestClient(di::Factory<IRestRequestSender> request_sender_factory,
-                       Uri base_uri)
-    : request_sender_factory_{std::move(request_sender_factory)},
-      base_uri_{std::move(base_uri)} {}
+RestClient::RestClient(Uri base_uri,
+                       di::Factory<IRestRequestSender> request_sender_factory)
+    : base_uri_{std::move(base_uri)},
+      request_sender_factory_{std::move(request_sender_factory)} {}
 
 auto RestClient::Call(TypedEndpoint endpoint) const
     -> rest_client::RequestBuilder {

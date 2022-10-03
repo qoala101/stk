@@ -3,9 +3,8 @@
 
 #include "app_sps_sdb_app_client.h"
 #include "core_types.h"
-#include "cpp_not_null.h"
 #include "network_aprh_ws_handler_variant.h"
-#include "network_i_ws_client.h"
+#include "network_ws_client_builder.h"
 #include "network_ws_connection.h"
 
 namespace stonks::app::sps {
@@ -15,8 +14,8 @@ namespace stonks::app::sps {
  */
 class App {
  public:
-  App(core::Symbol symbol, SdbAppClient sdb_app_client,
-      cpp::NnUp<network::IWsClient> ws_client);
+  App(core::Symbol symbol, network::WsClientBuilder ws_client_builder,
+      SdbAppClient sdb_app_client);
 
  private:
   /**

@@ -18,12 +18,11 @@ namespace stonks::network {
  */
 class WsClientBuilder {
  public:
-  explicit WsClientBuilder(cpp::NnUp<IWsClient> ws_client);
-
   /**
-   * @brief Sets web socket URI and expected types.
+   * @param endpoint Web socket URI and expected types.
    */
-  auto On(TypedWsEndpoint endpoint) -> WsClientBuilder &;
+  explicit WsClientBuilder(TypedWsEndpoint endpoint,
+                           cpp::NnUp<IWsClient> ws_client);
 
   /**
    * @brief Registers handler for received messages.
@@ -46,8 +45,8 @@ class WsClientBuilder {
   [[nodiscard]] auto Handling(cpp::NnUp<IWsMessageHandler> handler)
       -> WsClientBuilder &;
 
-  cpp::Up<IWsClient> ws_client_{};
   cpp::Opt<TypedWsEndpoint> endpoint_{};
+  cpp::Up<IWsClient> ws_client_{};
   cpp::Up<IWsMessageHandler> handler_{};
 };
 }  // namespace stonks::network
