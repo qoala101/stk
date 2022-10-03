@@ -14,8 +14,7 @@ namespace stonks::app::injectors {
 [[nodiscard]] inline auto MakeSqldbSqliteInjector() {
   struct SqliteDbHandleFactory {
     [[nodiscard]] auto operator()(const sqlite::DbHandlesFactory &factory,
-                                  const sqlite::FilePath &file_path)
-        -> sqlite::SqliteDbHandle {
+                                  const sqlite::FilePath &file_path) {
       return factory.LoadDbFromFileToMemory(file_path);
     }
   };

@@ -4,7 +4,6 @@
 #include <variant>
 #include <vector>
 
-#include "cpp_copy_const.h"
 #include "cpp_variant_struct.h"
 #include "sqldb_types.h"
 
@@ -39,8 +38,7 @@ class ColumnsVariant
 
  private:
   template <cpp::DecaysTo<ColumnsVariant> This>
-  [[nodiscard]] static auto GetColumnsImpl(This &t)
-      -> cpp::CopyConst<This, std::vector<Column>> *;
+  [[nodiscard]] static auto GetColumnsImpl(This &t);
 };
 }  // namespace stonks::sqldb::qbf
 

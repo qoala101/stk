@@ -6,9 +6,6 @@
 #include "nosqldb_types.h"
 
 namespace stonks::network {
-template <typename T>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
-
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> nosqldb::Item;
 }  // namespace stonks::network

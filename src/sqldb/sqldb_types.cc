@@ -12,7 +12,7 @@
 namespace stonks::sqldb {
 template <cpp::DecaysTo<TableDefinition> This>
 auto TableDefinition::GetColumnDefinitionImpl(This &t, const Column &column)
-    -> cpp::CopyConst<This, ColumnDefinition> & {
+    -> auto & {
   const auto iter =
       ranges::find_if(t.columns, [&column](const auto &column_definition) {
         return column_definition.column == column;

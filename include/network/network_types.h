@@ -60,8 +60,6 @@ struct Endpoint {
  * @brief Where and what to send via REST API call.
  */
 struct RestRequest {
-  [[nodiscard]] auto IsEmpty() const -> bool;
-
   Endpoint endpoint{};
   Params params{};
   Headers headers{};

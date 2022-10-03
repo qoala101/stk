@@ -6,7 +6,6 @@
 #include <string_view>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
-#include "cpp_copy_const.h"
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 #include "network_i_json.h"
@@ -95,18 +94,16 @@ class Json : public network::IJson {
 
  private:
   template <cpp::DecaysTo<Json> This>
-  [[nodiscard]] static auto CloneImpl(This& t) -> cpp::NnUp<IJson>;
+  [[nodiscard]] static auto CloneImpl(This& t);
 
   template <cpp::DecaysTo<Json> This>
-  [[nodiscard]] static auto GetChildImpl(This& t, std::string_view key)
-      -> cpp::Pv<IJson>;
+  [[nodiscard]] static auto GetChildImpl(This& t, std::string_view key);
 
   template <cpp::DecaysTo<Json> This>
-  [[nodiscard]] static auto GetChildImpl(This& t, int index) -> cpp::Pv<IJson>;
+  [[nodiscard]] static auto GetChildImpl(This& t, int index);
 
   template <cpp::DecaysTo<Json> This>
-  [[nodiscard]] static auto GetNativeHandleImpl(This& t)
-      -> cpp::CopyConst<This, IJson::NativeHandle>&;
+  [[nodiscard]] static auto GetNativeHandleImpl(This& t) -> auto&;
 
   network::IJson::NativeHandle native_handle_;
 };

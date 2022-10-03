@@ -4,6 +4,7 @@
 #include <string>
 #include <utility>
 
+#include "cpp_optional.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_enums.h"
 #include "network_types.h"
@@ -14,6 +15,8 @@ namespace stonks::network {
  */
 class RestRequestBuilder {
  public:
+  RestRequestBuilder();
+
   /**
    * @remark Method is GET by default.
    */
@@ -39,7 +42,7 @@ class RestRequestBuilder {
    * @copydoc RestRequestBuilder::AddParam
    */
   template <Convertible Value>
-  auto AddParam(std::string key, Value &&value) -> RestRequestBuilder & {
+  auto AddParam(std::string key, Value &&value) -> auto & {
     return AddParam(key, ConvertToJson(std::forward<Value>(value)));
   }
 
@@ -59,7 +62,7 @@ class RestRequestBuilder {
    * @copydoc RestRequestBuilder::WithBody
    */
   template <Convertible Value>
-  auto WithBody(Value &&value) -> RestRequestBuilder & {
+  auto WithBody(Value &&value) -> auto & {
     return WithBody(ConvertToJson(std::forward<Value>(value)));
   }
 
@@ -75,7 +78,7 @@ class RestRequestBuilder {
   [[nodiscard]] auto Build() -> RestRequest;
 
  private:
-  RestRequest request_{};
+  cpp::Opt<RestRequest> request_{};
   bool uri_is_set_{};
 };
 }  // namespace stonks::network

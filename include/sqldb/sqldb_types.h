@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "cpp_copy_const.h"
 #include "cpp_optional.h"
 #include "cpp_typed_struct.h"
 #include "cpp_views.h"
@@ -67,7 +66,7 @@ struct TableDefinition {
   template <cpp::DecaysTo<TableDefinition> This>
   [[nodiscard]] static auto GetColumnDefinitionImpl(This &t,
                                                     const Column &column)
-      -> cpp::CopyConst<This, ColumnDefinition> &;
+      -> auto &;
 };
 
 /**

@@ -29,7 +29,7 @@ class WsClientBuilder {
    */
   template <typename T>
     requires std::constructible_from<AutoParsableWsMessageHandler, T>
-  auto Handling(T &&handler) -> WsClientBuilder & {
+  auto Handling(T &&handler) -> auto & {
     return Handling(
         cpp::MakeNnUp<AutoParsableWsMessageHandler>(std::forward<T>(handler)));
   }

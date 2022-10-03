@@ -8,9 +8,6 @@
 #include "network_i_json.h"
 
 namespace stonks::network {
-template <typename T>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
-
 template <>
 [[nodiscard]] auto ParseFromJson(const IJson &json) -> absl::Time;
 [[nodiscard]] auto ConvertToJson(absl::Time value) -> cpp::Pv<IJson>;

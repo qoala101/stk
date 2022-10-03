@@ -41,7 +41,7 @@ struct TypedStruct {
       -> std::partial_ordering = default;
 
   template <DecaysTo<TypedStruct> This>
-  [[nodiscard]] static auto OperatorValueTypeImpl(This &&t) -> ValueType {
+  [[nodiscard]] static auto OperatorValueTypeImpl(This &&t) {
     return MoveIfRvalue<decltype(std::forward<This>(t))>(t.value);
   }
 };

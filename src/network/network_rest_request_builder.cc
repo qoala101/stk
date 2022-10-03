@@ -9,14 +9,18 @@
 #include "network_types.h"
 
 namespace stonks::network {
+RestRequestBuilder::RestRequestBuilder() : request_{std::in_place_t{}} {}
+
 auto RestRequestBuilder::WithMethod(Method method) -> RestRequestBuilder& {
-  request_.endpoint.method = method;
+  Expects(request_.has_value());
+  request_->endpoint.method = method;
   return *this;
 }
 
 auto RestRequestBuilder::WithBaseUri(Uri base_uri) -> RestRequestBuilder& {
   Expects(!uri_is_set_);
-  request_.endpoint.uri = std::move(base_uri);
+  Expects(request_.has_value());
+  request_->endpoint.uri = std::move(base_uri);
   uri_is_set_ = true;
   Ensures(uri_is_set_);
   return *this;
@@ -24,49 +28,55 @@ auto RestRequestBuilder::WithBaseUri(Uri base_uri) -> RestRequestBuilder& {
 
 auto RestRequestBuilder::AppendUri(Uri uri) -> RestRequestBuilder& {
   Expects(uri_is_set_);
+  Expects(request_.has_value());
 
   if (!uri.value.starts_with("/")) {
-    request_.endpoint.uri.value += "/";
+    request_->endpoint.uri.value += "/";
   }
 
-  request_.endpoint.uri.value += std::move(uri);
-  Ensures(!request_.endpoint.uri.value.empty());
+  request_->endpoint.uri.value += std::move(uri);
+  Ensures(!request_->endpoint.uri.value.empty());
   return *this;
 }
 
 auto RestRequestBuilder::AddParam(std::string key, Param value)
     -> RestRequestBuilder& {
-  request_.params.emplace(std::move(key), std::move(value));
-  Ensures(!request_.params.empty());
+  Expects(request_.has_value());
+  request_->params.emplace(std::move(key), std::move(value));
+  Ensures(!request_->params.empty());
   return *this;
 }
 
 auto RestRequestBuilder::AddHeader(std::string key, std::string value)
     -> RestRequestBuilder& {
-  request_.headers.emplace(std::move(key), std::move(value));
-  Ensures(!request_.headers.empty());
+  Expects(request_.has_value());
+  request_->headers.emplace(std::move(key), std::move(value));
+  Ensures(!request_->headers.empty());
   return *this;
 }
 
 auto RestRequestBuilder::WithBody(Body::value_type body)
     -> RestRequestBuilder& {
-  Expects(!request_.body.has_value());
-  request_.body = std::move(body);
-  Ensures(request_.body.has_value());
+  Expects(request_.has_value());
+  Expects(!request_->body.has_value());
+  request_->body = std::move(body);
+  Ensures(request_->body.has_value());
   return *this;
 }
 
 auto RestRequestBuilder::Build() const -> RestRequest {
   Expects(uri_is_set_);
-  return request_;
+  Expects(request_.has_value());
+  return *request_;
 }
 
 auto RestRequestBuilder::Build() -> RestRequest {
   Expects(uri_is_set_);
-  auto request = RestRequest{std::move(request_)};
-  request_ = {};
+  Expects(request_.has_value());
+  auto request = RestRequest{std::move(*request_)};
+  request_.reset();
   uri_is_set_ = false;
-  Ensures(request_.IsEmpty());
+  Ensures(!request_.has_value());
   Ensures(!uri_is_set_);
   return request;
 }

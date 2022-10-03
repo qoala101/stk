@@ -47,7 +47,7 @@ auto Value::GetDouble() const -> double {
 }
 
 template <cpp::DecaysTo<Value> This>
-auto Value::GetStringImpl(This& t) -> cpp::CopyConst<This, std::string>& {
+auto Value::GetStringImpl(This& t) -> auto& {
   Expects(std::holds_alternative<std::string>(t.value));
   return std::get<std::string>(t.value);
 }

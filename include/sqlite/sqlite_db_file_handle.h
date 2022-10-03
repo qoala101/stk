@@ -2,7 +2,6 @@
 #define STONKS_SQLITE_SQLITE_DB_FILE_HANDLE_H_
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
-#include "cpp_copy_const.h"
 #include "di_factory.h"
 #include "log_i_logger.h"
 #include "sqlite_raw_handles.h"
@@ -51,8 +50,7 @@ class SqliteDbFileHandle {
 
  private:
   template <cpp::DecaysTo<SqliteDbFileHandle> This>
-  [[nodiscard]] static auto GetSqliteDbImpl(This &t)
-      -> cpp::CopyConst<This, sqlite3> &;
+  [[nodiscard]] static auto GetSqliteDbImpl(This &t) -> auto &;
 
   di::Factory<log::ILogger> logger_factory_;
   SqliteDbHandle sqlite_db_handle_;

@@ -31,8 +31,8 @@
 
 namespace stonks::restsdk {
 namespace {
-[[nodiscard]] auto NetworkMethodFromHttpMethod(const web::http::method &method)
-    -> network::Method {
+[[nodiscard]] auto NetworkMethodFromHttpMethod(
+    const web::http::method &method) {
   if (method == web::http::methods::GET) {
     return network::Method::kGet;
   }
@@ -46,8 +46,7 @@ namespace {
   return network::Method::kOther;
 }
 
-[[nodiscard]] auto HttpStatusFromNetworkStatus(network::Status status)
-    -> web::http::status_code {
+[[nodiscard]] auto HttpStatusFromNetworkStatus(network::Status status) {
   switch (status) {
     case network::Status::kOk:
       return web::http::status_codes::OK;
@@ -62,14 +61,13 @@ namespace {
   }
 }
 
-[[nodiscard]] auto FetchEndpoint(const web::http::http_request &request)
-    -> network::Endpoint {
-  return {.method = NetworkMethodFromHttpMethod(request.method()),
-          .uri = {request.relative_uri().path()}};
+[[nodiscard]] auto FetchEndpoint(const web::http::http_request &request) {
+  return network::Endpoint{
+      .method = NetworkMethodFromHttpMethod(request.method()),
+      .uri = {request.relative_uri().path()}};
 }
 
-[[nodiscard]] auto FetchParams(const std::string &request_query)
-    -> network::Params {
+[[nodiscard]] auto FetchParams(const std::string &request_query) {
   const auto raw_params =
       web::uri::split_query(web::uri::decode(request_query));
   auto params = network::Params{};
@@ -81,8 +79,8 @@ namespace {
   return params;
 }
 
-[[nodiscard]] auto FetchHeaders(const web::http::http_headers &request_headers)
-    -> std::map<std::string, std::string> {
+[[nodiscard]] auto FetchHeaders(
+    const web::http::http_headers &request_headers) {
   auto headers = std::map<std::string, std::string>{};
 
   for (const auto &header : request_headers) {
@@ -105,15 +103,16 @@ namespace {
 }
 
 [[nodiscard]] auto RestRequestFromHttpRequest(
-    const web::http::http_request &request) -> network::RestRequest {
-  return {.endpoint = FetchEndpoint(request),
-          .params = FetchParams(request.request_uri().query()),
-          .headers = FetchHeaders(request.headers()),
-          .body = FetchBody(request)};
+    const web::http::http_request &request) {
+  return network::RestRequest{
+      .endpoint = FetchEndpoint(request),
+      .params = FetchParams(request.request_uri().query()),
+      .headers = FetchHeaders(request.headers()),
+      .body = FetchBody(request)};
 }
 
 [[nodiscard]] auto HttpResponseFromRestResponse(
-    const network::RestResponse &response) -> web::http::http_response {
+    const network::RestResponse &response) {
   auto http_response =
       web::http::http_response{HttpStatusFromNetworkStatus(response.status)};
 

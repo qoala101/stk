@@ -24,8 +24,7 @@ Rows::Rows(std::vector<Column> columns)
 }
 
 template <cpp::DecaysTo<Rows> This>
-auto Rows::GetColumnValuesImpl(This &t, const Column &column)
-    -> cpp::CopyConst<This, std::vector<Value>> & {
+auto Rows::GetColumnValuesImpl(This &t, const Column &column) -> auto & {
   const auto iter =
       ranges::find_if(t.columns_, [&column](const auto &other_column) {
         return other_column.column == column;

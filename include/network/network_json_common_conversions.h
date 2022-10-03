@@ -50,24 +50,22 @@ template <>
 
 template <cpp::IsTypedStruct T>
   requires Parsable<typename T::ValueType>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
-  return {ParseFromJson<typename T::ValueType>(json)};
+[[nodiscard]] auto ParseFromJson(const IJson &json) {
+  return T{ParseFromJson<typename T::ValueType>(json)};
 }
 
 template <Convertible T>
-[[nodiscard]] auto ConvertToJson(const cpp::TypedStruct<T> &value)
-    -> cpp::Pv<IJson> {
+[[nodiscard]] auto ConvertToJson(const cpp::TypedStruct<T> &value) {
   return ConvertToJson(value.value);
 }
 
 template <cpp::Variant T>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
+[[nodiscard]] auto ParseFromJson(const IJson &json) {
   return detail::ParseVariantFromJson<T, std::variant_size_v<T> - 1>(json);
 }
 
 template <Convertible... Ts>
-[[nodiscard]] auto ConvertToJson(const std::variant<Ts...> &value)
-    -> cpp::Pv<IJson> {
+[[nodiscard]] auto ConvertToJson(const std::variant<Ts...> &value) {
   return std::visit([](const auto &v) { return ConvertToJson(v); }, value);
 }
 
@@ -82,7 +80,7 @@ template <cpp::Optional T>
 }
 
 template <Convertible T>
-[[nodiscard]] auto ConvertToJson(const cpp::Opt<T> &value) -> cpp::Pv<IJson> {
+[[nodiscard]] auto ConvertToJson(const cpp::Opt<T> &value) {
   if (!value.has_value()) {
     return CreateNullJson();
   }
@@ -92,7 +90,7 @@ template <Convertible T>
 
 template <cpp::Vector T>
   requires Parsable<typename T::value_type>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
+[[nodiscard]] auto ParseFromJson(const IJson &json) {
   auto vector = T{};
 
   for (auto i = 0; i < json.GetSize(); ++i) {
@@ -105,8 +103,7 @@ template <cpp::Vector T>
 }
 
 template <Convertible T>
-[[nodiscard]] auto ConvertToJson(const std::vector<T> &value)
-    -> cpp::Pv<IJson> {
+[[nodiscard]] auto ConvertToJson(const std::vector<T> &value) {
   auto json = CreateNullJson();
 
   for (auto i = 0; i < gsl::narrow_cast<int>(value.size()); ++i) {
@@ -118,7 +115,7 @@ template <Convertible T>
 }
 
 template <Convertible T>
-[[nodiscard]] auto ConvertToJson(T *value) -> cpp::Pv<IJson> {
+[[nodiscard]] auto ConvertToJson(T *value) {
   if (value == nullptr) {
     return CreateNullJson();
   }

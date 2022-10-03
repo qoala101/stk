@@ -1,7 +1,7 @@
 #ifndef STONKS_RESTSDK_RESTSDK_JSON_NATIVE_HANDLE_H_
 #define STONKS_RESTSDK_RESTSDK_JSON_NATIVE_HANDLE_H_
 
-#include "cpp_copy_const.h"
+#include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_not_null.h"
 #include "network_i_json.h"
 
@@ -49,8 +49,7 @@ class IJson::NativeHandle {
 
  private:
   template <cpp::DecaysTo<NativeHandle> This>
-  [[nodiscard]] static auto OperatorAsteriskImpl(This &t)
-      -> cpp::CopyConst<This, web::json::value> &;
+  [[nodiscard]] static auto OperatorAsteriskImpl(This &t) -> auto &;
 
   cpp::NnUp<web::json::value> json_;
 };

@@ -38,8 +38,7 @@ class Options {
   explicit Options(cpp::NnSp<CLI::App> app);
 
   template <typename T, cpp::DecaysTo<T> U>
-  [[nodiscard]] auto GetOptionOrImpl(std::string name, U &&default_value) const
-      -> T;
+  [[nodiscard]] auto GetOptionOrImpl(std::string name, U &&default_value) const;
 
   cpp::NnSp<CLI::App> app_;
 };

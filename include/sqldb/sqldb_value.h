@@ -7,7 +7,6 @@
 #include <utility>
 #include <variant>
 
-#include "cpp_copy_const.h"
 #include "cpp_typed_struct.h"
 #include "cpp_variant_struct.h"
 #include "sqldb_enums.h"
@@ -72,8 +71,7 @@ class Value : public cpp::VariantStruct<std::monostate, bool, int, int64_t,
 
  private:
   template <cpp::DecaysTo<Value> This>
-  [[nodiscard]] static auto GetStringImpl(This &t)
-      -> cpp::CopyConst<This, std::string> &;
+  [[nodiscard]] static auto GetStringImpl(This &t) -> auto &;
 };
 }  // namespace stonks::sqldb
 

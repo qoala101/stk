@@ -3,11 +3,12 @@
 #include <gsl/assert>
 #include <variant>
 
+#include "cpp_copy_const.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qbf {
 template <cpp::DecaysTo<TableVariant> This>
-auto TableVariant::GetTableImpl(This &t) -> cpp::CopyConst<This, Table> & {
+auto TableVariant::GetTableImpl(This &t) -> auto & {
   Expects(t.HasTable());
   return std::visit(
       [](auto &v) -> cpp::CopyConst<This, Table> & {

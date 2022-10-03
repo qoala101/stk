@@ -3,7 +3,6 @@
 
 #include "app_sps_sdb_app_client.h"
 #include "core_types.h"
-#include "network_aprh_ws_handler_variant.h"
 #include "network_ws_client_builder.h"
 #include "network_ws_connection.h"
 
@@ -22,8 +21,7 @@ class App {
    * @copydoc endpoints::BinanceSymbolBookTickerStream
    */
   [[nodiscard]] static auto BinanceSymbolBookTickerStream(
-      core::Symbol symbol, SdbAppClient sdb_app_client)
-      -> network::aprh::HandlerWithWsMessage;
+      core::Symbol symbol, SdbAppClient sdb_app_client);
 
   network::WsConnection ws_connection_;
 };

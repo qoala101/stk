@@ -15,8 +15,7 @@
 namespace stonks::db {
 namespace {
 template <typename Key, typename Value>
-[[nodiscard]] auto GetValue(const std::map<Key, Value> &map, const Key &key)
-    -> Value {
+[[nodiscard]] auto GetValue(const std::map<Key, Value> &map, const Key &key) {
   auto value = map.find(key);
   Expects(value != map.end());
   return value->second;
@@ -26,18 +25,15 @@ template <typename Key, typename Value>
 Cache::Cache(cpp::NnSp<PreparedStatements> prepared_statements)
     : prepared_statements_{std::move(prepared_statements)} {}
 
-[[nodiscard]] auto Cache::GetAssetIdByAsset(const std::string &asset) const
-    -> int64_t {
+auto Cache::GetAssetIdByAsset(const std::string &asset) const -> int64_t {
   return GetValue(asset_to_asset_id_map_, asset);
 }
 
-[[nodiscard]] auto Cache::GetSymbolIdBySymbol(const SymbolName &symbol) const
-    -> int64_t {
+auto Cache::GetSymbolIdBySymbol(const SymbolName &symbol) const -> int64_t {
   return GetValue(symbol_to_symbol_id_map_, symbol);
 }
 
-[[nodiscard]] auto Cache::GetSymbolBySymbolId(int64_t symbol_id) const
-    -> SymbolName {
+auto Cache::GetSymbolBySymbolId(int64_t symbol_id) const -> SymbolName {
   return GetValue(symbol_id_to_symbol_map_, symbol_id);
 }
 

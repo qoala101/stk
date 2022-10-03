@@ -8,7 +8,7 @@
 
 namespace stonks::cli {
 template <typename T, cpp::DecaysTo<T> U>
-auto Options::GetOptionOrImpl(std::string name, U &&default_value) const -> T {
+auto Options::GetOptionOrImpl(std::string name, U &&default_value) const {
   const auto *option = app_->get_option_no_throw(std::move(name));
 
   if (option == nullptr) {

@@ -13,14 +13,23 @@
 
 namespace stonks::app::sps {
 namespace {
-[[nodiscard]] auto SymbolPriceRecordFrom(core::Symbol symbol,
-                                         const BinanceSymbolBookTick &book_tick)
-    -> core::SymbolPriceRecord {
-  return {.symbol = std::move(symbol),
-          .price = {(book_tick.best_bid_price + book_tick.best_ask_price) / 2},
-          .time = absl::Now()};
+[[nodiscard]] auto SymbolPriceRecordFrom(
+    core::Symbol symbol, const BinanceSymbolBookTick &book_tick) {
+  return core::SymbolPriceRecord{
+      .symbol = std::move(symbol),
+      .price = {(book_tick.best_bid_price + book_tick.best_ask_price) / 2},
+      .time = absl::Now()};
 }
 }  // namespace
+
+auto App::BinanceSymbolBookTickerStream(core::Symbol symbol,
+                                        SdbAppClient sdb_app_client) {
+  return [symbol = std::move(symbol), sdb_client = std::move(sdb_app_client)](
+             network::AutoParsable message) mutable {
+    auto record = SymbolPriceRecordFrom(symbol, message);
+    sdb_client.InsertSymbolPriceRecord(std::move(record));
+  };
+}
 
 App::App(core::Symbol symbol, network::WsClientBuilder ws_client_builder,
          SdbAppClient sdb_app_client)
@@ -28,14 +37,4 @@ App::App(core::Symbol symbol, network::WsClientBuilder ws_client_builder,
                          .Handling(BinanceSymbolBookTickerStream(
                              std::move(symbol), std::move(sdb_app_client)))
                          .Connect()} {}
-
-auto App::BinanceSymbolBookTickerStream(core::Symbol symbol,
-                                        SdbAppClient sdb_app_client)
-    -> network::aprh::HandlerWithWsMessage {
-  return [symbol = std::move(symbol), sdb_client = std::move(sdb_app_client)](
-             network::AutoParsable message) mutable {
-    auto record = SymbolPriceRecordFrom(symbol, message);
-    sdb_client.InsertSymbolPriceRecord(std::move(record));
-  };
-}
 }  // namespace stonks::app::sps

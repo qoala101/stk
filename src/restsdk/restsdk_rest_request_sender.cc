@@ -15,7 +15,6 @@
 #include <magic_enum.hpp>
 #include <map>
 #include <memory>
-#include <string>
 #include <utility>
 
 #include "cpp_polymorphic_value.h"
@@ -27,8 +26,7 @@
 
 namespace stonks::restsdk {
 namespace {
-[[nodiscard]] auto HttpMethodFromNetworkMethod(network::Method method)
-    -> web::http::method {
+[[nodiscard]] auto HttpMethodFromNetworkMethod(network::Method method) {
   switch (method) {
     case network::Method::kGet:
       return web::http::methods::GET;
@@ -43,8 +41,7 @@ namespace {
   Expects(false);
 }
 
-[[nodiscard]] auto NetworkStatusFromHttpStatus(web::http::status_code status)
-    -> network::Status {
+[[nodiscard]] auto NetworkStatusFromHttpStatus(web::http::status_code status) {
   switch (status) {
     case web::http::status_codes::OK:
       return network::Status::kOk;
@@ -86,8 +83,7 @@ namespace {
   Expects(false);
 }
 
-[[nodiscard]] auto ConvertToRequestParam(const network::IJson &json)
-    -> std::string {
+[[nodiscard]] auto ConvertToRequestParam(const network::IJson &json) {
   const auto &rest_json = json.GetNativeHandle();
 
   if (rest_json->is_string()) {
@@ -113,8 +109,7 @@ namespace {
   return http_request;
 }
 
-[[nodiscard]] auto FetchWebUriFromRequest(const network::RestRequest &request)
-    -> web::uri {
+[[nodiscard]] auto FetchWebUriFromRequest(const network::RestRequest &request) {
   auto uri_builder = web::http::uri_builder{request.endpoint.uri.value};
 
   for (const auto &[key, value] : request.params) {

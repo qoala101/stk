@@ -18,8 +18,8 @@
 
 namespace stonks::sqlite {
 namespace {
-auto GetColumns(const std::vector<sqldb::CellDefinition> &cell_definitions)
-    -> std::vector<sqldb::Column> {
+[[nodiscard]] auto GetColumns(
+    const std::vector<sqldb::CellDefinition> &cell_definitions) {
   auto columns = cell_definitions |
                  ranges::views::transform([](const auto &cell_definition) {
                    return cell_definition.column;
@@ -29,8 +29,8 @@ auto GetColumns(const std::vector<sqldb::CellDefinition> &cell_definitions)
   return columns;
 }
 
-auto GetCellTypes(const std::vector<sqldb::CellDefinition> &cell_definitions)
-    -> std::vector<sqldb::DataType> {
+[[nodiscard]] auto GetCellTypes(
+    const std::vector<sqldb::CellDefinition> &cell_definitions) {
   auto cell_types = cell_definitions |
                     ranges::views::transform([](const auto &cell_definition) {
                       return cell_definition.data_type;

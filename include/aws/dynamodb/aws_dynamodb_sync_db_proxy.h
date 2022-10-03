@@ -55,15 +55,14 @@ class SyncDbProxy : public nosqldb::IDb {
   [[nodiscard]] auto GetTableStatus(const nosqldb::Table &table) const
       -> cpp::Opt<Aws::DynamoDB::Model::TableStatus>;
 
-  [[nodiscard]] auto IsTableExists(const nosqldb::Table &table) const -> bool;
+  [[nodiscard]] auto IsTableExists(const nosqldb::Table &table) const;
 
-  [[nodiscard]] auto IsTableReadyForUse(const nosqldb::Table &table) const
-      -> bool;
+  [[nodiscard]] auto IsTableReadyForUse(const nosqldb::Table &table) const;
 
   [[nodiscard]] auto IsItemExists(const nosqldb::Table &table,
-                                  const nosqldb::Key &key) const -> bool;
+                                  const nosqldb::Key &key) const;
   [[nodiscard]] auto IsItemExists(const nosqldb::Table &table,
-                                  const nosqldb::Item &item) const -> bool;
+                                  const nosqldb::Item &item) const;
 
   AsyncDb async_db_;
 };

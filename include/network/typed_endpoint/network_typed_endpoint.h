@@ -22,7 +22,7 @@ using ParseTypeCheck = fu2::function<void(const IJson &) const>;
  * @brief Convenience API to create parse type check.
  */
 template <Parsable T>
-auto ExpectedType() -> ParseTypeCheck {
+auto ExpectedType() {
   return [](const IJson &json) { std::ignore = ParseFromJson<T>(json); };
 }
 

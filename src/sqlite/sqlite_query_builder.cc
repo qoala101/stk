@@ -22,11 +22,11 @@
 
 namespace stonks::sqlite {
 namespace {
-auto IsColumnPrimaryKey(const sqldb::ColumnDefinition &column) -> bool {
+[[nodiscard]] auto IsColumnPrimaryKey(const sqldb::ColumnDefinition &column) {
   return column.primary_key;
 }
 
-auto IsColumnForeignKey(const sqldb::ColumnDefinition &column) -> bool {
+[[nodiscard]] auto IsColumnForeignKey(const sqldb::ColumnDefinition &column) {
   return column.foreign_key.has_value();
 }
 }  // namespace

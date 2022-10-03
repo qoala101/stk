@@ -29,7 +29,7 @@ Json::Json(std::string_view value)
 Json::Json(IJson::NativeHandle impl) : native_handle_{std::move(impl)} {}
 
 template <cpp::DecaysTo<Json> This>
-auto Json::CloneImpl(This& t) -> cpp::NnUp<IJson> {
+auto Json::CloneImpl(This& t) {
   return cpp::MakeNnUp<Json>(cpp::MoveIfNotConst<This>(t.native_handle_));
 }
 
@@ -40,7 +40,7 @@ auto Json::clone() -> cpp::NnUp<IJson> { return CloneImpl(*this); }
 auto Json::IsNull() const -> bool { return native_handle_->is_null(); }
 
 template <cpp::DecaysTo<Json> This>
-auto Json::GetChildImpl(This& t, std::string_view key) -> cpp::Pv<IJson> {
+auto Json::GetChildImpl(This& t, std::string_view key) {
   return cpp::MakePv<IJson, restsdk::Json>(IJson::NativeHandle{
       cpp::MoveIfNotConst<This>(t.native_handle_->at(key.data()))});
 }
@@ -59,7 +59,7 @@ void Json::SetChild(std::string key, cpp::Pv<IJson> child) {
 }
 
 template <cpp::DecaysTo<Json> This>
-auto Json::GetChildImpl(This& t, int index) -> cpp::Pv<IJson> {
+auto Json::GetChildImpl(This& t, int index) {
   return cpp::MakePv<IJson, restsdk::Json>(IJson::NativeHandle{
       cpp::MoveIfNotConst<This>(t.native_handle_->as_array().at(index))});
 }
@@ -96,8 +96,7 @@ auto Json::GetSize() const -> int {
 }
 
 template <cpp::DecaysTo<Json> This>
-auto Json::GetNativeHandleImpl(This& t)
-    -> cpp::CopyConst<This, IJson::NativeHandle>& {
+auto Json::GetNativeHandleImpl(This& t) -> auto& {
   return t.native_handle_;
 }
 

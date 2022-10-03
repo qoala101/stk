@@ -40,8 +40,7 @@ auto IJson::NativeHandle::operator=(NativeHandle &&) noexcept
 IJson::NativeHandle::~NativeHandle() = default;
 
 template <cpp::DecaysTo<IJson::NativeHandle> This>
-auto IJson::NativeHandle::OperatorAsteriskImpl(This &t)
-    -> cpp::CopyConst<This, web::json::value> & {
+auto IJson::NativeHandle::OperatorAsteriskImpl(This &t) -> auto & {
   return *t.json_;
 }
 

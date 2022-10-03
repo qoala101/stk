@@ -3,7 +3,6 @@
 
 #include <variant>
 
-#include "cpp_copy_const.h"
 #include "cpp_variant_struct.h"
 #include "sqldb_types.h"
 
@@ -32,8 +31,7 @@ class TableVariant
 
  private:
   template <cpp::DecaysTo<TableVariant> This>
-  [[nodiscard]] static auto GetTableImpl(This &t)
-      -> cpp::CopyConst<This, Table> &;
+  [[nodiscard]] static auto GetTableImpl(This &t) -> auto &;
 };
 
 }  // namespace stonks::sqldb::qbf

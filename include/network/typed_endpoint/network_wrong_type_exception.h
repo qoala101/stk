@@ -4,7 +4,6 @@
 #include <string>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
-#include "cpp_copy_const.h"
 #include "cpp_polymorphic_value.h"
 #include "network_exception.h"
 #include "network_i_json.h"
@@ -33,8 +32,7 @@ class WrongTypeException : public Exception {
 
  private:
   template <cpp::DecaysTo<WrongTypeException> This>
-  [[nodiscard]] static auto GetJsonImpl(This &t)
-      -> cpp::CopyConst<This, cpp::Pv<IJson>> &;
+  [[nodiscard]] static auto GetJsonImpl(This &t) -> auto &;
 
   cpp::Pv<IJson> json_{};
 };

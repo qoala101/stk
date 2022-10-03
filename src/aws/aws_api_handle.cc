@@ -14,7 +14,7 @@
 
 namespace stonks::aws {
 namespace {
-[[nodiscard]] auto Options() -> const Aws::SDKOptions & {
+[[nodiscard]] auto Options() -> auto & {
   static const auto kOptions = Aws::SDKOptions{};
   return kOptions;
 }
@@ -48,8 +48,7 @@ class ApiHandleImpl {
 }  // namespace detail
 
 namespace {
-[[nodiscard]] auto GetCachedApiHandle(cpp::NnUp<log::ILogger> logger)
-    -> cpp::NnSp<detail::ApiHandleImpl> {
+[[nodiscard]] auto GetCachedApiHandle(cpp::NnUp<log::ILogger> logger) {
   static auto last_instance = cpp::Wp<detail::ApiHandleImpl>{};
 
   auto last_instance_lock = last_instance.lock();

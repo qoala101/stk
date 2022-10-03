@@ -8,8 +8,8 @@ namespace stonks::sqldb {
  * @brief Transforms arguments to values.
  */
 template <typename... Ts>
-auto AsValues(Ts &&...ts) -> std::vector<Value> {
-  return {Value{std::forward<Ts>(ts)}...};
+auto AsValues(Ts &&...ts) {
+  return std::vector<Value>{Value{std::forward<Ts>(ts)}...};
 }
 }  // namespace stonks::sqldb
 
