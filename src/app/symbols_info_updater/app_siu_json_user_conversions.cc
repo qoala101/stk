@@ -3,7 +3,7 @@
 #include "app_siu_types.h"
 #include "cpp_typed_struct.h"
 #include "network_i_json.h"
-#include "network_json_basic_conversions.h"
+#include "network_json_base_conversions.h"
 #include "network_json_common_conversions.h"
 #include "network_json_conversions_facades.h"
 

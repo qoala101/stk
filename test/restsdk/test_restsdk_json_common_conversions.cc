@@ -10,7 +10,7 @@
 
 #include "cpp_optional.h"
 #include "gtest/gtest_pred_impl.h"
-#include "network_json_basic_conversions.h"
+#include "network_json_base_conversions.h"
 #include "network_json_common_conversions.h"
 #include "network_json_conversions_facades.h"
 

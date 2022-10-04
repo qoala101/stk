@@ -15,7 +15,7 @@
 #include "network_i_json.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
-#include "network_json_basic_conversions.h"
+#include "network_json_base_conversions.h"
 #include "network_json_common_conversions.h"
 #include "network_json_conversions_facades.h"
 #include "network_rest_request_builder.h"

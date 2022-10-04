@@ -7,7 +7,7 @@
 
 #include "cpp_polymorphic_value.h"
 #include "network_i_json.h"
-#include "network_json_basic_conversions.h"
+#include "network_json_base_conversions.h"
 #include "restsdk_json.h"
 #include "restsdk_json_native_handle.h"
 

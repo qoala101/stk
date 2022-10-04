@@ -17,10 +17,10 @@
 #include "cpp_polymorphic_value.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_json.h"
-#include "network_json_basic_conversions.h"
+#include "network_json_base_conversions.h"
 
 /**
- * @file Common conversions based on basic ones and standard templates.
+ * @file Common conversions based on the base ones and standard templates.
  */
 
 namespace stonks::network {

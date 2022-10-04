@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_JSON_BASIC_CONVERSIONS_H_
-#define STONKS_NETWORK_NETWORK_JSON_BASIC_CONVERSIONS_H_
+#ifndef STONKS_NETWORK_NETWORK_JSON_BASE_CONVERSIONS_H_
+#define STONKS_NETWORK_NETWORK_JSON_BASE_CONVERSIONS_H_
 
 #include <polymorphic_value.h>
 
@@ -11,9 +11,9 @@
 #include "network_i_json.h"
 
 /**
- * @file List of basic type conversions which should be provided by the network
- * library implementer. Client could then use those for conversion
- * of user types.
+ * @file List of simple types conversions which should be provided
+ * by the network library implementer. Client could then use those
+ * for conversion of user types.
  */
 
 namespace stonks::network {
@@ -59,4 +59,4 @@ struct JsonParser {
 [[nodiscard]] auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson>;
 }  // namespace stonks::network
 
-#endif  // STONKS_NETWORK_NETWORK_JSON_BASIC_CONVERSIONS_H_
+#endif  // STONKS_NETWORK_NETWORK_JSON_BASE_CONVERSIONS_H_

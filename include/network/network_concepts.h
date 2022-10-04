@@ -2,7 +2,7 @@
 #define STONKS_NETWORK_NETWORK_CONCEPTS_H_
 
 #include "network_i_json.h"
-#include "network_json_basic_conversions.h"
+#include "network_json_base_conversions.h"
 
 /**
  * @file Common network library concepts.

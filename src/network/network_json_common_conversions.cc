@@ -4,7 +4,7 @@
 #include <string_view>
 #include <variant>
 
-#include "network_json_basic_conversions.h"
+#include "network_json_base_conversions.h"
 #include "network_json_conversions_facades.h"
 
 namespace stonks::network {
