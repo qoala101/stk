@@ -6,9 +6,11 @@
 #include "cpp_polymorphic_value.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_json.h"
-#include "network_json_basic_conversions.h"
 
 namespace stonks::network {
+template <Parsable T>
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
+
 /**
  * @brief Implicitly converts JSON to any type which can be parsed from it.
  */
@@ -21,8 +23,8 @@ class AutoParsable {
    */
   template <Parsable T>
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  operator T() {
-    return JsonParser<std::decay_t<T>>{}(*json_);
+  [[nodiscard]] operator T() {
+    return ParseFromJson<std::decay_t<T>>(*json_);
   }
 
  private:

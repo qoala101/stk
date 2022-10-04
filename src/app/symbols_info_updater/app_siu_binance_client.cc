@@ -5,7 +5,6 @@
 #include "app_siu_endpoints.h"
 #include "network_rest_client.h"
 #include "network_rest_client_request_builder.h"
-#include "core_types.h"
 
 namespace stonks::app::siu {
 BinanceClient::BinanceClient(network::RestClient rest_client)

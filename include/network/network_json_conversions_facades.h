@@ -33,6 +33,14 @@ void BuildJsonFromImpl(IJson &json, Key &&key, Value &&value,
 }  // namespace detail
 
 /**
+ * @brief Alias for JSON parser operator which converts JSON to an object.
+ */
+template <Parsable T>
+[[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
+  return JsonParser<T>{}(json);
+}
+
+/**
  * @brief Constructs object of type T by passing parsed JSON children
  * as constructor arguments.
  * @param keys List of JSON children names.
@@ -47,7 +55,7 @@ template <Parsable T, cpp::DecaysTo<IJson> Json, typename... Keys>
  */
 template <Parsable T, typename Key>
 [[nodiscard]] auto ParseFromJsonChild(const IJson &json, Key &&child_key) {
-  return JsonParser<T>{}(*json.GetChild(std::forward<Key>(child_key)));
+  return ParseFromJson<T>(*json.GetChild(std::forward<Key>(child_key)));
 }
 
 /**

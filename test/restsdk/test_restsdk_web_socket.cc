@@ -62,7 +62,7 @@ class WebSocketHandler : public stonks::network::IWsMessageHandler {
   void HandleMessage(stonks::network::WsMessage message) const override {
     try {
       messages_->emplace_back(
-          stonks::network::JsonParser<MessageVariant>{}(*message));
+          stonks::network::ParseFromJson<MessageVariant>(*message));
     } catch (const std::exception &) {
     }
   }

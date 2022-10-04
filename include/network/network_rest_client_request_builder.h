@@ -11,8 +11,7 @@
 #include "cpp_optional.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_rest_request_sender.h"
-#include "network_json_basic_conversions.h"   // IWYU pragma: keep
-#include "network_json_common_conversions.h"  // IWYU pragma: keep
+#include "network_json_conversions_facades.h"
 #include "network_types.h"
 
 namespace stonks::network {
@@ -58,7 +57,7 @@ class RequestBuilder {
    */
   template <Parsable T>
   [[nodiscard]] auto AndReceive() const {
-    return JsonParser<T>{}(*SendRequestAndGetResult());
+    return ParseFromJson<T>(*SendRequestAndGetResult());
   }
 
   /**
@@ -67,7 +66,7 @@ class RequestBuilder {
    */
   template <Parsable T>
   [[nodiscard]] auto AndReceive() {
-    return JsonParser<T>{}(*SendRequestAndGetResult());
+    return ParseFromJson<T>(*SendRequestAndGetResult());
   }
 
  private:

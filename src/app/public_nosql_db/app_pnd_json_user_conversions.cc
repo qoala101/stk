@@ -1,5 +1,6 @@
 #include "app_pnd_json_user_conversions.h"
 
+#include "network_json_basic_conversions.h"
 #include "network_json_conversions_facades.h"
 #include "nosqldb_types.h"
 

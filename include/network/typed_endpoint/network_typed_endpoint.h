@@ -10,6 +10,7 @@
 #include "network_i_json.h"
 #include "network_json_basic_conversions.h"
 #include "network_json_common_conversions.h"
+#include "network_json_conversions_facades.h"
 #include "network_types.h"
 
 namespace stonks::network {
@@ -24,7 +25,7 @@ using ParseTypeCheck = fu2::function<void(const IJson &) const>;
  */
 template <Parsable T>
 auto ExpectedType() {
-  return [](const IJson &json) { std::ignore = JsonParser<T>{}(json); };
+  return [](const IJson &json) { std::ignore = ParseFromJson<T>(json); };
 }
 
 /**

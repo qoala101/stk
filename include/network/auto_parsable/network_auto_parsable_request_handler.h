@@ -8,6 +8,7 @@
 #include "network_aprh_handler_variant.h"
 #include "network_auto_parsable_request.h"
 #include "network_i_rest_request_handler.h"
+#include "network_json_basic_conversions.h"
 #include "network_types.h"
 
 namespace stonks::network {

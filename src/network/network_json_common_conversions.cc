@@ -13,18 +13,7 @@ auto ConvertToJson(const char *value) -> cpp::Pv<IJson> {
 }
 
 template <>
-auto JsonParser<cpp::MessageException>::operator()(const IJson &json) const
-    -> Type {
-  return Type{ParseFromJsonChild<std::string>(json, "message")};
-}
-
-auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson> {
-  return BuildJsonFrom("message", value.what());
-}
-
-template <>
-auto JsonParser<std::monostate>::operator()(const IJson &json) const
-    -> Type {
+auto JsonParser<std::monostate>::operator()(const IJson &json) const -> Type {
   if (!json.IsNull()) {
     throw cpp::MessageException{"JSON is not null"};
   }
@@ -34,5 +23,15 @@ auto JsonParser<std::monostate>::operator()(const IJson &json) const
 
 auto ConvertToJson(std::monostate /*unused*/) -> cpp::Pv<IJson> {
   return CreateNullJson();
+}
+
+template <>
+auto JsonParser<cpp::MessageException>::operator()(const IJson &json) const
+    -> Type {
+  return Type{ParseFromJsonChild<std::string>(json, "message")};
+}
+
+auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson> {
+  return BuildJsonFrom("message", value.what());
 }
 }  // namespace stonks::network

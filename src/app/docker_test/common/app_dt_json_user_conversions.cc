@@ -8,7 +8,7 @@
 namespace stonks::network {
 template <>
 auto JsonParser<absl::Time>::operator()(const IJson &json) const -> Type {
-  return absl::FromUnixMillis(JsonParser<int64_t>{}(json));
+  return absl::FromUnixMillis(ParseFromJson<int64_t>(json));
 }
 
 auto ConvertToJson(absl::Time value) -> cpp::Pv<IJson> {

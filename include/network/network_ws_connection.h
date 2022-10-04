@@ -7,6 +7,7 @@
 #include "cpp_not_null.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_ws_client.h"
+#include "network_json_basic_conversions.h"
 #include "network_ws_types.h"
 
 namespace stonks::network {

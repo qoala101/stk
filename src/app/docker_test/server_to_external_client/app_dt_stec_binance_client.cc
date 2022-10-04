@@ -7,6 +7,7 @@
 #include "app_dt_stec_binance_types.h"
 #include "app_dt_types.h"
 #include "cpp_typed_struct.h"
+#include "network_json_common_conversions.h"
 #include "network_rest_client_request_builder.h"
 
 namespace stonks::app::dt::stec::binance {

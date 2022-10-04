@@ -22,6 +22,9 @@ template <typename T>
 concept Reference = std::is_lvalue_reference_v<T>;
 
 template <typename T>
+concept RawPointer = std::is_pointer_v<T>;
+
+template <typename T>
 concept Rvalue = std::is_rvalue_reference_v<T>;
 
 template <typename T, typename U>
@@ -40,6 +43,13 @@ concept IsTypedStruct =
 
 template <typename T>
 concept Vector = std::same_as<T, std::vector<typename T::value_type>>;
+
+template <typename T, typename... Args>
+concept ConstructibleFrom =
+    requires(Args &&...args) { T{std::forward<Args>(args)...}; };
+
+template <typename T, typename U>
+concept AssignableFrom = requires(T t, U &&u) { t = std::forward<U>(u); };
 
 template <typename T>
 concept VoidInvocable = requires(T &t) {
@@ -61,13 +71,6 @@ template <typename T, typename... Args>
 concept NonVoidInvocableTakes =
     requires(T &t, Args &&...args) { t(std::forward<Args>(args)...); } && !
 VoidInvocableTakes<T, Args...>;
-
-template <typename T, typename... Args>
-concept ConstructibleFrom =
-    requires(Args &&...args) { T{std::forward<Args>(args)...}; };
-
-template <typename T, typename U>
-concept AssignableFrom = requires(T t, U &&u) { t = std::forward<U>(u); };
 }  // namespace stonks::cpp
 
 #endif  // STONKS_CPP_CPP_CONCEPTS_H_

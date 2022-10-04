@@ -1,6 +1,8 @@
 #ifndef STONKS_CLI_CLI_OPTIONS_H_
 #define STONKS_CLI_CLI_OPTIONS_H_
 
+#include <stdint.h>
+
 #include <string>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
