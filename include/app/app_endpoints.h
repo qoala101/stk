@@ -5,6 +5,11 @@
 
 namespace stonks::app::endpoints {
 /**
+ * @copydoc sdb::App::InsertOrUpdateSymbolInfo
+ */
+[[nodiscard]] auto InsertOrUpdateSymbolInfo() -> const network::TypedEndpoint &;
+
+/**
  * @copydoc sdb::App::InsertSymbolPriceRecord
  */
 [[nodiscard]] auto InsertSymbolPriceRecord() -> const network::TypedEndpoint &;

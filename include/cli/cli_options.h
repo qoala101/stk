@@ -19,15 +19,10 @@ class App;
  */
 class Options {
  public:
-  /**
-   * @brief Get int option or default value if not provided.
-   */
   [[nodiscard]] auto GetOptionOr(std::string name, int default_value) const
       -> int;
-
-  /**
-   * @brief Get string option or default value if not provided.
-   */
+  [[nodiscard]] auto GetOptionOr(std::string name, int64_t default_value) const
+      -> int64_t;
   [[nodiscard]] auto GetOptionOr(std::string name,
                                  std::string default_value) const
       -> std::string;
@@ -37,8 +32,8 @@ class Options {
 
   explicit Options(cpp::NnSp<CLI::App> app);
 
-  template <typename T, cpp::DecaysTo<T> U>
-  [[nodiscard]] auto GetOptionOrImpl(std::string name, U &&default_value) const;
+  template <typename T>
+  [[nodiscard]] auto GetOptionOrImpl(std::string name, T &&default_value) const;
 
   cpp::NnSp<CLI::App> app_;
 };

@@ -32,6 +32,11 @@ void App::CreateTablesIfNotExist() {
   }
 }
 
+void App::InsertOrUpdateSymbolInfo(const core::SymbolInfo &info) {
+  fmt::print("Received symbol info: {} {} {}", info.symbol.value,
+             info.base_asset.asset.value, info.quote_asset.asset.value);
+}
+
 void App::InsertSymbolPriceRecord(const core::SymbolPriceRecord &record) {
   fmt::print("Received: {} {} {}", absl::FormatTime(record.time),
              record.symbol.value, record.price);

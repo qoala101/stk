@@ -10,6 +10,14 @@
 #include "network_typed_endpoint.h"
 
 namespace stonks::app::endpoints {
+auto InsertOrUpdateSymbolInfo() -> const network::TypedEndpoint& {
+  static const auto kEndpoint = network::TypedEndpoint{
+      .endpoint = {.method = network::Method::kPost,
+                   .uri = {"/InsertOrUpdateSymbolInfo"}},
+      .expected_types = {.body = network::ExpectedType<core::SymbolInfo>()}};
+  return kEndpoint;
+}
+
 auto InsertSymbolPriceRecord() -> const network::TypedEndpoint& {
   static const auto kEndpoint = network::TypedEndpoint{
       .endpoint = {.method = network::Method::kPost,

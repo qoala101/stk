@@ -12,16 +12,28 @@
 #include "not_null.hpp"
 
 namespace stonks::app::sdb {
+auto AppServer::InsertOrUpdateSymbolInfo(cpp::NnSp<App> app) {
+  return
+      [app = std::move(app)](network::AutoParsableRestRequest request) mutable {
+        app->InsertOrUpdateSymbolInfo(request.Body());
+      };
+}
+
+auto AppServer::InsertSymbolPriceRecord(cpp::NnSp<App> app) {
+  return
+      [app = std::move(app)](network::AutoParsableRestRequest request) mutable {
+        app->InsertSymbolPriceRecord(request.Body());
+      };
+}
+
 AppServer::AppServer(App app, network::RestServerBuilder rest_server_builder)
     : rest_server_{[&app, &rest_server_builder]() {
         auto shared_app = cpp::MakeNnSp<App>(std::move(app));
-
         return rest_server_builder
-            .Handling(
-                endpoints::InsertSymbolPriceRecord(),
-                [shared_app](network::AutoParsableRestRequest request) mutable {
-                  shared_app->InsertSymbolPriceRecord(request.Body());
-                })
+            .Handling(endpoints::InsertOrUpdateSymbolInfo(),
+                      InsertOrUpdateSymbolInfo(shared_app))
+            .Handling(endpoints::InsertSymbolPriceRecord(),
+                      InsertSymbolPriceRecord(std::move(shared_app)))
             .Start();
       }()} {}
 }  // namespace stonks::app::sdb

@@ -26,7 +26,7 @@
 
 namespace stonks::restsdk {
 namespace {
-[[nodiscard]] auto HttpMethodFromNetworkMethod(network::Method method) {
+[[nodiscard]] auto HttpMethodFrom(network::Method method) {
   switch (method) {
     case network::Method::kGet:
       return web::http::methods::GET;
@@ -41,7 +41,7 @@ namespace {
   Expects(false);
 }
 
-[[nodiscard]] auto NetworkStatusFromHttpStatus(web::http::status_code status) {
+[[nodiscard]] auto StatusFrom(web::http::status_code status) {
   switch (status) {
     case web::http::status_codes::OK:
       return network::Status::kOk;
@@ -93,10 +93,9 @@ namespace {
   return rest_json->serialize();
 }
 
-[[nodiscard]] auto HttpRequestFromNetworkRequest(
-    const network::RestRequest &request) {
-  auto http_request = web::http::http_request{
-      HttpMethodFromNetworkMethod(request.endpoint.method)};
+[[nodiscard]] auto HttpRequestFrom(const network::RestRequest &request) {
+  auto http_request =
+      web::http::http_request{HttpMethodFrom(request.endpoint.method)};
 
   for (const auto &[key, value] : request.headers) {
     http_request.headers().add(key, value);
@@ -109,7 +108,7 @@ namespace {
   return http_request;
 }
 
-[[nodiscard]] auto FetchWebUriFromRequest(const network::RestRequest &request) {
+[[nodiscard]] auto WebUriFrom(const network::RestRequest &request) {
   auto uri_builder = web::http::uri_builder{request.endpoint.uri.value};
 
   for (const auto &[key, value] : request.params) {
@@ -125,18 +124,18 @@ RestRequestSender::RestRequestSender(cpp::NnUp<log::ILogger> logger)
 
 auto RestRequestSender::SendRequestAndGetResponse(
     network::RestRequest request) const -> network::RestResponse {
-  const auto full_uri = FetchWebUriFromRequest(request);
+  const auto full_uri = WebUriFrom(request);
 
   logger_->LogImportantEvent(fmt::format(
       "Sending {} request to {}",
       magic_enum::enum_name(request.endpoint.method), full_uri.to_string()));
 
   auto http_client = web::http::client::http_client{full_uri};
-  const auto http_request = HttpRequestFromNetworkRequest(request);
+  const auto http_request = HttpRequestFrom(request);
   const auto http_response = http_client.request(http_request).get();
 
-  auto response = network::RestResponse{
-      .status = NetworkStatusFromHttpStatus(http_response.status_code())};
+  auto response =
+      network::RestResponse{.status = StatusFrom(http_response.status_code())};
   auto http_response_json = http_response.extract_json().get();
 
   if (!http_response_json.is_null()) {

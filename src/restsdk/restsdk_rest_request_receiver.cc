@@ -31,8 +31,7 @@
 
 namespace stonks::restsdk {
 namespace {
-[[nodiscard]] auto NetworkMethodFromHttpMethod(
-    const web::http::method &method) {
+[[nodiscard]] auto MethodFrom(const web::http::method &method) {
   if (method == web::http::methods::GET) {
     return network::Method::kGet;
   }
@@ -46,7 +45,7 @@ namespace {
   return network::Method::kOther;
 }
 
-[[nodiscard]] auto HttpStatusFromNetworkStatus(network::Status status) {
+[[nodiscard]] auto HttpStatusFrom(network::Status status) {
   switch (status) {
     case network::Status::kOk:
       return web::http::status_codes::OK;
@@ -61,13 +60,12 @@ namespace {
   }
 }
 
-[[nodiscard]] auto FetchEndpoint(const web::http::http_request &request) {
-  return network::Endpoint{
-      .method = NetworkMethodFromHttpMethod(request.method()),
-      .uri = {request.relative_uri().path()}};
+[[nodiscard]] auto EndpointFrom(const web::http::http_request &request) {
+  return network::Endpoint{.method = MethodFrom(request.method()),
+                           .uri = {request.relative_uri().path()}};
 }
 
-[[nodiscard]] auto FetchParams(const std::string &request_query) {
+[[nodiscard]] auto ParamsFrom(const std::string &request_query) {
   const auto raw_params =
       web::uri::split_query(web::uri::decode(request_query));
   auto params = network::Params{};
@@ -79,8 +77,7 @@ namespace {
   return params;
 }
 
-[[nodiscard]] auto FetchHeaders(
-    const web::http::http_headers &request_headers) {
+[[nodiscard]] auto HeadersFrom(const web::http::http_headers &request_headers) {
   auto headers = std::map<std::string, std::string>{};
 
   for (const auto &header : request_headers) {
@@ -90,7 +87,7 @@ namespace {
   return headers;
 }
 
-[[nodiscard]] auto FetchBody(const web::http::http_request &request)
+[[nodiscard]] auto BodyFrom(const web::http::http_request &request)
     -> network::Body {
   auto json = request.extract_json().get();
 
@@ -102,19 +99,17 @@ namespace {
       network::IJson::NativeHandle{std::move(json)});
 }
 
-[[nodiscard]] auto RestRequestFromHttpRequest(
-    const web::http::http_request &request) {
+[[nodiscard]] auto RestRequestFrom(const web::http::http_request &request) {
   return network::RestRequest{
-      .endpoint = FetchEndpoint(request),
-      .params = FetchParams(request.request_uri().query()),
-      .headers = FetchHeaders(request.headers()),
-      .body = FetchBody(request)};
+      .endpoint = EndpointFrom(request),
+      .params = ParamsFrom(request.request_uri().query()),
+      .headers = HeadersFrom(request.headers()),
+      .body = BodyFrom(request)};
 }
 
-[[nodiscard]] auto HttpResponseFromRestResponse(
-    const network::RestResponse &response) {
+[[nodiscard]] auto HttpResponseFrom(const network::RestResponse &response) {
   auto http_response =
-      web::http::http_response{HttpStatusFromNetworkStatus(response.status)};
+      web::http::http_response{HttpStatusFrom(response.status)};
 
   if (response.result.has_value()) {
     http_response.set_body(*(*response.result)->GetNativeHandle());
@@ -179,10 +174,10 @@ void RestRequestReceiver::HandleHttpRequest(
   logger_->LogEvent(
       fmt::format("Received {} request on {}", request.method(), request_uri));
 
-  auto rest_request = RestRequestFromHttpRequest(request);
+  auto rest_request = RestRequestFrom(request);
   const auto rest_response =
       handler_->HandleRequestAndGiveResponse(std::move(rest_request));
-  const auto http_response = HttpResponseFromRestResponse(rest_response);
+  const auto http_response = HttpResponseFrom(rest_response);
   request.reply(http_response).wait();
 
   logger_->LogEvent(fmt::format("Replied {} on {}",

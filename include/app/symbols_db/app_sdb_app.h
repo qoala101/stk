@@ -40,6 +40,11 @@ class App {
       -> std::vector<core::SymbolPriceRecord>;
 
   /**
+   * @brief Updates symbol info in the table.
+   */
+  void InsertOrUpdateSymbolInfo(const core::SymbolInfo &info);
+
+  /**
    * @brief Records symbol price.
    */
   void InsertSymbolPriceRecord(const core::SymbolPriceRecord &record);

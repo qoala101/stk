@@ -16,7 +16,7 @@
 
 auto main(int argc, const char *const *argv) -> int {
   stonks::cli::App{argc, argv}.Run([](const stonks::cli::Options &options) {
-    auto default_injector = stonks::di::MakeInjector(
+    auto base_injector = stonks::di::MakeInjector(
         stonks::app::injectors::MakeNetworkRestsdkInjector(),
         stonks::app::injectors::MakeLogSpdlogInjector(),
         stonks::di::BindTypeToValue<stonks::network::Uri>(
@@ -25,7 +25,7 @@ auto main(int argc, const char *const *argv) -> int {
 
     const auto injector = stonks::di::OverrideBindingsForType<
         stonks::app::dt::stec::PdsAppClient>(
-        default_injector,
+        base_injector,
         stonks::di::BindTypeToValue<stonks::network::Uri>(
             stonks::network::Uri{fmt::format(
                 "http://{}:{}", options.GetOptionOr("pds_host", "0.0.0.0"),

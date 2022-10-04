@@ -31,13 +31,13 @@ auto main(int argc, const char *const *argv) -> int {
         stonks::app::injectors::MakeLogSpdlogInjector(),
         stonks::di::BindTypeToValue<stonks::core::Symbol>(
             stonks::core::Symbol{options.GetOptionOr("symbol", "btcusdt")}),
-        stonks::di::BindTypeToFactoryFunction<stonks::network::TypedWsEndpoint,
-                                              TypedWsEndpointFactory,
-                                              stonks::core::Symbol>(),
         stonks::di::BindTypeToValue<stonks::network::Uri>(
             stonks::network::Uri{fmt::format(
                 "http://{}:{}", options.GetOptionOr("sdb_host", "0.0.0.0"),
-                options.GetOptionOr("sdb_port", 6506))}));
+                options.GetOptionOr("sdb_port", 6506))}),
+        stonks::di::BindTypeToFactoryFunction<stonks::network::TypedWsEndpoint,
+                                              TypedWsEndpointFactory,
+                                              stonks::core::Symbol>());
 
     return injector.create<stonks::app::sps::App>();
   });
