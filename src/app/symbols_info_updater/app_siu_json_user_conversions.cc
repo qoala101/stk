@@ -11,41 +11,38 @@ namespace stonks::network {
 template <>
 auto JsonParser<app::siu::BinanceSymbolExchangeInfo>::operator()(
     const IJson &json) const -> Type {
-  auto data = MakeFromJson<Type>(json, "symbol", "baseAsset", "quoteAsset");
-  // {
-  //     .symbol = ParseJsonElement<std::string>(json, "symbol"),
-  //     .base_asset = ParseJsonElement<std::string>(json, "baseAsset"),
-  //     .quote_asset = ParseJsonElement<std::string>(json, "quoteAsset")};
+  auto value = MakeFromJson<Type>(json, "symbol", "baseAsset", "quoteAsset");
+  auto filters = json.GetChild("filters");
 
-  // const auto& filters = json.at("filters").as_array();
+  for (auto i = 0; i < filters->GetSize(); ++i) {
+    auto filter = filters->GetChild(i);
+    const auto type = ParseFromJsonChild<std::string>(*filter, "filterType");
 
-  // for (const auto& filter : filters) {
-  //   const auto type = ParseJsonElement<std::string>(filter, "filterType");
+    if (type == "LOT_SIZE") {
+      value.min_quantity = ParseFromJsonChild<std::string>(*filter, "minQty");
+      value.step_size = ParseFromJsonChild<std::string>(*filter, "stepSize");
+      continue;
+    }
 
-  //   if (type == "LOT_SIZE") {
-  //     data.min_quantity = ParseJsonElement<double>(filter, "minQty");
-  //     data.step_size = ParseJsonElement<double>(filter, "stepSize");
-  //     continue;
-  //   }
+    if (type == "MIN_NOTIONAL") {
+      value.min_notional =
+          ParseFromJsonChild<std::string>(*filter, "minNotional");
+      continue;
+    }
 
-  //   if (type == "MIN_NOTIONAL") {
-  //     data.min_notional = ParseJsonElement<double>(filter, "minNotional");
-  //     continue;
-  //   }
+    if (type == "PRICE_FILTER") {
+      value.tick_size = ParseFromJsonChild<std::string>(*filter, "tickSize");
+      continue;
+    }
+  }
 
-  //   if (type == "PRICE_FILTER") {
-  //     data.tick_size = ParseJsonElement<double>(filter, "tickSize");
-  //     continue;
-  //   }
-  // }
-
-  return data;
+  return value;
 }
 
 template <>
-auto JsonParser<std::vector<app::siu::BinanceSymbolExchangeInfo>>::operator()(
+auto JsonParser<app::siu::BinanceExchangeInfo>::operator()(
     const IJson &json) const -> Type {
-  return {app::siu::BinanceSymbolExchangeInfo{.symbol = "btcusdt"},
-          app::siu::BinanceSymbolExchangeInfo{.symbol = "ethusdt"}};
+  return {ParseFromJsonChild<std::vector<app::siu::BinanceSymbolExchangeInfo>>(
+      json, "symbols")};
 }
 }  // namespace stonks::network

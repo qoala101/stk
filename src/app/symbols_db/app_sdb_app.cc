@@ -33,8 +33,10 @@ void App::CreateTablesIfNotExist() {
 }
 
 void App::InsertOrUpdateSymbolInfo(const core::SymbolInfo &info) {
-  fmt::print("Received symbol info: {} {} {}", info.symbol.value,
-             info.base_asset.asset.value, info.quote_asset.asset.value);
+  fmt::print("Received symbol info: {} {} {} {} {} {} {}", info.symbol.value,
+             info.base_asset.asset.value, info.base_asset.min_amount,
+             info.base_asset.price_step, info.quote_asset.asset.value,
+             info.quote_asset.min_amount, info.quote_asset.price_step);
 }
 
 void App::InsertSymbolPriceRecord(const core::SymbolPriceRecord &record) {

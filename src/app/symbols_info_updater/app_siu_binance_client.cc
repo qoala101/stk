@@ -10,9 +10,8 @@ namespace stonks::app::siu {
 BinanceClient::BinanceClient(network::RestClient rest_client)
     : rest_client_{std::move(rest_client)} {}
 
-auto BinanceClient::BinanceExchangeInfo() const
-    -> std::vector<BinanceSymbolExchangeInfo> {
+auto BinanceClient::BinanceExchangeInfo() const -> struct BinanceExchangeInfo {
   return rest_client_.Call(endpoints::BinanceExchangeInfo())
-      .AndReceive<std::vector<BinanceSymbolExchangeInfo>>();
+      .AndReceive<struct BinanceExchangeInfo>();
 }
 }  // namespace stonks::app::siu

@@ -30,7 +30,7 @@ auto main(int argc, const char *const *argv) -> int {
         stonks::app::injectors::MakeNetworkRestsdkInjector(),
         stonks::app::injectors::MakeLogSpdlogInjector(),
         stonks::di::BindTypeToValue<stonks::core::Symbol>(
-            stonks::core::Symbol{options.GetOptionOr("symbol", "btcusdt")}),
+            stonks::core::Symbol{options.GetOptionOr("symbol", "BTCUSDT")}),
         stonks::di::BindTypeToValue<stonks::network::Uri>(
             stonks::network::Uri{fmt::format(
                 "http://{}:{}", options.GetOptionOr("sdb_host", "0.0.0.0"),

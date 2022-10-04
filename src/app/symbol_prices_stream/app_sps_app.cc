@@ -12,11 +12,13 @@
 
 namespace stonks::app::sps {
 namespace {
-[[nodiscard]] auto SymbolPriceRecordFrom(
-    core::Symbol symbol, const BinanceSymbolBookTick &book_tick) {
+[[nodiscard]] auto SymbolPriceRecordFrom(core::Symbol symbol,
+                                         const BinanceBookTick &book_tick) {
   return core::SymbolPriceRecord{
       .symbol = std::move(symbol),
-      .price = {(book_tick.best_bid_price + book_tick.best_ask_price) / 2},
+      .price = {(std::stod(book_tick.best_bid_price) +
+                 std::stod(book_tick.best_ask_price)) /
+                2},
       .time = absl::Now()};
 }
 }  // namespace

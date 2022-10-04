@@ -14,8 +14,7 @@ auto BinanceExchangeInfo() -> const network::TypedEndpoint& {
       .endpoint = {.method = network::Method::kGet,
                    .uri = {"https://api.binance.com/api/v3/exchangeInfo"}},
       .expected_types = {
-          .result =
-              network::ExpectedType<std::vector<BinanceSymbolExchangeInfo>>()}};
+          .result = network::ExpectedType<struct BinanceExchangeInfo>()}};
   return kEndpoint;
 };
 }  // namespace stonks::app::siu::endpoints
