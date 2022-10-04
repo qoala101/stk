@@ -6,6 +6,7 @@
 #include "cpp_polymorphic_value.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_json.h"
+#include "network_json_basic_conversions.h"
 
 namespace stonks::network {
 /**
@@ -21,7 +22,7 @@ class AutoParsable {
   template <Parsable T>
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   operator T() {
-    return ParseFromJson<std::decay_t<T>>(*json_);
+    return JsonParser<std::decay_t<T>>{}(*json_);
   }
 
  private:

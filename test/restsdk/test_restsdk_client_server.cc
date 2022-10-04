@@ -366,7 +366,7 @@ TEST(ClientServer, ServerReceivedWrongTypeException) {
   ASSERT_TRUE(response.result.has_value());
   EXPECT_NO_THROW(
       std::ignore =
-          stonks::network::ParseFromJson<stonks::cpp::MessageException>(
+          stonks::network::JsonParser<stonks::cpp::MessageException>{}(
               **response.result));
 
   request =
@@ -383,7 +383,7 @@ TEST(ClientServer, ServerReceivedWrongTypeException) {
   ASSERT_TRUE(response.result.has_value());
   EXPECT_NO_THROW(
       std::ignore =
-          stonks::network::ParseFromJson<stonks::cpp::MessageException>(
+          stonks::network::JsonParser<stonks::cpp::MessageException>{}(
               **response.result));
 }
 

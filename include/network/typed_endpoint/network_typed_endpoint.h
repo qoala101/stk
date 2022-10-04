@@ -8,6 +8,7 @@
 #include "cpp_optional.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_json.h"
+#include "network_json_basic_conversions.h"
 #include "network_json_common_conversions.h"
 #include "network_types.h"
 
@@ -23,7 +24,7 @@ using ParseTypeCheck = fu2::function<void(const IJson &) const>;
  */
 template <Parsable T>
 auto ExpectedType() {
-  return [](const IJson &json) { std::ignore = ParseFromJson<T>(json); };
+  return [](const IJson &json) { std::ignore = JsonParser<T>{}(json); };
 }
 
 /**

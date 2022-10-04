@@ -8,8 +8,8 @@
 
 namespace stonks::network {
 template <>
-auto ParseFromJson(const IJson &json) -> absl::Time {
-  return absl::FromUnixMillis(ParseFromJson<int64_t>(json));
+auto JsonParser<absl::Time>::operator()(const IJson &json) const -> Type {
+  return absl::FromUnixMillis(JsonParser<int64_t>{}(json));
 }
 
 auto ConvertToJson(absl::Time value) -> cpp::Pv<IJson> {
@@ -17,20 +17,19 @@ auto ConvertToJson(absl::Time value) -> cpp::Pv<IJson> {
 }
 
 template <>
-auto ParseFromJson(const IJson &json) -> core::AssetInfo {
-  return MakeFromJson<core::AssetInfo>(json, "asset", "min_amount",
-                                       "price_step");
+auto JsonParser<core::AssetInfo>::operator()(const IJson &json) const -> Type {
+  return MakeFromJson<Type>(json, "asset", "min_amount", "price_step");
 }
 
 template <>
-auto ParseFromJson(const IJson &json) -> core::SymbolInfo {
-  return MakeFromJson<core::SymbolInfo>(json, "symbol", "base_asset",
-                                        "quote_asset");
+auto JsonParser<core::SymbolInfo>::operator()(const IJson &json) const -> Type {
+  return MakeFromJson<Type>(json, "symbol", "base_asset", "quote_asset");
 }
 
 template <>
-auto ParseFromJson(const IJson &json) -> core::SymbolPriceRecord {
-  return MakeFromJson<core::SymbolPriceRecord>(json, "symbol", "price", "time");
+auto JsonParser<core::SymbolPriceRecord>::operator()(const IJson &json) const
+    -> Type {
+  return MakeFromJson<Type>(json, "symbol", "price", "time");
 }
 }  // namespace stonks::network
 

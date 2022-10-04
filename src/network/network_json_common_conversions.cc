@@ -13,9 +13,9 @@ auto ConvertToJson(const char *value) -> cpp::Pv<IJson> {
 }
 
 template <>
-auto ParseFromJson(const IJson &json) -> cpp::MessageException {
-  return cpp::MessageException{
-      ParseFromJsonChild<std::string>(json, "message")};
+auto JsonParser<cpp::MessageException>::operator()(const IJson &json) const
+    -> Type {
+  return Type{ParseFromJsonChild<std::string>(json, "message")};
 }
 
 auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson> {
@@ -23,7 +23,8 @@ auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson> {
 }
 
 template <>
-auto ParseFromJson(const IJson &json) -> std::monostate {
+auto JsonParser<std::monostate>::operator()(const IJson &json) const
+    -> Type {
   if (!json.IsNull()) {
     throw cpp::MessageException{"JSON is not null"};
   }

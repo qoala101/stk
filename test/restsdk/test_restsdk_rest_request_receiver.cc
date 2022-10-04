@@ -44,7 +44,7 @@ struct SymbolPrice {
 
 namespace stonks::network {
 template <>
-auto ParseFromJson(const IJson &json) -> SymbolPrice {
+auto JsonParser<SymbolPrice>::operator()(const IJson &json) const -> Type {
   return {.symbol = ParseFromJsonChild<SymbolName>(json, "symbol"),
           .price = std::stod(ParseFromJsonChild<std::string>(json, "price"))};
 }
@@ -69,9 +69,9 @@ TEST(RestRequestReceiver, SendRequest) {
       EXPECT_EQ(request.endpoint.uri, stonks::network::Uri{"/Test"});
       return {stonks::network::Status::kOk,
               stonks::network::ConvertToJson(SymbolPrice{
-                  .symbol = stonks::network::ParseFromJson<stonks::SymbolName>(
+                  .symbol = stonks::network::JsonParser<stonks::SymbolName>{}(
                       **request.body),
-                  .price = stonks::network::ParseFromJson<double>(
+                  .price = stonks::network::JsonParser<double>{}(
                       *request.params.at("price"))})};
     }
   };
@@ -95,7 +95,7 @@ TEST(RestRequestReceiver, SendRequest) {
   const auto sender =
       test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
   const auto response = sender.SendRequestAndGetResponse(request);
-  const auto response_price = ParseFromJson<SymbolPrice>(**response.result);
+  const auto response_price = stonks::network::JsonParser<SymbolPrice>{}(**response.result);
   EXPECT_EQ(response.status, stonks::network::Status::kOk);
   EXPECT_EQ(response_price.symbol, stonks::SymbolName{"BTCUSDT"});
   EXPECT_EQ(response_price.price, 123.456);

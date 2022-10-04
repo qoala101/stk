@@ -7,6 +7,7 @@
 #include "network_auto_parsable.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_json.h"
+#include "network_json_basic_conversions.h"
 #include "network_json_common_conversions.h"
 
 /**
@@ -46,7 +47,7 @@ template <Parsable T, cpp::DecaysTo<IJson> Json, typename... Keys>
  */
 template <Parsable T, typename Key>
 [[nodiscard]] auto ParseFromJsonChild(const IJson &json, Key &&child_key) {
-  return ParseFromJson<T>(*json.GetChild(std::forward<Key>(child_key)));
+  return JsonParser<T>{}(*json.GetChild(std::forward<Key>(child_key)));
 }
 
 /**

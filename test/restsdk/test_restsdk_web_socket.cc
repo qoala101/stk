@@ -40,8 +40,9 @@ using MessageVariant = std::variant<std::string, BinanceWebSocketMessage>;
 
 namespace stonks::network {
 template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> BinanceWebSocketMessage {
-  return MakeFromJson<BinanceWebSocketMessage>(json, "method", "params", "id");
+auto JsonParser<BinanceWebSocketMessage>::operator()(const IJson &json) const
+    -> Type {
+  return MakeFromJson<Type>(json, "method", "params", "id");
 }
 }  // namespace stonks::network
 
@@ -61,7 +62,7 @@ class WebSocketHandler : public stonks::network::IWsMessageHandler {
   void HandleMessage(stonks::network::WsMessage message) const override {
     try {
       messages_->emplace_back(
-          stonks::network::ParseFromJson<MessageVariant>(*message));
+          stonks::network::JsonParser<MessageVariant>{}(*message));
     } catch (const std::exception &) {
     }
   }

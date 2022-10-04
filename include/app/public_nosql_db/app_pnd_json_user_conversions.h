@@ -5,11 +5,6 @@
 #include "network_i_json.h"
 #include "nosqldb_types.h"
 
-namespace stonks::network {
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> nosqldb::Item;
-}  // namespace stonks::network
-
 namespace stonks::nosqldb {
 [[nodiscard]] auto ConvertToJson(const Item &value) -> cpp::Pv<network::IJson>;
 }  // namespace stonks::nosqldb

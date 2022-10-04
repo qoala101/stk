@@ -3,9 +3,9 @@
 #include <utility>
 
 #include "app_siu_endpoints.h"
-#include "app_siu_json_user_conversions.h"
 #include "network_rest_client.h"
 #include "network_rest_client_request_builder.h"
+#include "core_types.h"
 
 namespace stonks::app::siu {
 BinanceClient::BinanceClient(network::RestClient rest_client)

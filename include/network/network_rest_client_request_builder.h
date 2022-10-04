@@ -58,7 +58,7 @@ class RequestBuilder {
    */
   template <Parsable T>
   [[nodiscard]] auto AndReceive() const {
-    return ParseFromJson<T>(*SendRequestAndGetResult());
+    return JsonParser<T>{}(*SendRequestAndGetResult());
   }
 
   /**
@@ -67,7 +67,7 @@ class RequestBuilder {
    */
   template <Parsable T>
   [[nodiscard]] auto AndReceive() {
-    return ParseFromJson<T>(*SendRequestAndGetResult());
+    return JsonParser<T>{}(*SendRequestAndGetResult());
   }
 
  private:

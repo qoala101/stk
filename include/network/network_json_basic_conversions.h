@@ -18,28 +18,17 @@
 
 namespace stonks::network {
 template <typename T>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
+struct JsonParser {
+  using Type = T;
+
+  [[nodiscard]] auto operator()(const IJson &json) const -> Type;
+};
 
 [[nodiscard]] auto CreateNullJson() -> cpp::Pv<IJson>;
-
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> bool;
 [[nodiscard]] auto ConvertToJson(bool value) -> cpp::Pv<IJson>;
-
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> int;
 [[nodiscard]] auto ConvertToJson(int value) -> cpp::Pv<IJson>;
-
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> int64_t;
 [[nodiscard]] auto ConvertToJson(int64_t value) -> cpp::Pv<IJson>;
-
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> double;
 [[nodiscard]] auto ConvertToJson(double value) -> cpp::Pv<IJson>;
-
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> std::string;
 [[nodiscard]] auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson>;
 }  // namespace stonks::network
 

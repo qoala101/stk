@@ -9,18 +9,7 @@
 #include "network_json_basic_conversions.h"  // IWYU pragma: keep
 
 namespace stonks::network {
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> absl::Time;
 [[nodiscard]] auto ConvertToJson(absl::Time value) -> cpp::Pv<IJson>;
-
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> core::AssetInfo;
-
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> core::SymbolInfo;
-
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> core::SymbolPriceRecord;
 }  // namespace stonks::network
 
 namespace stonks::core {

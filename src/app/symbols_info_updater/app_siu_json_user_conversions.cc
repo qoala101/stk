@@ -1,16 +1,15 @@
-#include "app_siu_json_user_conversions.h"
-
 #include <vector>
 
 #include "app_siu_types.h"
+#include "core_types.h"
 #include "network_json_basic_conversions.h"
 #include "network_json_conversions_facades.h"
 
 namespace stonks::network {
 template <>
-auto ParseFromJson(const IJson &json) -> app::siu::BinanceSymbolExchangeInfo {
-  auto data = MakeFromJson<app::siu::BinanceSymbolExchangeInfo>(
-      json, "symbol", "baseAsset", "quoteAsset");
+auto JsonParser<app::siu::BinanceSymbolExchangeInfo>::operator()(
+    const IJson &json) const -> Type {
+  auto data = MakeFromJson<Type>(json, "symbol", "baseAsset", "quoteAsset");
   // {
   //     .symbol = ParseJsonElement<std::string>(json, "symbol"),
   //     .base_asset = ParseJsonElement<std::string>(json, "baseAsset"),
@@ -42,8 +41,8 @@ auto ParseFromJson(const IJson &json) -> app::siu::BinanceSymbolExchangeInfo {
 }
 
 template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json)
-    -> std::vector<app::siu::BinanceSymbolExchangeInfo> {
+auto JsonParser<std::vector<app::siu::BinanceSymbolExchangeInfo>>::operator()(
+    const IJson &json) const -> Type {
   return {app::siu::BinanceSymbolExchangeInfo{.symbol = "btcusdt"},
           app::siu::BinanceSymbolExchangeInfo{.symbol = "ethusdt"}};
 }

@@ -5,8 +5,8 @@
 
 namespace stonks::network {
 template <>
-auto ParseFromJson(const IJson &json) -> nosqldb::Item {
-  return MakeFromJson<nosqldb::Item>(json, "key", "value");
+auto JsonParser<nosqldb::Item>::operator()(const IJson &json) const -> Type {
+  return MakeFromJson<Type>(json, "key", "value");
 }
 }  // namespace stonks::network
 

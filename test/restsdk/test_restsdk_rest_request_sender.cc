@@ -51,7 +51,7 @@ struct AvgPrice {
 
 namespace stonks::network {
 template <>
-auto ParseFromJson(const IJson &json) -> AvgPrice {
+auto JsonParser<AvgPrice>::operator()(const IJson &json) const -> Type {
   return {.mins = ParseFromJsonChild<int>(json, "mins"),
           .price = std::stod(ParseFromJsonChild<std::string>(json, "price"))};
 }
@@ -137,13 +137,13 @@ TEST(RestRequestSender, SendRequest) {
       test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
   const auto response = sender.SendRequestAndGetResponse(request);
   const auto response_price =
-      stonks::network::ParseFromJson<AvgPrice>(**response.result);
+      stonks::network::JsonParser<AvgPrice>{}(**response.result);
   EXPECT_GT(response_price.mins, 0);
   EXPECT_GT(response_price.price, 0);
 
   const auto response_price_json =
       stonks::network::ConvertToJson(response_price);
-  const auto json_price = ParseFromJson<AvgPrice>(*response_price_json);
+  const auto json_price = stonks::network::JsonParser<AvgPrice>{}(*response_price_json);
   EXPECT_EQ(response_price, json_price);
 }
 }  // namespace

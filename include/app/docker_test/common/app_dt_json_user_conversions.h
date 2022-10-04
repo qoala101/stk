@@ -8,13 +8,7 @@
 #include "network_i_json.h"
 
 namespace stonks::network {
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> absl::Time;
 [[nodiscard]] auto ConvertToJson(absl::Time value) -> cpp::Pv<IJson>;
-
-template <>
-[[nodiscard]] auto ParseFromJson(const IJson &json)
-    -> app::dt::SymbolPriceRecord;
 }  // namespace stonks::network
 
 namespace stonks::app::dt {

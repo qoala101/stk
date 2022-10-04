@@ -7,8 +7,8 @@
 
 namespace stonks::network {
 template <>
-auto ParseFromJson(const IJson &json) -> absl::Time {
-  return absl::FromUnixMillis(ParseFromJson<int64_t>(json));
+auto JsonParser<absl::Time>::operator()(const IJson &json) const -> Type {
+  return absl::FromUnixMillis(JsonParser<int64_t>{}(json));
 }
 
 auto ConvertToJson(absl::Time value) -> cpp::Pv<IJson> {
@@ -16,9 +16,9 @@ auto ConvertToJson(absl::Time value) -> cpp::Pv<IJson> {
 }
 
 template <>
-auto ParseFromJson(const IJson &json) -> app::dt::SymbolPriceRecord {
-  return MakeFromJson<app::dt::SymbolPriceRecord>(json, "time", "symbol",
-                                                  "price");
+auto JsonParser<app::dt::SymbolPriceRecord>::operator()(const IJson &json) const
+    -> Type {
+  return MakeFromJson<Type>(json, "time", "symbol", "price");
 }
 }  // namespace stonks::network
 
