@@ -26,7 +26,6 @@ class Json : public network::IJson {
   explicit Json(int value);
   explicit Json(int64_t value);
   explicit Json(double value);
-  explicit Json(const char* value);
   explicit Json(std::string_view value);
   explicit Json(IJson::NativeHandle impl);
 

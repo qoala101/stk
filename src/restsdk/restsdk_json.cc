@@ -20,9 +20,6 @@ Json::Json(int64_t value) : native_handle_{web::json::value::number(value)} {}
 
 Json::Json(double value) : native_handle_{web::json::value::number(value)} {}
 
-Json::Json(const char* value)
-    : native_handle_{web::json::value::string(value)} {}
-
 Json::Json(std::string_view value)
     : native_handle_{web::json::value::string(value.data())} {}
 
