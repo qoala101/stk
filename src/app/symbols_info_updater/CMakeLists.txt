@@ -1,3 +1,4 @@
+find_package(cppcoro REQUIRED)
 find_package(fmt REQUIRED)
 
 add_executable(symbols_info_updater
@@ -18,5 +19,6 @@ target_link_libraries(symbols_info_updater
   PRIVATE libcli
   PRIVATE librestsdk
   PRIVATE libspdlog
+  PRIVATE cppcoro::cppcoro
   PRIVATE fmt::fmt
 )
