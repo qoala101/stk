@@ -21,6 +21,13 @@ class PreparedStatements {
   [[nodiscard]] auto InsertAsset() const -> const sqldb::IUpdateStatement &;
   [[nodiscard]] auto DeleteAsset() const -> const sqldb::IUpdateStatement &;
 
+  [[nodiscard]] auto SelectSymbolPriceRecords() const
+      -> const sqldb::ISelectStatement &;
+  [[nodiscard]] auto InsertSymbolPriceRecord() const
+      -> const sqldb::IUpdateStatement &;
+  [[nodiscard]] auto DeleteSymbolPriceRecords() const
+      -> const sqldb::IUpdateStatement &;
+
  private:
   cpp::NnSp<sqldb::IDb> db_;
   sqldb::QueryBuilderFacade query_builder_facade_;
@@ -28,6 +35,10 @@ class PreparedStatements {
   mutable cpp::Up<sqldb::ISelectStatement> select_assets_{};
   mutable cpp::Up<sqldb::IUpdateStatement> insert_asset_{};
   mutable cpp::Up<sqldb::IUpdateStatement> delete_asset_{};
+
+  mutable cpp::Up<sqldb::ISelectStatement> select_symbol_price_records_{};
+  mutable cpp::Up<sqldb::IUpdateStatement> insert_symbol_price_record_{};
+  mutable cpp::Up<sqldb::IUpdateStatement> delete_symbol_price_records_{};
 };
 }  // namespace stonks::app::sdb
 

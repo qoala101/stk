@@ -1,5 +1,11 @@
 #include "app_sdb_app.h"
 
+#include <absl/time/time.h>
+
+#include <compare>
+#include <functional>
+#include <limits>
+#include <memory>
 #include <range/v3/action/action.hpp>
 #include <range/v3/action/sort.hpp>
 #include <range/v3/action/unique.hpp>
@@ -8,9 +14,6 @@
 #include <range/v3/view/set_algorithm.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
-#include <compare>
-#include <functional>
-#include <memory>
 #include <string>
 #include <utility>
 
@@ -101,6 +104,50 @@ void App::UpdateAssets(std::vector<core::Asset> assets) {
       std::move(assets), std::bind_front(&App::SelectAssets, this),
       std::bind_front(&App::InsertAsset, this), [](const auto &) {},
       std::bind_front(&App::DeleteAsset, this));
+}
+
+auto App::SelectSymbolPriceRecords(const core::Symbol &symbol,
+                                   const absl::Time *start_time,
+                                   const absl::Time *end_time,
+                                   const int *limit) const
+    -> std::vector<core::SymbolPriceRecord> {
+  const auto start_time_value =
+      (start_time != nullptr) ? *start_time : absl::InfinitePast();
+  const auto end_time_value =
+      (end_time != nullptr) ? *end_time : absl::InfiniteFuture();
+  const auto limit_value =
+      (limit != nullptr) ? *limit : std::numeric_limits<int>::max();
+
+  const auto rows = prepared_statements_.SelectSymbolPriceRecords().Execute(
+      sqldb::AsValues(symbol, absl::ToUnixMillis(start_time_value),
+                      absl::ToUnixMillis(end_time_value), limit_value));
+
+  const auto &price = rows.GetColumnValues({"price"});
+  const auto &time = rows.GetColumnValues({"time"});
+
+  const auto num_rows = rows.GetSize();
+
+  auto price_ticks = std::vector<core::SymbolPriceRecord>{};
+  price_ticks.reserve(num_rows);
+
+  for (auto i = 0; i < num_rows; ++i) {
+    price_ticks.emplace_back(core::SymbolPriceRecord{
+        .symbol = symbol,
+        .price = core::Price{price[i].GetDouble()},
+        .time = absl::FromUnixMillis(time[i].GetInt64())});
+  }
+
+  return price_ticks;
+}
+
+void App::InsertSymbolPriceRecord(core::SymbolPriceRecord record) {
+  prepared_statements_.InsertSymbolPriceRecord().Execute(sqldb::AsValues(
+      std::move(record.symbol), absl::ToUnixMillis(record.time), record.price));
+}
+
+void App::DeleteSymbolPriceRecords(absl::Time before_time) {
+  prepared_statements_.DeleteSymbolPriceRecords().Execute(
+      sqldb::AsValues(absl::ToUnixMillis(before_time)));
 }
 
 void App::InsertAsset(core::Asset asset) {

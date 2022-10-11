@@ -1,8 +1,12 @@
 #include "app_sdb_prepared_statements.h"
 
+#include <fmt/core.h>
 #include <fmt/format.h>
 
 #include <gsl/assert>
+#include <memory>
+#include <string>
+#include <utility>
 
 #include "app_sdb_tables.h"
 #include "cpp_not_null.h"
@@ -13,6 +17,9 @@
 #include "sqldb_types.h"
 
 namespace stonks::app::sdb {
+// NOLINTNEXTLINE(*-unused-using-decls)
+using fmt::literals::operator""_a;
+
 namespace {
 template <typename Statement>
 [[nodiscard]] auto InitLazily(
@@ -63,6 +70,61 @@ auto PreparedStatements::DeleteAsset() const -> const sqldb::IUpdateStatement& {
                      .Where(fmt::format("{}.{} = ?", tables::Asset::kTable,
                                         tables::Asset::kName))
                      .Build();
+    return db_->PrepareStatement(std::move(query));
+  });
+}
+
+auto PreparedStatements::SelectSymbolPriceRecords() const
+    -> const sqldb::ISelectStatement& {
+  return InitLazily(select_symbol_price_records_, [this]() {
+    const auto& table = tables::SymbolPriceRecord::Definition();
+    const auto columns =
+        table.GetColumnDefinitions({{tables::SymbolPriceRecord::kPrice},
+                                    {tables::SymbolPriceRecord::kTime}});
+    auto query = query_builder_facade_.Select()
+                     .Columns(columns)
+                     .FromTable(table)
+                     .Where(fmt::format(
+                         "{table0}.{column0} = "
+                         "(SELECT id FROM {table1} WHERE name = ?) AND "
+                         "{table0}.{column1} >= ? AND "
+                         "{table0}.{column1} <= ?",
+                         "table0"_a = tables::SymbolPriceRecord::kTable,
+                         "table1"_a = tables::SymbolInfo::kTable,
+                         "column0"_a = tables::SymbolPriceRecord::kSymbolId,
+                         "column1"_a = tables::SymbolPriceRecord::kTime))
+                     .Limited()
+                     .Build();
+    return db_->PrepareStatement(std::move(query), columns);
+  });
+}
+
+auto PreparedStatements::InsertSymbolPriceRecord() const
+    -> const sqldb::IUpdateStatement& {
+  return InitLazily(insert_symbol_price_record_, [this]() {
+    auto query = sqldb::Query{
+        fmt::format("INSERT INTO {table0} "
+                    "({column0}, {column1}, {column2}) "
+                    "VALUES "
+                    "((SELECT id FROM {table1} WHERE name = ?), ?, ?)",
+                    "table0"_a = tables::SymbolPriceRecord::kTable,
+                    "table1"_a = tables::SymbolInfo::kTable,
+                    "column0"_a = tables::SymbolPriceRecord::kSymbolId,
+                    "column1"_a = tables::SymbolPriceRecord::kPrice,
+                    "column2"_a = tables::SymbolPriceRecord::kTime)};
+    return db_->PrepareStatement(std::move(query));
+  });
+}
+
+auto PreparedStatements::DeleteSymbolPriceRecords() const
+    -> const sqldb::IUpdateStatement& {
+  return InitLazily(insert_symbol_price_record_, [this]() {
+    auto query =
+        query_builder_facade_.Delete()
+            .FromTable(tables::SymbolPriceRecord::Definition())
+            .Where(fmt::format("{}.{} < ?", tables::SymbolPriceRecord::kTable,
+                               tables::SymbolPriceRecord::kTime))
+            .Build();
     return db_->PrepareStatement(std::move(query));
   });
 }

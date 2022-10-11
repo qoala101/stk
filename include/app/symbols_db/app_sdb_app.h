@@ -1,6 +1,8 @@
 #ifndef STONKS_APP_SYMBOLS_DB_APP_SDB_APP_H_
 #define STONKS_APP_SYMBOLS_DB_APP_SDB_APP_H_
 
+#include <absl/time/time.h>
+
 #include <vector>
 
 #include "app_sdb_prepared_statements.h"
@@ -24,6 +26,25 @@ class App {
    * @brief Updates the list of all assets.
    */
   void UpdateAssets(std::vector<core::Asset> assets);
+
+  /**
+   * @brief Selects symbol price records following the conditions.
+   */
+  [[nodiscard]] auto SelectSymbolPriceRecords(const core::Symbol &symbol,
+                                              const absl::Time *start_time,
+                                              const absl::Time *end_time,
+                                              const int *limit) const
+      -> std::vector<core::SymbolPriceRecord>;
+
+  /**
+   * @brief Records symbol price.
+   */
+  void InsertSymbolPriceRecord(core::SymbolPriceRecord record);
+
+  /**
+   * @brief Deletes symbol price records older than specified time.
+   */
+  void DeleteSymbolPriceRecords(absl::Time before_time);
 
  private:
   void CreateTablesIfNotExist();
