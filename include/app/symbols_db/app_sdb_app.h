@@ -6,6 +6,7 @@
 #include "app_sdb_prepared_statements.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
+#include "di_factory.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"
 
@@ -16,8 +17,8 @@ namespace stonks::app::sdb {
  */
 class App {
  public:
-  App(cpp::NnUp<sqldb::IDb> db, cpp::NnUp<sqldb::IQueryBuilder> query_builder,
-      PreparedStatements prepared_statements);
+  App(cpp::NnUp<sqldb::IDb> db,
+      di::Factory<sqldb::IQueryBuilder> query_builder_factory);
 
   /**
    * @brief Updates the list of all assets.
@@ -31,7 +32,7 @@ class App {
   void InsertAsset(core::Asset asset);
   void DeleteAsset(core::Asset asset);
 
-  cpp::NnUp<sqldb::IDb> db_;
+  cpp::NnSp<sqldb::IDb> db_;
   cpp::NnUp<sqldb::IQueryBuilder> query_builder_;
   PreparedStatements prepared_statements_;
 };

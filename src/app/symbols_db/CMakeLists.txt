@@ -5,6 +5,7 @@ add_executable(symbols_db
   app_sdb_app_server.cc
   app_sdb_app.cc
   app_sdb_main.cc
+  app_sdb_prepared_statements.cc
   app_sdb_tables.cc
 )
 

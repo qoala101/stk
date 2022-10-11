@@ -1,8 +1,5 @@
 #include "app_sdb_app.h"
 
-#include <compare>
-#include <functional>
-#include <memory>
 #include <range/v3/action/action.hpp>
 #include <range/v3/action/sort.hpp>
 #include <range/v3/action/unique.hpp>
@@ -11,6 +8,9 @@
 #include <range/v3/view/set_algorithm.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
+#include <compare>
+#include <functional>
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -24,6 +24,7 @@
 #include "sqldb_as_values.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
+#include "sqldb_query_builder_facade.h"
 #include "sqldb_rows.h"
 #include "sqldb_types.h"
 
@@ -78,11 +79,11 @@ void App::CreateTablesIfNotExist() {
 }
 
 App::App(cpp::NnUp<sqldb::IDb> db,
-         cpp::NnUp<sqldb::IQueryBuilder> query_builder,
-         PreparedStatements prepared_statements)
+         di::Factory<sqldb::IQueryBuilder> query_builder_factory)
     : db_{std::move(db)},
-      query_builder_{std::move(query_builder)},
-      prepared_statements_{std::move(prepared_statements)} {
+      query_builder_{query_builder_factory.Create()},
+      prepared_statements_{
+          db_, sqldb::QueryBuilderFacade{std::move(query_builder_factory)}} {
   CreateTablesIfNotExist();
 }
 
