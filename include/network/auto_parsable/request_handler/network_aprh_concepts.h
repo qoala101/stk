@@ -17,11 +17,10 @@ concept ConvertibleInvocable = requires(T &t) {
                                };
 
 template <typename T, typename... Args>
-concept ConvertibleInvocableTakes = requires(T &t, Args &&...args) {
-                                      {
-                                        t(std::forward<Args>(args)...)
-                                        } -> Convertible;
-                                    } && cpp::NonVoidInvocableTakes<T, Args...>;
+concept ConvertibleInvocableTaking =
+    requires(T &t, Args &&...args) {
+      { t(std::forward<Args>(args)...) } -> Convertible;
+    } && cpp::NonVoidInvocableTaking<T, Args...>;
 }  // namespace stonks::network::aprh
 
 #endif  // STONKS_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_NETWORK_APRH_CONCEPTS_H_

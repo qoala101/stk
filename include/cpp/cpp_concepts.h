@@ -51,26 +51,32 @@ concept ConstructibleFrom =
 template <typename T, typename U>
 concept AssignableFrom = requires(T t, U &&u) { t = std::forward<U>(u); };
 
+template <typename T, typename U>
+concept InvocableReturning = requires(T &t) {
+                               { t() } -> std::same_as<U>;
+                             };
+
 template <typename T>
-concept VoidInvocable = requires(T &t) {
-                          { t() } -> std::same_as<void>;
-                        };
+concept VoidInvocable = InvocableReturning<T, void>;
 
 template <typename T>
 concept NonVoidInvocable = requires(T &t) { t(); } && !
 VoidInvocable<T>;
 
-template <typename T, typename... Args>
-concept VoidInvocableTakes = requires(T &t, Args &&...args) {
-                               {
-                                 t(std::forward<Args>(args)...)
-                                 } -> std::same_as<void>;
-                             };
+template <typename T, typename U, typename... Args>
+concept InvocableReturningTaking = requires(T &t, Args &&...args) {
+                                     {
+                                       t(std::forward<Args>(args)...)
+                                       } -> std::same_as<U>;
+                                   };
 
 template <typename T, typename... Args>
-concept NonVoidInvocableTakes =
+concept VoidInvocableTaking = InvocableReturningTaking<T, void, Args...>;
+
+template <typename T, typename... Args>
+concept NonVoidInvocableTaking =
     requires(T &t, Args &&...args) { t(std::forward<Args>(args)...); } && !
-VoidInvocableTakes<T, Args...>;
+VoidInvocableTaking<T, Args...>;
 }  // namespace stonks::cpp
 
 #endif  // STONKS_CPP_CPP_CONCEPTS_H_

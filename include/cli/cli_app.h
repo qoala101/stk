@@ -34,7 +34,7 @@ class App {
    * @brief Runs the function until interrupted.
    * @tparam Main Callable with access to command line options.
    */
-  template <cpp::VoidInvocableTakes<const Options &> Main>
+  template <cpp::VoidInvocableTaking<const Options &> Main>
   void Run(const Main &main) {
     const auto run_scope = CreateRunScope();
     main(CreateOptions());
@@ -57,7 +57,7 @@ class App {
    * @tparam Main Callable with access to command line options.
    * Returns an instance which would be kept alive until interrupt occurs.
    */
-  template <cpp::NonVoidInvocableTakes<const Options &> Main>
+  template <cpp::NonVoidInvocableTaking<const Options &> Main>
   void Run(const Main &main) {
     auto instance = cpp::Opt<decltype(main(std::declval<Options>()))>{};
     const auto run_scope = CreateRunScope();

@@ -42,6 +42,39 @@ auto Rows::GetColumnValues(const Column &column) -> std::vector<Value> & {
   return GetColumnValuesImpl(*this, column);
 }
 
+template <cpp::DecaysTo<Rows> This>
+auto Rows::GetCellValueImpl(This &t, const Column &column, int row_index)
+    -> auto & {
+  Expects(row_index >= 0);
+
+  auto &values = t.GetColumnValues(column);
+  Expects(row_index < gsl::narrow_cast<int>(values.size()));
+
+  return values[row_index];
+}
+
+auto Rows::GetCellValue(const Column &column, int row_index) const
+    -> const Value & {
+  return GetCellValueImpl(*this, column, row_index);
+}
+
+auto Rows::GetCellValue(const Column &column, int row_index) -> Value & {
+  return GetCellValueImpl(*this, column, row_index);
+}
+
+template <cpp::DecaysTo<Rows> This>
+auto Rows::GetFirstImpl(This &t, const Column &column) -> auto & {
+  return t.GetCellValue(column, 0);
+}
+
+auto Rows::GetFirst(const Column &column) const -> const Value & {
+  return GetFirstImpl(*this, column);
+}
+
+auto Rows::GetFirst(const Column &column) -> Value & {
+  return GetFirstImpl(*this, column);
+}
+
 auto Rows::GetSize() const -> int {
   if (columns_.empty()) {
     return 0;
@@ -49,6 +82,8 @@ auto Rows::GetSize() const -> int {
 
   return gsl::narrow_cast<int>(columns_.front().values.size());
 }
+
+auto Rows::IsEmpty() const -> bool { return GetSize() == 0; }
 
 void Rows::Push(std::vector<Value> values) {
   Expects(values.size() == columns_.size());

@@ -9,7 +9,7 @@
 #include "network_types.h"
 
 namespace stonks::network {
-RestRequestBuilder::RestRequestBuilder() : request_{std::in_place_t{}} {}
+RestRequestBuilder::RestRequestBuilder() : request_{std::in_place} {}
 
 auto RestRequestBuilder::WithMethod(Method method) -> RestRequestBuilder& {
   Expects(request_.has_value());

@@ -22,29 +22,29 @@ class AutoParsableRequestHandler : public IRestRequestHandler {
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableRequestHandler(T &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
-            std::in_place_type_t<aprh::Handler>{}, std::forward<T>(handler)}} {}
+            std::in_place_type<aprh::Handler>, std::forward<T>(handler)}} {}
 
-  template <cpp::VoidInvocableTakes<AutoParsableRestRequest> T>
+  template <cpp::VoidInvocableTaking<AutoParsableRestRequest> T>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableRequestHandler(T &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
-            std::in_place_type_t<aprh::HandlerWithRequest>{},
+            std::in_place_type<aprh::HandlerWithRequest>,
             std::forward<T>(handler)}} {}
 
   template <aprh::ConvertibleInvocable T>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableRequestHandler(T &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
-            std::in_place_type_t<aprh::HandlerWithResponse>{},
+            std::in_place_type<aprh::HandlerWithResponse>,
             [handler = std::forward<T>(handler)]() {
               return ConvertToJson(handler());
             }}} {}
 
-  template <aprh::ConvertibleInvocableTakes<AutoParsableRestRequest> T>
+  template <aprh::ConvertibleInvocableTaking<AutoParsableRestRequest> T>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableRequestHandler(T &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
-            std::in_place_type_t<aprh::HandlerWithRequestAndResponse>{},
+            std::in_place_type<aprh::HandlerWithRequestAndResponse>,
             [handler =
                  std::forward<T>(handler)](AutoParsableRestRequest request) {
               return ConvertToJson(handler(std::move(request)));

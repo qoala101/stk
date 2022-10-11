@@ -21,13 +21,13 @@ class AutoParsableWsMessageHandler : public IWsMessageHandler {
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableWsMessageHandler(T &&handler)
       : handler_{aprh::WsHandlerVariant::ValueType{
-            std::in_place_type_t<aprh::Handler>{}, std::forward<T>(handler)}} {}
+            std::in_place_type<aprh::Handler>, std::forward<T>(handler)}} {}
 
-  template <cpp::VoidInvocableTakes<AutoParsable> T>
+  template <cpp::VoidInvocableTaking<AutoParsable> T>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableWsMessageHandler(T &&handler)
       : handler_{aprh::WsHandlerVariant::ValueType{
-            std::in_place_type_t<aprh::HandlerWithWsMessage>{},
+            std::in_place_type<aprh::HandlerWithWsMessage>,
             std::forward<T>(handler)}} {}
 
   /**
