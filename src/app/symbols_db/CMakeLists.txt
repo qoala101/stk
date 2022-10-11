@@ -1,4 +1,5 @@
 find_package(fmt REQUIRED)
+find_package(range-v3 REQUIRED)
 
 add_executable(symbols_db
   app_sdb_app_server.cc
@@ -18,4 +19,5 @@ target_link_libraries(symbols_db
   PRIVATE libspdlog
   PRIVATE libsqlite
   PRIVATE fmt::fmt
+  PRIVATE range-v3::range-v3
 )

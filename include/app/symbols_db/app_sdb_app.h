@@ -1,10 +1,9 @@
 #ifndef STONKS_APP_SYMBOLS_DB_APP_SDB_APP_H_
 #define STONKS_APP_SYMBOLS_DB_APP_SDB_APP_H_
 
-#include <absl/time/time.h>
-
 #include <vector>
 
+#include "app_sdb_prepared_statements.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
 #include "sqldb_i_db.h"
@@ -17,43 +16,24 @@ namespace stonks::app::sdb {
  */
 class App {
  public:
-  App(cpp::NnUp<sqldb::IDb> db, cpp::NnUp<sqldb::IQueryBuilder> query_builder);
+  App(cpp::NnUp<sqldb::IDb> db, cpp::NnUp<sqldb::IQueryBuilder> query_builder,
+      PreparedStatements prepared_statements);
 
   /**
-   * @brief Selects all symbols.
+   * @brief Updates the list of all assets.
    */
-  [[nodiscard]] auto SelectSymbols() const -> std::vector<core::Symbol>;
-
-  /**
-   * @brief Selects symbol info.
-   */
-  [[nodiscard]] auto SelectSymbolInfo(const core::Symbol &symbol) const
-      -> std::vector<core::SymbolInfo>;
-
-  /**
-   * @brief Selects price records following the conditions.
-   */
-  [[nodiscard]] auto SelectSymbolPriceRecords(const core::Symbol &symbol,
-                                              const absl::Time *start_time,
-                                              const absl::Time *end_time,
-                                              const int *limit) const
-      -> std::vector<core::SymbolPriceRecord>;
-
-  /**
-   * @brief Updates symbol info in the table.
-   */
-  void InsertOrUpdateSymbolInfo(const core::SymbolInfo &info);
-
-  /**
-   * @brief Records symbol price.
-   */
-  void InsertSymbolPriceRecord(const core::SymbolPriceRecord &record);
+  void UpdateAssets(std::vector<core::Asset> assets);
 
  private:
   void CreateTablesIfNotExist();
 
+  [[nodiscard]] auto SelectAssets() const;
+  void InsertAsset(core::Asset asset);
+  void DeleteAsset(core::Asset asset);
+
   cpp::NnUp<sqldb::IDb> db_;
   cpp::NnUp<sqldb::IQueryBuilder> query_builder_;
+  PreparedStatements prepared_statements_;
 };
 }  // namespace stonks::app::sdb
 
