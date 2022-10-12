@@ -33,38 +33,62 @@
 
 namespace stonks::app::sdb {
 namespace {
+template <typename T>
+[[nodiscard]] auto DefaultLess(const T &left, const T &right) {
+  return left < right;
+}
+
+template <typename T>
+[[nodiscard]] auto DefaultEquals(const T &left, const T &right) {
+  return left == right;
+}
+
 template <typename Item>
 void UpdateItems(
     std::vector<Item> new_items,
     const cpp::InvocableReturning<std::vector<Item>> auto &select_items,
     const cpp::VoidInvocableTaking<const Item &> auto &insert_item,
     const cpp::VoidInvocableTaking<const Item &> auto &update_item,
-    const cpp::VoidInvocableTaking<const Item &> auto &delete_item) {
-  const auto old_items =
-      select_items() | ranges::actions::sort | ranges::actions::unique;
-  new_items |= ranges::actions::sort | ranges::actions::unique;
+    const cpp::VoidInvocableTaking<const Item &> auto &delete_item,
+    const std::predicate<const Item &, const Item &> auto &item_less,
+    const std::predicate<const Item &, const Item &> auto &item_equals) {
+  const auto old_items = select_items() | ranges::actions::sort(item_less) |
+                         ranges::actions::unique(item_equals);
+  new_items |=
+      ranges::actions::sort(item_less) | ranges::actions::unique(item_equals);
 
   const auto removed_items =
-      ranges::views::set_difference(old_items, new_items);
+      ranges::views::set_difference(old_items, new_items, item_less);
 
   for (const auto &removed_item : removed_items) {
     delete_item(removed_item);
   }
 
-  const auto added_items = ranges::views::set_difference(new_items, old_items);
+  const auto added_items =
+      ranges::views::set_difference(new_items, old_items, item_less);
 
   for (const auto &added_item : added_items) {
     insert_item(added_item);
   }
 
   const auto existing_items =
-      ranges::views::set_intersection(new_items, old_items);
+      ranges::views::set_intersection(new_items, old_items, item_less);
   const auto updated_items =
       ranges::views::set_difference(existing_items, old_items);
 
   for (const auto &updated_item : updated_items) {
     update_item(updated_item);
   }
+}
+
+[[nodiscard]] auto SymbolInfoLess(const core::SymbolInfo &left,
+                                  const core::SymbolInfo &right) {
+  return left.symbol < right.symbol;
+}
+
+[[nodiscard]] auto SymbolInfoEquals(const core::SymbolInfo &left,
+                                    const core::SymbolInfo &right) {
+  return left.symbol == right.symbol;
 }
 }  // namespace
 
@@ -103,7 +127,49 @@ void App::UpdateAssets(std::vector<core::Asset> assets) {
   UpdateItems(
       std::move(assets), std::bind_front(&App::SelectAssets, this),
       std::bind_front(&App::InsertAsset, this), [](const auto &) {},
-      std::bind_front(&App::DeleteAsset, this));
+      std::bind_front(&App::DeleteAsset, this), &DefaultLess<core::Asset>,
+      &DefaultEquals<core::Asset>);
+}
+
+auto App::SelectSymbolsInfo() const {
+  auto rows = prepared_statements_.SelectSymbolsInfo().Execute();
+
+  auto &name = rows.GetColumnValues({tables::SymbolInfo::kName});
+  auto &base_asset = rows.GetColumnValues({"base_asset"});
+  const auto &base_asset_min_amount =
+      rows.GetColumnValues({tables::SymbolInfo::kBaseAssetMinAmount});
+  const auto &base_asset_price_step =
+      rows.GetColumnValues({tables::SymbolInfo::kBaseAssetPriceStep});
+  auto &quote_asset = rows.GetColumnValues({"quote_asset"});
+  const auto &quote_asset_min_amount =
+      rows.GetColumnValues({tables::SymbolInfo::kQuoteAssetMinAmount});
+  const auto &quote_asset_price_step =
+      rows.GetColumnValues({tables::SymbolInfo::kQuoteAssetPriceStep});
+
+  const auto num_rows = rows.GetSize();
+  auto infos = std::vector<core::SymbolInfo>{};
+  infos.reserve(num_rows);
+
+  for (auto i = 0; i < num_rows; ++i) {
+    infos.emplace_back(core::SymbolInfo{
+        .symbol = {std::move(name[i].GetString())},
+        .base_asset = {.asset = {std::move(base_asset[i].GetString())},
+                       .min_amount = base_asset_min_amount[i].GetDouble(),
+                       .price_step = base_asset_price_step[i].GetDouble()},
+        .quote_asset = {.asset = {std::move(quote_asset[i].GetString())},
+                        .min_amount = quote_asset_min_amount[i].GetDouble(),
+                        .price_step = quote_asset_price_step[i].GetDouble()}});
+  }
+
+  return infos;
+}
+
+void App::UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos) {
+  UpdateItems(std::move(infos), std::bind_front(&App::SelectSymbolsInfo, this),
+              std::bind_front(&App::InsertSymbolInfo, this),
+              std::bind_front(&App::UpdateSymbolInfo, this),
+              std::bind_front(&App::DeleteSymbolInfo, this), &SymbolInfoLess,
+              &SymbolInfoEquals);
 }
 
 auto App::SelectSymbolPriceRecords(const core::Symbol &symbol,
@@ -122,11 +188,10 @@ auto App::SelectSymbolPriceRecords(const core::Symbol &symbol,
       sqldb::AsValues(symbol, absl::ToUnixMillis(start_time_value),
                       absl::ToUnixMillis(end_time_value), limit_value));
 
-  const auto &price = rows.GetColumnValues({"price"});
-  const auto &time = rows.GetColumnValues({"time"});
+  const auto &price = rows.GetColumnValues({tables::SymbolPriceRecord::kPrice});
+  const auto &time = rows.GetColumnValues({tables::SymbolPriceRecord::kTime});
 
   const auto num_rows = rows.GetSize();
-
   auto price_ticks = std::vector<core::SymbolPriceRecord>{};
   price_ticks.reserve(num_rows);
 
@@ -156,5 +221,26 @@ void App::InsertAsset(core::Asset asset) {
 
 void App::DeleteAsset(core::Asset asset) {
   prepared_statements_.DeleteAsset().Execute(sqldb::AsValues(std::move(asset)));
+}
+
+void App::InsertSymbolInfo(core::SymbolInfo info) {
+  prepared_statements_.InsertSymbolInfo().Execute(sqldb::AsValues(
+      std::move(info.symbol), std::move(info.base_asset.asset),
+      info.base_asset.min_amount, info.base_asset.price_step,
+      std::move(info.quote_asset.asset), info.quote_asset.min_amount,
+      info.quote_asset.price_step));
+}
+
+void App::UpdateSymbolInfo(core::SymbolInfo info) {
+  prepared_statements_.UpdateSymbolInfo().Execute(sqldb::AsValues(
+      std::move(info.base_asset.asset), info.base_asset.min_amount,
+      info.base_asset.price_step, std::move(info.quote_asset.asset),
+      info.quote_asset.min_amount, info.quote_asset.price_step,
+      std::move(info.symbol)));
+}
+
+void App::DeleteSymbolInfo(core::SymbolInfo info) {
+  prepared_statements_.DeleteSymbolInfo().Execute(
+      sqldb::AsValues(std::move(info.symbol)));
 }
 }  // namespace stonks::app::sdb

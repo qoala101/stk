@@ -21,6 +21,15 @@ class PreparedStatements {
   [[nodiscard]] auto InsertAsset() const -> const sqldb::IUpdateStatement &;
   [[nodiscard]] auto DeleteAsset() const -> const sqldb::IUpdateStatement &;
 
+  [[nodiscard]] auto SelectSymbolsInfo() const
+      -> const sqldb::ISelectStatement &;
+  [[nodiscard]] auto InsertSymbolInfo() const
+      -> const sqldb::IUpdateStatement &;
+  [[nodiscard]] auto UpdateSymbolInfo() const
+      -> const sqldb::IUpdateStatement &;
+  [[nodiscard]] auto DeleteSymbolInfo() const
+      -> const sqldb::IUpdateStatement &;
+
   [[nodiscard]] auto SelectSymbolPriceRecords() const
       -> const sqldb::ISelectStatement &;
   [[nodiscard]] auto InsertSymbolPriceRecord() const
@@ -35,6 +44,12 @@ class PreparedStatements {
   mutable cpp::Up<sqldb::ISelectStatement> select_assets_{};
   mutable cpp::Up<sqldb::IUpdateStatement> insert_asset_{};
   mutable cpp::Up<sqldb::IUpdateStatement> delete_asset_{};
+
+  mutable cpp::Up<sqldb::ISelectStatement> select_symbol_info_{};
+  mutable cpp::Up<sqldb::ISelectStatement> select_symbols_info_{};
+  mutable cpp::Up<sqldb::IUpdateStatement> insert_symbol_info_{};
+  mutable cpp::Up<sqldb::IUpdateStatement> update_symbol_info_{};
+  mutable cpp::Up<sqldb::IUpdateStatement> delete_symbol_info_{};
 
   mutable cpp::Up<sqldb::ISelectStatement> select_symbol_price_records_{};
   mutable cpp::Up<sqldb::IUpdateStatement> insert_symbol_price_record_{};

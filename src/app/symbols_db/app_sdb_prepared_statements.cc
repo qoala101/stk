@@ -7,9 +7,12 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "app_sdb_tables.h"
 #include "cpp_not_null.h"
+#include "cpp_typed_struct.h"
+#include "not_null.hpp"
 #include "sqldb_qbf_delete_query_builder.h"
 #include "sqldb_qbf_insert_query_builder.h"
 #include "sqldb_qbf_select_query_builder.h"
@@ -67,8 +70,125 @@ auto PreparedStatements::DeleteAsset() const -> const sqldb::IUpdateStatement& {
   return InitLazily(delete_asset_, [this]() {
     auto query = query_builder_facade_.Delete()
                      .FromTable(tables::Asset::Definition())
-                     .Where(fmt::format("{}.{} = ?", tables::Asset::kTable,
-                                        tables::Asset::kName))
+                     .Where(fmt::format("{} = ?", tables::Asset::kName))
+                     .Build();
+    return db_->PrepareStatement(std::move(query));
+  });
+}
+
+auto PreparedStatements::SelectSymbolsInfo() const
+    -> const sqldb::ISelectStatement& {
+  return InitLazily(select_symbol_info_, [this]() {
+    auto columns = tables::SymbolInfo::Definition().GetColumnDefinitions(
+        {{tables::SymbolInfo::kName},
+         {tables::SymbolInfo::kBaseAssetMinAmount},
+         {tables::SymbolInfo::kBaseAssetPriceStep},
+         {tables::SymbolInfo::kQuoteAssetMinAmount},
+         {tables::SymbolInfo::kQuoteAssetPriceStep}});
+
+    const auto base_asset_column = []() {
+      auto base_asset_column = tables::Asset::Definition().GetColumnDefinition(
+          {tables::Asset::kName});
+      base_asset_column.column.value = "base_asset";
+      return base_asset_column;
+    }();
+    columns.emplace_back(cpp::AssumeNn(&base_asset_column));
+
+    const auto quote_asset_column = []() {
+      auto quote_asset_column = tables::Asset::Definition().GetColumnDefinition(
+          {tables::Asset::kName});
+      quote_asset_column.column.value = "quote_asset";
+      return quote_asset_column;
+    }();
+    columns.emplace_back(cpp::AssumeNn(&quote_asset_column));
+
+    auto query = sqldb::Query{
+        fmt::format("SELECT "
+                    "{table0}.{column0}, "
+                    "{table0}.{column1}, "
+                    "{table0}.{column2}, "
+                    "{table0}.{column3}, "
+                    "{table0}.{column4}, "
+                    "BaseAsset.{column7} AS {column5}, "
+                    "QuoteAsset.{column7} AS {column6} "
+                    "FROM {table0} "
+                    "JOIN {table1} AS BaseAsset ON {table0}.{column8} = "
+                    "BaseAsset.{column9} "
+                    "JOIN {table1} AS QuoteAsset ON {table0}.{column10} = "
+                    "QuoteAsset.{column9} ",
+                    "table0"_a = tables::SymbolInfo::kTable,
+                    "table1"_a = tables::Asset::kTable,
+                    "column0"_a = columns[0]->column.value,
+                    "column1"_a = columns[1]->column.value,
+                    "column2"_a = columns[2]->column.value,
+                    "column3"_a = columns[3]->column.value,
+                    "column4"_a = columns[4]->column.value,
+                    "column5"_a = columns[5]->column.value,
+                    "column6"_a = columns[6]->column.value,
+                    "column7"_a = tables::Asset::kName,
+                    "column8"_a = tables::SymbolInfo::kBaseAssetId,
+                    "column9"_a = tables::Asset::kId,
+                    "column10"_a = tables::SymbolInfo::kQuoteAssetId)};
+    return db_->PrepareStatement(std::move(query), columns);
+  });
+}
+
+auto PreparedStatements::InsertSymbolInfo() const
+    -> const sqldb::IUpdateStatement& {
+  return InitLazily(insert_symbol_info_, [this]() {
+    auto query = sqldb::Query{fmt::format(
+        "INSERT INTO {table0} ({column0}, "
+        "{column1}, {column2}, {column3}, "
+        "{column4}, {column5}, {column6}) "
+        "VALUES (?, "
+        "(SELECT {column7} FROM {table1} WHERE {column8} = ?), ?, ?, "
+        "(SELECT {column7} FROM {table1} WHERE {column8} = ?), ?, ?)",
+        "table0"_a = tables::SymbolInfo::kTable,
+        "table1"_a = tables::Asset::kTable,
+        "column0"_a = tables::SymbolInfo::kName,
+        "column1"_a = tables::SymbolInfo::kBaseAssetId,
+        "column2"_a = tables::SymbolInfo::kBaseAssetMinAmount,
+        "column3"_a = tables::SymbolInfo::kBaseAssetPriceStep,
+        "column4"_a = tables::SymbolInfo::kQuoteAssetId,
+        "column5"_a = tables::SymbolInfo::kQuoteAssetMinAmount,
+        "column6"_a = tables::SymbolInfo::kQuoteAssetPriceStep,
+        "column7"_a = tables::Asset::kId, "column8"_a = tables::Asset::kName)};
+    return db_->PrepareStatement(std::move(query));
+  });
+}
+
+auto PreparedStatements::UpdateSymbolInfo() const
+    -> const sqldb::IUpdateStatement& {
+  return InitLazily(update_symbol_info_, [this]() {
+    auto query = sqldb::Query{fmt::format(
+        "UPDATE {table0} SET "
+        "{column0} = (SELECT {column1} FROM {table1} WHERE {column2} = ?), "
+        "{column3} = ?, "
+        "{column4} = ?, "
+        "{column5} = (SELECT {column1} FROM {table1} WHERE {column2} = ?), "
+        "{column6} = ?, "
+        "{column7} = ? "
+        "WHERE {column8} = ?",
+        "table0"_a = tables::SymbolInfo::kTable,
+        "table1"_a = tables::Asset::kTable,
+        "column0"_a = tables::SymbolInfo::kBaseAssetId,
+        "column1"_a = tables::Asset::kId, "column2"_a = tables::Asset::kName,
+        "column3"_a = tables::SymbolInfo::kBaseAssetMinAmount,
+        "column4"_a = tables::SymbolInfo::kBaseAssetPriceStep,
+        "column5"_a = tables::SymbolInfo::kQuoteAssetId,
+        "column6"_a = tables::SymbolInfo::kQuoteAssetMinAmount,
+        "column7"_a = tables::SymbolInfo::kQuoteAssetPriceStep,
+        "column8"_a = tables::SymbolInfo::kName)};
+    return db_->PrepareStatement(std::move(query));
+  });
+}
+
+auto PreparedStatements::DeleteSymbolInfo() const
+    -> const sqldb::IUpdateStatement& {
+  return InitLazily(delete_symbol_info_, [this]() {
+    auto query = query_builder_facade_.Delete()
+                     .FromTable(tables::SymbolInfo::Definition())
+                     .Where(fmt::format("{} = ?", tables::SymbolInfo::kName))
                      .Build();
     return db_->PrepareStatement(std::move(query));
   });
@@ -81,20 +201,23 @@ auto PreparedStatements::SelectSymbolPriceRecords() const
     const auto columns =
         table.GetColumnDefinitions({{tables::SymbolPriceRecord::kPrice},
                                     {tables::SymbolPriceRecord::kTime}});
-    auto query = query_builder_facade_.Select()
-                     .Columns(columns)
-                     .FromTable(table)
-                     .Where(fmt::format(
-                         "{table0}.{column0} = "
-                         "(SELECT id FROM {table1} WHERE name = ?) AND "
-                         "{table0}.{column1} >= ? AND "
-                         "{table0}.{column1} <= ?",
-                         "table0"_a = tables::SymbolPriceRecord::kTable,
-                         "table1"_a = tables::SymbolInfo::kTable,
-                         "column0"_a = tables::SymbolPriceRecord::kSymbolId,
-                         "column1"_a = tables::SymbolPriceRecord::kTime))
-                     .Limited()
-                     .Build();
+    auto query =
+        query_builder_facade_.Select()
+            .Columns(columns)
+            .FromTable(table)
+            .Where(fmt::format(
+                "{table0}.{column0} = "
+                "(SELECT {column1} FROM {table1} WHERE {column2} = ?) AND "
+                "{table0}.{column3} >= ? AND "
+                "{table0}.{column3} <= ?",
+                "table0"_a = tables::SymbolPriceRecord::kTable,
+                "table1"_a = tables::SymbolInfo::kTable,
+                "column0"_a = tables::SymbolPriceRecord::kSymbolId,
+                "column1"_a = tables::SymbolInfo::kId,
+                "column2"_a = tables::SymbolInfo::kName,
+                "column3"_a = tables::SymbolPriceRecord::kTime))
+            .Limited()
+            .Build();
     return db_->PrepareStatement(std::move(query), columns);
   });
 }
@@ -102,16 +225,18 @@ auto PreparedStatements::SelectSymbolPriceRecords() const
 auto PreparedStatements::InsertSymbolPriceRecord() const
     -> const sqldb::IUpdateStatement& {
   return InitLazily(insert_symbol_price_record_, [this]() {
-    auto query = sqldb::Query{
-        fmt::format("INSERT INTO {table0} "
-                    "({column0}, {column1}, {column2}) "
-                    "VALUES "
-                    "((SELECT id FROM {table1} WHERE name = ?), ?, ?)",
-                    "table0"_a = tables::SymbolPriceRecord::kTable,
-                    "table1"_a = tables::SymbolInfo::kTable,
-                    "column0"_a = tables::SymbolPriceRecord::kSymbolId,
-                    "column1"_a = tables::SymbolPriceRecord::kPrice,
-                    "column2"_a = tables::SymbolPriceRecord::kTime)};
+    auto query = sqldb::Query{fmt::format(
+        "INSERT INTO {table0} "
+        "({column0}, {column1}, {column2}) "
+        "VALUES "
+        "((SELECT {column3} FROM {table1} WHERE {column4} = ?), ?, ?)",
+        "table0"_a = tables::SymbolPriceRecord::kTable,
+        "table1"_a = tables::SymbolInfo::kTable,
+        "column0"_a = tables::SymbolPriceRecord::kSymbolId,
+        "column1"_a = tables::SymbolPriceRecord::kPrice,
+        "column2"_a = tables::SymbolPriceRecord::kTime,
+        "column3"_a = tables::SymbolInfo::kId,
+        "column4"_a = tables::SymbolInfo::kName)};
     return db_->PrepareStatement(std::move(query));
   });
 }
@@ -122,8 +247,7 @@ auto PreparedStatements::DeleteSymbolPriceRecords() const
     auto query =
         query_builder_facade_.Delete()
             .FromTable(tables::SymbolPriceRecord::Definition())
-            .Where(fmt::format("{}.{} < ?", tables::SymbolPriceRecord::kTable,
-                               tables::SymbolPriceRecord::kTime))
+            .Where(fmt::format("{} < ?", tables::SymbolPriceRecord::kTime))
             .Build();
     return db_->PrepareStatement(std::move(query));
   });

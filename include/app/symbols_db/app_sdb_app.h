@@ -28,6 +28,11 @@ class App {
   void UpdateAssets(std::vector<core::Asset> assets);
 
   /**
+   * @brief Updates the list of all symbol infos.
+   */
+  void UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos);
+
+  /**
    * @brief Selects symbol price records following the conditions.
    */
   [[nodiscard]] auto SelectSymbolPriceRecords(const core::Symbol &symbol,
@@ -52,6 +57,11 @@ class App {
   [[nodiscard]] auto SelectAssets() const;
   void InsertAsset(core::Asset asset);
   void DeleteAsset(core::Asset asset);
+
+  [[nodiscard]] auto SelectSymbolsInfo() const;
+  void InsertSymbolInfo(core::SymbolInfo info);
+  void UpdateSymbolInfo(core::SymbolInfo info);
+  void DeleteSymbolInfo(core::SymbolInfo info);
 
   cpp::NnSp<sqldb::IDb> db_;
   cpp::NnUp<sqldb::IQueryBuilder> query_builder_;
