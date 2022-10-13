@@ -10,6 +10,7 @@ include(GoogleTest)
 enable_testing()
 
 add_executable(unittests
+  app/test_app_symbols_db.cc
 
   # Disabled in order to not waste AWS API credits.
   # aws/test_aws_dynamodb_db.cc
@@ -24,8 +25,6 @@ add_executable(unittests
   restsdk/test_restsdk_web_socket.cc
 
   sqlite/test_sqlite_db.cc
-
-  # stonks/stonks_db.cc
 )
 
 # Disables IWYU.
@@ -42,12 +41,12 @@ target_link_libraries(unittests
 gtest_discover_tests(unittests)
 
 target_link_libraries(unittests
+  PRIVATE app_symbols_db
   PRIVATE libaws
   PRIVATE libcpp
   PRIVATE librestsdk
   PRIVATE libspdlog
   PRIVATE libsqlite
-  PRIVATE libstonks
   PRIVATE absl::absl
   PRIVATE fmt::fmt
   PRIVATE function2::function2

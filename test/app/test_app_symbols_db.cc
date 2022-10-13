@@ -3,15 +3,12 @@
 #include <optional>
 
 #include "cpp_not_null.h"
-#include "sqlite_factory.h"
-#include "stonks_db.h"
-#include "stonks_db_updater_symbols_info.h"
-#include "stonks_types.h"
+#include "app_sdb_app.h"
 
 namespace {
 const auto kTestDbFileName = "stonks_db_test.db";
 
-auto db = cpp::Sp<stonks::Db>{};
+auto db = cpp::Sp<stonks::app::sdb::App>{};
 
 TEST(StonksDb, UpdateSymbolsInfo) {
   db = cpp::MakeSp<stonks::Db>(stonks::sqlite::Factory{}, ":memory:");
