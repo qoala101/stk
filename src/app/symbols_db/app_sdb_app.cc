@@ -4,8 +4,10 @@
 
 #include <compare>
 #include <functional>
+#include <gsl/assert>
 #include <limits>
 #include <memory>
+#include <optional>
 #include <range/v3/action/action.hpp>
 #include <range/v3/action/sort.hpp>
 #include <range/v3/action/unique.hpp>
@@ -90,6 +92,37 @@ void UpdateItems(
                                     const core::SymbolInfo &right) {
   return left.symbol == right.symbol;
 }
+
+[[nodiscard]] auto SymbolsInfoFrom(sqldb::Rows rows) {
+  auto &names = rows.GetColumnValues({tables::SymbolInfo::kName});
+  auto &base_assets = rows.GetColumnValues({"base_asset"});
+  const auto &base_asset_min_amounts =
+      rows.GetColumnValues({tables::SymbolInfo::kBaseAssetMinAmount});
+  const auto &base_asset_price_steps =
+      rows.GetColumnValues({tables::SymbolInfo::kBaseAssetPriceStep});
+  auto &quote_assets = rows.GetColumnValues({"quote_asset"});
+  const auto &quote_asset_min_amounts =
+      rows.GetColumnValues({tables::SymbolInfo::kQuoteAssetMinAmount});
+  const auto &quote_asset_price_steps =
+      rows.GetColumnValues({tables::SymbolInfo::kQuoteAssetPriceStep});
+
+  const auto num_rows = rows.GetSize();
+  auto infos = std::vector<core::SymbolInfo>{};
+  infos.reserve(num_rows);
+
+  for (auto i = 0; i < num_rows; ++i) {
+    infos.emplace_back(core::SymbolInfo{
+        .symbol = {std::move(names[i].GetString())},
+        .base_asset = {.asset = {std::move(base_assets[i].GetString())},
+                       .min_amount = base_asset_min_amounts[i].GetDouble(),
+                       .price_step = base_asset_price_steps[i].GetDouble()},
+        .quote_asset = {.asset = {std::move(quote_assets[i].GetString())},
+                        .min_amount = quote_asset_min_amounts[i].GetDouble(),
+                        .price_step = quote_asset_price_steps[i].GetDouble()}});
+  }
+
+  return infos;
+}
 }  // namespace
 
 void App::CreateTablesIfNotExist() {
@@ -116,9 +149,9 @@ App::App(cpp::NnUp<sqldb::IDb> db,
 
 auto App::SelectAssets() const {
   auto rows = prepared_statements_.SelectAssets().Execute();
-  auto &name_values = rows.GetColumnValues({tables::Asset::kName});
-  return name_values | ranges::views::transform([](auto &asset) {
-           return core::Asset{std::move(asset.GetString())};
+  auto &names = rows.GetColumnValues({tables::Asset::kName});
+  return names | ranges::views::transform([](auto &name) {
+           return core::Asset{std::move(name.GetString())};
          }) |
          ranges::to_vector;
 }
@@ -131,37 +164,32 @@ void App::UpdateAssets(std::vector<core::Asset> assets) {
       &DefaultEquals<core::Asset>);
 }
 
-auto App::SelectSymbolsInfo() const {
-  auto rows = prepared_statements_.SelectSymbolsInfo().Execute();
+auto App::SelectSymbolsWithPriceRecords() const -> std::vector<core::Symbol> {
+  auto rows = prepared_statements_.SelectSymbolsWithPriceRecords().Execute();
+  auto &names = rows.GetColumnValues({tables::SymbolInfo::kName});
+  return names | ranges::views::transform([](auto &name) {
+           return core::Symbol{std::move(name.GetString())};
+         }) |
+         ranges::to_vector;
+}
 
-  auto &name = rows.GetColumnValues({tables::SymbolInfo::kName});
-  auto &base_asset = rows.GetColumnValues({"base_asset"});
-  const auto &base_asset_min_amount =
-      rows.GetColumnValues({tables::SymbolInfo::kBaseAssetMinAmount});
-  const auto &base_asset_price_step =
-      rows.GetColumnValues({tables::SymbolInfo::kBaseAssetPriceStep});
-  auto &quote_asset = rows.GetColumnValues({"quote_asset"});
-  const auto &quote_asset_min_amount =
-      rows.GetColumnValues({tables::SymbolInfo::kQuoteAssetMinAmount});
-  const auto &quote_asset_price_step =
-      rows.GetColumnValues({tables::SymbolInfo::kQuoteAssetPriceStep});
+auto App::SelectSymbolInfo(core::Symbol symbol) const
+    -> cpp::Opt<core::SymbolInfo> {
+  auto rows = prepared_statements_.SelectSymbolInfo().Execute(
+      sqldb::AsValues(std::move(symbol)));
+  auto infos = SymbolsInfoFrom(std::move(rows));
 
-  const auto num_rows = rows.GetSize();
-  auto infos = std::vector<core::SymbolInfo>{};
-  infos.reserve(num_rows);
-
-  for (auto i = 0; i < num_rows; ++i) {
-    infos.emplace_back(core::SymbolInfo{
-        .symbol = {std::move(name[i].GetString())},
-        .base_asset = {.asset = {std::move(base_asset[i].GetString())},
-                       .min_amount = base_asset_min_amount[i].GetDouble(),
-                       .price_step = base_asset_price_step[i].GetDouble()},
-        .quote_asset = {.asset = {std::move(quote_asset[i].GetString())},
-                        .min_amount = quote_asset_min_amount[i].GetDouble(),
-                        .price_step = quote_asset_price_step[i].GetDouble()}});
+  if (infos.empty()) {
+    return std::nullopt;
   }
 
-  return infos;
+  Expects(infos.size() == 1);
+  return std::move(infos.front());
+}
+
+auto App::SelectSymbolsInfo() const {
+  auto rows = prepared_statements_.SelectSymbolsInfo().Execute();
+  return SymbolsInfoFrom(std::move(rows));
 }
 
 void App::UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos) {
@@ -188,8 +216,9 @@ auto App::SelectSymbolPriceRecords(const core::Symbol &symbol,
       sqldb::AsValues(symbol, absl::ToUnixMillis(start_time_value),
                       absl::ToUnixMillis(end_time_value), limit_value));
 
-  const auto &price = rows.GetColumnValues({tables::SymbolPriceRecord::kPrice});
-  const auto &time = rows.GetColumnValues({tables::SymbolPriceRecord::kTime});
+  const auto &prices =
+      rows.GetColumnValues({tables::SymbolPriceRecord::kPrice});
+  const auto &times = rows.GetColumnValues({tables::SymbolPriceRecord::kTime});
 
   const auto num_rows = rows.GetSize();
   auto price_ticks = std::vector<core::SymbolPriceRecord>{};
@@ -198,8 +227,8 @@ auto App::SelectSymbolPriceRecords(const core::Symbol &symbol,
   for (auto i = 0; i < num_rows; ++i) {
     price_ticks.emplace_back(core::SymbolPriceRecord{
         .symbol = symbol,
-        .price = core::Price{price[i].GetDouble()},
-        .time = absl::FromUnixMillis(time[i].GetInt64())});
+        .price = core::Price{prices[i].GetDouble()},
+        .time = absl::FromUnixMillis(times[i].GetInt64())});
   }
 
   return price_ticks;

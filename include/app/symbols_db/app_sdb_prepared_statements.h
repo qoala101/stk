@@ -21,6 +21,11 @@ class PreparedStatements {
   [[nodiscard]] auto InsertAsset() const -> const sqldb::IUpdateStatement &;
   [[nodiscard]] auto DeleteAsset() const -> const sqldb::IUpdateStatement &;
 
+  [[nodiscard]] auto SelectSymbolsWithPriceRecords() const
+      -> const sqldb::ISelectStatement &;
+
+  [[nodiscard]] auto SelectSymbolInfo() const
+      -> const sqldb::ISelectStatement &;
   [[nodiscard]] auto SelectSymbolsInfo() const
       -> const sqldb::ISelectStatement &;
   [[nodiscard]] auto InsertSymbolInfo() const
@@ -44,6 +49,8 @@ class PreparedStatements {
   mutable cpp::Up<sqldb::ISelectStatement> select_assets_{};
   mutable cpp::Up<sqldb::IUpdateStatement> insert_asset_{};
   mutable cpp::Up<sqldb::IUpdateStatement> delete_asset_{};
+
+  mutable cpp::Up<sqldb::ISelectStatement> select_symbols_with_price_records_{};
 
   mutable cpp::Up<sqldb::ISelectStatement> select_symbol_info_{};
   mutable cpp::Up<sqldb::ISelectStatement> select_symbols_info_{};

@@ -8,6 +8,7 @@
 #include "app_sdb_prepared_statements.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
+#include "cpp_optional.h"
 #include "di_factory.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"
@@ -26,6 +27,19 @@ class App {
    * @brief Updates the list of all assets.
    */
   void UpdateAssets(std::vector<core::Asset> assets);
+
+  /**
+   * @brief Selects symbols which have price records.
+   */
+  [[nodiscard]] auto SelectSymbolsWithPriceRecords() const
+      -> std::vector<core::Symbol>;
+
+  /**
+   * @brief Selects symbol info.
+   * @return Nullopt if symbol doesn't exist.
+   */
+  [[nodiscard]] auto SelectSymbolInfo(core::Symbol symbol) const
+      -> cpp::Opt<core::SymbolInfo>;
 
   /**
    * @brief Updates the list of all symbol infos.

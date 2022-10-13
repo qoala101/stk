@@ -17,6 +17,7 @@
 #include "sqldb_qbf_insert_query_builder.h"
 #include "sqldb_qbf_select_query_builder.h"
 #include "sqldb_query_builder_facade.h"
+#include "sqldb_row_definition.h"
 #include "sqldb_types.h"
 
 namespace stonks::app::sdb {
@@ -35,6 +36,67 @@ template <typename Statement>
 
   Ensures(statement != nullptr);
   return *statement;
+}
+
+[[nodiscard]] auto SelectSymbolsInfoRowDefinition() {
+  auto columns = tables::SymbolInfo::Definition().GetColumnDefinitions(
+      {{tables::SymbolInfo::kName},
+       {tables::SymbolInfo::kBaseAssetMinAmount},
+       {tables::SymbolInfo::kBaseAssetPriceStep},
+       {tables::SymbolInfo::kQuoteAssetMinAmount},
+       {tables::SymbolInfo::kQuoteAssetPriceStep}});
+
+  const auto base_asset_column = []() {
+    auto base_asset_column =
+        tables::Asset::Definition().GetColumnDefinition({tables::Asset::kName});
+    base_asset_column.column.value = "base_asset";
+    return base_asset_column;
+  }();
+  columns.emplace_back(cpp::AssumeNn(&base_asset_column));
+
+  const auto quote_asset_column = []() {
+    auto quote_asset_column =
+        tables::Asset::Definition().GetColumnDefinition({tables::Asset::kName});
+    quote_asset_column.column.value = "quote_asset";
+    return quote_asset_column;
+  }();
+  columns.emplace_back(cpp::AssumeNn(&quote_asset_column));
+
+  return sqldb::RowDefinition{columns};
+}
+
+[[nodiscard]] auto SelectSymbolsInfoQuery(
+    const sqldb::RowDefinition& row_definition) {
+  const auto& cell_definitions = row_definition.GetCellDefinitions();
+  Expects(cell_definitions.size() == 7);
+
+  return sqldb::Query{
+      fmt::format("SELECT "
+                  "{table0}.{column0}, "
+                  "{table0}.{column1}, "
+                  "{table0}.{column2}, "
+                  "{table0}.{column3}, "
+                  "{table0}.{column4}, "
+                  "BaseAsset.{column7} AS {column5}, "
+                  "QuoteAsset.{column7} AS {column6} "
+                  "FROM {table0} "
+                  "JOIN {table1} AS BaseAsset ON {table0}.{column8} = "
+                  "BaseAsset.{column9} "
+                  "JOIN {table1} AS QuoteAsset ON {table0}.{column10} = "
+                  "QuoteAsset.{column9} ",
+                  "table0"_a = tables::SymbolInfo::kTable,
+                  "table1"_a = tables::Asset::kTable,
+                  "column0"_a = cell_definitions[0].column.value,
+                  "column1"_a = cell_definitions[1].column.value,
+                  "column2"_a = cell_definitions[2].column.value,
+                  "column3"_a = cell_definitions[3].column.value,
+                  "column4"_a = cell_definitions[4].column.value,
+                  "column5"_a = cell_definitions[5].column.value,
+                  "column6"_a = cell_definitions[6].column.value,
+                  "column7"_a = tables::Asset::kName,
+                  "column8"_a = tables::SymbolInfo::kBaseAssetId,
+                  "column9"_a = tables::Asset::kId,
+                  "column10"_a = tables::SymbolInfo::kQuoteAssetId)};
 }
 }  // namespace
 
@@ -76,60 +138,43 @@ auto PreparedStatements::DeleteAsset() const -> const sqldb::IUpdateStatement& {
   });
 }
 
-auto PreparedStatements::SelectSymbolsInfo() const
+auto PreparedStatements::SelectSymbolsWithPriceRecords() const
     -> const sqldb::ISelectStatement& {
   return InitLazily(select_symbol_info_, [this]() {
-    auto columns = tables::SymbolInfo::Definition().GetColumnDefinitions(
-        {{tables::SymbolInfo::kName},
-         {tables::SymbolInfo::kBaseAssetMinAmount},
-         {tables::SymbolInfo::kBaseAssetPriceStep},
-         {tables::SymbolInfo::kQuoteAssetMinAmount},
-         {tables::SymbolInfo::kQuoteAssetPriceStep}});
-
-    const auto base_asset_column = []() {
-      auto base_asset_column = tables::Asset::Definition().GetColumnDefinition(
-          {tables::Asset::kName});
-      base_asset_column.column.value = "base_asset";
-      return base_asset_column;
-    }();
-    columns.emplace_back(cpp::AssumeNn(&base_asset_column));
-
-    const auto quote_asset_column = []() {
-      auto quote_asset_column = tables::Asset::Definition().GetColumnDefinition(
-          {tables::Asset::kName});
-      quote_asset_column.column.value = "quote_asset";
-      return quote_asset_column;
-    }();
-    columns.emplace_back(cpp::AssumeNn(&quote_asset_column));
-
-    auto query = sqldb::Query{
-        fmt::format("SELECT "
-                    "{table0}.{column0}, "
-                    "{table0}.{column1}, "
-                    "{table0}.{column2}, "
-                    "{table0}.{column3}, "
-                    "{table0}.{column4}, "
-                    "BaseAsset.{column7} AS {column5}, "
-                    "QuoteAsset.{column7} AS {column6} "
-                    "FROM {table0} "
-                    "JOIN {table1} AS BaseAsset ON {table0}.{column8} = "
-                    "BaseAsset.{column9} "
-                    "JOIN {table1} AS QuoteAsset ON {table0}.{column10} = "
-                    "QuoteAsset.{column9} ",
-                    "table0"_a = tables::SymbolInfo::kTable,
-                    "table1"_a = tables::Asset::kTable,
-                    "column0"_a = columns[0]->column.value,
-                    "column1"_a = columns[1]->column.value,
-                    "column2"_a = columns[2]->column.value,
-                    "column3"_a = columns[3]->column.value,
-                    "column4"_a = columns[4]->column.value,
-                    "column5"_a = columns[5]->column.value,
-                    "column6"_a = columns[6]->column.value,
-                    "column7"_a = tables::Asset::kName,
-                    "column8"_a = tables::SymbolInfo::kBaseAssetId,
-                    "column9"_a = tables::Asset::kId,
-                    "column10"_a = tables::SymbolInfo::kQuoteAssetId)};
+    const auto columns = tables::SymbolInfo::Definition().GetColumnDefinitions(
+        {{tables::SymbolInfo::kName}});
+    auto query = query_builder_facade_.Select()
+                     .Columns(columns)
+                     .FromTable(tables::SymbolInfo::Definition())
+                     .Where(fmt::format(
+                         "EXISTS(SELECT 1 FROM {table0} WHERE "
+                         "{table0}.{column0} = {table1}.{column1} LIMIT 1)",
+                         "table0"_a = tables::SymbolPriceRecord::kTable,
+                         "table1"_a = tables::SymbolInfo::kTable,
+                         "column0"_a = tables::SymbolPriceRecord::kSymbolId,
+                         "column1"_a = tables::SymbolInfo::kId))
+                     .Build();
     return db_->PrepareStatement(std::move(query), columns);
+  });
+}
+
+auto PreparedStatements::SelectSymbolInfo() const
+    -> const sqldb::ISelectStatement& {
+  return InitLazily(select_symbol_info_, [this]() {
+    const auto row_definition = SelectSymbolsInfoRowDefinition();
+    auto query = sqldb::Query{fmt::format(
+        "{} WHERE {}.{} = ?", SelectSymbolsInfoQuery(row_definition).value,
+        tables::SymbolInfo::kTable, tables::SymbolInfo::kName)};
+    return db_->PrepareStatement(std::move(query), row_definition);
+  });
+}
+
+auto PreparedStatements::SelectSymbolsInfo() const
+    -> const sqldb::ISelectStatement& {
+  return InitLazily(select_symbols_info_, [this]() {
+    const auto row_definition = SelectSymbolsInfoRowDefinition();
+    auto query = SelectSymbolsInfoQuery(row_definition);
+    return db_->PrepareStatement(std::move(query), row_definition);
   });
 }
 
@@ -206,12 +251,10 @@ auto PreparedStatements::SelectSymbolPriceRecords() const
             .Columns(columns)
             .FromTable(table)
             .Where(fmt::format(
-                "{table0}.{column0} = "
-                "(SELECT {column1} FROM {table1} WHERE {column2} = ?) AND "
-                "{table0}.{column3} >= ? AND "
-                "{table0}.{column3} <= ?",
-                "table0"_a = tables::SymbolPriceRecord::kTable,
-                "table1"_a = tables::SymbolInfo::kTable,
+                "{column0} = "
+                "(SELECT {column1} FROM {table} WHERE {column2} = ?) AND "
+                "{column3} >= ? AND {column3} < ?",
+                "table"_a = tables::SymbolInfo::kTable,
                 "column0"_a = tables::SymbolPriceRecord::kSymbolId,
                 "column1"_a = tables::SymbolInfo::kId,
                 "column2"_a = tables::SymbolInfo::kName,
