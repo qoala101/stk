@@ -52,10 +52,12 @@ add_compile_definitions(_TURN_OFF_PLATFORM_STRING)
 add_compile_options(
   -Wall
   -Wextra
-  # -Werror
   -pedantic
-  # -pedantic-errors
   -Wno-missing-braces
+
+  # Uncomment to treat warnings like errors. Not convenient for development.
+  # -Werror
+  # -pedantic-errors
 )
 
 add_subdirectory(src)

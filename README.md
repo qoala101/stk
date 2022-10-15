@@ -16,20 +16,6 @@ https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/credentials.html
 
 ## How to build
 
-### Setup conan profile if not already
-
-```bash
-conan profile new default || true && \
-conan profile update settings.os=Linux default && \
-conan profile update settings.arch=x86_64 default && \
-conan profile update settings.compiler=clang default && \
-conan profile update settings.compiler.libcxx=libstdc++11 default && \
-conan profile update settings.compiler.version=11 default && \
-conan profile update settings.build_type=Release default && \
-conan profile update env.CC=/usr/bin/clang-11 default && \
-conan profile update env.CXX=/usr/bin/clang++-11 default
-```
-
 ### Create build directory
 
 ```bash
@@ -40,7 +26,7 @@ cd build
 ### Install missing libraries
 
 ```bash
-conan install .. --build=missing -pr=default
+conan install .. --build=missing -pr=conanprofile.txt
 ```
 
 ### Build

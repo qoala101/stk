@@ -1,5 +1,6 @@
 [requires]
 abseil/20220623.0
+andreasbuhr-cppcoro/cci.20210113
 aws-sdk-cpp/1.9.234
 cli11/2.2.0
 cpprestsdk/2.10.18
@@ -20,8 +21,6 @@ openssl/1.1.1q
 zlib/1.2.12
 
 [options]
-absl:shared=False
-
 aws-sdk-cpp:access-management=False
 aws-sdk-cpp:cognito-identity=False
 aws-sdk-cpp:dynamodb=True
@@ -37,8 +36,6 @@ aws-sdk-cpp:sqs=False
 aws-sdk-cpp:sts=False
 aws-sdk-cpp:text-to-speech=False
 aws-sdk-cpp:transfer=False
-
-cpprestsdk:shared=False
 
 di:with_extensions=True
 
