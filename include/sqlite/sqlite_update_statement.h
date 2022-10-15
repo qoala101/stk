@@ -5,7 +5,7 @@
 
 #include "sqldb_i_update_statement.h"
 #include "sqldb_value.h"
-#include "sqlite_prepared_statement_handle.h"
+#include "sqlite_ps_common_impl.h"
 
 namespace stonks::sqlite {
 /**
@@ -13,11 +13,7 @@ namespace stonks::sqlite {
  */
 class UpdateStatement : public sqldb::IUpdateStatement {
  public:
-  /**
-   * @param prepared_statement_handle Handle for SQLite prepared statement
-   * produced by parent DB.
-   */
-  explicit UpdateStatement(PreparedStatementHandle prepared_statement_handle);
+  explicit UpdateStatement(ps::CommonImpl impl);
 
   /**
    * @copydoc sqldb::IUpdateStatement::Execute
@@ -25,7 +21,7 @@ class UpdateStatement : public sqldb::IUpdateStatement {
   void Execute(std::vector<sqldb::Value> params) const override;
 
  private:
-  PreparedStatementHandle prepared_statement_handle_;
+  ps::CommonImpl impl_;
 };
 }  // namespace stonks::sqlite
 

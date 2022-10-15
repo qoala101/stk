@@ -38,6 +38,9 @@ class Db : public sqldb::IDb {
       -> cpp::NnUp<sqldb::IUpdateStatement> override;
 
  private:
+  [[nodiscard]] auto PsCommonImplFrom(sqldb::Query query) const;
+
+  di::Factory<log::ILogger> logger_factory_;
   cpp::NnSp<SqliteDbHandleVariant> sqlite_db_handle_;
   DbFacade sqlite_db_facade_;
 };

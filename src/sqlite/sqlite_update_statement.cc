@@ -6,23 +6,18 @@
 #include <utility>
 
 #include "cpp_message_exception.h"
-#include "cpp_not_null.h"
 #include "sqlite_prepared_statement_facade.h"
-#include "sqlite_prepared_statement_handle.h"
+#include "sqlite_ps_common_impl.h"
 #include "sqlite_types.h"
 
 namespace stonks::sqlite {
-UpdateStatement::UpdateStatement(
-    PreparedStatementHandle prepared_statement_handle)
-    : prepared_statement_handle_{std::move(prepared_statement_handle)} {}
+UpdateStatement::UpdateStatement(ps::CommonImpl impl)
+    : impl_{std::move(impl)} {}
 
 void UpdateStatement::Execute(std::vector<sqldb::Value> params) const {
-  auto &sqlite_statement = prepared_statement_handle_.GetSqliteStatement();
-  auto prepared_statement_facade =
-      PreparedStatementFacade{cpp::AssumeNn(&sqlite_statement)};
-  prepared_statement_facade.Reset();
-  prepared_statement_facade.BindParams(params);
+  impl_.BeforeExecution(params);
 
+  const auto &prepared_statement_facade = impl_.GetPreparedStatementFacade();
   const auto result_code = prepared_statement_facade.Step();
 
   if (result_code != SQLITE_DONE) {

@@ -60,6 +60,14 @@ struct SymbolPriceRecord {
   Symbol symbol{};
   Price price{};
   absl::Time time{};
+
+ private:
+  [[nodiscard]] friend auto operator==(const SymbolPriceRecord &,
+                                       const SymbolPriceRecord &)
+      -> bool = default;
+  [[nodiscard]] friend auto operator<=>(const SymbolPriceRecord &,
+                                        const SymbolPriceRecord &)
+      -> std::partial_ordering = default;
 };
 }  // namespace stonks::core
 

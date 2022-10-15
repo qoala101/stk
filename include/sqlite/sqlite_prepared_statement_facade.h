@@ -22,18 +22,18 @@ class PreparedStatementFacade {
    * @brief Resets prepared statement.
    * @remark Should be called before new parameters binding.
    */
-  void Reset();
+  void Reset() const;
 
   /**
    * @brief Binds parameters in the order they defined in the statement.
    */
-  void BindParams(const std::vector<sqldb::Value> &params);
+  void BindParams(const std::vector<sqldb::Value> &params) const;
 
   /**
    * @brief Executes the next statement step.
    * @return SQLite result code.
    */
-  auto Step() -> ResultCode;
+  [[nodiscard]] auto Step() const -> ResultCode;
 
   /**
    * @brief Gives the values of provided types from the current step

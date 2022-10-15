@@ -11,7 +11,6 @@
 #include <utility>
 
 #include "cpp_message_exception.h"
-#include "cpp_not_null.h"
 #include "sqldb_types.h"
 #include "sqlite_prepared_statement_facade.h"
 #include "sqlite_types.h"
@@ -41,10 +40,9 @@ namespace {
 }
 }  // namespace
 
-SelectStatement::SelectStatement(
-    PreparedStatementHandle prepared_statement_handle,
-    const sqldb::RowDefinition &result_definition)
-    : prepared_statement_handle_{std::move(prepared_statement_handle)},
+SelectStatement::SelectStatement(ps::CommonImpl impl,
+                                 const sqldb::RowDefinition &result_definition)
+    : impl_{std::move(impl)},
       result_columns_{GetColumns(result_definition.GetCellDefinitions())},
       result_types_{GetCellTypes(result_definition.GetCellDefinitions())} {
   Ensures(result_columns_.size() == result_types_.size());
@@ -52,12 +50,9 @@ SelectStatement::SelectStatement(
 
 auto SelectStatement::Execute(std::vector<sqldb::Value> params) const
     -> sqldb::Rows {
-  auto &sqlite_statement = prepared_statement_handle_.GetSqliteStatement();
-  auto prepared_statement_facade =
-      PreparedStatementFacade{cpp::AssumeNn(&sqlite_statement)};
-  prepared_statement_facade.Reset();
-  prepared_statement_facade.BindParams(params);
+  impl_.BeforeExecution(params);
 
+  const auto &prepared_statement_facade = impl_.GetPreparedStatementFacade();
   auto result_rows = sqldb::Rows{result_columns_};
 
   while (true) {
