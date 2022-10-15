@@ -16,6 +16,7 @@
 #include <utility>
 #include <vector>
 
+#include "core_types.h"
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
@@ -39,7 +40,6 @@
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 #include "not_null.hpp"
-#include "stonks_types.h"
 #include "test_restsdk_injector.h"
 
 namespace {
@@ -50,21 +50,22 @@ class EntityInterface {
  public:
   virtual ~EntityInterface() = default;
 
-  virtual void PushSymbol(stonks::SymbolName symbol) = 0;
+  virtual void PushSymbol(stonks::core::Symbol symbol) = 0;
 
   [[nodiscard]] virtual auto GetSymbol(int index) const
-      -> stonks::SymbolName = 0;
+      -> stonks::core::Symbol = 0;
 
   [[nodiscard]] virtual auto GetSize() const -> int = 0;
 };
 
 class Entity : public EntityInterface {
  public:
-  void PushSymbol(stonks::SymbolName symbol) override {
+  void PushSymbol(stonks::core::Symbol symbol) override {
     symbols_.emplace_back(std::move(symbol));
   }
 
-  [[nodiscard]] auto GetSymbol(int index) const -> stonks::SymbolName override {
+  [[nodiscard]] auto GetSymbol(int index) const
+      -> stonks::core::Symbol override {
     EXPECT_GT(symbols_.size(), index);
     return symbols_[index];
   }
@@ -72,7 +73,7 @@ class Entity : public EntityInterface {
   [[nodiscard]] auto GetSize() const -> int override { return symbols_.size(); }
 
  private:
-  std::vector<stonks::SymbolName> symbols_{};
+  std::vector<stonks::core::Symbol> symbols_{};
 };
 
 class EntityServer {
@@ -83,7 +84,7 @@ class EntityServer {
         .endpoint = {.method = stonks::network::Method::kPost,
                      .uri = {"/PushSymbol"}},
         .expected_types = {
-            .body = stonks::network::ExpectedType<stonks::SymbolName>()}};
+            .body = stonks::network::ExpectedType<stonks::core::Symbol>()}};
   }
 
   [[nodiscard]] static auto GetSymbolEndpointDesc()
@@ -93,7 +94,7 @@ class EntityServer {
                      .uri = {"/GetSymbol"}},
         .expected_types = {
             .params = {{"index", stonks::network::ExpectedType<int>()}},
-            .result = stonks::network::ExpectedType<stonks::SymbolName>()}};
+            .result = stonks::network::ExpectedType<stonks::core::Symbol>()}};
   }
 
   [[nodiscard]] static auto GetSizeEndpointDesc()
@@ -131,7 +132,8 @@ class EntityServer {
   }
 
   auto GetSymbolEndpointHandler(
-      stonks::network::AutoParsableRestRequest request) -> stonks::SymbolName {
+      stonks::network::AutoParsableRestRequest request)
+      -> stonks::core::Symbol {
     const auto index = int{request.Param("index")};
 
     if (index >= entity_.GetSize()) {
@@ -155,16 +157,17 @@ class EntityClient : public EntityInterface {
                     .create<stonks::di::Factory<
                         stonks::network::IRestRequestSender>>()} {}
 
-  void PushSymbol(stonks::SymbolName symbol) override {
+  void PushSymbol(stonks::core::Symbol symbol) override {
     client_.Call(EntityServer::PushSymbolEndpointDesc())
         .WithBody(symbol)
         .DiscardingResult();
   }
 
-  [[nodiscard]] auto GetSymbol(int index) const -> stonks::SymbolName override {
+  [[nodiscard]] auto GetSymbol(int index) const
+      -> stonks::core::Symbol override {
     return client_.Call(EntityServer::GetSymbolEndpointDesc())
         .WithParam("index", index)
-        .AndReceive<stonks::SymbolName>();
+        .AndReceive<stonks::core::Symbol>();
   }
 
   [[nodiscard]] auto GetSize() const -> int override {
@@ -219,12 +222,12 @@ TEST(ClientServerDeathTest, WrongClientTypes) {
       "NOT_SENT_PARAM", stonks::network::ExpectedType<int>());
   EXPECT_DEATH(std::ignore = rest_client.Call(endpoint_with_added_param)
                                  .WithParam("index", 0)
-                                 .AndReceive<stonks::SymbolName>(),
+                                 .AndReceive<stonks::core::Symbol>(),
                "");
   EXPECT_DEATH(std::ignore = rest_client.Call(endpoint_with_added_param)
                                  .WithParam("index", 0)
                                  .WithParam("UNKNOWN_PARAM", 0)
-                                 .AndReceive<stonks::SymbolName>(),
+                                 .AndReceive<stonks::core::Symbol>(),
                "");
 }
 

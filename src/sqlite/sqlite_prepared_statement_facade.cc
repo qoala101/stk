@@ -85,7 +85,7 @@ PreparedStatementFacade::PreparedStatementFacade(
   Ensures(sqlite_statement_ != nullptr);
 }
 
-void PreparedStatementFacade::Reset() {
+void PreparedStatementFacade::Reset() const {
   Expects(sqlite_statement_ != nullptr);
 
   const auto result_code = sqlite3_reset(sqlite_statement_);
@@ -97,7 +97,7 @@ void PreparedStatementFacade::Reset() {
 }
 
 void PreparedStatementFacade::BindParams(
-    const std::vector<sqldb::Value> &params) {
+    const std::vector<sqldb::Value> &params) const {
   Expects(sqlite_statement_ != nullptr);
 
   for (auto i = 0; i < gsl::narrow_cast<int>(params.size()); ++i) {
@@ -105,7 +105,7 @@ void PreparedStatementFacade::BindParams(
   }
 }
 
-auto PreparedStatementFacade::Step() -> ResultCode {
+auto PreparedStatementFacade::Step() const -> ResultCode {
   Expects(sqlite_statement_ != nullptr);
   return {sqlite3_step(sqlite_statement_)};
 }

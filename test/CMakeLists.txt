@@ -41,7 +41,7 @@ target_link_libraries(unittests
 gtest_discover_tests(unittests)
 
 target_link_libraries(unittests
-  PRIVATE app_symbols_db
+  PRIVATE libappsymbolsdb
   PRIVATE libaws
   PRIVATE libcpp
   PRIVATE librestsdk

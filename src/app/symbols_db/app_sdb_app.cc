@@ -5,7 +5,6 @@
 #include <compare>
 #include <functional>
 #include <gsl/assert>
-#include <limits>
 #include <memory>
 #include <optional>
 #include <range/v3/action/action.hpp>
@@ -18,6 +17,7 @@
 #include <range/v3/view/view.hpp>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "app_sdb_prepared_statements.h"
 #include "app_sdb_tables.h"
@@ -147,7 +147,7 @@ App::App(cpp::NnUp<sqldb::IDb> db,
   CreateTablesIfNotExist();
 }
 
-auto App::SelectAssets() const {
+auto App::SelectAssets() const -> std::vector<core::Asset> {
   auto rows = prepared_statements_.SelectAssets().Execute();
   auto &names = rows.GetColumnValues({tables::Asset::kName});
   return names | ranges::views::transform([](auto &name) {
@@ -187,7 +187,7 @@ auto App::SelectSymbolInfo(core::Symbol symbol) const
   return std::move(infos.front());
 }
 
-auto App::SelectSymbolsInfo() const {
+auto App::SelectSymbolsInfo() const -> std::vector<core::SymbolInfo> {
   auto rows = prepared_statements_.SelectSymbolsInfo().Execute();
   return SymbolsInfoFrom(std::move(rows));
 }
@@ -200,21 +200,11 @@ void App::UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos) {
               &SymbolInfoEquals);
 }
 
-auto App::SelectSymbolPriceRecords(const core::Symbol &symbol,
-                                   const absl::Time *start_time,
-                                   const absl::Time *end_time,
-                                   const int *limit) const
-    -> std::vector<core::SymbolPriceRecord> {
-  const auto start_time_value =
-      (start_time != nullptr) ? *start_time : absl::InfinitePast();
-  const auto end_time_value =
-      (end_time != nullptr) ? *end_time : absl::InfiniteFuture();
-  const auto limit_value =
-      (limit != nullptr) ? *limit : std::numeric_limits<int>::max();
-
+auto App::SelectSymbolPriceRecords(const SelectSymbolPriceRecordsArgs &args)
+    const -> std::vector<core::SymbolPriceRecord> {
   const auto rows = prepared_statements_.SelectSymbolPriceRecords().Execute(
-      sqldb::AsValues(symbol, absl::ToUnixMillis(start_time_value),
-                      absl::ToUnixMillis(end_time_value), limit_value));
+      sqldb::AsValues(args.symbol, absl::ToUnixMillis(args.start_time),
+                      absl::ToUnixMillis(args.end_time), args.limit));
 
   const auto &prices =
       rows.GetColumnValues({tables::SymbolPriceRecord::kPrice});
@@ -226,7 +216,7 @@ auto App::SelectSymbolPriceRecords(const core::Symbol &symbol,
 
   for (auto i = 0; i < num_rows; ++i) {
     price_ticks.emplace_back(core::SymbolPriceRecord{
-        .symbol = symbol,
+        .symbol = args.symbol,
         .price = core::Price{prices[i].GetDouble()},
         .time = absl::FromUnixMillis(times[i].GetInt64())});
   }
@@ -236,7 +226,7 @@ auto App::SelectSymbolPriceRecords(const core::Symbol &symbol,
 
 void App::InsertSymbolPriceRecord(core::SymbolPriceRecord record) {
   prepared_statements_.InsertSymbolPriceRecord().Execute(sqldb::AsValues(
-      std::move(record.symbol), absl::ToUnixMillis(record.time), record.price));
+      std::move(record.symbol), record.price, absl::ToUnixMillis(record.time)));
 }
 
 void App::DeleteSymbolPriceRecords(absl::Time before_time) {

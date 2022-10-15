@@ -1,171 +1,157 @@
-#include <gtest/gtest.h>
+#include <absl/time/time.h>
+#include <gtest/gtest-message.h>
+#include <gtest/gtest-test-part.h>
 
-#include <optional>
+#include <boost/di.hpp>
+#include <ext/alloc_traits.h>
+#include <memory>
+#include <vector>
 
-#include "cpp_not_null.h"
 #include "app_sdb_app.h"
+#include "core_types.h"
+#include "cpp_smart_pointers.h"
+#include "cpp_typed_struct.h"
+#include "gtest/gtest_pred_impl.h"
+#include "test_app_injector.h"
 
 namespace {
-const auto kTestDbFileName = "stonks_db_test.db";
+auto db = stonks::cpp::Sp<stonks::app::sdb::App>{};
 
-auto db = cpp::Sp<stonks::app::sdb::App>{};
+TEST(AppSymbolsDb, UpdateSymbolsInfo) {
+  db = test::app::Injector().create<stonks::cpp::Sp<stonks::app::sdb::App>>();
 
-TEST(StonksDb, UpdateSymbolsInfo) {
-  db = cpp::MakeSp<stonks::Db>(stonks::sqlite::Factory{}, ":memory:");
-
-  db->UpdateAssets({"YYY", "USDT"});
+  db->UpdateAssets({{"YYY"}, {"USDT"}});
   auto assets = db->SelectAssets();
   EXPECT_EQ(assets.size(), 2);
-  EXPECT_EQ(assets[0], "USDT");
-  EXPECT_EQ(assets[1], "YYY");
+  EXPECT_EQ(assets[0].value, "USDT");
+  EXPECT_EQ(assets[1].value, "YYY");
 
-  db->UpdateAssets({"ETH", "USDT"});
+  db->UpdateAssets({{"ETH"}, {"USDT"}});
   assets = db->SelectAssets();
   EXPECT_EQ(assets.size(), 2);
-  EXPECT_EQ(assets[0], "USDT");
-  EXPECT_EQ(assets[1], "ETH");
+  EXPECT_EQ(assets[0].value, "USDT");
+  EXPECT_EQ(assets[1].value, "ETH");
 
   auto symbols_info =
-      std::vector<stonks::SymbolInfo>{stonks::SymbolInfo{.symbol = "ETHUSDT",
-                                                         .base_asset = "ETH",
-                                                         .quote_asset = "USDT",
-                                                         .min_base_amount = 1,
-                                                         .min_quote_amount = 2,
-                                                         .base_step = 3,
-                                                         .quote_step = 4}};
+      std::vector<stonks::core::SymbolInfo>{stonks::core::SymbolInfo{
+          .symbol = {"ETHUSDT"},
+          .base_asset = {.asset = {"ETH"}, .min_amount = 1, .price_step = 3},
+          .quote_asset = {
+              .asset = {"USDT"}, .min_amount = 2, .price_step = 4}}};
   db->UpdateSymbolsInfo(symbols_info);
   EXPECT_EQ(db->SelectSymbolsInfo(), symbols_info);
 
-  db->UpdateAssets({"BTC", "USDT"});
+  db->UpdateAssets({{"BTC"}, {"USDT"}});
   assets = db->SelectAssets();
   EXPECT_EQ(assets.size(), 2);
-  EXPECT_EQ(assets[0], "USDT");
-  EXPECT_EQ(assets[1], "BTC");
+  EXPECT_EQ(assets[0].value, "USDT");
+  EXPECT_EQ(assets[1].value, "BTC");
   EXPECT_TRUE(db->SelectSymbolsInfo().empty());
 
-  symbols_info = std::vector<stonks::SymbolInfo>{stonks::SymbolInfo{
-      .symbol = "BTCUSDT", .base_asset = "BTC", .quote_asset = "USDT"}};
+  symbols_info = std::vector<stonks::core::SymbolInfo>{stonks::core::SymbolInfo{
+      .symbol = {"BTCUSDT"}, .base_asset = {"BTC"}, .quote_asset = {"USDT"}}};
   db->UpdateSymbolsInfo(symbols_info);
   EXPECT_EQ(db->SelectSymbolsInfo(), symbols_info);
 
-  symbols_info[0].min_base_amount = 1;
-  symbols_info[0].min_quote_amount = 2;
-  symbols_info[0].base_step = 3;
-  symbols_info[0].quote_step = 4;
+  symbols_info[0].base_asset.min_amount = 1;
+  symbols_info[0].quote_asset.min_amount = 2;
+  symbols_info[0].base_asset.price_step = 3;
+  symbols_info[0].quote_asset.price_step = 4;
   db->UpdateSymbolsInfo(symbols_info);
   EXPECT_EQ(db->SelectSymbolsInfo(), symbols_info);
 
-  symbols_info[0].base_asset = "USDT";
+  symbols_info[0].base_asset = {"USDT"};
   db->UpdateSymbolsInfo(symbols_info);
   EXPECT_EQ(db->SelectSymbolsInfo(), symbols_info);
 
-  symbols_info.emplace_back(stonks::SymbolInfo{
-      .symbol = "NEW_NAME", .base_asset = "USDT", .quote_asset = "USDT"});
+  symbols_info.emplace_back(stonks::core::SymbolInfo{
+      .symbol = {"NEW_NAME"}, .base_asset = {"USDT"}, .quote_asset = {"USDT"}});
   db->UpdateSymbolsInfo(symbols_info);
   EXPECT_EQ(db->SelectSymbolsInfo(), symbols_info);
 
-  db->InsertSymbolPriceTick(stonks::SymbolPriceTick{.symbol = "BTCUSDT"});
-  EXPECT_FALSE(db->SelectSymbolPriceTicks(nullptr, nullptr, nullptr).empty());
+  db->InsertSymbolPriceRecord(
+      stonks::core::SymbolPriceRecord{.symbol = {"BTCUSDT"}});
+  EXPECT_FALSE(db->SelectSymbolPriceRecords({.symbol = {"BTCUSDT"}}).empty());
 
-  db->UpdateAssets({"NONE_ASSET"});
-  EXPECT_TRUE(db->SelectSymbolPriceTicks(nullptr, nullptr, nullptr).empty());
+  db->UpdateAssets({{"NONE_ASSET"}});
+  EXPECT_TRUE(db->SelectSymbolPriceRecords({.symbol = {"BTCUSDT"}}).empty());
 }
 
-TEST(StonksDb, TablesInitialization) {
-  std::ignore = std::remove(kTestDbFileName);
-  db = cpp::MakeSp<stonks::Db>(stonks::sqlite::Factory{}, kTestDbFileName);
-  std::ignore = stonks::DbUpdaterSymbolsInfo{db};
+TEST(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
+  const auto eth_usdt = stonks::core::Symbol{"ETHUSDT"};
+  const auto btc_usdt = stonks::core::Symbol{"BTCUSDT"};
 
-  const auto assets = db->SelectAssets();
-  EXPECT_FALSE(assets.empty());
+  db->UpdateAssets({{"BTC"}, {"ETH"}, {"USDT"}});
+  db->UpdateSymbolsInfo(
+      {{.symbol = {eth_usdt}, .base_asset = {"ETH"}, .quote_asset = {"USDT"}},
+       {.symbol = {btc_usdt}, .base_asset = {"BTC"}, .quote_asset = {"USDT"}}});
 
-  const auto symbols = db->SelectSymbols();
-  EXPECT_FALSE(symbols.empty());
-}
+  const auto symbol_price_records =
+      db->SelectSymbolPriceRecords({.symbol = eth_usdt});
+  EXPECT_TRUE(symbol_price_records.empty());
 
-TEST(StonksDb, InsertAndSelectSymbolPriceTicks) {
-  const auto eth_usdt = stonks::SymbolName{"ETHUSDT"};
-  const auto btc_usdt = stonks::SymbolName{"BTCUSDT"};
-  const auto symbol_price_ticks =
-      db->SelectSymbolPriceTicks(&eth_usdt, nullptr, nullptr);
-  EXPECT_TRUE(symbol_price_ticks.empty());
+  const auto eth_price_records = std::vector<stonks::core::SymbolPriceRecord>{
+      stonks::core::SymbolPriceRecord{.symbol = eth_usdt,
+                                      .price = {0.1},
+                                      .time = absl::FromUnixMillis(1000)},
+      stonks::core::SymbolPriceRecord{.symbol = eth_usdt,
+                                      .price = {0.2},
+                                      .time = absl::FromUnixMillis(2000)},
+      stonks::core::SymbolPriceRecord{.symbol = eth_usdt,
+                                      .price = {0.3},
+                                      .time = absl::FromUnixMillis(3000)}};
 
-  const auto eth_price_ticks = std::vector<stonks::SymbolPriceTick>{
-      stonks::SymbolPriceTick{.symbol = eth_usdt,
-                              .time = absl::Time{1000},
-                              .buy_price = 0.1,
-                              .sell_price = 0.01},
-      stonks::SymbolPriceTick{.symbol = eth_usdt,
-                              .time = absl::Time{2000},
-                              .buy_price = 0.2,
-                              .sell_price = 0.02},
-      stonks::SymbolPriceTick{.symbol = eth_usdt,
-                              .time = absl::Time{3000},
-                              .buy_price = 0.3,
-                              .sell_price = 0.03}};
-
-  for (const auto &symbol_price_tick : eth_price_ticks) {
-    db->InsertSymbolPriceTick(symbol_price_tick);
+  for (const auto &symbol_price_record : eth_price_records) {
+    db->InsertSymbolPriceRecord(symbol_price_record);
   }
 
-  const auto btc_price_ticks = std::vector<stonks::SymbolPriceTick>{
-      stonks::SymbolPriceTick{.symbol = btc_usdt,
-                              .time = absl::Time{10000},
-                              .buy_price = 0.01,
-                              .sell_price = 0.001},
-      stonks::SymbolPriceTick{.symbol = btc_usdt,
-                              .time = absl::Time{20000},
-                              .buy_price = 0.02,
-                              .sell_price = 0.002},
-      stonks::SymbolPriceTick{.symbol = btc_usdt,
-                              .time = absl::Time{30000},
-                              .buy_price = 0.03,
-                              .sell_price = 0.003}};
+  const auto btc_price_records = std::vector<stonks::core::SymbolPriceRecord>{
+      stonks::core::SymbolPriceRecord{.symbol = btc_usdt,
+                                      .price = {0.01},
+                                      .time = absl::FromUnixMillis(10000)},
+      stonks::core::SymbolPriceRecord{.symbol = btc_usdt,
+                                      .price = {0.02},
+                                      .time = absl::FromUnixMillis(20000)},
+      stonks::core::SymbolPriceRecord{.symbol = btc_usdt,
+                                      .price = {0.03},
+                                      .time = absl::FromUnixMillis(30000)}};
 
-  for (const auto &symbol_price_tick : btc_price_ticks) {
-    db->InsertSymbolPriceTick(symbol_price_tick);
+  for (const auto &symbol_price_record : btc_price_records) {
+    db->InsertSymbolPriceRecord(symbol_price_record);
   }
 
-  const auto all_price_ticks_received =
-      db->SelectSymbolPriceTicks(nullptr, nullptr, nullptr);
-  EXPECT_EQ(all_price_ticks_received.size(),
-            eth_price_ticks.size() + btc_price_ticks.size());
+  const auto eth_price_records_received =
+      db->SelectSymbolPriceRecords({.symbol = eth_usdt});
+  EXPECT_EQ(eth_price_records_received, eth_price_records);
 
-  const auto eth_price_ticks_received =
-      db->SelectSymbolPriceTicks(&eth_usdt, nullptr, nullptr);
-  EXPECT_EQ(eth_price_ticks_received, eth_price_ticks);
-
-  const auto btc_price_ticks_received =
-      db->SelectSymbolPriceTicks(&btc_usdt, nullptr, nullptr);
-  EXPECT_EQ(btc_price_ticks_received, btc_price_ticks);
+  const auto btc_price_records_received =
+      db->SelectSymbolPriceRecords({.symbol = btc_usdt});
+  EXPECT_EQ(btc_price_records_received, btc_price_records);
 }
 
-TEST(StonksDb, SelectPeriod) {
-  auto period =
-      stonks::Period{.start_time = std::nullopt, .end_time = std::nullopt};
-  auto price_ticks = db->SelectSymbolPriceTicks(nullptr, &period, nullptr);
-  EXPECT_EQ(price_ticks.size(), 6);
+TEST(AppSymbolsDb, SelectPeriod) {
+  const auto symbol = stonks::core::Symbol{"ETHUSDT"};
+  auto price_records = db->SelectSymbolPriceRecords({.symbol = symbol});
+  EXPECT_EQ(price_records.size(), 3);
 
-  period = stonks::Period{.start_time = cpp::MakeOpt<absl::Time>(1001),
-                          .end_time = std::nullopt};
-  auto symbol = stonks::SymbolName{"ETHUSDT"};
-  price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
-  EXPECT_EQ(price_ticks.size(), 2);
+  price_records = db->SelectSymbolPriceRecords(
+      {.symbol = symbol, .start_time = absl::FromUnixMillis(1001)});
+  EXPECT_EQ(price_records.size(), 2);
 
-  period = stonks::Period{.start_time = std::nullopt,
-                          .end_time = cpp::MakeOpt<absl::Time>(2999)};
-  price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
-  EXPECT_EQ(price_ticks.size(), 2);
+  price_records = db->SelectSymbolPriceRecords(
+      {.symbol = symbol, .end_time = absl::FromUnixMillis(2999)});
+  EXPECT_EQ(price_records.size(), 2);
 
-  period = stonks::Period{.start_time = cpp::MakeOpt<absl::Time>(1001),
-                          .end_time = cpp::MakeOpt<absl::Time>(2999)};
-  price_ticks = db->SelectSymbolPriceTicks(&symbol, &period, nullptr);
-  EXPECT_EQ(price_ticks.size(), 1);
+  price_records =
+      db->SelectSymbolPriceRecords({.symbol = symbol,
+                                    .start_time = absl::FromUnixMillis(1001),
+                                    .end_time = absl::FromUnixMillis(2999)});
+  EXPECT_EQ(price_records.size(), 1);
 }
 
-TEST(StonksDb, SelectLimit) {
-  const auto limit = 4;
-  auto price_ticks = db->SelectSymbolPriceTicks(nullptr, nullptr, &limit);
-  EXPECT_EQ(price_ticks.size(), 4);
+TEST(AppSymbolsDb, SelectLimit) {
+  const auto price_records =
+      db->SelectSymbolPriceRecords({.symbol = {"ETHUSDT"}, .limit = 2});
+  EXPECT_EQ(price_records.size(), 2);
 }
 }  // namespace

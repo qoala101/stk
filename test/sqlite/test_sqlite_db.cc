@@ -15,14 +15,14 @@
 #include "test_sqlite_injector.h"
 
 namespace {
-const auto kTestDbFileName = "sqlite_db_test.db";
-
 auto db = stonks::cpp::Up<stonks::sqldb::IDb>{};
 auto query_builder = stonks::cpp::Up<stonks::sqldb::IQueryBuilder>{};
 auto query_builder_facade = std::optional<stonks::sqldb::QueryBuilderFacade>{};
 
 TEST(SqliteDb, CreateAndDropTable) {
-  std::ignore = std::filesystem::remove(kTestDbFileName);
+  const auto db_file_name =
+      test::sqlite::Injector().create<stonks::sqlite::FilePath>().value;
+  std::ignore = std::filesystem::remove(db_file_name);
   db = test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
   auto query_builder_factory =
       test::sqlite::Injector()
@@ -192,9 +192,11 @@ TEST(SqliteDb, SelectJoin) {
 }
 
 TEST(SqliteDb, FileWriteAndRead) {
-  EXPECT_FALSE(std::filesystem::exists(kTestDbFileName));
+  const auto db_file_name =
+      test::sqlite::Injector().create<stonks::sqlite::FilePath>().value;
+  EXPECT_FALSE(std::filesystem::exists(db_file_name));
   db.reset();
-  EXPECT_TRUE(std::filesystem::exists(kTestDbFileName));
+  EXPECT_TRUE(std::filesystem::exists(db_file_name));
 
   db = test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
   auto db_copy =
@@ -214,7 +216,7 @@ TEST(SqliteDb, FileWriteAndRead) {
   EXPECT_EQ(db_rows, db_copy_rows);
 
   db_copy.reset();
-  EXPECT_TRUE(std::filesystem::exists(kTestDbFileName));
+  EXPECT_TRUE(std::filesystem::exists(db_file_name));
 }
 
 TEST(SqliteDb, CascadeForeignKeyDelete) {

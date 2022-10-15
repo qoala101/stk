@@ -8,6 +8,7 @@
 #include <ostream>
 #include <string>
 
+#include "core_types.h"
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 #include "gtest/gtest_pred_impl.h"
@@ -22,12 +23,11 @@
 #include "network_types.h"
 #include "not_null.hpp"
 #include "restsdk_rest_request_sender.h"
-#include "stonks_types.h"
 #include "test_restsdk_injector.h"
 
 namespace {
 struct SymbolPrice {
-  stonks::SymbolName symbol{};
+  stonks::core::Symbol symbol{};
   double price{};
 
   //  private:
@@ -45,7 +45,7 @@ struct SymbolPrice {
 namespace stonks::network {
 template <>
 auto JsonParser<SymbolPrice>::operator()(const IJson &json) const -> Type {
-  return {.symbol = ParseFromJsonChild<SymbolName>(json, "symbol"),
+  return {.symbol = ParseFromJsonChild<core::Symbol>(json, "symbol"),
           .price = std::stod(ParseFromJsonChild<std::string>(json, "price"))};
 }
 
@@ -67,12 +67,13 @@ TEST(RestRequestReceiver, SendRequest) {
         -> stonks::network::RestResponse override {
       EXPECT_EQ(request.endpoint.method, stonks::network::Method::kGet);
       EXPECT_EQ(request.endpoint.uri, stonks::network::Uri{"/Test"});
-      return {stonks::network::Status::kOk,
-              stonks::network::ConvertToJson(SymbolPrice{
-                  .symbol = stonks::network::ParseFromJson<stonks::SymbolName>(
-                      **request.body),
-                  .price = stonks::network::ParseFromJson<double>(
-                      *request.params.at("price"))})};
+      return {
+          stonks::network::Status::kOk,
+          stonks::network::ConvertToJson(SymbolPrice{
+              .symbol = stonks::network::ParseFromJson<stonks::core::Symbol>(
+                  **request.body),
+              .price = stonks::network::ParseFromJson<double>(
+                  *request.params.at("price"))})};
     }
   };
 
@@ -98,7 +99,7 @@ TEST(RestRequestReceiver, SendRequest) {
   const auto response_price =
       stonks::network::ParseFromJson<SymbolPrice>(**response.result);
   EXPECT_EQ(response.status, stonks::network::Status::kOk);
-  EXPECT_EQ(response_price.symbol, stonks::SymbolName{"BTCUSDT"});
+  EXPECT_EQ(response_price.symbol, stonks::core::Symbol{"BTCUSDT"});
   EXPECT_EQ(response_price.price, 123.456);
 }
 }  // namespace
