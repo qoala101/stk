@@ -1,11 +1,11 @@
 #ifndef STONKS_SQLDB_SQLDB_I_DB_H_
 #define STONKS_SQLDB_SQLDB_I_DB_H_
 
+#include <not_null.hpp>
 #include <string>
 #include <vector>
 
 #include "cpp_not_null.h"
-#include "not_null.hpp"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_row_definition.h"

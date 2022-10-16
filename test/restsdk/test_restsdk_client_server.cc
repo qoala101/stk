@@ -9,6 +9,7 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <not_null.hpp>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -39,7 +40,6 @@
 #include "network_rest_server_builder.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
-#include "not_null.hpp"
 #include "test_restsdk_injector.h"
 
 namespace {

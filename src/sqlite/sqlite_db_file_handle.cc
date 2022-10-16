@@ -3,11 +3,11 @@
 #include <bits/exception.h>
 
 #include <memory>
+#include <not_null.hpp>
 #include <utility>
 
 #include "cpp_not_null.h"
 #include "di_factory.h"
-#include "not_null.hpp"
 #include "sqlite_db_facade.h"
 
 namespace stonks::sqlite {

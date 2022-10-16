@@ -5,11 +5,11 @@
 #include <function2/function2.hpp>
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <utility>
 
 #include "cpp_optional.h"
 #include "network_typed_ws_message_handler.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 TypedWsClient::TypedWsClient(WsEndpointTypes endpoint_types,

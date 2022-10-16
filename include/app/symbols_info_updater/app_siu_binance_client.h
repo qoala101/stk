@@ -1,8 +1,6 @@
 #ifndef STONKS_APP_SYMBOLS_INFO_UPDATER_APP_SIU_BINANCE_CLIENT_H_
 #define STONKS_APP_SYMBOLS_INFO_UPDATER_APP_SIU_BINANCE_CLIENT_H_
 
-#include <vector>
-
 #include "app_siu_types.h"
 #include "network_rest_client.h"
 

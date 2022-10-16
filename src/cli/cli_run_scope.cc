@@ -4,11 +4,11 @@
 
 #include <CLI/App.hpp>
 #include <memory>
+#include <not_null.hpp>
 #include <utility>
 
 #include "cli_wait_for_interrupt.h"
 #include "cpp_not_null.h"
-#include "not_null.hpp"
 
 namespace stonks::cli {
 RunScope::RunScope(cpp::NnSp<CLI::App> app) : app_{std::move(app)} {

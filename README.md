@@ -26,7 +26,7 @@ cd build
 ### Install missing libraries
 
 ```bash
-conan install .. --build=missing -pr=conanprofile.txt
+conan install .. --build=missing -pr=../conanprofile.txt
 ```
 
 ### Build

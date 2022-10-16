@@ -36,4 +36,4 @@ RUN apt update && \
   conan remove "*" -s -b -f && \
   \
   # Fetches dependencies from git.
-  cmake .. -DFETCH_DEPENDENCIES_ONLY=ON
+  cmake .. -DTHIRD_PARTY_ONLY=ON

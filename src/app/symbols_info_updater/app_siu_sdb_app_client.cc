@@ -13,7 +13,7 @@ SdbAppClient::SdbAppClient(network::RestClient rest_client)
     : rest_client_{std::move(rest_client)} {}
 
 void SdbAppClient::InsertOrUpdateSymbolInfo(core::SymbolInfo info) {
-  rest_client_.Call(endpoints::InsertOrUpdateSymbolInfo())
+  rest_client_.Call(endpoints::UpdateSymbolsInfo())
       .WithBody(std::move(info))
       .DiscardingResult();
 }

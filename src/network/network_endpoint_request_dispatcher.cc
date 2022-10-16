@@ -1,11 +1,11 @@
 #include "network_endpoint_request_dispatcher.h"
 
 #include <memory>
+#include <not_null.hpp>
 #include <utility>
 
 #include "network_enums.h"
 #include "network_types.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 EndpointRequestDispatcher::EndpointRequestDispatcher(

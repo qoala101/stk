@@ -2,6 +2,7 @@
 
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <type_traits>
 
 #include "cpp_expose_private_constructors.h"
@@ -9,7 +10,6 @@
 #include "network_typed_ws_client.h"
 #include "network_typed_ws_endpoint.h"
 #include "network_ws_connection.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 WsClientBuilder::WsClientBuilder(TypedWsEndpoint endpoint,

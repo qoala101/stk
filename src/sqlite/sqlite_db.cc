@@ -1,10 +1,10 @@
 #include "sqlite_db.h"
 
 #include <memory>
+#include <not_null.hpp>
 #include <utility>
 
 #include "cpp_not_null.h"
-#include "not_null.hpp"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqlite_db_facade.h"

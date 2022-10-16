@@ -1,8 +1,9 @@
 #ifndef STONKS_CPP_ALIASES_CPP_NOT_NULL_H_
 #define STONKS_CPP_ALIASES_CPP_NOT_NULL_H_
 
+#include <not_null.hpp>
+
 #include "cpp_smart_pointers.h"
-#include "not_null.hpp"
 
 /**
  * @file Short cpp::not_null aliases.

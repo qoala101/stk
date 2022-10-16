@@ -5,6 +5,7 @@
 
 #include <map>
 #include <memory>
+#include <not_null.hpp>
 #include <ostream>
 #include <string>
 
@@ -21,7 +22,6 @@
 #include "network_json_conversions_facades.h"
 #include "network_rest_request_builder.h"
 #include "network_types.h"
-#include "not_null.hpp"
 #include "restsdk_rest_request_sender.h"
 #include "test_restsdk_injector.h"
 

@@ -6,6 +6,7 @@
 #include <functional>
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <optional>
 #include <range/v3/action/action.hpp>
 #include <range/v3/action/sort.hpp>
@@ -25,7 +26,6 @@
 #include "cpp_not_null.h"
 #include "cpp_typed_struct.h"
 #include "cpp_views.h"
-#include "not_null.hpp"
 #include "sqldb_as_values.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"

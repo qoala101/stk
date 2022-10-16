@@ -8,12 +8,14 @@
 #include "network_enums.h"
 #include "network_typed_endpoint.h"
 
+// TODO(vh): .expected_type = network::FromFunction(&App::SelectAssets)
+// TODO(vh): .expected_type = network::FromFunction(&App::PushAsset, "asset")
+
 namespace stonks::app::endpoints {
 auto SelectAssets() -> const network::TypedEndpoint& {
   // static const auto kEndpoint = network::TypedEndpoint{
   //     .endpoint = {.method = network::Method::kGet, .uri =
   //     {"/SelectAssets"}},
-  //     // TODO(vh): .expected_type = network::FromFunction(&App::SelectAssets,
   //     0) .expected_types = {
   //         .result = network::ExpectedType<std::vector<core::Asset>>()}};
   // return kEndpoint;

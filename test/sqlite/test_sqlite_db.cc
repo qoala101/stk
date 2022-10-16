@@ -2,11 +2,11 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <not_null.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 
 #include "cpp_not_null.h"
-#include "not_null.hpp"
 #include "sqldb_as_values.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_query_builder.h"

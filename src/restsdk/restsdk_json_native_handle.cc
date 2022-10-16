@@ -2,11 +2,11 @@
 
 #include <cpprest/json.h>
 
+#include <not_null.hpp>
 #include <utility>
 
 #include "cpp_not_null.h"
 #include "network_i_json.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 IJson::NativeHandle::NativeHandle()

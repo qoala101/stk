@@ -19,13 +19,13 @@
 
 #include <map>
 #include <memory>
+#include <not_null.hpp>
 #include <optional>
 #include <string>
 #include <utility>
 
 #include "aws_api_handle.h"
 #include "cpp_message_exception.h"
-#include "not_null.hpp"
 
 namespace stonks::aws::dynamodb {
 AsyncDb::AsyncDb(ApiHandle api_handle)

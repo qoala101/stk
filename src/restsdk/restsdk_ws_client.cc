@@ -10,6 +10,7 @@
 #include <functional>
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <type_traits>
 #include <utility>
 
@@ -17,7 +18,6 @@
 #include "cpp_typed_struct.h"
 #include "network_i_json.h"
 #include "network_types.h"
-#include "not_null.hpp"
 #include "restsdk_json_native_handle.h"
 #include "restsdk_parse_json_fom_string.h"
 

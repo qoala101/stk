@@ -11,7 +11,7 @@ project(
   LANGUAGES CXX
 )
 
-option(FETCH_DEPENDENCIES_ONLY "If true, CMake would stop after making dependencies declared in the main CMakeFile.txt available.")
+option(THIRD_PARTY_ONLY "If true, CMake would stop after making third party dependencies available.")
 option(BUILD_TESTS "Whether to include the test folder to the build." ON)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -26,17 +26,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
-include(FetchContent)
+add_subdirectory(thirdparty)
 
-FetchContent_Declare(NotNull
-  GIT_REPOSITORY https://github.com/bitwizeshift/not_null
-  GIT_TAG c839cb1bb4cf988bd17a4c363263997275f508b8)
-
-FetchContent_MakeAvailable(NotNull)
-
-if(FETCH_DEPENDENCIES_ONLY)
+if(THIRD_PARTY_ONLY)
   return()
-endif(FETCH_DEPENDENCIES_ONLY)
+endif(THIRD_PARTY_ONLY)
 
 find_program(iwyu NAMES iwyu include-what-you-use REQUIRED)
 set(iwyu ${iwyu}

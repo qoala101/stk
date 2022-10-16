@@ -2,6 +2,7 @@
 
 #include <absl/time/clock.h>
 
+#include <string>
 #include <utility>
 
 #include "app_sps_sdb_app_client.h"

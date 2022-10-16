@@ -13,6 +13,7 @@
 #include <magic_enum.hpp>
 #include <map>
 #include <memory>
+#include <not_null.hpp>
 #include <optional>
 #include <string>
 #include <type_traits>
@@ -24,7 +25,6 @@
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_types.h"
-#include "not_null.hpp"
 #include "restsdk_json.h"
 #include "restsdk_json_native_handle.h"
 #include "restsdk_parse_json_fom_string.h"

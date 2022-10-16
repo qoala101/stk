@@ -1,15 +1,15 @@
 #include "app_sdb_app_server.h"
 
+#include <not_null.hpp>
 #include <utility>
 
 #include "app_endpoints.h"
 #include "cpp_not_null.h"
 #include "network_auto_parsable_request.h"
 #include "network_rest_server_builder.h"
-#include "not_null.hpp"
 
 namespace stonks::app::sdb {
-auto AppServer::InsertOrUpdateSymbolInfo(cpp::NnSp<App> app) {
+auto AppServer::UpdateSymbolsInfo(cpp::NnSp<App> app) {
   return
       [app = std::move(app)](network::AutoParsableRestRequest request) mutable {
         // app->InsertOrUpdateSymbolInfo(request.Body());
@@ -27,8 +27,8 @@ AppServer::AppServer(App app, network::RestServerBuilder rest_server_builder)
     : rest_server_{[&app, &rest_server_builder]() {
         auto shared_app = cpp::MakeNnSp<App>(std::move(app));
         return rest_server_builder
-            .Handling(endpoints::InsertOrUpdateSymbolInfo(),
-                      InsertOrUpdateSymbolInfo(shared_app))
+            .Handling(endpoints::UpdateSymbolsInfo(),
+                      UpdateSymbolsInfo(shared_app))
             .Handling(endpoints::InsertSymbolPriceRecord(),
                       InsertSymbolPriceRecord(std::move(shared_app)))
             .Start();

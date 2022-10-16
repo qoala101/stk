@@ -12,7 +12,6 @@
 #include "app_sdb_tables.h"
 #include "cpp_not_null.h"
 #include "cpp_typed_struct.h"
-#include "not_null.hpp"
 #include "sqldb_qbf_delete_query_builder.h"
 #include "sqldb_qbf_insert_query_builder.h"
 #include "sqldb_qbf_select_query_builder.h"

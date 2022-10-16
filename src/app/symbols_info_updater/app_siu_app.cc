@@ -1,5 +1,6 @@
 #include "app_siu_app.h"
 
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -7,6 +8,7 @@
 #include "app_siu_sdb_app_client.h"
 #include "app_siu_types.h"
 #include "core_types.h"
+#include "cpp_typed_struct.h"
 
 namespace stonks::app::siu {
 namespace {

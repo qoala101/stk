@@ -1,0 +1,8 @@
+include(FetchContent)
+
+FetchContent_Declare(NotNull
+  GIT_REPOSITORY https://github.com/bitwizeshift/not_null
+  GIT_TAG c839cb1bb4cf988bd17a4c363263997275f508b8
+)
+
+FetchContent_MakeAvailable(NotNull)

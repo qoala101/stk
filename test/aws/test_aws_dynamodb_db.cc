@@ -2,6 +2,7 @@
 #include <gtest/gtest-test-part.h>
 
 #include <memory>
+#include <not_null.hpp>
 #include <optional>
 #include <string>
 #include <tuple>
@@ -10,7 +11,6 @@
 #include "nosqldb_i_items_interface.h"
 #include "nosqldb_i_tables_interface.h"
 #include "nosqldb_types.h"
-#include "not_null.hpp"
 #include "test_aws_injector.h"
 
 namespace {

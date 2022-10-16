@@ -4,11 +4,11 @@
 #include <CLI/Config.hpp>     // IWYU pragma: keep
 #include <CLI/Formatter.hpp>  // IWYU pragma: keep
 #include <memory>
+#include <not_null.hpp>
 
 #include "cli_run_scope.h"
 #include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
-#include "not_null.hpp"
 
 namespace stonks::cli {
 App::App(int argc, const char* const* argv) : app_{cpp::MakeNnSp<CLI::App>()} {

@@ -6,11 +6,11 @@
 
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <utility>
 
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
-#include "not_null.hpp"
 
 namespace stonks::aws {
 namespace {
