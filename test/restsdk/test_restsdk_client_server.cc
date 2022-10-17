@@ -38,6 +38,7 @@
 #include "network_rest_request_builder.h"
 #include "network_rest_server.h"
 #include "network_rest_server_builder.h"
+#include "network_te_endpoint_types_from.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 #include "test_restsdk_injector.h"
@@ -83,8 +84,8 @@ class EntityServer {
     return stonks::network::TypedEndpoint{
         .endpoint = {.method = stonks::network::Method::kPost,
                      .uri = {"/PushSymbol"}},
-        .expected_types = {
-            .body = stonks::network::ExpectedType<stonks::core::Symbol>()}};
+        .expected_types = stonks::network::te::EndpointTypesFrom(
+            &Entity::PushSymbol, stonks::network::te::kBody)};
   }
 
   [[nodiscard]] static auto GetSymbolEndpointDesc()
@@ -92,9 +93,8 @@ class EntityServer {
     return stonks::network::TypedEndpoint{
         .endpoint = {.method = stonks::network::Method::kGet,
                      .uri = {"/GetSymbol"}},
-        .expected_types = {
-            .params = {{"index", stonks::network::ExpectedType<int>()}},
-            .result = stonks::network::ExpectedType<stonks::core::Symbol>()}};
+        .expected_types = stonks::network::te::EndpointTypesFrom(
+            &Entity::GetSymbol, "index")};
   }
 
   [[nodiscard]] static auto GetSizeEndpointDesc()
@@ -102,7 +102,8 @@ class EntityServer {
     return stonks::network::TypedEndpoint{
         .endpoint = {.method = stonks::network::Method::kGet,
                      .uri = {"/GetSize"}},
-        .expected_types = {.result = stonks::network::ExpectedType<int>()}};
+        .expected_types =
+            stonks::network::te::EndpointTypesFrom(&Entity::GetSize)};
   }
 
   explicit EntityServer(stonks::network::Uri base_uri)

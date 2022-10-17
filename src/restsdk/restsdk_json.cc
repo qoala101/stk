@@ -83,8 +83,6 @@ void Json::SetChild(int index, cpp::Pv<IJson> child) {
 }
 
 auto Json::GetSize() const -> int {
-  Expects(native_handle_->is_array() || native_handle_->is_null());
-
   if (native_handle_->is_null()) {
     return 0;
   }

@@ -51,6 +51,9 @@ concept ConstructibleFrom =
 template <typename T, typename U>
 concept AssignableFrom = requires(T t, U &&u) { t = std::forward<U>(u); };
 
+template <typename T>
+concept MemberFunction = std::is_member_function_pointer_v<T>;
+
 template <typename T, typename U>
 concept InvocableReturning = requires(T &t) {
                                { t() } -> std::same_as<U>;

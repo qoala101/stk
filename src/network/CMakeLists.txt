@@ -40,6 +40,7 @@ target_include_directories(libnetwork
 
 target_link_libraries(libnetwork
   PUBLIC libdi
+  PUBLIC callable
   PUBLIC function2::function2
 
   PRIVATE fmt::fmt
