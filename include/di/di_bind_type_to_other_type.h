@@ -8,10 +8,10 @@
 
 namespace stonks::di {
 namespace detail {
-template <typename Type, typename Injected>
-  requires cpp::ConstructibleFrom<Type, Injected>
-struct TypeInjector : public Type {
-  explicit TypeInjector(Injected injected) : Type{std::move(injected)} {}
+template <typename T, typename Injected>
+  requires cpp::ConstructibleFrom<T, Injected>
+struct TypeInjector : public T {
+  explicit TypeInjector(Injected injected) : T{std::move(injected)} {}
 };
 }  // namespace detail
 
@@ -19,11 +19,10 @@ struct TypeInjector : public Type {
  * @brief Binds type to other type.
  * @remark Can be used to bind variant to specific variant.
  */
-template <typename Type, typename Injected>
-  requires cpp::ConstructibleFrom<Type, Injected>
+template <typename T, typename Injected>
+  requires cpp::ConstructibleFrom<T, Injected>
 [[nodiscard]] auto BindTypeToOtherType() {
-  return boost::di::bind<Type>()
-      .template to<detail::TypeInjector<Type, Injected>>();
+  return boost::di::bind<T>().template to<detail::TypeInjector<T, Injected>>();
 }
 }  // namespace stonks::di
 

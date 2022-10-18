@@ -76,14 +76,12 @@ class Json : public network::IJson {
   [[nodiscard]] auto GetNativeHandle() -> IJson::NativeHandle& override;
 
  private:
-  template <cpp::This<Json> This>
-  [[nodiscard]] static auto CloneImpl(This& t);
+  [[nodiscard]] static auto CloneImpl(cpp::This<Json> auto& t);
 
-  template <cpp::This<Json> This>
-  [[nodiscard]] static auto GetChildImpl(This& t, std::string_view key);
+  [[nodiscard]] static auto GetChildImpl(cpp::This<Json> auto& t,
+                                         std::string_view key);
 
-  template <cpp::This<Json> This>
-  [[nodiscard]] static auto GetChildImpl(This& t, int index);
+  [[nodiscard]] static auto GetChildImpl(cpp::This<Json> auto& t, int index);
 
   [[nodiscard]] static auto GetNativeHandleImpl(cpp::This<Json> auto& t)
       -> auto&;

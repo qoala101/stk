@@ -27,11 +27,11 @@ class WsClientBuilder {
   /**
    * @brief Registers handler for received messages.
    */
-  template <typename T>
-    requires std::constructible_from<AutoParsableWsMessageHandler, T>
-  auto Handling(T &&handler) -> auto & {
-    return Handling(
-        cpp::MakeNnUp<AutoParsableWsMessageHandler>(std::forward<T>(handler)));
+  template <typename Handler>
+    requires std::constructible_from<AutoParsableWsMessageHandler, Handler>
+  auto Handling(Handler &&handler) -> auto & {
+    return Handling(cpp::MakeNnUp<AutoParsableWsMessageHandler>(
+        std::forward<Handler>(handler)));
   }
 
   /**

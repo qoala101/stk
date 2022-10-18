@@ -27,8 +27,8 @@ class TableVariant
   [[nodiscard]] auto HasTable() const -> bool;
 
  private:
-  template <cpp::This<TableVariant> This>
-  [[nodiscard]] static auto GetTableImpl(This &t) -> auto &;
+  [[nodiscard]] static auto GetTableImpl(cpp::This<TableVariant> auto &t)
+      -> auto &;
 };
 
 }  // namespace stonks::sqldb::qbf

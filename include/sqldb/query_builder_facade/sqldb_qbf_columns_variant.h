@@ -34,8 +34,7 @@ class ColumnsVariant
   [[nodiscard]] auto HasColumns() const -> bool;
 
  private:
-  template <cpp::This<ColumnsVariant> This>
-  [[nodiscard]] static auto GetColumnsImpl(This &t);
+  [[nodiscard]] static auto GetColumnsImpl(cpp::This<ColumnsVariant> auto &t);
 };
 }  // namespace stonks::sqldb::qbf
 

@@ -6,23 +6,23 @@
 namespace stonks::cpp {
 namespace detail {
 template <typename From, typename To>
-struct CopyConstImpl {
-  using T = To;
+struct CopyConstTraits {
+  using Type = To;
 };
 
 template <Const From, typename To>
-struct CopyConstImpl<From, To> {
-  using T = const To;
+struct CopyConstTraits<From, To> {
+  using Type = const To;
 };
 
 template <Const From, Reference To>
-struct CopyConstImpl<From, To> {
-  using T = const std::remove_reference_t<To> &;
+struct CopyConstTraits<From, To> {
+  using Type = const std::remove_reference_t<To> &;
 };
 
 template <Const From, Rvalue To>
-struct CopyConstImpl<From, To> {
-  using T = const std::remove_reference_t<To> &&;
+struct CopyConstTraits<From, To> {
+  using Type = const std::remove_reference_t<To> &&;
 };
 }  // namespace detail
 
@@ -30,7 +30,7 @@ struct CopyConstImpl<From, To> {
  * @brief Applies const specifier to second type if the first one is const.
  */
 template <typename From, typename To>
-using CopyConst = typename detail::CopyConstImpl<From, To>::T;
+using CopyConst = typename detail::CopyConstTraits<From, To>::Type;
 }  // namespace stonks::cpp
 
 #endif  // STONKS_CPP_CPP_COPY_CONST_H_

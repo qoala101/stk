@@ -35,8 +35,8 @@ struct SqliteDbHandleVariant
   [[nodiscard]] auto HasFilePath() const -> bool;
 
  private:
-  template <cpp::This<SqliteDbHandleVariant> This>
-  [[nodiscard]] static auto GetSqliteDbImpl(This &t) -> auto &;
+  [[nodiscard]] static auto GetSqliteDbImpl(
+      cpp::This<SqliteDbHandleVariant> auto &t) -> auto &;
 };
 }  // namespace stonks::sqlite
 

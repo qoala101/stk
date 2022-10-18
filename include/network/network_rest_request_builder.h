@@ -42,9 +42,9 @@ class RestRequestBuilder {
   /**
    * @copydoc RestRequestBuilder::AddParam
    */
-  template <Convertible Value>
-  auto AddParam(std::string key, Value &&value) -> auto & {
-    return AddParam(key, ConvertToJson(std::forward<Value>(value)));
+  template <Convertible T>
+  auto AddParam(std::string key, T &&value) -> auto & {
+    return AddParam(key, ConvertToJson(std::forward<T>(value)));
   }
 
   /**
@@ -62,9 +62,9 @@ class RestRequestBuilder {
   /**
    * @copydoc RestRequestBuilder::WithBody
    */
-  template <Convertible Value>
-  auto WithBody(Value &&value) -> auto & {
-    return WithBody(ConvertToJson(std::forward<Value>(value)));
+  template <Convertible T>
+  auto WithBody(T &&value) -> auto & {
+    return WithBody(ConvertToJson(std::forward<T>(value)));
   }
 
   /**

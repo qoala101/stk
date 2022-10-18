@@ -6,11 +6,11 @@
 
 namespace stonks::di {
 namespace detail {
-template <typename Type, typename FactoryFunction, typename... Args>
-  requires std::is_invocable_r_v<Type, FactoryFunction, Args...>
-struct FactoryFunctionInjector : public Type {
+template <typename T, typename FactoryFunction, typename... Args>
+  requires std::is_invocable_r_v<T, FactoryFunction, Args...>
+struct FactoryFunctionInjector : public T {
   explicit FactoryFunctionInjector(Args... args)
-      : Type{FactoryFunction{}(std::move(args)...)} {}
+      : T{FactoryFunction{}(std::move(args)...)} {}
 };
 }  // namespace detail
 
@@ -22,12 +22,12 @@ struct FactoryFunctionInjector : public Type {
  * Typically those would be factory and arguments to its create method.
  * @remark Can be used for types which don't have public constructors.
  */
-template <typename Type, typename FactoryFunction, typename... Args>
-  requires std::is_invocable_r_v<Type, FactoryFunction, Args...>
+template <typename T, typename FactoryFunction, typename... Args>
+  requires std::is_invocable_r_v<T, FactoryFunction, Args...>
 [[nodiscard]] auto BindTypeToFactoryFunction() {
-  return boost::di::bind<Type>()
+  return boost::di::bind<T>()
       .template to<
-          detail::FactoryFunctionInjector<Type, FactoryFunction, Args...>>();
+          detail::FactoryFunctionInjector<T, FactoryFunction, Args...>>();
 }
 }  // namespace stonks::di
 

@@ -7,9 +7,9 @@ namespace stonks::di {
 /**
  * @brief Binds type to value.
  */
-template <typename Type, typename Value>
+template <typename T, typename Value>
 [[nodiscard]] auto BindTypeToValue(Value &&value) {
-  return boost::di::bind<Type>().to(std::forward<Value>(value));
+  return boost::di::bind<T>().to(std::forward<Value>(value));
 }
 }  // namespace stonks::di
 

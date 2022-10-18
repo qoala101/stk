@@ -73,11 +73,10 @@ class RequestBuilder {
   RequestBuilder(Endpoint endpoint,
                  cpp::NnUp<IRestRequestSender> request_sender);
 
-  template <cpp::This<RequestBuilder> This>
-  static void DiscardingResultImpl(This &t);
+  static void DiscardingResultImpl(cpp::This<RequestBuilder> auto &t);
 
-  template <cpp::This<RequestBuilder> This>
-  [[nodiscard]] static auto SendRequestAndGetResultImpl(This &t);
+  [[nodiscard]] static auto SendRequestAndGetResultImpl(
+      cpp::This<RequestBuilder> auto &t);
 
   [[nodiscard]] auto WithParam(std::string key, Param value)
       -> RequestBuilder &;

@@ -29,12 +29,12 @@ class RestServerBuilder {
   /**
    * @brief Registers handler for particular endpoint.
    */
-  template <typename T>
-    requires std::constructible_from<AutoParsableRequestHandler, T>
-  auto Handling(TypedEndpoint endpoint, T &&handler) -> auto & {
-    return Handling(
-        std::move(endpoint),
-        cpp::MakeNnUp<AutoParsableRequestHandler>(std::forward<T>(handler)));
+  template <typename Handler>
+    requires std::constructible_from<AutoParsableRequestHandler, Handler>
+  auto Handling(TypedEndpoint endpoint, Handler &&handler) -> auto & {
+    return Handling(std::move(endpoint),
+                    cpp::MakeNnUp<AutoParsableRequestHandler>(
+                        std::forward<Handler>(handler)));
   }
 
   /**

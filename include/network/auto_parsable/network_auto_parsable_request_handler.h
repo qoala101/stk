@@ -18,35 +18,36 @@ namespace stonks::network {
  */
 class AutoParsableRequestHandler : public IRestRequestHandler {
  public:
-  template <cpp::VoidInvocable T>
+  template <cpp::VoidInvocable Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
-  explicit AutoParsableRequestHandler(T &&handler)
-      : handler_{aprh::HandlerVariant::ValueType{
-            std::in_place_type<aprh::Handler>, std::forward<T>(handler)}} {}
+  explicit AutoParsableRequestHandler(Handler &&handler)
+      : handler_{
+            aprh::HandlerVariant::ValueType{std::in_place_type<aprh::Handler>,
+                                            std::forward<Handler>(handler)}} {}
 
-  template <cpp::VoidInvocableTaking<AutoParsableRestRequest> T>
+  template <cpp::VoidInvocableTaking<AutoParsableRestRequest> Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
-  explicit AutoParsableRequestHandler(T &&handler)
+  explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
             std::in_place_type<aprh::HandlerWithRequest>,
-            std::forward<T>(handler)}} {}
+            std::forward<Handler>(handler)}} {}
 
-  template <aprh::ConvertibleInvocable T>
+  template <aprh::ConvertibleInvocable Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
-  explicit AutoParsableRequestHandler(T &&handler)
+  explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
             std::in_place_type<aprh::HandlerWithResponse>,
-            [handler = std::forward<T>(handler)]() {
+            [handler = std::forward<Handler>(handler)]() {
               return ConvertToJson(handler());
             }}} {}
 
-  template <aprh::ConvertibleInvocableTaking<AutoParsableRestRequest> T>
+  template <aprh::ConvertibleInvocableTaking<AutoParsableRestRequest> Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
-  explicit AutoParsableRequestHandler(T &&handler)
+  explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
             std::in_place_type<aprh::HandlerWithRequestAndResponse>,
-            [handler =
-                 std::forward<T>(handler)](AutoParsableRestRequest request) {
+            [handler = std::forward<Handler>(handler)](
+                AutoParsableRestRequest request) {
               return ConvertToJson(handler(std::move(request)));
             }}} {}
 

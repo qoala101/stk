@@ -17,18 +17,19 @@ namespace stonks::network {
  */
 class AutoParsableWsMessageHandler : public IWsMessageHandler {
  public:
-  template <cpp::VoidInvocable T>
+  template <cpp::VoidInvocable Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
-  explicit AutoParsableWsMessageHandler(T &&handler)
+  explicit AutoParsableWsMessageHandler(Handler &&handler)
       : handler_{aprh::WsHandlerVariant::ValueType{
-            std::in_place_type<aprh::Handler>, std::forward<T>(handler)}} {}
+            std::in_place_type<aprh::Handler>,
+            std::forward<Handler>(handler)}} {}
 
-  template <cpp::VoidInvocableTaking<AutoParsable> T>
+  template <cpp::VoidInvocableTaking<AutoParsable> Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
-  explicit AutoParsableWsMessageHandler(T &&handler)
+  explicit AutoParsableWsMessageHandler(Handler &&handler)
       : handler_{aprh::WsHandlerVariant::ValueType{
             std::in_place_type<aprh::HandlerWithWsMessage>,
-            std::forward<T>(handler)}} {}
+            std::forward<Handler>(handler)}} {}
 
   /**
    * @brief Wraps request in auto-parsable and forwards it to the handler.
