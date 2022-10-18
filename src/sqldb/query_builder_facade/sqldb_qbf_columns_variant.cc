@@ -7,7 +7,7 @@
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qbf {
-template <cpp::DecaysTo<ColumnsVariant> This>
+template <cpp::This<ColumnsVariant> This>
 auto ColumnsVariant::GetColumnsImpl(This &t) {
   Expects(t.HasColumns());
   return std::visit(

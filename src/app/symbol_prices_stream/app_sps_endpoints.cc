@@ -14,10 +14,9 @@ namespace stonks::app::sps::endpoints {
 auto BinanceSymbolBookTickerStream(core::Symbol symbol)
     -> network::TypedWsEndpoint {
   absl::AsciiStrToLower(&symbol.value);
-  return {
-      .endpoint = {fmt::format("wss://stream.binance.com:9443/ws/{}@bookTicker",
-                               std::move(symbol.value))},
-      .expected_types = {.received_message =
-                             network::ExpectedType<BinanceBookTick>()}};
+  return {.endpoint = {fmt::format(
+              "wss://stream.binance.com:9443/ws/{}@bookTicker", symbol.value)},
+          .expected_types = {.received_message =
+                                 network::ExpectedType<BinanceBookTick>()}};
 };
 }  // namespace stonks::app::sps::endpoints

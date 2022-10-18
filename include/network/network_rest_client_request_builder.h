@@ -5,10 +5,10 @@
 #include <string>
 #include <utility>
 
-#include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
+#include "cpp_this.h"          // IWYU pragma: keep
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_rest_request_sender.h"
 #include "network_json_conversions_facades.h"
@@ -73,10 +73,10 @@ class RequestBuilder {
   RequestBuilder(Endpoint endpoint,
                  cpp::NnUp<IRestRequestSender> request_sender);
 
-  template <cpp::DecaysTo<RequestBuilder> This>
+  template <cpp::This<RequestBuilder> This>
   static void DiscardingResultImpl(This &t);
 
-  template <cpp::DecaysTo<RequestBuilder> This>
+  template <cpp::This<RequestBuilder> This>
   [[nodiscard]] static auto SendRequestAndGetResultImpl(This &t);
 
   [[nodiscard]] auto WithParam(std::string key, Param value)

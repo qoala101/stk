@@ -11,8 +11,6 @@
 #include <string>
 #include <utility>
 
-#include "cpp_typed_struct.h"
-
 namespace stonks::sqldb {
 Rows::Rows(std::vector<Column> columns)
     : columns_{
@@ -23,8 +21,8 @@ Rows::Rows(std::vector<Column> columns)
   Ensures(columns_.size() == columns.size());
 }
 
-template <cpp::DecaysTo<Rows> This>
-auto Rows::GetColumnValuesImpl(This &t, const Column &column) -> auto & {
+auto Rows::GetColumnValuesImpl(cpp::This<Rows> auto &t, const Column &column)
+    -> auto & {
   const auto iter =
       ranges::find_if(t.columns_, [&column](const auto &other_column) {
         return other_column.column == column;
@@ -42,9 +40,8 @@ auto Rows::GetColumnValues(const Column &column) -> std::vector<Value> & {
   return GetColumnValuesImpl(*this, column);
 }
 
-template <cpp::DecaysTo<Rows> This>
-auto Rows::GetCellValueImpl(This &t, const Column &column, int row_index)
-    -> auto & {
+auto Rows::GetCellValueImpl(cpp::This<Rows> auto &t, const Column &column,
+                            int row_index) -> auto & {
   Expects(row_index >= 0);
 
   auto &values = t.GetColumnValues(column);
@@ -62,8 +59,8 @@ auto Rows::GetCellValue(const Column &column, int row_index) -> Value & {
   return GetCellValueImpl(*this, column, row_index);
 }
 
-template <cpp::DecaysTo<Rows> This>
-auto Rows::GetFirstImpl(This &t, const Column &column) -> auto & {
+auto Rows::GetFirstImpl(cpp::This<Rows> auto &t, const Column &column)
+    -> auto & {
   return t.GetCellValue(column, 0);
 }
 

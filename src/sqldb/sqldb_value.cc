@@ -46,8 +46,7 @@ auto Value::GetDouble() const -> double {
   return std::get<double>(value);
 }
 
-template <cpp::DecaysTo<Value> This>
-auto Value::GetStringImpl(This& t) -> auto& {
+auto Value::GetStringImpl(cpp::This<Value> auto& t) -> auto& {
   Expects(std::holds_alternative<std::string>(t.value));
   return std::get<std::string>(t.value);
 }
@@ -61,7 +60,7 @@ auto Value::GetString() -> std::string& { return GetStringImpl(*this); }
 auto Value::GetType() const -> DataType {
   Expects(!IsNull());
   return std::visit(
-      [](const auto& v) -> DataType {
+      [](const auto& v) {
         using V = decltype(v);
 
         if constexpr (cpp::DecaysTo<V, bool>) {
@@ -84,7 +83,7 @@ auto Value::GetType() const -> DataType {
           return DataType::kString;
         }
 
-        return {};
+        return DataType{};
       },
       value);
 }

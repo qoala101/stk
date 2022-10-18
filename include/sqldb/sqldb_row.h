@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 
+#include "cpp_this.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 
@@ -22,12 +23,10 @@ class Row {
   [[nodiscard]] auto GetCells() -> std::map<Column, Value> &;
 
  private:
-  template <cpp::DecaysTo<Row> This>
-  [[nodiscard]] static auto GetValueImpl(This &t, const Column &column)
-      -> auto &;
+  [[nodiscard]] static auto GetValueImpl(cpp::This<Row> auto &t,
+                                         const Column &column) -> auto &;
 
-  template <cpp::DecaysTo<Row> This>
-  [[nodiscard]] static auto GetCellsImpl(This &t) -> auto &;
+  [[nodiscard]] static auto GetCellsImpl(cpp::This<Row> auto &t) -> auto &;
 
   std::map<Column, Value> cells_{};
 };

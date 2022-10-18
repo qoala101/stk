@@ -4,8 +4,8 @@
 #include <function2/function2.hpp>
 #include <gsl/assert>
 
-#include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_not_null.h"
+#include "cpp_this.h"  // IWYU pragma: keep
 
 namespace stonks::cpp {
 /**
@@ -51,8 +51,7 @@ class Lazy {
   }
 
  private:
-  template <DecaysTo<Lazy> This>
-  [[nodiscard]] static auto GetObjectImpl(This &t) -> auto & {
+  [[nodiscard]] static auto GetObjectImpl(This<Lazy> auto &t) -> auto & {
     if (!t.object_.has_value()) {
       t.object_ = t.initializer_();
     }
@@ -61,8 +60,7 @@ class Lazy {
     return *t.object_;
   }
 
-  template <DecaysTo<Lazy> This>
-  [[nodiscard]] static auto OperatorAsteriskImpl(This &t) -> auto & {
+  [[nodiscard]] static auto OperatorAsteriskImpl(This<Lazy> auto &t) -> auto & {
     auto &object = t.GetObject();
 
     if constexpr (PointerLike<T>) {
@@ -72,8 +70,7 @@ class Lazy {
     }
   }
 
-  template <DecaysTo<Lazy> This>
-  [[nodiscard]] static auto OperatorArrowImpl(This &t) {
+  [[nodiscard]] static auto OperatorArrowImpl(This<Lazy> auto &t) {
     return AssumeNn(&*t);
   }
 

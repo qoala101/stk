@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "cpp_this.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 
@@ -65,17 +66,15 @@ class Rows {
   [[nodiscard]] friend auto operator==(const Rows &, const Rows &)
       -> bool = default;
 
-  template <cpp::DecaysTo<Rows> This>
-  [[nodiscard]] static auto GetColumnValuesImpl(This &t, const Column &column)
-      -> auto &;
+  [[nodiscard]] static auto GetColumnValuesImpl(cpp::This<Rows> auto &t,
+                                                const Column &column) -> auto &;
 
-  template <cpp::DecaysTo<Rows> This>
-  [[nodiscard]] static auto GetCellValueImpl(This &t, const Column &column,
+  [[nodiscard]] static auto GetCellValueImpl(cpp::This<Rows> auto &t,
+                                             const Column &column,
                                              int row_index) -> auto &;
 
-  template <cpp::DecaysTo<Rows> This>
-  [[nodiscard]] static auto GetFirstImpl(This &t, const Column &column)
-      -> auto &;
+  [[nodiscard]] static auto GetFirstImpl(cpp::This<Rows> auto &t,
+                                         const Column &column) -> auto &;
 
   std::vector<ColumnValues> columns_{};
 };

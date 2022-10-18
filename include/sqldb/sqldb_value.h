@@ -7,6 +7,7 @@
 #include <utility>
 #include <variant>
 
+#include "cpp_this.h"  // IWYU pragma: keep
 #include "cpp_typed_struct.h"
 #include "cpp_variant_struct.h"
 #include "sqldb_enums.h"
@@ -66,8 +67,7 @@ class Value : public cpp::VariantStruct<std::monostate, bool, int, int64_t,
   [[nodiscard]] auto IsNull() const -> bool;
 
  private:
-  template <cpp::DecaysTo<Value> This>
-  [[nodiscard]] static auto GetStringImpl(This &t) -> auto &;
+  [[nodiscard]] static auto GetStringImpl(cpp::This<Value> auto &t) -> auto &;
 };
 }  // namespace stonks::sqldb
 

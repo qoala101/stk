@@ -10,9 +10,8 @@
 #include "cpp_not_null.h"
 
 namespace stonks::sqldb {
-template <cpp::DecaysTo<TableDefinition> This>
-auto TableDefinition::GetColumnDefinitionImpl(This &t, const Column &column)
-    -> auto & {
+auto TableDefinition::GetColumnDefinitionImpl(
+    cpp::This<TableDefinition> auto &t, const Column &column) -> auto & {
   const auto iter =
       ranges::find_if(t.columns, [&column](const auto &column_definition) {
         return column_definition.column == column;

@@ -3,6 +3,7 @@
 
 #include <variant>
 
+#include "cpp_this.h"  // IWYU pragma: keep
 #include "cpp_variant_struct.h"
 #include "sqlite_db_file_handle.h"
 #include "sqlite_raw_handles.h"
@@ -34,7 +35,7 @@ struct SqliteDbHandleVariant
   [[nodiscard]] auto HasFilePath() const -> bool;
 
  private:
-  template <cpp::DecaysTo<SqliteDbHandleVariant> This>
+  template <cpp::This<SqliteDbHandleVariant> This>
   [[nodiscard]] static auto GetSqliteDbImpl(This &t) -> auto &;
 };
 }  // namespace stonks::sqlite

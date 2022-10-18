@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "cpp_optional.h"
+#include "cpp_this.h"  // IWYU pragma: keep
 #include "cpp_typed_struct.h"
 #include "cpp_views.h"
 #include "sqldb_enums.h"
@@ -63,10 +64,8 @@ struct TableDefinition {
   std::vector<ColumnDefinition> columns{};
 
  private:
-  template <cpp::DecaysTo<TableDefinition> This>
-  [[nodiscard]] static auto GetColumnDefinitionImpl(This &t,
-                                                    const Column &column)
-      -> auto &;
+  [[nodiscard]] static auto GetColumnDefinitionImpl(
+      cpp::This<TableDefinition> auto &t, const Column &column) -> auto &;
 };
 
 /**

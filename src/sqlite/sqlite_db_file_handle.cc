@@ -35,8 +35,8 @@ SqliteDbFileHandle::~SqliteDbFileHandle() {
   }
 }
 
-template <cpp::DecaysTo<SqliteDbFileHandle> This>
-auto SqliteDbFileHandle::GetSqliteDbImpl(This& t) -> auto& {
+auto SqliteDbFileHandle::GetSqliteDbImpl(cpp::This<SqliteDbFileHandle> auto& t)
+    -> auto& {
   return *t.sqlite_db_handle_;
 }
 

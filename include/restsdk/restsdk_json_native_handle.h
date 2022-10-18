@@ -1,8 +1,8 @@
 #ifndef STONKS_RESTSDK_RESTSDK_JSON_NATIVE_HANDLE_H_
 #define STONKS_RESTSDK_RESTSDK_JSON_NATIVE_HANDLE_H_
 
-#include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_not_null.h"
+#include "cpp_this.h"  // IWYU pragma: keep
 #include "network_i_json.h"
 
 namespace web::json {
@@ -40,8 +40,8 @@ class IJson::NativeHandle {
   [[nodiscard]] auto operator*() -> web::json::value &;
 
  private:
-  template <cpp::DecaysTo<NativeHandle> This>
-  [[nodiscard]] static auto OperatorAsteriskImpl(This &t) -> auto &;
+  [[nodiscard]] static auto OperatorAsteriskImpl(
+      cpp::This<NativeHandle> auto &t) -> auto &;
 
   cpp::NnUp<web::json::value> json_;
 };

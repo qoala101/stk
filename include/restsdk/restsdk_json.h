@@ -5,9 +5,9 @@
 #include <string>
 #include <string_view>
 
-#include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
+#include "cpp_this.h"  // IWYU pragma: keep
 #include "network_i_json.h"
 #include "restsdk_json_native_handle.h"
 
@@ -76,17 +76,17 @@ class Json : public network::IJson {
   [[nodiscard]] auto GetNativeHandle() -> IJson::NativeHandle& override;
 
  private:
-  template <cpp::DecaysTo<Json> This>
+  template <cpp::This<Json> This>
   [[nodiscard]] static auto CloneImpl(This& t);
 
-  template <cpp::DecaysTo<Json> This>
+  template <cpp::This<Json> This>
   [[nodiscard]] static auto GetChildImpl(This& t, std::string_view key);
 
-  template <cpp::DecaysTo<Json> This>
+  template <cpp::This<Json> This>
   [[nodiscard]] static auto GetChildImpl(This& t, int index);
 
-  template <cpp::DecaysTo<Json> This>
-  [[nodiscard]] static auto GetNativeHandleImpl(This& t) -> auto&;
+  [[nodiscard]] static auto GetNativeHandleImpl(cpp::This<Json> auto& t)
+      -> auto&;
 
   network::IJson::NativeHandle native_handle_;
 };

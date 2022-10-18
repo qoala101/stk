@@ -4,8 +4,8 @@
 #include <compare>
 #include <utility>
 
-#include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_move_if.h"
+#include "cpp_this.h"  // IWYU pragma: keep
 
 namespace stonks::cpp {
 /**
@@ -40,7 +40,7 @@ struct TypedStruct {
                                         const TypedStruct &)
       -> std::partial_ordering = default;
 
-  template <DecaysTo<TypedStruct> This>
+  template <This<TypedStruct> This>
   [[nodiscard]] static auto OperatorValueTypeImpl(This &&t) {
     return MoveIfRvalue<decltype(std::forward<This>(t))>(t.value);
   }

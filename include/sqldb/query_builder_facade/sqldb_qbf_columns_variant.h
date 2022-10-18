@@ -4,6 +4,7 @@
 #include <variant>
 #include <vector>
 
+#include "cpp_this.h"  // IWYU pragma: keep
 #include "cpp_variant_struct.h"
 #include "sqldb_types.h"
 
@@ -33,7 +34,7 @@ class ColumnsVariant
   [[nodiscard]] auto HasColumns() const -> bool;
 
  private:
-  template <cpp::DecaysTo<ColumnsVariant> This>
+  template <cpp::This<ColumnsVariant> This>
   [[nodiscard]] static auto GetColumnsImpl(This &t);
 };
 }  // namespace stonks::sqldb::qbf

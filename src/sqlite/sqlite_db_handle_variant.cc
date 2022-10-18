@@ -7,7 +7,7 @@
 #include "sqlite_db_file_handle.h"
 
 namespace stonks::sqlite {
-template <cpp::DecaysTo<SqliteDbHandleVariant> This>
+template <cpp::This<SqliteDbHandleVariant> This>
 auto SqliteDbHandleVariant::GetSqliteDbImpl(This &t) -> auto & {
   return std::visit(
       [](auto &v) -> cpp::CopyConst<This, sqlite3> & {

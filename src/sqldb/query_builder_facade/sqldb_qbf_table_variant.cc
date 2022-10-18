@@ -7,7 +7,7 @@
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qbf {
-template <cpp::DecaysTo<TableVariant> This>
+template <cpp::This<TableVariant> This>
 auto TableVariant::GetTableImpl(This &t) -> auto & {
   Expects(t.HasTable());
   return std::visit(

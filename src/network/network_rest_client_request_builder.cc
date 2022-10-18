@@ -11,7 +11,7 @@
 #include "network_types.h"
 
 namespace stonks::network::rest_client {
-template <cpp::DecaysTo<RequestBuilder> This>
+template <cpp::This<RequestBuilder> This>
 void RequestBuilder::DiscardingResultImpl(This& t) {
   Expects(t.request_.has_value());
   std::ignore = t.request_sender_->SendRequestAndGetResponse(
@@ -31,7 +31,7 @@ RequestBuilder::RequestBuilder(Endpoint endpoint,
     : request_{{.endpoint = std::move(endpoint)}},
       request_sender_{std::move(request_sender)} {}
 
-template <cpp::DecaysTo<RequestBuilder> This>
+template <cpp::This<RequestBuilder> This>
 auto RequestBuilder::SendRequestAndGetResultImpl(This& t) {
   Expects(t.request_.has_value());
   auto result =

@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_polymorphic_value.h"
+#include "cpp_this.h"  // IWYU pragma: keep
 #include "network_exception.h"
 #include "network_i_json.h"
 
@@ -27,8 +27,8 @@ class WrongTypeException : public Exception {
   [[nodiscard]] auto GetJson() -> cpp::Pv<IJson> &;
 
  private:
-  template <cpp::DecaysTo<WrongTypeException> This>
-  [[nodiscard]] static auto GetJsonImpl(This &t) -> auto &;
+  [[nodiscard]] static auto GetJsonImpl(cpp::This<WrongTypeException> auto &t)
+      -> auto &;
 
   cpp::Pv<IJson> json_{};
 };

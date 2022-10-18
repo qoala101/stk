@@ -39,8 +39,8 @@ auto IJson::NativeHandle::operator=(NativeHandle &&) noexcept
 
 IJson::NativeHandle::~NativeHandle() = default;
 
-template <cpp::DecaysTo<IJson::NativeHandle> This>
-auto IJson::NativeHandle::OperatorAsteriskImpl(This &t) -> auto & {
+auto IJson::NativeHandle::OperatorAsteriskImpl(
+    cpp::This<IJson::NativeHandle> auto &t) -> auto & {
   return *t.json_;
 }
 

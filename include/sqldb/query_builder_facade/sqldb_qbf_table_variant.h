@@ -3,6 +3,7 @@
 
 #include <variant>
 
+#include "cpp_this.h"  // IWYU pragma: keep
 #include "cpp_variant_struct.h"
 #include "sqldb_types.h"
 
@@ -26,7 +27,7 @@ class TableVariant
   [[nodiscard]] auto HasTable() const -> bool;
 
  private:
-  template <cpp::DecaysTo<TableVariant> This>
+  template <cpp::This<TableVariant> This>
   [[nodiscard]] static auto GetTableImpl(This &t) -> auto &;
 };
 
