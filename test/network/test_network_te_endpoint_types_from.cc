@@ -146,12 +146,12 @@ TEST(FunctionTypes, Result) {
 }
 
 TEST(FunctionTypesDeathTest, Errors) {
-  EXPECT_DEATH(stonks::network::te::EndpointTypesFrom(&Type::Params, "value",
-                                                      "value", "const_ref",
-                                                      "pointer", "opt", "vec"),
+  EXPECT_DEATH(std::ignore = stonks::network::te::EndpointTypesFrom(
+                   &Type::Params, "value", "value", "const_ref", "pointer",
+                   "opt", "vec"),
                "");
   EXPECT_DEATH(
-      stonks::network::te::EndpointTypesFrom(
+      std::ignore = stonks::network::te::EndpointTypesFrom(
           &Type::Params, stonks::network::te::kBody, stonks::network::te::kBody,
           "const_ref", "pointer", "opt", "vec"),
       "");

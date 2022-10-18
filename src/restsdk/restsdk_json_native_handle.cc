@@ -44,12 +44,13 @@ auto IJson::NativeHandle::OperatorAsteriskImpl(This &t) -> auto & {
   return *t.json_;
 }
 
-auto IJson::NativeHandle::operator->() const -> const web::json::value * {
-  return &OperatorAsteriskImpl(*this);
+auto IJson::NativeHandle::operator->() const
+    -> cpp::Nn<const web::json::value *> {
+  return cpp::AssumeNn(&OperatorAsteriskImpl(*this));
 }
 
-auto IJson::NativeHandle::operator->() -> web::json::value * {
-  return &OperatorAsteriskImpl(*this);
+auto IJson::NativeHandle::operator->() -> cpp::Nn<web::json::value *> {
+  return cpp::AssumeNn(&OperatorAsteriskImpl(*this));
 }
 
 auto IJson::NativeHandle::operator*() const -> const web::json::value & {

@@ -30,12 +30,12 @@ class IJson::NativeHandle {
   /**
    * @brief Gives REST SDK JSON handle.
    */
-  [[nodiscard]] auto operator->() const -> const web::json::value *;
+  [[nodiscard]] auto operator->() const -> cpp::Nn<const web::json::value *>;
 
   /**
    * @copydoc operator->
    */
-  [[nodiscard]] auto operator->() -> web::json::value *;
+  [[nodiscard]] auto operator->() -> cpp::Nn<web::json::value *>;
 
   /**
    * @brief Gives REST SDK JSON handle.

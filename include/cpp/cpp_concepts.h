@@ -25,6 +25,12 @@ template <typename T>
 concept RawPointer = std::is_pointer_v<T>;
 
 template <typename T>
+concept PointerLike = requires(T t) {
+                        t.operator->();
+                        t.operator*();
+                      };
+
+template <typename T>
 concept Rvalue = std::is_rvalue_reference_v<T>;
 
 template <typename T, typename U>
@@ -55,7 +61,7 @@ template <typename T>
 concept MemberFunction = std::is_member_function_pointer_v<T>;
 
 template <typename T, typename U>
-concept InvocableReturning = requires(T &t) {
+concept InvocableReturning = requires(T t) {
                                { t() } -> std::same_as<U>;
                              };
 
@@ -63,11 +69,11 @@ template <typename T>
 concept VoidInvocable = InvocableReturning<T, void>;
 
 template <typename T>
-concept NonVoidInvocable = requires(T &t) { t(); } && !
+concept NonVoidInvocable = requires(T t) { t(); } && !
 VoidInvocable<T>;
 
 template <typename T, typename U, typename... Args>
-concept InvocableReturningTaking = requires(T &t, Args &&...args) {
+concept InvocableReturningTaking = requires(T t, Args &&...args) {
                                      {
                                        t(std::forward<Args>(args)...)
                                        } -> std::same_as<U>;
@@ -78,7 +84,7 @@ concept VoidInvocableTaking = InvocableReturningTaking<T, void, Args...>;
 
 template <typename T, typename... Args>
 concept NonVoidInvocableTaking =
-    requires(T &t, Args &&...args) { t(std::forward<Args>(args)...); } && !
+    requires(T t, Args &&...args) { t(std::forward<Args>(args)...); } && !
 VoidInvocableTaking<T, Args...>;
 }  // namespace stonks::cpp
 

@@ -24,10 +24,10 @@ template <typename... Args>
 }
 
 template <typename... Ts>
-using NnUp = ::cpp::not_null<Up<Ts...>>;
+using NnUp = Nn<Up<Ts...>>;
 
 template <typename... Ts>
-using NnSp = ::cpp::not_null<Sp<Ts...>>;
+using NnSp = Nn<Sp<Ts...>>;
 
 template <typename... Ts, typename... Args>
 [[nodiscard]] auto MakeNnUp(Args &&...args) {

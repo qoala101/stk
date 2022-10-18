@@ -17,6 +17,8 @@ add_executable(unittests
   cpp/test_cpp_move_if.cc
   cpp/test_cpp_typed_struct.cc
 
+  network/test_network_te_endpoint_types_from.cc
+
   restsdk/test_restsdk_client_server.cc
   restsdk/test_restsdk_json_common_conversions.cc
   restsdk/test_restsdk_json_conversions_facades.cc
