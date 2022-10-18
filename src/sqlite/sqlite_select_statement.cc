@@ -20,9 +20,10 @@ namespace {
 [[nodiscard]] auto GetColumns(
     const std::vector<sqldb::CellDefinition> &cell_definitions) {
   auto columns = cell_definitions |
-                 ranges::views::transform([](const auto &cell_definition) {
-                   return cell_definition.column;
-                 }) |
+                 ranges::views::transform(
+                     [](const sqldb::CellDefinition &cell_definition) {
+                       return cell_definition.column;
+                     }) |
                  ranges::to_vector;
   Ensures(columns.size() == cell_definitions.size());
   return columns;
@@ -31,9 +32,10 @@ namespace {
 [[nodiscard]] auto GetCellTypes(
     const std::vector<sqldb::CellDefinition> &cell_definitions) {
   auto cell_types = cell_definitions |
-                    ranges::views::transform([](const auto &cell_definition) {
-                      return cell_definition.data_type;
-                    }) |
+                    ranges::views::transform(
+                        [](const sqldb::CellDefinition &cell_definition) {
+                          return cell_definition.data_type;
+                        }) |
                     ranges::to_vector;
   Ensures(cell_types.size() == cell_definitions.size());
   return cell_types;

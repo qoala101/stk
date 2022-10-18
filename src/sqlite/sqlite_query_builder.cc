@@ -19,6 +19,7 @@
 
 #include "cpp_optional.h"
 #include "sqldb_enums_to_string.h"  // IWYU pragma: keep
+#include "sqldb_types.h"
 
 namespace stonks::sqlite {
 namespace {
@@ -139,13 +140,14 @@ auto QueryBuilder::BuildSelectQuery(const sqldb::Table &table,
   } else {
     Expects(!columns->empty());
     const auto column_values =
-        *columns | ranges::views::transform(
-                       [](const auto &column) { return column.value; });
-    query += ranges::accumulate(column_values | ranges::views::drop(1),
-                                column_values.front(),
-                                [](const auto &query, const auto &column) {
-                                  return fmt::format("{}, {}", query, column);
-                                });
+        *columns | ranges::views::transform([](const sqldb::Column &column) {
+          return column.value;
+        });
+    query += ranges::accumulate(
+        column_values | ranges::views::drop(1), column_values.front(),
+        [](const std::string &query, const std::string &column) {
+          return fmt::format("{}, {}", query, column);
+        });
   }
 
   query += fmt::format(R"( FROM "{}")", table.value);

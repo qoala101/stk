@@ -16,7 +16,7 @@ Rows::Rows(std::vector<Column> columns)
     : columns_{
           ranges::views::transform(
               columns,
-              [](auto &column) { return ColumnValues{std::move(column)}; }) |
+              [](Column &column) { return ColumnValues{std::move(column)}; }) |
           ranges::to_vector} {
   Ensures(columns_.size() == columns.size());
 }
@@ -24,7 +24,7 @@ Rows::Rows(std::vector<Column> columns)
 auto Rows::GetColumnValuesImpl(cpp::This<Rows> auto &t, const Column &column)
     -> auto & {
   const auto iter =
-      ranges::find_if(t.columns_, [&column](const auto &other_column) {
+      ranges::find_if(t.columns_, [&column](const ColumnValues &other_column) {
         return other_column.column == column;
       });
   Expects(iter != t.columns_.end());

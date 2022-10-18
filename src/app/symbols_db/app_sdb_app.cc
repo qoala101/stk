@@ -33,6 +33,7 @@
 #include "sqldb_query_builder_facade.h"
 #include "sqldb_rows.h"
 #include "sqldb_types.h"
+#include "sqldb_value.h"
 
 namespace stonks::app::sdb {
 namespace {
@@ -151,7 +152,7 @@ App::App(cpp::NnUp<sqldb::IDb> db,
 auto App::SelectAssets() const -> std::vector<core::Asset> {
   auto rows = prepared_statements_.select_assets->Execute();
   auto &names = rows.GetColumnValues({tables::Asset::kName});
-  return names | ranges::views::transform([](auto &name) {
+  return names | ranges::views::transform([](sqldb::Value &name) {
            return core::Asset{std::move(name.GetString())};
          }) |
          ranges::to_vector;
@@ -168,7 +169,7 @@ void App::UpdateAssets(std::vector<core::Asset> assets) {
 auto App::SelectSymbolsWithPriceRecords() const -> std::vector<core::Symbol> {
   auto rows = prepared_statements_.select_symbols_with_price_records->Execute();
   auto &names = rows.GetColumnValues({tables::SymbolInfo::kName});
-  return names | ranges::views::transform([](auto &name) {
+  return names | ranges::views::transform([](sqldb::Value &name) {
            return core::Symbol{std::move(name.GetString())};
          }) |
          ranges::to_vector;

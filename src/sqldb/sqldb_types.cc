@@ -12,8 +12,8 @@
 namespace stonks::sqldb {
 auto TableDefinition::GetColumnDefinitionImpl(
     cpp::This<TableDefinition> auto &t, const Column &column) -> auto & {
-  const auto iter =
-      ranges::find_if(t.columns, [&column](const auto &column_definition) {
+  const auto iter = ranges::find_if(
+      t.columns, [&column](const ColumnDefinition &column_definition) {
         return column_definition.column == column;
       });
   Expects(iter != t.columns.end());
@@ -33,7 +33,7 @@ auto TableDefinition::GetColumnDefinition(const Column &column)
 auto TableDefinition::GetColumnDefinitions(const std::vector<Column> &columns)
     const -> cpp::ConstView<ColumnDefinition> {
   auto column_definitions =
-      columns | ranges::views::transform([this](const auto &column) {
+      columns | ranges::views::transform([this](const Column &column) {
         return cpp::AssumeNn(&GetColumnDefinition(column));
       }) |
       ranges::to_vector;

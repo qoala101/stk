@@ -25,7 +25,7 @@ auto GetColumns(const TableVariant &table, const ColumnsVariant &columns)
 
   auto table_columns =
       table_definition.columns |
-      ranges::views::transform([](const auto &column_definition) {
+      ranges::views::transform([](const ColumnDefinition &column_definition) {
         return column_definition.column;
       }) |
       ranges::to_vector;
@@ -36,9 +36,10 @@ auto GetColumns(const TableVariant &table, const ColumnsVariant &columns)
 auto GetColumns(const cpp::ConstView<ColumnDefinition> &column_definitions)
     -> std::vector<Column> {
   auto columns = column_definitions |
-                 ranges::views::transform([](const auto &column_definition) {
-                   return column_definition->column;
-                 }) |
+                 ranges::views::transform(
+                     [](cpp::Nn<const ColumnDefinition *> column_definition) {
+                       return column_definition->column;
+                     }) |
                  ranges::to_vector;
   Expects(columns.size() == column_definitions.size());
   return columns;

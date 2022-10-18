@@ -18,25 +18,26 @@ RowDefinition::RowDefinition(std::vector<CellDefinition> cell_definitions)
 
 RowDefinition::RowDefinition(
     const std::vector<ColumnDefinition> &column_definitions)
-    : RowDefinition{ranges::views::transform(column_definitions,
-                                             [](const auto &column_definition) {
-                                               return CellDefinition{
-                                                   column_definition.column,
-                                                   column_definition.data_type};
-                                             }) |
+    : RowDefinition{ranges::views::transform(
+                        column_definitions,
+                        [](const ColumnDefinition &column_definition) {
+                          return CellDefinition{column_definition.column,
+                                                column_definition.data_type};
+                        }) |
                     ranges::to_vector} {
   Ensures(cell_definitions_.size() == column_definitions.size());
 }
 
 RowDefinition::RowDefinition(
     const cpp::ConstView<ColumnDefinition> &column_definitions)
-    : RowDefinition{ranges::views::transform(
-                        column_definitions,
-                        [](const auto &column_definition) {
-                          return CellDefinition{column_definition->column,
-                                                column_definition->data_type};
-                        }) |
-                    ranges::to_vector} {
+    : RowDefinition{
+          ranges::views::transform(
+              column_definitions,
+              [](cpp::Nn<const ColumnDefinition *> column_definition) {
+                return CellDefinition{column_definition->column,
+                                      column_definition->data_type};
+              }) |
+          ranges::to_vector} {
   Ensures(cell_definitions_.size() == column_definitions.size());
 }
 
