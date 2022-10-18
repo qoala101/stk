@@ -11,7 +11,7 @@ namespace stonks::cpp {
  * passed to the static functions.
  */
 template <typename T, typename U>
-concept This = std::same_as<std::remove_const_t<T>, U>;
+concept This = std::same_as<std::remove_const_t<std::remove_reference_t<T>>, U>;
 }  // namespace stonks::cpp
 
 #endif  // STONKS_CPP_CPP_THIS_H_
