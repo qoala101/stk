@@ -60,30 +60,22 @@ auto Value::GetString() -> std::string& { return GetStringImpl(*this); }
 auto Value::GetType() const -> DataType {
   Expects(!IsNull());
   return std::visit(
-      [](const auto& v) {
+      [](const auto& v) -> DataType {
         using V = decltype(v);
 
         if constexpr (cpp::DecaysTo<V, bool>) {
           return DataType::kBool;
-        }
-
-        if constexpr (cpp::DecaysTo<V, int>) {
+        } else if constexpr (cpp::DecaysTo<V, int>) {
           return DataType::kInt;
-        }
-
-        if constexpr (cpp::DecaysTo<V, int64_t>) {
+        } else if constexpr (cpp::DecaysTo<V, int64_t>) {
           return DataType::kInt64;
-        }
-
-        if constexpr (cpp::DecaysTo<V, double>) {
+        } else if constexpr (cpp::DecaysTo<V, double>) {
           return DataType::kDouble;
-        }
-
-        if constexpr (cpp::DecaysTo<V, std::string>) {
+        } else if constexpr (cpp::DecaysTo<V, std::string>) {
           return DataType::kString;
+        } else {
+          return {};
         }
-
-        return DataType{};
       },
       value);
 }

@@ -19,24 +19,18 @@ auto HandlerVariant::operator()(RestRequest request) -> RestResponse {
         if constexpr (cpp::DecaysTo<V, Handler>) {
           v();
           return RestResponse{.status = Status::kOk};
-        }
-
-        if constexpr (cpp::DecaysTo<V, HandlerWithRequest>) {
+        } else if constexpr (cpp::DecaysTo<V, HandlerWithRequest>) {
           v(AutoParsableRestRequest{std::move(request)});
           return RestResponse{.status = Status::kOk};
-        }
-
-        if constexpr (cpp::DecaysTo<V, HandlerWithResponse>) {
+        } else if constexpr (cpp::DecaysTo<V, HandlerWithResponse>) {
           return RestResponse{.status = Status::kOk, .result = v()};
-        }
-
-        if constexpr (cpp::DecaysTo<V, HandlerWithRequestAndResponse>) {
+        } else if constexpr (cpp::DecaysTo<V, HandlerWithRequestAndResponse>) {
           return RestResponse{
               .status = Status::kOk,
               .result = v(AutoParsableRestRequest{std::move(request)})};
+        } else {
+          Expects(false);
         }
-
-        Expects(false);
       },
       value);
 }

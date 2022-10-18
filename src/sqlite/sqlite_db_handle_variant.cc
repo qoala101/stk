@@ -15,13 +15,11 @@ auto SqliteDbHandleVariant::GetSqliteDbImpl(This &t) -> auto & {
 
         if constexpr (cpp::DecaysTo<V, SqliteDbHandle>) {
           return *v;
-        }
-
-        if constexpr (cpp::DecaysTo<V, SqliteDbFileHandle>) {
+        } else if constexpr (cpp::DecaysTo<V, SqliteDbFileHandle>) {
           return v.GetSqliteDb();
+        } else {
+          Expects(false);
         }
-
-        Expects(false);
       },
       t.value);
 }
@@ -42,9 +40,9 @@ auto SqliteDbHandleVariant::GetFilePath() const -> const FilePath & {
 
         if constexpr (cpp::DecaysTo<V, SqliteDbFileHandle>) {
           return v.GetFilePath();
+        } else {
+          Expects(false);
         }
-
-        Expects(false);
       },
       value);
 }

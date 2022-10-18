@@ -24,19 +24,6 @@ namespace stonks::app::sdb {
 using fmt::literals::operator""_a;
 
 namespace {
-template <typename Statement>
-[[nodiscard]] auto InitLazily(
-    cpp::Up<Statement>& statement,
-    const cpp::InvocableReturning<cpp::NnUp<Statement>> auto& initializer)
-    -> auto& {
-  if (statement == nullptr) {
-    statement = initializer().as_nullable();
-  }
-
-  Ensures(statement != nullptr);
-  return *statement;
-}
-
 [[nodiscard]] auto SelectSymbolsInfoRowDefinition() {
   auto columns = tables::SymbolInfo::Definition().GetColumnDefinitions(
       {{tables::SymbolInfo::kName},

@@ -16,13 +16,11 @@ auto ColumnsVariant::GetColumnsImpl(This &t) {
 
         if constexpr (cpp::DecaysTo<V, std::vector<Column>>) {
           return &v;
-        }
-
-        if constexpr (cpp::DecaysTo<V, AllColumnsType>) {
+        } else if constexpr (cpp::DecaysTo<V, AllColumnsType>) {
           return nullptr;
+        } else {
+          Expects(false);
         }
-
-        Expects(false);
       },
       t.value);
 }

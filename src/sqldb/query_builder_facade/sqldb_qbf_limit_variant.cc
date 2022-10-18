@@ -12,13 +12,11 @@ auto LimitVariant::GetLimitClause() const -> std::string {
 
         if constexpr (cpp::DecaysTo<V, int>) {
           return fmt::format(" LIMIT {}", v);
-        }
-
-        if constexpr (cpp::DecaysTo<V, LimitedType>) {
+        } else if constexpr (cpp::DecaysTo<V, LimitedType>) {
           return " LIMIT ?";
+        } else {
+          return {};
         }
-
-        return {};
       },
       value);
 }

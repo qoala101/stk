@@ -14,15 +14,11 @@ void WsHandlerVariant::operator()(WsMessage message) {
 
         if constexpr (cpp::DecaysTo<V, Handler>) {
           v();
-          return;
-        }
-
-        if constexpr (cpp::DecaysTo<V, HandlerWithWsMessage>) {
+        } else if constexpr (cpp::DecaysTo<V, HandlerWithWsMessage>) {
           v(AutoParsable{std::move(message)});
-          return;
+        } else {
+          Expects(false);
         }
-
-        Expects(false);
       },
       value);
 }

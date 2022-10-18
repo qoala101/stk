@@ -16,13 +16,11 @@ auto TableVariant::GetTableImpl(This &t) -> auto & {
 
         if constexpr (cpp::DecaysTo<V, Table>) {
           return v;
-        }
-
-        if constexpr (cpp::DecaysTo<V, TableDefinition>) {
+        } else if constexpr (cpp::DecaysTo<V, TableDefinition>) {
           return v.table;
+        } else {
+          Expects(false);
         }
-
-        Expects(false);
       },
       t.value);
 }
