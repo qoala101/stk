@@ -47,7 +47,6 @@ class RequestBuilder {
   void DiscardingResult() const;
 
   /**
-   * @copydoc DiscardingResult
    * @remark Other methods should not be called after this.
    */
   void DiscardingResult();
@@ -61,7 +60,6 @@ class RequestBuilder {
   }
 
   /**
-   * @copydoc AndReceive
    * @remark Other methods should not be called after this.
    */
   template <Parsable T>

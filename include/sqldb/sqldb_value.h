@@ -53,10 +53,6 @@ class Value : public cpp::VariantStruct<std::monostate, bool, int, int64_t,
    * @remark Should not be called on NULL value.
    */
   [[nodiscard]] auto GetString() const -> const std::string &;
-
-  /**
-   * @copydoc GetString
-   */
   [[nodiscard]] auto GetString() -> std::string &;
 
   /**

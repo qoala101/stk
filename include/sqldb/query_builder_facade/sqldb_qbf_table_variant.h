@@ -18,10 +18,6 @@ class TableVariant
    * @remark Should only be called if variant has table.
    */
   [[nodiscard]] auto GetTable() const -> const Table &;
-
-  /**
-   * @copydoc GetTable
-   */
   [[nodiscard]] auto GetTable() -> Table &;
 
   /**

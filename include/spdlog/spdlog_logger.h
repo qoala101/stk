@@ -6,6 +6,9 @@
 #include "log_i_logger.h"
 
 namespace stonks::spdlog {
+/**
+ * @copydoc log::ILogger
+ */
 class Logger : public log::ILogger {
  public:
   /**

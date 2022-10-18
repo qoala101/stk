@@ -18,7 +18,7 @@ class http_listener;
 
 namespace stonks::restsdk {
 /**
- * @copyright network::IRestRequestReceiver
+ * @copydoc network::IRestRequestReceiver
  */
 class RestRequestReceiver : public network::IRestRequestReceiver {
  public:

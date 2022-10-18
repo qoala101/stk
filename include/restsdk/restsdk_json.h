@@ -33,10 +33,6 @@ class Json : public network::IJson {
    * @copydoc network::IJson::clone
    */
   [[nodiscard]] auto clone() const -> cpp::NnUp<IJson> override;
-
-  /**
-   * @copydoc network::IJson::clone
-   */
   [[nodiscard]] auto clone() -> cpp::NnUp<IJson> override;
 
   /**
@@ -49,10 +45,6 @@ class Json : public network::IJson {
    */
   [[nodiscard]] auto GetChild(std::string_view key) const
       -> cpp::Pv<IJson> override;
-
-  /**
-   * @copydoc network::IJson::GetChild
-   */
   [[nodiscard]] auto GetChild(std::string_view key) -> cpp::Pv<IJson> override;
 
   /**
@@ -64,10 +56,6 @@ class Json : public network::IJson {
    * @copydoc network::IJson::GetChild
    */
   [[nodiscard]] auto GetChild(int index) const -> cpp::Pv<IJson> override;
-
-  /**
-   * @copydoc network::IJson::GetChild
-   */
   [[nodiscard]] auto GetChild(int index) -> cpp::Pv<IJson> override;
 
   /**
@@ -85,10 +73,6 @@ class Json : public network::IJson {
    */
   [[nodiscard]] auto GetNativeHandle() const
       -> const IJson::NativeHandle& override;
-
-  /**
-   * @copydoc network::IJson::GetImpl
-   */
   [[nodiscard]] auto GetNativeHandle() -> IJson::NativeHandle& override;
 
  private:

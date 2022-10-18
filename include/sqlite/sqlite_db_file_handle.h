@@ -36,10 +36,6 @@ class SqliteDbFileHandle {
    * @brief Gives native SQLite handle.
    */
   [[nodiscard]] auto GetSqliteDb() const -> const sqlite3 &;
-
-  /**
-   * @copydoc GetSqliteDb
-   */
   [[nodiscard]] auto GetSqliteDb() -> sqlite3 &;
 
   /**

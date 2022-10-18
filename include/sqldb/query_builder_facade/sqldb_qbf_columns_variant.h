@@ -25,10 +25,6 @@ class ColumnsVariant
    * @remark Should only be called if variant has columns.
    */
   [[nodiscard]] auto GetColumns() const -> const std::vector<Column> *;
-
-  /**
-   * @copydoc GetColumns
-   */
   [[nodiscard]] auto GetColumns() -> std::vector<Column> *;
 
   /**

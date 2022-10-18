@@ -73,7 +73,6 @@ class RestRequestBuilder {
   [[nodiscard]] auto Build() const -> RestRequest;
 
   /**
-   * @copydoc Build
    * @remark Other methods should not be called after this.
    */
   [[nodiscard]] auto Build() -> RestRequest;

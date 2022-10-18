@@ -24,10 +24,6 @@ class WrongTypeException : public Exception {
    * @brief Gives JSON which failed to be parsed.
    */
   [[nodiscard]] auto GetJson() const -> const cpp::Pv<IJson> &;
-
-  /**
-   * @copydoc GetJson
-   */
   [[nodiscard]] auto GetJson() -> cpp::Pv<IJson> &;
 
  private:
