@@ -51,7 +51,7 @@ class Lazy {
   }
 
  private:
-  template <cpp::DecaysTo<Lazy> This>
+  template <DecaysTo<Lazy> This>
   [[nodiscard]] static auto GetObjectImpl(This &t) -> auto & {
     if (!t.object_.has_value()) {
       t.object_ = t.initializer_();
@@ -61,24 +61,24 @@ class Lazy {
     return *t.object_;
   }
 
-  template <cpp::DecaysTo<Lazy> This>
+  template <DecaysTo<Lazy> This>
   [[nodiscard]] static auto OperatorAsteriskImpl(This &t) -> auto & {
     auto &object = t.GetObject();
 
-    if constexpr (cpp::PointerLike<T>) {
+    if constexpr (PointerLike<T>) {
       return *object;
     } else {
       return object;
     }
   }
 
-  template <cpp::DecaysTo<Lazy> This>
+  template <DecaysTo<Lazy> This>
   [[nodiscard]] static auto OperatorArrowImpl(This &t) {
-    return cpp::AssumeNn(&*t);
+    return AssumeNn(&*t);
   }
 
   mutable fu2::unique_function<T()> initializer_{};
-  mutable cpp::Opt<T> object_{};
+  mutable Opt<T> object_{};
 };
 }  // namespace stonks::cpp
 

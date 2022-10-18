@@ -10,7 +10,7 @@ namespace stonks::cpp {
  * @brief Pointers to multiple elements.
  */
 template <typename T>
-using View = std::vector<cpp::Nn<T *>>;
+using View = std::vector<Nn<T *>>;
 
 /**
  * @brief Const pointers to multiple elements.
