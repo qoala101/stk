@@ -3,7 +3,6 @@
 
 #include "cpp_lazy.h"
 #include "cpp_not_null.h"
-#include "cpp_smart_pointers.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"

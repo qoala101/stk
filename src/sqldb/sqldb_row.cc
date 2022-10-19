@@ -4,6 +4,8 @@
 #include <string>
 #include <utility>
 
+#include "cpp_typed_struct.h"
+
 namespace stonks::sqldb {
 Row::Row(std::vector<Cell> cells) {
   for (auto &cell : cells) {

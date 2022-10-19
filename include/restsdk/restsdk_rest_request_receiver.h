@@ -8,13 +8,9 @@
 #include "network_i_rest_request_receiver.h"
 #include "network_types.h"
 
-namespace web::http {
-class http_request;
-
-namespace experimental::listener {
+namespace web::http::experimental::listener {
 class http_listener;
-}  // namespace experimental::listener
-}  // namespace web::http
+}  // namespace web::http::experimental::listener
 
 namespace stonks::restsdk {
 /**

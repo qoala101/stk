@@ -16,6 +16,11 @@ set_target_properties(librestsdk PROPERTIES
   OUTPUT_NAME restsdk
 )
 
+# Removes the clash of U macro between cpprestsdk and other libs.
+target_compile_definitions(librestsdk
+  PRIVATE _TURN_OFF_PLATFORM_STRING
+)
+
 target_include_directories(librestsdk
   PUBLIC ${PROJECT_SOURCE_DIR}/include/restsdk
 )

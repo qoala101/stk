@@ -1,17 +1,13 @@
 #include "restsdk_ws_client.h"
 
 #include <cpprest/base_uri.h>
-#include <cpprest/json.h>
 #include <cpprest/ws_client.h>
 #include <cpprest/ws_msg.h>
 #include <fmt/core.h>
 #include <pplx/pplxtasks.h>
 
-#include <functional>
-#include <gsl/assert>
 #include <memory>
 #include <not_null.hpp>
-#include <type_traits>
 #include <utility>
 
 #include "cpp_not_null.h"
@@ -74,7 +70,7 @@ void WsClient::Connect(network::WsEndpoint endpoint) {
 void WsClient::SetMessageHandler(
     cpp::NnUp<network::IWsMessageHandler> handler) {
   native_ws_client_->set_message_handler(
-      [handler = std::move(handler)](
+      [handler = cpp::NnSp<network::IWsMessageHandler>{std::move(handler)}](
           const web::websockets::client::websocket_incoming_message &message) {
         HandleWsMessage(*handler, message);
       });

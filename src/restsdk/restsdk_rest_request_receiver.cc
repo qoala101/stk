@@ -8,7 +8,6 @@
 #include <polymorphic_value.h>
 #include <pplx/pplxtasks.h>
 
-#include <functional>
 #include <gsl/assert>
 #include <magic_enum.hpp>
 #include <map>
@@ -16,7 +15,6 @@
 #include <not_null.hpp>
 #include <optional>
 #include <string>
-#include <type_traits>
 #include <utility>
 
 #include "cpp_not_null.h"
@@ -166,10 +164,11 @@ void RestRequestReceiver::Receive(
   http_listener_ =
       cpp::MakeUp<web::http::experimental::listener::http_listener>(
           std::move(uri.value));
-  http_listener_->support([handler = std::move(handler), logger = logger_](
-                              const web::http::http_request &request) {
-    HandleHttpRequest(*handler, *logger, request);
-  });
+  http_listener_->support(
+      [handler = cpp::NnSp<network::IRestRequestHandler>{std::move(handler)},
+       logger = logger_](const web::http::http_request &request) {
+        HandleHttpRequest(*handler, *logger, request);
+      });
 
   logger_->LogImportantEvent(
       fmt::format("Starting REST receiver: {}...", uri.value));

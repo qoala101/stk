@@ -10,9 +10,8 @@
 #include <fmt/core.h>
 #include <polymorphic_value.h>
 #include <pplx/pplxtasks.h>
-
-#include <gsl/assert>
 #include <magic_enum.hpp>
+#include <gsl/assert>
 #include <map>
 #include <memory>
 #include <utility>
@@ -23,6 +22,7 @@
 #include "network_types.h"
 #include "restsdk_json.h"
 #include "restsdk_json_native_handle.h"
+#include "not_null.hpp"
 
 namespace stonks::restsdk {
 namespace {

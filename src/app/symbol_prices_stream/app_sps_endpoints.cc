@@ -3,8 +3,6 @@
 #include <absl/strings/ascii.h>
 #include <fmt/core.h>
 
-#include <utility>
-
 #include "app_sps_types.h"
 #include "core_types.h"
 #include "cpp_optional.h"

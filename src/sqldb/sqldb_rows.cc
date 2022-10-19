@@ -6,10 +6,11 @@
 #include <range/v3/algorithm/find_if.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
-#include <range/v3/view/all.hpp>
 #include <range/v3/view/transform.hpp>
-#include <string>
+#include <range/v3/view/view.hpp>
 #include <utility>
+
+#include "cpp_typed_struct.h"
 
 namespace stonks::sqldb {
 Rows::Rows(std::vector<Column> columns)

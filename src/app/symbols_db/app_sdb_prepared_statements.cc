@@ -3,6 +3,7 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 
+#include <function2/function2.hpp>
 #include <gsl/assert>
 #include <memory>
 #include <string>
@@ -35,7 +36,7 @@ namespace {
   return kColumn;
 }
 
-[[nodiscard]] auto SymbolsInfoQuoteAssetColumn() {
+[[nodiscard]] auto SymbolsInfoQuoteAssetColumn() -> auto& {
   static const auto kColumn = []() {
     auto quote_asset_column =
         tables::Asset::Definition().GetColumnDefinition({tables::Asset::kName});
@@ -54,7 +55,7 @@ namespace {
        {tables::SymbolInfo::kQuoteAssetMinAmount},
        {tables::SymbolInfo::kQuoteAssetPriceStep}});
   columns.emplace_back(cpp::AssumeNn(&SymbolsInfoBaseAssetColumn()));
-  columns.emplace_back(cpp::AssumeNn(&SymbolsInfoQuoteAssetColumn));
+  columns.emplace_back(cpp::AssumeNn(&SymbolsInfoQuoteAssetColumn()));
   return sqldb::RowDefinition{columns};
 }
 
