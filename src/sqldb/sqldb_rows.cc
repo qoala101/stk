@@ -13,11 +13,10 @@
 
 namespace stonks::sqldb {
 Rows::Rows(std::vector<Column> columns)
-    : columns_{
-          ranges::views::transform(
-              columns,
-              [](Column &column) { return ColumnValues{std::move(column)}; }) |
-          ranges::to_vector} {
+    : columns_{columns | ranges::views::transform([](Column &column) {
+                 return ColumnValues{std::move(column)};
+               }) |
+               ranges::to_vector} {
   Ensures(columns_.size() == columns.size());
 }
 

@@ -46,13 +46,9 @@ class WsClient : public network::IWsClient {
   void SendMessage(network::WsMessage message) const override;
 
  private:
-  void HandleWsMessage(
-      const web::websockets::client::websocket_incoming_message &message);
-
   cpp::NnUp<web::websockets::client::websocket_callback_client>
       native_ws_client_;
   cpp::NnUp<log::ILogger> logger_;
-  cpp::Up<network::IWsMessageHandler> handler_{};
 };
 }  // namespace stonks::restsdk
 

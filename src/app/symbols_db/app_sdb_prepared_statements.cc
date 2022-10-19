@@ -24,6 +24,28 @@ namespace stonks::app::sdb {
 using fmt::literals::operator""_a;
 
 namespace {
+[[nodiscard]] auto SymbolsInfoBaseAssetColumn() -> auto& {
+  static const auto kColumn = []() {
+    auto base_asset_column =
+        tables::Asset::Definition().GetColumnDefinition({tables::Asset::kName});
+    base_asset_column.column.value = "base_asset";
+    return base_asset_column;
+  }();
+
+  return kColumn;
+}
+
+[[nodiscard]] auto SymbolsInfoQuoteAssetColumn() {
+  static const auto kColumn = []() {
+    auto quote_asset_column =
+        tables::Asset::Definition().GetColumnDefinition({tables::Asset::kName});
+    quote_asset_column.column.value = "quote_asset";
+    return quote_asset_column;
+  }();
+
+  return kColumn;
+}
+
 [[nodiscard]] auto SelectSymbolsInfoRowDefinition() {
   auto columns = tables::SymbolInfo::Definition().GetColumnDefinitions(
       {{tables::SymbolInfo::kName},
@@ -31,23 +53,8 @@ namespace {
        {tables::SymbolInfo::kBaseAssetPriceStep},
        {tables::SymbolInfo::kQuoteAssetMinAmount},
        {tables::SymbolInfo::kQuoteAssetPriceStep}});
-
-  const auto base_asset_column = []() {
-    auto base_asset_column =
-        tables::Asset::Definition().GetColumnDefinition({tables::Asset::kName});
-    base_asset_column.column.value = "base_asset";
-    return base_asset_column;
-  }();
-  columns.emplace_back(cpp::AssumeNn(&base_asset_column));
-
-  const auto quote_asset_column = []() {
-    auto quote_asset_column =
-        tables::Asset::Definition().GetColumnDefinition({tables::Asset::kName});
-    quote_asset_column.column.value = "quote_asset";
-    return quote_asset_column;
-  }();
-  columns.emplace_back(cpp::AssumeNn(&quote_asset_column));
-
+  columns.emplace_back(cpp::AssumeNn(&SymbolsInfoBaseAssetColumn()));
+  columns.emplace_back(cpp::AssumeNn(&SymbolsInfoQuoteAssetColumn));
   return sqldb::RowDefinition{columns};
 }
 

@@ -161,7 +161,7 @@ auto App::SelectAssets() const -> std::vector<core::Asset> {
 void App::UpdateAssets(std::vector<core::Asset> assets) {
   UpdateItems(
       std::move(assets), std::bind_front(&App::SelectAssets, this),
-      std::bind_front(&App::InsertAsset, this), [](const auto &) {},
+      std::bind_front(&App::InsertAsset, this), [](const core::Asset &) {},
       std::bind_front(&App::DeleteAsset, this), &DefaultLess<core::Asset>,
       &DefaultEquals<core::Asset>);
 }

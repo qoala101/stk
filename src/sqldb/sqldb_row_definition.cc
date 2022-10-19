@@ -18,8 +18,8 @@ RowDefinition::RowDefinition(std::vector<CellDefinition> cell_definitions)
 
 RowDefinition::RowDefinition(
     const std::vector<ColumnDefinition> &column_definitions)
-    : RowDefinition{ranges::views::transform(
-                        column_definitions,
+    : RowDefinition{column_definitions |
+                    ranges::views::transform(
                         [](const ColumnDefinition &column_definition) {
                           return CellDefinition{column_definition.column,
                                                 column_definition.data_type};
@@ -31,8 +31,8 @@ RowDefinition::RowDefinition(
 RowDefinition::RowDefinition(
     const cpp::ConstView<ColumnDefinition> &column_definitions)
     : RowDefinition{
+          column_definitions |
           ranges::views::transform(
-              column_definitions,
               [](cpp::Nn<const ColumnDefinition *> column_definition) {
                 return CellDefinition{column_definition->column,
                                       column_definition->data_type};
