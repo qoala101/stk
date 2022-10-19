@@ -6,7 +6,6 @@ COPY conanprofile.txt .
 RUN apt update && \
   apt -y install \
   cmake \
-  iwyu \
   \
   # Required to fetch git dependencies by cmake.
   git \
