@@ -22,14 +22,15 @@ template <typename... Keys>
   return AutoParsable{json.GetChild(std::forward<Keys>(keys)...)};
 }
 
-inline void BuildJsonFromImpl(IJson & /*json*/) {}
-
 template <typename Key, Convertible Value, typename... KeyValues>
 void BuildJsonFromImpl(IJson &json, Key &&key, Value &&value,
                        KeyValues &&...key_values) {
   json.SetChild(std::forward<Key>(key),
                 ConvertToJson(std::forward<Value>(value)));
-  BuildJsonFromImpl(json, std::forward<KeyValues>(key_values)...);
+
+  if constexpr (sizeof...(KeyValues) > 0) {
+    BuildJsonFromImpl(json, std::forward<KeyValues>(key_values)...);
+  }
 }
 }  // namespace detail
 

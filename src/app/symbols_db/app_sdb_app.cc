@@ -128,9 +128,10 @@ void UpdateItems(
 
 void App::CreateTablesIfNotExist() {
   const auto tables = cpp::ConstView<sqldb::TableDefinition>{
-      cpp::AssumeNn(&tables::Asset::Definition()),
-      cpp::AssumeNn(&tables::SymbolInfo::Definition()),
-      cpp::AssumeNn(&tables::SymbolPriceRecord::Definition())};
+      cpp::AssumeNn(&tables::TableTraits<tables::Asset>::GetDefinition()),
+      cpp::AssumeNn(&tables::TableTraits<tables::SymbolInfo>::GetDefinition()),
+      cpp::AssumeNn(
+          &tables::TableTraits<tables::SymbolPriceRecord>::GetDefinition())};
 
   for (const auto table : tables) {
     db_->PrepareStatement(

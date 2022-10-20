@@ -73,8 +73,6 @@ void ParseNextParamType(EndpointTypes &endpoint_types, Param &&param,
   if constexpr (kNumRemainingParams > 0) {
     ParseNextParamType<Function, Params...>(endpoint_types,
                                             std::forward<Params>(params)...);
-  } else {
-    return;
   }
 }
 
