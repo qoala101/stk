@@ -30,7 +30,6 @@
 #include "sqldb_as_values.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
-#include "sqldb_query_builder_facade.h"
 #include "sqldb_rows.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
@@ -141,11 +140,10 @@ void App::CreateTablesIfNotExist() {
 }
 
 App::App(cpp::NnUp<sqldb::IDb> db,
-         di::Factory<sqldb::IQueryBuilder> query_builder_factory)
+         cpp::NnUp<sqldb::IQueryBuilder> query_builder)
     : db_{std::move(db)},
-      query_builder_{query_builder_factory.Create()},
-      prepared_statements_{PreparedStatementsFrom(
-          db_, sqldb::QueryBuilderFacade{std::move(query_builder_factory)})} {
+      query_builder_{std::move(query_builder)},
+      prepared_statements_{PreparedStatementsFrom(db_)} {
   CreateTablesIfNotExist();
 }
 
@@ -206,7 +204,7 @@ auto App::SelectSymbolPriceRecords(const SelectSymbolPriceRecordsArgs &args)
     const -> std::vector<core::SymbolPriceRecord> {
   const auto rows = prepared_statements_.select_symbol_price_records->Execute(
       sqldb::AsValues(args.symbol, absl::ToUnixMillis(args.start_time),
-                      absl::ToUnixMillis(args.end_time), args.limit));
+                      absl::ToUnixMillis(args.end_time)));
 
   const auto &prices =
       rows.GetColumnValues({tables::SymbolPriceRecord::kPrice});

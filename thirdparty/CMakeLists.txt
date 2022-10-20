@@ -1,2 +1,3 @@
 add_subdirectory(callable)
 add_subdirectory(notnull)
+add_subdirectory(sqlbuilder)

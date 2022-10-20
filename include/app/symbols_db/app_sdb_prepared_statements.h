@@ -6,7 +6,6 @@
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
-#include "sqldb_query_builder_facade.h"
 
 namespace stonks::app::sdb {
 /**
@@ -34,9 +33,7 @@ struct PreparedStatements {
 /**
  * @brief Prepares the statements for DB.
  */
-[[nodiscard]] auto PreparedStatementsFrom(
-    const cpp::NnSp<sqldb::IDb> &db,
-    const sqldb::QueryBuilderFacade &query_builder_facade)
+[[nodiscard]] auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb> &db)
     -> PreparedStatements;
 }  // namespace stonks::app::sdb
 

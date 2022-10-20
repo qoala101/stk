@@ -24,6 +24,7 @@ target_link_libraries(libappsymbolsdb
   PUBLIC libsqlite
   PUBLIC range-v3::range-v3
   PUBLIC fmt::fmt
+  PUBLIC sqlbuilder
 )
 
 add_executable(appsymbolsdb

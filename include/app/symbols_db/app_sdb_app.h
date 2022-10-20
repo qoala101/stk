@@ -21,8 +21,7 @@ namespace stonks::app::sdb {
  */
 class App {
  public:
-  App(cpp::NnUp<sqldb::IDb> db,
-      di::Factory<sqldb::IQueryBuilder> query_builder_factory);
+  App(cpp::NnUp<sqldb::IDb> db, cpp::NnUp<sqldb::IQueryBuilder> query_builder);
 
   /**
    * @brief Selects all assets.
@@ -64,7 +63,6 @@ class App {
     core::Symbol symbol{};
     absl::Time start_time{absl::InfinitePast()};
     absl::Time end_time{absl::InfiniteFuture()};
-    int limit{std::numeric_limits<int>::max()};
   };
 
   /**

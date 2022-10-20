@@ -1,6 +1,7 @@
 #include "restsdk_ws_client.h"
 
 #include <cpprest/base_uri.h>
+#include <cpprest/json.h>  // IWYU pragma: keep
 #include <cpprest/ws_client.h>
 #include <cpprest/ws_msg.h>
 #include <fmt/core.h>
