@@ -1,12 +1,10 @@
 find_package(fmt REQUIRED)
-find_package(nameof REQUIRED)
 find_package(range-v3 REQUIRED)
 
 add_library(libappsymbolsdb
   app_sdb_app_server.cc
   app_sdb_app.cc
   app_sdb_prepared_statements.cc
-  app_sdb_tables.cc
 )
 
 set_target_properties(libappsymbolsdb PROPERTIES
@@ -23,7 +21,6 @@ target_link_libraries(libappsymbolsdb
   PUBLIC librestsdk
   PUBLIC libspdlog
   PUBLIC libsqlite
-  PUBLIC nameof::nameof
   PUBLIC range-v3::range-v3
   PUBLIC fmt::fmt
   PUBLIC sqlbuilder

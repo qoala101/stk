@@ -31,6 +31,7 @@
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_rows.h"
+#include "sqldb_traits.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 
@@ -128,10 +129,10 @@ void UpdateItems(
 
 void App::CreateTablesIfNotExist() {
   const auto tables = cpp::ConstView<sqldb::TableDefinition>{
-      cpp::AssumeNn(&tables::TableTraits<tables::Asset>::GetDefinition()),
-      cpp::AssumeNn(&tables::TableTraits<tables::SymbolInfo>::GetDefinition()),
+      cpp::AssumeNn(&sqldb::TableTraits<tables::Asset>::GetDefinition()),
+      cpp::AssumeNn(&sqldb::TableTraits<tables::SymbolInfo>::GetDefinition()),
       cpp::AssumeNn(
-          &tables::TableTraits<tables::SymbolPriceRecord>::GetDefinition())};
+          &sqldb::TableTraits<tables::SymbolPriceRecord>::GetDefinition())};
 
   for (const auto table : tables) {
     db_->PrepareStatement(
@@ -205,7 +206,7 @@ auto App::SelectSymbolPriceRecords(const SelectSymbolPriceRecordsArgs &args)
     const -> std::vector<core::SymbolPriceRecord> {
   const auto rows = prepared_statements_.select_symbol_price_records->Execute(
       sqldb::AsValues(args.symbol, absl::ToUnixMillis(args.start_time),
-                      absl::ToUnixMillis(args.end_time)));
+                      absl::ToUnixMillis(args.end_time), args.limit));
 
   const auto &prices =
       rows.GetColumnValues({tables::SymbolPriceRecord::kPrice});

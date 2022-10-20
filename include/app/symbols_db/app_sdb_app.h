@@ -63,6 +63,7 @@ class App {
     core::Symbol symbol{};
     absl::Time start_time{absl::InfinitePast()};
     absl::Time end_time{absl::InfiniteFuture()};
+    int limit{std::numeric_limits<int>::max()};
   };
 
   /**
