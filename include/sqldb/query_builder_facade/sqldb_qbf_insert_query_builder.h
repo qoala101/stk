@@ -48,17 +48,17 @@ class InsertQueryBuilderTemplate {
  public:
   template <typename Column>
   [[nodiscard]] auto Value(std::string TEMP) -> auto & {
-    if (column_names_.empty()) {
-      column_names_ = ColumnTraits<Column>::GetName();
-    } else {
-      column_names_ += fmt::format(", {}", ColumnTraits<Column>::GetName());
+    if (!column_names_.empty()) {
+      column_names_ += ", ";
     }
 
-    if (values_.empty()) {
-      values_ = TEMP;
-    } else {
-      values_ += fmt::format(", {}", TEMP);
+    column_names_ += ColumnTraits<Column>::GetName();
+
+    if (!values_.empty()) {
+      values_ += ", ";
     }
+
+    values_ += TEMP;
 
     return *this;
   }

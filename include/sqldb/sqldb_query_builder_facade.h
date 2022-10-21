@@ -59,17 +59,14 @@ class QueryBuilderFacadeT {
     return qbf::SelectQueryBuilderTemplate{static_cast<qbf::One *>(nullptr)};
   }
 
-  [[nodiscard]] auto Insert() {
-    return qbf::InsertQueryBuilderTemplate{};
-  }
+  [[nodiscard]] auto Insert() { return qbf::InsertQueryBuilderTemplate{}; }
 
-  [[nodiscard]] auto Delete() {
-    return qbf::DeleteQueryBuilderTemplate{};
-  }
+  [[nodiscard]] auto Delete() { return qbf::DeleteQueryBuilderTemplate{}; }
 
-  // [[nodiscard]] auto Update() {
-  //   return qbf::DeleteQueryBuilderTemplate{};
-  // }
+  template <typename Table>
+  [[nodiscard]] auto Update() {
+    return qbf::UpdateQueryBuilderTemplate{static_cast<Table *>(nullptr)};
+  }
 };
 
 namespace qbf {
