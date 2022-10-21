@@ -157,5 +157,4 @@ auto SelectQueryBuilderTemplate::Build() const
 
   return {{std::move(query)}, cell_definitions_};
 }
-
 }  // namespace stonks::sqldb::qbf

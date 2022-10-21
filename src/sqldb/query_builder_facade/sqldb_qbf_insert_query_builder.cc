@@ -58,4 +58,14 @@ auto InsertQueryBuilder::Build() const -> Query {
                            : GetColumns(table_, {AllColumnsType{}});
   return query_builder_->BuildInsertQuery(table, columns);
 }
+
+auto InsertQueryBuilderTemplate::Build() const -> Query {
+  Expects(!table_name_.empty());
+
+  auto query = fmt::format("INSERT INTO {} ({}) VALUES ({})", table_name_,
+                           column_names_, values_);
+
+  Ensures(!query.empty());
+  return {std::move(query)};
+}
 }  // namespace stonks::sqldb::qbf
