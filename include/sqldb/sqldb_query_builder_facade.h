@@ -7,6 +7,8 @@
 #include "sqldb_qbf_insert_query_builder.h"
 #include "sqldb_qbf_select_query_builder.h"
 #include "sqldb_qbf_update_query_builder.h"
+#include "sqldb_traits.h"
+#include "sqldb_types.h"
 
 namespace stonks::sqldb {
 /**
@@ -40,6 +42,73 @@ class QueryBuilderFacade {
  private:
   di::Factory<IQueryBuilder> query_builder_factory_;
 };
+
+class QueryBuilderFacadeT {
+ public:
+  template <typename... Columns>
+  [[nodiscard]] auto Select() {
+    return qbf::SelectQueryBuilderTemplate{
+        static_cast<std::tuple<Columns...> *>(nullptr)};
+  }
+
+  [[nodiscard]] auto SelectAll() {
+    return qbf::SelectQueryBuilderTemplate{static_cast<qbf::All *>(nullptr)};
+  }
+
+  [[nodiscard]] auto SelectOne() {
+    return qbf::SelectQueryBuilderTemplate{static_cast<qbf::One *>(nullptr)};
+  }
+};
+
+namespace qbf {
+template <typename ColumnT>
+struct Column {};
+
+struct Param {
+  Param() : text_{"?"} {}
+
+  explicit Param(SelectQueryBuilderTemplate builder)
+      : text_{fmt::format("({})", builder.Build().first.value)} {}
+
+  std::string text_{};
+};
+
+template <typename LeftColumn, typename RightColumn>
+[[nodiscard]] auto operator==(const Column<LeftColumn> &left,
+                              const Column<RightColumn> &right) {
+  return fmt::format("{} = {}", ColumnTraits<LeftColumn>::GetFullName(),
+                     ColumnTraits<RightColumn>::GetFullName());
+}
+
+template <typename LeftColumn>
+[[nodiscard]] auto operator==(const Column<LeftColumn> &left,
+                              const Param &right) {
+  return fmt::format("{} = {}", ColumnTraits<LeftColumn>::GetFullName(),
+                     right.text_);
+}
+
+template <typename LeftColumn>
+[[nodiscard]] auto operator>=(const Column<LeftColumn> &left,
+                              const Param &right) {
+  return fmt::format("{} >= {}", ColumnTraits<LeftColumn>::GetFullName(),
+                     right.text_);
+}
+
+template <typename LeftColumn>
+[[nodiscard]] auto operator<(const Column<LeftColumn> &left,
+                             const Param &right) {
+  return fmt::format("{} < {}", ColumnTraits<LeftColumn>::GetFullName(),
+                     right.text_);
+}
+
+[[nodiscard]] inline auto Exists(SelectQueryBuilderTemplate builder) {
+  return fmt::format("EXISTS ({})", builder.Build().first.value);
+};
+
+[[nodiscard]] inline auto On(std::string_view on_clause) {
+  return fmt::format("ON ({})", on_clause);
+};
+}  // namespace qbf
 }  // namespace stonks::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_QUERY_BUILDER_FACADE_H_

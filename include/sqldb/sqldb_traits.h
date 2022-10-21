@@ -32,36 +32,42 @@ template <typename Column>
 
 template <typename Table>
 struct TableTraitsGetName {
-  [[nodiscard]] static auto GetName() {
+  [[nodiscard]] static auto GetName() -> auto & {
     static const auto kName = std::string{nameof::nameof_short_type<Table>()};
     return kName;
   }
 };
 
+template <typename Original, typename Alias>
+struct As {};
+
 template <typename Column>
 struct ColumnTraits {
-  [[nodiscard]] static auto GetName() {
+  [[nodiscard]] static auto GetName() -> auto & {
     static const auto kName = std::string{nameof::nameof_short_type<Column>()};
     return kName;
   }
 
-  [[nodiscard]] static auto GetFullName() {
+  [[nodiscard]] static auto GetFullName() -> auto & {
     static const auto kName = fmt::format(
         "{}.{}", nameof::nameof_short_type<typename Column::Table>(),
         nameof::nameof_short_type<Column>());
     return kName;
   }
 
-  [[nodiscard]] static auto GetForeignKey() -> cpp::Opt<sqldb::ForeignKey> {
-    if constexpr (requires { typename Column::ForeignKey; }) {
-      return sqldb::ForeignKey{
-          .table = {TableTraitsGetName<
-              typename Column::ForeignKey::Table>::GetName()},
-          .column = {
-              ColumnTraits<typename Column::ForeignKey::Column>::GetName()}};
-    } else {
-      return std::nullopt;
-    }
+  [[nodiscard]] static auto GetForeignKey() -> auto & {
+    static const auto kValue = []() -> cpp::Opt<sqldb::ForeignKey> {
+      if constexpr (requires { typename Column::ForeignKey; }) {
+        return sqldb::ForeignKey{
+            .table = {TableTraitsGetName<
+                typename Column::ForeignKey::Table>::GetName()},
+            .column = {
+                ColumnTraits<typename Column::ForeignKey::Column>::GetName()}};
+      } else {
+        return std::nullopt;
+      }
+    }();
+    return kValue;
   }
 
   [[nodiscard]] static constexpr auto GetType() {
@@ -82,13 +88,40 @@ struct ColumnTraits {
     }
   }
 
-  [[nodiscard]] static auto GetDefinition() {
-    return sqldb::ColumnDefinition{.column = {ColumnTraits<Column>::GetName()},
-                                   .data_type = GetType(),
-                                   .primary_key = HasPrimaryKey<Column>(),
-                                   .auto_increment = HasAutoIncrement<Column>(),
-                                   .unique = HasUnique<Column>(),
-                                   .foreign_key = GetForeignKey()};
+  [[nodiscard]] static auto GetDefinition() -> auto & {
+    static const auto kValue =
+        sqldb::ColumnDefinition{.column = {ColumnTraits<Column>::GetName()},
+                                .data_type = GetType(),
+                                .primary_key = HasPrimaryKey<Column>(),
+                                .auto_increment = HasAutoIncrement<Column>(),
+                                .unique = HasUnique<Column>(),
+                                .foreign_key = GetForeignKey()};
+    return kValue;
+  }
+};
+
+template <typename Original, typename Alias>
+struct ColumnTraits<As<Original, Alias>> {
+  [[nodiscard]] static constexpr auto GetName() -> auto & {
+    return ColumnTraits<Alias>::GetName();
+  }
+
+  [[nodiscard]] static auto GetFullName() -> auto & {
+    static const auto kName = fmt::format(
+        "{} AS {}", ColumnTraits<Original>::GetFullName(), GetName());
+    return kName;
+  }
+
+  [[nodiscard]] static constexpr auto GetForeignKey() -> auto & {
+    return ColumnTraits<Original>::GetForeignKey();
+  }
+
+  [[nodiscard]] static constexpr auto GetType() {
+    return ColumnTraits<Original>::GetType();
+  }
+
+  [[nodiscard]] static constexpr auto GetDefinition() -> auto & {
+    return ColumnTraits<Original>::GetDefinition();
   }
 };
 
@@ -97,35 +130,44 @@ struct ColumnsTraits;
 
 template <typename... Columns>
 struct ColumnsTraits<std::tuple<Columns...>> {
-  [[nodiscard]] static auto GetNames() {
-    auto names = std::string{};
-    GetNamesImpl<Columns...>(names);
-    return names;
+  [[nodiscard]] static auto GetFullNames() -> auto & {
+    static const auto kValue = [] {
+      auto names = std::string{};
+      GetFullNamesImpl<Columns...>(names);
+      return names;
+    }();
+    return kValue;
   }
 
-  [[nodiscard]] static auto GetTypes() {
-    auto types = std::vector<sqldb::CellDefinition>{};
-    GetTypesImpl<Columns...>(types);
-    return types;
+  [[nodiscard]] static auto GetTypes() -> auto & {
+    static const auto kValue = [] {
+      auto types = std::vector<sqldb::CellDefinition>{};
+      GetTypesImpl<Columns...>(types);
+      return types;
+    }();
+    return kValue;
   }
 
-  [[nodiscard]] static auto GetDefinitions() {
-    auto definitions = std::vector<sqldb::ColumnDefinition>{};
-    GetDefinitionsImpl<Columns...>(definitions);
-    return definitions;
+  [[nodiscard]] static auto GetDefinitions() -> auto & {
+    static const auto kValue = [] {
+      auto definitions = std::vector<sqldb::ColumnDefinition>{};
+      GetDefinitionsImpl<Columns...>(definitions);
+      return definitions;
+    }();
+    return kValue;
   }
 
  private:
   template <typename Column, typename... OtherColumns>
-  static void GetNamesImpl(std::string &names) {
+  static void GetFullNamesImpl(std::string &names) {
     if (names.empty()) {
-      names = ColumnTraits<Column>::GetName();
+      names = ColumnTraits<Column>::GetFullName();
     } else {
-      names += fmt::format(", {}", ColumnTraits<Column>::GetName());
+      names += fmt::format(", {}", ColumnTraits<Column>::GetFullName());
     }
 
     if constexpr (sizeof...(OtherColumns) > 0) {
-      GetNamesImpl<OtherColumns...>(names);
+      GetFullNamesImpl<OtherColumns...>(names);
     }
   }
 
@@ -154,15 +196,28 @@ struct ColumnsTraits<std::tuple<Columns...>> {
 template <typename Table>
 struct TableTraits {
   [[nodiscard]] static auto GetName() -> auto & {
-    static const auto kName = std::string{nameof::nameof_short_type<Table>()};
-    return kName;
+    static const auto kValue = std::string{nameof::nameof_short_type<Table>()};
+    return kValue;
   }
 
   [[nodiscard]] static auto GetDefinition() -> auto & {
-    static const auto kDefinition = sqldb::TableDefinition{
+    static const auto kValue = sqldb::TableDefinition{
         .table = {GetName()},
         .columns = ColumnsTraits<typename Table::Columns>::GetDefinitions()};
-    return kDefinition;
+    return kValue;
+  }
+};
+
+template <typename Original, typename Alias>
+struct TableTraits<As<Original, Alias>> {
+  [[nodiscard]] static auto GetName() -> auto & {
+    static const auto kName = fmt::format(
+        "{} AS {}", TableTraits<Original>::GetName(), TableTraits<Alias>::GetName());
+    return kName;
+  }
+
+  [[nodiscard]] static constexpr auto GetDefinition() -> auto & {
+    return TableTraits<Original>::GetDefinition();
   }
 };
 }  // namespace stonks::sqldb
