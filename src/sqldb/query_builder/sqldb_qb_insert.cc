@@ -1,4 +1,4 @@
-#include "sqldb_qbf_insert_query_builder.h"
+#include "sqldb_qb_insert.h"
 
 #include <gsl/assert>
 #include <memory>
@@ -6,11 +6,10 @@
 #include <variant>
 
 #include "cpp_typed_struct.h"
-#include "sqldb_qbf_columns_variant.h"
-#include "sqldb_qbf_common.h"
+#include "sqldb_qb_common.h"
 
-namespace stonks::sqldb::qbf {
-auto InsertQueryBuilderTemplate::Build() const -> Query {
+namespace stonks::sqldb::qb {
+auto Insert::Build() const -> Query {
   Expects(!table_name_.empty());
 
   auto query = fmt::format("INSERT INTO {} ({}) VALUES ({})", table_name_,
@@ -19,4 +18,4 @@ auto InsertQueryBuilderTemplate::Build() const -> Query {
   Ensures(!query.empty());
   return {std::move(query)};
 }
-}  // namespace stonks::sqldb::qbf
+}  // namespace stonks::sqldb::qb

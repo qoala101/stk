@@ -9,8 +9,8 @@
 #include "app_dt_pds_tables.h"
 #include "di_factory.h"
 #include "sqldb_as_values.h"
-#include "sqldb_qbf_insert_query_builder.h"
-#include "sqldb_query_builder_facade.h"
+#include "sqldb_qb_insert_query_builder.h"
+#include "sqldb_query_builder.h"
 #include "sqldb_types.h"
 
 namespace stonks::app::dt::pds {
@@ -22,7 +22,7 @@ Db::Db(sqldb::IDb &db)
             ->Execute();
 
         auto statement = db.PrepareStatement(
-            sqldb::QueryBuilderFacade{std::move(query_builder_factory)}
+            sqldb::query_builder{std::move(query_builder_factory)}
                 .Insert()
                 .IntoColumns({{"time"}, {"symbol"}, {"price"}})
                 .IntoTable(tables::SymbolPriceRecord())

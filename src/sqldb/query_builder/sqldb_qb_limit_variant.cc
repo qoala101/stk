@@ -1,10 +1,10 @@
-#include "sqldb_qbf_limit_variant.h"
+#include "sqldb_qb_limit_variant.h"
 
 #include <fmt/core.h>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 
-namespace stonks::sqldb::qbf {
+namespace stonks::sqldb::qb {
 auto LimitVariant::GetLimitClause() const -> std::string {
   return std::visit(
       [](const auto &v) -> std::string {
@@ -20,4 +20,4 @@ auto LimitVariant::GetLimitClause() const -> std::string {
       },
       value);
 }
-}  // namespace stonks::sqldb::qbf
+}  // namespace stonks::sqldb::qb

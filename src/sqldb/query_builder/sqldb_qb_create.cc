@@ -1,4 +1,4 @@
-#include "sqldb_qbf_create_query_builder.h"
+#include "sqldb_qb_create.h"
 
 #include <bits/ranges_algo.h>
 
@@ -8,7 +8,7 @@
 #include <range/v3/view/filter.hpp>
 #include "sqldb_enums_to_string.h"
 
-namespace stonks::sqldb::qbf {
+namespace stonks::sqldb::qb {
 namespace {
 [[nodiscard]] auto IsColumnPrimaryKey(const sqldb::ColumnDefinition &column) {
   return column.primary_key;
@@ -19,14 +19,14 @@ namespace {
 }
 }  // namespace
 
-auto CreateQueryBuilderTemplate::IfNotExists() -> CreateQueryBuilderTemplate & {
+auto Create::IfNotExists() -> Create & {
   Expects(if_not_exists_clause_.empty());
   if_not_exists_clause_ = " IF NOT EXISTS";
   Ensures(!if_not_exists_clause_.empty());
   return *this;
 }
 
-auto CreateQueryBuilderTemplate::Build() const -> Query {
+auto Create::Build() const -> Query {
   Expects(!table_definition.table.value.empty());
   Expects(!table_definition.columns.empty());
 
@@ -109,4 +109,4 @@ auto CreateQueryBuilderTemplate::Build() const -> Query {
   Ensures(!query.empty());
   return {std::move(query)};
 }
-}  // namespace stonks::sqldb::qbf
+}  // namespace stonks::sqldb::qb

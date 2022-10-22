@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_SELECT_QUERY_BUILDER_H_
-#define STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_SELECT_QUERY_BUILDER_H_
+#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_SELECT_H_
+#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_SELECT_H_
 
 #include <string>
 #include <string_view>
@@ -9,26 +9,25 @@
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 #include "cpp_views.h"
-#include "sqldb_qbf_columns_variant.h"
-#include "sqldb_qbf_limit_variant.h"
+#include "sqldb_qb_limit_variant.h"
 #include "sqldb_traits.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qbf {
+namespace stonks::sqldb::qb {
 struct All;
 struct One;
 
-class SelectQueryBuilderTemplate {
+class Select {
  public:
   template <typename... Columns>
-  explicit SelectQueryBuilderTemplate(std::tuple<Columns...> * /*unused*/)
+  explicit Select(std::tuple<Columns...> * /*unused*/)
       : cell_definitions_{ColumnsTraits<std::tuple<Columns...>>::GetTypes()},
         full_column_names_{
             ColumnsTraits<std::tuple<Columns...>>::GetFullNames()} {}
 
-  explicit SelectQueryBuilderTemplate(All * /*unused*/) : select_all_{true} {}
+  explicit Select(All * /*unused*/) : select_all_{true} {}
 
-  explicit SelectQueryBuilderTemplate(One * /*unused*/) : select_one_{true} {}
+  explicit Select(One * /*unused*/) : select_one_{true} {}
 
   template <typename Table>
   [[nodiscard]] auto From() -> auto & {
@@ -51,11 +50,11 @@ class SelectQueryBuilderTemplate {
   }
 
   [[nodiscard]] auto Where(std::string_view where_clause)
-      -> SelectQueryBuilderTemplate &;
+      -> Select &;
   [[nodiscard]] auto And(std::string_view where_clause)
-      -> SelectQueryBuilderTemplate &;
+      -> Select &;
   [[nodiscard]] auto Or(std::string_view where_clause)
-      -> SelectQueryBuilderTemplate &;
+      -> Select &;
 
   template <typename Table>
   [[nodiscard]] auto Join(std::string_view on_clause) -> auto & {
@@ -66,9 +65,9 @@ class SelectQueryBuilderTemplate {
     return *this;
   }
 
-  [[nodiscard]] auto Limit(int limit) -> SelectQueryBuilderTemplate &;
+  [[nodiscard]] auto Limit(int limit) -> Select &;
 
-  [[nodiscard]] auto LimitParam() -> SelectQueryBuilderTemplate &;
+  [[nodiscard]] auto LimitParam() -> Select &;
 
   [[nodiscard]] auto Build() const
       -> std::pair<Query, std::vector<CellDefinition>>;
@@ -86,4 +85,4 @@ class SelectQueryBuilderTemplate {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_SELECT_QUERY_BUILDER_H_
+#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_SELECT_H_

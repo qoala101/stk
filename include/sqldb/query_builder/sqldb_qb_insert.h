@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_INSERT_QUERY_BUILDER_H_
-#define STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_INSERT_QUERY_BUILDER_H_
+#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_QUERY_BUILDER_H_
+#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_QUERY_BUILDER_H_
 
 #include <fmt/format.h>
 
@@ -13,19 +13,17 @@
 #include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
 #include "cpp_views.h"
-#include "sqldb_qbf_columns_variant.h"
-#include "sqldb_qbf_table_variant.h"
 #include "sqldb_traits.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qbf {
+namespace stonks::sqldb::qb {
 struct All;
 
-class InsertQueryBuilderTemplate {
+class Insert {
  public:
-  InsertQueryBuilderTemplate() = default;
+  Insert() = default;
 
-  explicit InsertQueryBuilderTemplate(All* /*unused*/) : insert_all_{true} {}
+  explicit Insert(All* /*unused*/) : insert_all_{true} {}
 
   template <typename Column>
   [[nodiscard]] auto Value(std::string TEMP) -> auto& {
@@ -70,6 +68,6 @@ class InsertQueryBuilderTemplate {
   std::string values_{};
   std::string table_name_{};
 };
-}  // namespace stonks::sqldb::qbf
+}  // namespace stonks::sqldb::qb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_INSERT_QUERY_BUILDER_H_
+#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_QUERY_BUILDER_H_

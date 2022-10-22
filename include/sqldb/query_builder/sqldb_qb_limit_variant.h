@@ -1,12 +1,12 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_LIMIT_VARIANT_H_
-#define STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_LIMIT_VARIANT_H_
+#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QBF_LIMIT_VARIANT_H_
+#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QBF_LIMIT_VARIANT_H_
 
 #include <string>
 #include <variant>
 
 #include "cpp_variant_struct.h"
 
-namespace stonks::sqldb::qbf {
+namespace stonks::sqldb::qb {
 /**
  * @brief Variant of limit specification.
  */
@@ -23,6 +23,6 @@ class LimitVariant
    */
   [[nodiscard]] auto GetLimitClause() const -> std::string;
 };
-}  // namespace stonks::sqldb::qbf
+}  // namespace stonks::sqldb::qb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_LIMIT_VARIANT_H_
+#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QBF_LIMIT_VARIANT_H_

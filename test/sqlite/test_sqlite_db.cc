@@ -9,13 +9,13 @@
 #include "cpp_not_null.h"
 #include "sqldb_as_values.h"
 #include "sqldb_i_db.h"
-#include "sqldb_query_builder_facade.h"
+#include "sqldb_query_builder.h"
 #include "sqldb_types.h"
 #include "test_sqlite_injector.h"
+#include "sqldb_qb_common.h"
 
 namespace {
 auto db = stonks::cpp::Up<stonks::sqldb::IDb>{};
-auto query_builder_facade = stonks::sqldb::QueryBuilderFacade{};
 
 struct TestTable {
   struct IntTrue {
@@ -59,26 +59,26 @@ TEST(SqliteDb, CreateAndDropTable) {
   db = test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
 
   db->PrepareStatement(
-        query_builder_facade.Create().Table<TestTable>().IfNotExists().Build())
+        stonks::sqldb::query_builder::CreateTable<TestTable>().IfNotExists().Build())
       ->Execute();
   db->PrepareStatement(
-        query_builder_facade.Create().Table<TestTable>().IfNotExists().Build())
+        stonks::sqldb::query_builder::CreateTable<TestTable>().IfNotExists().Build())
       ->Execute();
-  db->PrepareStatement(query_builder_facade.Drop().Table<TestTable>().Build())
+  db->PrepareStatement(stonks::sqldb::query_builder::DropTable<TestTable>().Build())
       ->Execute();
   EXPECT_ANY_THROW(db->PrepareStatement(
-                         query_builder_facade.Drop().Table<TestTable>().Build())
+                         stonks::sqldb::query_builder::DropTable<TestTable>().Build())
                        ->Execute());
 }
 
 TEST(SqliteDb, InsertAndSelect) {
   db->PrepareStatement(
-        query_builder_facade.Create().Table<Asset>().IfNotExists().Build())
+        stonks::sqldb::query_builder::CreateTable<Asset>().IfNotExists().Build())
       ->Execute();
 
   auto insert_statement = db->PrepareStatement(
-      query_builder_facade.Insert()
-          .Value<Asset::name>(stonks::sqldb::qbf::Param{}.text_)
+      stonks::sqldb::query_builder::Insert()
+          .Value<Asset::name>(stonks::sqldb::qb::Param{}.text_)
           .Into<Asset>()
           .Build());
   insert_statement->Execute(stonks::sqldb::AsValues("BTC"));
@@ -86,7 +86,7 @@ TEST(SqliteDb, InsertAndSelect) {
   insert_statement->Execute(stonks::sqldb::AsValues("USDT"));
 
   auto [query, columns] =
-      query_builder_facade.SelectAll().From<Asset>().Build();
+      stonks::sqldb::query_builder::SelectAll().From<Asset>().Build();
   auto select_statement =
       db->PrepareStatement(std::move(query), std::move(columns));
 
@@ -102,7 +102,7 @@ TEST(SqliteDb, InsertAndSelect) {
 
 TEST(SqliteDb, InsertNull) {
   auto insert_statement = db->PrepareStatement(
-      query_builder_facade.InsertAll().Into<Asset>().Build());
+      stonks::sqldb::query_builder::InsertAll().Into<Asset>().Build());
   EXPECT_ANY_THROW(insert_statement->Execute());
 }
 
@@ -152,13 +152,13 @@ struct SymbolPrice {
 
 TEST(SqliteDb, ForeignKey) {
   db->PrepareStatement(
-        query_builder_facade.Create().Table<Symbol>().IfNotExists().Build())
+        stonks::sqldb::query_builder::CreateTable<Symbol>().IfNotExists().Build())
       ->Execute();
 
   auto insert_symbol_statement = db->PrepareStatement(
-      query_builder_facade.Insert()
-          .Value<Symbol::base_asset_id>(stonks::sqldb::qbf::Param{}.text_)
-          .Value<Symbol::quote_asset_id>(stonks::sqldb::qbf::Param{}.text_)
+      stonks::sqldb::query_builder::Insert()
+          .Value<Symbol::base_asset_id>(stonks::sqldb::qb::Param{}.text_)
+          .Value<Symbol::quote_asset_id>(stonks::sqldb::qb::Param{}.text_)
           .Into<Symbol>()
           .Build());
   insert_symbol_statement->Execute(stonks::sqldb::AsValues(1, 3));
@@ -166,14 +166,13 @@ TEST(SqliteDb, ForeignKey) {
   EXPECT_ANY_THROW(
       insert_symbol_statement->Execute(stonks::sqldb::AsValues(5, 6)));
 
-  db->PrepareStatement(query_builder_facade.Create()
-                           .Table<SymbolPrice>()
+  db->PrepareStatement(stonks::sqldb::query_builder::CreateTable<SymbolPrice>()
                            .IfNotExists()
                            .Build())
       ->Execute();
 
   auto insert_symbol_price_statement = db->PrepareStatement(
-      query_builder_facade.InsertAll().Into<SymbolPrice>().Build());
+      stonks::sqldb::query_builder::InsertAll().Into<SymbolPrice>().Build());
   insert_symbol_price_statement->Execute(
       stonks::sqldb::AsValues(1, 1661787828796, 12345));
   insert_symbol_price_statement->Execute(
@@ -215,7 +214,7 @@ TEST(SqliteDb, FileWriteAndRead) {
       test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
 
   const auto [select_query, columns] =
-      query_builder_facade.SelectAll().From<SymbolPrice>().Build();
+      stonks::sqldb::query_builder::SelectAll().From<SymbolPrice>().Build();
   const auto db_rows = db->PrepareStatement(select_query, columns)->Execute();
   const auto db_copy_rows =
       db_copy->PrepareStatement(select_query, columns)->Execute();
@@ -228,25 +227,24 @@ TEST(SqliteDb, FileWriteAndRead) {
 
 TEST(SqliteDb, CascadeForeignKeyDelete) {
   db->PrepareStatement(
-        query_builder_facade.Delete()
-            .From<Asset>()
-            .Where(stonks::sqldb::qbf::Column<Asset::name>{} == "USDT")
+        stonks::sqldb::query_builder::DeleteFromTable<Asset>()
+            .Where(stonks::sqldb::qb::Column<Asset::name>{} == "USDT")
             .Build())
       ->Execute();
 
   auto [query0, columns0] =
-      query_builder_facade.SelectAll().From<Asset>().Build();
+      stonks::sqldb::query_builder::SelectAll().From<Asset>().Build();
   auto select_statement = db->PrepareStatement(query0, columns0);
   auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
 
   auto [query1, columns1] =
-      query_builder_facade.SelectAll().From<Symbol>().Build();
+      stonks::sqldb::query_builder::SelectAll().From<Symbol>().Build();
   select_statement = db->PrepareStatement(query1, columns1);
   rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 0);
 
-  auto [query2, columns2] =query_builder_facade.SelectAll()
+  auto [query2, columns2] =stonks::sqldb::query_builder::SelectAll()
                                .From<SymbolPrice>()
                                .Build();
   select_statement =

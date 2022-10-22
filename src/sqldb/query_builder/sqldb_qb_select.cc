@@ -1,4 +1,4 @@
-#include "sqldb_qbf_select_query_builder.h"
+#include "sqldb_qb_select.h"
 
 #include <fmt/core.h>
 
@@ -13,47 +13,47 @@
 #include <variant>
 
 #include "cpp_typed_struct.h"
-#include "sqldb_qbf_common.h"
+#include "sqldb_qb_common.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qbf {
-auto SelectQueryBuilderTemplate::Where(std::string_view where_clause)
-    -> SelectQueryBuilderTemplate & {
+namespace stonks::sqldb::qb {
+auto Select::Where(std::string_view where_clause)
+    -> Select & {
   Expects(where_clause_.empty());
   where_clause_ = fmt::format(" WHERE ({})", where_clause);
   Ensures(!where_clause_.empty());
   return *this;
 }
 
-auto SelectQueryBuilderTemplate::And(std::string_view where_clause)
-    -> SelectQueryBuilderTemplate & {
+auto Select::And(std::string_view where_clause)
+    -> Select & {
   Expects(!where_clause_.empty());
   where_clause_ += fmt::format(" AND ({})", where_clause);
   return *this;
 }
-auto SelectQueryBuilderTemplate::Or(std::string_view where_clause)
-    -> SelectQueryBuilderTemplate & {
+auto Select::Or(std::string_view where_clause)
+    -> Select & {
   Expects(!where_clause_.empty());
   where_clause_ += fmt::format(" OR ({})", where_clause);
   return *this;
 }
 
-auto SelectQueryBuilderTemplate::Limit(int limit)
-    -> SelectQueryBuilderTemplate & {
+auto Select::Limit(int limit)
+    -> Select & {
   Expects(std::holds_alternative<std::monostate>(limit_.value));
   limit_.value.emplace<int>(limit);
   Ensures(!std::holds_alternative<std::monostate>(limit_.value));
   return *this;
 }
 
-auto SelectQueryBuilderTemplate::LimitParam() -> SelectQueryBuilderTemplate & {
+auto Select::LimitParam() -> Select & {
   Expects(std::holds_alternative<std::monostate>(limit_.value));
   limit_.value.emplace<LimitedType>();
   Ensures(!std::holds_alternative<std::monostate>(limit_.value));
   return *this;
 }
 
-auto SelectQueryBuilderTemplate::Build() const
+auto Select::Build() const
     -> std::pair<Query, std::vector<CellDefinition>> {
   Expects(!table_name_.empty());
   Expects(!cell_definitions_.empty());
@@ -74,4 +74,4 @@ auto SelectQueryBuilderTemplate::Build() const
 
   return {{std::move(query)}, cell_definitions_};
 }
-}  // namespace stonks::sqldb::qbf
+}  // namespace stonks::sqldb::qb

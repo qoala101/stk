@@ -1,4 +1,4 @@
-#include "sqldb_qbf_delete_query_builder.h"
+#include "sqldb_qb_delete.h"
 
 #include <fmt/core.h>
 
@@ -7,29 +7,29 @@
 #include <string>
 #include <utility>
 
-namespace stonks::sqldb::qbf {
-auto DeleteQueryBuilderTemplate::Where(std::string_view where_clause)
-    -> DeleteQueryBuilderTemplate& {
+namespace stonks::sqldb::qb {
+auto Delete::Where(std::string_view where_clause)
+    -> Delete& {
   Expects(where_clause_.empty());
   where_clause_ = fmt::format(" WHERE ({})", where_clause);
   Ensures(!where_clause_.empty());
   return *this;
 }
 
-auto DeleteQueryBuilderTemplate::And(std::string_view where_clause)
-    -> DeleteQueryBuilderTemplate& {
+auto Delete::And(std::string_view where_clause)
+    -> Delete& {
   Expects(!where_clause_.empty());
   where_clause_ += fmt::format(" AND ({})", where_clause);
   return *this;
 }
-auto DeleteQueryBuilderTemplate::Or(std::string_view where_clause)
-    -> DeleteQueryBuilderTemplate& {
+auto Delete::Or(std::string_view where_clause)
+    -> Delete& {
   Expects(!where_clause_.empty());
   where_clause_ += fmt::format(" OR ({})", where_clause);
   return *this;
 }
 
-auto DeleteQueryBuilderTemplate::Build() const -> Query {
+auto Delete::Build() const -> Query {
   Expects(!table_name_.empty());
 
   auto query = std::string{"DELETE "};
@@ -38,4 +38,4 @@ auto DeleteQueryBuilderTemplate::Build() const -> Query {
 
   return {query};
 }
-}  // namespace stonks::sqldb::qbf
+}  // namespace stonks::sqldb::qb

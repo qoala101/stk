@@ -30,7 +30,7 @@
 #include "sqldb_as_values.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
-#include "sqldb_query_builder_facade.h"
+#include "sqldb_query_builder.h"
 #include "sqldb_rows.h"
 #include "sqldb_traits.h"
 #include "sqldb_types.h"
@@ -129,26 +129,9 @@ void UpdateItems(
 }  // namespace
 
 void App::CreateTablesIfNotExist() {
-  const auto queries =
-      std::vector<sqldb::Query>{sqldb::QueryBuilderFacade{}
-                                    .Create()
-                                    .Table<tables::Asset>()
-                                    .IfNotExists()
-                                    .Build(),
-                                sqldb::QueryBuilderFacade{}
-                                    .Create()
-                                    .Table<tables::SymbolInfo>()
-                                    .IfNotExists()
-                                    .Build(),
-                                sqldb::QueryBuilderFacade{}
-                                    .Create()
-                                    .Table<tables::SymbolPriceRecord>()
-                                    .IfNotExists()
-                                    .Build()};
-
-  for (const auto &query : queries) {
-    db_->PrepareStatement(query)->Execute();
-  }
+  prepared_statements_.create_asset->Execute();
+  prepared_statements_.create_symbol_info->Execute();
+  prepared_statements_.create_symbol_price_record->Execute();
 }
 
 App::App(cpp::NnUp<sqldb::IDb> db)

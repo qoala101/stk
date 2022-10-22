@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_UPDATE_QUERY_BUILDER_H_
-#define STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_UPDATE_QUERY_BUILDER_H_
+#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_UPDATE_H_
+#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_UPDATE_H_
 
 #include <string>
 #include <string_view>
@@ -9,16 +9,14 @@
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 #include "cpp_views.h"
-#include "sqldb_qbf_columns_variant.h"
-#include "sqldb_qbf_table_variant.h"
 #include "sqldb_traits.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qbf {
-class UpdateQueryBuilderTemplate {
+namespace stonks::sqldb::qb {
+class Update {
  public:
   template <typename Table>
-  explicit UpdateQueryBuilderTemplate(Table * /*unused*/)
+  explicit Update(Table * /*unused*/)
       : table_name_{TableTraits<Table>::GetName()} {}
 
   template <typename Column>
@@ -33,11 +31,11 @@ class UpdateQueryBuilderTemplate {
   }
 
   [[nodiscard]] auto Where(std::string_view where_clause)
-      -> UpdateQueryBuilderTemplate &;
+      -> Update &;
   [[nodiscard]] auto And(std::string_view where_clause)
-      -> UpdateQueryBuilderTemplate &;
+      -> Update &;
   [[nodiscard]] auto Or(std::string_view where_clause)
-      -> UpdateQueryBuilderTemplate &;
+      -> Update &;
 
   [[nodiscard]] auto Build() const -> Query;
 
@@ -48,4 +46,4 @@ class UpdateQueryBuilderTemplate {
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_UPDATE_QUERY_BUILDER_H_
+#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_UPDATE_H_

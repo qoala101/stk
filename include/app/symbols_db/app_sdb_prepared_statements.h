@@ -12,6 +12,10 @@ namespace stonks::app::sdb {
  * @brief Lazy valuated prepared statements.
  */
 struct PreparedStatements {
+  cpp::Lazy<cpp::NnUp<sqldb::IUpdateStatement>> create_asset;
+  cpp::Lazy<cpp::NnUp<sqldb::IUpdateStatement>> create_symbol_info;
+  cpp::Lazy<cpp::NnUp<sqldb::IUpdateStatement>> create_symbol_price_record;
+
   cpp::Lazy<cpp::NnUp<sqldb::ISelectStatement>> select_assets;
   cpp::Lazy<cpp::NnUp<sqldb::IUpdateStatement>> insert_asset;
   cpp::Lazy<cpp::NnUp<sqldb::IUpdateStatement>> delete_asset;
