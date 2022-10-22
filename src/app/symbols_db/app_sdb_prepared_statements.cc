@@ -17,7 +17,6 @@
 #include "di_factory.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_query_builder.h"
-#include "sqldb_row_definition.h"
 #include "sqldb_traits.h"
 #include "sqldb_types.h"
 

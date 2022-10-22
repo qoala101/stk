@@ -8,7 +8,6 @@
 #include "cpp_not_null.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
-#include "sqldb_row_definition.h"
 
 namespace stonks::sqldb {
 /**

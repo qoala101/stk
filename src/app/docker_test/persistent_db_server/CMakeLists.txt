@@ -5,7 +5,6 @@ add_executable(persistent_db_server
   app_dt_pds_app.cc
   app_dt_pds_db.cc
   app_dt_pds_main.cc
-  app_dt_pds_tables.cc
 )
 
 target_include_directories(persistent_db_server

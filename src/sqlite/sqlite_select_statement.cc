@@ -45,8 +45,8 @@ namespace {
 SelectStatement::SelectStatement(ps::CommonImpl impl,
                                  const sqldb::RowDefinition &result_definition)
     : impl_{std::move(impl)},
-      result_columns_{GetColumns(result_definition.GetCellDefinitions())},
-      result_types_{GetCellTypes(result_definition.GetCellDefinitions())} {
+      result_columns_{GetColumns(result_definition)},
+      result_types_{GetCellTypes(result_definition)} {
   Ensures(result_columns_.size() == result_types_.size());
 }
 

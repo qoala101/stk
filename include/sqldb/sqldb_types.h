@@ -28,47 +28,6 @@ struct Column : public cpp::TypedStruct<std::string> {};
 struct Query : public cpp::TypedStruct<std::string> {};
 
 /**
- * @brief Foreign key to the column in the table.
- */
-struct ForeignKey {
-  Table table{};
-  Column column{};
-};
-
-/**
- * @brief Description of SQL table column.
- */
-struct ColumnDefinition {
-  Column column{};
-  DataType data_type{};
-  bool primary_key{};
-  bool auto_increment{};
-  bool unique{};
-  cpp::Opt<ForeignKey> foreign_key{};
-};
-
-/**
- * @brief Description of SQL table which is table name
- * and description of its columns.
- */
-struct TableDefinition {
-  [[nodiscard]] auto GetColumnDefinition(const Column &column) const
-      -> const ColumnDefinition &;
-  [[nodiscard]] auto GetColumnDefinition(const Column &column)
-      -> ColumnDefinition &;
-
-  [[nodiscard]] auto GetColumnDefinitions(const std::vector<Column> &columns)
-      const -> cpp::ConstView<ColumnDefinition>;
-
-  Table table{};
-  std::vector<ColumnDefinition> columns{};
-
- private:
-  [[nodiscard]] static auto GetColumnDefinitionImpl(
-      cpp::This<TableDefinition> auto &t, const Column &column) -> auto &;
-};
-
-/**
  * @brief Value of single column cell.
  */
 struct Cell {
@@ -88,6 +47,8 @@ struct CellDefinition {
                                        const CellDefinition &)
       -> bool = default;
 };
+
+using RowDefinition = std::vector<CellDefinition>;
 }  // namespace stonks::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_TYPES_H_

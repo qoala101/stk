@@ -7,7 +7,6 @@
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
-#include "sqldb_row_definition.h"
 #include "sqldb_types.h"
 #include "sqlite_db_facade.h"
 #include "sqlite_db_handle_variant.h"
