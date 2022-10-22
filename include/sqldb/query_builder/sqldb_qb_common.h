@@ -20,13 +20,13 @@ struct Param {
   Param() : text_{"?"} {}
 
   explicit Param(const Select& builder)
-      : text_{fmt::format("({})", builder.Build().first.value)} {}
+      : text_{fmt::format("({})", builder.Build().query.value)} {}
 
   std::string text_{};
 };
 
 [[nodiscard]] inline auto Exists(Select builder) {
-  return fmt::format("EXISTS ({})", builder.Build().first.value);
+  return fmt::format("EXISTS ({})", builder.Build().query.value);
 };
 
 [[nodiscard]] inline auto On(std::string_view on_clause) {

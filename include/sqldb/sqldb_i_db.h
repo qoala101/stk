@@ -22,8 +22,7 @@ class IDb {
    * @brief Creates prepared statement which can then be called to execute the
    * select query on DB.
    */
-  [[nodiscard]] virtual auto PrepareStatement(Query query,
-                                              RowDefinition result_definition)
+  [[nodiscard]] virtual auto PrepareStatement(SelectQuery query)
       -> cpp::NnUp<ISelectStatement> = 0;
 
   /**

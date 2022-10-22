@@ -49,12 +49,9 @@ class Select {
     return *this;
   }
 
-  [[nodiscard]] auto Where(std::string_view where_clause)
-      -> Select &;
-  [[nodiscard]] auto And(std::string_view where_clause)
-      -> Select &;
-  [[nodiscard]] auto Or(std::string_view where_clause)
-      -> Select &;
+  [[nodiscard]] auto Where(std::string_view where_clause) -> Select &;
+  [[nodiscard]] auto And(std::string_view where_clause) -> Select &;
+  [[nodiscard]] auto Or(std::string_view where_clause) -> Select &;
 
   template <typename Table>
   [[nodiscard]] auto Join(std::string_view on_clause) -> auto & {
@@ -69,8 +66,7 @@ class Select {
 
   [[nodiscard]] auto LimitParam() -> Select &;
 
-  [[nodiscard]] auto Build() const
-      -> std::pair<Query, std::vector<CellDefinition>>;
+  [[nodiscard]] auto Build() const -> SelectQuery;
 
  private:
   bool select_all_{};
@@ -83,6 +79,6 @@ class Select {
 
   std::string join_clause_{};
 };
-}  // namespace stonks::sqldb
+}  // namespace stonks::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_SELECT_H_

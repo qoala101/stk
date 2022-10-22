@@ -26,8 +26,7 @@ class Db : public sqldb::IDb {
   /**
    * @copydoc sqldb::IDb::PrepareStatement
    */
-  [[nodiscard]] auto PrepareStatement(sqldb::Query query,
-                                      sqldb::RowDefinition result_definition)
+  [[nodiscard]] auto PrepareStatement(sqldb::SelectQuery query)
       -> cpp::NnUp<sqldb::ISelectStatement> override;
 
   /**

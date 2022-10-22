@@ -18,27 +18,20 @@ namespace stonks::sqldb {
 struct Query : public cpp::TypedStruct<std::string> {};
 
 /**
- * @brief Value of single column cell.
- */
-struct Cell {
-  std::string column_name{};
-  Value value{};
-};
-
-/**
  * @brief Description of SQL table cell.
  */
 struct CellDefinition {
   std::string column_name{};
   DataType data_type{};
-
- private:
-  [[nodiscard]] friend auto operator==(const CellDefinition &,
-                                       const CellDefinition &)
-      -> bool = default;
 };
 
-using RowDefinition = std::vector<CellDefinition>;
+/**
+ * @brief SQL query with expected result definition.
+ */
+struct SelectQuery {
+  Query query{};
+  std::vector<CellDefinition> column_types{};
+};
 }  // namespace stonks::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_TYPES_H_

@@ -18,13 +18,13 @@
 namespace stonks::sqlite {
 namespace {
 [[nodiscard]] auto GetColumnNames(
-    const std::vector<sqldb::CellDefinition> &cell_definitions) {
-  auto column_names = cell_definitions |
-                      ranges::views::transform(
-                          [](const sqldb::CellDefinition &cell_definition) {
-                            return cell_definition.column_name;
-                          }) |
-                      ranges::to_vector;
+    std::vector<sqldb::CellDefinition> &cell_definitions) {
+  auto column_names =
+      cell_definitions |
+      ranges::views::transform([](sqldb::CellDefinition &cell_definition) {
+        return std::move(cell_definition.column_name);
+      }) |
+      ranges::to_vector;
   Ensures(column_names.size() == cell_definitions.size());
   return column_names;
 }
@@ -42,8 +42,8 @@ namespace {
 }
 }  // namespace
 
-SelectStatement::SelectStatement(ps::CommonImpl impl,
-                                 const sqldb::RowDefinition &result_definition)
+SelectStatement::SelectStatement(
+    ps::CommonImpl impl, std::vector<sqldb::CellDefinition> result_definition)
     : impl_{std::move(impl)},
       result_column_names_{GetColumnNames(result_definition)},
       result_types_{GetCellTypes(result_definition)} {

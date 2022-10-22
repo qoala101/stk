@@ -21,7 +21,7 @@ class SelectStatement : public sqldb::ISelectStatement {
    * statement result.
    */
   SelectStatement(ps::CommonImpl impl,
-                  const sqldb::RowDefinition &result_definition);
+                  std::vector<sqldb::CellDefinition> result_definition);
 
   /**
    * @copydoc sqldb::ISelectStatement::Execute

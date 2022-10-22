@@ -45,51 +45,51 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
     -> PreparedStatements {
   return {
       .create_asset{[db]() {
-        auto query =
-            sqldb::query_builder::CreateTable<tables::Asset>().IfNotExists().Build();
-        return db->PrepareStatement(std::move(query));
+        return db->PrepareStatement(
+            sqldb::query_builder::CreateTable<tables::Asset>()
+                .IfNotExists()
+                .Build());
       }},
 
       .create_symbol_info{[db]() {
-        auto query = sqldb::query_builder::CreateTable<tables::SymbolInfo>()
-                         .IfNotExists()
-                         .Build();
-        return db->PrepareStatement(std::move(query));
+        return db->PrepareStatement(
+            sqldb::query_builder::CreateTable<tables::SymbolInfo>()
+                .IfNotExists()
+                .Build());
       }},
 
       .create_symbol_price_record{[db]() {
-        auto query = sqldb::query_builder::CreateTable<tables::SymbolPriceRecord>()
-                         .IfNotExists()
-                         .Build();
-        return db->PrepareStatement(std::move(query));
+        return db->PrepareStatement(
+            sqldb::query_builder::CreateTable<tables::SymbolPriceRecord>()
+                .IfNotExists()
+                .Build());
       }},
 
       .select_assets{[db]() {
-        auto [query, columns] =
+        return db->PrepareStatement(
             sqldb::query_builder::Select<tables::Asset::name>()
                 .From<tables::Asset>()
-                .Build();
-        return db->PrepareStatement(std::move(query), std::move(columns));
+                .Build());
       }},
 
       .insert_asset{[db]() {
-        auto query = sqldb::query_builder::Insert()
-                         .Value<tables::Asset::name>(sqldb::qb::Param{}.text_)
-                         .Into<tables::Asset>()
-                         .Build();
-        return db->PrepareStatement(std::move(query));
+        return db->PrepareStatement(
+            sqldb::query_builder::Insert()
+                .Value<tables::Asset::name>(sqldb::qb::Param{}.text_)
+                .Into<tables::Asset>()
+                .Build());
       }},
 
       .delete_asset{[db]() {
-        auto query = sqldb::query_builder::DeleteFromTable<tables::Asset>()
-                         .Where(sqldb::qb::Column<tables::Asset::name>{} ==
-                                sqldb::qb::Param{})
-                         .Build();
-        return db->PrepareStatement(std::move(query));
+        return db->PrepareStatement(
+            sqldb::query_builder::DeleteFromTable<tables::Asset>()
+                .Where(sqldb::qb::Column<tables::Asset::name>{} ==
+                       sqldb::qb::Param{})
+                .Build());
       }},
 
       .select_symbols_with_price_records{[db]() {
-        auto [query, columns] =
+        return db->PrepareStatement(
             sqldb::query_builder::Select<tables::SymbolInfo::name>()
                 .From<tables::SymbolInfo>()
                 .Where(sqldb::qb::Exists(
@@ -99,26 +99,23 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
                                    tables::SymbolPriceRecord::symbol_id>{} ==
                                sqldb::qb::Column<tables::SymbolInfo::id>{})
                         .Limit(1)))
-                .Build();
-        return db->PrepareStatement(std::move(query), std::move(columns));
+                .Build());
       }},
 
       .select_symbol_info{[db]() {
-        auto [query, columns] =
+        return db->PrepareStatement(
             SelectSymbolsInfoQuery()
                 .Where(sqldb::qb::Column<tables::SymbolInfo::name>{} ==
                        sqldb::qb::Param{})
-                .Build();
-        return db->PrepareStatement(std::move(query), std::move(columns));
+                .Build());
       }},
 
       .select_symbols_info{[db]() {
-        auto [query, columns] = SelectSymbolsInfoQuery().Build();
-        return db->PrepareStatement(std::move(query), std::move(columns));
+        return db->PrepareStatement(SelectSymbolsInfoQuery().Build());
       }},
 
       .insert_symbol_info{[db]() {
-        auto query =
+        return db->PrepareStatement(
             sqldb::query_builder::Insert()
                 .Value<tables::SymbolInfo::name>(sqldb::qb::Param{}.text_)
                 .Value<tables::SymbolInfo::base_asset_id>(sqldb::qb::Param{
@@ -142,12 +139,11 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
                 .Value<tables::SymbolInfo::quote_asset_price_step>(
                     sqldb::qb::Param{}.text_)
                 .Into<tables::SymbolInfo>()
-                .Build();
-        return db->PrepareStatement(std::move(query));
+                .Build());
       }},
 
       .update_symbol_info{[db]() {
-        auto query =
+        return db->PrepareStatement(
             sqldb::query_builder::UpdateTable<tables::SymbolInfo>()
                 .Set<tables::SymbolInfo::base_asset_id>(sqldb::qb::Param{
                     sqldb::query_builder::Select<tables::Asset::id>()
@@ -171,20 +167,19 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
                     sqldb::qb::Param{}.text_)
                 .Where(sqldb::qb::Column<tables::SymbolInfo::name>{} ==
                        sqldb::qb::Param{})
-                .Build();
-        return db->PrepareStatement(std::move(query));
+                .Build());
       }},
 
       .delete_symbol_info{[db]() {
-        auto query = sqldb::query_builder::DeleteFromTable<tables::SymbolInfo>()
-                         .Where(sqldb::qb::Column<tables::SymbolInfo::name>{} ==
-                                sqldb::qb::Param{})
-                         .Build();
-        return db->PrepareStatement(std::move(query));
+        return db->PrepareStatement(
+            sqldb::query_builder::DeleteFromTable<tables::SymbolInfo>()
+                .Where(sqldb::qb::Column<tables::SymbolInfo::name>{} ==
+                       sqldb::qb::Param{})
+                .Build());
       }},
 
       .select_symbol_price_records{[db]() {
-        auto [query, columns] =
+        return db->PrepareStatement(
             sqldb::query_builder::Select<tables::SymbolPriceRecord::price,
                                          tables::SymbolPriceRecord::time>()
                 .From<tables::SymbolPriceRecord>()
@@ -200,12 +195,11 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
                      sqldb::qb::Param{})
                 .And(sqldb::qb::Column<tables::SymbolPriceRecord::time>{} <
                      sqldb::qb::Param{})
-                .Build();
-        return db->PrepareStatement(std::move(query), std::move(columns));
+                .Build());
       }},
 
       .insert_symbol_price_record{[db]() {
-        auto query =
+        return db->PrepareStatement(
             sqldb::query_builder::Insert()
                 .Value<tables::SymbolPriceRecord::symbol_id>(sqldb::qb::Param{
                     sqldb::query_builder::Select<tables::SymbolInfo::id>()
@@ -218,17 +212,15 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
                 .Value<tables::SymbolPriceRecord::time>(
                     sqldb::qb::Param{}.text_)
                 .Into<tables::SymbolPriceRecord>()
-                .Build();
-        return db->PrepareStatement(std::move(query));
+                .Build());
       }},
 
       .delete_symbol_price_records{[db]() {
-        auto query =
+        return db->PrepareStatement(
             sqldb::query_builder::DeleteFromTable<tables::SymbolPriceRecord>()
                 .Where(sqldb::qb::Column<tables::SymbolPriceRecord::time>{} <
                        sqldb::qb::Param{})
-                .Build();
-        return db->PrepareStatement(std::move(query));
+                .Build());
       }}};
 }
 }  // namespace stonks::app::sdb
