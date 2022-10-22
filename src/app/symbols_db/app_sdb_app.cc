@@ -98,12 +98,12 @@ void UpdateItems(
 
 [[nodiscard]] auto SymbolsInfoFrom(sqldb::Rows rows) {
   auto &names = rows.GetColumnValues<tables::SymbolInfo::name>();
-  auto &base_assets = rows.GetColumnValues({"base_asset"});
+  auto &base_assets = rows.GetColumnValues<BaseAsset::base_asset>();
   const auto &base_asset_min_amounts =
       rows.GetColumnValues<tables::SymbolInfo::base_asset_min_amount>();
   const auto &base_asset_price_steps =
       rows.GetColumnValues<tables::SymbolInfo::base_asset_price_step>();
-  auto &quote_assets = rows.GetColumnValues({"quote_asset"});
+  auto &quote_assets = rows.GetColumnValues<QuoteAsset::quote_asset>();
   const auto &quote_asset_min_amounts =
       rows.GetColumnValues<tables::SymbolInfo::quote_asset_min_amount>();
   const auto &quote_asset_price_steps =

@@ -1,8 +1,12 @@
 #ifndef STONKS_SQLDB_SQLDB_ROWS_H_
 #define STONKS_SQLDB_SQLDB_ROWS_H_
 
+#include <bits/ranges_algo.h>
+
+#include <range/v3/algorithm/find_if.hpp>
 #include <vector>
 
+#include "cpp_copy_const.h"
 #include "cpp_this.h"  // IWYU pragma: keep
 #include "sqldb_traits.h"
 #include "sqldb_types.h"
@@ -14,39 +18,20 @@ namespace stonks::sqldb {
  */
 class Rows {
  public:
-  explicit Rows(std::vector<Column> columns = {});
+  explicit Rows(std::vector<std::string> column_names = {});
 
   /**
    * @brief Gives column values.
    */
-  [[nodiscard]] auto GetColumnValues(const Column &column) const
-      -> const std::vector<Value> &;
-  [[nodiscard]] auto GetColumnValues(const Column &column)
-      -> std::vector<Value> &;
-
   template <typename Column>
-  [[nodiscard]] auto GetColumnValues() const -> const std::vector<Value> & {
-    return GetColumnValues({ColumnTraits<Column>::GetName()});
+  [[nodiscard]] auto GetColumnValues() const -> auto & {
+    return GetColumnValuesImpl<Column>(*this);
   }
 
   template <typename Column>
-  [[nodiscard]] auto GetColumnValues() -> std::vector<Value> & {
-    return GetColumnValues({ColumnTraits<Column>::GetName()});
+  [[nodiscard]] auto GetColumnValues() -> auto & {
+    return GetColumnValuesImpl<Column>(*this);
   }
-
-  /**
-   * @brief Gives column cell value.
-   */
-  [[nodiscard]] auto GetCellValue(const Column &column, int row_index) const
-      -> const Value &;
-  [[nodiscard]] auto GetCellValue(const Column &column, int row_index)
-      -> Value &;
-
-  /**
-   * @brief Gives cell value of the first row.
-   */
-  [[nodiscard]] auto GetFirst(const Column &column) const -> const Value &;
-  [[nodiscard]] auto GetFirst(const Column &column) -> Value &;
 
   /**
    * @brief Gives number of values in each column.
@@ -65,7 +50,7 @@ class Rows {
 
  private:
   struct ColumnValues {
-    Column column{};
+    std::string column_name{};
     std::vector<Value> values{};
 
    private:
@@ -77,15 +62,20 @@ class Rows {
   [[nodiscard]] friend auto operator==(const Rows &, const Rows &)
       -> bool = default;
 
+  template <typename Column>
+  [[nodiscard]] static auto GetColumnValuesImpl(cpp::This<Rows> auto &t)
+      -> auto & {
+    return t.GetColumnValues(ColumnTraits<Column>::GetName());
+  }
+
+  [[nodiscard]] auto GetColumnValues(std::string_view column_name) const
+      -> const std::vector<Value> &;
+  [[nodiscard]] auto GetColumnValues(std::string_view column_name)
+      -> std::vector<Value> &;
+
   [[nodiscard]] static auto GetColumnValuesImpl(cpp::This<Rows> auto &t,
-                                                const Column &column) -> auto &;
-
-  [[nodiscard]] static auto GetCellValueImpl(cpp::This<Rows> auto &t,
-                                             const Column &column,
-                                             int row_index) -> auto &;
-
-  [[nodiscard]] static auto GetFirstImpl(cpp::This<Rows> auto &t,
-                                         const Column &column) -> auto &;
+                                                std::string_view column_name)
+      -> auto &;
 
   std::vector<ColumnValues> columns_{};
 };

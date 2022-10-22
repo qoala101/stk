@@ -14,7 +14,6 @@ add_library(libsqldb
   sqldb_i_select_statement.cc
   sqldb_i_update_statement.cc
   sqldb_query_builder.cc
-  sqldb_row.cc
   sqldb_rows.cc
   sqldb_value.cc
 )

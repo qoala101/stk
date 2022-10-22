@@ -23,30 +23,6 @@
 namespace stonks::app::sdb {
 namespace {
 [[nodiscard]] auto SelectSymbolsInfoQuery() {
-  struct BaseAsset {
-    struct id : tables::Asset::id {
-      using Table = BaseAsset;
-    };
-
-    struct name : tables::Asset::name {
-      using Table = BaseAsset;
-    };
-
-    struct base_asset : name {};
-  };
-
-  struct QuoteAsset {
-    struct id : tables::Asset::id {
-      using Table = QuoteAsset;
-    };
-
-    struct name : tables::Asset::name {
-      using Table = QuoteAsset;
-    };
-
-    struct quote_asset : name {};
-  };
-
   return sqldb::query_builder::Select<
              tables::SymbolInfo::name,
              tables::SymbolInfo::base_asset_min_amount,

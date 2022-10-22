@@ -9,10 +9,10 @@
 #include "cpp_not_null.h"
 #include "sqldb_as_values.h"
 #include "sqldb_i_db.h"
+#include "sqldb_qb_common.h"
 #include "sqldb_query_builder.h"
 #include "sqldb_types.h"
 #include "test_sqlite_injector.h"
-#include "sqldb_qb_common.h"
 
 namespace {
 auto db = stonks::cpp::Up<stonks::sqldb::IDb>{};
@@ -58,22 +58,27 @@ TEST(SqliteDb, CreateAndDropTable) {
   std::ignore = std::filesystem::remove(db_file_name);
   db = test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
 
-  db->PrepareStatement(
-        stonks::sqldb::query_builder::CreateTable<TestTable>().IfNotExists().Build())
+  db->PrepareStatement(stonks::sqldb::query_builder::CreateTable<TestTable>()
+                           .IfNotExists()
+                           .Build())
+      ->Execute();
+  db->PrepareStatement(stonks::sqldb::query_builder::CreateTable<TestTable>()
+                           .IfNotExists()
+                           .Build())
       ->Execute();
   db->PrepareStatement(
-        stonks::sqldb::query_builder::CreateTable<TestTable>().IfNotExists().Build())
+        stonks::sqldb::query_builder::DropTable<TestTable>().Build())
       ->Execute();
-  db->PrepareStatement(stonks::sqldb::query_builder::DropTable<TestTable>().Build())
-      ->Execute();
-  EXPECT_ANY_THROW(db->PrepareStatement(
-                         stonks::sqldb::query_builder::DropTable<TestTable>().Build())
-                       ->Execute());
+  EXPECT_ANY_THROW(
+      db->PrepareStatement(
+            stonks::sqldb::query_builder::DropTable<TestTable>().Build())
+          ->Execute());
 }
 
 TEST(SqliteDb, InsertAndSelect) {
-  db->PrepareStatement(
-        stonks::sqldb::query_builder::CreateTable<Asset>().IfNotExists().Build())
+  db->PrepareStatement(stonks::sqldb::query_builder::CreateTable<Asset>()
+                           .IfNotExists()
+                           .Build())
       ->Execute();
 
   auto insert_statement = db->PrepareStatement(
@@ -92,12 +97,12 @@ TEST(SqliteDb, InsertAndSelect) {
 
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 3);
-  EXPECT_EQ(rows.GetColumnValues({"id"})[0].GetInt64(), 1);
-  EXPECT_EQ(rows.GetColumnValues({"name"})[0].GetString(), "BTC");
-  EXPECT_EQ(rows.GetColumnValues({"id"})[1].GetInt64(), 2);
-  EXPECT_EQ(rows.GetColumnValues({"name"})[1].GetString(), "ETH");
-  EXPECT_EQ(rows.GetColumnValues({"id"})[2].GetInt64(), 3);
-  EXPECT_EQ(rows.GetColumnValues({"name"})[2].GetString(), "USDT");
+  EXPECT_EQ(rows.GetColumnValues<Asset::id>()[0].GetInt64(), 1);
+  EXPECT_EQ(rows.GetColumnValues<Asset::name>()[0].GetString(), "BTC");
+  EXPECT_EQ(rows.GetColumnValues<Asset::id>()[1].GetInt64(), 2);
+  EXPECT_EQ(rows.GetColumnValues<Asset::name>()[1].GetString(), "ETH");
+  EXPECT_EQ(rows.GetColumnValues<Asset::id>()[2].GetInt64(), 3);
+  EXPECT_EQ(rows.GetColumnValues<Asset::name>()[2].GetString(), "USDT");
 }
 
 TEST(SqliteDb, InsertNull) {
@@ -151,8 +156,9 @@ struct SymbolPrice {
 };
 
 TEST(SqliteDb, ForeignKey) {
-  db->PrepareStatement(
-        stonks::sqldb::query_builder::CreateTable<Symbol>().IfNotExists().Build())
+  db->PrepareStatement(stonks::sqldb::query_builder::CreateTable<Symbol>()
+                           .IfNotExists()
+                           .Build())
       ->Execute();
 
   auto insert_symbol_statement = db->PrepareStatement(
@@ -182,10 +188,10 @@ TEST(SqliteDb, ForeignKey) {
 TEST(SqliteDb, SelectJoin) {
   const auto cell_definitions = std::vector<stonks::sqldb::CellDefinition>{
       stonks::sqldb::CellDefinition{
-          .column = {"base_asset"},
+          .column_name = {"base_asset"},
           .data_type = stonks::sqldb::DataType::kString},
       stonks::sqldb::CellDefinition{
-          .column = {"quote_asset"},
+          .column_name = {"quote_asset"},
           .data_type = stonks::sqldb::DataType::kString}};
 
   auto select_statement = db->PrepareStatement(
@@ -196,10 +202,10 @@ TEST(SqliteDb, SelectJoin) {
       cell_definitions);
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
-  EXPECT_EQ(rows.GetColumnValues({"base_asset"})[0].GetString(), "BTC");
-  EXPECT_EQ(rows.GetColumnValues({"quote_asset"})[0].GetString(), "USDT");
-  EXPECT_EQ(rows.GetColumnValues({"base_asset"})[1].GetString(), "ETH");
-  EXPECT_EQ(rows.GetColumnValues({"quote_asset"})[1].GetString(), "USDT");
+  EXPECT_EQ(rows.GetColumnValues<struct base_asset>()[0].GetString(), "BTC");
+  EXPECT_EQ(rows.GetColumnValues<struct quote_asset>()[0].GetString(), "USDT");
+  EXPECT_EQ(rows.GetColumnValues<struct base_asset>()[1].GetString(), "ETH");
+  EXPECT_EQ(rows.GetColumnValues<struct quote_asset>()[1].GetString(), "USDT");
 }
 
 TEST(SqliteDb, FileWriteAndRead) {
@@ -244,11 +250,9 @@ TEST(SqliteDb, CascadeForeignKeyDelete) {
   rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 0);
 
-  auto [query2, columns2] =stonks::sqldb::query_builder::SelectAll()
-                               .From<SymbolPrice>()
-                               .Build();
-  select_statement =
-      db->PrepareStatement(query2, columns2);
+  auto [query2, columns2] =
+      stonks::sqldb::query_builder::SelectAll().From<SymbolPrice>().Build();
+  select_statement = db->PrepareStatement(query2, columns2);
   rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 0);
 }

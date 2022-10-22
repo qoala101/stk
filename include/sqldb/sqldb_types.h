@@ -13,16 +13,6 @@
 
 namespace stonks::sqldb {
 /**
- * @brief Name of SQL table which has columns with different value types.
- */
-struct Table : public cpp::TypedStruct<std::string> {};
-
-/**
- * @brief Name of the SQL table column.
- */
-struct Column : public cpp::TypedStruct<std::string> {};
-
-/**
  * @brief SQL query.
  */
 struct Query : public cpp::TypedStruct<std::string> {};
@@ -31,7 +21,7 @@ struct Query : public cpp::TypedStruct<std::string> {};
  * @brief Value of single column cell.
  */
 struct Cell {
-  Column column{};
+  std::string column_name{};
   Value value{};
 };
 
@@ -39,7 +29,7 @@ struct Cell {
  * @brief Description of SQL table cell.
  */
 struct CellDefinition {
-  Column column{};
+  std::string column_name{};
   DataType data_type{};
 
  private:

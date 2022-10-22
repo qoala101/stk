@@ -189,7 +189,7 @@ struct ColumnsTraits<std::tuple<Columns...>> {
   template <ColumnT Column, ColumnT... OtherColumns>
   static void GetTypesImpl(std::vector<sqldb::CellDefinition> &types) {
     types.emplace_back(
-        sqldb::CellDefinition{.column = {ColumnTraits<Column>::GetName()},
+        sqldb::CellDefinition{.column_name = ColumnTraits<Column>::GetName(),
                               .data_type = ColumnTraits<Column>::GetType()});
 
     if constexpr (sizeof...(OtherColumns) > 0) {

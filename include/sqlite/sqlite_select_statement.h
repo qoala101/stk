@@ -31,7 +31,7 @@ class SelectStatement : public sqldb::ISelectStatement {
 
  private:
   ps::CommonImpl impl_;
-  std::vector<sqldb::Column> result_columns_{};
+  std::vector<std::string> result_column_names_{};
   std::vector<sqldb::DataType> result_types_{};
 };
 }  // namespace stonks::sqlite
