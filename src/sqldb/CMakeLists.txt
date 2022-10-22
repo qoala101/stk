@@ -6,7 +6,9 @@ find_package(range-v3 REQUIRED)
 add_library(libsqldb
   query_builder_facade/sqldb_qbf_columns_variant.cc
   query_builder_facade/sqldb_qbf_common.cc
+  query_builder_facade/sqldb_qbf_create_query_builder.cc
   query_builder_facade/sqldb_qbf_delete_query_builder.cc
+  query_builder_facade/sqldb_qbf_drop_query_builder.cc
   query_builder_facade/sqldb_qbf_insert_query_builder.cc
   query_builder_facade/sqldb_qbf_limit_variant.cc
   query_builder_facade/sqldb_qbf_select_query_builder.cc

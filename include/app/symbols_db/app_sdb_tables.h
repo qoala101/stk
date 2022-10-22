@@ -15,10 +15,6 @@ namespace stonks::app::sdb::tables {
  * @copydoc core::Asset
  */
 struct Asset {
-  static constexpr auto kTable = "Asset";
-  static constexpr auto kId = "id";
-  static constexpr auto kName = "name";
-
   struct id {
     using Table = Asset;
     using DataType = int64_t;
@@ -40,16 +36,6 @@ struct Asset {
  * @copydoc core::SymbolInfo
  */
 struct SymbolInfo {
-  static constexpr auto kTable = "SymbolInfo";
-  static constexpr auto kId = "id";
-  static constexpr auto kName = "name";
-  static constexpr auto kBaseAssetId = "base_asset_id";
-  static constexpr auto kBaseAssetMinAmount = "base_asset_min_amount";
-  static constexpr auto kBaseAssetPriceStep = "base_asset_price_step";
-  static constexpr auto kQuoteAssetId = "quote_asset_id";
-  static constexpr auto kQuoteAssetMinAmount = "quote_asset_min_amount";
-  static constexpr auto kQuoteAssetPriceStep = "quote_asset_price_step";
-
   struct id {
     using Table = SymbolInfo;
     using DataType = int64_t;
@@ -67,11 +53,7 @@ struct SymbolInfo {
   struct base_asset_id {
     using Table = SymbolInfo;
     using DataType = int64_t;
-
-    struct ForeignKey {
-      using Table = Asset;
-      using Column = Table::id;
-    };
+    using ForeignKey = Asset::id;
   };
 
   struct base_asset_min_amount {
@@ -87,11 +69,7 @@ struct SymbolInfo {
   struct quote_asset_id {
     using Table = SymbolInfo;
     using DataType = int64_t;
-
-    struct ForeignKey {
-      using Table = Asset;
-      using Column = Table::id;
-    };
+    using ForeignKey = Asset::id;
   };
 
   struct quote_asset_min_amount {
@@ -113,19 +91,10 @@ struct SymbolInfo {
  * @copydoc core::SymbolPriceRecord
  */
 struct SymbolPriceRecord {
-  static constexpr auto kTable = "SymbolPriceRecord";
-  static constexpr auto kSymbolId = "symbol_id";
-  static constexpr auto kPrice = "price";
-  static constexpr auto kTime = "time";
-
   struct symbol_id {
     using Table = SymbolPriceRecord;
     using DataType = int64_t;
-
-    struct ForeignKey {
-      using Table = SymbolInfo;
-      using Column = Table::id;
-    };
+    using ForeignKey = SymbolInfo::id;
   };
 
   struct price {

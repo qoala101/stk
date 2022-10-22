@@ -6,9 +6,7 @@
 #include "di_bind_type_to_other_type.h"
 #include "di_make_injector.h"
 #include "sqldb_i_db.h"
-#include "sqldb_i_query_builder.h"
 #include "sqlite_db.h"
-#include "sqlite_query_builder.h"
 
 namespace stonks::app::injectors {
 [[nodiscard]] inline auto MakeSqldbSqliteInjector() {
@@ -21,8 +19,6 @@ namespace stonks::app::injectors {
 
   return di::MakeInjector(
       di::BindInterfaceToImplementation<sqldb::IDb, sqlite::Db>(),
-      di::BindInterfaceToImplementation<sqldb::IQueryBuilder,
-                                        sqlite::QueryBuilder>(),
       di::BindTypeToFactoryFunction<
           sqlite::SqliteDbHandle, SqliteDbHandleFactory,
           sqlite::DbHandlesFactory, sqlite::FilePath>(),

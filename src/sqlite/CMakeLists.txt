@@ -11,7 +11,6 @@ add_library(libsqlite
   sqlite_prepared_statement_facade.cc
   sqlite_prepared_statement_handle.cc
   sqlite_ps_common_impl.cc
-  sqlite_query_builder.cc
   sqlite_raw_handles.cc
   sqlite_select_statement.cc
   sqlite_update_statement.cc

@@ -2,7 +2,6 @@
 
 #include <fmt/core.h>
 #include <fmt/format.h>
-#include <sql.h>
 
 #include <function2/function2.hpp>
 #include <gsl/assert>
@@ -20,7 +19,6 @@
 #include "sqldb_row_definition.h"
 #include "sqldb_traits.h"
 #include "sqldb_types.h"
-#include "sqlite_query_builder.h"
 
 namespace stonks::app::sdb {
 namespace {
@@ -49,7 +47,7 @@ namespace {
     struct quote_asset : name {};
   };
 
-  return sqldb::QueryBuilderFacadeT{}
+  return sqldb::QueryBuilderFacade{}
       .Select<tables::SymbolInfo::name,
               tables::SymbolInfo::base_asset_min_amount,
               tables::SymbolInfo::base_asset_price_step,
@@ -69,7 +67,7 @@ namespace {
 
 auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
     -> PreparedStatements {
-  static auto qbf = sqldb::QueryBuilderFacadeT{};
+  static auto qbf = sqldb::QueryBuilderFacade{};
 
   return {
       .select_assets{[db]() {

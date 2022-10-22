@@ -30,6 +30,7 @@
 #include "sqldb_as_values.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
+#include "sqldb_query_builder_facade.h"
 #include "sqldb_rows.h"
 #include "sqldb_traits.h"
 #include "sqldb_types.h"
@@ -96,17 +97,17 @@ void UpdateItems(
 }
 
 [[nodiscard]] auto SymbolsInfoFrom(sqldb::Rows rows) {
-  auto &names = rows.GetColumnValues({tables::SymbolInfo::kName});
+  auto &names = rows.GetColumnValues<tables::SymbolInfo::name>();
   auto &base_assets = rows.GetColumnValues({"base_asset"});
   const auto &base_asset_min_amounts =
-      rows.GetColumnValues({tables::SymbolInfo::kBaseAssetMinAmount});
+      rows.GetColumnValues<tables::SymbolInfo::base_asset_min_amount>();
   const auto &base_asset_price_steps =
-      rows.GetColumnValues({tables::SymbolInfo::kBaseAssetPriceStep});
+      rows.GetColumnValues<tables::SymbolInfo::base_asset_price_step>();
   auto &quote_assets = rows.GetColumnValues({"quote_asset"});
   const auto &quote_asset_min_amounts =
-      rows.GetColumnValues({tables::SymbolInfo::kQuoteAssetMinAmount});
+      rows.GetColumnValues<tables::SymbolInfo::quote_asset_min_amount>();
   const auto &quote_asset_price_steps =
-      rows.GetColumnValues({tables::SymbolInfo::kQuoteAssetPriceStep});
+      rows.GetColumnValues<tables::SymbolInfo::quote_asset_price_step>();
 
   const auto num_rows = rows.GetSize();
   auto infos = std::vector<core::SymbolInfo>{};
@@ -128,30 +129,36 @@ void UpdateItems(
 }  // namespace
 
 void App::CreateTablesIfNotExist() {
-  const auto tables = cpp::ConstView<sqldb::TableDefinition>{
-      cpp::AssumeNn(&sqldb::TableTraits<tables::Asset>::GetDefinition()),
-      cpp::AssumeNn(&sqldb::TableTraits<tables::SymbolInfo>::GetDefinition()),
-      cpp::AssumeNn(
-          &sqldb::TableTraits<tables::SymbolPriceRecord>::GetDefinition())};
+  const auto queries =
+      std::vector<sqldb::Query>{sqldb::QueryBuilderFacade{}
+                                    .Create()
+                                    .Table<tables::Asset>()
+                                    .IfNotExists()
+                                    .Build(),
+                                sqldb::QueryBuilderFacade{}
+                                    .Create()
+                                    .Table<tables::SymbolInfo>()
+                                    .IfNotExists()
+                                    .Build(),
+                                sqldb::QueryBuilderFacade{}
+                                    .Create()
+                                    .Table<tables::SymbolPriceRecord>()
+                                    .IfNotExists()
+                                    .Build()};
 
-  for (const auto table : tables) {
-    db_->PrepareStatement(
-           query_builder_->BuildCreateTableIfNotExistsQuery(*table))
-        ->Execute();
+  for (const auto &query : queries) {
+    db_->PrepareStatement(query)->Execute();
   }
 }
 
-App::App(cpp::NnUp<sqldb::IDb> db,
-         cpp::NnUp<sqldb::IQueryBuilder> query_builder)
-    : db_{std::move(db)},
-      query_builder_{std::move(query_builder)},
-      prepared_statements_{PreparedStatementsFrom(db_)} {
+App::App(cpp::NnUp<sqldb::IDb> db)
+    : db_{std::move(db)}, prepared_statements_{PreparedStatementsFrom(db_)} {
   CreateTablesIfNotExist();
 }
 
 auto App::SelectAssets() const -> std::vector<core::Asset> {
   auto rows = prepared_statements_.select_assets->Execute();
-  auto &names = rows.GetColumnValues({tables::Asset::kName});
+  auto &names = rows.GetColumnValues<tables::Asset::name>();
   return names | ranges::views::transform([](sqldb::Value &name) {
            return core::Asset{std::move(name.GetString())};
          }) |
@@ -168,7 +175,7 @@ void App::UpdateAssets(std::vector<core::Asset> assets) {
 
 auto App::SelectSymbolsWithPriceRecords() const -> std::vector<core::Symbol> {
   auto rows = prepared_statements_.select_symbols_with_price_records->Execute();
-  auto &names = rows.GetColumnValues({tables::SymbolInfo::kName});
+  auto &names = rows.GetColumnValues<tables::SymbolInfo::name>();
   return names | ranges::views::transform([](sqldb::Value &name) {
            return core::Symbol{std::move(name.GetString())};
          }) |
@@ -206,11 +213,10 @@ auto App::SelectSymbolPriceRecords(const SelectSymbolPriceRecordsArgs &args)
     const -> std::vector<core::SymbolPriceRecord> {
   const auto rows = prepared_statements_.select_symbol_price_records->Execute(
       sqldb::AsValues(args.symbol, absl::ToUnixMillis(args.start_time),
-                      absl::ToUnixMillis(args.end_time), args.limit));
+                      absl::ToUnixMillis(args.end_time) /*, args.limit*/));
 
-  const auto &prices =
-      rows.GetColumnValues({tables::SymbolPriceRecord::kPrice});
-  const auto &times = rows.GetColumnValues({tables::SymbolPriceRecord::kTime});
+  const auto &prices = rows.GetColumnValues<tables::SymbolPriceRecord::price>();
+  const auto &times = rows.GetColumnValues<tables::SymbolPriceRecord::time>();
 
   const auto num_rows = rows.GetSize();
   auto price_ticks = std::vector<core::SymbolPriceRecord>{};

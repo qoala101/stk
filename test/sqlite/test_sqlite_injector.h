@@ -8,12 +8,10 @@
 #include "di_make_injector.h"
 #include "spdlog_logger.h"
 #include "sqldb_i_db.h"
-#include "sqldb_i_query_builder.h"
 #include "sqlite_db.h"
 #include "sqlite_db_file_handle.h"
 #include "sqlite_db_handle_variant.h"
 #include "sqlite_db_handles_factory.h"
-#include "sqlite_query_builder.h"
 #include "sqlite_raw_handles.h"
 #include "sqlite_types.h"
 
@@ -35,8 +33,6 @@ namespace test::sqlite {
                                                 stonks::spdlog::Logger>(),
       stonks::di::BindInterfaceToImplementation<stonks::sqldb::IDb,
                                                 stonks::sqlite::Db>(),
-      stonks::di::BindInterfaceToImplementation<stonks::sqldb::IQueryBuilder,
-                                                stonks::sqlite::QueryBuilder>(),
       stonks::di::BindTypeToOtherType<stonks::sqlite::SqliteDbHandleVariant,
                                       stonks::sqlite::SqliteDbFileHandle>(),
       stonks::di::BindTypeToFactoryFunction<

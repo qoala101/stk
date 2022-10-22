@@ -62,7 +62,7 @@ struct ColumnTraits {
             .table = {TableTraitsGetName<
                 typename Column::ForeignKey::Table>::GetName()},
             .column = {
-                ColumnTraits<typename Column::ForeignKey::Column>::GetName()}};
+                ColumnTraits<typename Column::ForeignKey>::GetName()}};
       } else {
         return std::nullopt;
       }
@@ -130,6 +130,19 @@ struct ColumnsTraits;
 
 template <typename... Columns>
 struct ColumnsTraits<std::tuple<Columns...>> {
+  [[nodiscard]] static constexpr auto GetSize() {
+    return sizeof...(Columns);
+  }
+
+  [[nodiscard]] static auto GetNames() -> auto & {
+    static const auto kValue = [] {
+      auto names = std::string{};
+      GetNamesImpl<Columns...>(names);
+      return names;
+    }();
+    return kValue;
+  }
+
   [[nodiscard]] static auto GetFullNames() -> auto & {
     static const auto kValue = [] {
       auto names = std::string{};
@@ -158,6 +171,19 @@ struct ColumnsTraits<std::tuple<Columns...>> {
   }
 
  private:
+  template <typename Column, typename... OtherColumns>
+  static void GetNamesImpl(std::string &names) {
+    if (names.empty()) {
+      names = ColumnTraits<Column>::GetName();
+    } else {
+      names += fmt::format(", {}", ColumnTraits<Column>::GetName());
+    }
+
+    if constexpr (sizeof...(OtherColumns) > 0) {
+      GetNamesImpl<OtherColumns...>(names);
+    }
+  }
+
   template <typename Column, typename... OtherColumns>
   static void GetFullNamesImpl(std::string &names) {
     if (names.empty()) {
@@ -211,8 +237,9 @@ struct TableTraits {
 template <typename Original, typename Alias>
 struct TableTraits<As<Original, Alias>> {
   [[nodiscard]] static auto GetName() -> auto & {
-    static const auto kName = fmt::format(
-        "{} AS {}", TableTraits<Original>::GetName(), TableTraits<Alias>::GetName());
+    static const auto kName =
+        fmt::format("{} AS {}", TableTraits<Original>::GetName(),
+                    TableTraits<Alias>::GetName());
     return kName;
   }
 

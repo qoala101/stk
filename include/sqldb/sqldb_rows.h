@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "cpp_this.h"  // IWYU pragma: keep
+#include "sqldb_traits.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 
@@ -22,6 +23,16 @@ class Rows {
       -> const std::vector<Value> &;
   [[nodiscard]] auto GetColumnValues(const Column &column)
       -> std::vector<Value> &;
+
+  template <typename Column>
+  [[nodiscard]] auto GetColumnValues() const -> const std::vector<Value> & {
+    return GetColumnValues({ColumnTraits<Column>::GetName()});
+  }
+
+  template <typename Column>
+  [[nodiscard]] auto GetColumnValues() -> std::vector<Value> & {
+    return GetColumnValues({ColumnTraits<Column>::GetName()});
+  }
 
   /**
    * @brief Gives column cell value.

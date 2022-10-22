@@ -149,11 +149,11 @@ TEST(AppSymbolsDb, SelectPeriod) {
   EXPECT_EQ(price_records.size(), 1);
 }
 
-TEST(AppSymbolsDb, SelectLimit) {
-  const auto price_records =
-      db->SelectSymbolPriceRecords({.symbol = {"ETHUSDT"}, .limit = 2});
-  EXPECT_EQ(price_records.size(), 2);
-}
+// TEST(AppSymbolsDb, SelectLimit) {
+//   const auto price_records =
+//       db->SelectSymbolPriceRecords({.symbol = {"ETHUSDT"}, .limit = 2});
+//   EXPECT_EQ(price_records.size(), 2);
+// }
 
 TEST(AppSymbolsDb, SelectSymbolsWithPriceRecords) {
   const auto symbols = db->SelectSymbolsWithPriceRecords();

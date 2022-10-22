@@ -14,8 +14,8 @@
 #include "sqldb_types.h"
 
 namespace stonks::app::dt::pds {
-Db::Db(sqldb::IDb &db, di::Factory<sqldb::IQueryBuilder> query_builder_factory)
-    : insert_symbol_price_record_statement_{[&db, &query_builder_factory]() {
+Db::Db(sqldb::IDb &db)
+    : insert_symbol_price_record_statement_{[&db]() {
         db.PrepareStatement(
               query_builder_factory.Create()->BuildCreateTableIfNotExistsQuery(
                   tables::SymbolPriceRecord()))

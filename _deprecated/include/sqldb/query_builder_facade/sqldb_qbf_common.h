@@ -16,16 +16,16 @@ namespace stonks::sqldb::qbf {
 /**
  * @brief Gives columns from variants.
  */
-// [[nodiscard]] auto GetColumns(const TableVariant &table,
-//                               const ColumnsVariant &columns)
-//     -> std::vector<Column>;
+[[nodiscard]] auto GetColumns(const TableVariant &table,
+                              const ColumnsVariant &columns)
+    -> std::vector<Column>;
 
-// /**
-//  * @brief Gives columns from their definitions.
-//  */
-// [[nodiscard]] auto GetColumns(
-//     const cpp::ConstView<ColumnDefinition> &column_definitions)
-//     -> std::vector<Column>;
+/**
+ * @brief Gives columns from their definitions.
+ */
+[[nodiscard]] auto GetColumns(
+    const cpp::ConstView<ColumnDefinition> &column_definitions)
+    -> std::vector<Column>;
 }  // namespace stonks::sqldb::qbf
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_FACADE_SQLDB_QBF_COMMON_H_

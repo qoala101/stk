@@ -12,7 +12,6 @@
 #include "cpp_optional.h"
 #include "di_factory.h"
 #include "sqldb_i_db.h"
-#include "sqldb_i_query_builder.h"
 
 namespace stonks::app::sdb {
 /**
@@ -21,7 +20,7 @@ namespace stonks::app::sdb {
  */
 class App {
  public:
-  App(cpp::NnUp<sqldb::IDb> db, cpp::NnUp<sqldb::IQueryBuilder> query_builder);
+  explicit App(cpp::NnUp<sqldb::IDb> db);
 
   /**
    * @brief Selects all assets.
@@ -94,7 +93,6 @@ class App {
   void DeleteSymbolInfo(core::SymbolInfo info);
 
   cpp::NnSp<sqldb::IDb> db_;
-  cpp::NnUp<sqldb::IQueryBuilder> query_builder_;
   PreparedStatements prepared_statements_;
 };
 }  // namespace stonks::app::sdb

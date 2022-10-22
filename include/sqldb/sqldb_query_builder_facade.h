@@ -2,8 +2,9 @@
 #define STONKS_SQLDB_SQLDB_QUERY_BUILDER_FACADE_H_
 
 #include "di_factory.h"
-#include "sqldb_i_query_builder.h"
+#include "sqldb_qbf_create_query_builder.h"
 #include "sqldb_qbf_delete_query_builder.h"
+#include "sqldb_qbf_drop_query_builder.h"
 #include "sqldb_qbf_insert_query_builder.h"
 #include "sqldb_qbf_select_query_builder.h"
 #include "sqldb_qbf_update_query_builder.h"
@@ -11,39 +12,7 @@
 #include "sqldb_types.h"
 
 namespace stonks::sqldb {
-/**
- * @brief Start point for query builders which provide fluent query-building
- * API.
- */
 class QueryBuilderFacade {
- public:
-  explicit QueryBuilderFacade(di::Factory<IQueryBuilder> query_builder_factory);
-
-  /**
-   * @brief Start building select statement.
-   */
-  [[nodiscard]] auto Select() const -> qbf::SelectQueryBuilder;
-
-  /**
-   * @brief Start building insert statement.
-   */
-  [[nodiscard]] auto Insert() const -> qbf::InsertQueryBuilder;
-
-  /**
-   * @brief Start building update statement.
-   */
-  [[nodiscard]] auto Update() const -> qbf::UpdateQueryBuilder;
-
-  /**
-   * @brief Start building delete statement.
-   */
-  [[nodiscard]] auto Delete() const -> qbf::DeleteQueryBuilder;
-
- private:
-  di::Factory<IQueryBuilder> query_builder_factory_;
-};
-
-class QueryBuilderFacadeT {
  public:
   template <typename... Columns>
   [[nodiscard]] auto Select() {
@@ -61,12 +30,20 @@ class QueryBuilderFacadeT {
 
   [[nodiscard]] auto Insert() { return qbf::InsertQueryBuilderTemplate{}; }
 
+  [[nodiscard]] auto InsertAll() {
+    return qbf::InsertQueryBuilderTemplate{static_cast<qbf::All *>(nullptr)};
+  }
+
   [[nodiscard]] auto Delete() { return qbf::DeleteQueryBuilderTemplate{}; }
 
   template <typename Table>
   [[nodiscard]] auto Update() {
     return qbf::UpdateQueryBuilderTemplate{static_cast<Table *>(nullptr)};
   }
+
+  [[nodiscard]] auto Create() { return qbf::CreateQueryBuilderTemplate{}; }
+
+  [[nodiscard]] auto Drop() { return qbf::DropQueryBuilderTemplate{}; }
 };
 
 namespace qbf {
@@ -94,6 +71,13 @@ template <typename LeftColumn>
                               const Param &right) {
   return fmt::format("{} = {}", ColumnTraits<LeftColumn>::GetFullName(),
                      right.text_);
+}
+
+template <typename LeftColumn>
+[[nodiscard]] auto operator==(const Column<LeftColumn> &left,
+                              std::string_view right) {
+  return fmt::format(R"({} = "{}")", ColumnTraits<LeftColumn>::GetFullName(),
+                     right);
 }
 
 template <typename LeftColumn>

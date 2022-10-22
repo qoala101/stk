@@ -5,13 +5,12 @@
 #include "cpp_not_null.h"
 #include "di_factory.h"
 #include "sqldb_i_db.h"
-#include "sqldb_i_query_builder.h"
 #include "sqldb_i_update_statement.h"
 
 namespace stonks::app::dt::pds {
 class Db {
  public:
-  Db(sqldb::IDb &db, di::Factory<sqldb::IQueryBuilder> query_builder_factory);
+  explicit Db(sqldb::IDb &db);
 
   void InsertSymbolPriceRecord(const SymbolPriceRecord &record);
 
