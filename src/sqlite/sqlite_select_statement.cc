@@ -17,37 +17,34 @@
 
 namespace stonks::sqlite {
 namespace {
-[[nodiscard]] auto GetColumnNames(
-    std::vector<sqldb::CellDefinition> &cell_definitions) {
-  auto column_names =
-      cell_definitions |
-      ranges::views::transform([](sqldb::CellDefinition &cell_definition) {
-        return std::move(cell_definition.column_name);
-      }) |
-      ranges::to_vector;
-  Ensures(column_names.size() == cell_definitions.size());
-  return column_names;
+[[nodiscard]] auto GetColumns(sqldb::ResultDefinition &result_definition) {
+  auto columns = result_definition.value |
+                 ranges::views::transform([](sqldb::ColumnType &column_type) {
+                   return std::move(column_type.column);
+                 }) |
+                 ranges::to_vector;
+  Ensures(columns.size() == result_definition.value.size());
+  return columns;
 }
 
-[[nodiscard]] auto GetCellTypes(
-    const std::vector<sqldb::CellDefinition> &cell_definitions) {
-  auto cell_types = cell_definitions |
-                    ranges::views::transform(
-                        [](const sqldb::CellDefinition &cell_definition) {
-                          return cell_definition.data_type;
-                        }) |
-                    ranges::to_vector;
-  Ensures(cell_types.size() == cell_definitions.size());
-  return cell_types;
+[[nodiscard]] auto GetTypes(const sqldb::ResultDefinition &result_definition) {
+  auto types =
+      result_definition.value |
+      ranges::views::transform([](const sqldb::ColumnType &column_type) {
+        return column_type.type;
+      }) |
+      ranges::to_vector;
+  Ensures(types.size() == result_definition.value.size());
+  return types;
 }
 }  // namespace
 
-SelectStatement::SelectStatement(
-    ps::CommonImpl impl, std::vector<sqldb::CellDefinition> result_definition)
+SelectStatement::SelectStatement(ps::CommonImpl impl,
+                                 sqldb::ResultDefinition result_definition)
     : impl_{std::move(impl)},
-      result_column_names_{GetColumnNames(result_definition)},
-      result_types_{GetCellTypes(result_definition)} {
-  Ensures(result_column_names_.size() == result_types_.size());
+      result_columns_{GetColumns(result_definition)},
+      result_types_{GetTypes(result_definition)} {
+  Ensures(result_columns_.size() == result_types_.size());
 }
 
 auto SelectStatement::Execute(std::vector<sqldb::Value> params) const
@@ -55,7 +52,7 @@ auto SelectStatement::Execute(std::vector<sqldb::Value> params) const
   impl_.BeforeExecution(params);
 
   const auto &prepared_statement_facade = impl_.GetPreparedStatementFacade();
-  auto result_rows = sqldb::Rows{result_column_names_};
+  auto result_rows = sqldb::Rows{result_columns_};
 
   while (true) {
     const auto result_code = prepared_statement_facade.Step();

@@ -51,7 +51,7 @@ auto Select::LimitParam() -> Select& {
 
 auto Select::Build() const -> SelectQuery {
   Expects(!table_name_.empty());
-  Expects(!cell_definitions_.empty());
+  Expects(!cell_definitions_.value.empty());
 
   auto query = std::string{"SELECT "};
 

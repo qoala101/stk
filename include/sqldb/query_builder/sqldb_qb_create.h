@@ -10,7 +10,7 @@
 #include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
-#include "sqldb_data_type.h"
+#include "sqldb_types.h"
 #include "sqldb_traits.h"
 #include "sqldb_types.h"
 

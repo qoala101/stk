@@ -11,15 +11,15 @@
 #include <utility>
 
 #include "cpp_typed_struct.h"
+#include "sqldb_types.h"
 
 namespace stonks::sqldb {
-Rows::Rows(std::vector<std::string> column_names)
-    : columns_{column_names |
-               ranges::views::transform([](std::string &column_name) {
-                 return ColumnValues{std::move(column_name)};
+Rows::Rows(std::vector<Column> columns)
+    : columns_{columns | ranges::views::transform([](Column &column) {
+                 return ColumnValues{.column = std::move(column)};
                }) |
                ranges::to_vector} {
-  Ensures(columns_.size() == column_names.size());
+  Ensures(columns_.size() == columns.size());
 }
 
 auto Rows::GetSize() const -> int {
@@ -30,8 +30,6 @@ auto Rows::GetSize() const -> int {
   return gsl::narrow_cast<int>(columns_.front().values.size());
 }
 
-auto Rows::IsEmpty() const -> bool { return GetSize() == 0; }
-
 void Rows::Push(std::vector<Value> values) {
   Expects(values.size() == columns_.size());
 
@@ -40,22 +38,22 @@ void Rows::Push(std::vector<Value> values) {
   }
 }
 
-auto Rows::GetColumnValuesImpl(cpp::This<Rows> auto &t,
-                               std::string_view column_name) -> auto & {
-  const auto iter = ranges::find_if(
-      t.columns_, [column_name](const ColumnValues &other_column) {
-        return other_column.column_name == column_name;
+auto Rows::GetColumnValuesImpl(cpp::This<Rows> auto &t, const Column &column)
+    -> auto & {
+  const auto iter =
+      ranges::find_if(t.columns_, [column](const ColumnValues &column_values) {
+        return column_values.column == column;
       });
   Expects(iter != t.columns_.end());
   return iter->values;
 }
 
-auto Rows::GetColumnValues(std::string_view column_name) const
+auto Rows::GetColumnValues(const Column &column) const
     -> const std::vector<Value> & {
-  return GetColumnValuesImpl(*this, column_name);
+  return GetColumnValuesImpl(*this, column);
 }
-auto Rows::GetColumnValues(std::string_view column_name)
-    -> std::vector<Value> & {
-  return GetColumnValuesImpl(*this, column_name);
+
+auto Rows::GetColumnValues(const Column &column) -> std::vector<Value> & {
+  return GetColumnValuesImpl(*this, column);
 }
 }  // namespace stonks::sqldb

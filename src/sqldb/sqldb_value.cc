@@ -5,8 +5,6 @@
 #include <type_traits>
 #include <variant>
 
-#include "cpp_concepts.h"
-#include "sqldb_data_type.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb {

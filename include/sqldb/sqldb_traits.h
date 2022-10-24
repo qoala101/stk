@@ -9,7 +9,6 @@
 
 #include "cpp_name_of.h"
 #include "cpp_optional.h"
-#include "sqldb_data_type.h"
 #include "sqldb_types.h"
 
 /**
@@ -139,7 +138,7 @@ struct ColumnsTraits<std::tuple<Columns...>> {
 
   [[nodiscard]] static auto GetTypes() -> auto & {
     static const auto kValue = [] {
-      auto types = std::vector<sqldb::CellDefinition>{};
+      auto types = std::vector<sqldb::ColumnType>{};
       GetTypesImpl<Columns...>(types);
       return types;
     }();
@@ -174,10 +173,10 @@ struct ColumnsTraits<std::tuple<Columns...>> {
   }
 
   template <ColumnT Column, ColumnT... OtherColumns>
-  static void GetTypesImpl(std::vector<sqldb::CellDefinition> &types) {
+  static void GetTypesImpl(std::vector<sqldb::ColumnType> &types) {
     types.emplace_back(
-        sqldb::CellDefinition{.column_name = ColumnTraits<Column>::GetName(),
-                              .data_type = {ColumnTraits<Column>::GetType()}});
+        sqldb::ColumnType{.column = {ColumnTraits<Column>::GetName()},
+                          .type = {ColumnTraits<Column>::GetType()}});
 
     if constexpr (sizeof...(OtherColumns) > 0) {
       GetTypesImpl<OtherColumns...>(types);

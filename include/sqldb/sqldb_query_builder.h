@@ -39,7 +39,8 @@ template <typename... Columns>
 [[nodiscard]] auto SelectAll() -> qb::Select;
 
 /**
- * @brief Builds query which selects 1.
+ * @brief Builds special query which is used to check existence of the
+ * condition.
  */
 [[nodiscard]] auto SelectOne() -> qb::Select;
 
@@ -54,7 +55,7 @@ template <typename... Columns>
 [[nodiscard]] auto InsertAll() -> qb::Insert;
 
 /**
- * @brief Builds query which updates he values in specified columns.
+ * @brief Builds query which updates the values in specified columns.
  */
 template <typename Table>
 [[nodiscard]] auto UpdateTable() {

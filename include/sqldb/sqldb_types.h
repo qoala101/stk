@@ -4,13 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "cpp_optional.h"
-#include "cpp_this.h"  // IWYU pragma: keep
 #include "cpp_typed_struct.h"
 #include "cpp_variant_struct.h"
-#include "cpp_views.h"
-#include "sqldb_data_type.h"
-#include "sqldb_value.h"
 
 namespace stonks::sqldb {
 /**
@@ -19,19 +14,44 @@ namespace stonks::sqldb {
 struct Query : public cpp::TypedStruct<std::string> {};
 
 /**
- * @brief Description of SQL table cell.
+ * @brief Type of the data recognized by the library.
  */
-struct CellDefinition {
-  std::string column_name{};
-  DataTypeVariant data_type{};
+template <typename T>
+struct DataType {
+  using Type = T;
 };
 
 /**
- * @brief SQL query with expected result definition.
+ * @brief Holds supported data types.
+ */
+struct DataTypeVariant
+    : public cpp::VariantStruct<DataType<bool>, DataType<int>,
+                                DataType<int64_t>, DataType<double>,
+                                DataType<std::string>> {};
+/**
+ * @brief Table column name.
+ */
+struct Column : public cpp::TypedStruct<std::string> {};
+
+/**
+ * @brief SQL column type.
+ */
+struct ColumnType {
+  Column column{};
+  DataTypeVariant type{};
+};
+
+/**
+ * @brief Definition of select statement result.
+ */
+struct ResultDefinition : public cpp::TypedStruct<std::vector<ColumnType>> {};
+
+/**
+ * @brief SQL query with expected result types.
  */
 struct SelectQuery {
   Query query{};
-  std::vector<CellDefinition> column_types{};
+  ResultDefinition result_definition{};
 };
 }  // namespace stonks::sqldb
 

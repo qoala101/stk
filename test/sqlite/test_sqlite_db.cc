@@ -8,7 +8,6 @@
 
 #include "cpp_not_null.h"
 #include "sqldb_as_values.h"
-#include "sqldb_data_type.h"
 #include "sqldb_i_db.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_query_builder.h"
@@ -185,76 +184,77 @@ TEST(SqliteDb, ForeignKey) {
 }
 
 TEST(SqliteDb, SelectJoin) {
-  const auto cell_definitions = std::vector<stonks::sqldb::CellDefinition> {
-    stonks::sqldb::CellDefinition{
-        .column_name = {"base_asset"},
-        .data_type = {stonks::sqldb::DataType<std::string>{}}},
-        stonks::sqldb::CellDefinition{
-            .column_name = {"quote_asset"},
-            .data_type = {stonks::sqldb::DataType<std::string>{}}}};
+  const auto cell_definitions =
+      stonks::sqldb::ResultDefinition{std::vector<stonks::sqldb::ColumnType>{
+          stonks::sqldb::ColumnType{
+              .column = {"base_asset"},
+              .type = {stonks::sqldb::DataType<std::string>{}}},
+          stonks::sqldb::ColumnType{
+              .column = {"quote_asset"},
+              .type = {stonks::sqldb::DataType<std::string>{}}}}};
 
-    auto select_statement = db->PrepareStatement(
-        {.query =
-             {"SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS "
-              "quote_asset "
-              "FROM Symbol "
-              "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
-              "JOIN Asset AS QuoteAsset ON "
-              "Symbol.quote_asset_id=QuoteAsset.id;"},
-         .column_types = cell_definitions});
-    const auto rows = select_statement->Execute();
-    EXPECT_EQ(rows.GetSize(), 2);
-    EXPECT_EQ(rows.GetColumnValues<struct base_asset>()[0].Get<std::string>(), "BTC");
-    EXPECT_EQ(rows.GetColumnValues<struct quote_asset>()[0].Get<std::string>(),
-              "USDT");
-    EXPECT_EQ(rows.GetColumnValues<struct base_asset>()[1].Get<std::string>(), "ETH");
-    EXPECT_EQ(rows.GetColumnValues<struct quote_asset>()[1].Get<std::string>(),
-              "USDT");
-  }
+  auto select_statement = db->PrepareStatement(
+      {.query = {"SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS "
+                 "quote_asset "
+                 "FROM Symbol "
+                 "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
+                 "JOIN Asset AS QuoteAsset ON "
+                 "Symbol.quote_asset_id=QuoteAsset.id;"},
+       .result_definition = cell_definitions});
+  const auto rows = select_statement->Execute();
+  EXPECT_EQ(rows.GetSize(), 2);
+  EXPECT_EQ(rows.GetColumnValues<struct base_asset>()[0].Get<std::string>(),
+            "BTC");
+  EXPECT_EQ(rows.GetColumnValues<struct quote_asset>()[0].Get<std::string>(),
+            "USDT");
+  EXPECT_EQ(rows.GetColumnValues<struct base_asset>()[1].Get<std::string>(),
+            "ETH");
+  EXPECT_EQ(rows.GetColumnValues<struct quote_asset>()[1].Get<std::string>(),
+            "USDT");
+}
 
-  TEST(SqliteDb, FileWriteAndRead) {
-    const auto db_file_name =
-        test::sqlite::Injector().create<stonks::sqlite::FilePath>().value;
-    EXPECT_FALSE(std::filesystem::exists(db_file_name));
-    db.reset();
-    EXPECT_TRUE(std::filesystem::exists(db_file_name));
+TEST(SqliteDb, FileWriteAndRead) {
+  const auto db_file_name =
+      test::sqlite::Injector().create<stonks::sqlite::FilePath>().value;
+  EXPECT_FALSE(std::filesystem::exists(db_file_name));
+  db.reset();
+  EXPECT_TRUE(std::filesystem::exists(db_file_name));
 
-    db = test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
-    auto db_copy =
-        test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
+  db = test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
+  auto db_copy =
+      test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
 
-    const auto select_query =
-        stonks::sqldb::query_builder::SelectAll().From<SymbolPrice>().Build();
-    const auto db_rows = db->PrepareStatement(select_query)->Execute();
-    const auto db_copy_rows =
-        db_copy->PrepareStatement(select_query)->Execute();
-    EXPECT_GT(db_rows.GetSize(), 0);
-    EXPECT_EQ(db_rows, db_copy_rows);
+  const auto select_query =
+      stonks::sqldb::query_builder::SelectAll().From<SymbolPrice>().Build();
+  const auto db_rows = db->PrepareStatement(select_query)->Execute();
+  const auto db_copy_rows = db_copy->PrepareStatement(select_query)->Execute();
+  EXPECT_GT(db_rows.GetSize(), 0);
+  EXPECT_EQ(db_rows, db_copy_rows);
 
-    db_copy.reset();
-    EXPECT_TRUE(std::filesystem::exists(db_file_name));
-  }
+  db_copy.reset();
+  EXPECT_TRUE(std::filesystem::exists(db_file_name));
+}
 
-  TEST(SqliteDb, CascadeForeignKeyDelete) {
-    db->PrepareStatement(
-          stonks::sqldb::query_builder::DeleteFromTable<Asset>()
-              .Where(stonks::sqldb::qb::Column<Asset::name>{} == "USDT")
-              .Build())
-        ->Execute();
+TEST(SqliteDb, CascadeForeignKeyDelete) {
+  db->PrepareStatement(
+        stonks::sqldb::query_builder::DeleteFromTable<Asset>()
+            .Where(stonks::sqldb::qb::Column<Asset::name>{} == "USDT")
+            .Build())
+      ->Execute();
 
-    auto select_statement = db->PrepareStatement(
-        stonks::sqldb::query_builder::SelectAll().From<Asset>().Build());
-    auto rows = select_statement->Execute();
-    EXPECT_EQ(rows.GetSize(), 2);
+  auto select_statement = db->PrepareStatement(
+      stonks::sqldb::query_builder::SelectAll().From<Asset>().Build());
+  auto rows = select_statement->Execute();
+  EXPECT_EQ(rows.GetSize(), 2);
 
-    select_statement = db->PrepareStatement(
-        stonks::sqldb::query_builder::SelectAll().From<Symbol>().Build());
-    rows = select_statement->Execute();
-    EXPECT_EQ(rows.GetSize(), 0);
+  select_statement = db->PrepareStatement(
+      stonks::sqldb::query_builder::SelectAll().From<Symbol>().Build());
+  rows = select_statement->Execute();
+  EXPECT_EQ(rows.GetSize(), 0);
 
-    select_statement = db->PrepareStatement(
-        stonks::sqldb::query_builder::SelectAll().From<SymbolPrice>().Build());
-    rows = select_statement->Execute();
-    EXPECT_EQ(rows.GetSize(), 0);
-  }
+  select_statement = db->PrepareStatement(
+      stonks::sqldb::query_builder::SelectAll().From<SymbolPrice>().Build());
+  rows = select_statement->Execute();
+  EXPECT_EQ(rows.GetSize(), 0);
+}
 }  // namespace

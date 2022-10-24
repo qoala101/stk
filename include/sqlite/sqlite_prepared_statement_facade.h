@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "cpp_not_null.h"
-#include "sqldb_data_type.h"
+#include "sqldb_types.h"
 #include "sqldb_value.h"
 #include "sqlite_types.h"
 

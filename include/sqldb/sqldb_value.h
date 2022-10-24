@@ -3,15 +3,13 @@
 
 #include <cstdint>
 #include <string>
-#include <string_view>
-#include <type_traits>
 #include <utility>
 #include <variant>
 
 #include "cpp_this.h"  // IWYU pragma: keep
 #include "cpp_typed_struct.h"
 #include "cpp_variant_struct.h"
-#include "sqldb_data_type.h"
+#include "sqldb_types.h"
 
 namespace stonks::sqldb {
 namespace detail {

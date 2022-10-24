@@ -1,12 +1,8 @@
 #ifndef STONKS_SQLDB_SQLDB_ROWS_H_
 #define STONKS_SQLDB_SQLDB_ROWS_H_
 
-#include <bits/ranges_algo.h>
-
-#include <range/v3/algorithm/find_if.hpp>
 #include <vector>
 
-#include "cpp_copy_const.h"
 #include "cpp_this.h"  // IWYU pragma: keep
 #include "sqldb_traits.h"
 #include "sqldb_types.h"
@@ -18,7 +14,7 @@ namespace stonks::sqldb {
  */
 class Rows {
  public:
-  explicit Rows(std::vector<std::string> column_names = {});
+  explicit Rows(std::vector<Column> columns);
 
   /**
    * @brief Gives column values.
@@ -39,18 +35,13 @@ class Rows {
   [[nodiscard]] auto GetSize() const -> int;
 
   /**
-   * @brief Tells whether columns are empty.
-   */
-  [[nodiscard]] auto IsEmpty() const -> bool;
-
-  /**
    * @brief Adds a row.
    */
   void Push(std::vector<Value> values);
 
  private:
   struct ColumnValues {
-    std::string column_name{};
+    Column column{};
     std::vector<Value> values{};
 
    private:
@@ -65,17 +56,16 @@ class Rows {
   template <typename Column>
   [[nodiscard]] static auto GetColumnValuesImpl(cpp::This<Rows> auto &t)
       -> auto & {
-    return t.GetColumnValues(ColumnTraits<Column>::GetName());
+    return t.GetColumnValues({ColumnTraits<Column>::GetName()});
   }
 
-  [[nodiscard]] auto GetColumnValues(std::string_view column_name) const
+  [[nodiscard]] auto GetColumnValues(const Column &column) const
       -> const std::vector<Value> &;
-  [[nodiscard]] auto GetColumnValues(std::string_view column_name)
+  [[nodiscard]] auto GetColumnValues(const Column &column)
       -> std::vector<Value> &;
 
   [[nodiscard]] static auto GetColumnValuesImpl(cpp::This<Rows> auto &t,
-                                                std::string_view column_name)
-      -> auto &;
+                                                const Column &column) -> auto &;
 
   std::vector<ColumnValues> columns_{};
 };

@@ -34,8 +34,8 @@ class Select {
     Expects(table_name_.empty());
     table_name_ = TableTraits<Table>::GetName();
 
-    if (cell_definitions_.empty()) {
-      cell_definitions_ = ColumnsTraits<typename Table::Columns>::GetTypes();
+    if (cell_definitions_.value.empty()) {
+      cell_definitions_ = {ColumnsTraits<typename Table::Columns>::GetTypes()};
     }
 
     if (const auto full_column_names_required =
@@ -45,7 +45,7 @@ class Select {
     }
 
     Ensures(!table_name_.empty());
-    Ensures(!cell_definitions_.empty());
+    Ensures(!cell_definitions_.value.empty());
     return *this;
   }
 
@@ -72,7 +72,7 @@ class Select {
   bool select_all_{};
   bool select_one_{};
   std::string table_name_{};
-  std::vector<CellDefinition> cell_definitions_{};
+  ResultDefinition cell_definitions_{};
   std::string full_column_names_{};
   std::string where_clause_{};
   LimitVariant limit_{};
