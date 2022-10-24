@@ -1,9 +1,7 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CREATE_H_
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CREATE_H_
 
-#include <gsl/assert>
 #include <string>
-#include <string_view>
 #include <tuple>
 
 #include "sqldb_table_traits.h"

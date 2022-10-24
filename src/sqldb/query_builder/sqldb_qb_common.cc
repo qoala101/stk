@@ -11,7 +11,16 @@
 
 #include "cpp_not_null.h"
 #include "not_null.hpp"
+#include "sqldb_qb_select.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
+
+  Param::Param(const Select &builder)
+      : text_{fmt::format("({})", builder.Build().query.value)} {}
+
+
+auto Exists(const Select &builder) -> WhereQuery{
+  return {fmt::format("EXISTS ({})", builder.Build().query.value)};
+};
 }  // namespace stonks::sqldb::qb

@@ -1,7 +1,5 @@
 #include "sqldb_qb_create.h"
 
-#include <bits/ranges_algo.h>
-
 #include <gsl/assert>
 
 namespace stonks::sqldb::qb {

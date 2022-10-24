@@ -9,6 +9,7 @@
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 #include "cpp_views.h"
+#include "sqldb_qb_common.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
@@ -25,17 +26,15 @@ class Update {
       column_values_ += ", ";
     }
 
-    column_values_ += fmt::format("{} = {}", ColumnTraits<Column>::GetName(), TEMP);
+    column_values_ +=
+        fmt::format("{} = {}", ColumnTraits<Column>::GetName(), TEMP);
 
     return *this;
   }
 
-  [[nodiscard]] auto Where(std::string_view where_clause)
-      -> Update &;
-  [[nodiscard]] auto And(std::string_view where_clause)
-      -> Update &;
-  [[nodiscard]] auto Or(std::string_view where_clause)
-      -> Update &;
+  [[nodiscard]] auto Where(const WhereQuery &where) -> Update &;
+  [[nodiscard]] auto And(const WhereQuery &where) -> Update &;
+  [[nodiscard]] auto Or(const WhereQuery &where) -> Update &;
 
   [[nodiscard]] auto Build() const -> Query;
 
@@ -44,6 +43,6 @@ class Update {
   std::string column_values_{};
   std::string where_clause_{};
 };
-}  // namespace stonks::sqldb
+}  // namespace stonks::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_UPDATE_H_

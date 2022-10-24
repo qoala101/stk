@@ -8,24 +8,21 @@
 #include <utility>
 
 namespace stonks::sqldb::qb {
-auto Delete::Where(std::string_view where_clause)
-    -> Delete& {
+auto Delete::Where(const WhereQuery& where) -> Delete& {
   Expects(where_clause_.empty());
-  where_clause_ = fmt::format(" WHERE ({})", where_clause);
+  where_clause_ = fmt::format(" WHERE ({})", where.value);
   Ensures(!where_clause_.empty());
   return *this;
 }
 
-auto Delete::And(std::string_view where_clause)
-    -> Delete& {
+auto Delete::And(const WhereQuery& where) -> Delete& {
   Expects(!where_clause_.empty());
-  where_clause_ += fmt::format(" AND ({})", where_clause);
+  where_clause_ += fmt::format(" AND ({})", where.value);
   return *this;
 }
-auto Delete::Or(std::string_view where_clause)
-    -> Delete& {
+auto Delete::Or(const WhereQuery& where) -> Delete& {
   Expects(!where_clause_.empty());
-  where_clause_ += fmt::format(" OR ({})", where_clause);
+  where_clause_ += fmt::format(" OR ({})", where.value);
   return *this;
 }
 
@@ -37,5 +34,9 @@ auto Delete::Build() const -> Query {
   query += fmt::format(" FROM {}{}", table_name_, where_clause_);
 
   return {query};
+}
+
+Delete::Delete(std::string table_name) : table_name_{std::move(table_name)} {
+  Ensures(!table_name_.empty());
 }
 }  // namespace stonks::sqldb::qb

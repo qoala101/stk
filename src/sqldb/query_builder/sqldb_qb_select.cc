@@ -17,21 +17,24 @@
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
-auto Select::Where(std::string_view where_clause) -> Select& {
+Select::Select(All* /*unused*/) : select_all_{true} {}
+Select::Select(One* /*unused*/) : select_one_{true} {}
+
+auto Select::Where(const WhereQuery& where) -> Select& {
   Expects(where_clause_.empty());
-  where_clause_ = fmt::format(" WHERE ({})", where_clause);
+  where_clause_ = fmt::format(" WHERE ({})", where.value);
   Ensures(!where_clause_.empty());
   return *this;
 }
 
-auto Select::And(std::string_view where_clause) -> Select& {
+auto Select::And(const WhereQuery& where) -> Select& {
   Expects(!where_clause_.empty());
-  where_clause_ += fmt::format(" AND ({})", where_clause);
+  where_clause_ += fmt::format(" AND ({})", where.value);
   return *this;
 }
-auto Select::Or(std::string_view where_clause) -> Select& {
+auto Select::Or(const WhereQuery& where) -> Select& {
   Expects(!where_clause_.empty());
-  where_clause_ += fmt::format(" OR ({})", where_clause);
+  where_clause_ += fmt::format(" OR ({})", where.value);
   return *this;
 }
 

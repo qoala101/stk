@@ -11,24 +11,21 @@
 #include "sqldb_qb_common.h"
 
 namespace stonks::sqldb::qb {
-auto Update::Where(std::string_view where_clause)
-    -> Update& {
+auto Update::Where(const WhereQuery& where) -> Update& {
   Expects(where_clause_.empty());
-  where_clause_ = fmt::format(" WHERE ({})", where_clause);
+  where_clause_ = fmt::format(" WHERE ({})", where.value);
   Ensures(!where_clause_.empty());
   return *this;
 }
 
-auto Update::And(std::string_view where_clause)
-    -> Update& {
+auto Update::And(const WhereQuery& where) -> Update& {
   Expects(!where_clause_.empty());
-  where_clause_ += fmt::format(" AND ({})", where_clause);
+  where_clause_ += fmt::format(" AND ({})", where.value);
   return *this;
 }
-auto Update::Or(std::string_view where_clause)
-    -> Update& {
+auto Update::Or(const WhereQuery& where) -> Update& {
   Expects(!where_clause_.empty());
-  where_clause_ += fmt::format(" OR ({})", where_clause);
+  where_clause_ += fmt::format(" OR ({})", where.value);
   return *this;
 }
 
