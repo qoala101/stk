@@ -9,6 +9,7 @@
 
 #include "cpp_name_of.h"
 #include "cpp_optional.h"
+#include "sqldb_data_type.h"
 #include "sqldb_types.h"
 
 /**
@@ -82,21 +83,7 @@ struct ColumnTraits {
   }
 
   [[nodiscard]] static constexpr auto GetType() {
-    using Type = typename Column::DataType;
-
-    if constexpr (std::is_same_v<Type, bool>) {
-      return sqldb::DataType::kBool;
-    } else if constexpr (std::is_same_v<Type, int>) {
-      return sqldb::DataType::kInt;
-    } else if constexpr (std::is_same_v<Type, int64_t>) {
-      return sqldb::DataType::kInt64;
-    } else if constexpr (std::is_same_v<Type, double>) {
-      return sqldb::DataType::kDouble;
-    } else if constexpr (std::is_same_v<Type, std::string>) {
-      return sqldb::DataType::kString;
-    } else {
-      Expects(false);
-    }
+    return DataTypeVariant{DataType<typename Column::DataType>{}};
   }
 };
 
@@ -190,7 +177,7 @@ struct ColumnsTraits<std::tuple<Columns...>> {
   static void GetTypesImpl(std::vector<sqldb::CellDefinition> &types) {
     types.emplace_back(
         sqldb::CellDefinition{.column_name = ColumnTraits<Column>::GetName(),
-                              .data_type = ColumnTraits<Column>::GetType()});
+                              .data_type = {ColumnTraits<Column>::GetType()}});
 
     if constexpr (sizeof...(OtherColumns) > 0) {
       GetTypesImpl<OtherColumns...>(types);

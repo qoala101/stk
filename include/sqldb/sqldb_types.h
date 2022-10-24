@@ -7,8 +7,9 @@
 #include "cpp_optional.h"
 #include "cpp_this.h"  // IWYU pragma: keep
 #include "cpp_typed_struct.h"
+#include "cpp_variant_struct.h"
 #include "cpp_views.h"
-#include "sqldb_enums.h"
+#include "sqldb_data_type.h"
 #include "sqldb_value.h"
 
 namespace stonks::sqldb {
@@ -22,7 +23,7 @@ struct Query : public cpp::TypedStruct<std::string> {};
  */
 struct CellDefinition {
   std::string column_name{};
-  DataType data_type{};
+  DataTypeVariant data_type{};
 };
 
 /**

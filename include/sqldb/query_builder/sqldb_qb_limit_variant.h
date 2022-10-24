@@ -15,9 +15,8 @@ struct LimitedType {};
 /**
  * @brief Stores limit value in query builders.
  */
-class LimitVariant
+struct LimitVariant
     : public cpp::VariantStruct<std::monostate, int, LimitedType> {
- public:
   /**
    * @brief Gives limit clause which can be used in queries.
    */

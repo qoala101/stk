@@ -10,12 +10,32 @@
 #include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
-#include "sqldb_enums_to_string.h"
+#include "sqldb_data_type.h"
 #include "sqldb_traits.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
 namespace detail {
+[[nodiscard]] inline auto ToString(const DataTypeVariant &data_type) {
+  return std::visit(
+      [](const auto &v) {
+        using V = decltype(v);
+
+        if constexpr (cpp::DecaysTo<V, sqldb::DataType<bool>> ||
+                      cpp::DecaysTo<V, sqldb::DataType<int>> ||
+                      cpp::DecaysTo<V, sqldb::DataType<int64_t>>) {
+          return "INTEGER";
+        } else if constexpr (cpp::DecaysTo<V, sqldb::DataType<double>>) {
+          return "REAL";
+        } else if constexpr (cpp::DecaysTo<V, sqldb::DataType<std::string>>) {
+          return "TEXT";
+        } else {
+          Expects(false);
+        }
+      },
+      data_type.value);
+}
+
 template <typename T>
 struct ColumnsTraitsInternal;
 
@@ -55,9 +75,8 @@ struct ColumnsTraitsInternal<std::tuple<Columns...>> {
       query += ", ";
     }
 
-    query +=
-        fmt::format(R"("{}" {} NOT NULL)", ColumnTraits<Column>::GetName(),
-                    magic_enum::enum_name(ColumnTraits<Column>::GetType()));
+    query += fmt::format(R"("{}" {} NOT NULL)", ColumnTraits<Column>::GetName(),
+                         ToString(ColumnTraits<Column>::GetType()));
 
     if constexpr (::stonks::sqldb::detail::HasUnique<Column>()) {
       query += " UNIQUE";

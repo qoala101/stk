@@ -115,13 +115,13 @@ void UpdateItems(
 
   for (auto i = 0; i < num_rows; ++i) {
     infos.emplace_back(core::SymbolInfo{
-        .symbol = {std::move(names[i].GetString())},
-        .base_asset = {.asset = {std::move(base_assets[i].GetString())},
-                       .min_amount = base_asset_min_amounts[i].GetDouble(),
-                       .price_step = base_asset_price_steps[i].GetDouble()},
-        .quote_asset = {.asset = {std::move(quote_assets[i].GetString())},
-                        .min_amount = quote_asset_min_amounts[i].GetDouble(),
-                        .price_step = quote_asset_price_steps[i].GetDouble()}});
+        .symbol = {std::move(names[i].Get<std::string>())},
+        .base_asset = {.asset = {std::move(base_assets[i].Get<std::string>())},
+                       .min_amount = base_asset_min_amounts[i].Get<double>(),
+                       .price_step = base_asset_price_steps[i].Get<double>()},
+        .quote_asset = {.asset = {std::move(quote_assets[i].Get<std::string>())},
+                        .min_amount = quote_asset_min_amounts[i].Get<double>(),
+                        .price_step = quote_asset_price_steps[i].Get<double>()}});
   }
 
   return infos;
@@ -143,7 +143,7 @@ auto App::SelectAssets() const -> std::vector<core::Asset> {
   auto rows = prepared_statements_.select_assets->Execute();
   auto &names = rows.GetColumnValues<tables::Asset::name>();
   return names | ranges::views::transform([](sqldb::Value &name) {
-           return core::Asset{std::move(name.GetString())};
+           return core::Asset{std::move(name.Get<std::string>())};
          }) |
          ranges::to_vector;
 }
@@ -160,7 +160,7 @@ auto App::SelectSymbolsWithPriceRecords() const -> std::vector<core::Symbol> {
   auto rows = prepared_statements_.select_symbols_with_price_records->Execute();
   auto &names = rows.GetColumnValues<tables::SymbolInfo::name>();
   return names | ranges::views::transform([](sqldb::Value &name) {
-           return core::Symbol{std::move(name.GetString())};
+           return core::Symbol{std::move(name.Get<std::string>())};
          }) |
          ranges::to_vector;
 }
@@ -208,8 +208,8 @@ auto App::SelectSymbolPriceRecords(const SelectSymbolPriceRecordsArgs &args)
   for (auto i = 0; i < num_rows; ++i) {
     price_ticks.emplace_back(core::SymbolPriceRecord{
         .symbol = args.symbol,
-        .price = core::Price{prices[i].GetDouble()},
-        .time = absl::FromUnixMillis(times[i].GetInt64())});
+        .price = core::Price{prices[i].Get<double>()},
+        .time = absl::FromUnixMillis(times[i].Get<int64_t>())});
   }
 
   return price_ticks;

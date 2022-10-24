@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "sqldb_enums.h"
+#include "sqldb_data_type.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_rows.h"
 #include "sqldb_types.h"
@@ -32,7 +32,7 @@ class SelectStatement : public sqldb::ISelectStatement {
  private:
   ps::CommonImpl impl_;
   std::vector<std::string> result_column_names_{};
-  std::vector<sqldb::DataType> result_types_{};
+  std::vector<sqldb::DataTypeVariant> result_types_{};
 };
 }  // namespace stonks::sqlite
 

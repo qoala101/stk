@@ -1,80 +1,64 @@
 #include "sqldb_value.h"
 
+#include <cstdint>
 #include <gsl/assert>
+#include <type_traits>
 #include <variant>
 
-#include "sqldb_enums.h"
+#include "cpp_concepts.h"
+#include "sqldb_data_type.h"
+#include "sqldb_types.h"
 
 namespace stonks::sqldb {
-Value::Value(std::string_view value, DataType data_type) {
-  // NOLINTNEXTLINE(*-simplify-boolean-expr)
-  Expects(!value.empty() || (data_type == DataType::kString));
-
-  switch (data_type) {
-    case DataType::kBool:
-      this->value = static_cast<bool>(std::stoi(value.data()));
-    case DataType::kInt:
-      this->value = std::stoi(value.data());
-    case DataType::kInt64:
-      this->value = std::stoll(value.data());
-    case DataType::kDouble:
-      this->value = std::stod(value.data());
-    case DataType::kString:
-      this->value = value.data();
-  }
-
-  Ensures(!IsNull());
-}
-
-auto Value::GetBool() const -> bool {
+template <>
+auto Value::Get<bool>() const -> bool {
   Expects(std::holds_alternative<bool>(value));
   return std::get<bool>(value);
 }
 
-auto Value::GetInt() const -> int {
+template <>
+auto Value::Get<int>() const -> int {
   Expects(std::holds_alternative<int>(value));
   return std::get<int>(value);
 }
 
-auto Value::GetInt64() const -> int64_t {
+template <>
+auto Value::Get<int64_t>() const -> int64_t {
   Expects(std::holds_alternative<int64_t>(value));
   return std::get<int64_t>(value);
 }
 
-auto Value::GetDouble() const -> double {
+template <>
+auto Value::Get<double>() const -> double {
   Expects(std::holds_alternative<double>(value));
   return std::get<double>(value);
 }
 
-auto Value::GetStringImpl(cpp::This<Value> auto& t) -> auto& {
-  Expects(std::holds_alternative<std::string>(t.value));
-  return std::get<std::string>(t.value);
+template <typename T>
+auto Value::GetImpl(cpp::This<Value> auto& t) -> auto& {
+  Expects(std::holds_alternative<T>(t.value));
+  return std::get<T>(t.value);
 }
 
-auto Value::GetString() const -> const std::string& {
-  return GetStringImpl(*this);
+template <>
+auto Value::Get<std::string>() const -> const std::string& {
+  return GetImpl<std::string>(*this);
 }
 
-auto Value::GetString() -> std::string& { return GetStringImpl(*this); }
+template <>
+auto Value::Get<std::string>() -> std::string& {
+  return GetImpl<std::string>(*this);
+}
 
-auto Value::GetType() const -> DataType {
-  Expects(!IsNull());
+auto Value::GetType() const -> DataTypeVariant {
   return std::visit(
-      [](const auto& v) -> DataType {
+      [](const auto& v) -> DataTypeVariant {
         using V = decltype(v);
 
-        if constexpr (cpp::DecaysTo<V, bool>) {
-          return DataType::kBool;
-        } else if constexpr (cpp::DecaysTo<V, int>) {
-          return DataType::kInt;
-        } else if constexpr (cpp::DecaysTo<V, int64_t>) {
-          return DataType::kInt64;
-        } else if constexpr (cpp::DecaysTo<V, double>) {
-          return DataType::kDouble;
-        } else if constexpr (cpp::DecaysTo<V, std::string>) {
-          return DataType::kString;
+        if constexpr (!cpp::DecaysTo<V, std::monostate>) {
+          return {DataType<std::decay_t<V>>{}};
         } else {
-          return {};
+          Expects(false);
         }
       },
       value);

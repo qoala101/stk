@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "cpp_not_null.h"
-#include "sqldb_enums.h"
+#include "sqldb_data_type.h"
 #include "sqldb_value.h"
 #include "sqlite_types.h"
 
@@ -40,7 +40,7 @@ class PreparedStatementFacade {
    * in the order they are refined in the statement.
    */
   [[nodiscard]] auto GetStepValues(
-      const std::vector<sqldb::DataType> &value_types) const
+      const std::vector<sqldb::DataTypeVariant> &value_types) const
       -> std::vector<sqldb::Value>;
 
   /**

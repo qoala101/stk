@@ -7,9 +7,11 @@
 #include <gsl/assert>
 #include <gsl/util>
 #include <string>
+#include <variant>
 
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
+#include "sqldb_data_type.h"
 
 namespace stonks::sqlite {
 namespace {
@@ -20,30 +22,31 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
     return;
   }
 
-  auto result_code = SQLITE_OK;
+  // auto result_code = SQLITE_OK;
 
-  switch (value.GetType()) {
-    case sqldb::DataType::kBool:
-      result_code = sqlite3_bind_int(&statement, index,
-                                     static_cast<int>(value.GetBool()));
-      break;
-    case sqldb::DataType::kInt:
-      result_code = sqlite3_bind_int(&statement, index, value.GetInt());
-      break;
-    case sqldb::DataType::kInt64:
-      result_code = sqlite3_bind_int64(&statement, index, value.GetInt64());
-      break;
-    case sqldb::DataType::kDouble:
-      result_code = sqlite3_bind_double(&statement, index, value.GetDouble());
-      break;
-    case sqldb::DataType::kString: {
-      const auto &string = value.GetString();
-      result_code =
-          sqlite3_bind_text(&statement, index, string.c_str(),
-                            gsl::narrow_cast<int>(string.length()), nullptr);
-      break;
-    }
-  }
+  auto result_code = std::visit(
+      [&statement, index, &value](const auto &v) {
+        using V = decltype(v);
+
+        if constexpr (cpp::DecaysTo<V, sqldb::DataType<bool>>) {
+          return sqlite3_bind_int(&statement, index,
+                                  static_cast<int>(value.Get<bool>()));
+        } else if constexpr (cpp::DecaysTo<V, sqldb::DataType<int>>) {
+          return sqlite3_bind_int(&statement, index, value.Get<int>());
+        } else if constexpr (cpp::DecaysTo<V, sqldb::DataType<int64_t>>) {
+          return sqlite3_bind_int64(&statement, index, value.Get<int64_t>());
+        } else if constexpr (cpp::DecaysTo<V, sqldb::DataType<double>>) {
+          return sqlite3_bind_double(&statement, index, value.Get<double>());
+        } else if constexpr (cpp::DecaysTo<V, sqldb::DataType<std::string>>) {
+          const auto &string = value.Get<std::string>();
+          return sqlite3_bind_text(&statement, index, string.c_str(),
+                                   gsl::narrow_cast<int>(string.length()),
+                                   nullptr);
+        } else {
+          Expects(false);
+        }
+      },
+      value.GetType().value);
 
   if (result_code != SQLITE_OK) {
     throw cpp::MessageException{fmt::format(
@@ -52,28 +55,35 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
 }
 
 [[nodiscard]] auto GetValue(sqlite3_stmt &statement, int index,
-                            sqldb::DataType type) {
+                            sqldb::DataTypeVariant type) {
   Expects(index >= 0);
 
   if (sqlite3_column_type(&statement, index) == SQLITE_NULL) {
     return sqldb::Value{};
   }
 
-  switch (type) {
-    case sqldb::DataType::kBool:
-      return sqldb::Value{
-          static_cast<bool>(sqlite3_column_int(&statement, index))};
-    case sqldb::DataType::kInt:
-      return sqldb::Value{sqlite3_column_int(&statement, index)};
-    case sqldb::DataType::kInt64:
-      return sqldb::Value{int64_t{sqlite3_column_int64(&statement, index)}};
-    case sqldb::DataType::kDouble:
-      return sqldb::Value{sqlite3_column_double(&statement, index)};
-    case sqldb::DataType::kString:
-      // NOLINTNEXTLINE(*-reinterpret-cast)
-      return sqldb::Value{std::string{reinterpret_cast<const char *>(
-          sqlite3_column_text(&statement, index))}};
-  }
+  return std::visit(
+      [&statement, index](const auto &v) {
+        using V = decltype(v);
+
+        if constexpr (cpp::DecaysTo<V, sqldb::DataType<bool>>) {
+          return sqldb::Value{
+              static_cast<bool>(sqlite3_column_int(&statement, index))};
+        } else if constexpr (cpp::DecaysTo<V, sqldb::DataType<int>>) {
+          return sqldb::Value{sqlite3_column_int(&statement, index)};
+        } else if constexpr (cpp::DecaysTo<V, sqldb::DataType<int64_t>>) {
+          return sqldb::Value{int64_t{sqlite3_column_int64(&statement, index)}};
+        } else if constexpr (cpp::DecaysTo<V, sqldb::DataType<double>>) {
+          return sqldb::Value{sqlite3_column_double(&statement, index)};
+        } else if constexpr (cpp::DecaysTo<V, sqldb::DataType<std::string>>) {
+          // NOLINTNEXTLINE(*-reinterpret-cast)
+          return sqldb::Value{std::string{reinterpret_cast<const char *>(
+              sqlite3_column_text(&statement, index))}};
+        } else {
+          Expects(false);
+        }
+      },
+      type.value);
 
   Expects(false);
 }
@@ -111,7 +121,7 @@ auto PreparedStatementFacade::Step() const -> ResultCode {
 }
 
 auto PreparedStatementFacade::GetStepValues(
-    const std::vector<sqldb::DataType> &value_types) const
+    const std::vector<sqldb::DataTypeVariant> &value_types) const
     -> std::vector<sqldb::Value> {
   Expects(sqlite_statement_ != nullptr);
 
