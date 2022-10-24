@@ -10,7 +10,7 @@
 #include "cpp_optional.h"
 #include "cpp_views.h"
 #include "sqldb_qb_limit_variant.h"
-#include "sqldb_traits.h"
+#include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {

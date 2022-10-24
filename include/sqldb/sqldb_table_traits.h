@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_TRAITS_H_
-#define STONKS_SQLDB_SQLDB_TRAITS_H_
+#ifndef STONKS_SQLDB_SQLDB_TABLE_TRAITS_H_
+#define STONKS_SQLDB_SQLDB_TABLE_TRAITS_H_
 
 #include <fmt/format.h>
 
@@ -19,12 +19,12 @@ namespace stonks::sqldb {
 namespace detail {
 template <typename T>
 struct TupleTraits {
-  [[nodiscard]] static constexpr auto IsTuple() { return false; }
+  [[nodiscard]] static consteval auto IsTuple() { return false; }
 };
 
 template <typename... Ts>
 struct TupleTraits<std::tuple<Ts...>> {
-  [[nodiscard]] static constexpr auto IsTuple() { return true; }
+  [[nodiscard]] static consteval auto IsTuple() { return true; }
 };
 }  // namespace detail
 
@@ -44,70 +44,90 @@ concept ColumnT = requires {
                     // typename T::DataType;
                   };
 
-namespace detail {
-template <ColumnT Column>
-[[nodiscard]] consteval auto HasPrimaryKey() {
-  return requires { typename Column::PrimaryKey; };
-}
-
-template <ColumnT Column>
-[[nodiscard]] consteval auto HasAutoIncrement() {
-  return requires { typename Column::AutoIncrement; };
-}
-
-template <ColumnT Column>
-[[nodiscard]] consteval auto HasUnique() {
-  return requires { typename Column::Unique; };
-}
-
-template <ColumnT Column>
-[[nodiscard]] consteval auto HasForeignKey() {
-  return requires { typename Column::ForeignKey; };
-}
-}  // namespace detail
-
+/**
+ * @brief Alias for either column or table which has a special treatment.
+ */
 template <typename Original, typename Alias>
 struct As {};
 
-template <ColumnT Column>
+/**
+ * @brief Information retrieved from the column declaration.
+ */
+template <typename Column>
 struct ColumnTraits {
-  [[nodiscard]] static auto GetName() -> auto & {
+  /**
+   * @brief Gives short column name which is the name of its type.
+   */
+  [[nodiscard]] static constexpr auto GetName() -> auto & {
     return cpp::NameOf<Column>();
   }
 
+  /**
+   * @brief Gives full column name which includes its table name.
+   */
   [[nodiscard]] static auto GetFullName() -> auto & {
     static const auto kConstant =
         fmt::format("{}.{}", cpp::NameOf<typename Column::Table>(), GetName());
     return kConstant;
   }
 
-  [[nodiscard]] static constexpr auto GetType() {
+  /**
+   * @brief Gives column data type.
+   */
+  [[nodiscard]] static consteval auto GetType() {
     return DataTypeVariant{DataType<typename Column::DataType>{}};
+  }
+
+  /**
+   * @brief Tells whether column is part of the primary key.
+   */
+  [[nodiscard]] static consteval auto IsPrimaryKey() {
+    return requires { typename Column::PrimaryKey; };
+  }
+
+  /**
+   * @brief Tells whether column is foreign key.
+   */
+  [[nodiscard]] static consteval auto IsForeignKey() {
+    return requires { typename Column::ForeignKey; };
+  }
+
+  /**
+   * @brief Tells whether column has auto increment.
+   */
+  [[nodiscard]] static consteval auto HasAutoIncrement() {
+    return requires { typename Column::AutoIncrement; };
+  }
+
+  /**
+   * @brief Tells whether column data is unique.
+   */
+  [[nodiscard]] static consteval auto IsUnique() {
+    return requires { typename Column::Unique; };
   }
 };
 
-template <ColumnT Original, ColumnT Alias>
-struct ColumnTraits<As<Original, Alias>> {
+/**
+ * @brief Traits for the AS alias which are mostly the same
+ * as the original column ones.
+ */
+template <typename Original, typename Alias>
+struct ColumnTraits<As<Original, Alias>> : public ColumnTraits<Original> {
+  /**
+   * @copydoc ColumnTraits::GetName
+   */
   [[nodiscard]] static constexpr auto GetName() -> auto & {
     return ColumnTraits<Alias>::GetName();
   }
 
+  /**
+   * @copydoc ColumnTraits::GetFullName
+   */
   [[nodiscard]] static auto GetFullName() -> auto & {
-    static const auto kName = fmt::format(
-        "{} AS {}", ColumnTraits<Original>::GetFullName(), GetName());
-    return kName;
-  }
-
-  [[nodiscard]] static constexpr auto GetForeignKey() -> auto & {
-    return ColumnTraits<Original>::GetForeignKey();
-  }
-
-  [[nodiscard]] static constexpr auto GetType() {
-    return ColumnTraits<Original>::GetType();
-  }
-
-  [[nodiscard]] static constexpr auto GetDefinition() -> auto & {
-    return ColumnTraits<Original>::GetDefinition();
+    static const auto kConstant =
+        fmt::format("{} AS {}", ColumnTraits<Original>::GetFullName(),
+                    ColumnTraits<Original>::GetName());
+    return kConstant;
   }
 };
 
@@ -116,9 +136,17 @@ struct ColumnsTraits;
 
 template <typename... Columns>
 struct ColumnsTraits<std::tuple<Columns...>> {
-  [[nodiscard]] static constexpr auto GetSize() { return sizeof...(Columns); }
+  /**
+   * @brief Gives number of columns.
+   */
+  [[nodiscard]] static consteval auto GetSize() { return sizeof...(Columns); }
 
-  [[nodiscard]] static auto GetNames() -> auto & {
+  /**
+   * @brief Get the Names object
+   *
+   * @return auto&
+   */
+  [[nodiscard]] static constexpr auto GetNames() -> auto & {
     static const auto kValue = [] {
       auto names = std::string{};
       GetNamesImpl<Columns...>(names);
@@ -184,27 +212,35 @@ struct ColumnsTraits<std::tuple<Columns...>> {
   }
 };
 
-template <TableT Table>
+/**
+ * @brief Information retrieved from the table declaration.
+ */
+template <typename Table>
 struct TableTraits {
-  [[nodiscard]] static auto GetName() -> auto & {
-    static const auto kValue = std::string{nameof::nameof_short_type<Table>()};
-    return kValue;
+  /**
+   * @brief Gives table name which is the name of the type.
+   */
+  [[nodiscard]] static constexpr auto GetName() -> auto & {
+    return cpp::NameOf<Table>();
   }
 };
 
-template <TableT Original, TableT Alias>
-struct TableTraits<As<Original, Alias>> {
+/**
+ * @brief Traits for the AS alias which are mostly the same
+ * as the original table ones.
+ */
+template <typename Original, typename Alias>
+struct TableTraits<As<Original, Alias>> : public TableTraits<Original> {
+  /**
+   * @copydoc TableTraits::GetName
+   */
   [[nodiscard]] static auto GetName() -> auto & {
-    static const auto kName =
+    static const auto kConstant =
         fmt::format("{} AS {}", TableTraits<Original>::GetName(),
                     TableTraits<Alias>::GetName());
-    return kName;
-  }
-
-  [[nodiscard]] static constexpr auto GetDefinition() -> auto & {
-    return TableTraits<Original>::GetDefinition();
+    return kConstant;
   }
 };
 }  // namespace stonks::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_TRAITS_H_
+#endif  // STONKS_SQLDB_SQLDB_TABLE_TRAITS_H_

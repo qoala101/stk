@@ -2,158 +2,150 @@
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CREATE_H_
 
 #include <gsl/assert>
-#include <magic_enum.hpp>
 #include <string>
 #include <string_view>
 #include <tuple>
 
-#include "cpp_expose_private_constructors.h"
-#include "cpp_not_null.h"
-#include "cpp_optional.h"
-#include "sqldb_types.h"
-#include "sqldb_traits.h"
+#include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
 namespace detail {
-[[nodiscard]] inline auto ToString(const DataTypeVariant &data_type) {
-  return std::visit(
-      [](const auto &v) {
-        using V = decltype(v);
+struct ColumnDefinition {
+  std::string name{};
+  DataTypeVariant type{};
+  bool unique{};
+};
 
-        if constexpr (cpp::DecaysTo<V, sqldb::DataType<bool>> ||
-                      cpp::DecaysTo<V, sqldb::DataType<int>> ||
-                      cpp::DecaysTo<V, sqldb::DataType<int64_t>>) {
-          return "INTEGER";
-        } else if constexpr (cpp::DecaysTo<V, sqldb::DataType<double>>) {
-          return "REAL";
-        } else if constexpr (cpp::DecaysTo<V, sqldb::DataType<std::string>>) {
-          return "TEXT";
-        } else {
-          Expects(false);
-        }
-      },
-      data_type.value);
-}
+struct PrimaryKey {
+  std::string column_name{};
+  bool auto_increment{};
+};
+
+struct ForeignKey {
+  std::string column_name{};
+  std::string target_table_name{};
+  std::string target_column_name{};
+};
 
 template <typename T>
-struct ColumnsTraitsInternal;
+struct ColumnsTraits;
 
 template <typename... Columns>
-struct ColumnsTraitsInternal<std::tuple<Columns...>> {
-  [[nodiscard]] static auto GetColumnsQuery() -> auto & {
+struct ColumnsTraits<std::tuple<Columns...>> {
+  [[nodiscard]] static auto GetColumnDefinitions() -> auto & {
     static const auto kConstant = [] {
-      auto query = std::string{};
-      GetColumnsQueryImpl<Columns...>(query);
-      return query;
+      auto values = std::vector<ColumnDefinition>{};
+      GetColumnDefinitionsImpl<Columns...>(values);
+      return values;
     }();
     return kConstant;
   }
 
-  [[nodiscard]] static auto GetPrimaryKeyQuery() -> auto & {
+  [[nodiscard]] static auto GetPrimaryKeys() -> auto & {
     static const auto kConstant = [] {
-      auto query = std::string{};
-      GetPrimaryKeyQueryImpl<Columns...>(query);
-      return query;
+      auto values = std::vector<PrimaryKey>{};
+      GetPrimaryKeysImpl<Columns...>(values);
+      return values;
     }();
     return kConstant;
   }
 
-  [[nodiscard]] static auto GetForeignKeysQuery() -> auto & {
+  [[nodiscard]] static auto GetForeignKeys() -> auto & {
     static const auto kConstant = [] {
-      auto query = std::string{};
-      GetForeignKeysQueryImpl<Columns...>(query);
-      return query;
+      auto values = std::vector<ForeignKey>{};
+      GetForeignKeysImpl<Columns...>(values);
+      return values;
     }();
     return kConstant;
   }
 
  private:
-  template <ColumnT Column, ColumnT... OtherColumns>
-  static void GetColumnsQueryImpl(std::string &query) {
-    if (!query.empty()) {
-      query += ", ";
-    }
+  template <typename Column, typename... OtherColumns>
+  static void GetColumnDefinitionsImpl(std::vector<ColumnDefinition> &values) {
+    using ColumnTraits = ColumnTraits<Column>;
 
-    query += fmt::format(R"("{}" {} NOT NULL)", ColumnTraits<Column>::GetName(),
-                         ToString(ColumnTraits<Column>::GetType()));
-
-    if constexpr (::stonks::sqldb::detail::HasUnique<Column>()) {
-      query += " UNIQUE";
-    }
+    values.emplace_back(ColumnDefinition{.name = ColumnTraits::GetName(),
+                                         .type = ColumnTraits::GetType(),
+                                         .unique = ColumnTraits::IsUnique()});
 
     if constexpr (sizeof...(OtherColumns) > 0) {
-      GetColumnsQueryImpl<OtherColumns...>(query);
+      GetColumnDefinitionsImpl<OtherColumns...>(values);
     }
   }
 
-  template <ColumnT Column, ColumnT... OtherColumns>
-  static void GetPrimaryKeyQueryImpl(std::string &query) {
-    if constexpr (::stonks::sqldb::detail::HasPrimaryKey<Column>()) {
-      const auto first_primary_key_column = query.empty();
+  template <typename Column, typename... OtherColumns>
+  static void GetPrimaryKeysImpl(std::vector<PrimaryKey> &values) {
+    using ColumnTraits = ColumnTraits<Column>;
 
-      if (first_primary_key_column) {
-        query += ", PRIMARY KEY(";
-      } else {
-        query += ", ";
-      }
-
-      query += fmt::format(R"("{}")", ColumnTraits<Column>::GetName());
-
-      if (::stonks::sqldb::detail::HasAutoIncrement<Column>()) {
-        query += " AUTOINCREMENT";
-      }
+    if constexpr (ColumnTraits::IsPrimaryKey()) {
+      values.emplace_back(
+          PrimaryKey{.column_name = ColumnTraits::GetName(),
+                     .auto_increment = ColumnTraits::HasAutoIncrement()});
     }
 
     if constexpr (sizeof...(OtherColumns) > 0) {
-      GetPrimaryKeyQueryImpl<OtherColumns...>(query);
-    } else if (!query.empty()) {
-      query += ")";
+      GetPrimaryKeysImpl<OtherColumns...>(values);
     }
   }
 
-  template <ColumnT Column, ColumnT... OtherColumns>
-  static void GetForeignKeysQueryImpl(std::string &query) {
-    if constexpr (::stonks::sqldb::detail::HasForeignKey<Column>()) {
-      query += fmt::format(
-          R"(, FOREIGN KEY("{}") REFERENCES "{}"("{}") ON DELETE CASCADE)",
-          ColumnTraits<Column>::GetName(),
-          TableTraits<typename Column::ForeignKey::Table>::GetName(),
-          ColumnTraits<typename Column::ForeignKey>::GetName());
+  template <typename Column, typename... OtherColumns>
+  static void GetForeignKeysImpl(std::vector<ForeignKey> &values) {
+    using ColumnTraits = ColumnTraits<Column>;
+
+    if constexpr (ColumnTraits::IsForeignKey()) {
+      values.emplace_back(ForeignKey{
+          .column_name = ColumnTraits::GetName(),
+          .target_table_name =
+              TableTraits<typename Column::ForeignKey::Table>::GetName(),
+          .target_column_name = ::stonks::sqldb::ColumnTraits<
+              typename Column::ForeignKey>::GetName()});
     }
 
     if constexpr (sizeof...(OtherColumns) > 0) {
-      GetForeignKeysQueryImpl<OtherColumns...>(query);
+      GetForeignKeysImpl<OtherColumns...>(values);
     }
   }
 };
 }  // namespace detail
 
+/**
+ * @brief Builds create table query.
+ */
 class Create {
  public:
-  template <typename Table>
+  /**
+   * @tparam Table Table definition.
+   */
+  template <typename Table, typename ColumnsTraits =
+                                detail::ColumnsTraits<typename Table::Columns>>
   explicit Create(Table * /*unused*/)
-      : table_name_{TableTraits<Table>::GetName()},
-        columns_clause_{detail::ColumnsTraitsInternal<
-            typename Table::Columns>::GetColumnsQuery()},
-        primary_key_query_{detail::ColumnsTraitsInternal<
-            typename Table::Columns>::GetPrimaryKeyQuery()},
-        foreign_keys_query_{detail::ColumnsTraitsInternal<
-            typename Table::Columns>::GetForeignKeysQuery()} {
-    Ensures(!table_name_.empty());
-    Ensures(!columns_clause_.empty());
-  }
+      : Create{TableTraits<Table>::GetName(),
+               ColumnsTraits::GetColumnDefinitions(),
+               ColumnsTraits::GetPrimaryKeys(),
+               ColumnsTraits::GetForeignKeys()} {}
 
+  /**
+   * @brief Adds if-not-exists condition.
+   */
   [[nodiscard]] auto IfNotExists() -> Create &;
 
+  /**
+   * @brief Builds the query from inputs.
+   */
   [[nodiscard]] auto Build() const -> Query;
 
  private:
-  std::string if_not_exists_clause_{};
+  Create(std::string table_name,
+         const std::vector<detail::ColumnDefinition> &column_definitions,
+         const std::vector<detail::PrimaryKey> &primary_keys,
+         const std::vector<detail::ForeignKey> &foreign_keys);
+
   std::string table_name_{};
-  std::string columns_clause_{};
-  std::string primary_key_query_{};
+  std::string columns_query_{};
+  std::string primary_keys_query_{};
   std::string foreign_keys_query_{};
+  std::string if_not_exists_query_{};
 };
 }  // namespace stonks::sqldb::qb
 

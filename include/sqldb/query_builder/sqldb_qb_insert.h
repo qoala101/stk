@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_QUERY_BUILDER_H_
-#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_QUERY_BUILDER_H_
+#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_
+#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_
 
 #include <fmt/format.h>
 
@@ -13,7 +13,7 @@
 #include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
 #include "cpp_views.h"
-#include "sqldb_traits.h"
+#include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
@@ -70,4 +70,4 @@ class Insert {
 };
 }  // namespace stonks::sqldb::qb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_QUERY_BUILDER_H_
+#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_

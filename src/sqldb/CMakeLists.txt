@@ -1,5 +1,4 @@
 find_package(fmt REQUIRED)
-find_package(magic_enum REQUIRED)
 find_package(range-v3 REQUIRED)
 
 add_library(libsqldb
@@ -30,7 +29,6 @@ target_include_directories(libsqldb
 target_link_libraries(libsqldb
   PUBLIC libcpp
   PUBLIC libdi
-  PUBLIC magic_enum::magic_enum
 
   PRIVATE fmt::fmt
   PRIVATE range-v3::range-v3

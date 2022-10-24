@@ -3,7 +3,6 @@
 #include <bits/ranges_algo.h>
 
 #include <gsl/assert>
-#include <magic_enum.hpp>
 #include <range/v3/algorithm/any_of.hpp>
 #include <range/v3/view/filter.hpp>
 
