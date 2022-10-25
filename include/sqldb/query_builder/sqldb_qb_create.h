@@ -4,109 +4,11 @@
 #include <string>
 #include <tuple>
 
+#include "sqldb_qb_table_traits.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
-namespace detail {
-struct ColumnDefinition {
-  std::string name{};
-  DataTypeVariant type{};
-  bool unique{};
-};
-
-struct PrimaryKey {
-  std::string column_name{};
-  bool auto_increment{};
-};
-
-struct ForeignKey {
-  std::string column_name{};
-  std::string target_table_name{};
-  std::string target_column_name{};
-};
-
-template <typename T>
-struct ColumnsTraits;
-
-template <typename... Columns>
-struct ColumnsTraits<std::tuple<Columns...>> {
-  [[nodiscard]] static auto GetColumnDefinitions() -> auto & {
-    static const auto kConstant = [] {
-      auto values = std::vector<ColumnDefinition>{};
-      GetColumnDefinitionsImpl<Columns...>(values);
-      return values;
-    }();
-    return kConstant;
-  }
-
-  [[nodiscard]] static auto GetPrimaryKeys() -> auto & {
-    static const auto kConstant = [] {
-      auto values = std::vector<PrimaryKey>{};
-      GetPrimaryKeysImpl<Columns...>(values);
-      return values;
-    }();
-    return kConstant;
-  }
-
-  [[nodiscard]] static auto GetForeignKeys() -> auto & {
-    static const auto kConstant = [] {
-      auto values = std::vector<ForeignKey>{};
-      GetForeignKeysImpl<Columns...>(values);
-      return values;
-    }();
-    return kConstant;
-  }
-
- private:
-  template <typename Column, typename... OtherColumns>
-  static void GetColumnDefinitionsImpl(std::vector<ColumnDefinition> &values) {
-    using ColumnTraits = ColumnTraits<Column>;
-
-    values.emplace_back(ColumnDefinition{.name = ColumnTraits::GetName(),
-                                         .type = ColumnTraits::GetType(),
-                                         .unique = ColumnTraits::IsUnique()});
-
-    if constexpr (sizeof...(OtherColumns) > 0) {
-      GetColumnDefinitionsImpl<OtherColumns...>(values);
-    }
-  }
-
-  template <typename Column, typename... OtherColumns>
-  static void GetPrimaryKeysImpl(std::vector<PrimaryKey> &values) {
-    using ColumnTraits = ColumnTraits<Column>;
-
-    if constexpr (ColumnTraits::IsPrimaryKey()) {
-      values.emplace_back(
-          PrimaryKey{.column_name = ColumnTraits::GetName(),
-                     .auto_increment = ColumnTraits::HasAutoIncrement()});
-    }
-
-    if constexpr (sizeof...(OtherColumns) > 0) {
-      GetPrimaryKeysImpl<OtherColumns...>(values);
-    }
-  }
-
-  template <typename Column, typename... OtherColumns>
-  static void GetForeignKeysImpl(std::vector<ForeignKey> &values) {
-    using ColumnTraits = ColumnTraits<Column>;
-
-    if constexpr (ColumnTraits::IsForeignKey()) {
-      values.emplace_back(ForeignKey{
-          .column_name = ColumnTraits::GetName(),
-          .target_table_name =
-              TableTraits<typename Column::ForeignKey::Table>::GetName(),
-          .target_column_name = ::stonks::sqldb::ColumnTraits<
-              typename Column::ForeignKey>::GetName()});
-    }
-
-    if constexpr (sizeof...(OtherColumns) > 0) {
-      GetForeignKeysImpl<OtherColumns...>(values);
-    }
-  }
-};
-}  // namespace detail
-
 /**
  * @brief Builds create table query.
  */
@@ -115,11 +17,10 @@ class Create {
   /**
    * @tparam Table Table definition.
    */
-  template <typename Table, typename ColumnsTraits =
-                                detail::ColumnsTraits<typename Table::Columns>>
+  template <typename Table,
+            typename ColumnsTraits = ColumnsTraits<typename Table::Columns>>
   explicit Create(Table * /*unused*/)
-      : Create{TableTraits<Table>::GetName(),
-               ColumnsTraits::GetColumnDefinitions(),
+      : Create{TableTraits<Table>::GetName(), ColumnsTraits::GetDefinitions(),
                ColumnsTraits::GetPrimaryKeys(),
                ColumnsTraits::GetForeignKeys()} {}
 
@@ -135,9 +36,9 @@ class Create {
 
  private:
   Create(std::string table_name,
-         const std::vector<detail::ColumnDefinition> &column_definitions,
-         const std::vector<detail::PrimaryKey> &primary_keys,
-         const std::vector<detail::ForeignKey> &foreign_keys);
+         const std::vector<ColumnDefinition> &column_definitions,
+         const std::vector<PrimaryKey> &primary_keys,
+         const std::vector<ForeignKey> &foreign_keys);
 
   std::string table_name_{};
   std::string columns_query_{};

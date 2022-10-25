@@ -22,9 +22,6 @@ struct ColumnType {
 };
 }  // namespace detail
 
-struct All;
-struct One;
-
 /**
  * @brief Builds query to select data from DB.
  */

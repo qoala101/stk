@@ -81,11 +81,11 @@ TEST(SqliteDb, InsertAndSelect) {
                            .Build())
       ->Execute();
 
-  auto insert_statement = db->PrepareStatement(
-      stonks::sqldb::query_builder::Insert()
-          .Value<Asset::name>(stonks::sqldb::qb::Param{}.text_)
-          .Into<Asset>()
-          .Build());
+  auto insert_statement =
+      db->PrepareStatement(stonks::sqldb::query_builder::Insert()
+                               .Value<Asset::name>(stonks::sqldb::qb::Param{})
+                               .Into<Asset>()
+                               .Build());
   insert_statement->Execute(stonks::sqldb::AsValues("BTC"));
   insert_statement->Execute(stonks::sqldb::AsValues("ETH"));
   insert_statement->Execute(stonks::sqldb::AsValues("USDT"));
@@ -161,8 +161,8 @@ TEST(SqliteDb, ForeignKey) {
 
   auto insert_symbol_statement = db->PrepareStatement(
       stonks::sqldb::query_builder::Insert()
-          .Value<Symbol::base_asset_id>(stonks::sqldb::qb::Param{}.text_)
-          .Value<Symbol::quote_asset_id>(stonks::sqldb::qb::Param{}.text_)
+          .Value<Symbol::base_asset_id>(stonks::sqldb::qb::Param{})
+          .Value<Symbol::quote_asset_id>(stonks::sqldb::qb::Param{})
           .Into<Symbol>()
           .Build());
   insert_symbol_statement->Execute(stonks::sqldb::AsValues(1, 3));

@@ -15,6 +15,9 @@
  */
 
 namespace stonks::sqldb::qb {
+struct All;
+struct One;
+
 template <typename ColumnT>
 struct Column {};
 

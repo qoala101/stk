@@ -75,7 +75,7 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
       .insert_asset{[db]() {
         return db->PrepareStatement(
             sqldb::query_builder::Insert()
-                .Value<tables::Asset::name>(sqldb::qb::Param{}.text_)
+                .Value<tables::Asset::name>(sqldb::qb::Param{})
                 .Into<tables::Asset>()
                 .Build());
       }},
@@ -117,27 +117,25 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
       .insert_symbol_info{[db]() {
         return db->PrepareStatement(
             sqldb::query_builder::Insert()
-                .Value<tables::SymbolInfo::name>(sqldb::qb::Param{}.text_)
+                .Value<tables::SymbolInfo::name>(sqldb::qb::Param{})
                 .Value<tables::SymbolInfo::base_asset_id>(sqldb::qb::Param{
                     sqldb::query_builder::Select<tables::Asset::id>()
                         .From<tables::Asset>()
                         .Where(sqldb::qb::Column<tables::Asset::name>{} ==
-                               sqldb::qb::Param{})}
-                                                              .text_)
+                               sqldb::qb::Param{})})
                 .Value<tables::SymbolInfo::base_asset_min_amount>(
-                    sqldb::qb::Param{}.text_)
+                    sqldb::qb::Param{})
                 .Value<tables::SymbolInfo::base_asset_price_step>(
-                    sqldb::qb::Param{}.text_)
+                    sqldb::qb::Param{})
                 .Value<tables::SymbolInfo::quote_asset_id>(sqldb::qb::Param{
                     sqldb::query_builder::Select<tables::Asset::id>()
                         .From<tables::Asset>()
                         .Where(sqldb::qb::Column<tables::Asset::name>{} ==
-                               sqldb::qb::Param{})}
-                                                               .text_)
+                               sqldb::qb::Param{})})
                 .Value<tables::SymbolInfo::quote_asset_min_amount>(
-                    sqldb::qb::Param{}.text_)
+                    sqldb::qb::Param{})
                 .Value<tables::SymbolInfo::quote_asset_price_step>(
-                    sqldb::qb::Param{}.text_)
+                    sqldb::qb::Param{})
                 .Into<tables::SymbolInfo>()
                 .Build());
       }},
@@ -205,12 +203,9 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
                     sqldb::query_builder::Select<tables::SymbolInfo::id>()
                         .From<tables::SymbolInfo>()
                         .Where(sqldb::qb::Column<tables::SymbolInfo::name>{} ==
-                               sqldb::qb::Param{})}
-                                                                 .text_)
-                .Value<tables::SymbolPriceRecord::price>(
-                    sqldb::qb::Param{}.text_)
-                .Value<tables::SymbolPriceRecord::time>(
-                    sqldb::qb::Param{}.text_)
+                               sqldb::qb::Param{})})
+                .Value<tables::SymbolPriceRecord::price>(sqldb::qb::Param{})
+                .Value<tables::SymbolPriceRecord::time>(sqldb::qb::Param{})
                 .Into<tables::SymbolPriceRecord>()
                 .Build());
       }},

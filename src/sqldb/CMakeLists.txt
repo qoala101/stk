@@ -1,3 +1,4 @@
+find_package(absl REQUIRED)
 find_package(fmt REQUIRED)
 find_package(range-v3 REQUIRED)
 
@@ -30,6 +31,7 @@ target_link_libraries(libsqldb
   PUBLIC libcpp
   PUBLIC libdi
 
+  PRIVATE absl::absl
   PRIVATE fmt::fmt
   PRIVATE range-v3::range-v3
 )
