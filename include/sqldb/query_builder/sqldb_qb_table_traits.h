@@ -5,29 +5,13 @@
 
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
+#include "sqldb_qb_types.h"
 
 /**
  * @file API to retrieve query-related info from table definitions.
  */
 
 namespace stonks::sqldb::qb {
-struct ColumnDefinition {
-  std::string name{};
-  DataTypeVariant type{};
-  bool unique{};
-};
-
-struct PrimaryKey {
-  std::string column_name{};
-  bool auto_increment{};
-};
-
-struct ForeignKey {
-  std::string column_name{};
-  std::string target_table_name{};
-  std::string target_column_name{};
-};
-
 template <typename T>
 struct ColumnsTraits;
 

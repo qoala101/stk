@@ -11,6 +11,7 @@
 #include "cpp_views.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_limit_variant.h"
+#include "sqldb_qb_table_traits.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
@@ -33,9 +34,10 @@ class Select {
   template <typename... Columns>
   explicit Select(std::tuple<Columns...> * /*unused*/)
       // : Select{ColumnsTraits<std::tuple<Columns...>>::GetNames()} {}
-      : cell_definitions_{ColumnsTraits<std::tuple<Columns...>>::GetTypes()},
-        full_column_names_{
-            ColumnsTraits<std::tuple<Columns...>>::GetFullNames()} {}
+      : cell_definitions_{::stonks::sqldb::ColumnsTraits<
+            std::tuple<Columns...>>::GetTypes()},
+        full_column_names_{::stonks::sqldb::ColumnsTraits<
+            std::tuple<Columns...>>::GetFullNames()} {}
 
   /**
    * @brief Query would select all table columns.
@@ -53,13 +55,14 @@ class Select {
     table_name_ = TableTraits<Table>::GetName();
 
     if (cell_definitions_.value.empty()) {
-      cell_definitions_ = {ColumnsTraits<typename Table::Columns>::GetTypes()};
+      cell_definitions_ = {
+          ::stonks::sqldb::ColumnsTraits<typename Table::Columns>::GetTypes()};
     }
 
     if (const auto full_column_names_required =
             !select_all_ && !select_one_ && full_column_names_.empty()) {
-      full_column_names_ =
-          ColumnsTraits<typename Table::Columns>::GetFullNames();
+      full_column_names_ = ::stonks::sqldb::ColumnsTraits<
+          typename Table::Columns>::GetFullNames();
     }
 
     Ensures(!table_name_.empty());

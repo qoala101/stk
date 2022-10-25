@@ -147,22 +147,20 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
                     sqldb::query_builder::Select<tables::Asset::id>()
                         .From<tables::Asset>()
                         .Where(sqldb::qb::Column<tables::Asset::name>{} ==
-                               sqldb::qb::Param{})}
-                                                            .text_)
+                               sqldb::qb::Param{})})
                 .Set<tables::SymbolInfo::base_asset_min_amount>(
-                    sqldb::qb::Param{}.text_)
+                    sqldb::qb::Param{})
                 .Set<tables::SymbolInfo::base_asset_price_step>(
-                    sqldb::qb::Param{}.text_)
+                    sqldb::qb::Param{})
                 .Set<tables::SymbolInfo::quote_asset_id>(sqldb::qb::Param{
                     sqldb::query_builder::Select<tables::Asset::id>()
                         .From<tables::Asset>()
                         .Where(sqldb::qb::Column<tables::Asset::name>{} ==
-                               sqldb::qb::Param{})}
-                                                             .text_)
+                               sqldb::qb::Param{})})
                 .Set<tables::SymbolInfo::quote_asset_min_amount>(
-                    sqldb::qb::Param{}.text_)
+                    sqldb::qb::Param{})
                 .Set<tables::SymbolInfo::quote_asset_price_step>(
-                    sqldb::qb::Param{}.text_)
+                    sqldb::qb::Param{})
                 .Where(sqldb::qb::Column<tables::SymbolInfo::name>{} ==
                        sqldb::qb::Param{})
                 .Build());

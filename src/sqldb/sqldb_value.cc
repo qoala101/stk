@@ -1,10 +1,13 @@
 #include "sqldb_value.h"
 
+#include <fmt/format.h>
+
 #include <cstdint>
 #include <gsl/assert>
 #include <type_traits>
 #include <variant>
 
+#include "cpp_concepts.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb {
@@ -64,5 +67,22 @@ auto Value::GetType() const -> DataTypeVariant {
 
 auto Value::IsNull() const -> bool {
   return std::holds_alternative<std::monostate>(value);
+}
+
+auto Value::ToString() const -> std::string {
+  return std::visit(
+      [](const auto& v) -> std::string {
+        using V = decltype(v);
+
+        if constexpr (cpp::DecaysTo<V, std::string>) {
+          return fmt::format(R"("{}")", v);
+        }
+        if constexpr (cpp::DecaysTo<V, std::monostate>) {
+          Expects(false);
+        } else {
+          return fmt::format("{}", v);
+        }
+      },
+      value);
 }
 }  // namespace stonks::sqldb

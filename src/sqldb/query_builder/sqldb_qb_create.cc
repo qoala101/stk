@@ -24,7 +24,7 @@ namespace {
 }
 
 [[nodiscard]] auto BuildColumnsQuery(
-    const std::vector<detail::ColumnDefinition> &column_definitions) {
+    const std::vector<ColumnDefinition> &column_definitions) {
   Expects(!column_definitions.empty());
 
   auto query = std::string{};
@@ -48,7 +48,7 @@ namespace {
 }
 
 [[nodiscard]] auto BuildPrimaryKeysQuery(
-    const std::vector<detail::PrimaryKey> &primary_keys) {
+    const std::vector<PrimaryKey> &primary_keys) {
   auto query = std::string{};
 
   for (const auto &primary_key : primary_keys) {
@@ -76,7 +76,7 @@ namespace {
 }
 
 [[nodiscard]] auto BuildForeignKeysQuery(
-    const std::vector<detail::ForeignKey> &foreign_keys) {
+    const std::vector<ForeignKey> &foreign_keys) {
   auto query = std::string{};
 
   for (const auto &foreign_key : foreign_keys) {
@@ -110,9 +110,9 @@ auto Create::Build() const -> Query {
 }
 
 Create::Create(std::string table_name,
-               const std::vector<detail::ColumnDefinition> &column_definitions,
-               const std::vector<detail::PrimaryKey> &primary_keys,
-               const std::vector<detail::ForeignKey> &foreign_keys)
+               const std::vector<ColumnDefinition> &column_definitions,
+               const std::vector<PrimaryKey> &primary_keys,
+               const std::vector<ForeignKey> &foreign_keys)
     : table_name_{[&table_name]() {
         Expects(!table_name.empty());
         return std::move(table_name);

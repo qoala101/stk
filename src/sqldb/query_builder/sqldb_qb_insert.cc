@@ -21,22 +21,6 @@
 #include "sqldb_value.h"
 
 namespace stonks::sqldb::qb {
-namespace {
-[[nodiscard]] auto ToString(const Value& value) {
-  return std::visit(
-      [&value](auto v) {
-        using V = typename decltype(v)::Type;
-
-        if constexpr (std::is_same_v<V, std::string>) {
-          return fmt::format(R"("{}")", value.Get<V>());
-        } else {
-          return fmt::format("{}", value.Get<V>());
-        }
-      },
-      value.GetType().value);
-}
-}  // namespace
-
 Insert::Insert(All* /*unused*/) : insert_all_{true} {}
 
 auto Insert::Value(std::string_view column_name, std::string_view value)
@@ -63,7 +47,7 @@ auto Insert::Value(std::string_view column_name, std::string_view value)
 
 auto Insert::Value(std::string_view column_name, const class Value& value)
     -> Insert& {
-  return Value(column_name, ToString(value));
+  return Value(column_name, value.ToString());
 }
 
 auto Insert::Value(std::string_view column_name, const Param& param)

@@ -58,6 +58,12 @@ class Value : public cpp::VariantStruct<std::monostate, bool, int, int64_t,
    */
   [[nodiscard]] auto IsNull() const -> bool;
 
+  /**
+   * @brief Get string representation.
+   * @remark If value is string, quotation marks are added.
+   */
+  [[nodiscard]] auto ToString() const -> std::string;
+
  private:
   template <typename T>
   [[nodiscard]] static auto GetImpl(cpp::This<Value> auto &t) -> auto &;

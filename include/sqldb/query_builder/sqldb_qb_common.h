@@ -9,6 +9,7 @@
 #include "cpp_views.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
+#include "sqldb_value.h"
 
 /**
  * @file Symbols used by query builders.
@@ -32,6 +33,11 @@ struct Param {
 };
 
 struct WhereQuery : public cpp::TypedStruct<std::string> {};
+
+struct QueryValue {
+  explicit QueryValue(const Value &value) {}
+  explicit QueryValue(const Param &param) {}
+};
 
 [[nodiscard]] auto Exists(const Select &builder) -> WhereQuery;
 

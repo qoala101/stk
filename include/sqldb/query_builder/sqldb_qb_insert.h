@@ -1,18 +1,6 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_
 
-#include <fmt/format.h>
-
-#include <range/v3/numeric/accumulate.hpp>
-#include <range/v3/range_fwd.hpp>
-#include <range/v3/view/repeat.hpp>
-#include <range/v3/view/repeat_n.hpp>
-#include <range/v3/view/single.hpp>
-#include <vector>
-
-#include "cpp_expose_private_constructors.h"
-#include "cpp_not_null.h"
-#include "cpp_views.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_table_traits.h"
 #include "sqldb_table_traits.h"

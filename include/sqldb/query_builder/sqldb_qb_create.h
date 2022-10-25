@@ -2,9 +2,10 @@
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CREATE_H_
 
 #include <string>
-#include <tuple>
+#include <vector>
 
 #include "sqldb_qb_table_traits.h"
+#include "sqldb_qb_types.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 

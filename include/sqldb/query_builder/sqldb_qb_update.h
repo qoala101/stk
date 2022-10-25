@@ -3,45 +3,70 @@
 
 #include <string>
 #include <string_view>
-#include <vector>
 
-#include "cpp_expose_private_constructors.h"
-#include "cpp_not_null.h"
-#include "cpp_optional.h"
-#include "cpp_views.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
+#include "sqldb_value.h"
 
 namespace stonks::sqldb::qb {
+/**
+ * @brief Builds the query to update values in the table.
+ */
 class Update {
  public:
   template <typename Table>
-  explicit Update(Table * /*unused*/)
-      : table_name_{TableTraits<Table>::GetName()} {}
+  explicit Update(Table* /*unused*/) : Update{TableTraits<Table>::GetName()} {}
 
+  /**
+   * @brief Sets the value for the column.
+   */
   template <typename Column>
-  [[nodiscard]] auto Set(std::string TEMP) -> auto & {
-    if (!column_values_.empty()) {
-      column_values_ += ", ";
-    }
-
-    column_values_ +=
-        fmt::format("{} = {}", ColumnTraits<Column>::GetName(), TEMP);
-
-    return *this;
+  [[nodiscard]] auto Set(const Value& value) -> auto& {
+    return Set(::stonks::sqldb::ColumnTraits<Column>::GetName(), value);
   }
 
-  [[nodiscard]] auto Where(const WhereQuery &where) -> Update &;
-  [[nodiscard]] auto And(const WhereQuery &where) -> Update &;
-  [[nodiscard]] auto Or(const WhereQuery &where) -> Update &;
+  /**
+   * @brief Sets the param for the column to be replaced later.
+   */
+  template <typename Column>
+  [[nodiscard]] auto Set(const Param& param) -> auto& {
+    return Set(::stonks::sqldb::ColumnTraits<Column>::GetName(), param);
+  }
 
+  /**
+   * @brief Adds condition to the query.
+   */
+  [[nodiscard]] auto Where(const WhereQuery& where) -> Update&;
+
+  /**
+   * @brief Adds AND-condition to the query.
+   */
+  [[nodiscard]] auto And(const WhereQuery& where) -> Update&;
+
+  /**
+   * @brief Adds OR-condition to the query.
+   */
+  [[nodiscard]] auto Or(const WhereQuery& where) -> Update&;
+
+  /**
+   * @brief Builds the query.
+   */
   [[nodiscard]] auto Build() const -> Query;
 
  private:
+  explicit Update(std::string table_name);
+
+  [[nodiscard]] auto Set(std::string_view column_name, std::string_view value)
+      -> auto&;
+  [[nodiscard]] auto Set(std::string_view column_name, const class Value& value)
+      -> Update&;
+  [[nodiscard]] auto Set(std::string_view column_name, const Param& param)
+      -> Update&;
+
   std::string table_name_{};
-  std::string column_values_{};
-  std::string where_clause_{};
+  std::string column_values_query_{};
+  std::string where_query_{};
 };
 }  // namespace stonks::sqldb::qb
 
