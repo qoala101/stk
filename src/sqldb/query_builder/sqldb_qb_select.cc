@@ -20,21 +20,11 @@ namespace stonks::sqldb::qb {
 Select::Select(All* /*unused*/) : select_all_{true} {}
 Select::Select(One* /*unused*/) : select_one_{true} {}
 
-auto Select::Where(const WhereQuery& where) -> Select& {
-  Expects(where_clause_.empty());
-  where_clause_ = fmt::format(" WHERE ({})", where.value);
-  Ensures(!where_clause_.empty());
-  return *this;
-}
-
-auto Select::And(const WhereQuery& where) -> Select& {
-  Expects(!where_clause_.empty());
-  where_clause_ += fmt::format(" AND ({})", where.value);
-  return *this;
-}
-auto Select::Or(const WhereQuery& where) -> Select& {
-  Expects(!where_clause_.empty());
-  where_clause_ += fmt::format(" OR ({})", where.value);
+auto Select::Where(WhereCondition condition) -> Select& {
+  auto& where_query = condition.GetQuery();
+  Expects(!where_query.empty());
+  where_query_ = std::move(where_query);
+  Ensures(!where_query_.empty());
   return *this;
 }
 
@@ -68,7 +58,7 @@ auto Select::Build() const -> SelectQuery {
   }
 
   query += fmt::format(" FROM {}{}{}{}", table_name_, join_clause_,
-                       where_clause_, limit_.GetLimitClause());
+                       where_query_, limit_.GetLimitClause());
 
   return {std::move(query), cell_definitions_};
 }

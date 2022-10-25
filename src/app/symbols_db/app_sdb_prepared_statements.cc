@@ -180,17 +180,21 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
                                          tables::SymbolPriceRecord::time>()
                 .From<tables::SymbolPriceRecord>()
                 .Where(
-                    sqldb::qb::Column<tables::SymbolPriceRecord::symbol_id>{} ==
-                    sqldb::qb::Param{
-                        sqldb::query_builder::Select<tables::SymbolInfo::id>()
-                            .From<tables::SymbolInfo>()
-                            .Where(
-                                sqldb::qb::Column<tables::SymbolInfo::name>{} ==
-                                sqldb::qb::Param{})})
-                .And(sqldb::qb::Column<tables::SymbolPriceRecord::time>{} >=
-                     sqldb::qb::Param{})
-                .And(sqldb::qb::Column<tables::SymbolPriceRecord::time>{} <
-                     sqldb::qb::Param{})
+                    (sqldb::qb::Column<
+                         tables::SymbolPriceRecord::symbol_id>{} ==
+                     sqldb::qb::Param{
+                         sqldb::query_builder::Select<tables::SymbolInfo::id>()
+                             .From<tables::SymbolInfo>()
+                             .Where(sqldb::qb::Column<
+                                        tables::SymbolInfo::name>{} ==
+                                    sqldb::qb::Param{})})
+                        .And(sqldb::qb::Column<
+                                 tables::SymbolPriceRecord::time>{} >=
+                             sqldb::qb::Param{})
+                        .And(sqldb::qb::Column<
+                                 tables::SymbolPriceRecord::time>{} <
+                             sqldb::qb::Param{}))
+
                 .Build());
       }},
 

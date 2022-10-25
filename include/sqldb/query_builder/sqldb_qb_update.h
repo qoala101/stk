@@ -37,17 +37,7 @@ class Update {
   /**
    * @brief Adds condition to the query.
    */
-  [[nodiscard]] auto Where(const WhereQuery& where) -> Update&;
-
-  /**
-   * @brief Adds AND-condition to the query.
-   */
-  [[nodiscard]] auto And(const WhereQuery& where) -> Update&;
-
-  /**
-   * @brief Adds OR-condition to the query.
-   */
-  [[nodiscard]] auto Or(const WhereQuery& where) -> Update&;
+  [[nodiscard]] auto Where(WhereCondition condition) -> Update&;
 
   /**
    * @brief Builds the query.

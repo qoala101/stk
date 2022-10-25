@@ -4,6 +4,7 @@ find_package(range-v3 REQUIRED)
 
 add_library(libsqldb
   query_builder/sqldb_qb_common.cc
+  query_builder/sqldb_qb_condition.cc
   query_builder/sqldb_qb_create.cc
   query_builder/sqldb_qb_delete.cc
   query_builder/sqldb_qb_drop.cc

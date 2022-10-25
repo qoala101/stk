@@ -5,8 +5,10 @@
 
 #include <vector>
 
+#include "cpp_this.h"
 #include "cpp_typed_struct.h"
 #include "cpp_views.h"
+#include "sqldb_qb_condition.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
@@ -32,52 +34,74 @@ struct Param {
   std::string text_{};
 };
 
-struct WhereQuery : public cpp::TypedStruct<std::string> {};
-
 struct QueryValue {
   explicit QueryValue(const Value &value) {}
   explicit QueryValue(const Param &param) {}
 };
 
-[[nodiscard]] auto Exists(const Select &builder) -> WhereQuery;
+/**
+ * @brief Builds WHERE-query from condition.
+ */
+class WhereCondition {
+ public:
+  /**
+   * @param condition Where condition.
+   */
+  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
+  WhereCondition(const Condition &condition);
 
-[[nodiscard]] inline auto On(const WhereQuery &where) {
-  return fmt::format("ON ({})", where.value);
+  /**
+   * @brief Gives the value of the query.
+   */
+  [[nodiscard]] auto GetQuery() const -> const std::string &;
+  [[nodiscard]] auto GetQuery() -> std::string &;
+
+ private:
+  [[nodiscard]] static auto GetQueryImpl(cpp::This<WhereCondition> auto &t)
+      -> auto &;
+
+  std::string query_{};
+};
+
+[[nodiscard]] auto Exists(const Select &builder) -> Condition;
+
+[[nodiscard]] inline auto On(const Condition &where) {
+  return fmt::format("ON ({})", where.GetQuery());
 };
 
 template <typename LeftColumn, typename RightColumn>
 [[nodiscard]] auto operator==(const Column<LeftColumn> &left,
                               const Column<RightColumn> &right) {
-  return WhereQuery{fmt::format("{} = {}",
-                                ColumnTraits<LeftColumn>::GetFullName(),
-                                ColumnTraits<RightColumn>::GetFullName())};
+  return Condition{fmt::format("{} = {}",
+                               ColumnTraits<LeftColumn>::GetFullName(),
+                               ColumnTraits<RightColumn>::GetFullName())};
 }
 
 template <typename LeftColumn>
 [[nodiscard]] auto operator==(const Column<LeftColumn> &left,
                               const Param &right) {
-  return WhereQuery{fmt::format(
+  return Condition{fmt::format(
       "{} = {}", ColumnTraits<LeftColumn>::GetFullName(), right.text_)};
 }
 
 template <typename LeftColumn>
 [[nodiscard]] auto operator==(const Column<LeftColumn> &left,
                               std::string_view right) {
-  return WhereQuery{fmt::format(
-      R"({} = "{}")", ColumnTraits<LeftColumn>::GetFullName(), right)};
+  return Condition{fmt::format(R"({} = "{}")",
+                               ColumnTraits<LeftColumn>::GetFullName(), right)};
 }
 
 template <typename LeftColumn>
 [[nodiscard]] auto operator>=(const Column<LeftColumn> &left,
                               const Param &right) {
-  return WhereQuery{fmt::format(
+  return Condition{fmt::format(
       "{} >= {}", ColumnTraits<LeftColumn>::GetFullName(), right.text_)};
 }
 
 template <typename LeftColumn>
 [[nodiscard]] auto operator<(const Column<LeftColumn> &left,
                              const Param &right) {
-  return WhereQuery{fmt::format(
+  return Condition{fmt::format(
       "{} < {}", ColumnTraits<LeftColumn>::GetFullName(), right.text_)};
 }
 }  // namespace stonks::sqldb::qb

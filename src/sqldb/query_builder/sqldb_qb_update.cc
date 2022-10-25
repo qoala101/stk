@@ -32,21 +32,11 @@ auto Update::Set(std::string_view column_name, const Param& param) -> Update& {
   return Set(column_name, param.text_);
 }
 
-auto Update::Where(const WhereQuery& where) -> Update& {
-  Expects(where_query_.empty());
-  where_query_ = fmt::format(" WHERE ({})", where.value);
+auto Update::Where(WhereCondition condition) -> Update& {
+  auto& where_query = condition.GetQuery();
+  Expects(!where_query.empty());
+  where_query_ = std::move(where_query);
   Ensures(!where_query_.empty());
-  return *this;
-}
-
-auto Update::And(const WhereQuery& where) -> Update& {
-  Expects(!where_query_.empty());
-  where_query_ += fmt::format(" AND ({})", where.value);
-  return *this;
-}
-auto Update::Or(const WhereQuery& where) -> Update& {
-  Expects(!where_query_.empty());
-  where_query_ += fmt::format(" OR ({})", where.value);
   return *this;
 }
 

@@ -70,9 +70,10 @@ class Select {
     return *this;
   }
 
-  [[nodiscard]] auto Where(const WhereQuery &where) -> Select &;
-  [[nodiscard]] auto And(const WhereQuery &where) -> Select &;
-  [[nodiscard]] auto Or(const WhereQuery &where) -> Select &;
+  /**
+   * @brief Adds condition to the query.
+   */
+  [[nodiscard]] auto Where(WhereCondition condition) -> Select &;
 
   template <typename Table>
   [[nodiscard]] auto Join(std::string_view on_clause) -> auto & {
@@ -97,7 +98,7 @@ class Select {
   std::string table_name_{};
   ResultDefinition cell_definitions_{};
   std::string full_column_names_{};
-  std::string where_clause_{};
+  std::string where_query_{};
   LimitVariant limit_{};
 
   std::string join_clause_{};

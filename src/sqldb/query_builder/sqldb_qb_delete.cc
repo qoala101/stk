@@ -7,21 +7,11 @@
 #include <utility>
 
 namespace stonks::sqldb::qb {
-auto Delete::Where(const WhereQuery& where) -> Delete& {
-  Expects(where_query_.empty());
-  where_query_ = fmt::format(" WHERE ({})", where.value);
+auto Delete::Where(WhereCondition condition) -> Delete& {
+  auto& where_query = condition.GetQuery();
+  Expects(!where_query.empty());
+  where_query_ = std::move(where_query);
   Ensures(!where_query_.empty());
-  return *this;
-}
-
-auto Delete::And(const WhereQuery& where) -> Delete& {
-  Expects(!where_query_.empty());
-  where_query_ += fmt::format(" AND ({})", where.value);
-  return *this;
-}
-auto Delete::Or(const WhereQuery& where) -> Delete& {
-  Expects(!where_query_.empty());
-  where_query_ += fmt::format(" OR ({})", where.value);
   return *this;
 }
 

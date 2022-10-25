@@ -22,17 +22,7 @@ class Delete {
   /**
    * @brief Adds condition to the query.
    */
-  [[nodiscard]] auto Where(const WhereQuery& where) -> Delete&;
-
-  /**
-   * @brief Adds AND-condition to the query.
-   */
-  [[nodiscard]] auto And(const WhereQuery& where) -> Delete&;
-
-  /**
-   * @brief Adds OR-condition to the query.
-   */
-  [[nodiscard]] auto Or(const WhereQuery& where) -> Delete&;
+  [[nodiscard]] auto Where(WhereCondition condition) -> Delete&;
 
   /**
    * @brief Builds the query.
