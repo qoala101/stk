@@ -34,9 +34,20 @@ struct Param {
   std::string text_{};
 };
 
-struct QueryValue {
-  explicit QueryValue(const Value &value) {}
-  explicit QueryValue(const Param &param) {}
+/**
+ * @brief Converts objects to parts of the query.
+ */
+class QueryValue {
+ public:
+  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
+  QueryValue(const Value &value) { query_ = value.ToString(); }
+  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
+  QueryValue(const Param &param) { query_ = param.text_; }
+
+  [[nodiscard]] auto GetQuery() const -> const std::string & { return query_; }
+
+ private:
+  std::string query_{};
 };
 
 /**

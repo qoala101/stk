@@ -23,10 +23,12 @@
 namespace stonks::sqldb::qb {
 Insert::Insert(All* /*unused*/) : insert_all_{true} {}
 
-auto Insert::Value(std::string_view column_name, std::string_view value)
-    -> auto& {
+auto Insert::Value(std::string_view column_name, const QueryValue& value)
+    -> Insert& {
   Expects(!column_name.empty());
-  Expects(!value.empty());
+
+  const auto& value_query = value.GetQuery();
+  Expects(!value_query.empty());
 
   if (!columns_query_.empty()) {
     columns_query_ += ", ";
@@ -38,21 +40,11 @@ auto Insert::Value(std::string_view column_name, std::string_view value)
     values_query_ += ", ";
   }
 
-  values_query_ += value;
+  values_query_ += value_query;
 
   Ensures(!columns_query_.empty());
   Ensures(!values_query_.empty());
   return *this;
-}
-
-auto Insert::Value(std::string_view column_name, const class Value& value)
-    -> Insert& {
-  return Value(column_name, value.ToString());
-}
-
-auto Insert::Value(std::string_view column_name, const Param& param)
-    -> Insert& {
-  return Value(column_name, param.text_);
 }
 
 auto Insert::Into(std::string table_name) -> Insert& {
@@ -65,10 +57,10 @@ auto Insert::Into(std::string table_name) -> Insert& {
 
 auto Insert::Into(std::string table_name,
                   const std::vector<std::string>& column_names) -> Insert& {
-  const auto param = Param{};
+  const auto value = QueryValue{Param{}};
 
   for (const auto& column_name : column_names) {
-    std::ignore = Value(column_name, param);
+    std::ignore = Value(column_name, value);
   }
 
   return Into(std::move(table_name));

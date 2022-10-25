@@ -22,16 +22,8 @@ class Update {
    * @brief Sets the value for the column.
    */
   template <typename Column>
-  [[nodiscard]] auto Set(const Value& value) -> auto& {
+  [[nodiscard]] auto Set(const QueryValue& value) -> auto& {
     return Set(::stonks::sqldb::ColumnTraits<Column>::GetName(), value);
-  }
-
-  /**
-   * @brief Sets the param for the column to be replaced later.
-   */
-  template <typename Column>
-  [[nodiscard]] auto Set(const Param& param) -> auto& {
-    return Set(::stonks::sqldb::ColumnTraits<Column>::GetName(), param);
   }
 
   /**
@@ -47,11 +39,7 @@ class Update {
  private:
   explicit Update(std::string table_name);
 
-  [[nodiscard]] auto Set(std::string_view column_name, std::string_view value)
-      -> auto&;
-  [[nodiscard]] auto Set(std::string_view column_name, const class Value& value)
-      -> Update&;
-  [[nodiscard]] auto Set(std::string_view column_name, const Param& param)
+  [[nodiscard]] auto Set(std::string_view column_name, const QueryValue& value)
       -> Update&;
 
   std::string table_name_{};

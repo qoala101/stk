@@ -11,25 +11,19 @@
 #include "sqldb_qb_common.h"
 
 namespace stonks::sqldb::qb {
-auto Update::Set(std::string_view column_name, std::string_view value)
-    -> auto& {
+auto Update::Set(std::string_view column_name, const QueryValue& value)
+    -> Update& {
+  const auto& value_query = value.GetQuery();
+  Expects(!value_query.empty());
+
   if (!column_values_query_.empty()) {
     column_values_query_ += ", ";
   }
 
-  column_values_query_ += fmt::format("{} = {}", column_name, value);
+  column_values_query_ += fmt::format("{} = {}", column_name, value_query);
 
   Ensures(!column_values_query_.empty());
   return *this;
-}
-
-auto Update::Set(std::string_view column_name, const class Value& value)
-    -> Update& {
-  return Set(column_name, value.ToString());
-}
-
-auto Update::Set(std::string_view column_name, const Param& param) -> Update& {
-  return Set(column_name, param.text_);
 }
 
 auto Update::Where(WhereCondition condition) -> Update& {

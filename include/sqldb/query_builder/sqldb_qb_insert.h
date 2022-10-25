@@ -24,16 +24,8 @@ class Insert {
    * @brief Specifies the value for the column.
    */
   template <typename Column>
-  [[nodiscard]] auto Value(const Value& value) -> auto& {
+  [[nodiscard]] auto Value(const QueryValue& value) -> auto& {
     return Value(ColumnTraits<Column>::GetName(), value);
-  }
-
-  /**
-   * @brief Specifies the param for the column to be substituted later.
-   */
-  template <typename Column>
-  [[nodiscard]] auto Value(const Param& param) -> auto& {
-    return Value(ColumnTraits<Column>::GetName(), param);
   }
 
   /**
@@ -57,12 +49,8 @@ class Insert {
   [[nodiscard]] auto Build() const -> Query;
 
  private:
-  [[nodiscard]] auto Value(std::string_view column_name, std::string_view value)
-      -> auto&;
   [[nodiscard]] auto Value(std::string_view column_name,
-                           const class Value& value) -> Insert&;
-  [[nodiscard]] auto Value(std::string_view column_name, const Param& param)
-      -> Insert&;
+                           const QueryValue& value) -> Insert&;
 
   [[nodiscard]] auto Into(std::string table_name) -> Insert&;
   [[nodiscard]] auto Into(std::string table_name,
