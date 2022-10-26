@@ -19,6 +19,7 @@
 #include "sqldb_query_builder.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
+#include "sqldb_value.h"
 
 namespace stonks::app::sdb {
 namespace {
@@ -98,7 +99,7 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb>& db)
                         .Where(sqldb::qb::Column<
                                    tables::SymbolPriceRecord::symbol_id>{} ==
                                sqldb::qb::Column<tables::SymbolInfo::id>{})
-                        .Limit(1)))
+                        .Limit(sqldb::Value{1})))
                 .Build());
       }},
 

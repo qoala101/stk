@@ -23,8 +23,26 @@
 namespace stonks::sqldb::qb {
 Insert::Insert(All* /*unused*/) : insert_all_{true} {}
 
+auto Insert::Build() const -> Query {
+  Expects(!table_name_.empty());
+  Expects(!columns_query_.empty());
+  Expects(!values_query_.empty());
+
+  auto query = fmt::format("INSERT INTO {} ({}) VALUES ({})", table_name_,
+                           columns_query_, values_query_);
+
+  Ensures(!query.empty());
+  return {std::move(query)};
+}
+
 auto Insert::Value(std::string_view column_name, const QueryValue& value)
     -> Insert& {
+  Expects(!insert_all_);
+  ValueImpl(column_name, value);
+  return *this;
+}
+
+void Insert::ValueImpl(std::string_view column_name, const QueryValue& value) {
   Expects(!column_name.empty());
 
   const auto& value_query = value.GetQuery();
@@ -44,37 +62,27 @@ auto Insert::Value(std::string_view column_name, const QueryValue& value)
 
   Ensures(!columns_query_.empty());
   Ensures(!values_query_.empty());
-  return *this;
-}
-
-auto Insert::Into(std::string table_name) -> Insert& {
-  Expects(table_name_.empty());
-  Expects(!table_name.empty());
-  table_name_ = std::move(table_name);
-  Ensures(!table_name_.empty());
-  return *this;
 }
 
 auto Insert::Into(std::string table_name,
-                  const std::vector<std::string>& column_names) -> Insert& {
-  const auto value = QueryValue{Param{}};
+                  const fu2::unique_function<std::vector<std::string>() const>&
+                      get_column_names) -> Insert& {
+  Expects(table_name_.empty());
+  Expects(!table_name.empty());
+  table_name_ = std::move(table_name);
 
-  for (const auto& column_name : column_names) {
-    std::ignore = Value(column_name, value);
+  if (insert_all_) {
+    Expects(columns_query_.empty());
+    Expects(values_query_.empty());
+
+    const auto param = QueryValue{Param{}};
+
+    for (const auto& column_name : get_column_names()) {
+      ValueImpl(column_name, param);
+    }
   }
 
-  return Into(std::move(table_name));
-}
-
-auto Insert::Build() const -> Query {
-  Expects(!table_name_.empty());
-  Expects(!columns_query_.empty());
-  Expects(!values_query_.empty());
-
-  auto query = fmt::format("INSERT INTO {} ({}) VALUES ({})", table_name_,
-                           columns_query_, values_query_);
-
-  Ensures(!query.empty());
-  return {std::move(query)};
+  Ensures(!table_name_.empty());
+  return *this;
 }
 }  // namespace stonks::sqldb::qb

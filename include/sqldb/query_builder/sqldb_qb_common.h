@@ -45,8 +45,12 @@ class QueryValue {
   QueryValue(const Param &param) { query_ = param.text_; }
 
   [[nodiscard]] auto GetQuery() const -> const std::string & { return query_; }
+  [[nodiscard]] auto GetQuery() -> std::string & { return query_; }
 
  private:
+  [[nodiscard]] static auto GetQueryImpl(cpp::This<QueryValue> auto &t)
+      -> auto &;
+
   std::string query_{};
 };
 
@@ -77,7 +81,7 @@ class WhereCondition {
 [[nodiscard]] auto Exists(const Select &builder) -> Condition;
 
 [[nodiscard]] inline auto On(const Condition &where) {
-  return fmt::format("ON ({})", where.GetQuery());
+  return where;
 };
 
 template <typename LeftColumn, typename RightColumn>

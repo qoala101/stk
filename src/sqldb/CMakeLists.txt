@@ -9,7 +9,6 @@ add_library(libsqldb
   query_builder/sqldb_qb_delete.cc
   query_builder/sqldb_qb_drop.cc
   query_builder/sqldb_qb_insert.cc
-  query_builder/sqldb_qb_limit_variant.cc
   query_builder/sqldb_qb_select.cc
   query_builder/sqldb_qb_update.cc
   sqldb_i_select_statement.cc

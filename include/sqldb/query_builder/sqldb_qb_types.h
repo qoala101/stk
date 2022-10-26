@@ -26,6 +26,12 @@ struct ForeignKey {
   std::string target_table_name{};
   std::string target_column_name{};
 };
+
+struct FullColumnType {
+  std::string name{};
+  std::string full_name{};
+  DataTypeVariant type{};
+};
 }  // namespace stonks::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_TYPES_H_

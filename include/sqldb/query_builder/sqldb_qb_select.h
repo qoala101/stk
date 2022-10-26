@@ -1,6 +1,7 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_SELECT_H_
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_SELECT_H_
 
+#include <function2/function2.hpp>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -10,19 +11,13 @@
 #include "cpp_optional.h"
 #include "cpp_views.h"
 #include "sqldb_qb_common.h"
-#include "sqldb_qb_limit_variant.h"
+#include "sqldb_qb_condition.h"
 #include "sqldb_qb_table_traits.h"
+#include "sqldb_qb_types.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
-namespace detail {
-struct ColumnType {
-  std::string name{};
-  DataTypeVariant type{};
-};
-}  // namespace detail
-
 /**
  * @brief Builds query to select data from DB.
  */
@@ -33,11 +28,7 @@ class Select {
    */
   template <typename... Columns>
   explicit Select(std::tuple<Columns...> * /*unused*/)
-      // : Select{ColumnsTraits<std::tuple<Columns...>>::GetNames()} {}
-      : cell_definitions_{::stonks::sqldb::ColumnsTraits<
-            std::tuple<Columns...>>::GetTypes()},
-        full_column_names_{::stonks::sqldb::ColumnsTraits<
-            std::tuple<Columns...>>::GetFullNames()} {}
+      : Select{ColumnsTraits<std::tuple<Columns...>>::GetFullColumnTypes()} {}
 
   /**
    * @brief Query would select all table columns.
@@ -49,25 +40,22 @@ class Select {
    */
   explicit Select(One * /*unused*/);
 
+  /**
+   * @brief Specifies the main table to select from.
+   */
   template <typename Table>
   [[nodiscard]] auto From() -> auto & {
-    Expects(table_name_.empty());
-    table_name_ = TableTraits<Table>::GetName();
+    return From(TableTraits<Table>::GetName(), []() {
+      return ColumnsTraits<typename Table::Columns>::GetFullColumnTypes();
+    });
+  }
 
-    if (cell_definitions_.value.empty()) {
-      cell_definitions_ = {
-          ::stonks::sqldb::ColumnsTraits<typename Table::Columns>::GetTypes()};
-    }
-
-    if (const auto full_column_names_required =
-            !select_all_ && !select_one_ && full_column_names_.empty()) {
-      full_column_names_ = ::stonks::sqldb::ColumnsTraits<
-          typename Table::Columns>::GetFullNames();
-    }
-
-    Ensures(!table_name_.empty());
-    Ensures(!cell_definitions_.value.empty());
-    return *this;
+  /**
+   * @brief Joins the table on specified condition.
+   */
+  template <typename Table>
+  [[nodiscard]] auto Join(const Condition &condition) -> auto & {
+    return Join(TableTraits<Table>::GetName(), condition);
   }
 
   /**
@@ -75,33 +63,37 @@ class Select {
    */
   [[nodiscard]] auto Where(WhereCondition condition) -> Select &;
 
-  template <typename Table>
-  [[nodiscard]] auto Join(std::string_view on_clause) -> auto & {
-    join_clause_ +=
-        fmt::format(" JOIN {} {}", TableTraits<Table>::GetName(), on_clause);
+  /**
+   * @brief Specifies the limit of returned rows.
+   */
+  [[nodiscard]] auto Limit(const QueryValue &value) -> Select &;
 
-    Ensures(!join_clause_.empty());
-    return *this;
-  }
-
-  [[nodiscard]] auto Limit(int limit) -> Select &;
-
-  [[nodiscard]] auto LimitParam() -> Select &;
-
+  /**
+   * @brief Builds the query.
+   */
   [[nodiscard]] auto Build() const -> SelectQuery;
 
  private:
-  explicit Select(const std::vector<std::string> &column_names);
+  explicit Select(const std::vector<FullColumnType> &columns);
+
+  [[nodiscard]] auto From(
+      std::string table_name,
+      const fu2::unique_function<std::vector<FullColumnType>() const>
+          &get_columns) -> Select &;
+
+  [[nodiscard]] auto Join(std::string_view table_name,
+                          const Condition &condition) -> Select &;
+
+  void SetColumnsQuery(const std::vector<FullColumnType> &columns);
+  void SetResultDefinition(const std::vector<FullColumnType> &columns);
 
   bool select_all_{};
-  bool select_one_{};
   std::string table_name_{};
-  ResultDefinition cell_definitions_{};
-  std::string full_column_names_{};
+  std::string columns_query_{};
   std::string where_query_{};
-  LimitVariant limit_{};
-
-  std::string join_clause_{};
+  std::string limit_query_{};
+  std::string join_query_{};
+  ResultDefinition result_definition_{};
 };
 }  // namespace stonks::sqldb::qb
 

@@ -1,6 +1,8 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_
 
+#include <function2/function2.hpp>
+
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_table_traits.h"
 #include "sqldb_table_traits.h"
@@ -33,14 +35,9 @@ class Insert {
    */
   template <typename Table>
   [[nodiscard]] auto Into() -> auto& {
-    auto table_name = TableTraits<Table>::GetName();
-
-    if (insert_all_) {
-      return Into(std::move(table_name),
-                  ColumnsTraits<typename Table::Columns>::GetNames());
-    }
-
-    return Into(std::move(table_name));
+    return Into(TableTraits<Table>::GetName(), []() {
+      return ColumnsTraits<typename Table::Columns>::GetNames();
+    });
   }
 
   /**
@@ -51,11 +48,13 @@ class Insert {
  private:
   [[nodiscard]] auto Value(std::string_view column_name,
                            const QueryValue& value) -> Insert&;
+  
+  void ValueImpl(std::string_view column_name, const QueryValue& value);
 
-  [[nodiscard]] auto Into(std::string table_name) -> Insert&;
-  [[nodiscard]] auto Into(std::string table_name,
-                          const std::vector<std::string>& column_names)
-      -> Insert&;
+  [[nodiscard]] auto Into(
+      std::string table_name,
+      const fu2::unique_function<std::vector<std::string>() const>&
+          get_column_names) -> Insert&;
 
   bool insert_all_{};
   std::string table_name_{};

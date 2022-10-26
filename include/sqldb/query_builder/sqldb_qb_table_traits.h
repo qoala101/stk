@@ -3,9 +3,9 @@
 
 #include <string>
 
+#include "sqldb_qb_types.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
-#include "sqldb_qb_types.h"
 
 /**
  * @file API to retrieve query-related info from table definitions.
@@ -48,6 +48,15 @@ struct ColumnsTraits<std::tuple<Columns...>> {
     static const auto kConstant = [] {
       auto values = std::vector<ForeignKey>{};
       GetForeignKeysImpl<Columns...>(values);
+      return values;
+    }();
+    return kConstant;
+  }
+
+  [[nodiscard]] static auto GetFullColumnTypes() -> auto & {
+    static const auto kConstant = [] {
+      auto values = std::vector<FullColumnType>{};
+      GetFullColumnTypesImpl<Columns...>(values);
       return values;
     }();
     return kConstant;
@@ -106,6 +115,19 @@ struct ColumnsTraits<std::tuple<Columns...>> {
 
     if constexpr (sizeof...(OtherColumns) > 0) {
       GetForeignKeysImpl<OtherColumns...>(values);
+    }
+  }
+
+  template <typename Column, typename... OtherColumns>
+  static void GetFullColumnTypesImpl(std::vector<FullColumnType> &values) {
+    using ColumnTraits = ColumnTraits<Column>;
+
+    values.emplace_back(FullColumnType{.name = ColumnTraits::GetName(),
+                                       .full_name = ColumnTraits::GetFullName(),
+                                       .type = ColumnTraits::GetType()});
+
+    if constexpr (sizeof...(OtherColumns) > 0) {
+      GetFullColumnTypesImpl<OtherColumns...>(values);
     }
   }
 };
