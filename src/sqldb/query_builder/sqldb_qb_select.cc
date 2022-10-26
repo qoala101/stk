@@ -18,7 +18,6 @@
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_types.h"
 #include "sqldb_types.h"
-#include "sqldb_value.h"
 
 namespace stonks::sqldb::qb {
 Select::Select(All* /*unused*/) : select_all_{true}, columns_query_{"*"} {

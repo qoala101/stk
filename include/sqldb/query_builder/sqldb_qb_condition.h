@@ -17,12 +17,12 @@ class Condition {
   /**
    * @brief Adds AND-condition to the query.
    */
-  [[nodiscard]] auto And(const Condition &condition) -> Condition &;
+  [[nodiscard]] auto operator&&(const Condition &condition) -> Condition &;
 
   /**
    * @brief Adds OR-condition to the query.
    */
-  [[nodiscard]] auto Or(const Condition &condition) -> Condition &;
+  [[nodiscard]] auto operator||(const Condition &condition) -> Condition &;
 
   /**
    * @brief Gives the value of the query.

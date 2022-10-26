@@ -11,13 +11,14 @@
 
 #include "cpp_not_null.h"
 #include "not_null.hpp"
+#include "sqldb_qb_condition.h"
 #include "sqldb_qb_select.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
 
-Param::Param(const Select &builder)
-    : text_{fmt::format("({})", builder.Build().query.value)} {}
+// Param::Param(const Select &builder)
+//     : text_{fmt::format("({})", builder.Build().query.value)} {}
 
 auto Exists(const Select &builder) -> Condition {
   return Condition{fmt::format("EXISTS ({})", builder.Build().query.value)};
@@ -41,4 +42,12 @@ auto WhereCondition::GetQuery() const -> const std::string & {
 }
 
 auto WhereCondition::GetQuery() -> std::string & { return GetQueryImpl(*this); }
+
+QueryValue::QueryValue(const Select &builder)
+    : query_{fmt::format("({})", builder.Build().query.value)} {}
+
+[[nodiscard]] auto operator==(std::string_view left, const Select &builder)
+    -> Condition {
+  return Condition{fmt::format("{} = ({})", left, builder.Build().query.value)};
+}
 }  // namespace stonks::sqldb::qb

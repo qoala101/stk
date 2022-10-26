@@ -29,7 +29,7 @@ class Select;
 struct Param {
   Param() : text_{"?"} {}
 
-  explicit Param(const Select &builder);
+  // explicit Param(const Select &builder);
 
   std::string text_{};
 };
@@ -43,6 +43,8 @@ class QueryValue {
   QueryValue(const Value &value) { query_ = value.ToString(); }
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   QueryValue(const Param &param) { query_ = param.text_; }
+
+  QueryValue(const Select &builder);
 
   [[nodiscard]] auto GetQuery() const -> const std::string & { return query_; }
   [[nodiscard]] auto GetQuery() -> std::string & { return query_; }
@@ -80,9 +82,7 @@ class WhereCondition {
 
 [[nodiscard]] auto Exists(const Select &builder) -> Condition;
 
-[[nodiscard]] inline auto On(const Condition &where) {
-  return where;
-};
+[[nodiscard]] inline auto On(const Condition &where) { return where; };
 
 template <typename LeftColumn, typename RightColumn>
 [[nodiscard]] auto operator==(const Column<LeftColumn> &left,
@@ -97,6 +97,15 @@ template <typename LeftColumn>
                               const Param &right) {
   return Condition{fmt::format(
       "{} = {}", ColumnTraits<LeftColumn>::GetFullName(), right.text_)};
+}
+
+[[nodiscard]] auto operator==(std::string_view left, const Select &builder)
+    -> Condition;
+
+template <typename LeftColumn>
+[[nodiscard]] auto operator==(const Column<LeftColumn> &left,
+                              const Select &builder) {
+  return ColumnTraits<LeftColumn>::GetFullName() == builder;
 }
 
 template <typename LeftColumn>

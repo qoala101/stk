@@ -13,12 +13,12 @@ Condition::Condition(std::string query)
   Ensures(!query_.empty());
 }
 
-auto Condition::And(const Condition &condition) -> Condition & {
+auto Condition::operator&&(const Condition &condition) -> Condition & {
   query_ += fmt::format(" AND ({})", condition.query_);
   return *this;
 }
 
-auto Condition::Or(const Condition &condition) -> Condition & {
+auto Condition::operator||(const Condition &condition) -> Condition & {
   query_ += fmt::format(" OR ({})", condition.query_);
   return *this;
 }
