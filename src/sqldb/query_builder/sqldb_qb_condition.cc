@@ -1,27 +1,49 @@
 #include "sqldb_qb_condition.h"
 
-#include <fmt/format.h>
+#include <fmt/core.h>
 
 #include <gsl/assert>
+#include <string>
+#include <utility>
+
+#include "cpp_typed_struct.h"
+#include "sqldb_p_types.h"
 
 namespace stonks::sqldb::qb {
-Condition::Condition(std::string query)
+Condition::Condition(p::Parametrized<Query> query)
     : query_{[&query]() {
-        Expects(!query.empty());
+        Expects(!query.value.empty());
         return std::move(query);
       }()} {
-  Ensures(!query_.empty());
+  Ensures(!query_.value.empty());
 }
 
 auto Condition::operator&&(const Condition &condition) -> Condition & {
-  query_ += fmt::format(" AND ({})", condition.query_);
+  AppendCondition(condition, "AND");
   return *this;
 }
 
 auto Condition::operator||(const Condition &condition) -> Condition & {
-  query_ += fmt::format(" OR ({})", condition.query_);
+  AppendCondition(condition, "OR");
   return *this;
 }
 
-auto Condition::GetQuery() const -> const std::string & { return query_; }
+auto Condition::GetQueryImpl(cpp::This<Condition> auto &t) -> auto & {
+  return t.query_;
+}
+
+auto Condition::GetQuery() const -> const p::Parametrized<Query> & {
+  return GetQueryImpl(*this);
+}
+
+auto Condition::GetQuery() -> p::Parametrized<Query> & {
+  return GetQueryImpl(*this);
+}
+
+void Condition::AppendCondition(const Condition &condition,
+                                std::string_view operator_string) {
+  query_.value +=
+      fmt::format(" {} ({})", operator_string, condition.query_.value);
+  query_.params.Append(condition.query_.params);
+}
 }  // namespace stonks::sqldb::qb
