@@ -1,7 +1,10 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CONDITION_H_
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CONDITION_H_
 
-#include <string>
+#include <string_view>
+
+#include "sqldb_p_types.h"
+#include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
 /**
@@ -10,9 +13,9 @@ namespace stonks::sqldb::qb {
 class Condition {
  public:
   /**
-   * @param query Initial condition.
+   * @param query Initial condition query.
    */
-  explicit Condition(std::string query);
+  explicit Condition(p::Parametrized<Query> query);
 
   /**
    * @brief Adds AND-condition to the query.
@@ -27,10 +30,17 @@ class Condition {
   /**
    * @brief Gives the value of the query.
    */
-  [[nodiscard]] auto GetQuery() const -> const std::string &;
+  [[nodiscard]] auto GetQuery() const -> const p::Parametrized<Query> &;
+  [[nodiscard]] auto GetQuery() -> p::Parametrized<Query> &;
 
  private:
-  std::string query_{};
+  [[nodiscard]] static auto GetQueryImpl(cpp::This<Condition> auto &t)
+      -> auto &;
+
+  void AppendCondition(const Condition &condition,
+                       std::string_view operator_string);
+
+  p::Parametrized<Query> query_{};
 };
 }  // namespace stonks::sqldb::qb
 
