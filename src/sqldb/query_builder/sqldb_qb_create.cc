@@ -43,7 +43,6 @@ namespace {
     }
   }
 
-  Ensures(!query.empty());
   return query;
 }
 
@@ -95,18 +94,17 @@ namespace {
 }  // namespace
 
 auto Create::IfNotExists() -> Create & {
-  Expects(if_not_exists_query_.empty());
-  if_not_exists_query_ = " IF NOT EXISTS";
-  Ensures(!if_not_exists_query_.empty());
+  Expects(if_not_exists_query_.value.empty());
+  if_not_exists_query_.value = " IF NOT EXISTS";
+  Ensures(!if_not_exists_query_.value.empty());
   return *this;
 }
 
 auto Create::Build() const -> Query {
-  auto query = Query{fmt::format(
-      R"(CREATE TABLE{} "{}"({}{}{}))", if_not_exists_query_, table_name_,
-      columns_query_, primary_keys_query_, foreign_keys_query_)};
-  Ensures(!query.value.empty());
-  return query;
+  return {fmt::format(R"(CREATE TABLE{} "{}"({}{}{}))",
+                      if_not_exists_query_.value, table_name_.value,
+                      columns_query_.value, primary_keys_query_.value,
+                      foreign_keys_query_.value)};
 }
 
 Create::Create(std::string table_name,
@@ -123,7 +121,7 @@ Create::Create(std::string table_name,
       }()},
       primary_keys_query_{BuildPrimaryKeysQuery(primary_keys)},
       foreign_keys_query_{BuildForeignKeysQuery(foreign_keys)} {
-  Ensures(!table_name_.empty());
-  Ensures(!columns_query_.empty());
+  Ensures(!table_name_.value.empty());
+  Ensures(!columns_query_.value.empty());
 }
 }  // namespace stonks::sqldb::qb

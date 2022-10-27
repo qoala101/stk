@@ -41,11 +41,11 @@ class Create {
          const std::vector<PrimaryKey> &primary_keys,
          const std::vector<ForeignKey> &foreign_keys);
 
-  std::string table_name_{};
-  std::string columns_query_{};
-  std::string primary_keys_query_{};
-  std::string foreign_keys_query_{};
-  std::string if_not_exists_query_{};
+  Query table_name_{};
+  Query columns_query_{};
+  Query primary_keys_query_{};
+  Query foreign_keys_query_{};
+  Query if_not_exists_query_{};
 };
 }  // namespace stonks::sqldb::qb
 

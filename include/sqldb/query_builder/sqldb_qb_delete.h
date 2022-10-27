@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "sqldb_qb_common.h"
+#include "sqldb_qb_where_condition.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
@@ -27,13 +27,13 @@ class Delete {
   /**
    * @brief Builds the query.
    */
-  [[nodiscard]] auto Build() const -> Query;
+  [[nodiscard]] auto Build() const -> p::Parametrized<Query>;
 
  private:
   explicit Delete(std::string table_name);
 
-  std::string table_name_{};
-  std::string where_query_{};
+  Query table_name_{};
+  p::Parametrized<Query> where_query_{};
 };
 }  // namespace stonks::sqldb::qb
 
