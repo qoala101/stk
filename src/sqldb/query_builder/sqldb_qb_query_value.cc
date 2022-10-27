@@ -7,8 +7,8 @@ QueryValue::QueryValue(p::Param param) : query_{"?", {{{param}}}} {}
 
 QueryValue::QueryValue(const Select &select) : QueryValue{select.Build()} {}
 
-QueryValue::QueryValue(p::Parametrized<SelectQuery> query)
-    : query_{fmt::format("({})", query.value), std::move(query.params)} {}
+QueryValue::QueryValue(const p::Parametrized<SelectQuery> &query)
+    : query_{fmt::format("({})", query.value), query.params} {}
 
 auto QueryValue::GetQueryImpl(cpp::This<QueryValue> auto &t) -> auto & {
   return t.query_;

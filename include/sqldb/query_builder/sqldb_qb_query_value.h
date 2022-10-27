@@ -25,7 +25,7 @@ class QueryValue {
   [[nodiscard]] auto GetQuery() -> p::Parametrized<Query> &;
 
  private:
-  explicit QueryValue(p::Parametrized<SelectQuery> query);
+  explicit QueryValue(const p::Parametrized<SelectQuery> &query);
 
   [[nodiscard]] static auto GetQueryImpl(cpp::This<QueryValue> auto &t)
       -> auto &;
