@@ -2,6 +2,8 @@
 
 #include <gsl/assert>
 
+#include "sqldb_qb_select.h"
+
 namespace stonks::sqldb::qb {
 QueryValue::QueryValue(const Value &value) : query_{value.ToString()} {}
 
@@ -12,8 +14,7 @@ QueryValue::QueryValue(const Select &select) : QueryValue{select.Build()} {}
 QueryValue::QueryValue(const p::Parametrized<SelectQuery> &query)
     : query_{[&query]() {
                Expects(!query.value.empty());
-               return p::Parametrized<SelectQuery>{
-                   fmt::format("({})", query.value)};
+               return Query{fmt::format("({})", query.value)};
              }(),
              query.params} {
   Ensures(!query_.value.empty());

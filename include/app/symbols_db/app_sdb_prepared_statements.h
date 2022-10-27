@@ -4,7 +4,7 @@
 #include "app_sdb_tables.h"
 #include "cpp_lazy.h"
 #include "cpp_not_null.h"
-#include "sqldb_i_db.h"
+#include "parametrized/sqldb_p_db.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 
@@ -62,7 +62,7 @@ struct PreparedStatements {
 /**
  * @brief Prepares the statements for DB.
  */
-[[nodiscard]] auto PreparedStatementsFrom(const cpp::NnSp<sqldb::IDb> &db)
+[[nodiscard]] auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db> &db)
     -> PreparedStatements;
 }  // namespace stonks::app::sdb
 

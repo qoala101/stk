@@ -10,7 +10,7 @@
 #include "core_types.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
-#include "di_factory.h"
+#include "parametrized/sqldb_p_db.h"
 #include "sqldb_i_db.h"
 
 namespace stonks::app::sdb {
@@ -92,7 +92,7 @@ class App {
   void UpdateSymbolInfo(core::SymbolInfo info);
   void DeleteSymbolInfo(core::SymbolInfo info);
 
-  cpp::NnSp<sqldb::IDb> db_;
+  cpp::NnSp<sqldb::p::Db> db_;
   PreparedStatements prepared_statements_;
 };
 }  // namespace stonks::app::sdb

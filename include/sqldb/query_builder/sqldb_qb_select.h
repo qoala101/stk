@@ -9,6 +9,7 @@
 #include "cpp_lazy.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_condition.h"
+#include "sqldb_qb_on_condition.h"
 #include "sqldb_qb_query_value.h"
 #include "sqldb_qb_table_traits.h"
 #include "sqldb_qb_types.h"
@@ -44,16 +45,18 @@ class Select {
    */
   template <typename Table>
   [[nodiscard]] auto From() -> auto & {
-    return From(TableTraits<Table>::GetName(), []() {
-      return ColumnsTraits<typename Table::Columns>::GetFullColumnTypes();
-    });
+    return From(
+        TableTraits<Table>::GetName(),
+        cpp::Lazy<std::vector<FullColumnType>>{[]() {
+          return ColumnsTraits<typename Table::Columns>::GetFullColumnTypes();
+        }});
   }
 
   /**
    * @brief Joins the table on specified condition.
    */
   template <typename Table>
-  [[nodiscard]] auto Join(const Condition &condition) -> auto & {
+  [[nodiscard]] auto Join(const OnCondition &condition) -> auto & {
     return Join(TableTraits<Table>::GetName(), condition);
   }
 
@@ -80,7 +83,7 @@ class Select {
       -> Select &;
 
   [[nodiscard]] auto Join(std::string_view table_name,
-                          const Condition &condition) -> Select &;
+                          const OnCondition &condition) -> Select &;
 
   void SetColumnsQueryFrom(const std::vector<FullColumnType> &columns);
 

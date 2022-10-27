@@ -4,6 +4,7 @@
 #include <function2/function2.hpp>
 #include <gsl/assert>
 
+#include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_not_null.h"
 #include "cpp_this.h"  // IWYU pragma: keep
 
@@ -18,11 +19,10 @@ class Lazy {
    * @param initializer Would be called to create the object
    * when it's requested the first time.
    */
-  explicit Lazy(fu2::unique_function<T()> initializer)
-      : initializer_{[&initializer]() {
-          Expects(!initializer.empty());
-          return std::move(initializer);
-        }()} {
+  template <cpp::InvocableReturning<T> Initializer>
+  // NOLINTNEXTLINE(*-forwarding-reference-overload)
+  explicit Lazy(Initializer &&initializer)
+      : initializer_{std::forward<Initializer>(initializer)} {
     Ensures(!initializer_.empty());
   }
 

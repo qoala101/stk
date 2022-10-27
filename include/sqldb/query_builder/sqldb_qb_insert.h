@@ -9,7 +9,6 @@
 #include "sqldb_qb_table_traits.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
-#include "sqldb_value.h"
 
 namespace stonks::sqldb::qb {
 /**
@@ -37,9 +36,10 @@ class Insert {
    */
   template <typename Table>
   [[nodiscard]] auto Into() -> auto& {
-    return Into(TableTraits<Table>::GetName(), []() {
-      return ColumnsTraits<typename Table::Columns>::GetNames();
-    });
+    return Into(TableTraits<Table>::GetName(),
+                cpp::Lazy<std::vector<std::string>>{[]() {
+                  return ColumnsTraits<typename Table::Columns>::GetNames();
+                }});
   }
 
   /**

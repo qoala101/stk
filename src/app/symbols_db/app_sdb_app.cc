@@ -25,8 +25,10 @@
 #include "core_types.h"
 #include "cpp_lazy.h"
 #include "cpp_not_null.h"
+#include "cpp_smart_pointers.h"
 #include "cpp_typed_struct.h"
 #include "cpp_views.h"
+#include "parametrized/sqldb_p_db.h"
 #include "sqldb_as_values.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
@@ -119,9 +121,10 @@ void UpdateItems(
         .base_asset = {.asset = {std::move(base_assets[i].Get<std::string>())},
                        .min_amount = base_asset_min_amounts[i].Get<double>(),
                        .price_step = base_asset_price_steps[i].Get<double>()},
-        .quote_asset = {.asset = {std::move(quote_assets[i].Get<std::string>())},
-                        .min_amount = quote_asset_min_amounts[i].Get<double>(),
-                        .price_step = quote_asset_price_steps[i].Get<double>()}});
+        .quote_asset = {
+            .asset = {std::move(quote_assets[i].Get<std::string>())},
+            .min_amount = quote_asset_min_amounts[i].Get<double>(),
+            .price_step = quote_asset_price_steps[i].Get<double>()}});
   }
 
   return infos;
@@ -135,7 +138,8 @@ void App::CreateTablesIfNotExist() {
 }
 
 App::App(cpp::NnUp<sqldb::IDb> db)
-    : db_{std::move(db)}, prepared_statements_{PreparedStatementsFrom(db_)} {
+    : db_{cpp::MakeNnSp<sqldb::p::Db>(std::move(db))},
+      prepared_statements_{PreparedStatementsFrom(db_)} {
   CreateTablesIfNotExist();
 }
 

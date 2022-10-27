@@ -87,13 +87,13 @@ auto Select::From(std::string table_name,
   return *this;
 }
 
-auto Select::Join(std::string_view table_name, const Condition& condition)
+auto Select::Join(std::string_view table_name, const OnCondition& condition)
     -> Select& {
   const auto& condition_query = condition.GetQuery();
   Expects(!condition_query.value.empty());
 
   join_query_.value +=
-      fmt::format(" JOIN {} ON ({})", table_name, condition_query.value);
+      fmt::format(" JOIN {}{}", table_name, condition_query.value);
   join_query_.params.Append(condition_query.params);
 
   Ensures(!join_query_.value.empty());
