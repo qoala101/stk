@@ -26,7 +26,7 @@ class Drop {
  private:
   explicit Drop(std::string table_name);
 
-  std::string table_name_{};
+  Query table_name_{};
 };
 }  // namespace stonks::sqldb::qb
 

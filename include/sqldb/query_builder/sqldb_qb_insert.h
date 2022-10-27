@@ -4,6 +4,7 @@
 #include <function2/function2.hpp>
 
 #include "sqldb_qb_common.h"
+#include "sqldb_qb_query_value.h"
 #include "sqldb_qb_table_traits.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
@@ -43,12 +44,12 @@ class Insert {
   /**
    * @brief Builds the query.
    */
-  [[nodiscard]] auto Build() const -> Query;
+  [[nodiscard]] auto Build() const -> p::Parametrized<Query>;
 
  private:
   [[nodiscard]] auto Value(std::string_view column_name,
                            const QueryValue& value) -> Insert&;
-  
+
   void ValueImpl(std::string_view column_name, const QueryValue& value);
 
   [[nodiscard]] auto Into(
@@ -57,9 +58,9 @@ class Insert {
           get_column_names) -> Insert&;
 
   bool insert_all_{};
-  std::string table_name_{};
-  std::string columns_query_{};
-  std::string values_query_{};
+  Query table_name_{};
+  Query columns_query_{};
+  p::Parametrized<Query> values_query_{};
 };
 }  // namespace stonks::sqldb::qb
 

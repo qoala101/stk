@@ -17,22 +17,20 @@
 #include <variant>
 
 #include "cpp_typed_struct.h"
+#include "sqldb_p_types.h"
 #include "sqldb_qb_common.h"
-#include "sqldb_value.h"
 
 namespace stonks::sqldb::qb {
 Insert::Insert(All* /*unused*/) : insert_all_{true} {}
 
-auto Insert::Build() const -> Query {
-  Expects(!table_name_.empty());
-  Expects(!columns_query_.empty());
-  Expects(!values_query_.empty());
+auto Insert::Build() const -> p::Parametrized<Query> {
+  Expects(!table_name_.value.empty());
+  Expects(!columns_query_.value.empty());
+  Expects(!values_query_.value.empty());
 
-  auto query = fmt::format("INSERT INTO {} ({}) VALUES ({})", table_name_,
-                           columns_query_, values_query_);
-
-  Ensures(!query.empty());
-  return {std::move(query)};
+  return {fmt::format("INSERT INTO {} ({}) VALUES ({})", table_name_.value,
+                      columns_query_.value, values_query_.value),
+          values_query_.params};
 }
 
 auto Insert::Value(std::string_view column_name, const QueryValue& value)
@@ -46,43 +44,45 @@ void Insert::ValueImpl(std::string_view column_name, const QueryValue& value) {
   Expects(!column_name.empty());
 
   const auto& value_query = value.GetQuery();
-  Expects(!value_query.empty());
+  Expects(!value_query.value.empty());
 
-  if (!columns_query_.empty()) {
-    columns_query_ += ", ";
+  if (!columns_query_.value.empty()) {
+    columns_query_.value += ", ";
   }
 
-  columns_query_ += column_name;
+  columns_query_.value += column_name;
 
-  if (!values_query_.empty()) {
-    values_query_ += ", ";
+  if (!values_query_.value.empty()) {
+    values_query_.value += ", ";
   }
 
-  values_query_ += value_query;
+  values_query_.value += value_query.value;
 
-  Ensures(!columns_query_.empty());
-  Ensures(!values_query_.empty());
+  values_query_.params.Append(value_query.params);
+
+  Ensures(!columns_query_.value.empty());
+  Ensures(!values_query_.value.empty());
 }
 
 auto Insert::Into(std::string table_name,
                   const fu2::unique_function<std::vector<std::string>() const>&
                       get_column_names) -> Insert& {
-  Expects(table_name_.empty());
+  Expects(table_name_.value.empty());
   Expects(!table_name.empty());
-  table_name_ = std::move(table_name);
+  table_name_.value = std::move(table_name);
 
   if (insert_all_) {
-    Expects(columns_query_.empty());
-    Expects(values_query_.empty());
+    Expects(columns_query_.value.empty());
+    Expects(values_query_.value.empty());
 
-    const auto param = QueryValue{Param{}};
+    const auto param = QueryValue{p::Param{}};
 
     for (const auto& column_name : get_column_names()) {
       ValueImpl(column_name, param);
     }
   }
 
-  Ensures(!table_name_.empty());
+  Ensures(!table_name_.value.empty());
   return *this;
 }
 }  // namespace stonks::sqldb::qb
