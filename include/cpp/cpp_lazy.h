@@ -19,8 +19,11 @@ class Lazy {
    * when it's requested the first time.
    */
   explicit Lazy(fu2::unique_function<T()> initializer)
-      : initializer_{std::move(initializer)} {
-    Expects(!initializer_.empty());
+      : initializer_{[&initializer]() {
+          Expects(!initializer.empty());
+          return std::move(initializer);
+        }()} {
+    Ensures(!initializer_.empty());
   }
 
   /**

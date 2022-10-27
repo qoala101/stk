@@ -3,6 +3,7 @@
 
 #include <function2/function2.hpp>
 
+#include "cpp_lazy.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_query_value.h"
 #include "sqldb_qb_table_traits.h"
@@ -54,8 +55,7 @@ class Insert {
 
   [[nodiscard]] auto Into(
       std::string table_name,
-      const fu2::unique_function<std::vector<std::string>() const>&
-          get_column_names) -> Insert&;
+      const cpp::Lazy<std::vector<std::string>>& column_names) -> Insert&;
 
   bool insert_all_{};
   Query table_name_{};

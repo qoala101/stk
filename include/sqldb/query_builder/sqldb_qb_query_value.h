@@ -2,10 +2,11 @@
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_QUERY_VALUE_H_
 
 #include "sqldb_p_types.h"
-#include "sqldb_qb_select.h"
 #include "sqldb_value.h"
 
 namespace stonks::sqldb::qb {
+class Select;
+
 /**
  * @brief Converts objects to parts of the query.
  */

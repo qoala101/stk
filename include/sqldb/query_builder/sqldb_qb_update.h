@@ -4,10 +4,10 @@
 #include <string>
 #include <string_view>
 
-#include "sqldb_qb_common.h"
+#include "sqldb_qb_query_value.h"
+#include "sqldb_qb_where_condition.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
-#include "sqldb_value.h"
 
 namespace stonks::sqldb::qb {
 /**
@@ -15,6 +15,9 @@ namespace stonks::sqldb::qb {
  */
 class Update {
  public:
+  /**
+   * @tparam Table Table to update.
+   */
   template <typename Table>
   explicit Update(Table* /*unused*/) : Update{TableTraits<Table>::GetName()} {}
 
@@ -34,7 +37,7 @@ class Update {
   /**
    * @brief Builds the query.
    */
-  [[nodiscard]] auto Build() const -> Query;
+  [[nodiscard]] auto Build() const -> p::Parametrized<Query>;
 
  private:
   explicit Update(std::string table_name);
@@ -42,9 +45,9 @@ class Update {
   [[nodiscard]] auto Set(std::string_view column_name, const QueryValue& value)
       -> Update&;
 
-  std::string table_name_{};
-  std::string column_values_query_{};
-  std::string where_query_{};
+  Query table_name_{};
+  p::Parametrized<Query> column_values_query_{};
+  p::Parametrized<Query> where_query_{};
 };
 }  // namespace stonks::sqldb::qb
 

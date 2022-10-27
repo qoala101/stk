@@ -65,8 +65,8 @@ void Insert::ValueImpl(std::string_view column_name, const QueryValue& value) {
 }
 
 auto Insert::Into(std::string table_name,
-                  const fu2::unique_function<std::vector<std::string>() const>&
-                      get_column_names) -> Insert& {
+                  const cpp::Lazy<std::vector<std::string>>& column_names)
+    -> Insert& {
   Expects(table_name_.value.empty());
   Expects(!table_name.empty());
   table_name_.value = std::move(table_name);
@@ -77,7 +77,7 @@ auto Insert::Into(std::string table_name,
 
     const auto param = QueryValue{p::Param{}};
 
-    for (const auto& column_name : get_column_names()) {
+    for (const auto& column_name : *column_names) {
       ValueImpl(column_name, param);
     }
   }

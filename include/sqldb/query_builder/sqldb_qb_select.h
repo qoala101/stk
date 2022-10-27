@@ -6,14 +6,13 @@
 #include <string_view>
 #include <vector>
 
-#include "cpp_expose_private_constructors.h"
-#include "cpp_not_null.h"
-#include "cpp_optional.h"
-#include "cpp_views.h"
+#include "cpp_lazy.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_condition.h"
+#include "sqldb_qb_query_value.h"
 #include "sqldb_qb_table_traits.h"
 #include "sqldb_qb_types.h"
+#include "sqldb_qb_where_condition.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
@@ -71,28 +70,28 @@ class Select {
   /**
    * @brief Builds the query.
    */
-  [[nodiscard]] auto Build() const -> SelectQuery;
+  [[nodiscard]] auto Build() const -> p::Parametrized<SelectQuery>;
 
  private:
   explicit Select(const std::vector<FullColumnType> &columns);
 
-  [[nodiscard]] auto From(
-      std::string table_name,
-      const fu2::unique_function<std::vector<FullColumnType>() const>
-          &get_columns) -> Select &;
+  [[nodiscard]] auto From(std::string table_name,
+                          const cpp::Lazy<std::vector<FullColumnType>> &columns)
+      -> Select &;
 
   [[nodiscard]] auto Join(std::string_view table_name,
                           const Condition &condition) -> Select &;
 
-  void SetColumnsQuery(const std::vector<FullColumnType> &columns);
-  void SetResultDefinition(const std::vector<FullColumnType> &columns);
+  void SetColumnsQueryFrom(const std::vector<FullColumnType> &columns);
+
+  void SetResultDefinitionFrom(const std::vector<FullColumnType> &columns);
 
   bool select_all_{};
-  std::string table_name_{};
-  std::string columns_query_{};
-  std::string where_query_{};
-  std::string limit_query_{};
-  std::string join_query_{};
+  Query table_name_{};
+  Query columns_query_{};
+  p::Parametrized<Query> where_query_{};
+  p::Parametrized<Query> limit_query_{};
+  p::Parametrized<Query> join_query_{};
   ResultDefinition result_definition_{};
 };
 }  // namespace stonks::sqldb::qb
