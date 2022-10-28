@@ -9,11 +9,10 @@
 #include "cpp_lazy.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_condition.h"
-#include "sqldb_qb_on_condition.h"
+#include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_qb_query_value.h"
 #include "sqldb_qb_table_traits.h"
 #include "sqldb_qb_types.h"
-#include "sqldb_qb_where_condition.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 

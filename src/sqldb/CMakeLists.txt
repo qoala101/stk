@@ -14,11 +14,10 @@ add_library(libsqldb
   query_builder/sqldb_qb_delete.cc
   query_builder/sqldb_qb_drop.cc
   query_builder/sqldb_qb_insert.cc
-  query_builder/sqldb_qb_on_condition.cc
   query_builder/sqldb_qb_query_value.cc
   query_builder/sqldb_qb_select.cc
   query_builder/sqldb_qb_update.cc
-  query_builder/sqldb_qb_where_condition.cc
+  query_builder/sqldb_qb_wrapped_conditions.cc
   sqldb_i_select_statement.cc
   sqldb_i_update_statement.cc
   sqldb_query_builder.cc

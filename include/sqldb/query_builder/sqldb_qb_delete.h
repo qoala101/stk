@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "sqldb_qb_where_condition.h"
+#include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
