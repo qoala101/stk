@@ -33,11 +33,11 @@ namespace {
              sqldb::As<QuoteAsset::name, QuoteAsset::quote_asset>>()
       .From<tables::SymbolInfo>()
       .Join<sqldb::As<tables::Asset, BaseAsset>>(sqldb::qb::On(
-          sqldb::qb::Column<tables::SymbolInfo::base_asset_id>{} ==
-          sqldb::qb::Column<BaseAsset::id>{}))
+          sqldb::qb::Column<tables::SymbolInfo::base_asset_id>() ==
+          sqldb::qb::Column<BaseAsset::id>()))
       .Join<sqldb::As<tables::Asset, QuoteAsset>>(sqldb::qb::On(
-          sqldb::qb::Column<tables::SymbolInfo::quote_asset_id>{} ==
-          sqldb::qb::Column<QuoteAsset::id>{}));
+          sqldb::qb::Column<tables::SymbolInfo::quote_asset_id>() ==
+          sqldb::qb::Column<QuoteAsset::id>()));
 }
 }  // namespace
 
@@ -83,7 +83,7 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db>& db)
       .delete_asset{[db]() {
         return db->PrepareStatement(
             sqldb::query_builder::DeleteFromTable<tables::Asset>()
-                .Where(sqldb::qb::Column<tables::Asset::name>{} ==
+                .Where(sqldb::qb::Column<tables::Asset::name>() ==
                        sqldb::p::Param{})
                 .Build());
       }},
@@ -96,8 +96,8 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db>& db)
                     sqldb::query_builder::SelectOne()
                         .From<tables::SymbolPriceRecord>()
                         .Where(sqldb::qb::Column<
-                                   tables::SymbolPriceRecord::symbol_id>{} ==
-                               sqldb::qb::Column<tables::SymbolInfo::id>{})
+                                   tables::SymbolPriceRecord::symbol_id>() ==
+                               sqldb::qb::Column<tables::SymbolInfo::id>())
                         .Limit(sqldb::Value{1})))
                 .Build());
       }},
@@ -105,7 +105,7 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db>& db)
       .select_symbol_info{[db]() {
         return db->PrepareStatement(
             SelectSymbolsInfo()
-                .Where(sqldb::qb::Column<tables::SymbolInfo::name>{} ==
+                .Where(sqldb::qb::Column<tables::SymbolInfo::name>() ==
                        sqldb::p::Param{})
                 .Build());
       }},
@@ -120,7 +120,7 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db>& db)
                 .Value<tables::SymbolInfo::base_asset_id>(
                     sqldb::query_builder::Select<tables::Asset::id>()
                         .From<tables::Asset>()
-                        .Where(sqldb::qb::Column<tables::Asset::name>{} ==
+                        .Where(sqldb::qb::Column<tables::Asset::name>() ==
                                sqldb::p::Param{}))
                 .Value<tables::SymbolInfo::base_asset_min_amount>(
                     sqldb::p::Param{})
@@ -129,7 +129,7 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db>& db)
                 .Value<tables::SymbolInfo::quote_asset_id>(
                     sqldb::query_builder::Select<tables::Asset::id>()
                         .From<tables::Asset>()
-                        .Where(sqldb::qb::Column<tables::Asset::name>{} ==
+                        .Where(sqldb::qb::Column<tables::Asset::name>() ==
                                sqldb::p::Param{}))
                 .Value<tables::SymbolInfo::quote_asset_min_amount>(
                     sqldb::p::Param{})
@@ -145,7 +145,7 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db>& db)
                 .Set<tables::SymbolInfo::base_asset_id>(
                     sqldb::query_builder::Select<tables::Asset::id>()
                         .From<tables::Asset>()
-                        .Where(sqldb::qb::Column<tables::Asset::name>{} ==
+                        .Where(sqldb::qb::Column<tables::Asset::name>() ==
                                sqldb::p::Param{}))
                 .Set<tables::SymbolInfo::base_asset_min_amount>(
                     sqldb::p::Param{})
@@ -154,13 +154,13 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db>& db)
                 .Set<tables::SymbolInfo::quote_asset_id>(
                     sqldb::query_builder::Select<tables::Asset::id>()
                         .From<tables::Asset>()
-                        .Where(sqldb::qb::Column<tables::Asset::name>{} ==
+                        .Where(sqldb::qb::Column<tables::Asset::name>() ==
                                sqldb::p::Param{}))
                 .Set<tables::SymbolInfo::quote_asset_min_amount>(
                     sqldb::p::Param{})
                 .Set<tables::SymbolInfo::quote_asset_price_step>(
                     sqldb::p::Param{})
-                .Where(sqldb::qb::Column<tables::SymbolInfo::name>{} ==
+                .Where(sqldb::qb::Column<tables::SymbolInfo::name>() ==
                        sqldb::p::Param{})
                 .Build());
       }},
@@ -168,7 +168,7 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db>& db)
       .delete_symbol_info{[db]() {
         return db->PrepareStatement(
             sqldb::query_builder::DeleteFromTable<tables::SymbolInfo>()
-                .Where(sqldb::qb::Column<tables::SymbolInfo::name>{} ==
+                .Where(sqldb::qb::Column<tables::SymbolInfo::name>() ==
                        sqldb::p::Param{})
                 .Build());
       }},
@@ -180,14 +180,14 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db>& db)
                 .From<tables::SymbolPriceRecord>()
                 .Where(
                     (sqldb::qb::Column<
-                         tables::SymbolPriceRecord::symbol_id>{} ==
+                         tables::SymbolPriceRecord::symbol_id>() ==
                      sqldb::query_builder::Select<tables::SymbolInfo::id>()
                          .From<tables::SymbolInfo>()
-                         .Where(sqldb::qb::Column<tables::SymbolInfo::name>{} ==
+                         .Where(sqldb::qb::Column<tables::SymbolInfo::name>() ==
                                 sqldb::p::Param{})) &&
-                    (sqldb::qb::Column<tables::SymbolPriceRecord::time>{} >=
+                    (sqldb::qb::Column<tables::SymbolPriceRecord::time>() >=
                      sqldb::p::Param{}) &&
-                    (sqldb::qb::Column<tables::SymbolPriceRecord::time>{} <
+                    (sqldb::qb::Column<tables::SymbolPriceRecord::time>() <
                      sqldb::p::Param{}))
 
                 .Build());
@@ -199,7 +199,7 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db>& db)
                 .Value<tables::SymbolPriceRecord::symbol_id>(
                     sqldb::query_builder::Select<tables::SymbolInfo::id>()
                         .From<tables::SymbolInfo>()
-                        .Where(sqldb::qb::Column<tables::SymbolInfo::name>{} ==
+                        .Where(sqldb::qb::Column<tables::SymbolInfo::name>() ==
                                sqldb::p::Param{}))
                 .Value<tables::SymbolPriceRecord::price>(sqldb::p::Param{})
                 .Value<tables::SymbolPriceRecord::time>(sqldb::p::Param{})
@@ -210,7 +210,7 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db>& db)
       .delete_symbol_price_records{[db]() {
         return db->PrepareStatement(
             sqldb::query_builder::DeleteFromTable<tables::SymbolPriceRecord>()
-                .Where(sqldb::qb::Column<tables::SymbolPriceRecord::time>{} <
+                .Where(sqldb::qb::Column<tables::SymbolPriceRecord::time>() <
                        sqldb::p::Param{})
                 .Build());
       }}};

@@ -10,6 +10,16 @@
  */
 
 namespace stonks::sqldb::qb {
+/**
+ * @brief Tag for all columns.
+ */
+struct All;
+
+/**
+ * @brief Tag for selecting 1.
+ */
+struct One;
+
 struct ColumnDefinition {
   std::string name{};
   DataTypeVariant type{};

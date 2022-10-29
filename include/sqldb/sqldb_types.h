@@ -9,16 +9,18 @@
 
 namespace stonks::sqldb {
 /**
- * @brief SQL query.
- */
-struct Query : public cpp::TypedStruct<std::string> {};
-
-/**
  * @brief Type of the data recognized by the library.
  */
 template <typename T>
 struct DataType {
   using Type = T;
+
+ private:
+  template <typename U>
+  [[nodiscard]] friend auto operator==(const DataType<T>& /*unused*/,
+                                       const DataType<U>& /*unused*/) {
+    return std::is_same_v<T, U>;
+  }
 };
 
 /**
@@ -27,7 +29,13 @@ struct DataType {
 struct DataTypeVariant
     : public cpp::VariantStruct<DataType<bool>, DataType<int>,
                                 DataType<int64_t>, DataType<double>,
-                                DataType<std::string>> {};
+                                DataType<std::string>> {
+ private:
+  friend auto operator<=>(const DataTypeVariant& left,
+                          const DataTypeVariant& right)
+      -> std::partial_ordering;
+};
+
 /**
  * @brief Table column name.
  */
@@ -47,10 +55,14 @@ struct ColumnType {
 struct ResultDefinition : public cpp::TypedStruct<std::vector<ColumnType>> {};
 
 /**
+ * @brief SQL query.
+ */
+struct Query : public cpp::TypedStruct<std::string> {};
+
+/**
  * @brief SQL query with expected result types.
  */
-struct SelectQuery {
-  Query query{};
+struct SelectQuery : public Query {
   ResultDefinition result_definition{};
 };
 }  // namespace stonks::sqldb
