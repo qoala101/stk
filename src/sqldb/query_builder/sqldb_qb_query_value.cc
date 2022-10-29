@@ -49,12 +49,12 @@ QueryValue::QueryValue(p::Parametrized<Query> query)
 
 QueryValue::QueryValue(const Value &value) : QueryWrapper{{ToString(value)}} {}
 
-QueryValue::QueryValue(p::Param param) : QueryWrapper{{{"?"}, {{{param}}}}} {}
+QueryValue::QueryValue(p::Param param) : QueryWrapper{{"?", {{{param}}}}} {}
 
 QueryValue::QueryValue(const Select &select) : QueryValue{select.Build()} {}
 
 QueryValue::QueryValue(const p::Parametrized<SelectQuery> &query)
-    : QueryWrapper{{query.value, query.params}} {}
+    : QueryWrapper{{fmt::format("({})", query.value), query.params}} {}
 
 [[nodiscard]] auto operator==(const QueryValue &left, const QueryValue &right)
     -> Condition {

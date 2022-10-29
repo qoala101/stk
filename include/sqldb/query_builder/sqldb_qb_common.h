@@ -22,9 +22,9 @@ class Select;
 /**
  * @brief Gives column name as value.
  */
-template <typename T>
+template <typename ColumnT>
 [[nodiscard]] auto Column() -> QueryValue {
-  return QueryValue{ColumnTraits<T>::GetFullName()};
+  return QueryValue{static_cast<ColumnT *>(nullptr)};
 }
 }  // namespace stonks::sqldb::qb
 
