@@ -4,13 +4,14 @@
 #include <string_view>
 
 #include "sqldb_p_types.h"
+#include "sqldb_qb_query_wrapper.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
 /**
  * @brief API to build the condition.
  */
-class Condition {
+class Condition : public QueryWrapper {
  public:
   /**
    * @param query Initial condition query.
@@ -27,20 +28,9 @@ class Condition {
    */
   [[nodiscard]] auto operator||(const Condition &condition) -> Condition &;
 
-  /**
-   * @brief Gives the value of the query.
-   */
-  [[nodiscard]] auto GetQuery() const -> const p::Parametrized<Query> &;
-  [[nodiscard]] auto GetQuery() -> p::Parametrized<Query> &;
-
  private:
-  [[nodiscard]] static auto GetQueryImpl(cpp::This<Condition> auto &t)
-      -> auto &;
-
   void AppendCondition(const Condition &condition,
                        std::string_view operator_string);
-
-  p::Parametrized<Query> query_{};
 };
 }  // namespace stonks::sqldb::qb
 

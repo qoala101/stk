@@ -8,15 +8,11 @@
 
 #include "cpp_typed_struct.h"
 #include "sqldb_p_types.h"
+#include "sqldb_qb_query_wrapper.h"
 
 namespace stonks::sqldb::qb {
 Condition::Condition(p::Parametrized<Query> query)
-    : query_{[&query]() {
-        Expects(!query.value.empty());
-        return std::move(query);
-      }()} {
-  Ensures(!query_.value.empty());
-}
+    : QueryWrapper{std::move(query)} {}
 
 auto Condition::operator&&(const Condition &condition) -> Condition & {
   AppendCondition(condition, "AND");
@@ -28,22 +24,13 @@ auto Condition::operator||(const Condition &condition) -> Condition & {
   return *this;
 }
 
-auto Condition::GetQueryImpl(cpp::This<Condition> auto &t) -> auto & {
-  return t.query_;
-}
-
-auto Condition::GetQuery() const -> const p::Parametrized<Query> & {
-  return GetQueryImpl(*this);
-}
-
-auto Condition::GetQuery() -> p::Parametrized<Query> & {
-  return GetQueryImpl(*this);
-}
-
 void Condition::AppendCondition(const Condition &condition,
                                 std::string_view operator_string) {
-  query_.value +=
-      fmt::format(" {} ({})", operator_string, condition.query_.value);
-  query_.params.Append(condition.query_.params);
+  auto &this_query = GetQuery();
+  const auto &condition_query = condition.GetQuery();
+
+  this_query.value +=
+      fmt::format(" {} ({})", operator_string, condition_query.value);
+  this_query.params.Append(condition_query.params);
 }
 }  // namespace stonks::sqldb::qb

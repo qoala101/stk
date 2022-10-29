@@ -3,30 +3,16 @@
 
 #include <string_view>
 
-#include "sqldb_p_types.h"
 #include "sqldb_qb_condition.h"
-#include "sqldb_types.h"
+#include "sqldb_qb_query_wrapper.h"
 
 namespace stonks::sqldb::qb {
 /**
  * @brief Wraps condition query.
  */
-class WrappedCondition {
- public:
-  /**
-   * @brief Gives the value of the query.
-   */
-  [[nodiscard]] auto GetQuery() const -> const p::Parametrized<Query> &;
-  [[nodiscard]] auto GetQuery() -> p::Parametrized<Query> &;
-
+class WrappedCondition : public QueryWrapper {
  protected:
   WrappedCondition(const Condition &condition, std::string_view format);
-
- private:
-  [[nodiscard]] static auto GetQueryImpl(cpp::This<WrappedCondition> auto &t)
-      -> auto &;
-
-  p::Parametrized<Query> query_{};
 };
 
 /**

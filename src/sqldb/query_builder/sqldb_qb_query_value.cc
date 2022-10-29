@@ -2,34 +2,16 @@
 
 #include <gsl/assert>
 
+#include "sqldb_qb_query_wrapper.h"
 #include "sqldb_qb_select.h"
 
 namespace stonks::sqldb::qb {
-QueryValue::QueryValue(const Value &value) : query_{value.ToString()} {}
+QueryValue::QueryValue(const Value &value) : QueryWrapper{{value.ToString()}} {}
 
-QueryValue::QueryValue(p::Param param) : query_{"?", {{{param}}}} {}
+QueryValue::QueryValue(p::Param param) : QueryWrapper{{{"?"}, {{{param}}}}} {}
 
 QueryValue::QueryValue(const Select &select) : QueryValue{select.Build()} {}
 
 QueryValue::QueryValue(const p::Parametrized<SelectQuery> &query)
-    : query_{[&query]() {
-               Expects(!query.value.empty());
-               return Query{fmt::format("({})", query.value)};
-             }(),
-             query.params} {
-  Ensures(!query_.value.empty());
-}
-
-auto QueryValue::GetQueryImpl(cpp::This<QueryValue> auto &t) -> auto & {
-  return t.query_;
-}
-
-[[nodiscard]] auto QueryValue::GetQuery() const
-    -> const p::Parametrized<Query> & {
-  return GetQueryImpl(*this);
-}
-
-[[nodiscard]] auto QueryValue::GetQuery() -> p::Parametrized<Query> & {
-  return GetQueryImpl(*this);
-}
+    : QueryWrapper{{query.value, query.params}} {}
 }  // namespace stonks::sqldb::qb
