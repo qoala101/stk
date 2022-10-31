@@ -17,7 +17,7 @@ class SelectStatement : public ISelectStatement {
    * @param params Query params to validate values against.
    */
   SelectStatement(cpp::NnUp<ISelectStatement> statement,
-                  std::vector<Param> params);
+                  std::vector<QueryParam> params);
 
   /**
    * @copydoc ISelectStatement::Execute
@@ -26,7 +26,7 @@ class SelectStatement : public ISelectStatement {
 
  private:
   cpp::NnUp<ISelectStatement> statement_;
-  std::vector<Param> params_{};
+  std::vector<QueryParam> params_{};
 };
 }  // namespace stonks::sqldb::p
 

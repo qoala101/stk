@@ -5,7 +5,7 @@
 
 namespace stonks::sqldb::p {
 auto AreParamsValid(const std::vector<Value> &values,
-                    const std::vector<Param> &params) -> bool {
+                    const std::vector<QueryParam> &params) -> bool {
   return (values.size() == params.size()) &&
          ranges::equal(
              values | ranges::views::transform(

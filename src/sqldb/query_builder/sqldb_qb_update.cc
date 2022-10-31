@@ -4,6 +4,8 @@
 
 #include <gsl/assert>
 #include <memory>
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/view/concat.hpp>
 #include <utility>
 #include <variant>
 
@@ -23,7 +25,10 @@ auto Update::Build() const -> p::Parametrized<Query> {
   Expects(!column_values_query_.value.empty());
 
   return {fmt::format("UPDATE {} SET {}{}", table_name_.value,
-                      column_values_query_.value, where_query_.value)};
+                      column_values_query_.value, where_query_.value),
+          ranges::views::concat(column_values_query_.params.value,
+                                where_query_.params.value) |
+              ranges::to_vector};
 }
 
 Update::Update(std::string table_name)

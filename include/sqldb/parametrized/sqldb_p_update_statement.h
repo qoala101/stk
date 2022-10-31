@@ -17,7 +17,7 @@ class UpdateStatement : public IUpdateStatement {
    * @param params Query params to validate values against.
    */
   UpdateStatement(cpp::NnUp<IUpdateStatement> statement,
-                  std::vector<Param> params);
+                  std::vector<QueryParam> params);
 
   /**
    * @copydoc IUpdateStatement::Execute
@@ -26,7 +26,7 @@ class UpdateStatement : public IUpdateStatement {
 
  private:
   cpp::NnUp<IUpdateStatement> statement_;
-  std::vector<Param> params_{};
+  std::vector<QueryParam> params_{};
 };
 }  // namespace stonks::sqldb::p
 

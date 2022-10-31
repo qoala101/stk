@@ -75,7 +75,7 @@ auto Insert::Into(std::string table_name,
     Expects(columns_query_.value.empty());
     Expects(values_query_.value.empty());
 
-    const auto param = QueryValue{p::Param{}};
+    const auto param = QueryValue{p::QueryParam{}};
 
     for (const auto& column_name : *column_names) {
       ValueImpl(column_name, param);

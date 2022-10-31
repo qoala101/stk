@@ -12,6 +12,7 @@
 #include "sqldb_qb_common.h"
 #include "sqldb_query_builder.h"
 #include "sqldb_types.h"
+#include "sqldb_value.h"
 #include "test_sqlite_injector.h"
 
 namespace {
@@ -83,7 +84,7 @@ TEST(SqliteDb, InsertAndSelect) {
 
   auto insert_statement =
       db->PrepareStatement(stonks::sqldb::query_builder::Insert()
-                               .Value<Asset::name>(stonks::sqldb::qb::Param{})
+                               .Value<Asset::name>(stonks::sqldb::p::QueryParam{})
                                .Into<Asset>()
                                .Build());
   insert_statement->Execute(stonks::sqldb::AsValues("BTC"));
@@ -161,8 +162,8 @@ TEST(SqliteDb, ForeignKey) {
 
   auto insert_symbol_statement = db->PrepareStatement(
       stonks::sqldb::query_builder::Insert()
-          .Value<Symbol::base_asset_id>(stonks::sqldb::qb::Param{})
-          .Value<Symbol::quote_asset_id>(stonks::sqldb::qb::Param{})
+          .Value<Symbol::base_asset_id>(stonks::sqldb::p::QueryParam{})
+          .Value<Symbol::quote_asset_id>(stonks::sqldb::p::QueryParam{})
           .Into<Symbol>()
           .Build());
   insert_symbol_statement->Execute(stonks::sqldb::AsValues(1, 3));
@@ -194,13 +195,13 @@ TEST(SqliteDb, SelectJoin) {
               .type = {stonks::sqldb::DataType<std::string>{}}}}};
 
   auto select_statement = db->PrepareStatement(
-      {.query = {"SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS "
-                 "quote_asset "
-                 "FROM Symbol "
-                 "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
-                 "JOIN Asset AS QuoteAsset ON "
-                 "Symbol.quote_asset_id=QuoteAsset.id;"},
-       .result_definition = cell_definitions});
+      {"SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS "
+       "quote_asset "
+       "FROM Symbol "
+       "JOIN Asset AS BaseAsset ON Symbol.base_asset_id=BaseAsset.id "
+       "JOIN Asset AS QuoteAsset ON "
+       "Symbol.quote_asset_id=QuoteAsset.id;",
+       cell_definitions});
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
   EXPECT_EQ(rows.GetColumnValues<struct base_asset>()[0].Get<std::string>(),
@@ -236,10 +237,10 @@ TEST(SqliteDb, FileWriteAndRead) {
 }
 
 TEST(SqliteDb, CascadeForeignKeyDelete) {
-  db->PrepareStatement(
-        stonks::sqldb::query_builder::DeleteFromTable<Asset>()
-            .Where(stonks::sqldb::qb::Column<Asset::name>{} == "USDT")
-            .Build())
+  db->PrepareStatement(stonks::sqldb::query_builder::DeleteFromTable<Asset>()
+                           .Where(stonks::sqldb::qb::Column<Asset::name>() ==
+                                  stonks::sqldb::Value{"USDT"})
+                           .Build())
       ->Execute();
 
   auto select_statement = db->PrepareStatement(

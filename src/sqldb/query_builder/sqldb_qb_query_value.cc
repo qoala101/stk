@@ -49,7 +49,8 @@ QueryValue::QueryValue(p::Parametrized<Query> query)
 
 QueryValue::QueryValue(const Value &value) : QueryWrapper{{ToString(value)}} {}
 
-QueryValue::QueryValue(p::Param param) : QueryWrapper{{"?", {{{param}}}}} {}
+QueryValue::QueryValue(p::QueryParam param)
+    : QueryWrapper{{"?", {{{param}}}}} {}
 
 QueryValue::QueryValue(const Select &select) : QueryValue{select.Build()} {}
 

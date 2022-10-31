@@ -8,7 +8,7 @@
 
 namespace stonks::sqldb::p {
 SelectStatement::SelectStatement(cpp::NnUp<ISelectStatement> statement,
-                                 std::vector<Param> params)
+                                 std::vector<QueryParam> params)
     : statement_{std::move(statement)}, params_{std::move(params)} {}
 
 auto SelectStatement::Execute(std::vector<Value> params) const -> sqldb::Rows {

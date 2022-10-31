@@ -9,7 +9,7 @@
 
 namespace stonks::sqldb::p {
 UpdateStatement::UpdateStatement(cpp::NnUp<IUpdateStatement> statement,
-                                 std::vector<Param> params)
+                                 std::vector<QueryParam> params)
     : statement_{std::move(statement)}, params_{std::move(params)} {}
 
 void UpdateStatement::Execute(std::vector<sqldb::Value> params) const {

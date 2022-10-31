@@ -24,7 +24,7 @@ class QueryValue : public QueryWrapper {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   QueryValue(const Value &value);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  QueryValue(p::Param param);
+  QueryValue(p::QueryParam param);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   QueryValue(const Select &select);
 

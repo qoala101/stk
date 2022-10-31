@@ -9,16 +9,16 @@ namespace stonks::sqldb::p {
  * @brief Query parameter to be substituted with value
  * when executing the statement.
  */
-struct Param : public cpp::TypedStruct<DataTypeVariant> {};
+struct QueryParam : public cpp::TypedStruct<DataTypeVariant> {};
 
 /**
  * @brief List of params with convenient API.
  */
-struct Params : public cpp::TypedStruct<std::vector<Param>> {
+struct QueryParams : public cpp::TypedStruct<std::vector<QueryParam>> {
   /**
    * @brief Appends params to the list.
    */
-  void Append(const Params &params);
+  void Append(const QueryParams &params);
 };
 
 /**
@@ -26,7 +26,7 @@ struct Params : public cpp::TypedStruct<std::vector<Param>> {
  */
 template <typename Query>
 struct Parametrized : public Query {
-  Params params{};
+  QueryParams params{};
 };
 }  // namespace stonks::sqldb::p
 
