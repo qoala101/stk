@@ -29,13 +29,13 @@ namespace {
              tables::SymbolInfo::base_asset_price_step,
              tables::SymbolInfo::quote_asset_min_amount,
              tables::SymbolInfo::quote_asset_price_step,
-             sqldb::As<BaseAsset::name, BaseAsset::base_asset>,
-             sqldb::As<QuoteAsset::name, QuoteAsset::quote_asset>>()
+             sqldb::qb::As<BaseAsset::name, BaseAsset::base_asset>,
+             sqldb::qb::As<QuoteAsset::name, QuoteAsset::quote_asset>>()
       .From<tables::SymbolInfo>()
-      .Join<sqldb::As<tables::Asset, BaseAsset>>(sqldb::qb::On(
+      .Join<sqldb::qb::As<tables::Asset, BaseAsset>>(sqldb::qb::On(
           sqldb::qb::Column<tables::SymbolInfo::base_asset_id>() ==
           sqldb::qb::Column<BaseAsset::id>()))
-      .Join<sqldb::As<tables::Asset, QuoteAsset>>(sqldb::qb::On(
+      .Join<sqldb::qb::As<tables::Asset, QuoteAsset>>(sqldb::qb::On(
           sqldb::qb::Column<tables::SymbolInfo::quote_asset_id>() ==
           sqldb::qb::Column<QuoteAsset::id>()));
 }

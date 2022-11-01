@@ -24,12 +24,12 @@ namespace {
 }
 
 [[nodiscard]] auto BuildColumnsQuery(
-    const std::vector<ColumnDefinition> &column_definitions) {
-  Expects(!column_definitions.empty());
+    const std::vector<CreateColumnData> &create_columns_data) {
+  Expects(!create_columns_data.empty());
 
   auto query = std::string{};
 
-  for (const auto &column : column_definitions) {
+  for (const auto &column : create_columns_data) {
     if (!query.empty()) {
       query += ", ";
     }
@@ -43,14 +43,14 @@ namespace {
     }
   }
 
-  return query;
+  return Query{std::move(query)};
 }
 
 [[nodiscard]] auto BuildPrimaryKeysQuery(
-    const std::vector<PrimaryKey> &primary_keys) {
+    const std::vector<PrimaryKeyData> &primary_keys_data) {
   auto query = std::string{};
 
-  for (const auto &primary_key : primary_keys) {
+  for (const auto &primary_key : primary_keys_data) {
     const auto first_key = query.empty();
 
     query += ", ";
@@ -71,14 +71,14 @@ namespace {
     query += ")";
   }
 
-  return query;
+  return Query{std::move(query)};
 }
 
 [[nodiscard]] auto BuildForeignKeysQuery(
-    const std::vector<ForeignKey> &foreign_keys) {
+    const std::vector<ForeignKeyData> &foreign_keys_data) {
   auto query = std::string{};
 
-  for (const auto &foreign_key : foreign_keys) {
+  for (const auto &foreign_key : foreign_keys_data) {
     Expects(!foreign_key.column_name.empty());
     Expects(!foreign_key.target_table_name.empty());
     Expects(!foreign_key.target_column_name.empty());
@@ -89,7 +89,7 @@ namespace {
         foreign_key.target_column_name);
   }
 
-  return query;
+  return Query{std::move(query)};
 }
 }  // namespace
 
@@ -108,19 +108,20 @@ auto Create::Build() const -> Query {
 }
 
 Create::Create(std::string table_name,
-               const std::vector<ColumnDefinition> &column_definitions,
-               const std::vector<PrimaryKey> &primary_keys,
-               const std::vector<ForeignKey> &foreign_keys)
+               const std::vector<CreateColumnData> &create_columns_data,
+               const std::vector<PrimaryKeyData> &primary_keys_data,
+               const std::vector<ForeignKeyData> &foreign_keys_data)
     : table_name_{[&table_name]() {
         Expects(!table_name.empty());
         return std::move(table_name);
       }()},
-      columns_query_{[&column_definitions]() {
-        Expects(!column_definitions.empty());
-        return BuildColumnsQuery(column_definitions);
+      columns_query_{[&create_columns_data]() {
+        auto query = BuildColumnsQuery(create_columns_data);
+        Expects(!query.value.empty());
+        return query;
       }()},
-      primary_keys_query_{BuildPrimaryKeysQuery(primary_keys)},
-      foreign_keys_query_{BuildForeignKeysQuery(foreign_keys)} {
+      primary_keys_query_{BuildPrimaryKeysQuery(primary_keys_data)},
+      foreign_keys_query_{BuildForeignKeysQuery(foreign_keys_data)} {
   Ensures(!table_name_.value.empty());
   Ensures(!columns_query_.value.empty());
 }

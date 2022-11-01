@@ -9,10 +9,10 @@
 #include "cpp_lazy.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_condition.h"
-#include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_qb_query_value.h"
 #include "sqldb_qb_table_traits.h"
 #include "sqldb_qb_types.h"
+#include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
@@ -27,7 +27,7 @@ class Select {
    */
   template <typename... Columns>
   explicit Select(std::tuple<Columns...> * /*unused*/)
-      : Select{ColumnsTraits<std::tuple<Columns...>>::GetFullColumnTypes()} {}
+      : Select{ColumnsTraits<std::tuple<Columns...>>::GetSelectColumnsData()} {}
 
   /**
    * @brief Query would select all table columns.
@@ -46,8 +46,8 @@ class Select {
   [[nodiscard]] auto From() -> auto & {
     return From(
         TableTraits<Table>::GetName(),
-        cpp::Lazy<std::vector<FullColumnType>>{[]() {
-          return ColumnsTraits<typename Table::Columns>::GetFullColumnTypes();
+        cpp::Lazy<std::vector<SelectColumnData>>{[]() {
+          return ColumnsTraits<typename Table::Columns>::GetSelectColumnsData();
         }});
   }
 
@@ -75,18 +75,21 @@ class Select {
   [[nodiscard]] auto Build() const -> p::Parametrized<SelectQuery>;
 
  private:
-  explicit Select(const std::vector<FullColumnType> &columns);
+  explicit Select(const std::vector<SelectColumnData> &select_columns_data);
 
-  [[nodiscard]] auto From(std::string table_name,
-                          const cpp::Lazy<std::vector<FullColumnType>> &columns)
+  [[nodiscard]] auto From(
+      std::string table_name,
+      const cpp::Lazy<std::vector<SelectColumnData>> &select_columns_data)
       -> Select &;
 
   [[nodiscard]] auto Join(std::string_view table_name,
                           const OnCondition &condition) -> Select &;
 
-  void SetColumnsQueryFrom(const std::vector<FullColumnType> &columns);
+  void SetColumnsQueryFrom(
+      const std::vector<SelectColumnData> &select_columns_data);
 
-  void SetResultDefinitionFrom(const std::vector<FullColumnType> &columns);
+  void SetResultDefinitionFrom(
+      const std::vector<SelectColumnData> &select_columns_data);
 
   bool select_all_{};
   Query table_name_{};

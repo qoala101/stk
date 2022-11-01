@@ -21,9 +21,10 @@ class Create {
   template <typename Table,
             typename ColumnsTraits = ColumnsTraits<typename Table::Columns>>
   explicit Create(Table * /*unused*/)
-      : Create{TableTraits<Table>::GetName(), ColumnsTraits::GetDefinitions(),
-               ColumnsTraits::GetPrimaryKeys(),
-               ColumnsTraits::GetForeignKeys()} {}
+      : Create{TableTraits<Table>::GetName(),
+               ColumnsTraits::GetCreateColumnsData(),
+               ColumnsTraits::GetPrimaryKeysData(),
+               ColumnsTraits::GetForeignKeysData()} {}
 
   /**
    * @brief Adds if-not-exists condition.
@@ -37,9 +38,9 @@ class Create {
 
  private:
   Create(std::string table_name,
-         const std::vector<ColumnDefinition> &column_definitions,
-         const std::vector<PrimaryKey> &primary_keys,
-         const std::vector<ForeignKey> &foreign_keys);
+         const std::vector<CreateColumnData> &create_columns_data,
+         const std::vector<PrimaryKeyData> &primary_keys_data,
+         const std::vector<ForeignKeyData> &foreign_keys_data);
 
   Query table_name_{};
   Query columns_query_{};

@@ -67,20 +67,21 @@ auto Select::Build() const -> p::Parametrized<SelectQuery> {
   return {{std::move(query), result_definition_}, std::move(params)};
 }
 
-Select::Select(const std::vector<FullColumnType>& columns) {
-  SetColumnsQueryFrom(columns);
-  SetResultDefinitionFrom(columns);
+Select::Select(const std::vector<SelectColumnData>& select_columns_data) {
+  SetColumnsQueryFrom(select_columns_data);
+  SetResultDefinitionFrom(select_columns_data);
 }
 
-auto Select::From(std::string table_name,
-                  const cpp::Lazy<std::vector<FullColumnType>>& columns)
+auto Select::From(
+    std::string table_name,
+    const cpp::Lazy<std::vector<SelectColumnData>>& select_columns_data)
     -> Select& {
   Expects(table_name_.value.empty());
   Expects(!table_name.empty());
   table_name_.value = std::move(table_name);
 
   if (select_all_) {
-    SetResultDefinitionFrom(*columns);
+    SetResultDefinitionFrom(*select_columns_data);
   }
 
   Ensures(!table_name_.value.empty());
@@ -100,24 +101,26 @@ auto Select::Join(std::string_view table_name, const OnCondition& condition)
   return *this;
 }
 
-void Select::SetColumnsQueryFrom(const std::vector<FullColumnType>& columns) {
-  Expects(!columns.empty());
+void Select::SetColumnsQueryFrom(
+    const std::vector<SelectColumnData>& select_columns_data) {
+  Expects(!select_columns_data.empty());
 
   columns_query_.value = absl::StrJoin(
-      columns | ranges::views::transform([](const FullColumnType& column) {
-        return column.full_name;
-      }),
+      select_columns_data |
+          ranges::views::transform(
+              [](const SelectColumnData& column) { return column.full_name; }),
       ", ");
 
   Ensures(!columns_query_.value.empty());
 }
 
 void Select::SetResultDefinitionFrom(
-    const std::vector<FullColumnType>& columns) {
-  Expects(!columns.empty());
+    const std::vector<SelectColumnData>& select_columns_data) {
+  Expects(!select_columns_data.empty());
 
   result_definition_.value =
-      columns | ranges::views::transform([](const FullColumnType& column) {
+      select_columns_data |
+      ranges::views::transform([](const SelectColumnData& column) {
         return ColumnType{.column = {column.name}, .type = column.type};
       }) |
       ranges::to_vector;

@@ -45,10 +45,15 @@ concept ColumnT = requires {
                   };
 
 /**
- * @brief Alias for either column or table which has a special treatment.
+ * @brief Information retrieved from the table declaration.
  */
-template <typename Original, typename Alias>
-struct As {};
+template <typename Table>
+struct TableTraits {
+  /**
+   * @brief Gives table name which is the name of the type.
+   */
+  [[nodiscard]] static auto GetName() { return cpp::NameOf<Table>(); }
+};
 
 /**
  * @brief Information retrieved from the column declaration.
@@ -101,124 +106,6 @@ struct ColumnTraits {
    */
   [[nodiscard]] static auto IsUnique() {
     return requires { typename Column::Unique; };
-  }
-};
-
-/**
- * @brief Traits for the AS alias which are mostly the same
- * as the original column ones.
- */
-template <typename Original, typename Alias>
-struct ColumnTraits<As<Original, Alias>> : public ColumnTraits<Original> {
-  /**
-   * @copydoc ColumnTraits::GetName
-   */
-  [[nodiscard]] static auto GetName() { return ColumnTraits<Alias>::GetName(); }
-
-  /**
-   * @copydoc ColumnTraits::GetFullName
-   */
-  [[nodiscard]] static auto GetFullName() {
-    return fmt::format("{} AS {}", ColumnTraits<Original>::GetFullName(),
-                       ColumnTraits<Original>::GetName());
-  }
-};
-
-template <typename T>
-struct ColumnsTraits;
-
-template <typename... Columns>
-struct ColumnsTraits<std::tuple<Columns...>> {
-  /**
-   * @brief Gives number of columns.
-   */
-  [[nodiscard]] static auto GetSize() { return sizeof...(Columns); }
-
-  /**
-   * @brief Get the Names object
-   *
-   * @return auto&
-   */
-  [[nodiscard]] static auto GetNames() {
-    auto names = std::string{};
-    GetNamesImpl<Columns...>(names);
-    return names;
-  }
-
-  [[nodiscard]] static auto GetFullNames() {
-    auto names = std::string{};
-    GetFullNamesImpl<Columns...>(names);
-    return names;
-  }
-
-  [[nodiscard]] static auto GetTypes() {
-    auto types = std::vector<sqldb::ColumnType>{};
-    GetTypesImpl<Columns...>(types);
-    return types;
-  }
-
- private:
-  template <ColumnT Column, ColumnT... OtherColumns>
-  static void GetNamesImpl(std::string &names) {
-    if (names.empty()) {
-      names = ColumnTraits<Column>::GetName();
-    } else {
-      names += fmt::format(", {}", ColumnTraits<Column>::GetName());
-    }
-
-    if constexpr (sizeof...(OtherColumns) > 0) {
-      GetNamesImpl<OtherColumns...>(names);
-    }
-  }
-
-  template <ColumnT Column, ColumnT... OtherColumns>
-  static void GetFullNamesImpl(std::string &names) {
-    if (names.empty()) {
-      names = ColumnTraits<Column>::GetFullName();
-    } else {
-      names += fmt::format(", {}", ColumnTraits<Column>::GetFullName());
-    }
-
-    if constexpr (sizeof...(OtherColumns) > 0) {
-      GetFullNamesImpl<OtherColumns...>(names);
-    }
-  }
-
-  template <ColumnT Column, ColumnT... OtherColumns>
-  static void GetTypesImpl(std::vector<sqldb::ColumnType> &types) {
-    types.emplace_back(
-        sqldb::ColumnType{.column = {ColumnTraits<Column>::GetName()},
-                          .type = {ColumnTraits<Column>::GetType()}});
-
-    if constexpr (sizeof...(OtherColumns) > 0) {
-      GetTypesImpl<OtherColumns...>(types);
-    }
-  }
-};
-
-/**
- * @brief Information retrieved from the table declaration.
- */
-template <typename Table>
-struct TableTraits {
-  /**
-   * @brief Gives table name which is the name of the type.
-   */
-  [[nodiscard]] static auto GetName() { return cpp::NameOf<Table>(); }
-};
-
-/**
- * @brief Traits for the AS alias which are mostly the same
- * as the original table ones.
- */
-template <typename Original, typename Alias>
-struct TableTraits<As<Original, Alias>> : public TableTraits<Original> {
-  /**
-   * @copydoc TableTraits::GetName
-   */
-  [[nodiscard]] static auto GetName() {
-    return fmt::format("{} AS {}", TableTraits<Original>::GetName(),
-                       TableTraits<Alias>::GetName());
   }
 };
 }  // namespace stonks::sqldb

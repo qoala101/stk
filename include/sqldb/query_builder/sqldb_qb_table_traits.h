@@ -5,46 +5,93 @@
 
 #include "sqldb_qb_types.h"
 #include "sqldb_table_traits.h"
-#include "sqldb_types.h"
+
+namespace stonks::sqldb {
+/**
+ * @brief Special treatment of table alias.
+ */
+template <typename Original, typename Alias>
+struct TableTraits<qb::As<Original, Alias>> : public TableTraits<Original> {
+  /**
+   * @copydoc TableTraits::GetName
+   */
+  [[nodiscard]] static auto GetName() {
+    return fmt::format("{} AS {}", TableTraits<Original>::GetName(),
+                       TableTraits<Alias>::GetName());
+  }
+};
 
 /**
- * @file API to retrieve query-related info from table definitions.
+ * @brief Special treatment of column alias.
  */
+template <typename Original, typename Alias>
+struct ColumnTraits<qb::As<Original, Alias>> : public ColumnTraits<Original> {
+  /**
+   * @copydoc ColumnTraits::GetName
+   */
+  [[nodiscard]] static auto GetName() { return ColumnTraits<Alias>::GetName(); }
 
-namespace stonks::sqldb::qb {
+  /**
+   * @copydoc ColumnTraits::GetFullName
+   */
+  [[nodiscard]] static auto GetFullName() {
+    return fmt::format("{} AS {}", ColumnTraits<Original>::GetFullName(),
+                       ColumnTraits<Original>::GetName());
+  }
+};
+
+namespace qb {
 template <typename T>
 struct ColumnsTraits;
 
+/**
+ * @brief API to retrieve query-related info from table columns.
+ */
 template <typename... Columns>
 struct ColumnsTraits<std::tuple<Columns...>> {
+  /**
+   * @brief Gives column names.
+   */
   [[nodiscard]] static auto GetNames() {
     auto names = std::vector<std::string>{};
     GetNamesImpl<Columns...>(names);
     return names;
   }
 
-  [[nodiscard]] static auto GetDefinitions() {
-    auto definitions = std::vector<ColumnDefinition>{};
-    GetDefinitionsImpl<Columns...>(definitions);
-    return definitions;
+  /**
+   * @brief Gives data required to create columns.
+   */
+  [[nodiscard]] static auto GetCreateColumnsData() {
+    auto data = std::vector<CreateColumnData>{};
+    GetCreateColumnsDataImpl<Columns...>(data);
+    return data;
   }
 
-  [[nodiscard]] static auto GetPrimaryKeys() {
-    auto keys = std::vector<PrimaryKey>{};
-    GetPrimaryKeysImpl<Columns...>(keys);
-    return keys;
+  /**
+   * @brief Parses primary keys data from column definitions.
+   */
+  [[nodiscard]] static auto GetPrimaryKeysData() {
+    auto data = std::vector<PrimaryKeyData>{};
+    GetPrimaryKeysDataImpl<Columns...>(data);
+    return data;
   }
 
-  [[nodiscard]] static auto GetForeignKeys() {
-    auto keys = std::vector<ForeignKey>{};
-    GetForeignKeysImpl<Columns...>(keys);
-    return keys;
+  /**
+   * @brief Parses foreign keys data from column definitions.
+   */
+  [[nodiscard]] static auto GetForeignKeysData() {
+    auto data = std::vector<ForeignKeyData>{};
+    GetForeignKeysDataImpl<Columns...>(data);
+    return data;
   }
 
-  [[nodiscard]] static auto GetFullColumnTypes() {
-    auto types = std::vector<FullColumnType>{};
-    GetFullColumnTypesImpl<Columns...>(types);
-    return types;
+  /**
+   * @brief Gives data required to select values from columns.
+   */
+  [[nodiscard]] static auto GetSelectColumnsData() {
+    auto data = std::vector<SelectColumnData>{};
+    GetSelectColumnsDataImpl<Columns...>(data);
+    return data;
   }
 
  private:
@@ -58,39 +105,39 @@ struct ColumnsTraits<std::tuple<Columns...>> {
   }
 
   template <typename Column, typename... OtherColumns>
-  static void GetDefinitionsImpl(std::vector<ColumnDefinition> &values) {
+  static void GetCreateColumnsDataImpl(std::vector<CreateColumnData> &data) {
     using ColumnTraits = ColumnTraits<Column>;
 
-    values.emplace_back(ColumnDefinition{.name = ColumnTraits::GetName(),
-                                         .type = ColumnTraits::GetType(),
-                                         .unique = ColumnTraits::IsUnique()});
+    data.emplace_back(CreateColumnData{.name = ColumnTraits::GetName(),
+                                       .type = ColumnTraits::GetType(),
+                                       .unique = ColumnTraits::IsUnique()});
 
     if constexpr (sizeof...(OtherColumns) > 0) {
-      GetDefinitionsImpl<OtherColumns...>(values);
+      GetCreateColumnsDataImpl<OtherColumns...>(data);
     }
   }
 
   template <typename Column, typename... OtherColumns>
-  static void GetPrimaryKeysImpl(std::vector<PrimaryKey> &values) {
+  static void GetPrimaryKeysDataImpl(std::vector<PrimaryKeyData> &data) {
     using ColumnTraits = ColumnTraits<Column>;
 
     if constexpr (ColumnTraits::IsPrimaryKey()) {
-      values.emplace_back(
-          PrimaryKey{.column_name = ColumnTraits::GetName(),
-                     .auto_increment = ColumnTraits::HasAutoIncrement()});
+      data.emplace_back(
+          PrimaryKeyData{.column_name = ColumnTraits::GetName(),
+                         .auto_increment = ColumnTraits::HasAutoIncrement()});
     }
 
     if constexpr (sizeof...(OtherColumns) > 0) {
-      GetPrimaryKeysImpl<OtherColumns...>(values);
+      GetPrimaryKeysDataImpl<OtherColumns...>(data);
     }
   }
 
   template <typename Column, typename... OtherColumns>
-  static void GetForeignKeysImpl(std::vector<ForeignKey> &values) {
+  static void GetForeignKeysDataImpl(std::vector<ForeignKeyData> &data) {
     using ColumnTraits = ColumnTraits<Column>;
 
     if constexpr (ColumnTraits::IsForeignKey()) {
-      values.emplace_back(ForeignKey{
+      data.emplace_back(ForeignKeyData{
           .column_name = ColumnTraits::GetName(),
           .target_table_name =
               TableTraits<typename Column::ForeignKey::Table>::GetName(),
@@ -99,23 +146,24 @@ struct ColumnsTraits<std::tuple<Columns...>> {
     }
 
     if constexpr (sizeof...(OtherColumns) > 0) {
-      GetForeignKeysImpl<OtherColumns...>(values);
+      GetForeignKeysDataImpl<OtherColumns...>(data);
     }
   }
 
   template <typename Column, typename... OtherColumns>
-  static void GetFullColumnTypesImpl(std::vector<FullColumnType> &values) {
+  static void GetSelectColumnsDataImpl(std::vector<SelectColumnData> &data) {
     using ColumnTraits = ColumnTraits<Column>;
 
-    values.emplace_back(FullColumnType{.name = ColumnTraits::GetName(),
+    data.emplace_back(SelectColumnData{.name = ColumnTraits::GetName(),
                                        .full_name = ColumnTraits::GetFullName(),
                                        .type = ColumnTraits::GetType()});
 
     if constexpr (sizeof...(OtherColumns) > 0) {
-      GetFullColumnTypesImpl<OtherColumns...>(values);
+      GetSelectColumnsDataImpl<OtherColumns...>(data);
     }
   }
 };
-}  // namespace stonks::sqldb::qb
+}  // namespace qb
+}  // namespace stonks::sqldb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_TABLE_TRAITS_H_
