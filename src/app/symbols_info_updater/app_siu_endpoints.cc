@@ -9,12 +9,10 @@
 #include "network_typed_endpoint.h"
 
 namespace stonks::app::siu::endpoints {
-auto BinanceExchangeInfo() -> const network::TypedEndpoint& {
-  static const auto kEndpoint = network::TypedEndpoint{
-      .endpoint = {.method = network::Method::kGet,
-                   .uri = {"https://api.binance.com/api/v3/exchangeInfo"}},
-      .expected_types = {
-          .result = network::ExpectedType<struct BinanceExchangeInfo>()}};
-  return kEndpoint;
+auto BinanceExchangeInfo() -> network::TypedEndpoint {
+  return {.endpoint = {.method = network::Method::kGet,
+                       .uri = {"https://api.binance.com/api/v3/exchangeInfo"}},
+          .expected_types = {
+              .result = network::ExpectedType<struct BinanceExchangeInfo>()}};
 };
 }  // namespace stonks::app::siu::endpoints

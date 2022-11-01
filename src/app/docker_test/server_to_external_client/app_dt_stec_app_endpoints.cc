@@ -9,13 +9,11 @@
 #include "network_typed_endpoint.h"
 
 namespace stonks::app::dt::stec::endpoints {
-auto GetAveragePrice() -> const network::TypedEndpoint& {
-  static const auto endpoint = network::TypedEndpoint{
-      .endpoint = {.method = network::Method::kGet,
-                   .uri = {"/GetAveragePrice"}},
-      .expected_types = {
-          .params = {{"symbol", network::ExpectedType<Symbol>()}},
-          .result = network::ExpectedType<Price>()}};
-  return endpoint;
+auto GetAveragePrice() -> network::TypedEndpoint {
+  return {.endpoint = {.method = network::Method::kGet,
+                       .uri = {"/GetAveragePrice"}},
+          .expected_types = {
+              .params = {{"symbol", network::ExpectedType<Symbol>()}},
+              .result = network::ExpectedType<Price>()}};
 }
 }  // namespace stonks::app::dt::stec::endpoints

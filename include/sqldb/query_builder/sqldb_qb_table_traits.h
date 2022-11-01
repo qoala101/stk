@@ -17,49 +17,34 @@ struct ColumnsTraits;
 
 template <typename... Columns>
 struct ColumnsTraits<std::tuple<Columns...>> {
-  [[nodiscard]] static auto GetNames() -> auto & {
-    static const auto kConstant = [] {
-      auto values = std::vector<std::string>{};
-      GetNamesImpl<Columns...>(values);
-      return values;
-    }();
-    return kConstant;
+  [[nodiscard]] static auto GetNames() {
+    auto names = std::vector<std::string>{};
+    GetNamesImpl<Columns...>(names);
+    return names;
   }
 
-  [[nodiscard]] static auto GetDefinitions() -> auto & {
-    static const auto kConstant = [] {
-      auto values = std::vector<ColumnDefinition>{};
-      GetDefinitionsImpl<Columns...>(values);
-      return values;
-    }();
-    return kConstant;
+  [[nodiscard]] static auto GetDefinitions() {
+    auto definitions = std::vector<ColumnDefinition>{};
+    GetDefinitionsImpl<Columns...>(definitions);
+    return definitions;
   }
 
-  [[nodiscard]] static auto GetPrimaryKeys() -> auto & {
-    static const auto kConstant = [] {
-      auto values = std::vector<PrimaryKey>{};
-      GetPrimaryKeysImpl<Columns...>(values);
-      return values;
-    }();
-    return kConstant;
+  [[nodiscard]] static auto GetPrimaryKeys() {
+    auto keys = std::vector<PrimaryKey>{};
+    GetPrimaryKeysImpl<Columns...>(keys);
+    return keys;
   }
 
-  [[nodiscard]] static auto GetForeignKeys() -> auto & {
-    static const auto kConstant = [] {
-      auto values = std::vector<ForeignKey>{};
-      GetForeignKeysImpl<Columns...>(values);
-      return values;
-    }();
-    return kConstant;
+  [[nodiscard]] static auto GetForeignKeys() {
+    auto keys = std::vector<ForeignKey>{};
+    GetForeignKeysImpl<Columns...>(keys);
+    return keys;
   }
 
   [[nodiscard]] static auto GetFullColumnTypes() -> auto & {
-    static const auto kConstant = [] {
-      auto values = std::vector<FullColumnType>{};
-      GetFullColumnTypesImpl<Columns...>(values);
-      return values;
-    }();
-    return kConstant;
+    auto types = std::vector<FullColumnType>{};
+    GetFullColumnTypesImpl<Columns...>(types);
+    return types;
   }
 
  private:

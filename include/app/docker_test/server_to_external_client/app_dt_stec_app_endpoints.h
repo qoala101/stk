@@ -7,7 +7,7 @@ namespace stonks::app::dt::stec::endpoints {
 /**
  * @copydoc App::GetAveragePrice
  */
-[[nodiscard]] auto GetAveragePrice() -> const network::TypedEndpoint &;
+[[nodiscard]] auto GetAveragePrice() -> network::TypedEndpoint;
 }  // namespace stonks::app::dt::stec::endpoints
 
 #endif  // STONKS_APP_DOCKER_TEST_SERVER_TO_EXTERNAL_CLIENT_APP_DT_STEC_APP_ENDPOINTS_H_

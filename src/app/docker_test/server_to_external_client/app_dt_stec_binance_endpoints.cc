@@ -10,12 +10,10 @@
 #include "network_typed_endpoint.h"
 
 namespace stonks::app::dt::stec::binance::endpoints {
-auto GetCurrentAveragePrice() -> const network::TypedEndpoint& {
-  static const auto endpoint = network::TypedEndpoint{
-      .endpoint = {.method = network::Method::kGet, .uri = {"/avgPrice"}},
-      .expected_types = {
-          .params = {{"symbol", network::ExpectedType<Symbol>()}},
-          .result = network::ExpectedType<AvgPrice>()}};
-  return endpoint;
+auto GetCurrentAveragePrice() -> network::TypedEndpoint {
+  return {.endpoint = {.method = network::Method::kGet, .uri = {"/avgPrice"}},
+          .expected_types = {
+              .params = {{"symbol", network::ExpectedType<Symbol>()}},
+              .result = network::ExpectedType<AvgPrice>()}};
 }
 }  // namespace stonks::app::dt::stec::binance::endpoints

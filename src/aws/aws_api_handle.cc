@@ -13,19 +13,12 @@
 #include "cpp_smart_pointers.h"
 
 namespace stonks::aws {
-namespace {
-[[nodiscard]] auto Options() -> auto & {
-  static const auto kOptions = Aws::SDKOptions{};
-  return kOptions;
-}
-}  // namespace
-
 namespace detail {
 class ApiHandleImpl {
  public:
   explicit ApiHandleImpl(cpp::NnUp<log::ILogger> logger)
       : logger_{std::move(logger)} {
-    Aws::InitAPI(Options());
+    Aws::InitAPI(Aws::SDKOptions{});
   }
 
   ApiHandleImpl(const ApiHandleImpl &) = delete;
@@ -36,7 +29,7 @@ class ApiHandleImpl {
 
   ~ApiHandleImpl() {
     try {
-      Aws::ShutdownAPI(Options());
+      Aws::ShutdownAPI(Aws::SDKOptions{});
     } catch (const std::exception &e) {
       logger_->LogErrorCondition(e.what());
     }

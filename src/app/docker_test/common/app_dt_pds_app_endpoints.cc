@@ -9,11 +9,10 @@
 #include "network_typed_endpoint.h"
 
 namespace stonks::app::dt::pds::endpoints {
-auto RecordSymbolPrice() -> const network::TypedEndpoint& {
-  static const auto endpoint = network::TypedEndpoint{
+auto RecordSymbolPrice() -> network::TypedEndpoint {
+  return {
       .endpoint = {.method = network::Method::kPost,
                    .uri = {"/RecordSymbolPrice"}},
       .expected_types = {.body = network::ExpectedType<SymbolPriceRecord>()}};
-  return endpoint;
 }
 }  // namespace stonks::app::dt::pds::endpoints

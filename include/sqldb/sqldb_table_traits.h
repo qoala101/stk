@@ -65,10 +65,9 @@ struct ColumnTraits {
   /**
    * @brief Gives full column name which includes its table name.
    */
-  [[nodiscard]] static auto GetFullName() -> auto & {
-    static const auto kConstant =
-        fmt::format("{}.{}", cpp::NameOf<typename Column::Table>(), GetName());
-    return kConstant;
+  [[nodiscard]] static consteval auto GetFullName() {
+    return fmt::format("{}.{}", cpp::NameOf<typename Column::Table>(),
+                       GetName());
   }
 
   /**
@@ -124,10 +123,8 @@ struct ColumnTraits<As<Original, Alias>> : public ColumnTraits<Original> {
    * @copydoc ColumnTraits::GetFullName
    */
   [[nodiscard]] static auto GetFullName() -> auto & {
-    static const auto kConstant =
-        fmt::format("{} AS {}", ColumnTraits<Original>::GetFullName(),
-                    ColumnTraits<Original>::GetName());
-    return kConstant;
+    return fmt::format("{} AS {}", ColumnTraits<Original>::GetFullName(),
+                       ColumnTraits<Original>::GetName());
   }
 };
 
@@ -146,31 +143,22 @@ struct ColumnsTraits<std::tuple<Columns...>> {
    *
    * @return auto&
    */
-  [[nodiscard]] static constexpr auto GetNames() -> auto & {
-    static const auto kValue = [] {
-      auto names = std::string{};
-      GetNamesImpl<Columns...>(names);
-      return names;
-    }();
-    return kValue;
+  [[nodiscard]] static auto GetNames() {
+    auto names = std::string{};
+    GetNamesImpl<Columns...>(names);
+    return names;
   }
 
-  [[nodiscard]] static auto GetFullNames() -> auto & {
-    static const auto kValue = [] {
-      auto names = std::string{};
-      GetFullNamesImpl<Columns...>(names);
-      return names;
-    }();
-    return kValue;
+  [[nodiscard]] static auto GetFullNames() {
+    auto names = std::string{};
+    GetFullNamesImpl<Columns...>(names);
+    return names;
   }
 
-  [[nodiscard]] static auto GetTypes() -> auto & {
-    static const auto kValue = [] {
-      auto types = std::vector<sqldb::ColumnType>{};
-      GetTypesImpl<Columns...>(types);
-      return types;
-    }();
-    return kValue;
+  [[nodiscard]] static auto GetTypes() {
+    auto types = std::vector<sqldb::ColumnType>{};
+    GetTypesImpl<Columns...>(types);
+    return types;
   }
 
  private:
@@ -235,10 +223,8 @@ struct TableTraits<As<Original, Alias>> : public TableTraits<Original> {
    * @copydoc TableTraits::GetName
    */
   [[nodiscard]] static auto GetName() -> auto & {
-    static const auto kConstant =
-        fmt::format("{} AS {}", TableTraits<Original>::GetName(),
-                    TableTraits<Alias>::GetName());
-    return kConstant;
+    return fmt::format("{} AS {}", TableTraits<Original>::GetName(),
+                       TableTraits<Alias>::GetName());
   }
 };
 }  // namespace stonks::sqldb

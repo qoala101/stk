@@ -9,10 +9,8 @@ namespace stonks::cpp {
  * @brief Gives short name of the type.
  */
 template <typename T>
-[[nodiscard]] auto NameOf() -> auto& {
-  static const auto kConstant = std::string{nameof::nameof_short_type<T>()};
-  Ensures(!kConstant.empty());
-  return kConstant;
+[[nodiscard]] auto NameOf() {
+  return std::string{nameof::nameof_short_type<T>()};
 }
 }  // namespace stonks::cpp
 

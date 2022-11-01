@@ -7,7 +7,7 @@ namespace stonks::app::dt::pds::endpoints {
 /**
  * @copydoc App::RecordSymbolPrice
  */
-[[nodiscard]] auto RecordSymbolPrice() -> const network::TypedEndpoint &;
+[[nodiscard]] auto RecordSymbolPrice() -> network::TypedEndpoint;
 }  // namespace stonks::app::dt::pds::endpoints
 
 #endif  // STONKS_APP_DOCKER_TEST_COMMON_APP_DT_PDS_APP_ENDPOINTS_H_

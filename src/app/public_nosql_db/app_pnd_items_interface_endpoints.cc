@@ -9,23 +9,19 @@
 #include "nosqldb_types.h"
 
 namespace stonks::app::pnd::endpoints {
-auto SelectItem() -> const network::TypedEndpoint& {
-  static const auto kEndpoint = network::TypedEndpoint{
-      .endpoint = {.method = network::Method::kGet, .uri = {"/SelectItem"}},
-      .expected_types = {
-          .params = {{"table", network::ExpectedType<nosqldb::Table>()},
-                     {"key", network::ExpectedType<nosqldb::Key>()}},
-          .result = network::ExpectedType<cpp::Opt<nosqldb::Item>>()}};
-  return kEndpoint;
+auto SelectItem() -> network::TypedEndpoint {
+  return {.endpoint = {.method = network::Method::kGet, .uri = {"/SelectItem"}},
+          .expected_types = {
+              .params = {{"table", network::ExpectedType<nosqldb::Table>()},
+                         {"key", network::ExpectedType<nosqldb::Key>()}},
+              .result = network::ExpectedType<cpp::Opt<nosqldb::Item>>()}};
 }
 
-auto InsertOrUpdateItem() -> const network::TypedEndpoint& {
-  static const auto kEndpoint = network::TypedEndpoint{
-      .endpoint = {.method = network::Method::kPost,
-                   .uri = {"/InsertOrUpdateItem"}},
-      .expected_types = {
-          .params = {{"table", network::ExpectedType<nosqldb::Table>()},
-                     {"item", network::ExpectedType<nosqldb::Item>()}}}};
-  return kEndpoint;
+auto InsertOrUpdateItem() -> network::TypedEndpoint {
+  return {.endpoint = {.method = network::Method::kPost,
+                       .uri = {"/InsertOrUpdateItem"}},
+          .expected_types = {
+              .params = {{"table", network::ExpectedType<nosqldb::Table>()},
+                         {"item", network::ExpectedType<nosqldb::Item>()}}}};
 }
 }  // namespace stonks::app::pnd::endpoints
