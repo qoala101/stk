@@ -41,7 +41,7 @@ struct ColumnsTraits<std::tuple<Columns...>> {
     return keys;
   }
 
-  [[nodiscard]] static auto GetFullColumnTypes() -> auto & {
+  [[nodiscard]] static auto GetFullColumnTypes() {
     auto types = std::vector<FullColumnType>{};
     GetFullColumnTypesImpl<Columns...>(types);
     return types;

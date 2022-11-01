@@ -85,7 +85,7 @@ class EntityServer {
         .endpoint = {.method = stonks::network::Method::kPost,
                      .uri = {"/PushSymbol"}},
         .expected_types = stonks::network::te::EndpointTypesFrom(
-            &Entity::PushSymbol, stonks::network::te::kBody)};
+            &Entity::PushSymbol, stonks::network::te::Body{})};
   }
 
   [[nodiscard]] static auto GetSymbolEndpointDesc()

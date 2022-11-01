@@ -5,11 +5,6 @@
 
 namespace stonks::di {
 /**
- * @brief Overrides binding by appending [Override] to it.
- */
-constexpr boost::di::core::override Override{};
-
-/**
  * @brief Makes injector.
  * @tparam Args Boost DI bindings or other injectors.
  */

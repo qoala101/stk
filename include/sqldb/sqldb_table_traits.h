@@ -19,12 +19,12 @@ namespace stonks::sqldb {
 namespace detail {
 template <typename T>
 struct TupleTraits {
-  [[nodiscard]] static consteval auto IsTuple() { return false; }
+  [[nodiscard]] static auto IsTuple() { return false; }
 };
 
 template <typename... Ts>
 struct TupleTraits<std::tuple<Ts...>> {
-  [[nodiscard]] static consteval auto IsTuple() { return true; }
+  [[nodiscard]] static auto IsTuple() { return true; }
 };
 }  // namespace detail
 
@@ -58,14 +58,12 @@ struct ColumnTraits {
   /**
    * @brief Gives short column name which is the name of its type.
    */
-  [[nodiscard]] static constexpr auto GetName() -> auto & {
-    return cpp::NameOf<Column>();
-  }
+  [[nodiscard]] static auto GetName() { return cpp::NameOf<Column>(); }
 
   /**
    * @brief Gives full column name which includes its table name.
    */
-  [[nodiscard]] static consteval auto GetFullName() {
+  [[nodiscard]] static auto GetFullName() {
     return fmt::format("{}.{}", cpp::NameOf<typename Column::Table>(),
                        GetName());
   }
@@ -73,7 +71,7 @@ struct ColumnTraits {
   /**
    * @brief Gives column data type.
    */
-  [[nodiscard]] static consteval auto GetType() {
+  [[nodiscard]] static auto GetType() {
     return DataTypeVariant{DataType<typename Column::DataType>{}};
   }
 
@@ -94,14 +92,14 @@ struct ColumnTraits {
   /**
    * @brief Tells whether column has auto increment.
    */
-  [[nodiscard]] static consteval auto HasAutoIncrement() {
+  [[nodiscard]] static auto HasAutoIncrement() {
     return requires { typename Column::AutoIncrement; };
   }
 
   /**
    * @brief Tells whether column data is unique.
    */
-  [[nodiscard]] static consteval auto IsUnique() {
+  [[nodiscard]] static auto IsUnique() {
     return requires { typename Column::Unique; };
   }
 };
@@ -115,14 +113,12 @@ struct ColumnTraits<As<Original, Alias>> : public ColumnTraits<Original> {
   /**
    * @copydoc ColumnTraits::GetName
    */
-  [[nodiscard]] static constexpr auto GetName() -> auto & {
-    return ColumnTraits<Alias>::GetName();
-  }
+  [[nodiscard]] static auto GetName() { return ColumnTraits<Alias>::GetName(); }
 
   /**
    * @copydoc ColumnTraits::GetFullName
    */
-  [[nodiscard]] static auto GetFullName() -> auto & {
+  [[nodiscard]] static auto GetFullName() {
     return fmt::format("{} AS {}", ColumnTraits<Original>::GetFullName(),
                        ColumnTraits<Original>::GetName());
   }
@@ -136,7 +132,7 @@ struct ColumnsTraits<std::tuple<Columns...>> {
   /**
    * @brief Gives number of columns.
    */
-  [[nodiscard]] static consteval auto GetSize() { return sizeof...(Columns); }
+  [[nodiscard]] static auto GetSize() { return sizeof...(Columns); }
 
   /**
    * @brief Get the Names object
@@ -208,9 +204,7 @@ struct TableTraits {
   /**
    * @brief Gives table name which is the name of the type.
    */
-  [[nodiscard]] static constexpr auto GetName() -> auto & {
-    return cpp::NameOf<Table>();
-  }
+  [[nodiscard]] static auto GetName() { return cpp::NameOf<Table>(); }
 };
 
 /**
@@ -222,7 +216,7 @@ struct TableTraits<As<Original, Alias>> : public TableTraits<Original> {
   /**
    * @copydoc TableTraits::GetName
    */
-  [[nodiscard]] static auto GetName() -> auto & {
+  [[nodiscard]] static auto GetName() {
     return fmt::format("{} AS {}", TableTraits<Original>::GetName(),
                        TableTraits<Alias>::GetName());
   }

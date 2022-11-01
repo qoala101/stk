@@ -16,10 +16,11 @@ namespace stonks::di {
  */
 template <typename T, typename... Args>
 auto OverrideBindingsForType(auto& injector, Args&&... args) {
-  return MakeInjector(boost::di::extension::make_extensible(injector),
-                      boost::di::injector<T>{MakeInjector(
-                          boost::di::extension::make_extensible(injector),
-                          std::forward<Args>(args)[Override]...)});
+  return MakeInjector(
+      boost::di::extension::make_extensible(injector),
+      boost::di::injector<T>{MakeInjector(
+          boost::di::extension::make_extensible(injector),
+          std::forward<Args>(args)[boost::di::core::override{}]...)});
 }
 }  // namespace stonks::di
 

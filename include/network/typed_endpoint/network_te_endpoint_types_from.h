@@ -13,8 +13,7 @@ namespace stonks::network::te {
  * @brief Passing the instance to API instead of parameter name
  * would make it to parse parameter as body.
  */
-class Body {
-} static constexpr kBody{};
+struct Body {};
 
 namespace detail {
 template <cpp::MemberFunction Function>

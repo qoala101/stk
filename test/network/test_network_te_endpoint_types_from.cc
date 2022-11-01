@@ -68,7 +68,7 @@ TEST(FunctionTypes, Params) {
 
 TEST(FunctionTypes, Body) {
   auto types = stonks::network::te::EndpointTypesFrom(
-      &Type::BodyValue, stonks::network::te::kBody);
+      &Type::BodyValue, stonks::network::te::Body{});
   EXPECT_TRUE(types.params.empty());
   EXPECT_NO_THROW((*types.body)(*value_json));
   EXPECT_ANY_THROW((*types.body)(*null_json));
@@ -76,7 +76,7 @@ TEST(FunctionTypes, Body) {
   EXPECT_FALSE(types.result.has_value());
 
   types = stonks::network::te::EndpointTypesFrom(&Type::BodyConstValue, "0",
-                                                 stonks::network::te::kBody,
+                                                 stonks::network::te::Body{},
                                                  "2", "3", "4", "5");
   EXPECT_EQ(types.params.size(), 5);
   EXPECT_NO_THROW((*types.body)(*value_json));
@@ -85,7 +85,7 @@ TEST(FunctionTypes, Body) {
   EXPECT_FALSE(types.result.has_value());
 
   types = stonks::network::te::EndpointTypesFrom(
-      &Type::BodyConstRef, "0", "1", stonks::network::te::kBody, "3", "4", "5");
+      &Type::BodyConstRef, "0", "1", stonks::network::te::Body{}, "3", "4", "5");
   EXPECT_EQ(types.params.size(), 5);
   EXPECT_NO_THROW((*types.body)(*value_json));
   EXPECT_ANY_THROW((*types.body)(*null_json));
@@ -93,7 +93,7 @@ TEST(FunctionTypes, Body) {
   EXPECT_FALSE(types.result.has_value());
 
   types = stonks::network::te::EndpointTypesFrom(
-      &Type::BodyPointer, "0", "1", "2", stonks::network::te::kBody, "4", "5");
+      &Type::BodyPointer, "0", "1", "2", stonks::network::te::Body{}, "4", "5");
   EXPECT_EQ(types.params.size(), 5);
   EXPECT_NO_THROW((*types.body)(*value_json));
   EXPECT_NO_THROW((*types.body)(*null_json));
@@ -101,7 +101,7 @@ TEST(FunctionTypes, Body) {
   EXPECT_FALSE(types.result.has_value());
 
   types = stonks::network::te::EndpointTypesFrom(
-      &Type::BodyOpt, "0", "1", "2", "3", stonks::network::te::kBody, "5");
+      &Type::BodyOpt, "0", "1", "2", "3", stonks::network::te::Body{}, "5");
   EXPECT_EQ(types.params.size(), 5);
   EXPECT_NO_THROW((*types.body)(*value_json));
   EXPECT_NO_THROW((*types.body)(*null_json));
@@ -109,7 +109,7 @@ TEST(FunctionTypes, Body) {
   EXPECT_FALSE(types.result.has_value());
 
   types = stonks::network::te::EndpointTypesFrom(
-      &Type::BodyVec, "0", "1", "2", "3", "4", stonks::network::te::kBody);
+      &Type::BodyVec, "0", "1", "2", "3", "4", stonks::network::te::Body{});
   EXPECT_EQ(types.params.size(), 5);
   EXPECT_ANY_THROW((*types.body)(*value_json));
   EXPECT_NO_THROW((*types.body)(*null_json));
@@ -152,7 +152,7 @@ TEST(FunctionTypesDeathTest, Errors) {
                "");
   EXPECT_DEATH(
       std::ignore = stonks::network::te::EndpointTypesFrom(
-          &Type::Params, stonks::network::te::kBody, stonks::network::te::kBody,
+          &Type::Params, stonks::network::te::Body{}, stonks::network::te::Body{},
           "const_ref", "pointer", "opt", "vec"),
       "");
 }

@@ -4,7 +4,7 @@
 
 namespace stonks::sqldb::qb {
 namespace {
-[[nodiscard]] constexpr auto ToString(const DataTypeVariant &type) {
+[[nodiscard]] auto ToString(const DataTypeVariant &type) {
   return std::visit(
       [](const auto &v) {
         using V = typename std::decay_t<decltype(v)>::Type;
