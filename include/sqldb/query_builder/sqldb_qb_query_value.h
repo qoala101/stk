@@ -11,7 +11,7 @@ namespace stonks::sqldb::qb {
 class Select;
 
 /**
- * @brief Converts objects to parts of the query.
+ * @brief Converts inputs to parts of the query.
  */
 class QueryValue : public QueryWrapper {
  public:
@@ -20,17 +20,15 @@ class QueryValue : public QueryWrapper {
       : QueryValue{ColumnTraits<Column>::GetFullName()} {}
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  QueryValue(p::Parametrized<Query> query);
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   QueryValue(const Value &value);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  QueryValue(p::QueryParam param);
+  QueryValue(const p::QueryParam &param);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   QueryValue(const Select &select);
 
  private:
-  // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  QueryValue(std::string query);
+  explicit QueryValue(std::string column_name);
+  explicit QueryValue(const p::Parametrized<SelectQuery> &query);
 
   friend auto operator==(const QueryValue &left, const QueryValue &right)
       -> Condition;
@@ -40,8 +38,6 @@ class QueryValue : public QueryWrapper {
 
   friend auto operator>=(const QueryValue &left, const QueryValue &right)
       -> Condition;
-
-  explicit QueryValue(const p::Parametrized<SelectQuery> &query);
 };
 }  // namespace stonks::sqldb::qb
 

@@ -4,10 +4,10 @@
 
 namespace stonks::sqldb::qb {
 namespace {
-[[nodiscard]] constexpr auto ToString(DataTypeVariant type) {
+[[nodiscard]] constexpr auto ToString(const DataTypeVariant &type) {
   return std::visit(
-      [](auto v) {
-        using V = typename decltype(v)::Type;
+      [](const auto &v) {
+        using V = typename std::decay_t<decltype(v)>::Type;
 
         if constexpr (std::is_same_v<V, bool> || std::is_same_v<V, int> ||
                       std::is_same_v<V, int64_t>) {

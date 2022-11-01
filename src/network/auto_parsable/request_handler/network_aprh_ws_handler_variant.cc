@@ -10,11 +10,11 @@ void WsHandlerVariant::operator()(WsMessage message) {
       [&message](auto &v) {
         Expects(!v.empty());
 
-        using V = decltype(v);
+        using V = std::decay_t<decltype(v)>;
 
-        if constexpr (cpp::DecaysTo<V, Handler>) {
+        if constexpr (std::is_same_v<V, Handler>) {
           v();
-        } else if constexpr (cpp::DecaysTo<V, HandlerWithWsMessage>) {
+        } else if constexpr (std::is_same_v<V, HandlerWithWsMessage>) {
           v(AutoParsable{std::move(message)});
         } else {
           Expects(false);

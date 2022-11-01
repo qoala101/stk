@@ -3,6 +3,7 @@
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/concat.hpp>
 
+#include "sqldb_p_types.h"
 #include "sqldb_qb_query_wrapper.h"
 #include "sqldb_qb_select.h"
 
@@ -17,22 +18,23 @@ namespace {
   const auto &right_query = right.GetQuery();
   Expects(!right_query.value.empty());
 
-  return Condition{
-      {fmt::format(fmt::runtime(format), left_query.value, right_query.value),
-       ranges::views::concat(left_query.params.value,
-                             right_query.params.value) |
-           ranges::to_vector}};
+  auto query =
+      fmt::format(fmt::runtime(format), left_query.value, right_query.value);
+  auto params =
+      ranges::views::concat(left_query.params.value, right_query.params.value) |
+      ranges::to_vector;
+  return Condition{{std::move(query), std::move(params)}};
 }
 
 [[nodiscard]] auto ToString(const Value &value) {
   return std::visit(
       [](const auto &v) -> std::string {
-        using V = decltype(v);
+        using V = std::decay_t<decltype(v)>;
 
-        if constexpr (cpp::DecaysTo<V, std::string>) {
+        if constexpr (std::is_same_v<V, std::string>) {
           return fmt::format(R"("{}")", v);
         }
-        if constexpr (cpp::DecaysTo<V, std::monostate>) {
+        if constexpr (std::is_same_v<V, std::monostate>) {
           Expects(false);
         } else {
           return fmt::format("{}", v);
@@ -42,17 +44,15 @@ namespace {
 }
 }  // namespace
 
-QueryValue::QueryValue(std::string query) : QueryWrapper{{std::move(query)}} {}
-
-QueryValue::QueryValue(p::Parametrized<Query> query)
-    : QueryWrapper{std::move(query)} {}
-
 QueryValue::QueryValue(const Value &value) : QueryWrapper{{ToString(value)}} {}
 
-QueryValue::QueryValue(p::QueryParam param)
+QueryValue::QueryValue(const p::QueryParam &param)
     : QueryWrapper{{"?", {{{param}}}}} {}
 
 QueryValue::QueryValue(const Select &select) : QueryValue{select.Build()} {}
+
+QueryValue::QueryValue(std::string column_name)
+    : QueryWrapper{{std::move(column_name)}} {}
 
 QueryValue::QueryValue(const p::Parametrized<SelectQuery> &query)
     : QueryWrapper{{fmt::format("({})", query.value), query.params}} {}

@@ -11,11 +11,11 @@ template <cpp::This<SqliteDbHandleVariant> This>
 auto SqliteDbHandleVariant::GetSqliteDbImpl(This &t) -> auto & {
   return std::visit(
       [](auto &v) -> cpp::CopyConst<This, sqlite3> & {
-        using V = decltype(v);
+        using V = std::decay_t<decltype(v)>;
 
-        if constexpr (cpp::DecaysTo<V, SqliteDbHandle>) {
+        if constexpr (std::is_same_v<V, SqliteDbHandle>) {
           return *v;
-        } else if constexpr (cpp::DecaysTo<V, SqliteDbFileHandle>) {
+        } else if constexpr (std::is_same_v<V, SqliteDbFileHandle>) {
           return v.GetSqliteDb();
         } else {
           Expects(false);
@@ -36,9 +36,9 @@ auto SqliteDbHandleVariant::GetFilePath() const -> const FilePath & {
   Expects(HasFilePath());
   return std::visit(
       [](const auto &v) -> const FilePath & {
-        using V = decltype(v);
+        using V = std::decay_t<decltype(v)>;
 
-        if constexpr (cpp::DecaysTo<V, SqliteDbFileHandle>) {
+        if constexpr (std::is_same_v<V, SqliteDbFileHandle>) {
           return v.GetFilePath();
         } else {
           Expects(false);

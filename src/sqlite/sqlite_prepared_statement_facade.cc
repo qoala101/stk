@@ -53,7 +53,7 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
 }
 
 [[nodiscard]] auto GetValue(sqlite3_stmt &statement, int index,
-                            sqldb::DataTypeVariant type) {
+                            const sqldb::DataTypeVariant &type) {
   Expects(index >= 0);
 
   if (sqlite3_column_type(&statement, index) == SQLITE_NULL) {
@@ -61,19 +61,19 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
   }
 
   return std::visit(
-      [&statement, index](auto v) {
-        using V = typename decltype(v)::Type;
+      [&statement, index](const auto &v) {
+        using V = typename std::decay_t<decltype(v)>::Type;
 
-        if constexpr (cpp::DecaysTo<V, bool>) {
+        if constexpr (std::is_same_v<V, bool>) {
           return sqldb::Value{
               static_cast<bool>(sqlite3_column_int(&statement, index))};
-        } else if constexpr (cpp::DecaysTo<V, int>) {
+        } else if constexpr (std::is_same_v<V, int>) {
           return sqldb::Value{sqlite3_column_int(&statement, index)};
-        } else if constexpr (cpp::DecaysTo<V, int64_t>) {
+        } else if constexpr (std::is_same_v<V, int64_t>) {
           return sqldb::Value{int64_t{sqlite3_column_int64(&statement, index)}};
-        } else if constexpr (cpp::DecaysTo<V, double>) {
+        } else if constexpr (std::is_same_v<V, double>) {
           return sqldb::Value{sqlite3_column_double(&statement, index)};
-        } else if constexpr (cpp::DecaysTo<V, std::string>) {
+        } else if constexpr (std::is_same_v<V, std::string>) {
           // NOLINTNEXTLINE(*-reinterpret-cast)
           return sqldb::Value{std::string{reinterpret_cast<const char *>(
               sqlite3_column_text(&statement, index))}};

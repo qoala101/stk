@@ -29,14 +29,6 @@ template <typename ColumnT>
 }
 
 /**
- * @brief Creates a query param of specified type.
- */
-template <typename T>
-[[nodiscard]] auto ParamOfType() -> QueryValue {
-  return p::QueryParam{DataType<T>{}};
-}
-
-/**
  * @brief Creates a query param of column type.
  */
 template <typename Column>

@@ -14,17 +14,17 @@ auto HandlerVariant::operator()(RestRequest request) -> RestResponse {
       [&request](auto &v) {
         Expects(!v.empty());
 
-        using V = decltype(v);
+        using V = std::decay_t<decltype(v)>;
 
-        if constexpr (cpp::DecaysTo<V, Handler>) {
+        if constexpr (std::is_same_v<V, Handler>) {
           v();
           return RestResponse{.status = Status::kOk};
-        } else if constexpr (cpp::DecaysTo<V, HandlerWithRequest>) {
+        } else if constexpr (std::is_same_v<V, HandlerWithRequest>) {
           v(AutoParsableRestRequest{std::move(request)});
           return RestResponse{.status = Status::kOk};
-        } else if constexpr (cpp::DecaysTo<V, HandlerWithResponse>) {
+        } else if constexpr (std::is_same_v<V, HandlerWithResponse>) {
           return RestResponse{.status = Status::kOk, .result = v()};
-        } else if constexpr (cpp::DecaysTo<V, HandlerWithRequestAndResponse>) {
+        } else if constexpr (std::is_same_v<V, HandlerWithRequestAndResponse>) {
           return RestResponse{
               .status = Status::kOk,
               .result = v(AutoParsableRestRequest{std::move(request)})};
