@@ -19,14 +19,14 @@ class Update {
    * @tparam Table Table to update.
    */
   template <typename Table>
-  explicit Update(Table* /*unused*/) : Update{TableTraits<Table>::GetName()} {}
+  explicit Update(Table* /*unused*/) : Update{Table::GetName()} {}
 
   /**
    * @brief Sets the value for the column.
    */
   template <typename Column>
   [[nodiscard]] auto Set(const QueryValue& value) -> auto& {
-    return Set(::stonks::sqldb::ColumnTraits<Column>::GetName(), value);
+    return Set(Column::GetName(), value);
   }
 
   /**

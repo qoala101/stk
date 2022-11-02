@@ -3,29 +3,25 @@
 
 #include <fmt/format.h>
 
+#include <cstdint>
 #include <gsl/assert>
 #include <nameof.hpp>
 #include <type_traits>
 
-#include "cpp_optional.h"
-#include "sqldb_types.h"
+#include "sqldb_table.h"
 
 namespace stonks::app::sdb::tables {
 /**
  * @copydoc core::Asset
  */
-struct Asset {
-  struct id {
-    using Table = Asset;
-    using DataType = int64_t;
+struct Asset : public sqldb::Table<Asset> {
+  struct id : public Column<int64_t, id> {
     struct PrimaryKey;
     struct AutoIncrement;
     struct Unique;
   };
 
-  struct name {
-    using Table = Asset;
-    using DataType = std::string;
+  struct name : public Column<std::string, name> {
     struct Unique;
   };
 
@@ -35,52 +31,30 @@ struct Asset {
 /**
  * @copydoc core::SymbolInfo
  */
-struct SymbolInfo {
-  struct id {
-    using Table = SymbolInfo;
-    using DataType = int64_t;
+struct SymbolInfo : public sqldb::Table<SymbolInfo> {
+  struct id : public Column<int64_t, id> {
     struct PrimaryKey;
     struct AutoIncrement;
     struct Unique;
   };
 
-  struct name {
-    using Table = SymbolInfo;
-    using DataType = std::string;
+  struct name : public Column<std::string, name> {
     struct Unique;
   };
 
-  struct base_asset_id {
-    using Table = SymbolInfo;
-    using DataType = int64_t;
+  struct base_asset_id : public Column<int64_t, base_asset_id> {
     using ForeignKey = Asset::id;
   };
 
-  struct base_asset_min_amount {
-    using Table = SymbolInfo;
-    using DataType = double;
-  };
+  using base_asset_min_amount = Column<double, struct base_asset_min_amount>;
+  using base_asset_price_step = Column<double, struct base_asset_price_step>;
 
-  struct base_asset_price_step {
-    using Table = SymbolInfo;
-    using DataType = double;
-  };
-
-  struct quote_asset_id {
-    using Table = SymbolInfo;
-    using DataType = int64_t;
+  struct quote_asset_id : public Column<int64_t, quote_asset_id> {
     using ForeignKey = Asset::id;
   };
 
-  struct quote_asset_min_amount {
-    using Table = SymbolInfo;
-    using DataType = double;
-  };
-
-  struct quote_asset_price_step {
-    using Table = SymbolInfo;
-    using DataType = double;
-  };
+  using quote_asset_min_amount = Column<double, struct quote_asset_min_amount>;
+  using quote_asset_price_step = Column<double, struct quote_asset_price_step>;
 
   using Columns = std::tuple<id, name, base_asset_id, base_asset_min_amount,
                              base_asset_price_step, quote_asset_id,
@@ -90,21 +64,14 @@ struct SymbolInfo {
 /**
  * @copydoc core::SymbolPriceRecord
  */
-struct SymbolPriceRecord {
-  struct symbol_id {
-    using Table = SymbolPriceRecord;
-    using DataType = int64_t;
+struct SymbolPriceRecord : public sqldb::Table<SymbolPriceRecord> {
+  struct symbol_id : public Column<int64_t, symbol_id> {
     using ForeignKey = SymbolInfo::id;
   };
 
-  struct price {
-    using Table = SymbolPriceRecord;
-    using DataType = double;
-  };
+  using price = Column<double, struct price>;
 
-  struct time {
-    using Table = SymbolPriceRecord;
-    using DataType = int64_t;
+  struct time : public Column<int64_t, time> {
     struct Unique;
   };
 

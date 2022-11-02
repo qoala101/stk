@@ -16,7 +16,7 @@ class Drop {
    * @tparam Table Table to drop.
    */
   template <typename Table>
-  explicit Drop(Table* /*unused*/) : Drop{TableTraits<Table>::GetName()} {}
+  explicit Drop(Table* /*unused*/) : Drop{Table::GetName()} {}
 
   /**
    * @brief Builds the query.

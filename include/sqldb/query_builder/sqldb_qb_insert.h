@@ -28,7 +28,7 @@ class Insert {
    */
   template <typename Column>
   [[nodiscard]] auto Value(const QueryValue& value) -> auto& {
-    return Value(ColumnTraits<Column>::GetName(), value);
+    return Value(Column::GetName(), value);
   }
 
   /**
@@ -36,8 +36,7 @@ class Insert {
    */
   template <typename Table>
   [[nodiscard]] auto Into() -> auto& {
-    return Into(TableTraits<Table>::GetName(),
-                cpp::Lazy<std::vector<std::string>>{[]() {
+    return Into(Table::GetName(), cpp::Lazy<std::vector<std::string>>{[]() {
                   return ColumnsTraits<typename Table::Columns>::GetNames();
                 }});
   }

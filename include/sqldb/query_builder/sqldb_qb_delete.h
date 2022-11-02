@@ -17,7 +17,7 @@ class Delete {
    * @tparam Table Table to delete rows from.
    */
   template <typename Table>
-  explicit Delete(Table* /*unused*/) : Delete{TableTraits<Table>::GetName()} {}
+  explicit Delete(Table* /*unused*/) : Delete{Table::GetName()} {}
 
   /**
    * @brief Adds condition to the query.

@@ -21,8 +21,7 @@ class Create {
   template <typename Table,
             typename ColumnsTraits = ColumnsTraits<typename Table::Columns>>
   explicit Create(Table * /*unused*/)
-      : Create{TableTraits<Table>::GetName(),
-               ColumnsTraits::GetCreateColumnsData(),
+      : Create{Table::GetName(), ColumnsTraits::GetCreateColumnsData(),
                ColumnsTraits::GetPrimaryKeysData(),
                ColumnsTraits::GetForeignKeysData()} {}
 

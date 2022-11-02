@@ -9,28 +9,16 @@
 #include "sqldb_i_update_statement.h"
 
 namespace stonks::app::sdb {
-struct BaseAsset {
-  struct id : tables::Asset::id {
-    using Table = BaseAsset;
-  };
-
-  struct name : tables::Asset::name {
-    using Table = BaseAsset;
-  };
-
-  struct base_asset : name {};
+struct BaseAsset : public sqldb::AliasToTable<tables::Asset, BaseAsset> {
+  using id = AliasToColumn<Target::id>;
+  using name = AliasToColumn<Target::name>;
+  using base_asset = AliasToColumn<name, struct base_asset>;
 };
 
-struct QuoteAsset {
-  struct id : tables::Asset::id {
-    using Table = QuoteAsset;
-  };
-
-  struct name : tables::Asset::name {
-    using Table = QuoteAsset;
-  };
-
-  struct quote_asset : name {};
+struct QuoteAsset : public sqldb::AliasToTable<tables::Asset, QuoteAsset> {
+  using id = AliasToColumn<Target::id>;
+  using name = AliasToColumn<Target::name>;
+  using quote_asset = AliasToColumn<name, struct quote_asset>;
 };
 
 /**

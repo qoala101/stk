@@ -17,7 +17,7 @@ class QueryValue : public QueryWrapper {
  public:
   template <typename Column>
   explicit QueryValue(Column * /*unused*/)
-      : QueryValue{ColumnTraits<Column>::GetFullName()} {}
+      : QueryValue{Column::GetFullName()} {}
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   QueryValue(const Value &value);

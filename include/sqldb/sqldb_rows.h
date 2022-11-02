@@ -56,7 +56,7 @@ class Rows {
   template <typename Column>
   [[nodiscard]] static auto GetColumnValuesImpl(cpp::This<Rows> auto &t)
       -> auto & {
-    return t.GetColumnValues({ColumnTraits<Column>::GetName()});
+    return t.GetColumnValues({Column::GetName()});
   }
 
   [[nodiscard]] auto GetColumnValues(const Column &column) const

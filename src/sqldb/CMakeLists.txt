@@ -23,6 +23,7 @@ add_library(libsqldb
   sqldb_i_update_statement.cc
   sqldb_query_builder.cc
   sqldb_rows.cc
+  sqldb_table.cc
   sqldb_types.cc
   sqldb_value.cc
 )

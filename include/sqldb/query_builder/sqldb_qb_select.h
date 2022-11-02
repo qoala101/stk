@@ -45,8 +45,7 @@ class Select {
   template <typename Table>
   [[nodiscard]] auto From() -> auto & {
     return From(
-        TableTraits<Table>::GetName(),
-        cpp::Lazy<std::vector<SelectColumnData>>{[]() {
+        Table::GetName(), cpp::Lazy<std::vector<SelectColumnData>>{[]() {
           return ColumnsTraits<typename Table::Columns>::GetSelectColumnsData();
         }});
   }
@@ -56,7 +55,7 @@ class Select {
    */
   template <typename Table>
   [[nodiscard]] auto Join(const OnCondition &condition) -> auto & {
-    return Join(TableTraits<Table>::GetName(), condition);
+    return Join(Table::GetName(), condition);
   }
 
   /**
