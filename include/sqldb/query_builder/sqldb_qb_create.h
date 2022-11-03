@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "sqldb_qb_table_traits.h"
+#include "sqldb_qb_columns_traits.h"
 #include "sqldb_qb_types.h"
 #include "sqldb_types.h"
 
@@ -18,7 +18,7 @@ class Create {
    * @tparam Table Table definition.
    */
   template <TableDefinition Table,
-            typename ColumnsTraits = ColumnsTraits<typename Table::Columns>>
+            typename ColumnsTraits = ColumnsTraits<Table>>
   explicit Create(Table * /*unused*/)
       : Create{Table::GetName(), ColumnsTraits::GetCreateColumnsData(),
                ColumnsTraits::GetPrimaryKeysData(),

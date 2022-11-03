@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_TABLE_TRAITS_H_
-#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_TABLE_TRAITS_H_
+#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COLUMNS_TRAITS_H_
+#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COLUMNS_TRAITS_H_
 
 #include <string>
 
@@ -9,6 +9,9 @@
 namespace stonks::sqldb::qb {
 template <typename T>
 struct ColumnsTraits;
+
+template <TableDefinition Table>
+struct ColumnsTraits<Table> : public ColumnsTraits<typename Table::Columns> {};
 
 /**
  * @brief API to retrieve query-related info from table columns.
@@ -121,4 +124,4 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
 };
 }  // namespace stonks::sqldb::qb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_TABLE_TRAITS_H_
+#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COLUMNS_TRAITS_H_

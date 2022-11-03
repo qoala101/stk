@@ -7,10 +7,10 @@
 #include <vector>
 
 #include "cpp_lazy.h"
+#include "sqldb_qb_columns_traits.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_condition.h"
 #include "sqldb_qb_query_value.h"
-#include "sqldb_qb_table_traits.h"
 #include "sqldb_qb_types.h"
 #include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_types.h"
@@ -26,7 +26,8 @@ class Select {
    */
   template <ColumnDefinition... Columns>
   explicit Select(cpp::TypeList<Columns...> * /*unused*/)
-      : Select{ColumnsTraits<cpp::TypeList<Columns...>>::GetSelectColumnsData()} {}
+      : Select{
+            ColumnsTraits<cpp::TypeList<Columns...>>::GetSelectColumnsData()} {}
 
   /**
    * @brief Query would select all table columns.
@@ -43,10 +44,10 @@ class Select {
    */
   template <TableDefinition Table>
   [[nodiscard]] auto From() -> auto & {
-    return From(
-        Table::GetName(), cpp::Lazy<std::vector<SelectColumnData>>{[]() {
-          return ColumnsTraits<typename Table::Columns>::GetSelectColumnsData();
-        }});
+    return From(Table::GetName(),
+                cpp::Lazy<std::vector<SelectColumnData>>{[]() {
+                  return ColumnsTraits<Table>::GetSelectColumnsData();
+                }});
   }
 
   /**

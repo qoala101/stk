@@ -4,9 +4,9 @@
 #include <function2/function2.hpp>
 
 #include "cpp_lazy.h"
+#include "sqldb_qb_columns_traits.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_query_value.h"
-#include "sqldb_qb_table_traits.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
@@ -36,7 +36,7 @@ class Insert {
   template <TableDefinition Table>
   [[nodiscard]] auto Into() -> auto& {
     return Into(Table::GetName(), cpp::Lazy<std::vector<std::string>>{[]() {
-                  return ColumnsTraits<typename Table::Columns>::GetNames();
+                  return ColumnsTraits<Table>::GetNames();
                 }});
   }
 
