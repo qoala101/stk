@@ -13,7 +13,6 @@
 #include "sqldb_qb_table_traits.h"
 #include "sqldb_qb_types.h"
 #include "sqldb_qb_wrapped_conditions.h"
-#include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {

@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "sqldb_table_traits.h"
+#include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {

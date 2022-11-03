@@ -1,5 +1,6 @@
 #include "sqldb_p_select_statement.h"
 
+#include <gsl/assert>
 #include <vector>
 
 #include "cpp_not_null.h"

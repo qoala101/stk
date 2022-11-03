@@ -5,6 +5,7 @@
 #include "cpp_lazy.h"
 #include "cpp_not_null.h"
 #include "parametrized/sqldb_p_db.h"
+#include "sqldb_alias_to_table.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 

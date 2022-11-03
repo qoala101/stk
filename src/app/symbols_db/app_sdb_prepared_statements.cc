@@ -16,7 +16,6 @@
 #include "parametrized/sqldb_p_db.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_query_builder.h"
-#include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 
@@ -206,7 +205,6 @@ auto PreparedStatementsFrom(const cpp::NnSp<sqldb::p::Db>& db)
                     (sqldb::qb::Column<tables::SymbolPriceRecord::time>() <
                      sqldb::qb::ParamForColumn<
                          tables::SymbolPriceRecord::time>()))
-
                 .Build());
       }},
 

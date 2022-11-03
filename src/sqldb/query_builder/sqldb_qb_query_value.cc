@@ -1,5 +1,7 @@
 #include "sqldb_qb_query_value.h"
 
+#include <fmt/format.h>
+
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/concat.hpp>
 

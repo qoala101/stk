@@ -1,5 +1,7 @@
 #include "sqldb_qb_create.h"
 
+#include <fmt/format.h>
+
 #include <gsl/assert>
 
 namespace stonks::sqldb::qb {

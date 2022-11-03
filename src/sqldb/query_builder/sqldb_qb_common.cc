@@ -1,5 +1,7 @@
 #include "sqldb_qb_common.h"
 
+#include <fmt/format.h>
+
 #include "sqldb_qb_select.h"
 
 namespace stonks::sqldb::qb {

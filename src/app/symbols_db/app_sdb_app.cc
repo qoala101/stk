@@ -34,7 +34,6 @@
 #include "sqldb_i_update_statement.h"
 #include "sqldb_query_builder.h"
 #include "sqldb_rows.h"
-#include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 

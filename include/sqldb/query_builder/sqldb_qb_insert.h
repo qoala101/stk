@@ -7,7 +7,6 @@
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_query_value.h"
 #include "sqldb_qb_table_traits.h"
-#include "sqldb_table_traits.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {

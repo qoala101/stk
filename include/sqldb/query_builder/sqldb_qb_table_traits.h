@@ -5,7 +5,6 @@
 
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_qb_types.h"
-#include "sqldb_table_traits.h"
 
 namespace stonks::sqldb::qb {
 template <typename T>

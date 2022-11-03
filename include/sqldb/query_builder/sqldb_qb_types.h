@@ -2,10 +2,17 @@
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_TYPES_H_
 
 #include <string>
+#include <string_view>
 
+#include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
+namespace detail {
+[[nodiscard]] auto GetFullAliasName(std::string_view target_name,
+                                    std::string_view alias_name) -> std::string;
+}  // namespace detail
+
 /**
  * @brief Tag for all columns.
  */
@@ -16,11 +23,41 @@ struct All;
  */
 struct One;
 
+template <typename Target, typename Alias>
+struct As;
+
 /**
- * @brief Alias for either column or table.
+ * @brief Alias for table.
  */
-template <typename Original, typename Alias>
-struct As {};
+template <TableDefinition TargetTable, TableDefinition AliasTable>
+struct As<TargetTable, AliasTable> : public TargetTable {
+  /**
+   * @copydoc Table::GetName
+   */
+  [[nodiscard]] static auto GetName() {
+    return detail::GetFullAliasName(TargetTable::GetName(),
+                                    AliasTable::GetName());
+  }
+};
+
+/**
+ * @brief Alias for column.
+ */
+template <ColumnDefinition TargetColumn, ColumnDefinition AliasColumn>
+struct As<TargetColumn, AliasColumn> : public TargetColumn {
+  /**
+   * @copydoc Table::Column::GetName
+   */
+  [[nodiscard]] static auto GetName() { return AliasColumn::GetName(); }
+
+  /**
+   * @copydoc Table::Column::GetFullName
+   */
+  [[nodiscard]] static auto GetFullName() {
+    return detail::GetFullAliasName(TargetColumn::GetFullName(),
+                                    AliasColumn::GetName());
+  }
+};
 
 /**
  * @brief Data required to create column.
