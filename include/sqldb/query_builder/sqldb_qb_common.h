@@ -23,7 +23,7 @@ class Select;
 /**
  * @brief Gives column name as value.
  */
-template <typename ColumnT>
+template <ColumnDefinition ColumnT>
 [[nodiscard]] auto Column() -> QueryValue {
   return QueryValue{static_cast<ColumnT *>(nullptr)};
 }
@@ -31,7 +31,7 @@ template <typename ColumnT>
 /**
  * @brief Creates a query param of column type.
  */
-template <typename Column>
+template <ColumnDefinition Column>
 [[nodiscard]] auto ParamForColumn() -> QueryValue {
   return p::QueryParam{DataType<typename Column::DataType>{}};
 }

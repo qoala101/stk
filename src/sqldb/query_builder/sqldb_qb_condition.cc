@@ -14,13 +14,13 @@ namespace stonks::sqldb::qb {
 Condition::Condition(p::Parametrized<Query> query)
     : QueryWrapper{std::move(query)} {}
 
-auto Condition::operator&&(const Condition &condition) -> Condition & {
-  AppendCondition(condition, "AND");
+auto Condition::operator&&(const Condition &other) -> Condition & {
+  AppendCondition(other, "AND");
   return *this;
 }
 
-auto Condition::operator||(const Condition &condition) -> Condition & {
-  AppendCondition(condition, "OR");
+auto Condition::operator||(const Condition &other) -> Condition & {
+  AppendCondition(other, "OR");
   return *this;
 }
 
@@ -31,6 +31,6 @@ void Condition::AppendCondition(const Condition &condition,
 
   this_query.value +=
       fmt::format(" {} ({})", operator_string, condition_query.value);
-  this_query.params.Append(condition_query.params);
+  this_query.params += condition_query.params;
 }
 }  // namespace stonks::sqldb::qb

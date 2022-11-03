@@ -9,11 +9,12 @@
 #include "cpp_this.h"  // IWYU pragma: keep
 #include "cpp_typed_struct.h"
 #include "cpp_variant_struct.h"
+#include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 
 namespace stonks::sqldb {
 namespace detail {
-template <typename T>
+template <SupportedDataType T>
 struct GetResultTraits {
   using Type = T;
   using ConstType = T;
@@ -41,11 +42,11 @@ class Value : public cpp::VariantStruct<std::monostate, bool, int, int64_t,
   /**
    * @brief Gives the value of specified type.
    */
-  template <typename T>
+  template <SupportedDataType T>
   [[nodiscard]] auto Get() const ->
       typename detail::GetResultTraits<T>::ConstType;
 
-  template <typename T>
+  template <SupportedDataType T>
   [[nodiscard]] auto Get() -> typename detail::GetResultTraits<T>::Type;
 
   /**
@@ -59,7 +60,7 @@ class Value : public cpp::VariantStruct<std::monostate, bool, int, int64_t,
   [[nodiscard]] auto IsNull() const -> bool;
 
  private:
-  template <typename T>
+  template <SupportedDataType T>
   [[nodiscard]] static auto GetImpl(cpp::This<Value> auto &t) -> auto &;
 };
 }  // namespace stonks::sqldb

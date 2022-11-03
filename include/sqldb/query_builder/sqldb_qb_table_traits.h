@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_qb_types.h"
 #include "sqldb_table_traits.h"
 
@@ -13,8 +14,8 @@ struct ColumnsTraits;
 /**
  * @brief API to retrieve query-related info from table columns.
  */
-template <typename... Columns>
-struct ColumnsTraits<std::tuple<Columns...>> {
+template <ColumnDefinition... Columns>
+struct ColumnsTraits<cpp::TypeList<Columns...>> {
   /**
    * @brief Gives column names.
    */
@@ -61,7 +62,7 @@ struct ColumnsTraits<std::tuple<Columns...>> {
   }
 
  private:
-  template <typename Column, typename... OtherColumns>
+  template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
   static void GetNamesImpl(std::vector<std::string> &values) {
     values.emplace_back(Column::GetName());
 
@@ -70,7 +71,7 @@ struct ColumnsTraits<std::tuple<Columns...>> {
     }
   }
 
-  template <typename Column, typename... OtherColumns>
+  template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
   static void GetCreateColumnsDataImpl(std::vector<CreateColumnData> &data) {
     data.emplace_back(CreateColumnData{.name = Column::GetName(),
                                        .type = Column::GetType(),
@@ -81,7 +82,7 @@ struct ColumnsTraits<std::tuple<Columns...>> {
     }
   }
 
-  template <typename Column, typename... OtherColumns>
+  template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
   static void GetPrimaryKeysDataImpl(std::vector<PrimaryKeyData> &data) {
     if constexpr (Column::IsPrimaryKey()) {
       data.emplace_back(
@@ -94,7 +95,7 @@ struct ColumnsTraits<std::tuple<Columns...>> {
     }
   }
 
-  template <typename Column, typename... OtherColumns>
+  template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
   static void GetForeignKeysDataImpl(std::vector<ForeignKeyData> &data) {
     if constexpr (Column::IsForeignKey()) {
       data.emplace_back(ForeignKeyData{
@@ -108,7 +109,7 @@ struct ColumnsTraits<std::tuple<Columns...>> {
     }
   }
 
-  template <typename Column, typename... OtherColumns>
+  template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
   static void GetSelectColumnsDataImpl(std::vector<SelectColumnData> &data) {
     data.emplace_back(SelectColumnData{.name = Column::GetName(),
                                        .full_name = Column::GetFullName(),

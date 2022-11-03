@@ -2,6 +2,7 @@
 #define STONKS_SQLDB_SQLDB_TABLE_H_
 
 #include "cpp_name_of.h"
+#include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 
 namespace stonks::sqldb {
@@ -27,7 +28,7 @@ class Table {
   /**
    * @brief Base for column definition types which provides API.
    */
-  template <typename DataTypeT, typename ColumnT>
+  template <SupportedDataType DataTypeT, typename ColumnT>
   class Column {
    public:
     Column() = delete;
@@ -90,7 +91,7 @@ class Table {
     }
 
    protected:
-    template <typename Table>
+    template <TableDefinition Table>
     [[nodiscard]] static auto GetFullNameInTable() {
       return detail::GetFullNameInTableImpl(Table::GetName(), GetName());
     }

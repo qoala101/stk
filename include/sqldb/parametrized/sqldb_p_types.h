@@ -18,13 +18,13 @@ struct QueryParams : public cpp::TypedStruct<std::vector<QueryParam>> {
   /**
    * @brief Appends params to the list.
    */
-  void Append(const QueryParams &params);
+  void operator+=(const QueryParams &other);
 };
 
 /**
  * @brief Query with known parameter types.
  */
-template <typename Query>
+template <std::derived_from<Query> Query>
 struct Parametrized : public Query {
   QueryParams params{};
 };

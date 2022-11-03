@@ -26,7 +26,7 @@ class Insert {
   /**
    * @brief Specifies the value for the column.
    */
-  template <typename Column>
+  template <ColumnDefinition Column>
   [[nodiscard]] auto Value(const QueryValue& value) -> auto& {
     return Value(Column::GetName(), value);
   }
@@ -34,7 +34,7 @@ class Insert {
   /**
    * @brief Sets the table to insert to.
    */
-  template <typename Table>
+  template <TableDefinition Table>
   [[nodiscard]] auto Into() -> auto& {
     return Into(Table::GetName(), cpp::Lazy<std::vector<std::string>>{[]() {
                   return ColumnsTraits<typename Table::Columns>::GetNames();

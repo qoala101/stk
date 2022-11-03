@@ -18,7 +18,7 @@ class Create {
   /**
    * @tparam Table Table definition.
    */
-  template <typename Table,
+  template <TableDefinition Table,
             typename ColumnsTraits = ColumnsTraits<typename Table::Columns>>
   explicit Create(Table * /*unused*/)
       : Create{Table::GetName(), ColumnsTraits::GetCreateColumnsData(),

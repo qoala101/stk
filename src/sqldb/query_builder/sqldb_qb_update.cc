@@ -50,7 +50,7 @@ auto Update::Set(std::string_view column_name, const QueryValue& value)
 
   column_values_query_.value +=
       fmt::format("{} = {}", column_name, value_query.value);
-  column_values_query_.params.Append(value_query.params);
+  column_values_query_.params += value_query.params;
 
   Ensures(!column_values_query_.value.empty());
   return *this;

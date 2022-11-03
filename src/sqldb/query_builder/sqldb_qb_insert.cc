@@ -57,8 +57,7 @@ void Insert::ValueImpl(std::string_view column_name, const QueryValue& value) {
   }
 
   values_query_.value += value_query.value;
-
-  values_query_.params.Append(value_query.params);
+  values_query_.params += value_query.params;
 
   Ensures(!columns_query_.value.empty());
   Ensures(!values_query_.value.empty());

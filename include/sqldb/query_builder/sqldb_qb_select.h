@@ -25,9 +25,9 @@ class Select {
   /**
    * @brief Query would select specified columns.
    */
-  template <typename... Columns>
-  explicit Select(std::tuple<Columns...> * /*unused*/)
-      : Select{ColumnsTraits<std::tuple<Columns...>>::GetSelectColumnsData()} {}
+  template <ColumnDefinition... Columns>
+  explicit Select(cpp::TypeList<Columns...> * /*unused*/)
+      : Select{ColumnsTraits<cpp::TypeList<Columns...>>::GetSelectColumnsData()} {}
 
   /**
    * @brief Query would select all table columns.
@@ -42,7 +42,7 @@ class Select {
   /**
    * @brief Specifies the main table to select from.
    */
-  template <typename Table>
+  template <TableDefinition Table>
   [[nodiscard]] auto From() -> auto & {
     return From(
         Table::GetName(), cpp::Lazy<std::vector<SelectColumnData>>{[]() {
@@ -53,7 +53,7 @@ class Select {
   /**
    * @brief Joins the table on specified condition.
    */
-  template <typename Table>
+  template <TableDefinition Table>
   [[nodiscard]] auto Join(const OnCondition &condition) -> auto & {
     return Join(Table::GetName(), condition);
   }

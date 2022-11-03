@@ -1,7 +1,7 @@
 #include "sqldb_p_types.h"
 
 namespace stonks::sqldb::p {
-void QueryParams::Append(const QueryParams& params) {
-  value.insert(value.end(), params.value.begin(), params.value.end());
+void QueryParams::operator+=(const QueryParams& other) {
+  value.insert(value.end(), other.value.begin(), other.value.end());
 }
 }  // namespace stonks::sqldb::p

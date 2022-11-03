@@ -18,13 +18,13 @@ class Update {
   /**
    * @tparam Table Table to update.
    */
-  template <typename Table>
+  template <TableDefinition Table>
   explicit Update(Table* /*unused*/) : Update{Table::GetName()} {}
 
   /**
    * @brief Sets the value for the column.
    */
-  template <typename Column>
+  template <ColumnDefinition Column>
   [[nodiscard]] auto Set(const QueryValue& value) -> auto& {
     return Set(Column::GetName(), value);
   }

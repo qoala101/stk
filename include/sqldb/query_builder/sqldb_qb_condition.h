@@ -21,12 +21,12 @@ class Condition : public QueryWrapper {
   /**
    * @brief Adds AND-condition to the query.
    */
-  [[nodiscard]] auto operator&&(const Condition &condition) -> Condition &;
+  [[nodiscard]] auto operator&&(const Condition &other) -> Condition &;
 
   /**
    * @brief Adds OR-condition to the query.
    */
-  [[nodiscard]] auto operator||(const Condition &condition) -> Condition &;
+  [[nodiscard]] auto operator||(const Condition &other) -> Condition &;
 
  private:
   void AppendCondition(const Condition &condition,

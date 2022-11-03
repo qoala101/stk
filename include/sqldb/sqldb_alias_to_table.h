@@ -1,13 +1,15 @@
 #ifndef STONKS_SQLDB_SQLDB_ALIAS_TO_TABLE_H_
 #define STONKS_SQLDB_SQLDB_ALIAS_TO_TABLE_H_
 
+#include "cpp_type_list.h"
+#include "sqldb_concepts.h"
 #include "sqldb_table.h"
 
 namespace stonks::sqldb {
 /**
  * @brief Base for table alias definition types.
  */
-template <typename TargetTable, typename AliasTable>
+template <TableDefinition TargetTable, typename AliasTable>
 struct AliasToTable : public Table<AliasTable> {
   /**
    * @brief Target table used to refer its columns in alias table.
@@ -15,9 +17,14 @@ struct AliasToTable : public Table<AliasTable> {
   using Target = TargetTable;
 
   /**
+   * @brief Alias table has no columns.
+   */
+  using Columns = cpp::TypeList<>;
+
+  /**
    * @brief Base for column alias which allows to override the type.
    */
-  template <typename TargetColumn, typename AliasColumn = TargetColumn>
+  template <ColumnDefinition TargetColumn, typename AliasColumn = TargetColumn>
   struct AliasToColumn : public TargetColumn {
     /**
      * @copydoc Column::GetName

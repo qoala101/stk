@@ -19,12 +19,12 @@ class Rows {
   /**
    * @brief Gives column values.
    */
-  template <typename Column>
+  template <ColumnDefinition Column>
   [[nodiscard]] auto GetColumnValues() const -> auto & {
     return GetColumnValuesImpl<Column>(*this);
   }
 
-  template <typename Column>
+  template <ColumnDefinition Column>
   [[nodiscard]] auto GetColumnValues() -> auto & {
     return GetColumnValuesImpl<Column>(*this);
   }
@@ -53,7 +53,7 @@ class Rows {
   [[nodiscard]] friend auto operator==(const Rows &, const Rows &)
       -> bool = default;
 
-  template <typename Column>
+  template <ColumnDefinition Column>
   [[nodiscard]] static auto GetColumnValuesImpl(cpp::This<Rows> auto &t)
       -> auto & {
     return t.GetColumnValues({Column::GetName()});

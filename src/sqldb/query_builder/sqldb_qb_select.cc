@@ -95,7 +95,7 @@ auto Select::Join(std::string_view table_name, const OnCondition& condition)
 
   join_query_.value +=
       fmt::format(" JOIN {}{}", table_name, condition_query.value);
-  join_query_.params.Append(condition_query.params);
+  join_query_.params += condition_query.params;
 
   Ensures(!join_query_.value.empty());
   return *this;

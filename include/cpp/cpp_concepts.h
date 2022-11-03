@@ -6,12 +6,21 @@
 #include <vector>
 
 #include "cpp_optional.h"
+#include "cpp_type_list.h"
 
 /**
  * @file Common concepts.
  */
 
 namespace stonks::cpp {
+namespace detail {
+template <typename T>
+struct IsTypeList : public std::false_type {};
+
+template <typename... Ts>
+struct IsTypeList<cpp::TypeList<Ts...>> : public std::true_type {};
+}  // namespace detail
+
 template <typename T>
 struct TypedStruct;
 
@@ -46,6 +55,9 @@ concept Variant =
 template <typename T>
 concept IsTypedStruct =
     std::derived_from<T, TypedStruct<typename T::ValueType>>;
+
+template <typename T>
+concept IsTypeList = detail::IsTypeList<T>::value;
 
 template <typename T>
 concept Vector = std::same_as<T, std::vector<typename T::value_type>>;

@@ -32,7 +32,7 @@ auto Value::Get<double>() const -> double {
   return std::get<double>(value);
 }
 
-template <typename T>
+template <SupportedDataType T>
 auto Value::GetImpl(cpp::This<Value> auto& t) -> auto& {
   Expects(std::holds_alternative<T>(t.value));
   return std::get<T>(t.value);

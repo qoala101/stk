@@ -15,7 +15,7 @@ class Select;
  */
 class QueryValue : public QueryWrapper {
  public:
-  template <typename Column>
+  template <ColumnDefinition Column>
   explicit QueryValue(Column * /*unused*/)
       : QueryValue{Column::GetFullName()} {}
 

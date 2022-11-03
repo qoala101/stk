@@ -8,6 +8,7 @@
 #include <nameof.hpp>
 #include <type_traits>
 
+#include "cpp_type_list.h"
 #include "sqldb_table.h"
 
 namespace stonks::app::sdb::tables {
@@ -25,7 +26,7 @@ struct Asset : public sqldb::Table<Asset> {
     struct Unique;
   };
 
-  using Columns = std::tuple<id, name>;
+  using Columns = cpp::TypeList<id, name>;
 };
 
 /**
@@ -56,9 +57,9 @@ struct SymbolInfo : public sqldb::Table<SymbolInfo> {
   using quote_asset_min_amount = Column<double, struct quote_asset_min_amount>;
   using quote_asset_price_step = Column<double, struct quote_asset_price_step>;
 
-  using Columns = std::tuple<id, name, base_asset_id, base_asset_min_amount,
-                             base_asset_price_step, quote_asset_id,
-                             quote_asset_min_amount, quote_asset_price_step>;
+  using Columns = cpp::TypeList<id, name, base_asset_id, base_asset_min_amount,
+                                base_asset_price_step, quote_asset_id,
+                                quote_asset_min_amount, quote_asset_price_step>;
 };
 
 /**
@@ -75,7 +76,7 @@ struct SymbolPriceRecord : public sqldb::Table<SymbolPriceRecord> {
     struct Unique;
   };
 
-  using Columns = std::tuple<symbol_id, price, time>;
+  using Columns = cpp::TypeList<symbol_id, price, time>;
 };
 }  // namespace stonks::app::sdb::tables
 
