@@ -23,7 +23,7 @@ class QueryValue : public QueryWrapper {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   QueryValue(const p::QueryParam &param);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  QueryValue(const Select &select);
+  QueryValue(const Select &query_builder);
 
  private:
   explicit QueryValue(std::string column_name);

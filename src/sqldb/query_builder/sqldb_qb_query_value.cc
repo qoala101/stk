@@ -51,7 +51,8 @@ QueryValue::QueryValue(const Value &value) : QueryWrapper{{ToString(value)}} {}
 QueryValue::QueryValue(const p::QueryParam &param)
     : QueryWrapper{{"?", {{{param}}}}} {}
 
-QueryValue::QueryValue(const Select &select) : QueryValue{select.Build()} {}
+QueryValue::QueryValue(const Select &query_builder)
+    : QueryValue{query_builder.Build()} {}
 
 QueryValue::QueryValue(std::string column_name)
     : QueryWrapper{{std::move(column_name)}} {}

@@ -4,7 +4,6 @@ find_package(range-v3 REQUIRED)
 add_library(libappsymbolsdb
   app_sdb_app_server.cc
   app_sdb_app.cc
-  app_sdb_prepared_statements.cc
 )
 
 set_target_properties(libappsymbolsdb PROPERTIES

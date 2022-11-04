@@ -6,8 +6,10 @@
 #include <vector>
 
 #include "cpp_not_null.h"
+#include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
+#include "sqldb_query_builder.h"
 
 namespace stonks::sqldb {
 /**
@@ -31,6 +33,17 @@ class IDb {
    */
   [[nodiscard]] virtual auto PrepareStatement(Query query)
       -> cpp::NnUp<IUpdateStatement> = 0;
+
+  /**
+   * @remark Convenience API for common action.
+   */
+  template <TableDefinition Table>
+  void CreateTableIfNotExists() {
+    CreateTableIfNotExistsImpl(query_builder::CreateTable<Table>());
+  }
+
+ private:
+  void CreateTableIfNotExistsImpl(qb::Create query_builder);
 };
 }  // namespace stonks::sqldb
 

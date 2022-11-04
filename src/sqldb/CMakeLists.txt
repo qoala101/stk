@@ -20,6 +20,7 @@ add_library(libsqldb
   query_builder/sqldb_qb_types.cc
   query_builder/sqldb_qb_update.cc
   query_builder/sqldb_qb_wrapped_conditions.cc
+  sqldb_i_db.cc
   sqldb_i_select_statement.cc
   sqldb_i_update_statement.cc
   sqldb_query_builder.cc

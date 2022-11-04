@@ -18,7 +18,7 @@ class Select;
 /**
  * @brief Adds EXISTS to select query.
  */
-[[nodiscard]] auto Exists(const Select &select) -> Condition;
+[[nodiscard]] auto Exists(const Select &query_builder) -> Condition;
 
 /**
  * @brief Gives column name as value.

@@ -2,16 +2,17 @@
 #define STONKS_APP_SYMBOLS_DB_APP_SDB_APP_H_
 
 #include <absl/time/time.h>
-
 #include <limits>
 #include <vector>
 
-#include "app_sdb_prepared_statements.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 #include "parametrized/sqldb_p_db.h"
 #include "sqldb_i_db.h"
+#include "cpp_smart_pointers.h"
+#include "sqldb_i_select_statement.h"
+#include "sqldb_i_update_statement.h"
 
 namespace stonks::app::sdb {
 /**
@@ -93,7 +94,28 @@ class App {
   void DeleteSymbolInfo(core::SymbolInfo info);
 
   cpp::NnSp<sqldb::p::Db> db_;
-  PreparedStatements prepared_statements_;
+
+  struct PreparedStatements {
+    cpp::Up<sqldb::IUpdateStatement> create_asset{};
+    cpp::Up<sqldb::IUpdateStatement> create_symbol_info{};
+    cpp::Up<sqldb::IUpdateStatement> create_symbol_price_record{};
+
+    cpp::Up<sqldb::ISelectStatement> select_assets{};
+    cpp::Up<sqldb::IUpdateStatement> insert_asset{};
+    cpp::Up<sqldb::IUpdateStatement> delete_asset{};
+
+    cpp::Up<sqldb::ISelectStatement> select_symbols_with_price_records{};
+
+    cpp::Up<sqldb::ISelectStatement> select_symbol_info{};
+    cpp::Up<sqldb::ISelectStatement> select_symbols_info{};
+    cpp::Up<sqldb::IUpdateStatement> insert_symbol_info{};
+    cpp::Up<sqldb::IUpdateStatement> update_symbol_info{};
+    cpp::Up<sqldb::IUpdateStatement> delete_symbol_info{};
+
+    cpp::Up<sqldb::ISelectStatement> select_symbol_price_records{};
+    cpp::Up<sqldb::IUpdateStatement> insert_symbol_price_record{};
+    cpp::Up<sqldb::IUpdateStatement> delete_symbol_price_records{};
+  } mutable prepared_statements_{};
 };
 }  // namespace stonks::app::sdb
 
