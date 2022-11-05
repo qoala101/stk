@@ -33,8 +33,8 @@ auto ExpectedType() {
  */
 struct EndpointTypes {
   std::map<std::string, ParseTypeCheck> params{};
-  cpp::Opt<ParseTypeCheck> body{};
-  cpp::Opt<ParseTypeCheck> result{};
+  ParseTypeCheck body{};
+  ParseTypeCheck result{};
 };
 
 /**

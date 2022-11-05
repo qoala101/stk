@@ -37,8 +37,7 @@ namespace {
     }
 
     Expects(!column.name.empty());
-    query +=
-        fmt::format(R"("{}" {} NOT NULL)", column.name, ToString(column.type));
+    query += fmt::format("{} {} NOT NULL", column.name, ToString(column.type));
 
     if (column.unique) {
       query += " UNIQUE";
@@ -58,11 +57,11 @@ namespace {
     query += ", ";
 
     if (first_key) {
-      query += "PRIMARY KEY(";
+      query += "PRIMARY KEY (";
     }
 
     Expects(!primary_key.column_name.empty());
-    query += fmt::format(R"("{}")", primary_key.column_name);
+    query += fmt::format("{}", primary_key.column_name);
 
     if (primary_key.auto_increment) {
       query += " AUTOINCREMENT";
@@ -85,10 +84,10 @@ namespace {
     Expects(!foreign_key.target_table_name.empty());
     Expects(!foreign_key.target_column_name.empty());
 
-    query += fmt::format(
-        R"(, FOREIGN KEY("{}") REFERENCES "{}"("{}") ON DELETE CASCADE)",
-        foreign_key.column_name, foreign_key.target_table_name,
-        foreign_key.target_column_name);
+    query +=
+        fmt::format(", FOREIGN KEY ({}) REFERENCES {} ({}) ON DELETE CASCADE",
+                    foreign_key.column_name, foreign_key.target_table_name,
+                    foreign_key.target_column_name);
   }
 
   return Query{std::move(query)};
@@ -103,10 +102,9 @@ auto Create::IfNotExists() -> Create & {
 }
 
 auto Create::Build() const -> Query {
-  return {fmt::format(R"(CREATE TABLE{} "{}"({}{}{}))",
-                      if_not_exists_query_.value, table_name_.value,
-                      columns_query_.value, primary_keys_query_.value,
-                      foreign_keys_query_.value)};
+  return {fmt::format("CREATE TABLE{} {} ({}{}{})", if_not_exists_query_.value,
+                      table_name_.value, columns_query_.value,
+                      primary_keys_query_.value, foreign_keys_query_.value)};
 }
 
 Create::Create(std::string table_name,

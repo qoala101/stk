@@ -70,15 +70,14 @@ void EndpointTypesValidatorTemplate::ValidateRequestParamTypes(
 
 void EndpointTypesValidatorTemplate::ValidateRequestBodyType(
     const Body &body) const {
-  if (endpoint_types_.body.has_value()) {
+  if (!endpoint_types_.body.empty()) {
     if (!body.has_value()) {
       HandleMissingRequestBody();
       return;
     }
 
     try {
-      Expects(!endpoint_types_.body->empty());
-      (*endpoint_types_.body)(**body);
+      endpoint_types_.body(**body);
     } catch (const std::exception &e) {
       HandleWrongRequestBodyType(*body, e);
     }
@@ -93,15 +92,14 @@ void EndpointTypesValidatorTemplate::ValidateRequestBodyType(
 
 void EndpointTypesValidatorTemplate::ValidateResponse(
     const RestResponse &response) const {
-  if (endpoint_types_.result.has_value()) {
+  if (!endpoint_types_.result.empty()) {
     if (!response.result.has_value()) {
       HandleMissingResponseBody();
       return;
     }
 
     try {
-      Expects(!endpoint_types_.result->empty());
-      (*endpoint_types_.result)(**response.result);
+      endpoint_types_.result(**response.result);
     } catch (const std::exception &e) {
       HandleWrongResponseBodyType(*response.result, e);
     }

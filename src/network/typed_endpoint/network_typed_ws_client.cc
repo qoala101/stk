@@ -22,20 +22,19 @@ void TypedWsClient::Connect(WsEndpoint endpoint) {
 }
 
 void TypedWsClient::SetMessageHandler(cpp::NnUp<IWsMessageHandler> handler) {
-  Expects(endpoint_types_.received_message.has_value());
+  Expects(!endpoint_types_.received_message.empty());
   ws_client_->SetMessageHandler(cpp::MakeNnUp<TypedWsMessageHandler>(
-      std::move(*endpoint_types_.received_message), std::move(handler)));
+      std::move(endpoint_types_.received_message), std::move(handler)));
 
-  endpoint_types_.received_message.reset();
-  Ensures(!endpoint_types_.received_message.has_value());
+  endpoint_types_.received_message = ParseTypeCheck{};
+  Ensures(endpoint_types_.received_message.empty());
 }
 
 void TypedWsClient::SendMessage(WsMessage message) const {
-  Expects(endpoint_types_.sent_message.has_value());
-  Expects(!endpoint_types_.sent_message->empty());
+  Expects(!endpoint_types_.sent_message.empty());
 
   try {
-    (*endpoint_types_.sent_message)(*message);
+    endpoint_types_.sent_message(*message);
   } catch (const std::exception &) {
     Expects(false);
   }

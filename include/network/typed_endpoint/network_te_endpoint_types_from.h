@@ -21,7 +21,7 @@ template <cpp::MemberFunction Function>
   using ReturnType = typename member_function_traits<Function>::return_type;
 
   if constexpr (std::is_same_v<ReturnType, void>) {
-    return std::nullopt;
+    return ParseTypeCheck{};
   } else {
     return ExpectedType<ReturnType>();
   }
@@ -61,7 +61,7 @@ void ParseNextParamType(EndpointTypes &endpoint_types, Param &&param,
 
   if constexpr (const auto is_param_body =
                     std::is_same_v<std::decay_t<Param>, Body>) {
-    Expects(!endpoint_types.body.has_value());
+    Expects(endpoint_types.body.empty());
     endpoint_types.body = std::move(param_type);
   } else {
     Expects(!endpoint_types.params.contains(std::forward<Param>(param)));

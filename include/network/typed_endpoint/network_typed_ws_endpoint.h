@@ -13,8 +13,8 @@ namespace stonks::network {
  * @brief Expected web socket message types.
  */
 struct WsEndpointTypes {
-  cpp::Opt<ParseTypeCheck> received_message{};
-  cpp::Opt<ParseTypeCheck> sent_message{};
+  ParseTypeCheck received_message{};
+  ParseTypeCheck sent_message{};
 };
 
 /**
