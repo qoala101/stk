@@ -7,50 +7,42 @@
 #include <range/v3/view/transform.hpp>
 
 #include "cpp_not_null.h"
+#include "sqldb_alias_to_table.h"
 #include "sqldb_as_values.h"
 #include "sqldb_i_db.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_query_builder.h"
-#include "sqldb_types.h"
+#include "sqldb_table.h"
 #include "sqldb_value.h"
 #include "test_sqlite_injector.h"
 
 namespace {
 auto db = stonks::cpp::Up<stonks::sqldb::IDb>{};
 
-struct TestTable {
-  struct IntTrue {
-    using Table = TestTable;
-    using DataType = int;
+struct TestTable : public stonks::sqldb::Table<TestTable> {
+  struct IntTrue : public Column<int, IntTrue> {
     struct PrimaryKey;
     struct AutoIncrement;
     struct Unique;
   };
 
-  struct TextFalse {
-    using Table = TestTable;
-    using DataType = std::string;
-  };
+  struct TextFalse : public Column<std::string, TextFalse> {};
 
-  using Columns = std::tuple<IntTrue, TextFalse>;
+  using Columns = stonks::cpp::TypeList<IntTrue, TextFalse>;
 };
 
-struct Asset {
-  struct id {
-    using Table = Asset;
-    using DataType = int64_t;
+struct Asset : public stonks::sqldb::Table<Asset> {
+  struct id : public Column<int64_t, id> {
     struct PrimaryKey;
     struct AutoIncrement;
     struct Unique;
   };
 
-  struct name {
-    using Table = Asset;
-    using DataType = std::string;
+  struct name : public Column<std::string, name> {
     struct Unique;
   };
 
-  using Columns = std::tuple<id, name>;
+  using Columns = stonks::cpp::TypeList<id, name>;
 };
 
 TEST(SqliteDb, CreateAndDropTable) {
@@ -82,11 +74,11 @@ TEST(SqliteDb, InsertAndSelect) {
                            .Build())
       ->Execute();
 
-  auto insert_statement =
-      db->PrepareStatement(stonks::sqldb::query_builder::Insert()
-                               .Value<Asset::name>(stonks::sqldb::p::QueryParam{})
-                               .Into<Asset>()
-                               .Build());
+  auto insert_statement = db->PrepareStatement(
+      stonks::sqldb::query_builder::Insert()
+          .Value<Asset::name>(stonks::sqldb::p::QueryParam{})
+          .Into<Asset>()
+          .Build());
   insert_statement->Execute(stonks::sqldb::AsValues("BTC"));
   insert_statement->Execute(stonks::sqldb::AsValues("ETH"));
   insert_statement->Execute(stonks::sqldb::AsValues("USDT"));
@@ -110,48 +102,34 @@ TEST(SqliteDb, InsertNull) {
   EXPECT_ANY_THROW(insert_statement->Execute());
 }
 
-struct Symbol {
-  struct id {
-    using Table = Symbol;
-    using DataType = int64_t;
+struct Symbol : public stonks::sqldb::Table<Symbol> {
+  struct id : public Column<int64_t, id> {
     struct PrimaryKey;
     struct AutoIncrement;
     struct Unique;
   };
 
-  struct base_asset_id {
-    using Table = Symbol;
-    using DataType = int64_t;
+  struct base_asset_id : public Column<int64_t, base_asset_id> {
     using ForeignKey = Asset::id;
   };
 
-  struct quote_asset_id {
-    using Table = Symbol;
-    using DataType = int64_t;
+  struct quote_asset_id : public Column<int64_t, quote_asset_id> {
     using ForeignKey = Asset::id;
   };
 
-  using Columns = std::tuple<id, base_asset_id, quote_asset_id>;
+  using Columns = stonks::cpp::TypeList<id, base_asset_id, quote_asset_id>;
 };
 
-struct SymbolPrice {
-  struct symbol_id {
-    using Table = SymbolPrice;
-    using DataType = int64_t;
+struct SymbolPrice : public stonks::sqldb::Table<SymbolPrice> {
+  struct symbol_id : public Column<int64_t, symbol_id> {
     using ForeignKey = Symbol::id;
   };
 
-  struct time {
-    using Table = SymbolPrice;
-    using DataType = int64_t;
-  };
+  struct time : public Column<int64_t, time> {};
 
-  struct price {
-    using Table = SymbolPrice;
-    using DataType = double;
-  };
+  struct price : public Column<int64_t, price> {};
 
-  using Columns = std::tuple<symbol_id, time, price>;
+  using Columns = stonks::cpp::TypeList<symbol_id, time, price>;
 };
 
 TEST(SqliteDb, ForeignKey) {
@@ -184,6 +162,14 @@ TEST(SqliteDb, ForeignKey) {
       stonks::sqldb::AsValues(2, 1661787828796, 0.12345));
 }
 
+struct BaseAsset : public stonks::sqldb::AliasToTable<Asset, BaseAsset> {
+  struct base_asset : public AliasToColumn<Target::name, base_asset> {};
+};
+
+struct QuoteAsset : public stonks::sqldb::AliasToTable<Asset, QuoteAsset> {
+  struct quote_asset : public AliasToColumn<Target::name, quote_asset> {};
+};
+
 TEST(SqliteDb, SelectJoin) {
   const auto cell_definitions =
       stonks::sqldb::ResultDefinition{std::vector<stonks::sqldb::ColumnType>{
@@ -204,14 +190,16 @@ TEST(SqliteDb, SelectJoin) {
        cell_definitions});
   const auto rows = select_statement->Execute();
   EXPECT_EQ(rows.GetSize(), 2);
-  EXPECT_EQ(rows.GetColumnValues<struct base_asset>()[0].Get<std::string>(),
+  EXPECT_EQ(rows.GetColumnValues<BaseAsset::base_asset>()[0].Get<std::string>(),
             "BTC");
-  EXPECT_EQ(rows.GetColumnValues<struct quote_asset>()[0].Get<std::string>(),
-            "USDT");
-  EXPECT_EQ(rows.GetColumnValues<struct base_asset>()[1].Get<std::string>(),
+  EXPECT_EQ(
+      rows.GetColumnValues<QuoteAsset::quote_asset>()[0].Get<std::string>(),
+      "USDT");
+  EXPECT_EQ(rows.GetColumnValues<BaseAsset::base_asset>()[1].Get<std::string>(),
             "ETH");
-  EXPECT_EQ(rows.GetColumnValues<struct quote_asset>()[1].Get<std::string>(),
-            "USDT");
+  EXPECT_EQ(
+      rows.GetColumnValues<QuoteAsset::quote_asset>()[1].Get<std::string>(),
+      "USDT");
 }
 
 TEST(SqliteDb, FileWriteAndRead) {

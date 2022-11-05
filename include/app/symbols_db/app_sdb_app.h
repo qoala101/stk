@@ -2,15 +2,16 @@
 #define STONKS_APP_SYMBOLS_DB_APP_SDB_APP_H_
 
 #include <absl/time/time.h>
+
 #include <limits>
 #include <vector>
 
 #include "core_types.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
+#include "cpp_smart_pointers.h"
 #include "parametrized/sqldb_p_db.h"
 #include "sqldb_i_db.h"
-#include "cpp_smart_pointers.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 
@@ -84,8 +85,6 @@ class App {
   void DeleteSymbolPriceRecords(absl::Time before_time);
 
  private:
-  void CreateTablesIfNotExist();
-
   void InsertAsset(core::Asset asset);
   void DeleteAsset(core::Asset asset);
 
@@ -96,10 +95,6 @@ class App {
   cpp::NnSp<sqldb::p::Db> db_;
 
   struct PreparedStatements {
-    cpp::Up<sqldb::IUpdateStatement> create_asset{};
-    cpp::Up<sqldb::IUpdateStatement> create_symbol_info{};
-    cpp::Up<sqldb::IUpdateStatement> create_symbol_price_record{};
-
     cpp::Up<sqldb::ISelectStatement> select_assets{};
     cpp::Up<sqldb::IUpdateStatement> insert_asset{};
     cpp::Up<sqldb::IUpdateStatement> delete_asset{};
