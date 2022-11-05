@@ -23,7 +23,6 @@
 
 #include "app_sdb_tables.h"
 #include "core_types.h"
-#include "cpp_name_of.h"
 #include "cpp_not_null.h"
 #include "cpp_typed_struct.h"
 #include "parametrized/sqldb_p_db.h"

@@ -10,19 +10,20 @@
 #include <fmt/core.h>
 #include <polymorphic_value.h>
 #include <pplx/pplxtasks.h>
-#include <magic_enum.hpp>
+
 #include <gsl/assert>
 #include <map>
 #include <memory>
+#include <nameof.hpp>
 #include <utility>
 
 #include "cpp_polymorphic_value.h"
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_types.h"
+#include "not_null.hpp"
 #include "restsdk_json.h"
 #include "restsdk_json_native_handle.h"
-#include "not_null.hpp"
 
 namespace stonks::restsdk {
 namespace {
@@ -127,8 +128,8 @@ auto RestRequestSender::SendRequestAndGetResponse(
   const auto full_uri = WebUriFrom(request);
 
   logger_->LogImportantEvent(fmt::format(
-      "Sending {} request to {}",
-      magic_enum::enum_name(request.endpoint.method), full_uri.to_string()));
+      "Sending {} request to {}", nameof::nameof_enum(request.endpoint.method),
+      full_uri.to_string()));
 
   auto http_client = web::http::client::http_client{full_uri};
   const auto http_request = HttpRequestFrom(request);

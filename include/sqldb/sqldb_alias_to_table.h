@@ -1,8 +1,10 @@
 #ifndef STONKS_SQLDB_SQLDB_ALIAS_TO_TABLE_H_
 #define STONKS_SQLDB_SQLDB_ALIAS_TO_TABLE_H_
 
+#include <nameof.hpp>
+
 #include "cpp_type_list.h"
-#include "sqldb_concepts.h"
+#include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_table.h"
 
 namespace stonks::sqldb {
@@ -29,7 +31,9 @@ struct AliasToTable : public Table<AliasTable> {
     /**
      * @copydoc Column::GetName
      */
-    [[nodiscard]] static auto GetName() { return cpp::NameOf<AliasColumn>(); }
+    [[nodiscard]] static auto GetName() {
+      return std::string{nameof::nameof_short_type<AliasColumn>()};
+    }
 
     /**
      * @copydoc Column::GetFullName

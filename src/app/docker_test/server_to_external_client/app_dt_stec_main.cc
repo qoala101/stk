@@ -17,8 +17,8 @@
 auto main(int argc, const char *const *argv) -> int {
   stonks::cli::App{argc, argv}.Run([](const stonks::cli::Options &options) {
     auto base_injector = stonks::di::MakeInjector(
-        stonks::app::injectors::MakeNetworkRestsdkInjector(),
-        stonks::app::injectors::MakeLogSpdlogInjector(),
+        stonks::app::injectors::CreateNetworkRestsdkInjector(),
+        stonks::app::injectors::CreateLogSpdlogInjector(),
         stonks::di::BindTypeToValue<stonks::network::Uri>(
             stonks::network::Uri{fmt::format(
                 "http://0.0.0.0:{}", options.GetOptionOr("port", 6507))}));

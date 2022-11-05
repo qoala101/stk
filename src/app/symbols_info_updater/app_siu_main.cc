@@ -26,8 +26,8 @@ auto main(int argc, const char *const *argv) -> int {
     };
 
     auto base_injector = stonks::di::MakeInjector(
-        stonks::app::injectors::MakeNetworkRestsdkInjector(),
-        stonks::app::injectors::MakeLogSpdlogInjector(),
+        stonks::app::injectors::CreateNetworkRestsdkInjector(),
+        stonks::app::injectors::CreateLogSpdlogInjector(),
         stonks::di::BindTypeToValue<int64_t>(options.GetOptionOr(
             "interval", int64_t{absl::ToInt64Milliseconds(absl::Hours(1))})),
         stonks::di::BindTypeToFactoryFunction<absl::Duration, DurationFactory,

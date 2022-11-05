@@ -9,7 +9,7 @@
 #include "sqlite_db.h"
 
 namespace stonks::app::injectors {
-[[nodiscard]] inline auto MakeSqldbSqliteInjector() {
+[[nodiscard]] inline auto CreateSqldbSqliteInjector() {
   struct SqliteDbHandleFactory {
     [[nodiscard]] auto operator()(const sqlite::DbHandlesFactory &factory,
                                   const sqlite::FilePath &file_path) {

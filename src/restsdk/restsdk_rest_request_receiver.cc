@@ -9,9 +9,9 @@
 #include <pplx/pplxtasks.h>
 
 #include <gsl/assert>
-#include <magic_enum.hpp>
 #include <map>
 #include <memory>
+#include <nameof.hpp>
 #include <not_null.hpp>
 #include <optional>
 #include <string>
@@ -130,7 +130,7 @@ void HandleHttpRequest(const network::IRestRequestHandler &handler,
   request.reply(http_response).wait();
 
   logger.LogEvent(fmt::format("Replied {} on {}",
-                              magic_enum::enum_name(rest_response.status),
+                              nameof::nameof_enum(rest_response.status),
                               request_uri));
 }
 }  // namespace

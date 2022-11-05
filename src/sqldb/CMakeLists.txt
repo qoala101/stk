@@ -1,5 +1,6 @@
 find_package(absl REQUIRED)
 find_package(fmt REQUIRED)
+find_package(nameof REQUIRED)
 find_package(range-v3 REQUIRED)
 
 add_library(libsqldb
@@ -43,6 +44,7 @@ target_include_directories(libsqldb
 target_link_libraries(libsqldb
   PUBLIC libcpp
   PUBLIC libdi
+  PUBLIC nameof::nameof
 
   PRIVATE absl::absl
   PRIVATE fmt::fmt

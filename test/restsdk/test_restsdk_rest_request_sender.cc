@@ -37,8 +37,8 @@ struct AvgPrice {
 }  // namespace
 
 // template <>
-// constexpr auto magic_enum::customize::enum_name<CustomNameEnum>(
-//     CustomNameEnum value) noexcept -> magic_enum::customize::customize_t {
+// constexpr auto nameof::customize::enum_name<CustomNameEnum>(
+//     CustomNameEnum value) noexcept -> nameof::customize::customize_t {
 //   switch (value) {
 //     case CustomNameEnum::kCustomEnumName:
 //       return "CUSTOM_ENUM_NAME";

@@ -1,7 +1,8 @@
 #ifndef STONKS_SQLDB_SQLDB_TABLE_H_
 #define STONKS_SQLDB_SQLDB_TABLE_H_
 
-#include "cpp_name_of.h"
+#include <nameof.hpp>
+
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 
@@ -23,7 +24,9 @@ class Table {
   /**
    * @brief Gives table name which is the name of the type.
    */
-  [[nodiscard]] static auto GetName() { return cpp::NameOf<TableT>(); }
+  [[nodiscard]] static auto GetName() {
+    return std::string{nameof::nameof_short_type<TableT>()};
+  }
 
   /**
    * @brief Base for column definition types which provides API.
@@ -46,7 +49,9 @@ class Table {
     /**
      * @brief Gives short column name which is the name of its type.
      */
-    [[nodiscard]] static auto GetName() { return cpp::NameOf<ColumnT>(); }
+    [[nodiscard]] static auto GetName() {
+      return std::string{nameof::nameof_short_type<ColumnT>()};
+    }
 
     /**
      * @brief Gives full column name which includes its table name.

@@ -13,9 +13,9 @@
 auto main(int argc, const char* const* argv) -> int {
   stonks::cli::App{argc, argv}.Run([]() {
     const auto injector = stonks::di::MakeInjector(
-        stonks::app::injectors::MakeNetworkRestsdkInjector(),
-        stonks::app::injectors::MakeNosqldbAwsInjector(),
-        stonks::app::injectors::MakeLogSpdlogInjector(),
+        stonks::app::injectors::CreateNetworkRestsdkInjector(),
+        stonks::app::injectors::CreateNosqldbAwsInjector(),
+        stonks::app::injectors::CreateLogSpdlogInjector(),
         stonks::di::BindTypeToValue<stonks::network::Uri>(
             stonks::network::Uri{"http://0.0.0.0:6506/Entity"}));
 

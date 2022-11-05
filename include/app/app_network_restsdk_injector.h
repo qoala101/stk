@@ -11,7 +11,7 @@
 #include "restsdk_ws_client.h"
 
 namespace stonks::app::injectors {
-[[nodiscard]] inline auto MakeNetworkRestsdkInjector() {
+[[nodiscard]] inline auto CreateNetworkRestsdkInjector() {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<network::IRestRequestReceiver,
                                         restsdk::RestRequestReceiver>(),

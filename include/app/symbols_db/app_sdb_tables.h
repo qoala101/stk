@@ -5,7 +5,6 @@
 
 #include <cstdint>
 #include <gsl/assert>
-#include <nameof.hpp>
 #include <type_traits>
 
 #include "cpp_type_list.h"

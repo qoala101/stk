@@ -27,8 +27,8 @@ auto main(int argc, const char *const *argv) -> int {
     };
 
     const auto injector = stonks::di::MakeInjector(
-        stonks::app::injectors::MakeNetworkRestsdkInjector(),
-        stonks::app::injectors::MakeLogSpdlogInjector(),
+        stonks::app::injectors::CreateNetworkRestsdkInjector(),
+        stonks::app::injectors::CreateLogSpdlogInjector(),
         stonks::di::BindTypeToValue<stonks::core::Symbol>(
             stonks::core::Symbol{options.GetOptionOr("symbol", "BTCUSDT")}),
         stonks::di::BindTypeToValue<stonks::network::Uri>(
