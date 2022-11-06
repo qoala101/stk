@@ -38,13 +38,6 @@ class Lazy {
   /**
    * @brief Gives an object the lazy initialized one points to.
    */
-  [[nodiscard]] auto operator->() const { return OperatorArrowImpl(*this); }
-
-  [[nodiscard]] auto operator->() { return OperatorArrowImpl(*this); }
-
-  /**
-   * @brief Gives an object the lazy initialized one points to.
-   */
   [[nodiscard]] auto operator*() const -> auto & {
     return OperatorAsteriskImpl(*this);
   }
@@ -52,6 +45,13 @@ class Lazy {
   [[nodiscard]] auto operator*() -> auto & {
     return OperatorAsteriskImpl(*this);
   }
+
+  /**
+   * @brief Gives an object the lazy initialized one points to.
+   */
+  [[nodiscard]] auto operator->() const { return OperatorArrowImpl(*this); }
+
+  [[nodiscard]] auto operator->() { return OperatorArrowImpl(*this); }
 
  private:
   [[nodiscard]] static auto GetObjectImpl(This<Lazy> auto &t) -> auto & {

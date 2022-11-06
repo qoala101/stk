@@ -14,20 +14,23 @@
 
 namespace stonks::sqldb::qb {
 auto Update::Where(WhereCondition condition) -> Update& {
+  Expects(where_query_->empty());
+
   auto& where_query = condition.GetQuery();
-  Expects(!where_query.value.empty());
+  Expects(!where_query->empty());
+
   where_query_ = std::move(where_query);
-  Ensures(!where_query_.value.empty());
+  Ensures(!where_query_->empty());
   return *this;
 }
 
 auto Update::Build() const -> p::Parametrized<Query> {
-  Expects(!column_values_query_.value.empty());
+  Expects(!column_values_query_->empty());
 
-  return {fmt::format("UPDATE {} SET {}{}", table_name_.value,
-                      column_values_query_.value, where_query_.value),
-          ranges::views::concat(column_values_query_.params.value,
-                                where_query_.params.value) |
+  return {fmt::format("UPDATE {} SET {}{}", *table_name_,
+                      *column_values_query_, *where_query_),
+          ranges::views::concat(*column_values_query_.params,
+                                *where_query_.params) |
               ranges::to_vector};
 }
 
@@ -36,23 +39,23 @@ Update::Update(std::string table_name)
         Expects(!table_name.empty());
         return std::move(table_name);
       }()} {
-  Ensures(!table_name_.value.empty());
+  Ensures(!table_name_->empty());
 }
 
 auto Update::Set(std::string_view column_name, const QueryValue& value)
     -> Update& {
   const auto& value_query = value.GetQuery();
-  Expects(!value_query.value.empty());
+  Expects(!value_query->empty());
 
-  if (!column_values_query_.value.empty()) {
-    column_values_query_.value += ", ";
+  if (!column_values_query_->empty()) {
+    *column_values_query_ += ", ";
   }
 
-  column_values_query_.value +=
-      fmt::format("{} = {}", column_name, value_query.value);
+  *column_values_query_ +=
+      fmt::format("{} = {}", column_name, *value_query);
   column_values_query_.params += value_query.params;
 
-  Ensures(!column_values_query_.value.empty());
+  Ensures(!column_values_query_->empty());
   return *this;
 }
 }  // namespace stonks::sqldb::qb

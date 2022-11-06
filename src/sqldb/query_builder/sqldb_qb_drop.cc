@@ -6,7 +6,7 @@
 
 namespace stonks::sqldb::qb {
 auto Drop::Build() const -> Query {
-  return {fmt::format("DROP TABLE {}", table_name_.value)};
+  return {fmt::format("DROP TABLE {}", *table_name_)};
 }
 
 Drop::Drop(std::string table_name)
@@ -14,6 +14,6 @@ Drop::Drop(std::string table_name)
         Expects(!table_name.empty());
         return std::move(table_name);
       }()} {
-  Ensures(!table_name_.value.empty());
+  Ensures(!table_name_->empty());
 }
 }  // namespace stonks::sqldb::qb

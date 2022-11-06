@@ -24,7 +24,7 @@ auto CommonImpl::GetPreparedStatementFacade() const
 
 void CommonImpl::BeforeExecution(
     const std::vector<sqldb::Value>& params) const {
-  logger_->LogEvent(fmt::format("Executing query: {}", query_.value));
+  logger_->LogEvent(fmt::format("Executing query: {}", *query_));
 
   prepared_statement_facade_.Reset();
   prepared_statement_facade_.BindParams(params);

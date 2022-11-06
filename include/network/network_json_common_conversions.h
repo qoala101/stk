@@ -76,7 +76,7 @@ struct JsonParser<T> {
  */
 template <Convertible T>
 [[nodiscard]] auto ConvertToJson(const cpp::TypedStruct<T> &value) {
-  return ConvertToJson(value.value);
+  return ConvertToJson(*value);
 }
 
 /**

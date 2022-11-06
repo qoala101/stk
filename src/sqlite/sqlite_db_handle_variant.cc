@@ -21,7 +21,7 @@ auto SqliteDbHandleVariant::GetSqliteDbImpl(This &t) -> auto & {
           Expects(false);
         }
       },
-      t.value);
+      *t);
 }
 
 auto SqliteDbHandleVariant::GetSqliteDb() const -> const sqlite3 & {

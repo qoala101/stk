@@ -110,7 +110,7 @@ namespace {
 }
 
 [[nodiscard]] auto WebUriFrom(const network::RestRequest &request) {
-  auto uri_builder = web::http::uri_builder{request.endpoint.uri.value};
+  auto uri_builder = web::http::uri_builder{*request.endpoint.uri};
 
   for (const auto &[key, value] : request.params) {
     uri_builder.append_query(key, ConvertToRequestParam(*value));

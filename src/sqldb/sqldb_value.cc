@@ -34,8 +34,8 @@ auto Value::Get<double>() const -> double {
 
 template <SupportedDataType T>
 auto Value::GetImpl(cpp::This<Value> auto& t) -> auto& {
-  Expects(std::holds_alternative<T>(t.value));
-  return std::get<T>(t.value);
+  Expects(std::holds_alternative<T>(*t));
+  return std::get<T>(*t);
 }
 
 template <>

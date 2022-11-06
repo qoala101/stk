@@ -29,8 +29,8 @@ void Condition::AppendCondition(const Condition &condition,
   auto &this_query = GetQuery();
   const auto &condition_query = condition.GetQuery();
 
-  this_query.value +=
-      fmt::format(" {} ({})", operator_string, condition_query.value);
+  *this_query +=
+      fmt::format(" {} ({})", operator_string, *condition_query);
   this_query.params += condition_query.params;
 }
 }  // namespace stonks::sqldb::qb

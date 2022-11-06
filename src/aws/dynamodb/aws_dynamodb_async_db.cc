@@ -62,7 +62,7 @@ void AsyncDb::CreateTableIfNotExists(const nosqldb::Table &table) {
 
   if (!result.IsSuccess()) {
     throw cpp::MessageException{fmt::format("Couldn't create table {}: {}",
-                                            table.value,
+                                            *table,
                                             result.GetError().GetMessage())};
   }
 }
@@ -81,7 +81,7 @@ void AsyncDb::DropTableIfExists(const nosqldb::Table &table) {
     }
 
     throw cpp::MessageException{fmt::format("Couldn't drop table {}: {}",
-                                            table.value,
+                                            *table,
                                             result.GetError().GetMessage())};
   }
 }
@@ -99,8 +99,8 @@ auto AsyncDb::SelectItem(const nosqldb::Table &table,
 
   if (!result.IsSuccess()) {
     throw cpp::MessageException{
-        fmt::format("Couldn't select item {} from table {}: {}", key.value,
-                    table.value, result.GetError().GetMessage())};
+        fmt::format("Couldn't select item {} from table {}: {}", *key,
+                    *table, result.GetError().GetMessage())};
   }
 
   const auto &result_map = result.GetResult().GetItem();
@@ -130,8 +130,8 @@ void AsyncDb::InsertOrUpdateItem(const nosqldb::Table &table,
 
   if (!result.IsSuccess()) {
     throw cpp::MessageException{fmt::format(
-        "Couldn't insert or update item {} in table {}: {}", item.key.value,
-        table.value, result.GetError().GetMessage())};
+        "Couldn't insert or update item {} in table {}: {}", *item.key,
+        *table, result.GetError().GetMessage())};
   }
 }
 
@@ -147,8 +147,8 @@ void AsyncDb::DeleteItemIfExists(const nosqldb::Table &table,
 
   if (!result.IsSuccess()) {
     throw cpp::MessageException{
-        fmt::format("Couldn't delete item {} from table {}: {}", key.value,
-                    table.value, result.GetError().GetMessage())};
+        fmt::format("Couldn't delete item {} from table {}: {}", *key,
+                    *table, result.GetError().GetMessage())};
   }
 }
 

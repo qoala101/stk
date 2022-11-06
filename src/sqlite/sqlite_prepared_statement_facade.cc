@@ -44,7 +44,7 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
           Expects(false);
         }
       },
-      value.GetType().value);
+      *value.GetType());
 
   if (result_code != SQLITE_OK) {
     throw cpp::MessageException{fmt::format(
@@ -81,7 +81,7 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
           Expects(false);
         }
       },
-      type.value);
+      *type);
 }
 }  // namespace
 

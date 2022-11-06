@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "cpp_move_if.h"
+#include "cpp_not_null.h"
 #include "cpp_this.h"  // IWYU pragma: keep
 
 namespace stonks::cpp {
@@ -31,6 +32,24 @@ struct TypedStruct {
     return OperatorValueTypeImpl(std::move(*this));
   }
 
+  /**
+   * @brief Gives the value.
+   */
+  [[nodiscard]] auto operator*() const -> auto & {
+    return OperatorAsteriskImpl(*this);
+  }
+
+  [[nodiscard]] auto operator*() -> auto & {
+    return OperatorAsteriskImpl(*this);
+  }
+
+  /**
+   * @brief Gives the value.
+   */
+  [[nodiscard]] auto operator->() const { return OperatorArrowImpl(*this); }
+
+  [[nodiscard]] auto operator->() { return OperatorArrowImpl(*this); }
+
   ValueType value{};
 
  private:
@@ -42,7 +61,16 @@ struct TypedStruct {
 
   template <This<TypedStruct> This>
   [[nodiscard]] static auto OperatorValueTypeImpl(This &&t) {
-    return MoveIfRvalue<decltype(std::forward<This>(t))>(t.value);
+    return MoveIfRvalue<decltype(std::forward<This>(t))>(*t);
+  }
+
+  [[nodiscard]] static auto OperatorAsteriskImpl(This<TypedStruct> auto &t)
+      -> auto & {
+    return t.value;
+  }
+
+  [[nodiscard]] static auto OperatorArrowImpl(This<TypedStruct> auto &t) {
+    return AssumeNn(&*t);
   }
 };
 }  // namespace stonks::cpp

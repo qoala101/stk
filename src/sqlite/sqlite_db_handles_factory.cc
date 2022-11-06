@@ -43,14 +43,14 @@ auto DbHandlesFactory::CreateInMemoryDb() const -> SqliteDbHandle {
 
 auto DbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
     -> SqliteDbHandle {
-  Expects(!file_path.value.empty());
+  Expects(!file_path->empty());
 
   auto *file_db = static_cast<sqlite3 *>(nullptr);
-  const auto result_code = sqlite3_open(file_path.value.c_str(), &file_db);
+  const auto result_code = sqlite3_open(file_path->c_str(), &file_db);
 
   if ((file_db == nullptr) || (result_code != SQLITE_OK)) {
     throw cpp::MessageException{fmt::format("Couldn't read DB from file {}: {}",
-                                            file_path.value, result_code)};
+                                            *file_path, result_code)};
   }
 
   return {cpp::AssumeNn(NullableSqliteDbHandle{
@@ -59,13 +59,13 @@ auto DbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
 
 auto DbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
     -> SqliteDbHandle {
-  Expects(!file_path.value.empty());
+  Expects(!file_path->empty());
 
   auto in_memory_db_handle = CreateInMemoryDb();
 
-  if (const auto db_is_new = !std::filesystem::exists(file_path.value)) {
+  if (const auto db_is_new = !std::filesystem::exists(*file_path)) {
     logger_->LogImportantEvent(
-        fmt::format("Created new DB for {}", file_path.value));
+        fmt::format("Created new DB for {}", *file_path));
     return in_memory_db_handle;
   }
 
@@ -73,7 +73,7 @@ auto DbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
   DbFacade{logger_factory_, cpp::AssumeNn(in_memory_db_handle.get())}
       .CopyDataFrom(*file_db_handle);
 
-  logger_->LogImportantEvent(fmt::format("Loaded DB from {}", file_path.value));
+  logger_->LogImportantEvent(fmt::format("Loaded DB from {}", *file_path));
   return in_memory_db_handle;
 }
 }  // namespace stonks::sqlite

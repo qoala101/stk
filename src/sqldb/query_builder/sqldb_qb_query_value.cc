@@ -15,15 +15,15 @@ namespace {
                                  const QueryValue &left,
                                  const QueryValue &right) {
   const auto &left_query = left.GetQuery();
-  Expects(!left_query.value.empty());
+  Expects(!left_query->empty());
 
   const auto &right_query = right.GetQuery();
-  Expects(!right_query.value.empty());
+  Expects(!right_query->empty());
 
   auto query =
-      fmt::format(fmt::runtime(format), left_query.value, right_query.value);
+      fmt::format(fmt::runtime(format), *left_query, *right_query);
   auto params =
-      ranges::views::concat(left_query.params.value, right_query.params.value) |
+      ranges::views::concat(*left_query.params, *right_query.params) |
       ranges::to_vector;
   return Condition{{std::move(query), std::move(params)}};
 }
@@ -42,7 +42,7 @@ namespace {
           return fmt::format("{}", v);
         }
       },
-      value.value);
+      *value);
 }
 }  // namespace
 
@@ -58,7 +58,7 @@ QueryValue::QueryValue(std::string column_name)
     : QueryWrapper{{std::move(column_name)}} {}
 
 QueryValue::QueryValue(const p::Parametrized<SelectQuery> &query)
-    : QueryWrapper{{fmt::format("({})", query.value), query.params}} {}
+    : QueryWrapper{{fmt::format("({})", *query), query.params}} {}
 
 [[nodiscard]] auto operator==(const QueryValue &left, const QueryValue &right)
     -> Condition {

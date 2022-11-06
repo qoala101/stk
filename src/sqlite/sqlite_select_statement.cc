@@ -18,23 +18,23 @@
 namespace stonks::sqlite {
 namespace {
 [[nodiscard]] auto GetColumns(sqldb::ResultDefinition &result_definition) {
-  auto columns = result_definition.value |
+  auto columns = *result_definition |
                  ranges::views::transform([](sqldb::ColumnType &column_type) {
                    return std::move(column_type.column);
                  }) |
                  ranges::to_vector;
-  Ensures(columns.size() == result_definition.value.size());
+  Ensures(columns.size() == result_definition->size());
   return columns;
 }
 
 [[nodiscard]] auto GetTypes(const sqldb::ResultDefinition &result_definition) {
   auto types =
-      result_definition.value |
+      *result_definition |
       ranges::views::transform([](const sqldb::ColumnType &column_type) {
         return column_type.type;
       }) |
       ranges::to_vector;
-  Ensures(types.size() == result_definition.value.size());
+  Ensures(types.size() == result_definition->size());
   return types;
 }
 }  // namespace

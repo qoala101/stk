@@ -58,7 +58,7 @@ void DbFacade::WriteToFile(const FilePath &file_path) const {
   DbFacade{logger_factory_, cpp::AssumeNn(file_db_handle.get())}.CopyDataFrom(
       *sqlite_db_);
 
-  logger_->LogImportantEvent(fmt::format("Stored DB to {}", file_path.value));
+  logger_->LogImportantEvent(fmt::format("Stored DB to {}", *file_path));
 }
 
 void DbFacade::CopyDataFrom(sqlite3 &other_db) const {
@@ -80,18 +80,18 @@ auto DbFacade::CreatePreparedStatement(const sqldb::Query &query) const
 
   auto *sqlite_statement = static_cast<sqlite3_stmt *>(nullptr);
   const auto result_code =
-      sqlite3_prepare_v3(sqlite_db_, query.value.c_str(),
-                         gsl::narrow_cast<int>(query.value.length()) + 1,
+      sqlite3_prepare_v3(sqlite_db_, query->c_str(),
+                         gsl::narrow_cast<int>(query->length()) + 1,
                          SQLITE_PREPARE_PERSISTENT, &sqlite_statement, nullptr);
 
   if (sqlite_statement == nullptr) {
     throw cpp::MessageException{
         fmt::format("Couldn't prepare the statement for query: {}, {}",
-                    query.value, result_code)};
+                    *query, result_code)};
   }
 
   logger_->LogImportantEvent(
-      fmt::format("Prepared statement for query: {}", query.value));
+      fmt::format("Prepared statement for query: {}", *query));
 
   return SqliteStatementHandle{cpp::AssumeNn(NullableSqliteStatementHandle{
       sqlite_statement,

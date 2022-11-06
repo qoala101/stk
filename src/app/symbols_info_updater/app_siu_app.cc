@@ -28,7 +28,7 @@ App::App(absl::Duration interval, BinanceClient binance_client,
          SdbAppClient sdb_app_client) {
   auto exchange_info = binance_client.BinanceExchangeInfo();
 
-  for (auto &symbol_info : exchange_info.value) {
+  for (auto &symbol_info : *exchange_info) {
     sdb_app_client.InsertOrUpdateSymbolInfo(SymbolInfoFrom(symbol_info));
   }
 }

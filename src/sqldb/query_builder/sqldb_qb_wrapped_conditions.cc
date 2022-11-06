@@ -12,7 +12,7 @@ WrappedCondition::WrappedCondition(const Condition &condition,
     : QueryWrapper{[&condition, format]() {
         const auto &query = condition.GetQuery();
         return p::Parametrized<Query>{
-            fmt::format(fmt::runtime(format), query.value), query.params};
+            fmt::format(fmt::runtime(format), *query), query.params};
       }()} {}
 
 OnCondition::OnCondition(const Condition &condition)

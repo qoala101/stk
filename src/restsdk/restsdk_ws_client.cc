@@ -60,12 +60,12 @@ WsClient::~WsClient() {
 
 void WsClient::Connect(network::WsEndpoint endpoint) {
   logger_->LogImportantEvent(
-      fmt::format("Connecting to web socket: {}...", endpoint.value.value));
+      fmt::format("Connecting to web socket: {}...", **endpoint));
 
-  native_ws_client_->connect(endpoint.value.value).wait();
+  native_ws_client_->connect(**endpoint).wait();
 
   logger_->LogImportantEvent(
-      fmt::format("Connected to web socket: {}", endpoint.value.value));
+      fmt::format("Connected to web socket: {}", **endpoint));
 }
 
 void WsClient::SetMessageHandler(

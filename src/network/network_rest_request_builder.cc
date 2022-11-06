@@ -30,12 +30,12 @@ auto RestRequestBuilder::AppendUri(Uri uri) -> RestRequestBuilder& {
   Expects(uri_is_set_);
   Expects(request_.has_value());
 
-  if (!uri.value.starts_with("/")) {
-    request_->endpoint.uri.value += "/";
+  if (!uri->starts_with("/")) {
+    *request_->endpoint.uri += "/";
   }
 
-  request_->endpoint.uri.value += std::move(uri);
-  Ensures(!request_->endpoint.uri.value.empty());
+  *request_->endpoint.uri += std::move(uri);
+  Ensures(!request_->endpoint.uri->empty());
   return *this;
 }
 

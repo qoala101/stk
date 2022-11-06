@@ -47,7 +47,7 @@ struct Asset : public stonks::sqldb::Table<Asset> {
 
 TEST(SqliteDb, CreateAndDropTable) {
   const auto db_file_name =
-      test::sqlite::Injector().create<stonks::sqlite::FilePath>().value;
+      *test::sqlite::Injector().create<stonks::sqlite::FilePath>();
   std::ignore = std::filesystem::remove(db_file_name);
   db = test::sqlite::Injector().create<stonks::cpp::Up<stonks::sqldb::IDb>>();
 
@@ -204,7 +204,7 @@ TEST(SqliteDb, SelectJoin) {
 
 TEST(SqliteDb, FileWriteAndRead) {
   const auto db_file_name =
-      test::sqlite::Injector().create<stonks::sqlite::FilePath>().value;
+      *test::sqlite::Injector().create<stonks::sqlite::FilePath>();
   EXPECT_FALSE(std::filesystem::exists(db_file_name));
   db.reset();
   EXPECT_TRUE(std::filesystem::exists(db_file_name));

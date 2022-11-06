@@ -163,7 +163,7 @@ void RestRequestReceiver::Receive(
 
   http_listener_ =
       cpp::MakeUp<web::http::experimental::listener::http_listener>(
-          std::move(uri.value));
+          std::move(*uri));
   http_listener_->support(
       [handler = cpp::NnSp<network::IRestRequestHandler>{std::move(handler)},
        logger = logger_](const web::http::http_request &request) {
@@ -171,12 +171,11 @@ void RestRequestReceiver::Receive(
       });
 
   logger_->LogImportantEvent(
-      fmt::format("Starting REST receiver: {}...", uri.value));
+      fmt::format("Starting REST receiver: {}...", *uri));
 
   http_listener_->open().wait();
 
-  logger_->LogImportantEvent(
-      fmt::format("Started REST receiver: {}", uri.value));
+  logger_->LogImportantEvent(fmt::format("Started REST receiver: {}", *uri));
 
   Ensures(http_listener_ != nullptr);
 }

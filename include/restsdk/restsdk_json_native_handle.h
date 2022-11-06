@@ -30,18 +30,20 @@ class IJson::NativeHandle {
   /**
    * @brief Gives REST SDK JSON handle.
    */
-  [[nodiscard]] auto operator->() const -> cpp::Nn<const web::json::value *>;
-  [[nodiscard]] auto operator->() -> cpp::Nn<web::json::value *>;
+  [[nodiscard]] auto operator*() const -> const web::json::value &;
+  [[nodiscard]] auto operator*() -> web::json::value &;
 
   /**
    * @brief Gives REST SDK JSON handle.
    */
-  [[nodiscard]] auto operator*() const -> const web::json::value &;
-  [[nodiscard]] auto operator*() -> web::json::value &;
+  [[nodiscard]] auto operator->() const -> cpp::Nn<const web::json::value *>;
+  [[nodiscard]] auto operator->() -> cpp::Nn<web::json::value *>;
 
  private:
   [[nodiscard]] static auto OperatorAsteriskImpl(
       cpp::This<NativeHandle> auto &t) -> auto &;
+
+  [[nodiscard]] static auto OperatorArrowImpl(cpp::This<NativeHandle> auto &t);
 
   cpp::NnUp<web::json::value> json_;
 };

@@ -23,14 +23,14 @@ TEST(AppSymbolsDb, UpdateSymbolsInfo) {
   db->UpdateAssets({{"YYY"}, {"USDT"}});
   auto assets = db->SelectAssets();
   EXPECT_EQ(assets.size(), 2);
-  EXPECT_EQ(assets[0].value, "USDT");
-  EXPECT_EQ(assets[1].value, "YYY");
+  EXPECT_EQ(*assets[0], "USDT");
+  EXPECT_EQ(*assets[1], "YYY");
 
   db->UpdateAssets({{"ETH"}, {"USDT"}});
   assets = db->SelectAssets();
   EXPECT_EQ(assets.size(), 2);
-  EXPECT_EQ(assets[0].value, "USDT");
-  EXPECT_EQ(assets[1].value, "ETH");
+  EXPECT_EQ(*assets[0], "USDT");
+  EXPECT_EQ(*assets[1], "ETH");
 
   auto symbols_info =
       std::vector<stonks::core::SymbolInfo>{stonks::core::SymbolInfo{
@@ -44,8 +44,8 @@ TEST(AppSymbolsDb, UpdateSymbolsInfo) {
   db->UpdateAssets({{"BTC"}, {"USDT"}});
   assets = db->SelectAssets();
   EXPECT_EQ(assets.size(), 2);
-  EXPECT_EQ(assets[0].value, "USDT");
-  EXPECT_EQ(assets[1].value, "BTC");
+  EXPECT_EQ(*assets[0], "USDT");
+  EXPECT_EQ(*assets[1], "BTC");
   EXPECT_TRUE(db->SelectSymbolsInfo().empty());
 
   symbols_info = std::vector<stonks::core::SymbolInfo>{stonks::core::SymbolInfo{
