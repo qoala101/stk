@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "cpp_lazy.h"
+#include "cpp_template_constructor.h"
 #include "sqldb_qb_columns_traits.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_condition.h"
@@ -25,7 +26,7 @@ class Select {
    * @brief Query would select specified columns.
    */
   template <ColumnDefinition... Columns>
-  explicit Select(cpp::TypeList<Columns...> * /*unused*/)
+  explicit Select(cpp::TemplateConstructor<Columns...> /*unused*/)
       : Select{
             ColumnsTraits<cpp::TypeList<Columns...>>::GetSelectColumnsData()} {}
 

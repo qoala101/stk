@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "cpp_template_constructor.h"
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_types.h"
@@ -17,7 +18,8 @@ class Delete {
    * @tparam Table Table to delete rows from.
    */
   template <TableDefinition Table>
-  explicit Delete(Table* /*unused*/) : Delete{Table::GetName()} {}
+  explicit Delete(cpp::TemplateConstructor<Table> /*unused*/)
+      : Delete{Table::GetName()} {}
 
   /**
    * @brief Adds condition to the query.

@@ -4,6 +4,7 @@
 #include <string>
 #include <string_view>
 
+#include "cpp_template_constructor.h"
 #include "sqldb_qb_query_value.h"
 #include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_types.h"
@@ -18,7 +19,8 @@ class Update {
    * @tparam Table Table to update.
    */
   template <TableDefinition Table>
-  explicit Update(Table* /*unused*/) : Update{Table::GetName()} {}
+  explicit Update(cpp::TemplateConstructor<Table> /*unused*/)
+      : Update{Table::GetName()} {}
 
   /**
    * @brief Sets the value for the column.

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "cpp_template_constructor.h"
 #include "sqldb_qb_columns_traits.h"
 #include "sqldb_qb_types.h"
 #include "sqldb_types.h"
@@ -19,7 +20,7 @@ class Create {
    */
   template <TableDefinition Table,
             typename ColumnsTraits = ColumnsTraits<Table>>
-  explicit Create(Table * /*unused*/)
+  explicit Create(cpp::TemplateConstructor<Table> /*unused*/)
       : Create{Table::GetName(), ColumnsTraits::GetCreateColumnsData(),
                ColumnsTraits::GetPrimaryKeysData(),
                ColumnsTraits::GetForeignKeysData()} {}

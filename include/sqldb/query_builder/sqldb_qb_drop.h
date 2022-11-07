@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "cpp_template_constructor.h"
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 
@@ -16,7 +17,8 @@ class Drop {
    * @tparam Table Table to drop.
    */
   template <TableDefinition Table>
-  explicit Drop(Table* /*unused*/) : Drop{Table::GetName()} {}
+  explicit Drop(cpp::TemplateConstructor<Table> /*unused*/)
+      : Drop{Table::GetName()} {}
 
   /**
    * @brief Builds the query.
