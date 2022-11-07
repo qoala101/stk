@@ -4,31 +4,31 @@
 #include <fmt/core.h>
 
 #include <gsl/assert>
-#include <iostream>
 #include <memory>
-#include <range/v3/numeric/accumulate.hpp>
+#include <range/v3/detail/variant.hpp>
+#include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
-#include <range/v3/range_fwd.hpp>
+#include <range/v3/utility/get.hpp>
+#include <range/v3/view/all.hpp>
 #include <range/v3/view/concat.hpp>
-#include <range/v3/view/drop.hpp>
 #include <range/v3/view/transform.hpp>
+#include <range/v3/view/view.hpp>
 #include <string>
 #include <utility>
-#include <variant>
 
 #include "cpp_typed_struct.h"
+#include "not_null.hpp"
 #include "sqldb_p_types.h"
-#include "sqldb_qb_common.h"
 #include "sqldb_qb_types.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
-Select::Select(All* /*unused*/) : select_all_{true}, columns_query_{"*"} {
+Select::Select(All /*unused*/) : select_all_{true}, columns_query_{"*"} {
   Ensures(select_all_);
   Ensures(!columns_query_->empty());
 }
 
-Select::Select(One* /*unused*/)
+Select::Select(One /*unused*/)
     : columns_query_{"1"},
       result_definition_{{{{.column = {"1"}, .type = {DataType<int>{}}}}}} {
   Ensures(!columns_query_->empty());

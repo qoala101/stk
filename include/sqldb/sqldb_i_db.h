@@ -1,15 +1,13 @@
 #ifndef STONKS_SQLDB_SQLDB_I_DB_H_
 #define STONKS_SQLDB_SQLDB_I_DB_H_
 
-#include <not_null.hpp>
-#include <string>
-#include <vector>
-
 #include "cpp_not_null.h"
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
+#include "sqldb_qb_create.h"
 #include "sqldb_query_builder.h"
+#include "sqldb_types.h"
 
 namespace stonks::sqldb {
 /**

@@ -8,6 +8,7 @@
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
+#include <string>
 #include <utility>
 
 #include "cpp_typed_struct.h"

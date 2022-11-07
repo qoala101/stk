@@ -1,12 +1,15 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_
 
-#include <function2/function2.hpp>
+#include <string>
+#include <string_view>
+#include <vector>
 
 #include "cpp_lazy.h"
+#include "sqldb_p_types.h"
 #include "sqldb_qb_columns_traits.h"
-#include "sqldb_qb_common.h"
 #include "sqldb_qb_query_value.h"
+#include "sqldb_qb_types.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
@@ -20,7 +23,7 @@ class Insert {
   /**
    * @brief Query would insert data to all of the columns.
    */
-  explicit Insert(All* /*unused*/);
+  explicit Insert(All);
 
   /**
    * @brief Specifies the value for the column.

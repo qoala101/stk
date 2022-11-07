@@ -4,7 +4,7 @@
 #include <concepts>
 #include <type_traits>
 
-#include "cpp_concepts.h"   // IWYU pragma: keep
+#include "cpp_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 
 namespace stonks::sqldb {

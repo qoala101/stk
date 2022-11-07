@@ -3,8 +3,12 @@
 #include <fmt/core.h>
 
 #include <gsl/assert>
+#include <memory>
 #include <string>
 #include <utility>
+
+#include "cpp_typed_struct.h"
+#include "not_null.hpp"
 
 namespace stonks::sqldb::qb {
 auto Delete::Where(WhereCondition condition) -> Delete& {

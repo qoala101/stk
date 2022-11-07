@@ -1,8 +1,11 @@
 #include "sqldb_p_db.h"
 
-#include <vector>
+#include <memory>
+#include <type_traits>
+#include <utility>
 
 #include "cpp_not_null.h"
+#include "not_null.hpp"
 #include "sqldb_i_db.h"
 #include "sqldb_p_select_statement.h"
 #include "sqldb_p_update_statement.h"

@@ -1,14 +1,12 @@
 #include <fmt/core.h>
 
 #include <boost/di.hpp>
-#include <memory>
 
 #include "app_dt_stec_app_server.h"
 #include "app_dt_stec_pds_app_client.h"
 #include "app_log_spdlog_injector.h"
 #include "app_network_restsdk_injector.h"
 #include "cli_app.h"
-#include "cli_options.h"
 #include "di_bind_type_to_value.h"
 #include "di_make_injector.h"
 #include "di_override_bindings_for_type.h"

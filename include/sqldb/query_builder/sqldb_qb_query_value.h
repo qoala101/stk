@@ -1,9 +1,13 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_QUERY_VALUE_H_
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_QUERY_VALUE_H_
 
+#include <string>
+
+#include "cpp_template_constructor.h"
 #include "sqldb_p_types.h"
 #include "sqldb_qb_condition.h"
 #include "sqldb_qb_query_wrapper.h"
+#include "sqldb_types.h"
 #include "sqldb_value.h"
 
 namespace stonks::sqldb::qb {
@@ -15,7 +19,7 @@ class Select;
 class QueryValue : public QueryWrapper {
  public:
   template <ColumnDefinition Column>
-  explicit QueryValue(Column * /*unused*/)
+  explicit QueryValue(cpp::TemplateConstructor<Column> /*unused*/)
       : QueryValue{Column::GetFullName()} {}
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)

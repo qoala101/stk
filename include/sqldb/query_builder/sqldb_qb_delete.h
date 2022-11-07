@@ -5,6 +5,7 @@
 
 #include "cpp_template_constructor.h"
 #include "sqldb_concepts.h"  // IWYU pragma: keep
+#include "sqldb_p_types.h"
 #include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_types.h"
 

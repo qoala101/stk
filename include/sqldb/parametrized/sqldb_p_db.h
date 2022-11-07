@@ -1,12 +1,12 @@
 #ifndef STONKS_SQLDB_PARAMETRIZED_SQLDB_P_DB_H_
 #define STONKS_SQLDB_PARAMETRIZED_SQLDB_P_DB_H_
 
-#include <vector>
-
 #include "cpp_not_null.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
+#include "sqldb_i_update_statement.h"
 #include "sqldb_p_types.h"
+#include "sqldb_types.h"
 
 namespace stonks::sqldb::p {
 /**

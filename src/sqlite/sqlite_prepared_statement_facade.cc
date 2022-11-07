@@ -7,10 +7,12 @@
 #include <gsl/assert>
 #include <gsl/util>
 #include <string>
+#include <type_traits>
 #include <variant>
 
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
+#include "cpp_typed_struct.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqlite {

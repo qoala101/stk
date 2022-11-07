@@ -14,13 +14,16 @@
 #include <nameof.hpp>
 #include <not_null.hpp>
 #include <optional>
-#include <range/v3/to_container.hpp>
+#include <range/v3/iterator/basic_iterator.hpp>
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/view/all.hpp>
 #include <range/v3/view/transform.hpp>
 #include <string>
 #include <utility>
 
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
+#include "cpp_typed_struct.h"
 #include "cpprest/http_msg.h"
 #include "network_enums.h"
 #include "network_i_json.h"

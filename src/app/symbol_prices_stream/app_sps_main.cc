@@ -1,7 +1,5 @@
 #include <fmt/core.h>
 
-#include <boost/di.hpp>
-#include <memory>
 #include <utility>
 
 #include "app_log_spdlog_injector.h"
@@ -9,7 +7,6 @@
 #include "app_sps_app.h"
 #include "app_sps_endpoints.h"
 #include "cli_app.h"
-#include "cli_options.h"
 #include "core_types.h"
 #include "di_bind_type_to_factory_function.h"
 #include "di_bind_type_to_value.h"
@@ -39,6 +36,6 @@ auto main(int argc, const char *const *argv) -> int {
                                               TypedWsEndpointFactory,
                                               stonks::core::Symbol>());
 
-    return injector.create<stonks::app::sps::App>();
+    return injector.template create<stonks::app::sps::App>();
   });
 }

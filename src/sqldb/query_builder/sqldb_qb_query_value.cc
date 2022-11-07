@@ -1,10 +1,23 @@
 #include "sqldb_qb_query_value.h"
 
-#include <fmt/format.h>
+#include <fmt/core.h>
 
+#include <gsl/assert>
+#include <memory>
+#include <range/v3/detail/variant.hpp>
+#include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
+#include <range/v3/utility/get.hpp>
+#include <range/v3/view/all.hpp>
 #include <range/v3/view/concat.hpp>
+#include <string_view>
+#include <type_traits>
+#include <utility>
+#include <variant>
+#include <vector>
 
+#include "cpp_typed_struct.h"
+#include "not_null.hpp"
 #include "sqldb_p_types.h"
 #include "sqldb_qb_query_wrapper.h"
 #include "sqldb_qb_select.h"
@@ -20,11 +33,9 @@ namespace {
   const auto &right_query = right.GetQuery();
   Expects(!right_query->empty());
 
-  auto query =
-      fmt::format(fmt::runtime(format), *left_query, *right_query);
-  auto params =
-      ranges::views::concat(*left_query.params, *right_query.params) |
-      ranges::to_vector;
+  auto query = fmt::format(fmt::runtime(format), *left_query, *right_query);
+  auto params = ranges::views::concat(*left_query.params, *right_query.params) |
+                ranges::to_vector;
   return Condition{{std::move(query), std::move(params)}};
 }
 

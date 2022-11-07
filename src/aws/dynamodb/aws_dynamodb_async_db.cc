@@ -26,6 +26,7 @@
 
 #include "aws_api_handle.h"
 #include "cpp_message_exception.h"
+#include "cpp_typed_struct.h"
 
 namespace stonks::aws::dynamodb {
 AsyncDb::AsyncDb(ApiHandle api_handle)
@@ -80,9 +81,8 @@ void AsyncDb::DropTableIfExists(const nosqldb::Table &table) {
       return;
     }
 
-    throw cpp::MessageException{fmt::format("Couldn't drop table {}: {}",
-                                            *table,
-                                            result.GetError().GetMessage())};
+    throw cpp::MessageException{fmt::format(
+        "Couldn't drop table {}: {}", *table, result.GetError().GetMessage())};
   }
 }
 
@@ -99,8 +99,8 @@ auto AsyncDb::SelectItem(const nosqldb::Table &table,
 
   if (!result.IsSuccess()) {
     throw cpp::MessageException{
-        fmt::format("Couldn't select item {} from table {}: {}", *key,
-                    *table, result.GetError().GetMessage())};
+        fmt::format("Couldn't select item {} from table {}: {}", *key, *table,
+                    result.GetError().GetMessage())};
   }
 
   const auto &result_map = result.GetResult().GetItem();
@@ -129,9 +129,9 @@ void AsyncDb::InsertOrUpdateItem(const nosqldb::Table &table,
   const auto &result = db_client_->UpdateItem(request);
 
   if (!result.IsSuccess()) {
-    throw cpp::MessageException{fmt::format(
-        "Couldn't insert or update item {} in table {}: {}", *item.key,
-        *table, result.GetError().GetMessage())};
+    throw cpp::MessageException{
+        fmt::format("Couldn't insert or update item {} in table {}: {}",
+                    *item.key, *table, result.GetError().GetMessage())};
   }
 }
 
@@ -147,8 +147,8 @@ void AsyncDb::DeleteItemIfExists(const nosqldb::Table &table,
 
   if (!result.IsSuccess()) {
     throw cpp::MessageException{
-        fmt::format("Couldn't delete item {} from table {}: {}", *key,
-                    *table, result.GetError().GetMessage())};
+        fmt::format("Couldn't delete item {} from table {}: {}", *key, *table,
+                    result.GetError().GetMessage())};
   }
 }
 

@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "cpp_not_null.h"
+#include "cpp_typed_struct.h"
 #include "sqldb_types.h"
 
 namespace stonks::sqlite::ps {

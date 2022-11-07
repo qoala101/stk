@@ -8,7 +8,6 @@
 #include "app_sps_sdb_app_client.h"
 #include "app_sps_types.h"
 #include "core_types.h"
-#include "network_auto_parsable.h"
 #include "network_ws_client_builder.h"
 
 namespace stonks::app::sps {

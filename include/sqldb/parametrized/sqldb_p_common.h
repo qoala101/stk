@@ -1,6 +1,8 @@
 #ifndef STONKS_SQLDB_PARAMETRIZED_SQLDB_P_COMMON_H_
 #define STONKS_SQLDB_PARAMETRIZED_SQLDB_P_COMMON_H_
 
+#include <vector>
+
 #include "sqldb_p_types.h"
 #include "sqldb_value.h"
 

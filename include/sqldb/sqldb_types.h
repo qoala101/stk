@@ -1,6 +1,9 @@
 #ifndef STONKS_SQLDB_SQLDB_TYPES_H_
 #define STONKS_SQLDB_SQLDB_TYPES_H_
 
+#include <stdint.h>
+
+#include <compare>
 #include <string>
 #include <vector>
 

@@ -9,8 +9,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "cpp_optional.h"
-
 namespace stonks::network::te {
 EndpointTypesValidatorTemplate::EndpointTypesValidatorTemplate(
     EndpointTypes endpoint_types)

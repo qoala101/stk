@@ -16,12 +16,12 @@ namespace detail {
 /**
  * @brief Tag for all columns.
  */
-struct All;
+struct All {};
 
 /**
  * @brief Tag for selecting 1.
  */
-struct One;
+struct One {};
 
 template <typename Target, typename Alias>
 struct As;

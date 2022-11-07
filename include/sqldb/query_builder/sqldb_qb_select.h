@@ -1,16 +1,15 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_SELECT_H_
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_SELECT_H_
 
-#include <function2/function2.hpp>
 #include <string>
 #include <string_view>
 #include <vector>
 
 #include "cpp_lazy.h"
 #include "cpp_template_constructor.h"
+#include "cpp_type_list.h"
+#include "sqldb_p_types.h"
 #include "sqldb_qb_columns_traits.h"
-#include "sqldb_qb_common.h"
-#include "sqldb_qb_condition.h"
 #include "sqldb_qb_query_value.h"
 #include "sqldb_qb_types.h"
 #include "sqldb_qb_wrapped_conditions.h"
@@ -33,12 +32,12 @@ class Select {
   /**
    * @brief Query would select all table columns.
    */
-  explicit Select(All * /*unused*/);
+  explicit Select(All);
 
   /**
    * @brief Query would result in 1 if result has any columns.
    */
-  explicit Select(One * /*unused*/);
+  explicit Select(One);
 
   /**
    * @brief Specifies the main table to select from.

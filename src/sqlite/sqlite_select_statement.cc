@@ -4,6 +4,7 @@
 #include <sqlite3.h>
 
 #include <gsl/assert>
+#include <memory>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
@@ -11,6 +12,8 @@
 #include <utility>
 
 #include "cpp_message_exception.h"
+#include "cpp_typed_struct.h"
+#include "not_null.hpp"
 #include "sqldb_types.h"
 #include "sqlite_prepared_statement_facade.h"
 #include "sqlite_types.h"

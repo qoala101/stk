@@ -2,6 +2,7 @@
 #define STONKS_APP_SYMBOLS_INFO_UPDATER_APP_SIU_TYPES_H_
 
 #include <string>
+
 #include "core_types.h"
 #include "cpp_typed_struct.h"
 

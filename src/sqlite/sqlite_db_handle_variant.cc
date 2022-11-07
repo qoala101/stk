@@ -1,6 +1,7 @@
 #include "sqlite_db_handle_variant.h"
 
 #include <gsl/assert>
+#include <type_traits>
 #include <variant>
 
 #include "cpp_copy_const.h"

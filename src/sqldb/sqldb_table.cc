@@ -1,6 +1,6 @@
 #include "sqldb_table.h"
 
-#include <fmt/format.h>
+#include <fmt/core.h>
 
 #include <string>
 

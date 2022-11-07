@@ -6,6 +6,7 @@
 #include "cpp_not_null.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_p_types.h"
+#include "sqldb_value.h"
 
 namespace stonks::sqldb::p {
 /**

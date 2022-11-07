@@ -1,6 +1,7 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COMMON_H_
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COMMON_H_
 
+#include "cpp_template_constructor.h"
 #include "sqldb_p_types.h"
 #include "sqldb_qb_condition.h"
 #include "sqldb_qb_query_value.h"
@@ -8,8 +9,6 @@
 #include "sqldb_types.h"
 
 namespace stonks::sqldb::qb {
-class Select;
-
 /**
  * @brief Adds ON to condition.
  */
@@ -25,7 +24,7 @@ class Select;
  */
 template <ColumnDefinition ColumnT>
 [[nodiscard]] auto Column() -> QueryValue {
-  return QueryValue{static_cast<ColumnT *>(nullptr)};
+  return QueryValue{cpp::TemplateConstructor<ColumnT>{}};
 }
 
 /**

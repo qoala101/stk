@@ -1,10 +1,18 @@
 #include "sqldb_qb_create.h"
 
-#include <fmt/format.h>
+#include <fmt/core.h>
+#include <stdint.h>
 
 #include <gsl/assert>
+#include <memory>
+#include <range/v3/functional/identity.hpp>
 #include <range/v3/numeric/accumulate.hpp>
+#include <type_traits>
+#include <utility>
+#include <variant>
 
+#include "cpp_typed_struct.h"
+#include "not_null.hpp"
 #include "sqldb_qb_types.h"
 
 namespace stonks::sqldb::qb {

@@ -16,6 +16,7 @@
 #include "aws_dynamodb_async_db.h"
 #include "cpp_message_exception.h"
 #include "cpp_optional.h"
+#include "cpp_typed_struct.h"
 #include "nosqldb_types.h"
 
 namespace stonks::aws::dynamodb {

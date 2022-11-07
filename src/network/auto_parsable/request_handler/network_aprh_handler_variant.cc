@@ -1,6 +1,7 @@
 #include "network_aprh_handler_variant.h"
 
 #include <gsl/assert>
+#include <type_traits>
 #include <utility>
 #include <variant>
 

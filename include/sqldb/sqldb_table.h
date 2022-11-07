@@ -2,6 +2,8 @@
 #define STONKS_SQLDB_SQLDB_TABLE_H_
 
 #include <nameof.hpp>
+#include <string>
+#include <string_view>
 
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"

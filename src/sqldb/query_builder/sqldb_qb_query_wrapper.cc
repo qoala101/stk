@@ -1,6 +1,11 @@
 #include "sqldb_qb_query_wrapper.h"
 
 #include <gsl/assert>
+#include <memory>
+#include <utility>
+
+#include "cpp_typed_struct.h"
+#include "not_null.hpp"
 
 namespace stonks::sqldb::qb {
 QueryWrapper::QueryWrapper(p::Parametrized<Query> query)

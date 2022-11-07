@@ -18,6 +18,7 @@
 #include <utility>
 
 #include "cpp_polymorphic_value.h"
+#include "cpp_typed_struct.h"
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_types.h"

@@ -1,27 +1,18 @@
 #include "sqldb_qb_insert.h"
 
-#include <absl/strings/str_cat.h>
-#include <absl/strings/str_join.h>
-#include <absl/strings/string_view.h>
 #include <fmt/core.h>
 
 #include <gsl/assert>
-#include <gsl/util>
 #include <memory>
-#include <range/v3/numeric/accumulate.hpp>
-#include <range/v3/range/conversion.hpp>
-#include <range/v3/view/drop.hpp>
 #include <string_view>
-#include <type_traits>
 #include <utility>
-#include <variant>
 
 #include "cpp_typed_struct.h"
+#include "not_null.hpp"
 #include "sqldb_p_types.h"
-#include "sqldb_qb_common.h"
 
 namespace stonks::sqldb::qb {
-Insert::Insert(All* /*unused*/) : insert_all_{true} {}
+Insert::Insert(All /*unused*/) : insert_all_{true} {}
 
 auto Insert::Build() const -> p::Parametrized<Query> {
   Expects(!table_name_->empty());

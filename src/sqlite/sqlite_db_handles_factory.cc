@@ -13,6 +13,7 @@
 
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
+#include "cpp_typed_struct.h"
 #include "sqlite_db_facade.h"
 #include "sqlite_raw_handles.h"
 

@@ -1,6 +1,8 @@
 #include "sqldb_p_update_statement.h"
 
 #include <gsl/assert>
+#include <memory>
+#include <utility>
 #include <vector>
 
 #include "cpp_not_null.h"

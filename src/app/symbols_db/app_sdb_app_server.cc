@@ -5,7 +5,6 @@
 
 #include "app_endpoints.h"
 #include "cpp_not_null.h"
-#include "network_auto_parsable_request.h"
 #include "network_rest_server_builder.h"
 
 namespace stonks::app::sdb {

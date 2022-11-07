@@ -6,7 +6,6 @@
 #include "app_network_restsdk_injector.h"
 #include "app_sqldb_sqlite_injector.h"
 #include "cli_app.h"
-#include "cli_options.h"
 #include "di_bind_type_to_value.h"
 #include "di_make_injector.h"
 #include "network_types.h"

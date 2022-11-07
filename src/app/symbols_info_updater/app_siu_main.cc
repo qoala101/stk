@@ -1,16 +1,13 @@
 #include <absl/time/time.h>
 #include <fmt/core.h>
 
-#include <boost/di.hpp>
 #include <cstdint>
-#include <memory>
 
 #include "app_log_spdlog_injector.h"
 #include "app_network_restsdk_injector.h"
 #include "app_siu_app.h"
 #include "app_siu_sdb_app_client.h"
 #include "cli_app.h"
-#include "cli_options.h"
 #include "di_bind_type_to_factory_function.h"
 #include "di_bind_type_to_value.h"
 #include "di_make_injector.h"

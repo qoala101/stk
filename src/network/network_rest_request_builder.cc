@@ -1,12 +1,14 @@
 #include "network_rest_request_builder.h"
 
 #include <gsl/assert>
+#include <memory>
 #include <string>
 #include <type_traits>
 #include <utility>
 
 #include "cpp_typed_struct.h"
 #include "network_types.h"
+#include "not_null.hpp"
 
 namespace stonks::network {
 RestRequestBuilder::RestRequestBuilder() : request_{std::in_place} {}

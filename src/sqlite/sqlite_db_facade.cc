@@ -13,6 +13,7 @@
 
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
+#include "cpp_typed_struct.h"
 #include "sqlite_db_handles_factory.h"
 #include "sqlite_raw_handles.h"
 
@@ -79,15 +80,14 @@ auto DbFacade::CreatePreparedStatement(const sqldb::Query &query) const
   Expects(sqlite_db_ != nullptr);
 
   auto *sqlite_statement = static_cast<sqlite3_stmt *>(nullptr);
-  const auto result_code =
-      sqlite3_prepare_v3(sqlite_db_, query->c_str(),
-                         gsl::narrow_cast<int>(query->length()) + 1,
-                         SQLITE_PREPARE_PERSISTENT, &sqlite_statement, nullptr);
+  const auto result_code = sqlite3_prepare_v3(
+      sqlite_db_, query->c_str(), gsl::narrow_cast<int>(query->length()) + 1,
+      SQLITE_PREPARE_PERSISTENT, &sqlite_statement, nullptr);
 
   if (sqlite_statement == nullptr) {
     throw cpp::MessageException{
-        fmt::format("Couldn't prepare the statement for query: {}, {}",
-                    *query, result_code)};
+        fmt::format("Couldn't prepare the statement for query: {}, {}", *query,
+                    result_code)};
   }
 
   logger_->LogImportantEvent(

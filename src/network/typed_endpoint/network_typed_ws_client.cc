@@ -8,7 +8,7 @@
 #include <not_null.hpp>
 #include <utility>
 
-#include "cpp_optional.h"
+#include "network_typed_endpoint.h"
 #include "network_typed_ws_message_handler.h"
 
 namespace stonks::network {
