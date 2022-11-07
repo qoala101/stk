@@ -3,6 +3,9 @@
 #include <fmt/format.h>
 
 #include <gsl/assert>
+#include <range/v3/numeric/accumulate.hpp>
+
+#include "sqldb_qb_types.h"
 
 namespace stonks::sqldb::qb {
 namespace {
@@ -29,44 +32,48 @@ namespace {
     const std::vector<CreateColumnData> &create_columns_data) {
   Expects(!create_columns_data.empty());
 
-  auto query = std::string{};
+  auto query = ranges::accumulate(
+      create_columns_data, std::string{}, [](auto &query, const auto &column) {
+        if (!query.empty()) {
+          query += ", ";
+        }
 
-  for (const auto &column : create_columns_data) {
-    if (!query.empty()) {
-      query += ", ";
-    }
+        Expects(!column.name.empty());
+        query +=
+            fmt::format("{} {} NOT NULL", column.name, ToString(column.type));
 
-    Expects(!column.name.empty());
-    query += fmt::format("{} {} NOT NULL", column.name, ToString(column.type));
+        if (column.unique) {
+          query += " UNIQUE";
+        }
 
-    if (column.unique) {
-      query += " UNIQUE";
-    }
-  }
+        return query;
+      });
 
   return Query{std::move(query)};
 }
 
 [[nodiscard]] auto BuildPrimaryKeysQuery(
     const std::vector<PrimaryKeyData> &primary_keys_data) {
-  auto query = std::string{};
+  auto query =
+      ranges::accumulate(primary_keys_data, std::string{},
+                         [](auto &query, const auto &primary_key) {
+                           const auto first_key = query.empty();
 
-  for (const auto &primary_key : primary_keys_data) {
-    const auto first_key = query.empty();
+                           query += ", ";
 
-    query += ", ";
+                           if (first_key) {
+                             query += "PRIMARY KEY (";
+                           }
 
-    if (first_key) {
-      query += "PRIMARY KEY (";
-    }
+                           Expects(!primary_key.column_name.empty());
+                           query += fmt::format("{}", primary_key.column_name);
 
-    Expects(!primary_key.column_name.empty());
-    query += fmt::format("{}", primary_key.column_name);
+                           if (primary_key.auto_increment) {
+                             query += " AUTOINCREMENT";
+                           }
 
-    if (primary_key.auto_increment) {
-      query += " AUTOINCREMENT";
-    }
-  }
+                           return query;
+                         });
 
   if (!query.empty()) {
     query += ")";
@@ -77,18 +84,19 @@ namespace {
 
 [[nodiscard]] auto BuildForeignKeysQuery(
     const std::vector<ForeignKeyData> &foreign_keys_data) {
-  auto query = std::string{};
+  auto query = ranges::accumulate(
+      foreign_keys_data, std::string{},
+      [](auto &query, const auto &foreign_key) {
+        Expects(!foreign_key.column_name.empty());
+        Expects(!foreign_key.target_table_name.empty());
+        Expects(!foreign_key.target_column_name.empty());
 
-  for (const auto &foreign_key : foreign_keys_data) {
-    Expects(!foreign_key.column_name.empty());
-    Expects(!foreign_key.target_table_name.empty());
-    Expects(!foreign_key.target_column_name.empty());
-
-    query +=
-        fmt::format(", FOREIGN KEY ({}) REFERENCES {} ({}) ON DELETE CASCADE",
-                    foreign_key.column_name, foreign_key.target_table_name,
-                    foreign_key.target_column_name);
-  }
+        return query +
+               fmt::format(
+                   ", FOREIGN KEY ({}) REFERENCES {} ({}) ON DELETE CASCADE",
+                   foreign_key.column_name, foreign_key.target_table_name,
+                   foreign_key.target_column_name);
+      });
 
   return Query{std::move(query)};
 }

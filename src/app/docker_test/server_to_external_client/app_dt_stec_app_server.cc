@@ -12,8 +12,7 @@ namespace stonks::app::dt::stec {
 AppServer::AppServer(App app, network::RestServerBuilder rest_server_builder)
     : rest_server_{rest_server_builder
                        .Handling(endpoints::GetAveragePrice(),
-                                 [app = std::move(app)](
-                                     network::AutoParsableRestRequest request) {
+                                 [app = std::move(app)](auto request) {
                                    return app.GetAveragePrice(
                                        request.Param("symbol"));
                                  })

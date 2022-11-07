@@ -46,8 +46,7 @@ class AutoParsableRequestHandler : public IRestRequestHandler {
   explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
             std::in_place_type<aprh::HandlerWithRequestAndResponse>,
-            [handler = std::forward<Handler>(handler)](
-                AutoParsableRestRequest request) {
+            [handler = std::forward<Handler>(handler)](auto request) {
               return ConvertToJson(handler(std::move(request)));
             }}} {}
 

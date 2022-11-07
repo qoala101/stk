@@ -15,7 +15,7 @@
 #include "sqlite_types.h"
 
 auto main(int argc, const char *const *argv) -> int {
-  stonks::cli::App{argc, argv}.Run([](const stonks::cli::Options &options) {
+  stonks::cli::App{argc, argv}.Run([](const auto &options) {
     const auto injector = stonks::di::MakeInjector(
         stonks::app::injectors::CreateNetworkRestsdkInjector(),
         stonks::app::injectors::CreateSqldbSqliteInjector(),

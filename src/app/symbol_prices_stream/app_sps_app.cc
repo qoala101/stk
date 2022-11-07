@@ -26,8 +26,8 @@ namespace {
 
 auto App::BinanceSymbolBookTickerStream(core::Symbol symbol,
                                         SdbAppClient sdb_app_client) {
-  return [symbol = std::move(symbol), sdb_client = std::move(sdb_app_client)](
-             network::AutoParsable message) mutable {
+  return [symbol = std::move(symbol),
+          sdb_client = std::move(sdb_app_client)](auto message) mutable {
     auto record = SymbolPriceRecordFrom(symbol, message);
     sdb_client.InsertSymbolPriceRecord(std::move(record));
   };

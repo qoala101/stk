@@ -14,6 +14,8 @@
 #include <nameof.hpp>
 #include <not_null.hpp>
 #include <optional>
+#include <range/v3/to_container.hpp>
+#include <range/v3/view/transform.hpp>
 #include <string>
 #include <utility>
 
@@ -66,23 +68,19 @@ namespace {
 [[nodiscard]] auto ParamsFrom(const std::string &request_query) {
   const auto raw_params =
       web::uri::split_query(web::uri::decode(request_query));
-  auto params = network::Params{};
 
-  for (const auto &[name, value] : raw_params) {
-    params.emplace(name, ParseJsonFromString(value));
-  }
-
-  return params;
+  return ranges::views::transform(raw_params,
+                                  [](const auto &raw_param) {
+                                    const auto &[name, value] = raw_param;
+                                    return std::make_pair(
+                                        name, ParseJsonFromString(value));
+                                  }) |
+         ranges::to<network::Params>;
 }
 
 [[nodiscard]] auto HeadersFrom(const web::http::http_headers &request_headers) {
-  auto headers = std::map<std::string, std::string>{};
-
-  for (const auto &header : request_headers) {
-    headers.emplace(header.first, header.second);
-  }
-
-  return headers;
+  return std::map<std::string, std::string>{request_headers.begin(),
+                                            request_headers.end()};
 }
 
 [[nodiscard]] auto BodyFrom(const web::http::http_request &request)
@@ -166,7 +164,7 @@ void RestRequestReceiver::Receive(
           std::move(*uri));
   http_listener_->support(
       [handler = cpp::NnSp<network::IRestRequestHandler>{std::move(handler)},
-       logger = logger_](const web::http::http_request &request) {
+       logger = logger_](const auto &request) {
         HandleHttpRequest(*handler, *logger, request);
       });
 

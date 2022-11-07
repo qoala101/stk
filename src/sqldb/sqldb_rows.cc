@@ -15,7 +15,7 @@
 
 namespace stonks::sqldb {
 Rows::Rows(std::vector<Column> columns)
-    : columns_{columns | ranges::views::transform([](Column &column) {
+    : columns_{columns | ranges::views::transform([](auto &column) {
                  return ColumnValues{.column = std::move(column)};
                }) |
                ranges::to_vector} {
@@ -41,7 +41,7 @@ void Rows::Push(std::vector<Value> values) {
 auto Rows::GetColumnValuesImpl(cpp::This<Rows> auto &t, const Column &column)
     -> auto & {
   const auto iter =
-      ranges::find_if(t.columns_, [column](const ColumnValues &column_values) {
+      ranges::find_if(t.columns_, [column](const auto &column_values) {
         return column_values.column == column;
       });
   Expects(iter != t.columns_.end());

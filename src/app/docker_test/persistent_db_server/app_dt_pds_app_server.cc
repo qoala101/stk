@@ -9,12 +9,10 @@
 
 namespace stonks::app::dt::pds {
 AppServer::AppServer(App app, network::RestServerBuilder rest_server_builder)
-    : rest_server_{
-          rest_server_builder
-              .Handling(endpoints::RecordSymbolPrice(),
-                        [app = std::move(app)](
-                            network::AutoParsableRestRequest request) mutable {
-                          app.RecordSymbolPrice(request.Body());
-                        })
-              .Start()} {}
+    : rest_server_{rest_server_builder
+                       .Handling(endpoints::RecordSymbolPrice(),
+                                 [app = std::move(app)](auto request) mutable {
+                                   app.RecordSymbolPrice(request.Body());
+                                 })
+                       .Start()} {}
 }  // namespace stonks::app::dt::pds

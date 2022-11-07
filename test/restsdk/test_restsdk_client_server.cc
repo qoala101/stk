@@ -259,26 +259,22 @@ TEST(ClientServer, WrongClientTypesReceived) {
                stonks::cpp::NnUp<stonks::network::IRestRequestHandler>>{};
 
   handlers.emplace(EntityServer::PushSymbolEndpointDesc().endpoint,
-                   stonks::cpp::MakeNnUp<FunctionHandler>(
-                       [](const stonks::network::RestRequest& /*unused*/) {
-                         return stonks::network::RestResponse{
-                             .status = stonks::network::Status::kOk,
-                             .result = stonks::network::ConvertToJson(0)};
-                       }));
+                   stonks::cpp::MakeNnUp<FunctionHandler>([](const auto&) {
+                     return stonks::network::RestResponse{
+                         .status = stonks::network::Status::kOk,
+                         .result = stonks::network::ConvertToJson(0)};
+                   }));
   handlers.emplace(EntityServer::GetSymbolEndpointDesc().endpoint,
-                   stonks::cpp::MakeNnUp<FunctionHandler>(
-                       [](const stonks::network::RestRequest& /*unused*/) {
-                         return stonks::network::RestResponse{
-                             .status = stonks::network::Status::kOk};
-                       }));
-  handlers.emplace(
-      EntityServer::PushSymbolEndpointDesc().endpoint,
-      stonks::cpp::MakeNnUp<FunctionHandler>(
-          [](const stonks::network::RestRequest& /*unused*/) {
-            return stonks::network::RestResponse{
-                .status = stonks::network::Status::kOk,
-                .result = stonks::network::ConvertToJson("NOT_INT")};
-          }));
+                   stonks::cpp::MakeNnUp<FunctionHandler>([](const auto&) {
+                     return stonks::network::RestResponse{
+                         .status = stonks::network::Status::kOk};
+                   }));
+  handlers.emplace(EntityServer::PushSymbolEndpointDesc().endpoint,
+                   stonks::cpp::MakeNnUp<FunctionHandler>([](const auto&) {
+                     return stonks::network::RestResponse{
+                         .status = stonks::network::Status::kOk,
+                         .result = stonks::network::ConvertToJson("NOT_INT")};
+                   }));
 
   const auto entity_server = [&handlers]() {
     auto entity_server =
@@ -309,17 +305,15 @@ TEST(ClientServerDeathTest, WrongServerTypes) {
           test::restsdk::Injector()
               .create<
                   stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>()}
-          .Handling(
-              EntityServer::PushSymbolEndpointDesc(),
-              [&entity](stonks::network::AutoParsableRestRequest request) {
-                entity.PushSymbol(request.Body());
-                return 55;
-              })
-          .Handling(
-              EntityServer::GetSymbolEndpointDesc(),
-              [&entity](stonks::network::AutoParsableRestRequest request) {
-                std::ignore = entity.GetSymbol(request.Param("index"));
-              })
+          .Handling(EntityServer::PushSymbolEndpointDesc(),
+                    [&entity](auto request) {
+                      entity.PushSymbol(request.Body());
+                      return 55;
+                    })
+          .Handling(EntityServer::GetSymbolEndpointDesc(),
+                    [&entity](auto request) {
+                      std::ignore = entity.GetSymbol(request.Param("index"));
+                    })
           .Handling(EntityServer::GetSizeEndpointDesc(),
                     []() { return "NOT_INT"; })
           .Start();

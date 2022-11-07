@@ -58,13 +58,12 @@ auto Select::Build() const -> p::Parametrized<SelectQuery> {
   Expects(!table_name_->empty());
   Expects(!columns_query_->empty());
 
-  auto query = fmt::format("SELECT {} FROM {}{}{}{}", *columns_query_,
-                           *table_name_, *join_query_,
-                           *where_query_, *limit_query_);
-  auto params =
-      ranges::views::concat(*join_query_.params, *where_query_.params,
-                            *limit_query_.params) |
-      ranges::to_vector;
+  auto query =
+      fmt::format("SELECT {} FROM {}{}{}{}", *columns_query_, *table_name_,
+                  *join_query_, *where_query_, *limit_query_);
+  auto params = ranges::views::concat(*join_query_.params, *where_query_.params,
+                                      *limit_query_.params) |
+                ranges::to_vector;
 
   return {{std::move(query), result_definition_}, std::move(params)};
 }
@@ -95,8 +94,7 @@ auto Select::Join(std::string_view table_name, const OnCondition& condition)
   const auto& condition_query = condition.GetQuery();
   Expects(!condition_query->empty());
 
-  *join_query_ +=
-      fmt::format(" JOIN {}{}", table_name, *condition_query);
+  *join_query_ += fmt::format(" JOIN {}{}", table_name, *condition_query);
   join_query_.params += condition_query.params;
 
   Ensures(!join_query_->empty());
@@ -108,9 +106,9 @@ void Select::SetColumnsQueryFrom(
   Expects(!select_columns_data.empty());
 
   *columns_query_ = absl::StrJoin(
-      select_columns_data |
-          ranges::views::transform(
-              [](const SelectColumnData& column) { return column.full_name; }),
+      select_columns_data | ranges::views::transform([](const auto& column) {
+        return column.full_name;
+      }),
       ", ");
 
   Ensures(!columns_query_->empty());
@@ -121,8 +119,7 @@ void Select::SetResultDefinitionFrom(
   Expects(!select_columns_data.empty());
 
   *result_definition_ =
-      select_columns_data |
-      ranges::views::transform([](const SelectColumnData& column) {
+      select_columns_data | ranges::views::transform([](const auto& column) {
         return ColumnType{.column = {column.name}, .type = column.type};
       }) |
       ranges::to_vector;

@@ -127,10 +127,9 @@ TEST(WebSocket, Facade) {
           kTypedSocket,
           test::restsdk::Injector()
               .create<stonks::cpp::NnUp<stonks::network::IWsClient>>()}
-          .Handling(
-              [&received_messages](stonks::network::AutoParsable message) {
-                received_messages.emplace_back(message);
-              })
+          .Handling([&received_messages](auto message) {
+            received_messages.emplace_back(message);
+          })
           .Connect();
   client.Send(kMessage1);
   client.Send(kMessage2);

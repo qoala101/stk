@@ -1,6 +1,7 @@
 find_package(cpprestsdk REQUIRED)
 find_package(fmt REQUIRED)
 find_package(nameof REQUIRED)
+find_package(range-v3 REQUIRED)
 
 add_library(librestsdk
   restsdk_json_basic_conversions.cc
@@ -32,4 +33,5 @@ target_link_libraries(librestsdk
   PRIVATE cpprestsdk::cpprest
   PRIVATE fmt::fmt
   PRIVATE nameof::nameof
+  PRIVATE range-v3::range-v3
 )

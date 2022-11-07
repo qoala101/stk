@@ -7,9 +7,9 @@ namespace stonks::sqldb::p {
 auto AreParamsValid(const std::vector<Value> &values,
                     const std::vector<QueryParam> &params) -> bool {
   return (values.size() == params.size()) &&
-         ranges::equal(
-             values | ranges::views::transform(
-                          [](const Value &value) { return value.GetType(); }),
-             params);
+         ranges::equal(values | ranges::views::transform([](const auto &value) {
+                         return value.GetType();
+                       }),
+                       params);
 }
 }  // namespace stonks::sqldb::p

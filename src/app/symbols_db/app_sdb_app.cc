@@ -188,8 +188,8 @@ auto App::SelectAssets() const -> std::vector<core::Asset> {
   auto &names = rows.GetColumnValues<tables::Asset::name>();
 
   Ensures(statement);
-  return names | ranges::views::transform([](sqldb::Value &name) {
-           return core::Asset{std::move(name.Get<std::string>())};
+  return names | ranges::views::transform([](auto &name) {
+           return core::Asset{std::move(name.template Get<std::string>())};
          }) |
          ranges::to_vector;
 }
@@ -197,7 +197,7 @@ auto App::SelectAssets() const -> std::vector<core::Asset> {
 void App::UpdateAssets(std::vector<core::Asset> assets) {
   UpdateItems(
       std::move(assets), std::bind_front(&App::SelectAssets, this),
-      std::bind_front(&App::InsertAsset, this), [](const core::Asset &) {},
+      std::bind_front(&App::InsertAsset, this), [](const auto &) {},
       std::bind_front(&App::DeleteAsset, this), &DefaultLess<core::Asset>,
       &DefaultEquals<core::Asset>);
 }
@@ -225,8 +225,8 @@ auto App::SelectSymbolsWithPriceRecords() const -> std::vector<core::Symbol> {
   auto &names = rows.GetColumnValues<tables::SymbolInfo::name>();
 
   Ensures(statement);
-  return names | ranges::views::transform([](sqldb::Value &name) {
-           return core::Symbol{std::move(name.Get<std::string>())};
+  return names | ranges::views::transform([](auto &name) {
+           return core::Symbol{std::move(name.template Get<std::string>())};
          }) |
          ranges::to_vector;
 }

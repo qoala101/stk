@@ -55,6 +55,7 @@ void EndpointTypesValidatorTemplate::ValidateRequestParamTypes(
 
   for (const auto &[key, value] : params) {
     const auto param_type = endpoint_types_.params.find(key);
+
     if (param_type == endpoint_types_.params.end()) {
       HandleUnknownParam(key);
     }

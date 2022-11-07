@@ -72,9 +72,7 @@ void WsClient::SetMessageHandler(
     cpp::NnUp<network::IWsMessageHandler> handler) {
   native_ws_client_->set_message_handler(
       [handler = cpp::NnSp<network::IWsMessageHandler>{std::move(handler)}](
-          const web::websockets::client::websocket_incoming_message &message) {
-        HandleWsMessage(*handler, message);
-      });
+          const auto &message) { HandleWsMessage(*handler, message); });
 }
 
 void WsClient::SendMessage(network::WsMessage message) const {

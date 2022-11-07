@@ -10,17 +10,15 @@
 
 namespace stonks::app::sdb {
 auto AppServer::UpdateSymbolsInfo(cpp::NnSp<App> app) {
-  return
-      [app = std::move(app)](network::AutoParsableRestRequest request) mutable {
-        // app->InsertOrUpdateSymbolInfo(request.Body());
-      };
+  return [app = std::move(app)](auto request) mutable {
+    // app->InsertOrUpdateSymbolInfo(request.Body());
+  };
 }
 
 auto AppServer::InsertSymbolPriceRecord(cpp::NnSp<App> app) {
-  return
-      [app = std::move(app)](network::AutoParsableRestRequest request) mutable {
-        // app->InsertSymbolPriceRecord(request.Body());
-      };
+  return [app = std::move(app)](auto request) mutable {
+    // app->InsertSymbolPriceRecord(request.Body());
+  };
 }
 
 AppServer::AppServer(App app, network::RestServerBuilder rest_server_builder)

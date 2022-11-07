@@ -18,7 +18,7 @@
 #include "network_types.h"
 
 auto main(int argc, const char *const *argv) -> int {
-  stonks::cli::App{argc, argv}.Run([](const stonks::cli::Options &options) {
+  stonks::cli::App{argc, argv}.Run([](const auto &options) {
     struct DurationFactory {
       [[nodiscard]] auto operator()(int64_t milliseconds) {
         return absl::Milliseconds(milliseconds);
@@ -41,6 +41,6 @@ auto main(int argc, const char *const *argv) -> int {
                     "http://{}:{}", options.GetOptionOr("sdb_host", "0.0.0.0"),
                     options.GetOptionOr("sdb_port", 6506))}));
 
-    return injector.create<stonks::app::siu::App>();
+    return injector.template create<stonks::app::siu::App>();
   });
 }
