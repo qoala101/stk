@@ -21,23 +21,12 @@ namespace detail {
 template <typename TableT>
 class Table {
  public:
-  Table() = delete;
-
-  /**
-   * @brief Gives table name which is the name of the type.
-   */
-  [[nodiscard]] static auto GetName() {
-    return std::string{nameof::nameof_short_type<TableT>()};
-  }
-
   /**
    * @brief Base for column definition types which provides API.
    */
   template <SupportedDataType DataTypeT, typename ColumnT>
   class Column {
    public:
-    Column() = delete;
-
     /**
      * @brief Parent table.
      */
@@ -47,6 +36,8 @@ class Table {
      * @brief Data type.
      */
     using DataType = DataTypeT;
+
+    Column() = delete;
 
     /**
      * @brief Gives short column name which is the name of its type.
@@ -103,6 +94,15 @@ class Table {
       return detail::GetFullNameInTableImpl(Table::GetName(), GetName());
     }
   };
+
+  Table() = delete;
+
+  /**
+   * @brief Gives table name which is the name of the type.
+   */
+  [[nodiscard]] static auto GetName() {
+    return std::string{nameof::nameof_short_type<TableT>()};
+  }
 };
 }  // namespace stonks::sqldb
 
