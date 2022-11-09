@@ -39,11 +39,11 @@ class WsClientBuilder {
    * @return Keeps web socket connection while alive.
    * @remark Other methods should not be called after this.
    */
-  [[nodiscard]] auto Connect() -> WsConnection;
+  auto Connect [[nodiscard]] () -> WsConnection;
 
  private:
-  [[nodiscard]] auto Handling(cpp::NnUp<IWsMessageHandler> handler)
-      -> WsClientBuilder &;
+  auto Handling [[nodiscard]] (cpp::NnUp<IWsMessageHandler> handler)
+  -> WsClientBuilder &;
 
   cpp::Opt<TypedWsEndpoint> endpoint_{};
   cpp::Up<IWsClient> ws_client_{};

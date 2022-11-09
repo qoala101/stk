@@ -16,7 +16,7 @@ class MessageException : public std::exception {
   /**
    * @brief Gives the message.
    */
-  [[nodiscard]] auto what() const noexcept -> const char* override;
+  auto what [[nodiscard]] () const noexcept -> const char* override;
 
  private:
   std::string message_{};

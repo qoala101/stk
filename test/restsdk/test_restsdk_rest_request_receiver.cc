@@ -31,10 +31,10 @@ struct SymbolPrice {
   double price{};
 
   //  private:
-  //   [[nodiscard]] friend auto operator==(const SymbolPrice &, const
+  //   friend auto operator== [[nodiscard]] (const SymbolPrice &, const
   //   SymbolPrice &)
   //       -> bool = default;
-  //   [[nodiscard]] friend auto operator<<(std::ostream &stream,
+  //   friend auto operator<< [[nodiscard]] (std::ostream &stream,
   //                                        const SymbolPrice &avg_price)
   //       -> std::ostream & {
   //     return stream << avg_price.symbol << " " << avg_price.price;
@@ -62,8 +62,8 @@ auto ConvertToJson(const SymbolPrice &value) -> cpp::Pv<IJson> {
 namespace {
 TEST(RestRequestReceiver, SendRequest) {
   struct Handler : public stonks::network::IRestRequestHandler {
-    [[nodiscard]] auto HandleRequestAndGiveResponse(
-        stonks::network::RestRequest request) const
+    auto HandleRequestAndGiveResponse
+        [[nodiscard]] (stonks::network::RestRequest request) const
         -> stonks::network::RestResponse override {
       EXPECT_EQ(request.endpoint.method, stonks::network::Method::kGet);
       EXPECT_EQ(request.endpoint.uri, stonks::network::Uri{"/Test"});

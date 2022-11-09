@@ -10,8 +10,8 @@
 
 namespace stonks::sqldb {
 namespace detail {
-[[nodiscard]] auto GetFullNameInTableImpl(std::string_view table_name,
-                                          std::string_view column_name)
+auto GetFullNameInTableImpl
+    [[nodiscard]] (std::string_view table_name, std::string_view column_name)
     -> std::string;
 }  // namespace detail
 
@@ -42,55 +42,55 @@ class Table {
     /**
      * @brief Gives short column name which is the name of its type.
      */
-    [[nodiscard]] static auto GetName() {
+    static auto GetName [[nodiscard]] () {
       return std::string{nameof::nameof_short_type<ColumnT>()};
     }
 
     /**
      * @brief Gives full column name which includes its table name.
      */
-    [[nodiscard]] static auto GetFullName() {
+    static auto GetFullName [[nodiscard]] () {
       return GetFullNameInTable<Table>();
     }
 
     /**
      * @brief Gives column data type.
      */
-    [[nodiscard]] static auto GetType() {
+    static auto GetType [[nodiscard]] () {
       return DataTypeVariant{::stonks::sqldb::DataType<DataType>{}};
     }
 
     /**
      * @brief Tells whether column is part of the primary key.
      */
-    [[nodiscard]] static consteval auto IsPrimaryKey() {
+    static consteval auto IsPrimaryKey [[nodiscard]] () {
       return requires { typename ColumnT::PrimaryKey; };
     }
 
     /**
      * @brief Tells whether column is foreign key.
      */
-    [[nodiscard]] static consteval auto IsForeignKey() {
+    static consteval auto IsForeignKey [[nodiscard]] () {
       return requires { typename ColumnT::ForeignKey; };
     }
 
     /**
      * @brief Tells whether column has auto increment.
      */
-    [[nodiscard]] static auto HasAutoIncrement() {
+    static auto HasAutoIncrement [[nodiscard]] () {
       return requires { typename ColumnT::AutoIncrement; };
     }
 
     /**
      * @brief Tells whether column data is unique.
      */
-    [[nodiscard]] static auto IsUnique() {
+    static auto IsUnique [[nodiscard]] () {
       return requires { typename ColumnT::Unique; };
     }
 
    protected:
     template <TableDefinition Table>
-    [[nodiscard]] static auto GetFullNameInTable() {
+    static auto GetFullNameInTable [[nodiscard]] () {
       return detail::GetFullNameInTableImpl(Table::GetName(), GetName());
     }
   };
@@ -100,7 +100,7 @@ class Table {
   /**
    * @brief Gives table name which is the name of the type.
    */
-  [[nodiscard]] static auto GetName() {
+  static auto GetName [[nodiscard]] () {
     return std::string{nameof::nameof_short_type<TableT>()};
   }
 };

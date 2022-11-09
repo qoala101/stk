@@ -20,56 +20,56 @@ struct TypedStruct {
   using BaseType = TypedStruct<ValueType>;
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  [[nodiscard]] operator ValueType() const & {
+  operator ValueType [[nodiscard]] () const & {
     return OperatorValueTypeImpl(*this);
   }
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  [[nodiscard]] operator ValueType() & { return OperatorValueTypeImpl(*this); }
+  operator ValueType() & { return OperatorValueTypeImpl [[nodiscard]] (*this); }
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  [[nodiscard]] operator ValueType() && {
+  operator ValueType [[nodiscard]] () && {
     return OperatorValueTypeImpl(std::move(*this));
   }
 
   /**
    * @brief Gives the value.
    */
-  [[nodiscard]] auto operator*() const -> auto & {
+  auto operator* [[nodiscard]] () const -> auto & {
     return OperatorAsteriskImpl(*this);
   }
 
-  [[nodiscard]] auto operator*() -> auto & {
+  auto operator* [[nodiscard]] () -> auto & {
     return OperatorAsteriskImpl(*this);
   }
 
   /**
    * @brief Gives the value.
    */
-  [[nodiscard]] auto operator->() const { return OperatorArrowImpl(*this); }
+  auto operator->() const { return OperatorArrowImpl [[nodiscard]] (*this); }
 
-  [[nodiscard]] auto operator->() { return OperatorArrowImpl(*this); }
+  auto operator->() { return OperatorArrowImpl [[nodiscard]] (*this); }
 
   ValueType value{};
 
  private:
-  [[nodiscard]] friend auto operator==(const TypedStruct &, const TypedStruct &)
-      -> bool = default;
-  [[nodiscard]] friend auto operator<=>(const TypedStruct &,
-                                        const TypedStruct &)
+  friend auto operator== [[nodiscard]] (const TypedStruct &,
+                                        const TypedStruct &) -> bool = default;
+  friend auto operator<=>
+      [[nodiscard]] (const TypedStruct &, const TypedStruct &)
       -> std::partial_ordering = default;
 
   template <This<TypedStruct> This>
-  [[nodiscard]] static auto OperatorValueTypeImpl(This &&t) {
+  static auto OperatorValueTypeImpl [[nodiscard]] (This &&t) {
     return MoveIfRvalue<decltype(std::forward<This>(t))>(*t);
   }
 
-  [[nodiscard]] static auto OperatorAsteriskImpl(This<TypedStruct> auto &t)
-      -> auto & {
+  static auto OperatorAsteriskImpl [[nodiscard]] (This<TypedStruct> auto &t)
+  -> auto & {
     return t.value;
   }
 
-  [[nodiscard]] static auto OperatorArrowImpl(This<TypedStruct> auto &t) {
+  static auto OperatorArrowImpl [[nodiscard]] (This<TypedStruct> auto &t) {
     return AssumeNn(&*t);
   }
 };

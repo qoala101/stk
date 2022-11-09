@@ -29,32 +29,32 @@ class Lazy {
   /**
    * @brief Gives lazy initialized object.
    */
-  [[nodiscard]] auto GetObject() const -> auto & {
+  auto GetObject [[nodiscard]] () const -> auto & {
     return GetObjectImpl(*this);
   }
 
-  [[nodiscard]] auto GetObject() -> auto & { return GetObjectImpl(*this); }
+  auto GetObject() -> auto & { return GetObjectImpl [[nodiscard]] (*this); }
 
   /**
    * @brief Gives an object the lazy initialized one points to.
    */
-  [[nodiscard]] auto operator*() const -> auto & {
+  auto operator* [[nodiscard]] () const -> auto & {
     return OperatorAsteriskImpl(*this);
   }
 
-  [[nodiscard]] auto operator*() -> auto & {
+  auto operator* [[nodiscard]] () -> auto & {
     return OperatorAsteriskImpl(*this);
   }
 
   /**
    * @brief Gives an object the lazy initialized one points to.
    */
-  [[nodiscard]] auto operator->() const { return OperatorArrowImpl(*this); }
+  auto operator->() const { return OperatorArrowImpl [[nodiscard]] (*this); }
 
-  [[nodiscard]] auto operator->() { return OperatorArrowImpl(*this); }
+  auto operator->() { return OperatorArrowImpl [[nodiscard]] (*this); }
 
  private:
-  [[nodiscard]] static auto GetObjectImpl(This<Lazy> auto &t) -> auto & {
+  static auto GetObjectImpl [[nodiscard]] (This<Lazy> auto &t) -> auto & {
     if (!t.object_.has_value()) {
       t.object_ = t.initializer_();
     }
@@ -63,7 +63,8 @@ class Lazy {
     return *t.object_;
   }
 
-  [[nodiscard]] static auto OperatorAsteriskImpl(This<Lazy> auto &t) -> auto & {
+  static auto OperatorAsteriskImpl [[nodiscard]] (This<Lazy> auto &t)
+  -> auto & {
     auto &object = t.GetObject();
 
     if constexpr (PointerLike<T>) {
@@ -73,7 +74,7 @@ class Lazy {
     }
   }
 
-  [[nodiscard]] static auto OperatorArrowImpl(This<Lazy> auto &t) {
+  static auto OperatorArrowImpl [[nodiscard]] (This<Lazy> auto &t) {
     return AssumeNn(&*t);
   }
 

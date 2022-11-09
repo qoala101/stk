@@ -31,7 +31,7 @@ class DbFacade {
   /**
    * @brief Creates prepared statement for the query.
    */
-  [[nodiscard]] auto CreatePreparedStatement(const sqldb::Query &query) const
+  auto CreatePreparedStatement [[nodiscard]] (const sqldb::Query &query) const
       -> SqliteStatementHandle;
 
   /**

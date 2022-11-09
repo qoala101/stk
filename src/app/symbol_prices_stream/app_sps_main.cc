@@ -17,7 +17,7 @@
 auto main(int argc, const char *const *argv) -> int {
   stonks::cli::App{argc, argv}.Run([](const auto &options) {
     struct TypedWsEndpointFactory {
-      [[nodiscard]] auto operator()(stonks::core::Symbol symbol) {
+      auto operator() [[nodiscard]] (stonks::core::Symbol symbol) {
         return stonks::app::sps::endpoints::BinanceSymbolBookTickerStream(
             std::move(symbol));
       }

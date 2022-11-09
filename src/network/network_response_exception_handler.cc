@@ -16,8 +16,8 @@
 
 namespace stonks::network {
 namespace {
-[[nodiscard]] auto TryToParseException(const IJson &json)
-    -> cpp::Opt<cpp::MessageException> {
+auto TryToParseException [[nodiscard]] (const IJson &json)
+-> cpp::Opt<cpp::MessageException> {
   try {
     return ParseFromJson<cpp::MessageException>(json);
   } catch (const std::exception &) {

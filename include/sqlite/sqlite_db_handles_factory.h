@@ -19,12 +19,12 @@ class DbHandlesFactory {
   /**
    * @brief Creates in-memory SQLite DB.
    */
-  [[nodiscard]] auto CreateInMemoryDb() const -> SqliteDbHandle;
+  auto CreateInMemoryDb [[nodiscard]] () const -> SqliteDbHandle;
 
   /**
    * @brief Creates SQLite handle to DB from file.
    */
-  [[nodiscard]] auto CreateHandleToFileDb(const FilePath &file_path) const
+  auto CreateHandleToFileDb [[nodiscard]] (const FilePath &file_path) const
       -> SqliteDbHandle;
 
   /**
@@ -32,7 +32,7 @@ class DbHandlesFactory {
    * DB.
    * @return Handle to in-memory DB.
    */
-  [[nodiscard]] auto LoadDbFromFileToMemory(const FilePath &file_path) const
+  auto LoadDbFromFileToMemory [[nodiscard]] (const FilePath &file_path) const
       -> SqliteDbHandle;
 
  private:

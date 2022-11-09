@@ -14,7 +14,7 @@ template <typename... Ts>
 using Pv = isocpp_p0201::polymorphic_value<Ts...>;
 
 template <typename... Ts, typename... Args>
-[[nodiscard]] auto MakePv(Args &&...args) {
+auto MakePv [[nodiscard]] (Args &&...args) {
   return isocpp_p0201::make_polymorphic_value<Ts...>(
       std::forward<Args>(args)...);
 }

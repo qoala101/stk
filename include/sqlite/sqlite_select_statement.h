@@ -25,7 +25,7 @@ class SelectStatement : public sqldb::ISelectStatement {
   /**
    * @copydoc sqldb::ISelectStatement::Execute
    */
-  [[nodiscard]] auto Execute(std::vector<sqldb::Value> params) const
+  auto Execute [[nodiscard]] (std::vector<sqldb::Value> params) const
       -> sqldb::Rows override;
 
  private:

@@ -27,25 +27,25 @@ class Update {
    * @brief Sets the value for the column.
    */
   template <ColumnDefinition Column>
-  [[nodiscard]] auto Set(const QueryValue& value) -> auto& {
+  auto Set [[nodiscard]] (const QueryValue& value) -> auto& {
     return Set(Column::GetName(), value);
   }
 
   /**
    * @brief Adds condition to the query.
    */
-  [[nodiscard]] auto Where(WhereCondition condition) -> Update&;
+  auto Where [[nodiscard]] (WhereCondition condition) -> Update&;
 
   /**
    * @brief Builds the query.
    */
-  [[nodiscard]] auto Build() const -> p::Parametrized<Query>;
+  auto Build [[nodiscard]] () const -> p::Parametrized<Query>;
 
  private:
   explicit Update(std::string table_name);
 
-  [[nodiscard]] auto Set(std::string_view column_name, const QueryValue& value)
-      -> Update&;
+  auto Set [[nodiscard]] (std::string_view column_name, const QueryValue& value)
+  -> Update&;
 
   Query table_name_{};
   p::Parametrized<Query> column_values_query_{};

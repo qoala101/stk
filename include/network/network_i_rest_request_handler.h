@@ -15,8 +15,8 @@ class IRestRequestHandler {
   /**
    * @return Response for the given request.
    */
-  [[nodiscard]] virtual auto HandleRequestAndGiveResponse(
-      RestRequest request) const -> RestResponse = 0;
+  virtual auto HandleRequestAndGiveResponse
+      [[nodiscard]] (RestRequest request) const -> RestResponse = 0;
 };
 }  // namespace stonks::network
 

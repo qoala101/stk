@@ -25,38 +25,38 @@ template <typename T>
 struct JsonParser {
   using Type = T;
 
-  [[nodiscard]] auto operator()(const IJson &json) const -> Type;
+  auto operator() [[nodiscard]] (const IJson &json) const -> Type;
 };
 
 /**
  * @remark To be defined by the library implementer.
  */
-[[nodiscard]] auto CreateNullJson() -> cpp::Pv<IJson>;
+auto CreateNullJson [[nodiscard]] () -> cpp::Pv<IJson>;
 
 /**
  * @remark To be defined by the library implementer.
  */
-[[nodiscard]] auto ConvertToJson(bool value) -> cpp::Pv<IJson>;
+auto ConvertToJson [[nodiscard]] (bool value) -> cpp::Pv<IJson>;
 
 /**
  * @remark To be defined by the library implementer.
  */
-[[nodiscard]] auto ConvertToJson(int value) -> cpp::Pv<IJson>;
+auto ConvertToJson [[nodiscard]] (int value) -> cpp::Pv<IJson>;
 
 /**
  * @remark To be defined by the library implementer.
  */
-[[nodiscard]] auto ConvertToJson(int64_t value) -> cpp::Pv<IJson>;
+auto ConvertToJson [[nodiscard]] (int64_t value) -> cpp::Pv<IJson>;
 
 /**
  * @remark To be defined by the library implementer.
  */
-[[nodiscard]] auto ConvertToJson(double value) -> cpp::Pv<IJson>;
+auto ConvertToJson [[nodiscard]] (double value) -> cpp::Pv<IJson>;
 
 /**
  * @remark To be defined by the library implementer.
  */
-[[nodiscard]] auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson>;
+auto ConvertToJson [[nodiscard]] (std::string_view value) -> cpp::Pv<IJson>;
 }  // namespace stonks::network
 
 #endif  // STONKS_NETWORK_NETWORK_JSON_BASE_CONVERSIONS_H_

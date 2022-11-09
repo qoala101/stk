@@ -25,23 +25,23 @@ class IJson {
    * @brief Creates a copy with the same data.
    * @remark Required by the polymorphic_value.
    */
-  [[nodiscard]] virtual auto clone() const -> cpp::NnUp<IJson> = 0;
-  [[nodiscard]] virtual auto clone() -> cpp::NnUp<IJson> = 0;
+  virtual auto clone [[nodiscard]] () const -> cpp::NnUp<IJson> = 0;
+  virtual auto clone [[nodiscard]] () -> cpp::NnUp<IJson> = 0;
 
   virtual ~IJson() = default;
 
   /**
    * @brief Whether JSON is default-created and empty.
    */
-  [[nodiscard]] virtual auto IsNull() const -> bool = 0;
+  virtual auto IsNull [[nodiscard]] () const -> bool = 0;
 
   /**
    * @brief Gives child JSON at the key.
    */
-  [[nodiscard]] virtual auto GetChild(std::string_view key) const
+  virtual auto GetChild [[nodiscard]] (std::string_view key) const
       -> cpp::Pv<IJson> = 0;
-  [[nodiscard]] virtual auto GetChild(std::string_view key)
-      -> cpp::Pv<IJson> = 0;
+  virtual auto GetChild [[nodiscard]] (std::string_view key)
+  -> cpp::Pv<IJson> = 0;
 
   /**
    * @brief Sets child JSON at the key.
@@ -52,8 +52,8 @@ class IJson {
   /**
    * @brief Gives child JSON at index.
    */
-  [[nodiscard]] virtual auto GetChild(int index) const -> cpp::Pv<IJson> = 0;
-  [[nodiscard]] virtual auto GetChild(int index) -> cpp::Pv<IJson> = 0;
+  virtual auto GetChild [[nodiscard]] (int index) const -> cpp::Pv<IJson> = 0;
+  virtual auto GetChild [[nodiscard]] (int index) -> cpp::Pv<IJson> = 0;
 
   /**
    * @brief Sets child JSON at index.
@@ -64,13 +64,14 @@ class IJson {
   /**
    * @brief Gives number of children.
    */
-  [[nodiscard]] virtual auto GetSize() const -> int = 0;
+  virtual auto GetSize [[nodiscard]] () const -> int = 0;
 
   /**
    * @brief Gives implementation details.
    */
-  [[nodiscard]] virtual auto GetNativeHandle() const -> const NativeHandle& = 0;
-  [[nodiscard]] virtual auto GetNativeHandle() -> NativeHandle& = 0;
+  virtual auto GetNativeHandle [[nodiscard]] () const
+      -> const NativeHandle& = 0;
+  virtual auto GetNativeHandle [[nodiscard]] () -> NativeHandle& = 0;
 };
 }  // namespace stonks::network
 

@@ -30,9 +30,9 @@ struct BinanceWebSocketMessage {
   const int id{1};
 
  private:
-  [[nodiscard]] friend auto operator==(const BinanceWebSocketMessage &,
-                                       const BinanceWebSocketMessage &)
-      -> bool = default;
+  friend auto operator== [[nodiscard]] (const BinanceWebSocketMessage &,
+                                        const BinanceWebSocketMessage &)
+  -> bool = default;
 };
 
 using MessageVariant = std::variant<std::string, BinanceWebSocketMessage>;

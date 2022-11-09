@@ -20,8 +20,8 @@ class App {
   /**
    * @copydoc endpoints::BinanceSymbolBookTickerStream
    */
-  [[nodiscard]] static auto BinanceSymbolBookTickerStream(
-      core::Symbol symbol, SdbAppClient sdb_app_client);
+  static auto BinanceSymbolBookTickerStream
+      [[nodiscard]] (core::Symbol symbol, SdbAppClient sdb_app_client);
 
   network::WsConnection ws_connection_;
 };

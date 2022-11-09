@@ -15,7 +15,7 @@ namespace stonks::sqldb::query_builder {
  * @brief Builds query which creates the table from its definition.
  */
 template <TableDefinition Table>
-[[nodiscard]] auto CreateTable() {
+auto CreateTable [[nodiscard]] () {
   return qb::Create{cpp::TemplateConstructor<Table>{}};
 }
 
@@ -23,7 +23,7 @@ template <TableDefinition Table>
  * @brief Builds query which drops the table.
  */
 template <TableDefinition Table>
-[[nodiscard]] auto DropTable() {
+auto DropTable [[nodiscard]] () {
   return qb::Drop{cpp::TemplateConstructor<Table>{}};
 }
 
@@ -31,36 +31,36 @@ template <TableDefinition Table>
  * @brief Builds query which selects specified columns.
  */
 template <ColumnDefinition... Columns>
-[[nodiscard]] auto Select() {
+auto Select [[nodiscard]] () {
   return qb::Select{cpp::TemplateConstructor<Columns...>{}};
 }
 
 /**
  * @brief Builds query which selects all columns from table.
  */
-[[nodiscard]] auto SelectAll() -> qb::Select;
+auto SelectAll [[nodiscard]] () -> qb::Select;
 
 /**
  * @brief Builds special query which is used to check existence of the
  * condition.
  */
-[[nodiscard]] auto SelectOne() -> qb::Select;
+auto SelectOne [[nodiscard]] () -> qb::Select;
 
 /**
  * @brief Builds query which inserts values to the specified columns.
  */
-[[nodiscard]] auto Insert() -> qb::Insert;
+auto Insert [[nodiscard]] () -> qb::Insert;
 
 /**
  * @brief Builds query which inserts values to each of the table columns.
  */
-[[nodiscard]] auto InsertAll() -> qb::Insert;
+auto InsertAll [[nodiscard]] () -> qb::Insert;
 
 /**
  * @brief Builds query which updates the values in specified columns.
  */
 template <TableDefinition Table>
-[[nodiscard]] auto UpdateTable() {
+auto UpdateTable [[nodiscard]] () {
   return qb::Update{cpp::TemplateConstructor<Table>{}};
 }
 
@@ -68,7 +68,7 @@ template <TableDefinition Table>
  * @brief Builds query which deletes rows from the table.
  */
 template <TableDefinition Table>
-[[nodiscard]] auto DeleteFromTable() {
+auto DeleteFromTable [[nodiscard]] () {
   return qb::Delete{cpp::TemplateConstructor<Table>{}};
 }
 }  // namespace stonks::sqldb::query_builder

@@ -24,9 +24,9 @@
 
 namespace stonks::sqldb::qb {
 namespace {
-[[nodiscard]] auto ConditionFrom(std::string_view format,
-                                 const QueryValue &left,
-                                 const QueryValue &right) {
+auto ConditionFrom
+    [[nodiscard]] (std::string_view format, const QueryValue &left,
+                   const QueryValue &right) {
   const auto &left_query = left.GetQuery();
   Expects(!left_query->empty());
 
@@ -39,7 +39,7 @@ namespace {
   return Condition{{std::move(query), std::move(params)}};
 }
 
-[[nodiscard]] auto ToString(const Value &value) {
+auto ToString [[nodiscard]] (const Value &value) {
   return std::visit(
       [](const auto &v) -> std::string {
         using V = std::decay_t<decltype(v)>;
@@ -71,18 +71,18 @@ QueryValue::QueryValue(std::string column_name)
 QueryValue::QueryValue(const p::Parametrized<SelectQuery> &query)
     : QueryWrapper{{fmt::format("({})", *query), query.params}} {}
 
-[[nodiscard]] auto operator==(const QueryValue &left, const QueryValue &right)
-    -> Condition {
+auto operator== [[nodiscard]] (const QueryValue &left, const QueryValue &right)
+-> Condition {
   return ConditionFrom("{} == {}", left, right);
 }
 
-[[nodiscard]] auto operator<(const QueryValue &left, const QueryValue &right)
-    -> Condition {
+auto operator<[[nodiscard]] (const QueryValue &left, const QueryValue &right)
+-> Condition {
   return ConditionFrom("{} < {}", left, right);
 }
 
-[[nodiscard]] auto operator>=(const QueryValue &left, const QueryValue &right)
-    -> Condition {
+auto operator>= [[nodiscard]] (const QueryValue &left, const QueryValue &right)
+-> Condition {
   return ConditionFrom("{} >= {}", left, right);
 }
 }  // namespace stonks::sqldb::qb

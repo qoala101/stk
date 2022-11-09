@@ -31,14 +31,14 @@ struct AliasToTable : public Table<AliasTable> {
     /**
      * @copydoc Column::GetName
      */
-    [[nodiscard]] static auto GetName() {
+    static auto GetName [[nodiscard]] () {
       return std::string{nameof::nameof_short_type<AliasColumn>()};
     }
 
     /**
      * @copydoc Column::GetFullName
      */
-    [[nodiscard]] static auto GetFullName() {
+    static auto GetFullName [[nodiscard]] () {
       return TargetColumn::template GetFullNameInTable<AliasTable>();
     }
   };

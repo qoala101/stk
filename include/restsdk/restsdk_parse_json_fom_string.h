@@ -10,8 +10,8 @@ namespace stonks::restsdk {
 /**
  * @brief Parses JSON from a raw string.
  */
-[[nodiscard]] auto ParseJsonFromString(const std::string &value)
-    -> cpp::Pv<network::IJson>;
+auto ParseJsonFromString [[nodiscard]] (const std::string &value)
+-> cpp::Pv<network::IJson>;
 }  // namespace stonks::restsdk
 
 #endif  // STONKS_RESTSDK_RESTSDK_PARSE_JSON_FOM_STRING_H_

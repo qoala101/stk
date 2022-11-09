@@ -12,7 +12,7 @@
 
 namespace stonks::app::siu {
 namespace {
-[[nodiscard]] auto SymbolInfoFrom(BinanceSymbolExchangeInfo binance_info) {
+auto SymbolInfoFrom [[nodiscard]] (BinanceSymbolExchangeInfo binance_info) {
   return core::SymbolInfo{
       .symbol = {std::move(binance_info.symbol)},
       .base_asset = {.asset = {std::move(binance_info.base_asset)},

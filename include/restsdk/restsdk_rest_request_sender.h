@@ -17,8 +17,9 @@ class RestRequestSender : public network::IRestRequestSender {
   /**
    * @copydoc network::IRestRequestSender::SendRequestAndGetResponse
    */
-  [[nodiscard]] auto SendRequestAndGetResponse(
-      network::RestRequest request) const -> network::RestResponse override;
+  auto SendRequestAndGetResponse
+      [[nodiscard]] (network::RestRequest request) const
+      -> network::RestResponse override;
 
  private:
   cpp::NnUp<log::ILogger> logger_;

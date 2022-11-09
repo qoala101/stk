@@ -22,7 +22,7 @@ namespace {
 using NullableSqliteStatementHandle =
     std::decay_t<decltype(std::declval<SqliteStatementHandle>().as_nullable())>;
 
-[[nodiscard]] auto GetAssociatedFileName(sqlite3 &sqlite_db) -> std::string {
+auto GetAssociatedFileName [[nodiscard]] (sqlite3 &sqlite_db) -> std::string {
   const auto *const file_name = sqlite3_db_filename(&sqlite_db, nullptr);
 
   if (file_name == nullptr) {
@@ -32,7 +32,7 @@ using NullableSqliteStatementHandle =
   return file_name;
 }
 
-[[nodiscard]] auto GetPrintableFileName(sqlite3 &sqlite_db) -> std::string {
+auto GetPrintableFileName [[nodiscard]] (sqlite3 &sqlite_db) -> std::string {
   auto file_name = GetAssociatedFileName(sqlite_db);
 
   if (file_name.empty()) {

@@ -20,23 +20,23 @@ struct SqliteDbHandleVariant
   /**
    * @brief Gives native SQLite handle.
    */
-  [[nodiscard]] auto GetSqliteDb() const -> const sqlite3 &;
-  [[nodiscard]] auto GetSqliteDb() -> sqlite3 &;
+  auto GetSqliteDb [[nodiscard]] () const -> const sqlite3 &;
+  auto GetSqliteDb [[nodiscard]] () -> sqlite3 &;
 
   /**
    * @brief Gives DB file path.
    * @remark Should only be called if variant has file path.
    */
-  [[nodiscard]] auto GetFilePath() const -> const FilePath &;
+  auto GetFilePath [[nodiscard]] () const -> const FilePath &;
 
   /**
    * @brief Whether variant has file path.
    */
-  [[nodiscard]] auto HasFilePath() const -> bool;
+  auto HasFilePath [[nodiscard]] () const -> bool;
 
  private:
-  [[nodiscard]] static auto GetSqliteDbImpl(
-      cpp::This<SqliteDbHandleVariant> auto &t) -> auto &;
+  static auto GetSqliteDbImpl
+      [[nodiscard]] (cpp::This<SqliteDbHandleVariant> auto &t) -> auto &;
 };
 }  // namespace stonks::sqlite
 

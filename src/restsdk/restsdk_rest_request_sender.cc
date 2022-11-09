@@ -28,7 +28,7 @@
 
 namespace stonks::restsdk {
 namespace {
-[[nodiscard]] auto HttpMethodFrom(network::Method method) {
+auto HttpMethodFrom [[nodiscard]] (network::Method method) {
   switch (method) {
     case network::Method::kGet:
       return web::http::methods::GET;
@@ -43,7 +43,7 @@ namespace {
   Expects(false);
 }
 
-[[nodiscard]] auto StatusFrom(web::http::status_code status) {
+auto StatusFrom [[nodiscard]] (web::http::status_code status) {
   switch (status) {
     case web::http::status_codes::OK:
       return network::Status::kOk;
@@ -85,7 +85,7 @@ namespace {
   Expects(false);
 }
 
-[[nodiscard]] auto ConvertToRequestParam(const network::IJson &json) {
+auto ConvertToRequestParam [[nodiscard]] (const network::IJson &json) {
   const auto &rest_json = json.GetNativeHandle();
 
   if (rest_json->is_string()) {
@@ -95,7 +95,7 @@ namespace {
   return rest_json->serialize();
 }
 
-[[nodiscard]] auto HttpRequestFrom(const network::RestRequest &request) {
+auto HttpRequestFrom [[nodiscard]] (const network::RestRequest &request) {
   auto http_request =
       web::http::http_request{HttpMethodFrom(request.endpoint.method)};
 
@@ -110,7 +110,7 @@ namespace {
   return http_request;
 }
 
-[[nodiscard]] auto WebUriFrom(const network::RestRequest &request) {
+auto WebUriFrom [[nodiscard]] (const network::RestRequest &request) {
   auto uri_builder = web::http::uri_builder{*request.endpoint.uri};
 
   for (const auto &[key, value] : request.params) {

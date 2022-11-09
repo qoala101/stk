@@ -32,20 +32,20 @@ class Json : public network::IJson {
   /**
    * @copydoc network::IJson::clone
    */
-  [[nodiscard]] auto clone() const -> cpp::NnUp<IJson> override;
-  [[nodiscard]] auto clone() -> cpp::NnUp<IJson> override;
+  auto clone [[nodiscard]] () const -> cpp::NnUp<IJson> override;
+  auto clone [[nodiscard]] () -> cpp::NnUp<IJson> override;
 
   /**
    * @copydoc network::IJson::IsNull
    */
-  [[nodiscard]] auto IsNull() const -> bool override;
+  auto IsNull [[nodiscard]] () const -> bool override;
 
   /**
    * @copydoc network::IJson::GetChild
    */
-  [[nodiscard]] auto GetChild(std::string_view key) const
+  auto GetChild [[nodiscard]] (std::string_view key) const
       -> cpp::Pv<IJson> override;
-  [[nodiscard]] auto GetChild(std::string_view key) -> cpp::Pv<IJson> override;
+  auto GetChild [[nodiscard]] (std::string_view key) -> cpp::Pv<IJson> override;
 
   /**
    * @copydoc network::IJson::SetChild
@@ -55,8 +55,8 @@ class Json : public network::IJson {
   /**
    * @copydoc network::IJson::GetChild
    */
-  [[nodiscard]] auto GetChild(int index) const -> cpp::Pv<IJson> override;
-  [[nodiscard]] auto GetChild(int index) -> cpp::Pv<IJson> override;
+  auto GetChild [[nodiscard]] (int index) const -> cpp::Pv<IJson> override;
+  auto GetChild [[nodiscard]] (int index) -> cpp::Pv<IJson> override;
 
   /**
    * @copydoc network::IJson::SetChild
@@ -66,25 +66,25 @@ class Json : public network::IJson {
   /**
    * @copydoc network::IJson::GetSize
    */
-  [[nodiscard]] auto GetSize() const -> int override;
+  auto GetSize [[nodiscard]] () const -> int override;
 
   /**
    * @copydoc network::IJson::GetImpl
    */
-  [[nodiscard]] auto GetNativeHandle() const
+  auto GetNativeHandle [[nodiscard]] () const
       -> const IJson::NativeHandle& override;
-  [[nodiscard]] auto GetNativeHandle() -> IJson::NativeHandle& override;
+  auto GetNativeHandle [[nodiscard]] () -> IJson::NativeHandle& override;
 
  private:
-  [[nodiscard]] static auto CloneImpl(cpp::This<Json> auto& t);
+  static auto CloneImpl [[nodiscard]] (cpp::This<Json> auto& t);
 
-  [[nodiscard]] static auto GetChildImpl(cpp::This<Json> auto& t,
-                                         std::string_view key);
+  static auto GetChildImpl
+      [[nodiscard]] (cpp::This<Json> auto& t, std::string_view key);
 
-  [[nodiscard]] static auto GetChildImpl(cpp::This<Json> auto& t, int index);
+  static auto GetChildImpl [[nodiscard]] (cpp::This<Json> auto& t, int index);
 
-  [[nodiscard]] static auto GetNativeHandleImpl(cpp::This<Json> auto& t)
-      -> auto&;
+  static auto GetNativeHandleImpl [[nodiscard]] (cpp::This<Json> auto& t)
+  -> auto&;
 
   network::IJson::NativeHandle native_handle_;
 };

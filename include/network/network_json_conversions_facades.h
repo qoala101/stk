@@ -17,8 +17,8 @@
 namespace stonks::network {
 namespace detail {
 template <typename... Keys>
-[[nodiscard]] auto MakeFromJsonImpl(cpp::DecaysTo<IJson> auto &json,
-                                    Keys &&...keys) {
+auto MakeFromJsonImpl
+    [[nodiscard]] (cpp::DecaysTo<IJson> auto &json, Keys &&...keys) {
   return AutoParsable{json.GetChild(std::forward<Keys>(keys)...)};
 }
 
@@ -38,7 +38,7 @@ void BuildJsonFromImpl(IJson &json, Key &&key, Value &&value,
  * @brief Alias for JSON parser operator which converts JSON to an object.
  */
 template <Parsable T>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> T {
+auto ParseFromJson [[nodiscard]] (const IJson &json) -> T {
   return JsonParser<T>{}(json);
 }
 
@@ -48,8 +48,8 @@ template <Parsable T>
  * @param keys List of JSON children names.
  */
 template <Parsable T, typename... Keys>
-[[nodiscard]] auto MakeFromJson(cpp::DecaysTo<IJson> auto &json,
-                                Keys &&...keys) {
+auto MakeFromJson
+    [[nodiscard]] (cpp::DecaysTo<IJson> auto &json, Keys &&...keys) {
   return T{detail::MakeFromJsonImpl(json, std::forward<Keys>(keys))...};
 }
 
@@ -57,7 +57,7 @@ template <Parsable T, typename... Keys>
  * @brief Shortcut for common use case of parsing JSON child.
  */
 template <Parsable T, typename Key>
-[[nodiscard]] auto ParseFromJsonChild(const IJson &json, Key &&child_key) {
+auto ParseFromJsonChild [[nodiscard]] (const IJson &json, Key &&child_key) {
   return ParseFromJson<T>(*json.GetChild(std::forward<Key>(child_key)));
 }
 
@@ -67,7 +67,7 @@ template <Parsable T, typename Key>
  * key1, value1, key2, value2, ..., keyN, valueN.
  */
 template <typename... KeyValues>
-[[nodiscard]] auto BuildJsonFrom(KeyValues &&...key_values) {
+auto BuildJsonFrom [[nodiscard]] (KeyValues &&...key_values) {
   auto json = stonks::network::CreateNullJson();
   detail::BuildJsonFromImpl(*json, std::forward<KeyValues>(key_values)...);
   return json;

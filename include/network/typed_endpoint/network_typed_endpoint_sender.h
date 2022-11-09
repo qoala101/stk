@@ -25,7 +25,7 @@ class TypedEndpointSender : public IRestRequestSender {
    * @brief Validates request prior forwarding it to the sender and response
    * after receiving it from sender.
    */
-  [[nodiscard]] auto SendRequestAndGetResponse(RestRequest request) const
+  auto SendRequestAndGetResponse [[nodiscard]] (RestRequest request) const
       -> RestResponse override;
 
  private:

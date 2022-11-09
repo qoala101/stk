@@ -9,7 +9,7 @@ namespace stonks::di {
  * @tparam Args Boost DI bindings or other injectors.
  */
 template <typename... Ts, typename... Args>
-[[nodiscard]] auto MakeInjector(Args &&...args) {
+auto MakeInjector [[nodiscard]] (Args &&...args) {
   return boost::di::make_injector<Ts...>(std::forward<Args>(args)...);
 }
 }  // namespace stonks::di

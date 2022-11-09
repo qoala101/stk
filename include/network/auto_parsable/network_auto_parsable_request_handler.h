@@ -53,7 +53,7 @@ class AutoParsableRequestHandler : public IRestRequestHandler {
   /**
    * @brief Wraps request in auto-parsable and forwards it to the handler.
    */
-  [[nodiscard]] auto HandleRequestAndGiveResponse(RestRequest request) const
+  auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request) const
       -> RestResponse override;
 
  private:

@@ -20,8 +20,8 @@ struct DataType {
 
  private:
   template <typename U>
-  [[nodiscard]] friend auto operator==(const DataType<T>& /*unused*/,
-                                       const DataType<U>& /*unused*/) {
+  friend auto operator== [[nodiscard]] (const DataType<T>& /*unused*/,
+                                        const DataType<U>& /*unused*/) {
     return std::is_same_v<T, U>;
   }
 };

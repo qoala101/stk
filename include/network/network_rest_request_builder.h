@@ -70,12 +70,12 @@ class RestRequestBuilder {
   /**
    * @brief Build REST request parts from inputs.
    */
-  [[nodiscard]] auto Build() const -> RestRequest;
+  auto Build [[nodiscard]] () const -> RestRequest;
 
   /**
    * @remark Other methods should not be called after this.
    */
-  [[nodiscard]] auto Build() -> RestRequest;
+  auto Build [[nodiscard]] () -> RestRequest;
 
  private:
   cpp::Opt<RestRequest> request_{};

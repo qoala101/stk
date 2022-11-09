@@ -50,8 +50,8 @@ class AsyncDb : public nosqldb::IDb {
   /**
    * @copydoc nosqldb::IDb::SelectItem
    */
-  [[nodiscard]] auto SelectItem(const nosqldb::Table &table,
-                                const nosqldb::Key &key) const
+  auto SelectItem
+      [[nodiscard]] (const nosqldb::Table &table, const nosqldb::Key &key) const
       -> cpp::Opt<nosqldb::Item> override;
 
   /**
@@ -69,7 +69,7 @@ class AsyncDb : public nosqldb::IDb {
   /**
    * @brief Gives a native DynamoDB handle.
    */
-  [[nodiscard]] auto GetDynamoDbClient() const
+  auto GetDynamoDbClient [[nodiscard]] () const
       -> const Aws::DynamoDB::DynamoDBClient &;
 
  private:

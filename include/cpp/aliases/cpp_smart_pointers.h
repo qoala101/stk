@@ -18,12 +18,12 @@ template <typename... Ts>
 using Wp = std::weak_ptr<Ts...>;
 
 template <typename... Ts, typename... Args>
-[[nodiscard]] auto MakeUp(Args &&...args) {
+auto MakeUp [[nodiscard]] (Args &&...args) {
   return std::make_unique<Ts...>(std::forward<Args>(args)...);
 }
 
 template <typename... Ts, typename... Args>
-[[nodiscard]] auto MakeSp(Args &&...args) {
+auto MakeSp [[nodiscard]] (Args &&...args) {
   return std::make_shared<Ts...>(std::forward<Args>(args)...);
 }
 }  // namespace stonks::cpp

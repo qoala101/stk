@@ -18,7 +18,7 @@ class RequestExceptionHandler : public IRestRequestHandler {
    * @brief Catches exception thrown by the handler and transforms it
    * to the response.
    */
-  [[nodiscard]] auto HandleRequestAndGiveResponse(RestRequest request) const
+  auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request) const
       -> RestResponse override;
 
  private:

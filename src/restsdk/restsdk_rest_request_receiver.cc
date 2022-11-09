@@ -34,7 +34,7 @@
 
 namespace stonks::restsdk {
 namespace {
-[[nodiscard]] auto MethodFrom(const web::http::method &method) {
+auto MethodFrom [[nodiscard]] (const web::http::method &method) {
   if (method == web::http::methods::GET) {
     return network::Method::kGet;
   }
@@ -48,7 +48,7 @@ namespace {
   return network::Method::kOther;
 }
 
-[[nodiscard]] auto HttpStatusFrom(network::Status status) {
+auto HttpStatusFrom [[nodiscard]] (network::Status status) {
   switch (status) {
     case network::Status::kOk:
       return web::http::status_codes::OK;
@@ -63,12 +63,12 @@ namespace {
   }
 }
 
-[[nodiscard]] auto EndpointFrom(const web::http::http_request &request) {
+auto EndpointFrom [[nodiscard]] (const web::http::http_request &request) {
   return network::Endpoint{.method = MethodFrom(request.method()),
                            .uri = {request.relative_uri().path()}};
 }
 
-[[nodiscard]] auto ParamsFrom(const std::string &request_query) {
+auto ParamsFrom [[nodiscard]] (const std::string &request_query) {
   const auto raw_params =
       web::uri::split_query(web::uri::decode(request_query));
 
@@ -81,13 +81,14 @@ namespace {
          ranges::to<network::Params>;
 }
 
-[[nodiscard]] auto HeadersFrom(const web::http::http_headers &request_headers) {
+auto HeadersFrom
+    [[nodiscard]] (const web::http::http_headers &request_headers) {
   return std::map<std::string, std::string>{request_headers.begin(),
                                             request_headers.end()};
 }
 
-[[nodiscard]] auto BodyFrom(const web::http::http_request &request)
-    -> network::Body {
+auto BodyFrom [[nodiscard]] (const web::http::http_request &request)
+-> network::Body {
   auto json = request.extract_json().get();
 
   if (json.is_null()) {
@@ -98,7 +99,7 @@ namespace {
       network::IJson::NativeHandle{std::move(json)});
 }
 
-[[nodiscard]] auto RestRequestFrom(const web::http::http_request &request) {
+auto RestRequestFrom [[nodiscard]] (const web::http::http_request &request) {
   return network::RestRequest{
       .endpoint = EndpointFrom(request),
       .params = ParamsFrom(request.request_uri().query()),
@@ -106,7 +107,7 @@ namespace {
       .body = BodyFrom(request)};
 }
 
-[[nodiscard]] auto HttpResponseFrom(const network::RestResponse &response) {
+auto HttpResponseFrom [[nodiscard]] (const network::RestResponse &response) {
   auto http_response =
       web::http::http_response{HttpStatusFrom(response.status)};
 

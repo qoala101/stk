@@ -17,7 +17,7 @@
 auto main(int argc, const char *const *argv) -> int {
   stonks::cli::App{argc, argv}.Run([](const auto &options) {
     struct DurationFactory {
-      [[nodiscard]] auto operator()(int64_t milliseconds) {
+      auto operator() [[nodiscard]] (int64_t milliseconds) {
         return absl::Milliseconds(milliseconds);
       }
     };

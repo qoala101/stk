@@ -25,7 +25,7 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
   /**
    * @brief Forwards the request to the appropriate handler.
    */
-  [[nodiscard]] auto HandleRequestAndGiveResponse(RestRequest request) const
+  auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request) const
       -> RestResponse override;
 
  private:

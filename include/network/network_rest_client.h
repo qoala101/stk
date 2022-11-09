@@ -24,7 +24,7 @@ class RestClient {
    * sending.
    * @param endpoint Endpoint relative to the base URI.
    */
-  [[nodiscard]] auto Call(TypedEndpoint endpoint) const
+  auto Call [[nodiscard]] (TypedEndpoint endpoint) const
       -> rest_client::RequestBuilder;
 
  private:

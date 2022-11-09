@@ -17,7 +17,7 @@ struct Body {};
 
 namespace detail {
 template <cpp::MemberFunction Function>
-[[nodiscard]] auto ParseResultType() {
+auto ParseResultType [[nodiscard]] () {
   using ReturnType = typename member_function_traits<Function>::return_type;
 
   if constexpr (std::is_same_v<ReturnType, void>) {
@@ -43,7 +43,7 @@ struct ParamTypeTraits<const T *> {
 };
 
 template <cpp::MemberFunction Function, int ParamIndex>
-[[nodiscard]] auto ParseParamType() {
+auto ParseParamType [[nodiscard]] () {
   using ParamType = typename member_function_traits<
       Function>::template argument_type<ParamIndex>;
 
@@ -94,7 +94,7 @@ void ParseParamsAndBodyTypes(EndpointTypes &endpoint_types,
  * which tells that parameter is body.
  */
 template <cpp::MemberFunction Function, typename... Params>
-[[nodiscard]] auto EndpointTypesFrom(Function /*unused*/, Params &&...params) {
+auto EndpointTypesFrom [[nodiscard]] (Function /*unused*/, Params &&...params) {
   auto endpoint_types =
       EndpointTypes{.result = detail::ParseResultType<Function>()};
 

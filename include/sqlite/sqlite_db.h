@@ -26,17 +26,17 @@ class Db : public sqldb::IDb {
   /**
    * @copydoc sqldb::IDb::PrepareStatement
    */
-  [[nodiscard]] auto PrepareStatement(sqldb::SelectQuery query)
-      -> cpp::NnUp<sqldb::ISelectStatement> override;
+  auto PrepareStatement [[nodiscard]] (sqldb::SelectQuery query)
+  -> cpp::NnUp<sqldb::ISelectStatement> override;
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement
    */
-  [[nodiscard]] auto PrepareStatement(sqldb::Query query)
-      -> cpp::NnUp<sqldb::IUpdateStatement> override;
+  auto PrepareStatement [[nodiscard]] (sqldb::Query query)
+  -> cpp::NnUp<sqldb::IUpdateStatement> override;
 
  private:
-  [[nodiscard]] auto PsCommonImplFrom(sqldb::Query query) const;
+  auto PsCommonImplFrom [[nodiscard]] (sqldb::Query query) const;
 
   di::Factory<log::ILogger> logger_factory_;
   cpp::NnSp<SqliteDbHandleVariant> sqlite_db_handle_;

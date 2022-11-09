@@ -7,48 +7,50 @@ namespace stonks::app::endpoints {
 /**
  * @copydoc sdb::App::SelectAssets
  */
-[[nodiscard]] auto SelectAssets() -> const network::TypedEndpoint &;
+auto SelectAssets [[nodiscard]] () -> const network::TypedEndpoint &;
 
 /**
  * @copydoc sdb::App::UpdateAssets
  */
-[[nodiscard]] auto UpdateAssets() -> const network::TypedEndpoint &;
+auto UpdateAssets [[nodiscard]] () -> const network::TypedEndpoint &;
 
 /**
  * @copydoc sdb::App::SelectSymbolsWithPriceRecords
  */
-[[nodiscard]] auto SelectSymbolsWithPriceRecords()
-    -> const network::TypedEndpoint &;
+auto SelectSymbolsWithPriceRecords [[nodiscard]] ()
+-> const network::TypedEndpoint &;
 
 /**
  * @copydoc sdb::App::SelectSymbolInfo
  */
-[[nodiscard]] auto SelectSymbolInfo() -> const network::TypedEndpoint &;
+auto SelectSymbolInfo [[nodiscard]] () -> const network::TypedEndpoint &;
 
 /**
  * @copydoc sdb::App::SelectSymbolsInfo
  */
-[[nodiscard]] auto SelectSymbolsInfo() -> const network::TypedEndpoint &;
+auto SelectSymbolsInfo [[nodiscard]] () -> const network::TypedEndpoint &;
 
 /**
  * @copydoc sdb::App::UpdateSymbolsInfo
  */
-[[nodiscard]] auto UpdateSymbolsInfo() -> const network::TypedEndpoint &;
+auto UpdateSymbolsInfo [[nodiscard]] () -> const network::TypedEndpoint &;
 
 /**
  * @copydoc sdb::App::SelectSymbolPriceRecords
  */
-[[nodiscard]] auto SelectSymbolPriceRecords() -> const network::TypedEndpoint &;
+auto SelectSymbolPriceRecords [[nodiscard]] ()
+-> const network::TypedEndpoint &;
 
 /**
  * @copydoc sdb::App::InsertSymbolPriceRecord
  */
-[[nodiscard]] auto InsertSymbolPriceRecord() -> const network::TypedEndpoint &;
+auto InsertSymbolPriceRecord [[nodiscard]] () -> const network::TypedEndpoint &;
 
 /**
  * @copydoc sdb::App::DeleteSymbolPriceRecords
  */
-[[nodiscard]] auto DeleteSymbolPriceRecords() -> const network::TypedEndpoint &;
+auto DeleteSymbolPriceRecords [[nodiscard]] ()
+-> const network::TypedEndpoint &;
 }  // namespace stonks::app::endpoints
 
 #endif  // STONKS_APP_APP_ENDPOINTS_H_

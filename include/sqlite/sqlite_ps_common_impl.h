@@ -26,7 +26,7 @@ class CommonImpl {
   /**
    * @brief Gives a facade to work with a statement.
    */
-  [[nodiscard]] auto GetPreparedStatementFacade() const
+  auto GetPreparedStatementFacade [[nodiscard]] () const
       -> const PreparedStatementFacade &;
 
   /**

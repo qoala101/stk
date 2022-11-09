@@ -28,12 +28,12 @@ class Create {
   /**
    * @brief Adds if-not-exists condition.
    */
-  [[nodiscard]] auto IfNotExists() -> Create &;
+  auto IfNotExists [[nodiscard]] () -> Create &;
 
   /**
    * @brief Builds the query from inputs.
    */
-  [[nodiscard]] auto Build() const -> Query;
+  auto Build [[nodiscard]] () const -> Query;
 
  private:
   Create(std::string table_name,

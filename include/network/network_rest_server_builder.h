@@ -42,12 +42,12 @@ class RestServerBuilder {
    * @return Keeps handling REST requests while alive.
    * @remark Other methods should not be called after this.
    */
-  [[nodiscard]] auto Start() -> RestServer;
+  auto Start [[nodiscard]] () -> RestServer;
 
  private:
-  [[nodiscard]] auto Handling(TypedEndpoint endpoint,
-                              cpp::NnUp<IRestRequestHandler> handler)
-      -> RestServerBuilder &;
+  auto Handling [[nodiscard]] (TypedEndpoint endpoint,
+                               cpp::NnUp<IRestRequestHandler> handler)
+  -> RestServerBuilder &;
 
   cpp::Opt<Uri> base_uri_{};
   cpp::Up<IRestRequestReceiver> request_receiver_{};

@@ -12,8 +12,8 @@
 
 namespace stonks::app::sps {
 namespace {
-[[nodiscard]] auto SymbolPriceRecordFrom(core::Symbol symbol,
-                                         const BinanceBookTick &book_tick) {
+auto SymbolPriceRecordFrom
+    [[nodiscard]] (core::Symbol symbol, const BinanceBookTick &book_tick) {
   return core::SymbolPriceRecord{
       .symbol = std::move(symbol),
       .price = {(std::stod(book_tick.best_bid_price) +

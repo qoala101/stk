@@ -27,7 +27,7 @@ class App {
   /**
    * @brief Selects all assets.
    */
-  [[nodiscard]] auto SelectAssets() const -> std::vector<core::Asset>;
+  auto SelectAssets [[nodiscard]] () const -> std::vector<core::Asset>;
 
   /**
    * @brief Updates the list of all assets.
@@ -37,20 +37,21 @@ class App {
   /**
    * @brief Selects symbols which have price records.
    */
-  [[nodiscard]] auto SelectSymbolsWithPriceRecords() const
+  auto SelectSymbolsWithPriceRecords [[nodiscard]] () const
       -> std::vector<core::Symbol>;
 
   /**
    * @brief Selects symbol info.
    * @return Nullopt if symbol doesn't exist.
    */
-  [[nodiscard]] auto SelectSymbolInfo(core::Symbol symbol) const
+  auto SelectSymbolInfo [[nodiscard]] (core::Symbol symbol) const
       -> cpp::Opt<core::SymbolInfo>;
 
   /**
    * @brief Selects all symbols info.
    */
-  [[nodiscard]] auto SelectSymbolsInfo() const -> std::vector<core::SymbolInfo>;
+  auto SelectSymbolsInfo [[nodiscard]] () const
+      -> std::vector<core::SymbolInfo>;
 
   /**
    * @brief Updates the list of all symbol infos.
@@ -70,8 +71,8 @@ class App {
   /**
    * @brief Selects symbol price records following the conditions.
    */
-  [[nodiscard]] auto SelectSymbolPriceRecords(
-      const SelectSymbolPriceRecordsArgs &args) const
+  auto SelectSymbolPriceRecords
+      [[nodiscard]] (const SelectSymbolPriceRecordsArgs &args) const
       -> std::vector<core::SymbolPriceRecord>;
 
   /**

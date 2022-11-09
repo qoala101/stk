@@ -33,13 +33,13 @@ class PreparedStatementFacade {
    * @brief Executes the next statement step.
    * @return SQLite result code.
    */
-  [[nodiscard]] auto Step() const -> ResultCode;
+  auto Step [[nodiscard]] () const -> ResultCode;
 
   /**
    * @brief Gives the values of provided types from the current step
    * in the order they are refined in the statement.
    */
-  [[nodiscard]] auto GetStepValues(
+  auto GetStepValues [[nodiscard]] (
       const std::vector<sqldb::DataTypeVariant> &value_types) const
       -> std::vector<sqldb::Value>;
 

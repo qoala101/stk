@@ -27,9 +27,9 @@ struct Type {
   void BodyVec(int, int, int, int, int, const std::vector<std::string> &body) {}
 
   void ResultVoid() {}
-  [[nodiscard]] auto ResultValue() { return std::string{}; }
-  [[nodiscard]] auto ResultOpt() { return stonks::cpp::Opt<std::string>{}; }
-  [[nodiscard]] auto ResultVec() { return std::vector<std::string>{}; }
+  auto ResultValue [[nodiscard]] () { return std::string{}; }
+  auto ResultOpt [[nodiscard]] () { return stonks::cpp::Opt<std::string>{}; }
+  auto ResultVec [[nodiscard]] () { return std::vector<std::string>{}; }
 };
 
 const auto value_json = stonks::network::ConvertToJson("text");

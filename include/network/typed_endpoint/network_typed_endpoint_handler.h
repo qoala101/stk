@@ -25,7 +25,7 @@ class TypedEndpointHandler : public IRestRequestHandler {
    * @brief Validates request prior forwarding it to the handler and response
    * after receiving it from handler.
    */
-  [[nodiscard]] auto HandleRequestAndGiveResponse(RestRequest request) const
+  auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request) const
       -> RestResponse override;
 
  private:

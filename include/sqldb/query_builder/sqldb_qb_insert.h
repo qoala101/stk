@@ -29,7 +29,7 @@ class Insert {
    * @brief Specifies the value for the column.
    */
   template <ColumnDefinition Column>
-  [[nodiscard]] auto Value(const QueryValue& value) -> auto& {
+  auto Value [[nodiscard]] (const QueryValue& value) -> auto& {
     return Value(Column::GetName(), value);
   }
 
@@ -37,7 +37,7 @@ class Insert {
    * @brief Sets the table to insert to.
    */
   template <TableDefinition Table>
-  [[nodiscard]] auto Into() -> auto& {
+  auto Into [[nodiscard]] () -> auto& {
     return Into(Table::GetName(), cpp::Lazy<std::vector<std::string>>{[]() {
                   return ColumnsTraits<Table>::GetNames();
                 }});
@@ -46,17 +46,18 @@ class Insert {
   /**
    * @brief Builds the query.
    */
-  [[nodiscard]] auto Build() const -> p::Parametrized<Query>;
+  auto Build [[nodiscard]] () const -> p::Parametrized<Query>;
 
  private:
-  [[nodiscard]] auto Value(std::string_view column_name,
-                           const QueryValue& value) -> Insert&;
+  auto Value [[nodiscard]] (std::string_view column_name,
+                            const QueryValue& value) -> Insert&;
 
   void ValueImpl(std::string_view column_name, const QueryValue& value);
 
-  [[nodiscard]] auto Into(
-      std::string table_name,
-      const cpp::Lazy<std::vector<std::string>>& column_names) -> Insert&;
+  auto Into
+      [[nodiscard]] (std::string table_name,
+                     const cpp::Lazy<std::vector<std::string>>& column_names)
+      -> Insert&;
 
   bool insert_all_{};
   Query table_name_{};

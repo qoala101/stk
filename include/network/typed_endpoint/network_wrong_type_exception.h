@@ -23,12 +23,12 @@ class WrongTypeException : public Exception {
   /**
    * @brief Gives JSON which failed to be parsed.
    */
-  [[nodiscard]] auto GetJson() const -> const cpp::Pv<IJson> &;
-  [[nodiscard]] auto GetJson() -> cpp::Pv<IJson> &;
+  auto GetJson [[nodiscard]] () const -> const cpp::Pv<IJson> &;
+  auto GetJson [[nodiscard]] () -> cpp::Pv<IJson> &;
 
  private:
-  [[nodiscard]] static auto GetJsonImpl(cpp::This<WrongTypeException> auto &t)
-      -> auto &;
+  static auto GetJsonImpl [[nodiscard]] (cpp::This<WrongTypeException> auto &t)
+  -> auto &;
 
   cpp::Pv<IJson> json_{};
 };

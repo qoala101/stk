@@ -6,7 +6,7 @@
 #include "nosqldb_types.h"
 
 namespace stonks::nosqldb {
-[[nodiscard]] auto ConvertToJson(const Item &value) -> cpp::Pv<network::IJson>;
+auto ConvertToJson [[nodiscard]] (const Item &value) -> cpp::Pv<network::IJson>;
 }  // namespace stonks::nosqldb
 
 #endif  // STONKS_APP_PUBLIC_NOSQL_DB_APP_PND_JSON_USER_CONVERSIONS_H_

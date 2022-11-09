@@ -56,7 +56,7 @@ struct QuoteAsset : public sqldb::AliasToTable<tables::Asset, QuoteAsset> {
   using quote_asset = AliasToColumn<name, struct quote_asset>;
 };
 
-[[nodiscard]] auto SelectSymbolsInfoBuilder() {
+auto SelectSymbolsInfoBuilder [[nodiscard]] () {
   return sqldb::query_builder::Select<
              tables::SymbolInfo::name,
              tables::SymbolInfo::base_asset_min_amount,
@@ -74,7 +74,7 @@ struct QuoteAsset : public sqldb::AliasToTable<tables::Asset, QuoteAsset> {
           sqldb::qb::Column<QuoteAsset::id>()));
 }
 
-[[nodiscard]] auto SymbolsInfoFrom(sqldb::Rows rows) {
+auto SymbolsInfoFrom [[nodiscard]] (sqldb::Rows rows) {
   auto &names = rows.GetColumnValues<tables::SymbolInfo::name>();
   auto &base_assets = rows.GetColumnValues<BaseAsset::base_asset>();
   const auto &base_asset_min_amounts =
@@ -107,12 +107,12 @@ struct QuoteAsset : public sqldb::AliasToTable<tables::Asset, QuoteAsset> {
 }
 
 template <typename T>
-[[nodiscard]] auto DefaultLess(const T &left, const T &right) {
+auto DefaultLess [[nodiscard]] (const T &left, const T &right) {
   return left < right;
 }
 
 template <typename T>
-[[nodiscard]] auto DefaultEquals(const T &left, const T &right) {
+auto DefaultEquals [[nodiscard]] (const T &left, const T &right) {
   return left == right;
 }
 
@@ -154,13 +154,13 @@ void UpdateItems(
   }
 }
 
-[[nodiscard]] auto SymbolInfoLess(const core::SymbolInfo &left,
-                                  const core::SymbolInfo &right) {
+auto SymbolInfoLess [[nodiscard]] (const core::SymbolInfo &left,
+                                   const core::SymbolInfo &right) {
   return left.symbol < right.symbol;
 }
 
-[[nodiscard]] auto SymbolInfoEquals(const core::SymbolInfo &left,
-                                    const core::SymbolInfo &right) {
+auto SymbolInfoEquals [[nodiscard]] (const core::SymbolInfo &left,
+                                     const core::SymbolInfo &right) {
   return left.symbol == right.symbol;
 }
 }  // namespace

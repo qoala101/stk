@@ -27,10 +27,10 @@ struct AssetInfo {
   double price_step{};
 
  private:
-  [[nodiscard]] friend auto operator==(const AssetInfo &, const AssetInfo &)
-      -> bool = default;
-  [[nodiscard]] friend auto operator<=>(const AssetInfo &, const AssetInfo &)
-      -> std::partial_ordering = default;
+  friend auto operator== [[nodiscard]] (const AssetInfo &, const AssetInfo &)
+  -> bool = default;
+  friend auto operator<=> [[nodiscard]] (const AssetInfo &, const AssetInfo &)
+  -> std::partial_ordering = default;
 };
 
 /**
@@ -42,10 +42,10 @@ struct SymbolInfo {
   AssetInfo quote_asset{};
 
  private:
-  [[nodiscard]] friend auto operator==(const SymbolInfo &, const SymbolInfo &)
-      -> bool = default;
-  [[nodiscard]] friend auto operator<=>(const SymbolInfo &, const SymbolInfo &)
-      -> std::partial_ordering = default;
+  friend auto operator== [[nodiscard]] (const SymbolInfo &, const SymbolInfo &)
+  -> bool = default;
+  friend auto operator<=> [[nodiscard]] (const SymbolInfo &, const SymbolInfo &)
+  -> std::partial_ordering = default;
 };
 
 /**
@@ -62,11 +62,11 @@ struct SymbolPriceRecord {
   absl::Time time{};
 
  private:
-  [[nodiscard]] friend auto operator==(const SymbolPriceRecord &,
-                                       const SymbolPriceRecord &)
+  friend auto operator==
+      [[nodiscard]] (const SymbolPriceRecord &, const SymbolPriceRecord &)
       -> bool = default;
-  [[nodiscard]] friend auto operator<=>(const SymbolPriceRecord &,
-                                        const SymbolPriceRecord &)
+  friend auto operator<=>
+      [[nodiscard]] (const SymbolPriceRecord &, const SymbolPriceRecord &)
       -> std::partial_ordering = default;
 };
 }  // namespace stonks::core

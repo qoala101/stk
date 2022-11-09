@@ -22,23 +22,23 @@ class Db {
   /**
    * @brief Prepares parametrized select statement.
    */
-  [[nodiscard]] auto PrepareStatement(Parametrized<SelectQuery> query)
-      -> cpp::NnUp<ISelectStatement>;
+  auto PrepareStatement [[nodiscard]] (Parametrized<SelectQuery> query)
+  -> cpp::NnUp<ISelectStatement>;
 
   /**
    * @brief Prepares parametrized update statement.
    */
-  [[nodiscard]] auto PrepareStatement(Parametrized<Query> query)
-      -> cpp::NnUp<IUpdateStatement>;
+  auto PrepareStatement [[nodiscard]] (Parametrized<Query> query)
+  -> cpp::NnUp<IUpdateStatement>;
 
   /**
    * @brief Gives wrapped DB.
    */
-  [[nodiscard]] auto GetDb() const -> const IDb &;
-  [[nodiscard]] auto GetDb() -> IDb &;
+  auto GetDb [[nodiscard]] () const -> const IDb &;
+  auto GetDb [[nodiscard]] () -> IDb &;
 
  private:
-  [[nodiscard]] static auto GetDbImpl(cpp::This<Db> auto &t) -> auto &;
+  static auto GetDbImpl [[nodiscard]] (cpp::This<Db> auto &t) -> auto &;
 
   cpp::NnUp<IDb> db_;
 };

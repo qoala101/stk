@@ -21,7 +21,7 @@ struct TypeInjector : public T {
  */
 template <typename T, typename Injected>
   requires cpp::ConstructibleFrom<T, Injected>
-[[nodiscard]] auto BindTypeToOtherType() {
+auto BindTypeToOtherType [[nodiscard]] () {
   return boost::di::bind<T>().template to<detail::TypeInjector<T, Injected>>();
 }
 }  // namespace stonks::di

@@ -12,18 +12,18 @@ namespace stonks::sqldb::qb {
 /**
  * @brief Adds ON to condition.
  */
-[[nodiscard]] auto On(const Condition &where) -> OnCondition;
+auto On [[nodiscard]] (const Condition &where) -> OnCondition;
 
 /**
  * @brief Adds EXISTS to select query.
  */
-[[nodiscard]] auto Exists(const Select &query_builder) -> Condition;
+auto Exists [[nodiscard]] (const Select &query_builder) -> Condition;
 
 /**
  * @brief Gives column name as value.
  */
 template <ColumnDefinition ColumnT>
-[[nodiscard]] auto Column() -> QueryValue {
+auto Column [[nodiscard]] () -> QueryValue {
   return QueryValue{cpp::TemplateConstructor<ColumnT>{}};
 }
 
@@ -31,7 +31,7 @@ template <ColumnDefinition ColumnT>
  * @brief Creates a query param of column type.
  */
 template <ColumnDefinition Column>
-[[nodiscard]] auto ParamForColumn() -> QueryValue {
+auto ParamForColumn [[nodiscard]] () -> QueryValue {
   return p::QueryParam{DataType<typename Column::DataType>{}};
 }
 }  // namespace stonks::sqldb::qb

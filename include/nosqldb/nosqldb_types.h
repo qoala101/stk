@@ -24,8 +24,8 @@ struct Item {
   std::string value{};
 
  private:
-  [[nodiscard]] friend auto operator==(const Item &, const Item &)
-      -> bool = default;
+  friend auto operator== [[nodiscard]] (const Item &, const Item &)
+  -> bool = default;
 };
 }  // namespace stonks::nosqldb
 

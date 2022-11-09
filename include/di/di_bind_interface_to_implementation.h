@@ -15,7 +15,7 @@ struct AssumedNn : public cpp::Nn<T> {
 };
 
 template <typename Interface>
-[[nodiscard]] auto EnableNn() {
+auto EnableNn [[nodiscard]] () {
   return MakeInjector(
       boost::di::bind<cpp::NnUp<Interface>>()
           .template to<detail::AssumedNn<cpp::Up<Interface>>>(),
@@ -24,7 +24,7 @@ template <typename Interface>
 }
 
 template <typename Interface, std::derived_from<Interface> Implementation>
-[[nodiscard]] auto EnableFactory() {
+auto EnableFactory [[nodiscard]] () {
   return MakeInjector(
       boost::di::bind<boost::di::extension::ifactory<Interface>>().to(
           boost::di::extension::factory<Implementation>{}),
@@ -37,7 +37,7 @@ template <typename Interface, std::derived_from<Interface> Implementation>
  * and interface factory.
  */
 template <typename Interface, std::derived_from<Interface> Implementation>
-[[nodiscard]] auto BindInterfaceToImplementation() {
+auto BindInterfaceToImplementation [[nodiscard]] () {
   return MakeInjector(
       boost::di::bind<Interface>().template to<Implementation>().in(
           boost::di::unique),

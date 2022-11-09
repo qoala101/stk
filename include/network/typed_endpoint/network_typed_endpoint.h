@@ -24,7 +24,7 @@ using ParseTypeCheck = fu2::function<void(const IJson &) const>;
  * @brief Convenience API to create parse type check.
  */
 template <Parsable T>
-[[nodiscard]] auto ExpectedType() {
+auto ExpectedType [[nodiscard]] () {
   return [](const auto &json) { std::ignore = ParseFromJson<T>(json); };
 }
 

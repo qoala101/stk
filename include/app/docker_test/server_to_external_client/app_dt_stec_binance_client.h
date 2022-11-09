@@ -13,7 +13,7 @@ class Client {
   explicit Client(
       di::Factory<network::IRestRequestSender> request_sender_factory);
 
-  [[nodiscard]] auto GetCurrentAveragePrice(const Symbol &symbol) const
+  auto GetCurrentAveragePrice [[nodiscard]] (const Symbol &symbol) const
       -> AvgPrice;
 
  private:

@@ -7,7 +7,7 @@
 #include "nosqldb_i_items_interface.h"
 
 namespace stonks::app::injectors {
-[[nodiscard]] inline auto CreateNosqldbAwsInjector() {
+inline auto CreateNosqldbAwsInjector [[nodiscard]] () {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<nosqldb::ITablesInterface,
                                         aws::dynamodb::SyncDbProxy>(),

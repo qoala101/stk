@@ -18,8 +18,8 @@ class IRestRequestSender {
   /**
    * @brief Executes the request and returns response JSON.
    */
-  [[nodiscard]] virtual auto SendRequestAndGetResponse(
-      RestRequest request) const -> RestResponse = 0;
+  virtual auto SendRequestAndGetResponse
+      [[nodiscard]] (RestRequest request) const -> RestResponse = 0;
 };
 }  // namespace stonks::network
 

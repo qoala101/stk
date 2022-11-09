@@ -41,7 +41,7 @@ class ApiHandleImpl {
 }  // namespace detail
 
 namespace {
-[[nodiscard]] auto GetCachedApiHandle(cpp::NnUp<log::ILogger> logger) {
+auto GetCachedApiHandle [[nodiscard]] (cpp::NnUp<log::ILogger> logger) {
   static auto last_instance = cpp::Wp<detail::ApiHandleImpl>{};
 
   auto last_instance_lock = last_instance.lock();

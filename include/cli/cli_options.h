@@ -21,12 +21,12 @@ class App;
  */
 class Options {
  public:
-  [[nodiscard]] auto GetOptionOr(std::string name, int default_value) const
+  auto GetOptionOr [[nodiscard]] (std::string name, int default_value) const
       -> int;
-  [[nodiscard]] auto GetOptionOr(std::string name, int64_t default_value) const
+  auto GetOptionOr [[nodiscard]] (std::string name, int64_t default_value) const
       -> int64_t;
-  [[nodiscard]] auto GetOptionOr(std::string name,
-                                 std::string default_value) const
+  auto GetOptionOr
+      [[nodiscard]] (std::string name, std::string default_value) const
       -> std::string;
 
  private:
@@ -34,8 +34,8 @@ class Options {
 
   explicit Options(cpp::NnSp<CLI::App> app);
 
-  [[nodiscard]] auto GetOptionOrImpl(std::string name,
-                                     auto &&default_value) const;
+  auto GetOptionOrImpl
+      [[nodiscard]] (std::string name, auto &&default_value) const;
 
   cpp::NnSp<CLI::App> app_;
 };

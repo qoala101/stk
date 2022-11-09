@@ -9,7 +9,7 @@
 
 namespace stonks::network {
 template <Parsable T>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
+auto ParseFromJson [[nodiscard]] (const IJson &json) -> T;
 
 /**
  * @brief Implicitly converts JSON to any type which can be parsed from it.
@@ -23,7 +23,7 @@ class AutoParsable {
    */
   template <Parsable T>
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  [[nodiscard]] operator T() {
+  operator T [[nodiscard]] () {
     return ParseFromJson<std::decay_t<T>>(*json_);
   }
 

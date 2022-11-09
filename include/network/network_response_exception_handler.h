@@ -18,7 +18,7 @@ class ResponseExceptionHandler : public IRestRequestSender {
   /**
    * @brief Checks whether response is an exception, parses, and throws it.
    */
-  [[nodiscard]] auto SendRequestAndGetResponse(RestRequest request) const
+  auto SendRequestAndGetResponse [[nodiscard]] (RestRequest request) const
       -> RestResponse override;
 
  private:

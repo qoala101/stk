@@ -15,7 +15,7 @@ class BinanceClient {
   /**
    * @copydoc endpoints::BinanceExchangeInfo
    */
-  [[nodiscard]] auto BinanceExchangeInfo() const -> BinanceExchangeInfo;
+  auto BinanceExchangeInfo [[nodiscard]] () const -> BinanceExchangeInfo;
 
  private:
   network::RestClient rest_client_;

@@ -14,8 +14,8 @@ struct BaseTypes {
   std::string e{};
 
  private:
-  [[nodiscard]] friend auto operator==(const BaseTypes &, const BaseTypes &)
-      -> bool = default;
+  friend auto operator== [[nodiscard]] (const BaseTypes &, const BaseTypes &)
+  -> bool = default;
 };
 
 TEST(JsonConversionsFacades, StringIndex) {

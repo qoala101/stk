@@ -16,11 +16,11 @@
 #include "sqlite_types.h"
 
 namespace test::sqlite {
-[[nodiscard]] inline auto Injector() -> auto & {
+inline auto Injector [[nodiscard]] () -> auto & {
   struct SqliteDbHandleFactory {
-    [[nodiscard]] auto operator()(
-        const stonks::sqlite::DbHandlesFactory &factory,
-        const stonks::sqlite::FilePath &file_path)
+    auto operator()
+        [[nodiscard]] (const stonks::sqlite::DbHandlesFactory &factory,
+                       const stonks::sqlite::FilePath &file_path)
         -> stonks::sqlite::SqliteDbHandle {
       return factory.LoadDbFromFileToMemory(file_path);
     }

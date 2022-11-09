@@ -50,10 +50,10 @@ struct Endpoint {
   Uri uri{};
 
  private:
-  [[nodiscard]] friend auto operator==(const Endpoint &, const Endpoint &)
-      -> bool = default;
-  [[nodiscard]] friend auto operator<=>(const Endpoint &, const Endpoint &)
-      -> std::partial_ordering = default;
+  friend auto operator== [[nodiscard]] (const Endpoint &, const Endpoint &)
+  -> bool = default;
+  friend auto operator<=> [[nodiscard]] (const Endpoint &, const Endpoint &)
+  -> std::partial_ordering = default;
 };
 
 /**

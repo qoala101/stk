@@ -16,8 +16,8 @@ class IItemsInterface {
    * @brief Selects the item with the specified key.
    * @return Nullopt if there is no item with such key.
    */
-  [[nodiscard]] virtual auto SelectItem(const Table &table,
-                                        const Key &key) const
+  virtual auto SelectItem
+      [[nodiscard]] (const Table &table, const Key &key) const
       -> cpp::Opt<Item> = 0;
 
   /**

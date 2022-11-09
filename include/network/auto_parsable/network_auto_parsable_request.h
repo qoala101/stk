@@ -19,13 +19,13 @@ class AutoParsableRestRequest {
    * @brief Gives request param by name by moving it into result.
    * @remark Same param should not be requested more than once.
    */
-  [[nodiscard]] auto Param(std::string_view key) -> AutoParsable;
+  auto Param [[nodiscard]] (std::string_view key) -> AutoParsable;
 
   /**
    * @brief Gives request body by moving it into result.
    * @remark Body should not be requested more than once.
    */
-  [[nodiscard]] auto Body() -> AutoParsable;
+  auto Body [[nodiscard]] () -> AutoParsable;
 
  private:
   RestRequest rest_request_;

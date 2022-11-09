@@ -20,7 +20,7 @@
 
 namespace stonks::sqlite {
 namespace {
-[[nodiscard]] auto GetColumns(sqldb::ResultDefinition &result_definition) {
+auto GetColumns [[nodiscard]] (sqldb::ResultDefinition &result_definition) {
   auto columns = *result_definition |
                  ranges::views::transform([](auto &column_type) {
                    return std::move(column_type.column);
@@ -30,7 +30,7 @@ namespace {
   return columns;
 }
 
-[[nodiscard]] auto GetTypes(const sqldb::ResultDefinition &result_definition) {
+auto GetTypes [[nodiscard]] (const sqldb::ResultDefinition &result_definition) {
   auto types = *result_definition |
                ranges::views::transform(
                    [](const auto &column_type) { return column_type.type; }) |

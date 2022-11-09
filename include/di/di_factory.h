@@ -18,7 +18,7 @@ class Factory {
   /**
    * @brief Creates not null object of type T.
    */
-  [[nodiscard]] auto Create() const {
+  auto Create [[nodiscard]] () const {
     return cpp::AssumeNn(factory_->create());
   }
 

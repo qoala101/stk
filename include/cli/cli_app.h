@@ -65,8 +65,9 @@ class App {
   }
 
  private:
-  [[nodiscard]] auto CreateRunScope() const -> RunScope;
-  [[nodiscard]] auto CreateOptions() const -> Options;
+  auto CreateRunScope [[nodiscard]] () const -> RunScope;
+
+  auto CreateOptions [[nodiscard]] () const -> Options;
 
   cpp::NnSp<CLI::App> app_;
 };

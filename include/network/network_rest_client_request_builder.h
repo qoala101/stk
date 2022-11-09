@@ -55,7 +55,7 @@ class RequestBuilder {
    * @brief Sends the request and converts result to the specified type.
    */
   template <Parsable T>
-  [[nodiscard]] auto AndReceive() const {
+  auto AndReceive [[nodiscard]] () const {
     return ParseFromJson<T>(*SendRequestAndGetResult());
   }
 
@@ -63,7 +63,7 @@ class RequestBuilder {
    * @remark Other methods should not be called after this.
    */
   template <Parsable T>
-  [[nodiscard]] auto AndReceive() {
+  auto AndReceive [[nodiscard]] () {
     return ParseFromJson<T>(*SendRequestAndGetResult());
   }
 
@@ -75,16 +75,16 @@ class RequestBuilder {
 
   static void DiscardingResultImpl(cpp::This<RequestBuilder> auto &t);
 
-  [[nodiscard]] static auto SendRequestAndGetResultImpl(
-      cpp::This<RequestBuilder> auto &t);
+  static auto SendRequestAndGetResultImpl
+      [[nodiscard]] (cpp::This<RequestBuilder> auto &t);
 
-  [[nodiscard]] auto WithParam(std::string key, Param value)
-      -> RequestBuilder &;
+  auto WithParam [[nodiscard]] (std::string key, Param value)
+  -> RequestBuilder &;
 
-  [[nodiscard]] auto WithBody(Body::value_type body) -> RequestBuilder &;
+  auto WithBody [[nodiscard]] (Body::value_type body) -> RequestBuilder &;
 
-  [[nodiscard]] auto SendRequestAndGetResult() const -> Result::value_type;
-  [[nodiscard]] auto SendRequestAndGetResult() -> Result::value_type;
+  auto SendRequestAndGetResult [[nodiscard]] () const -> Result::value_type;
+  auto SendRequestAndGetResult [[nodiscard]] () -> Result::value_type;
 
   cpp::Opt<RestRequest> request_{};
   cpp::NnUp<IRestRequestSender> request_sender_;

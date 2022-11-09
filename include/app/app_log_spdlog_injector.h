@@ -7,7 +7,7 @@
 #include "spdlog_logger.h"
 
 namespace stonks::app::injectors {
-[[nodiscard]] inline auto CreateLogSpdlogInjector() {
+inline auto CreateLogSpdlogInjector [[nodiscard]] () {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<log::ILogger, spdlog::Logger>());
 }

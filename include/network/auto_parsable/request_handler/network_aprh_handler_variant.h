@@ -24,7 +24,7 @@ struct HandlerVariant
   /**
    * @brief Calls operator of the current handler variant.
    */
-  [[nodiscard]] auto operator()(RestRequest request) -> RestResponse;
+  auto operator() [[nodiscard]] (RestRequest request) -> RestResponse;
 };
 }  // namespace stonks::network::aprh
 

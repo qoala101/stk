@@ -25,12 +25,12 @@ class Delete {
   /**
    * @brief Adds condition to the query.
    */
-  [[nodiscard]] auto Where(WhereCondition condition) -> Delete&;
+  auto Where [[nodiscard]] (WhereCondition condition) -> Delete&;
 
   /**
    * @brief Builds the query.
    */
-  [[nodiscard]] auto Build() const -> p::Parametrized<Query>;
+  auto Build [[nodiscard]] () const -> p::Parametrized<Query>;
 
  private:
   explicit Delete(std::string table_name);

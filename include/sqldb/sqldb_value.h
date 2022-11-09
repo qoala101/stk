@@ -43,25 +43,25 @@ class Value : public cpp::VariantStruct<std::monostate, bool, int, int64_t,
    * @brief Gives the value of specified type.
    */
   template <SupportedDataType T>
-  [[nodiscard]] auto Get() const ->
+  auto Get [[nodiscard]] () const ->
       typename detail::GetResultTraits<T>::ConstType;
 
   template <SupportedDataType T>
-  [[nodiscard]] auto Get() -> typename detail::GetResultTraits<T>::Type;
+  auto Get [[nodiscard]] () -> typename detail::GetResultTraits<T>::Type;
 
   /**
    * @remark Should not be called on NULL value.
    */
-  [[nodiscard]] auto GetType() const -> DataTypeVariant;
+  auto GetType [[nodiscard]] () const -> DataTypeVariant;
 
   /**
    * @brief Tells whether there is a value of any type.
    */
-  [[nodiscard]] auto IsNull() const -> bool;
+  auto IsNull [[nodiscard]] () const -> bool;
 
  private:
   template <SupportedDataType T>
-  [[nodiscard]] static auto GetImpl(cpp::This<Value> auto &t) -> auto &;
+  static auto GetImpl [[nodiscard]] (cpp::This<Value> auto &t) -> auto &;
 };
 }  // namespace stonks::sqldb
 

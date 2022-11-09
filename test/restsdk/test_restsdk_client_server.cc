@@ -53,10 +53,10 @@ class EntityInterface {
 
   virtual void PushSymbol(stonks::core::Symbol symbol) = 0;
 
-  [[nodiscard]] virtual auto GetSymbol(int index) const
+  virtual auto GetSymbol [[nodiscard]] (int index) const
       -> stonks::core::Symbol = 0;
 
-  [[nodiscard]] virtual auto GetSize() const -> int = 0;
+  virtual auto GetSize [[nodiscard]] () const -> int = 0;
 };
 
 class Entity : public EntityInterface {
@@ -65,13 +65,15 @@ class Entity : public EntityInterface {
     symbols_.emplace_back(std::move(symbol));
   }
 
-  [[nodiscard]] auto GetSymbol(int index) const
+  auto GetSymbol [[nodiscard]] (int index) const
       -> stonks::core::Symbol override {
     EXPECT_GT(symbols_.size(), index);
     return symbols_[index];
   }
 
-  [[nodiscard]] auto GetSize() const -> int override { return symbols_.size(); }
+  auto GetSize() const -> int override {
+    return symbols_.size [[nodiscard]] ();
+  }
 
  private:
   std::vector<stonks::core::Symbol> symbols_{};
@@ -79,8 +81,8 @@ class Entity : public EntityInterface {
 
 class EntityServer {
  public:
-  [[nodiscard]] static auto PushSymbolEndpointDesc()
-      -> stonks::network::TypedEndpoint {
+  static auto PushSymbolEndpointDesc [[nodiscard]] ()
+  -> stonks::network::TypedEndpoint {
     return stonks::network::TypedEndpoint{
         .endpoint = {.method = stonks::network::Method::kPost,
                      .uri = {"/PushSymbol"}},
@@ -88,8 +90,8 @@ class EntityServer {
             &Entity::PushSymbol, stonks::network::te::Body{})};
   }
 
-  [[nodiscard]] static auto GetSymbolEndpointDesc()
-      -> stonks::network::TypedEndpoint {
+  static auto GetSymbolEndpointDesc [[nodiscard]] ()
+  -> stonks::network::TypedEndpoint {
     return stonks::network::TypedEndpoint{
         .endpoint = {.method = stonks::network::Method::kGet,
                      .uri = {"/GetSymbol"}},
@@ -97,8 +99,8 @@ class EntityServer {
             &Entity::GetSymbol, "index")};
   }
 
-  [[nodiscard]] static auto GetSizeEndpointDesc()
-      -> stonks::network::TypedEndpoint {
+  static auto GetSizeEndpointDesc [[nodiscard]] ()
+  -> stonks::network::TypedEndpoint {
     return stonks::network::TypedEndpoint{
         .endpoint = {.method = stonks::network::Method::kGet,
                      .uri = {"/GetSize"}},
@@ -164,14 +166,14 @@ class EntityClient : public EntityInterface {
         .DiscardingResult();
   }
 
-  [[nodiscard]] auto GetSymbol(int index) const
+  auto GetSymbol [[nodiscard]] (int index) const
       -> stonks::core::Symbol override {
     return client_.Call(EntityServer::GetSymbolEndpointDesc())
         .WithParam("index", index)
         .AndReceive<stonks::core::Symbol>();
   }
 
-  [[nodiscard]] auto GetSize() const -> int override {
+  auto GetSize [[nodiscard]] () const -> int override {
     return client_.Call(EntityServer::GetSizeEndpointDesc()).AndReceive<int>();
   }
 
@@ -239,8 +241,8 @@ class FunctionHandler : public stonks::network::IRestRequestHandler {
                                handler)
       : handler_{std::move(handler)} {}
 
-  [[nodiscard]] auto HandleRequestAndGiveResponse(
-      stonks::network::RestRequest request) const
+  auto HandleRequestAndGiveResponse
+      [[nodiscard]] (stonks::network::RestRequest request) const
       -> stonks::network::RestResponse override {
     return handler_(request);
   }
@@ -388,8 +390,8 @@ TEST(ClientServer, ServerReceivedWrongTypeException) {
 TEST(ClientServer, ClientReceivedWrongTypeException) {
   class Handler : public stonks::network::IRestRequestHandler {
    public:
-    [[nodiscard]] auto HandleRequestAndGiveResponse(
-        stonks::network::RestRequest /*unused*/) const
+    auto HandleRequestAndGiveResponse
+        [[nodiscard]] (stonks::network::RestRequest /*unused*/) const
         -> stonks::network::RestResponse override {
       return {.status = stonks::network::Status::kOk};
     }

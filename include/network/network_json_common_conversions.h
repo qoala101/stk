@@ -25,13 +25,13 @@
 
 namespace stonks::network {
 template <Parsable T>
-[[nodiscard]] auto ParseFromJson(const IJson &json) -> T;
+auto ParseFromJson [[nodiscard]] (const IJson &json) -> T;
 
 namespace detail {
 template <cpp::Variant T, int Index>
   requires Parsable<std::variant_alternative_t<Index, T>>
 struct JsonVariantParser {
-  [[nodiscard]] auto operator()(const IJson &json) const -> T try {
+  auto operator() [[nodiscard]] (const IJson &json) const -> T try {
     return ParseFromJson<std::variant_alternative_t<Index, T>>(json);
   } catch (const std::exception &) {
     if constexpr (Index > 0) {
@@ -46,17 +46,18 @@ struct JsonVariantParser {
 /**
  * @remark Added to avoid implicit conversion to bool.
  */
-[[nodiscard]] auto ConvertToJson(const char *value) -> cpp::Pv<IJson>;
+auto ConvertToJson [[nodiscard]] (const char *value) -> cpp::Pv<IJson>;
 
 /**
  * @brief Gives null JSON.
  */
-[[nodiscard]] auto ConvertToJson(std::monostate value) -> cpp::Pv<IJson>;
+auto ConvertToJson [[nodiscard]] (std::monostate value) -> cpp::Pv<IJson>;
 
 /**
  * @brief Converts to string representation.
  */
-[[nodiscard]] auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson>;
+auto ConvertToJson [[nodiscard]] (const std::exception &value)
+-> cpp::Pv<IJson>;
 
 /**
  * @brief Parses descendants of typed structs.
@@ -66,7 +67,7 @@ template <cpp::IsTypedStruct T>
 struct JsonParser<T> {
   using Type = T;
 
-  [[nodiscard]] auto operator()(const IJson &json) const -> Type {
+  auto operator() [[nodiscard]] (const IJson &json) const -> Type {
     return Type{ParseFromJson<typename Type::ValueType>(json)};
   }
 };
@@ -75,7 +76,7 @@ struct JsonParser<T> {
  * @brief Converts descendants of typed structs.
  */
 template <Convertible T>
-[[nodiscard]] auto ConvertToJson(const cpp::TypedStruct<T> &value) {
+auto ConvertToJson [[nodiscard]] (const cpp::TypedStruct<T> &value) {
   return ConvertToJson(*value);
 }
 
@@ -86,7 +87,7 @@ template <cpp::Variant T>
 struct JsonParser<T> {
   using Type = T;
 
-  [[nodiscard]] auto operator()(const IJson &json) const -> Type {
+  auto operator() [[nodiscard]] (const IJson &json) const -> Type {
     return detail::JsonVariantParser<Type, std::variant_size_v<Type> - 1>{}(
         json);
   }
@@ -96,7 +97,7 @@ struct JsonParser<T> {
  * @brief Converts variants.
  */
 template <Convertible... Ts>
-[[nodiscard]] auto ConvertToJson(const std::variant<Ts...> &value) {
+auto ConvertToJson [[nodiscard]] (const std::variant<Ts...> &value) {
   return std::visit([](const auto &v) { return ConvertToJson(v); }, value);
 }
 
@@ -107,7 +108,7 @@ template <Parsable T>
 struct JsonParser<cpp::Opt<T>> {
   using Type = cpp::Opt<T>;
 
-  [[nodiscard]] auto operator()(const IJson &json) const -> Type {
+  auto operator() [[nodiscard]] (const IJson &json) const -> Type {
     if (json.IsNull()) {
       return std::nullopt;
     }
@@ -120,7 +121,7 @@ struct JsonParser<cpp::Opt<T>> {
  * @brief Converts optional values.
  */
 template <Convertible T>
-[[nodiscard]] auto ConvertToJson(const cpp::Opt<T> &value) {
+auto ConvertToJson [[nodiscard]] (const cpp::Opt<T> &value) {
   if (!value.has_value()) {
     return CreateNullJson();
   }
@@ -135,7 +136,7 @@ template <Parsable T>
 struct JsonParser<std::vector<T>> {
   using Type = std::vector<T>;
 
-  [[nodiscard]] auto operator()(const IJson &json) const -> Type {
+  auto operator() [[nodiscard]] (const IJson &json) const -> Type {
     auto vector = Type{};
 
     for (auto i = 0; i < json.GetSize(); ++i) {
@@ -151,7 +152,7 @@ struct JsonParser<std::vector<T>> {
  * @brief Converts vectors.
  */
 template <Convertible T>
-[[nodiscard]] auto ConvertToJson(const std::vector<T> &value) {
+auto ConvertToJson [[nodiscard]] (const std::vector<T> &value) {
   auto json = CreateNullJson();
 
   for (auto i = 0; i < gsl::narrow_cast<int>(value.size()); ++i) {
@@ -167,7 +168,7 @@ template <Convertible T>
  * @remark Use optional values when need to parse nullable pointers.
  */
 template <Convertible T>
-[[nodiscard]] auto ConvertToJson(T *value) {
+auto ConvertToJson [[nodiscard]] (T *value) {
   if (value == nullptr) {
     return CreateNullJson();
   }

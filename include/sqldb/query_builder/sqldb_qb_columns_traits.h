@@ -21,7 +21,7 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
   /**
    * @brief Gives column names.
    */
-  [[nodiscard]] static auto GetNames() {
+  static auto GetNames [[nodiscard]] () {
     auto names = std::vector<std::string>{};
     GetNamesImpl<Columns...>(names);
     return names;
@@ -30,7 +30,7 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
   /**
    * @brief Gives data required to create columns.
    */
-  [[nodiscard]] static auto GetCreateColumnsData() {
+  static auto GetCreateColumnsData [[nodiscard]] () {
     auto data = std::vector<CreateColumnData>{};
     GetCreateColumnsDataImpl<Columns...>(data);
     return data;
@@ -39,7 +39,7 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
   /**
    * @brief Parses primary keys data from column definitions.
    */
-  [[nodiscard]] static auto GetPrimaryKeysData() {
+  static auto GetPrimaryKeysData [[nodiscard]] () {
     auto data = std::vector<PrimaryKeyData>{};
     GetPrimaryKeysDataImpl<Columns...>(data);
     return data;
@@ -48,7 +48,7 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
   /**
    * @brief Parses foreign keys data from column definitions.
    */
-  [[nodiscard]] static auto GetForeignKeysData() {
+  static auto GetForeignKeysData [[nodiscard]] () {
     auto data = std::vector<ForeignKeyData>{};
     GetForeignKeysDataImpl<Columns...>(data);
     return data;
@@ -57,7 +57,7 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
   /**
    * @brief Gives data required to select values from columns.
    */
-  [[nodiscard]] static auto GetSelectColumnsData() {
+  static auto GetSelectColumnsData [[nodiscard]] () {
     auto data = std::vector<SelectColumnData>{};
     GetSelectColumnsDataImpl<Columns...>(data);
     return data;

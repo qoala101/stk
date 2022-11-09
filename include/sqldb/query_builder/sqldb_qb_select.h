@@ -43,7 +43,7 @@ class Select {
    * @brief Specifies the main table to select from.
    */
   template <TableDefinition Table>
-  [[nodiscard]] auto From() -> auto & {
+  auto From [[nodiscard]] () -> auto & {
     return From(Table::GetName(),
                 cpp::Lazy<std::vector<SelectColumnData>>{[]() {
                   return ColumnsTraits<Table>::GetSelectColumnsData();
@@ -54,35 +54,35 @@ class Select {
    * @brief Joins the table on specified condition.
    */
   template <TableDefinition Table>
-  [[nodiscard]] auto Join(const OnCondition &condition) -> auto & {
+  auto Join [[nodiscard]] (const OnCondition &condition) -> auto & {
     return Join(Table::GetName(), condition);
   }
 
   /**
    * @brief Adds condition to the query.
    */
-  [[nodiscard]] auto Where(WhereCondition condition) -> Select &;
+  auto Where [[nodiscard]] (WhereCondition condition) -> Select &;
 
   /**
    * @brief Specifies the limit of returned rows.
    */
-  [[nodiscard]] auto Limit(const QueryValue &value) -> Select &;
+  auto Limit [[nodiscard]] (const QueryValue &value) -> Select &;
 
   /**
    * @brief Builds the query.
    */
-  [[nodiscard]] auto Build() const -> p::Parametrized<SelectQuery>;
+  auto Build [[nodiscard]] () const -> p::Parametrized<SelectQuery>;
 
  private:
   explicit Select(const std::vector<SelectColumnData> &select_columns_data);
 
-  [[nodiscard]] auto From(
+  auto From [[nodiscard]] (
       std::string table_name,
       const cpp::Lazy<std::vector<SelectColumnData>> &select_columns_data)
-      -> Select &;
+  -> Select &;
 
-  [[nodiscard]] auto Join(std::string_view table_name,
-                          const OnCondition &condition) -> Select &;
+  auto Join [[nodiscard]] (std::string_view table_name,
+                           const OnCondition &condition) -> Select &;
 
   void SetColumnsQueryFrom(
       const std::vector<SelectColumnData> &select_columns_data);

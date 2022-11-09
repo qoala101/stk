@@ -24,7 +24,7 @@ struct FactoryFunctionInjector : public T {
  */
 template <typename T, typename FactoryFunction, typename... Args>
   requires std::is_invocable_r_v<T, FactoryFunction, Args...>
-[[nodiscard]] auto BindTypeToFactoryFunction() {
+auto BindTypeToFactoryFunction [[nodiscard]] () {
   return boost::di::bind<T>()
       .template to<
           detail::FactoryFunctionInjector<T, FactoryFunction, Args...>>();

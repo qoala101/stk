@@ -19,13 +19,13 @@ class ISelectStatement {
   /**
    * @brief Executes the statement and gives result.
    */
-  [[nodiscard]] auto Execute() const -> Rows;
+  auto Execute [[nodiscard]] () const -> Rows;
 
   /**
    * @brief Executes the statement and gives result.
    * @param params Values to be injected into the query in the specified order.
    */
-  [[nodiscard]] virtual auto Execute(std::vector<Value> params) const
+  virtual auto Execute [[nodiscard]] (std::vector<Value> params) const
       -> Rows = 0;
 };
 }  // namespace stonks::sqldb

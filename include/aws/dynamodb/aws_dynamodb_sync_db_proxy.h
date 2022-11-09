@@ -35,8 +35,8 @@ class SyncDbProxy : public nosqldb::IDb {
   /**
    * @copydoc nosqldb::IDb::SelectItem
    */
-  [[nodiscard]] auto SelectItem(const nosqldb::Table &table,
-                                const nosqldb::Key &key) const
+  auto SelectItem
+      [[nodiscard]] (const nosqldb::Table &table, const nosqldb::Key &key) const
       -> cpp::Opt<nosqldb::Item> override;
 
   /**
@@ -52,17 +52,17 @@ class SyncDbProxy : public nosqldb::IDb {
                           const nosqldb::Key &key) override;
 
  private:
-  [[nodiscard]] auto GetTableStatus(const nosqldb::Table &table) const
+  auto GetTableStatus [[nodiscard]] (const nosqldb::Table &table) const
       -> cpp::Opt<Aws::DynamoDB::Model::TableStatus>;
 
-  [[nodiscard]] auto IsTableExists(const nosqldb::Table &table) const;
+  auto IsTableExists [[nodiscard]] (const nosqldb::Table &table) const;
 
-  [[nodiscard]] auto IsTableReadyForUse(const nosqldb::Table &table) const;
+  auto IsTableReadyForUse [[nodiscard]] (const nosqldb::Table &table) const;
 
-  [[nodiscard]] auto IsItemExists(const nosqldb::Table &table,
-                                  const nosqldb::Key &key) const;
-  [[nodiscard]] auto IsItemExists(const nosqldb::Table &table,
-                                  const nosqldb::Item &item) const;
+  auto IsItemExists [[nodiscard]] (const nosqldb::Table &table,
+                                   const nosqldb::Key &key) const;
+  auto IsItemExists [[nodiscard]] (const nosqldb::Table &table,
+                                   const nosqldb::Item &item) const;
 
   AsyncDb async_db_;
 };

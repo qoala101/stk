@@ -17,7 +17,7 @@
 
 namespace stonks::sqldb::qb {
 namespace {
-[[nodiscard]] auto ToString(const DataTypeVariant &type) {
+auto ToString [[nodiscard]] (const DataTypeVariant &type) {
   return std::visit(
       [](const auto &v) {
         using V = typename std::decay_t<decltype(v)>::Type;
@@ -36,8 +36,8 @@ namespace {
       *type);
 }
 
-[[nodiscard]] auto BuildColumnsQuery(
-    const std::vector<CreateColumnData> &create_columns_data) {
+auto BuildColumnsQuery
+    [[nodiscard]] (const std::vector<CreateColumnData> &create_columns_data) {
   Expects(!create_columns_data.empty());
 
   auto query = ranges::accumulate(
@@ -60,8 +60,8 @@ namespace {
   return Query{std::move(query)};
 }
 
-[[nodiscard]] auto BuildPrimaryKeysQuery(
-    const std::vector<PrimaryKeyData> &primary_keys_data) {
+auto BuildPrimaryKeysQuery
+    [[nodiscard]] (const std::vector<PrimaryKeyData> &primary_keys_data) {
   auto query =
       ranges::accumulate(primary_keys_data, std::string{},
                          [](auto &query, const auto &primary_key) {
@@ -90,8 +90,8 @@ namespace {
   return Query{std::move(query)};
 }
 
-[[nodiscard]] auto BuildForeignKeysQuery(
-    const std::vector<ForeignKeyData> &foreign_keys_data) {
+auto BuildForeignKeysQuery
+    [[nodiscard]] (const std::vector<ForeignKeyData> &foreign_keys_data) {
   auto query = ranges::accumulate(
       foreign_keys_data, std::string{},
       [](auto &query, const auto &foreign_key) {

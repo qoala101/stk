@@ -35,18 +35,18 @@ class SqliteDbFileHandle {
   /**
    * @brief Gives native SQLite handle.
    */
-  [[nodiscard]] auto GetSqliteDb() const -> const sqlite3 &;
-  [[nodiscard]] auto GetSqliteDb() -> sqlite3 &;
+  auto GetSqliteDb [[nodiscard]] () const -> const sqlite3 &;
+  auto GetSqliteDb [[nodiscard]] () -> sqlite3 &;
 
   /**
    * @brief Gives file path DB was read from and would be stored to
    * when handle is destroyed.
    */
-  [[nodiscard]] auto GetFilePath() const -> const FilePath &;
+  auto GetFilePath [[nodiscard]] () const -> const FilePath &;
 
  private:
-  [[nodiscard]] static auto GetSqliteDbImpl(
-      cpp::This<SqliteDbFileHandle> auto &t) -> auto &;
+  static auto GetSqliteDbImpl
+      [[nodiscard]] (cpp::This<SqliteDbFileHandle> auto &t) -> auto &;
 
   di::Factory<log::ILogger> logger_factory_;
   SqliteDbHandle sqlite_db_handle_;

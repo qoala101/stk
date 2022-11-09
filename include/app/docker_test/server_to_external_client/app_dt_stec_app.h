@@ -10,7 +10,7 @@ class App {
  public:
   App(binance::Client binance_client, PdsAppClient pds_app_client);
 
-  [[nodiscard]] auto GetAveragePrice(Symbol symbol) const -> Price;
+  auto GetAveragePrice [[nodiscard]] (Symbol symbol) const -> Price;
 
  private:
   binance::Client binance_client_;

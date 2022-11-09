@@ -15,47 +15,47 @@ class AppServer {
   /**
    * @copydoc endpoints::SelectAssets
    */
-  [[nodiscard]] static auto SelectAssets(cpp::NnSp<App> app);
+  static auto SelectAssets [[nodiscard]] (cpp::NnSp<App> app);
 
   /**
    * @copydoc endpoints::UpdateAssets
    */
-  [[nodiscard]] static auto UpdateAssets(cpp::NnSp<App> app);
+  static auto UpdateAssets [[nodiscard]] (cpp::NnSp<App> app);
 
   /**
    * @copydoc endpoints::SelectSymbolsWithPriceRecords
    */
-  [[nodiscard]] static auto SelectSymbolsWithPriceRecords(cpp::NnSp<App> app);
+  static auto SelectSymbolsWithPriceRecords [[nodiscard]] (cpp::NnSp<App> app);
 
   /**
    * @copydoc endpoints::SelectSymbolInfo
    */
-  [[nodiscard]] static auto SelectSymbolInfo(cpp::NnSp<App> app);
+  static auto SelectSymbolInfo [[nodiscard]] (cpp::NnSp<App> app);
 
   /**
    * @copydoc endpoints::SelectSymbolsInfo
    */
-  [[nodiscard]] static auto SelectSymbolsInfo(cpp::NnSp<App> app);
+  static auto SelectSymbolsInfo [[nodiscard]] (cpp::NnSp<App> app);
 
   /**
    * @copydoc endpoints::UpdateSymbolsInfo
    */
-  [[nodiscard]] static auto UpdateSymbolsInfo(cpp::NnSp<App> app);
+  static auto UpdateSymbolsInfo [[nodiscard]] (cpp::NnSp<App> app);
 
   /**
    * @copydoc endpoints::SelectSymbolPriceRecords
    */
-  [[nodiscard]] static auto SelectSymbolPriceRecords(cpp::NnSp<App> app);
+  static auto SelectSymbolPriceRecords [[nodiscard]] (cpp::NnSp<App> app);
 
   /**
    * @copydoc endpoints::InsertSymbolPriceRecord
    */
-  [[nodiscard]] static auto InsertSymbolPriceRecord(cpp::NnSp<App> app);
+  static auto InsertSymbolPriceRecord [[nodiscard]] (cpp::NnSp<App> app);
 
   /**
    * @copydoc endpoints::DeleteSymbolPriceRecords
    */
-  [[nodiscard]] static auto DeleteSymbolPriceRecords(cpp::NnSp<App> app);
+  static auto DeleteSymbolPriceRecords [[nodiscard]] (cpp::NnSp<App> app);
 
   network::RestServer rest_server_;
 };

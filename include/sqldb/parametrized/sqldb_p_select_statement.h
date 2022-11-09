@@ -24,7 +24,7 @@ class SelectStatement : public ISelectStatement {
   /**
    * @copydoc ISelectStatement::Execute
    */
-  [[nodiscard]] auto Execute(std::vector<Value> params) const -> Rows override;
+  auto Execute [[nodiscard]] (std::vector<Value> params) const -> Rows override;
 
  private:
   cpp::NnUp<ISelectStatement> statement_;

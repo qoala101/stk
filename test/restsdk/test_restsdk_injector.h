@@ -12,7 +12,7 @@
 #include "spdlog_logger.h"
 
 namespace test::restsdk {
-[[nodiscard]] inline auto Injector() -> auto& {
+inline auto Injector [[nodiscard]] () -> auto& {
   static auto injector = stonks::di::MakeInjector(
       stonks::di::BindInterfaceToImplementation<
           stonks::network::IRestRequestSender,

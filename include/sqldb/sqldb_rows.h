@@ -19,19 +19,19 @@ class Rows {
    * @brief Gives column values.
    */
   template <ColumnDefinition Column>
-  [[nodiscard]] auto GetColumnValues() const -> auto & {
+  auto GetColumnValues [[nodiscard]] () const -> auto & {
     return GetColumnValuesImpl<Column>(*this);
   }
 
   template <ColumnDefinition Column>
-  [[nodiscard]] auto GetColumnValues() -> auto & {
+  auto GetColumnValues [[nodiscard]] () -> auto & {
     return GetColumnValuesImpl<Column>(*this);
   }
 
   /**
    * @brief Gives number of values in each column.
    */
-  [[nodiscard]] auto GetSize() const -> int;
+  auto GetSize [[nodiscard]] () const -> int;
 
   /**
    * @brief Adds a row.
@@ -44,27 +44,27 @@ class Rows {
     std::vector<Value> values{};
 
    private:
-    [[nodiscard]] friend auto operator==(const ColumnValues &,
-                                         const ColumnValues &)
+    friend auto operator==
+        [[nodiscard]] (const ColumnValues &, const ColumnValues &)
         -> bool = default;
   };
 
-  [[nodiscard]] friend auto operator==(const Rows &, const Rows &)
-      -> bool = default;
+  friend auto operator== [[nodiscard]] (const Rows &, const Rows &)
+  -> bool = default;
 
   template <ColumnDefinition Column>
-  [[nodiscard]] static auto GetColumnValuesImpl(cpp::This<Rows> auto &t)
-      -> auto & {
+  static auto GetColumnValuesImpl [[nodiscard]] (cpp::This<Rows> auto &t)
+  -> auto & {
     return t.GetColumnValues({Column::GetName()});
   }
 
-  [[nodiscard]] auto GetColumnValues(const Column &column) const
+  auto GetColumnValues [[nodiscard]] (const Column &column) const
       -> const std::vector<Value> &;
-  [[nodiscard]] auto GetColumnValues(const Column &column)
-      -> std::vector<Value> &;
+  auto GetColumnValues [[nodiscard]] (const Column &column)
+  -> std::vector<Value> &;
 
-  [[nodiscard]] static auto GetColumnValuesImpl(cpp::This<Rows> auto &t,
-                                                const Column &column) -> auto &;
+  static auto GetColumnValuesImpl
+      [[nodiscard]] (cpp::This<Rows> auto &t, const Column &column) -> auto &;
 
   std::vector<ColumnValues> columns_{};
 };

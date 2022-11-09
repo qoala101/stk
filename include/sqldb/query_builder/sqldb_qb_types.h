@@ -9,8 +9,9 @@
 
 namespace stonks::sqldb::qb {
 namespace detail {
-[[nodiscard]] auto GetFullAliasName(std::string_view target_name,
-                                    std::string_view alias_name) -> std::string;
+auto GetFullAliasName
+    [[nodiscard]] (std::string_view target_name, std::string_view alias_name)
+    -> std::string;
 }  // namespace detail
 
 /**
@@ -34,7 +35,7 @@ struct As<TargetTable, AliasTable> : public TargetTable {
   /**
    * @copydoc Table::GetName
    */
-  [[nodiscard]] static auto GetName() {
+  static auto GetName [[nodiscard]] () {
     return detail::GetFullAliasName(TargetTable::GetName(),
                                     AliasTable::GetName());
   }
@@ -48,12 +49,12 @@ struct As<TargetColumn, AliasColumn> : public TargetColumn {
   /**
    * @copydoc Table::Column::GetName
    */
-  [[nodiscard]] static auto GetName() { return AliasColumn::GetName(); }
+  static auto GetName() { return AliasColumn::GetName [[nodiscard]] (); }
 
   /**
    * @copydoc Table::Column::GetFullName
    */
-  [[nodiscard]] static auto GetFullName() {
+  static auto GetFullName [[nodiscard]] () {
     return detail::GetFullAliasName(TargetColumn::GetFullName(),
                                     AliasColumn::GetName());
   }

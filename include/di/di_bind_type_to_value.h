@@ -8,7 +8,7 @@ namespace stonks::di {
  * @brief Binds type to value.
  */
 template <typename T, typename Value>
-[[nodiscard]] auto BindTypeToValue(Value &&value) {
+auto BindTypeToValue [[nodiscard]] (Value &&value) {
   return boost::di::bind<T>().to(std::forward<Value>(value));
 }
 }  // namespace stonks::di

@@ -13,15 +13,15 @@ class QueryWrapper {
   /**
    * @brief Gives the value of the query.
    */
-  [[nodiscard]] auto GetQuery() const -> const p::Parametrized<Query> &;
-  [[nodiscard]] auto GetQuery() -> p::Parametrized<Query> &;
+  auto GetQuery [[nodiscard]] () const -> const p::Parametrized<Query> &;
+  auto GetQuery [[nodiscard]] () -> p::Parametrized<Query> &;
 
  protected:
   explicit QueryWrapper(p::Parametrized<Query> query);
 
  private:
-  [[nodiscard]] static auto GetQueryImpl(cpp::This<QueryWrapper> auto &t)
-      -> auto &;
+  static auto GetQueryImpl [[nodiscard]] (cpp::This<QueryWrapper> auto &t)
+  -> auto &;
 
   p::Parametrized<Query> query_{};
 };

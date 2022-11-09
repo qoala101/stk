@@ -23,7 +23,7 @@ class Drop {
   /**
    * @brief Builds the query.
    */
-  [[nodiscard]] auto Build() const -> Query;
+  auto Build [[nodiscard]] () const -> Query;
 
  private:
   explicit Drop(std::string table_name);

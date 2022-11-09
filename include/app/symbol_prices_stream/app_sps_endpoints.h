@@ -8,8 +8,8 @@ namespace stonks::app::sps::endpoints {
 /**
  * @brief Gives endpoint for the specified symbol.
  */
-[[nodiscard]] auto BinanceSymbolBookTickerStream(core::Symbol symbol)
-    -> network::TypedWsEndpoint;
+auto BinanceSymbolBookTickerStream [[nodiscard]] (core::Symbol symbol)
+-> network::TypedWsEndpoint;
 }  // namespace stonks::app::sps::endpoints
 
 #endif  // STONKS_APP_SYMBOL_PRICES_STREAM_APP_SPS_ENDPOINTS_H_
