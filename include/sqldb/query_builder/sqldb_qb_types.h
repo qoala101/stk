@@ -49,7 +49,7 @@ struct As<TargetColumn, AliasColumn> : public TargetColumn {
   /**
    * @copydoc Table::Column::GetName
    */
-  static auto GetName() { return AliasColumn::GetName [[nodiscard]] (); }
+  static auto GetName [[nodiscard]] () { return AliasColumn::GetName(); }
 
   /**
    * @copydoc Table::Column::GetFullName

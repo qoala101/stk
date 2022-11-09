@@ -71,8 +71,8 @@ class Entity : public EntityInterface {
     return symbols_[index];
   }
 
-  auto GetSize() const -> int override {
-    return symbols_.size [[nodiscard]] ();
+  auto GetSize [[nodiscard]] () const -> int override {
+    return symbols_.size();
   }
 
  private:

@@ -20,15 +20,15 @@ struct TypedStruct {
   using BaseType = TypedStruct<ValueType>;
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  operator ValueType [[nodiscard]] () const & {
+  [[nodiscard]] operator ValueType() const & {
     return OperatorValueTypeImpl(*this);
   }
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  operator ValueType() & { return OperatorValueTypeImpl [[nodiscard]] (*this); }
+  [[nodiscard]] operator ValueType() & { return OperatorValueTypeImpl(*this); }
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  operator ValueType [[nodiscard]] () && {
+  [[nodiscard]] operator ValueType() && {
     return OperatorValueTypeImpl(std::move(*this));
   }
 
@@ -46,9 +46,9 @@ struct TypedStruct {
   /**
    * @brief Gives the value.
    */
-  auto operator->() const { return OperatorArrowImpl [[nodiscard]] (*this); }
+  auto operator->[[nodiscard]] () const { return OperatorArrowImpl(*this); }
 
-  auto operator->() { return OperatorArrowImpl [[nodiscard]] (*this); }
+  auto operator->[[nodiscard]] () { return OperatorArrowImpl(*this); }
 
   ValueType value{};
 
