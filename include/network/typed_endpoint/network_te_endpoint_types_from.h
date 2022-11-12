@@ -93,12 +93,14 @@ void ParseParamsAndBodyTypes(EndpointTypes &endpoint_types,
  * @param params Names of function parameters. Could include the body tag
  * which tells that parameter is body.
  */
-template <cpp::MemberFunction Function, typename... Params>
-auto EndpointTypesFrom [[nodiscard]] (Function /*unused*/, Params &&...params) {
-  auto endpoint_types =
-      EndpointTypes{.result = detail::ParseResultType<Function>()};
+template <cpp::MemberFunction auto function, typename... Params>
+auto EndpointTypesFrom [[nodiscard]] (Params &&...params) {
+  using FunctionType = decltype(function);
 
-  detail::ParseParamsAndBodyTypes<Function, Params...>(
+  auto endpoint_types =
+      EndpointTypes{.result = detail::ParseResultType<FunctionType>()};
+
+  detail::ParseParamsAndBodyTypes<FunctionType, Params...>(
       endpoint_types, std::forward<Params>(params)...);
 
   return endpoint_types;

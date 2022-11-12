@@ -3,9 +3,9 @@
 
 #include <absl/time/time.h>
 
-#include <limits>
 #include <vector>
 
+#include "app_sdb_i_app.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
@@ -17,73 +17,64 @@
 
 namespace stonks::app::sdb {
 /**
- * @brief SQL DB manager which provides API to operate with symbols
- * and prices related data.
+ * @copydoc IApp
  */
-class App {
+class App : public IApp {
  public:
+  /**
+   * @param db DB handle to operate on.
+   */
   explicit App(cpp::NnUp<sqldb::IDb> db);
 
   /**
-   * @brief Selects all assets.
+   * @copydoc IApp::SelectAssets
    */
-  auto SelectAssets [[nodiscard]] () const -> std::vector<core::Asset>;
+  auto SelectAssets [[nodiscard]] () const -> std::vector<core::Asset> override;
 
   /**
-   * @brief Updates the list of all assets.
+   * @copydoc IApp::UpdateAssets
    */
-  void UpdateAssets(std::vector<core::Asset> assets);
+  void UpdateAssets(std::vector<core::Asset> assets) override;
 
   /**
-   * @brief Selects symbols which have price records.
+   * @copydoc IApp::SelectSymbolsWithPriceRecords
    */
   auto SelectSymbolsWithPriceRecords [[nodiscard]] () const
-      -> std::vector<core::Symbol>;
+      -> std::vector<core::Symbol> override;
 
   /**
-   * @brief Selects symbol info.
-   * @return Nullopt if symbol doesn't exist.
+   * @copydoc IApp::SelectSymbolInfo
    */
   auto SelectSymbolInfo [[nodiscard]] (core::Symbol symbol) const
-      -> cpp::Opt<core::SymbolInfo>;
+      -> cpp::Opt<core::SymbolInfo> override;
 
   /**
-   * @brief Selects all symbols info.
+   * @copydoc IApp::SelectSymbolsInfo
    */
   auto SelectSymbolsInfo [[nodiscard]] () const
-      -> std::vector<core::SymbolInfo>;
+      -> std::vector<core::SymbolInfo> override;
 
   /**
-   * @brief Updates the list of all symbol infos.
+   * @copydoc IApp::UpdateSymbolsInfo
    */
-  void UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos);
+  void UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos) override;
 
   /**
-   * @copydoc SelectSymbolPriceRecords
-   */
-  struct SelectSymbolPriceRecordsArgs {
-    core::Symbol symbol{};
-    absl::Time start_time{absl::InfinitePast()};
-    absl::Time end_time{absl::InfiniteFuture()};
-    int limit{std::numeric_limits<int>::max()};
-  };
-
-  /**
-   * @brief Selects symbol price records following the conditions.
+   * @copydoc IApp::SelectSymbolPriceRecords
    */
   auto SelectSymbolPriceRecords
       [[nodiscard]] (const SelectSymbolPriceRecordsArgs &args) const
-      -> std::vector<core::SymbolPriceRecord>;
+      -> std::vector<core::SymbolPriceRecord> override;
 
   /**
-   * @brief Records symbol price.
+   * @copydoc IApp::InsertSymbolPriceRecord
    */
-  void InsertSymbolPriceRecord(core::SymbolPriceRecord record);
+  void InsertSymbolPriceRecord(core::SymbolPriceRecord record) override;
 
   /**
-   * @brief Deletes symbol price records older than specified time.
+   * @copydoc IApp::DeleteSymbolPriceRecords
    */
-  void DeleteSymbolPriceRecords(absl::Time before_time);
+  void DeleteSymbolPriceRecords(absl::Time before_time) override;
 
  private:
   void InsertAsset(core::Asset asset);

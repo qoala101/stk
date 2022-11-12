@@ -5,7 +5,6 @@ add_executable(symbol_prices_stream
   app_sps_endpoints.cc
   app_sps_json_user_conversions.cc
   app_sps_main.cc
-  app_sps_sdb_app_client.cc
 )
 
 target_include_directories(symbol_prices_stream

@@ -1,5 +1,4 @@
 add_library(libapp
-  app_endpoints.cc
   app_json_user_conversions.cc
 )
 
@@ -17,6 +16,7 @@ target_link_libraries(libapp
   PUBLIC libnetwork
 )
 
+add_subdirectory(connection)
 add_subdirectory(docker_test)
 add_subdirectory(public_nosql_db)
 add_subdirectory(symbol_prices_stream)

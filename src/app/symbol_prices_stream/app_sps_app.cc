@@ -2,13 +2,14 @@
 
 #include <absl/time/clock.h>
 
+#include <memory>
 #include <string>
 #include <utility>
 
-#include "app_sps_sdb_app_client.h"
 #include "app_sps_types.h"
 #include "core_types.h"
 #include "network_ws_client_builder.h"
+#include "not_null.hpp"
 
 namespace stonks::app::sps {
 namespace {
@@ -24,18 +25,18 @@ auto SymbolPriceRecordFrom
 }  // namespace
 
 auto App::BinanceSymbolBookTickerStream(core::Symbol symbol,
-                                        SdbAppClient sdb_app_client) {
+                                        cpp::NnUp<sdb::IApp> sdb_app) {
   return [symbol = std::move(symbol),
-          sdb_client = std::move(sdb_app_client)](auto message) mutable {
+          sdb_app = std::move(sdb_app)](auto message) mutable {
     auto record = SymbolPriceRecordFrom(symbol, message);
-    sdb_client.InsertSymbolPriceRecord(std::move(record));
+    sdb_app->InsertSymbolPriceRecord(std::move(record));
   };
 }
 
 App::App(core::Symbol symbol, network::WsClientBuilder ws_client_builder,
-         SdbAppClient sdb_app_client)
+         cpp::NnUp<sdb::IApp> sdb_app)
     : ws_connection_{ws_client_builder
                          .Handling(BinanceSymbolBookTickerStream(
-                             std::move(symbol), std::move(sdb_app_client)))
+                             std::move(symbol), std::move(sdb_app)))
                          .Connect()} {}
 }  // namespace stonks::app::sps
