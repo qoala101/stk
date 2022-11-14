@@ -7,7 +7,7 @@
 #include <memory>
 #include <vector>
 
-#include "app_sdb_app.h"
+#include "core_symbols_db.h"
 #include "core_types.h"
 #include "cpp_smart_pointers.h"
 #include "cpp_typed_struct.h"

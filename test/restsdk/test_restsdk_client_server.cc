@@ -86,8 +86,9 @@ class EntityServer {
     return stonks::network::TypedEndpoint{
         .endpoint = {.method = stonks::network::Method::kPost,
                      .uri = {"/PushSymbol"}},
-        .expected_types = stonks::network::te::EndpointTypesFrom(
-            &Entity::PushSymbol, stonks::network::te::Body{})};
+        .expected_types =
+            stonks::network::te::EndpointTypesFrom<&Entity::PushSymbol>(
+                stonks::network::te::Body{})};
   }
 
   static auto GetSymbolEndpointDesc [[nodiscard]] ()
@@ -95,8 +96,9 @@ class EntityServer {
     return stonks::network::TypedEndpoint{
         .endpoint = {.method = stonks::network::Method::kGet,
                      .uri = {"/GetSymbol"}},
-        .expected_types = stonks::network::te::EndpointTypesFrom(
-            &Entity::GetSymbol, "index")};
+        .expected_types =
+            stonks::network::te::EndpointTypesFrom<&Entity::GetSymbol>(
+                "index")};
   }
 
   static auto GetSizeEndpointDesc [[nodiscard]] ()
@@ -105,7 +107,7 @@ class EntityServer {
         .endpoint = {.method = stonks::network::Method::kGet,
                      .uri = {"/GetSize"}},
         .expected_types =
-            stonks::network::te::EndpointTypesFrom(&Entity::GetSize)};
+            stonks::network::te::EndpointTypesFrom<&Entity::GetSize>()};
   }
 
   explicit EntityServer(stonks::network::Uri base_uri)

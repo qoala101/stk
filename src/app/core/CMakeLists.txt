@@ -1,0 +1,3 @@
+add_subdirectory(symbol_prices_stream)
+add_subdirectory(symbols_db)
+add_subdirectory(symbols_info_updater)
