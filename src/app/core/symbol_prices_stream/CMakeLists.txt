@@ -15,8 +15,8 @@ target_include_directories(libcore_symbol_prices_stream
 )
 
 target_link_libraries(libcore_symbol_prices_stream
-  PRIVATE libcore
-  PRIVATE libcore_symbols_db
-  PRIVATE libnetwork
+  PUBLIC libcore_symbols_db
+  PUBLIC libnetwork
+
   PRIVATE fmt::fmt
 )

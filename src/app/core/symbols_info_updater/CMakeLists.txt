@@ -16,8 +16,8 @@ target_include_directories(libcore_symbols_info_updater
 )
 
 target_link_libraries(libcore_symbols_info_updater
-  PRIVATE libcore
-  PRIVATE libcore_symbols_db
-  PRIVATE libnetwork
+  PUBLIC libcore_symbols_db
+  PUBLIC libnetwork
+
   PRIVATE range-v3::range-v3
 )

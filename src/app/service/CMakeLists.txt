@@ -13,9 +13,8 @@ target_include_directories(libservice
 )
 
 target_link_libraries(libservice
-  PRIVATE absl::absl
-  PRIVATE libcore
-  PRIVATE libnetwork
+  PUBLIC libcore
+  PUBLIC libnetwork
 )
 
 add_subdirectory(symbol_prices_stream)

@@ -1,4 +1,4 @@
-find_package(fmt REQUIRED)
+find_package(fmt REQUIRED) # TODO(vh): Remove
 
 add_library(libservice_symbols_db
   service_symbols_db.cc
@@ -13,11 +13,12 @@ target_include_directories(libservice_symbols_db
 )
 
 target_link_libraries(libservice_symbols_db
-  PRIVATE libcore
-  PRIVATE libcore_symbols_db
-  PRIVATE libcpp
-  PRIVATE libnetwork
+  PUBLIC libcore_symbols_db
+  PUBLIC libnetwork
+
   PRIVATE libservice
+  PUBLIC callable # TODO(vh): Remove
+  PUBLIC fmt::fmt # TODO(vh): Remove
 )
 
 add_executable(service_symbols_db
@@ -27,7 +28,6 @@ add_executable(service_symbols_db
 target_link_libraries(service_symbols_db
   PRIVATE libcli
   PRIVATE libcore_symbols_db
-  PRIVATE libdi
   PRIVATE librestsdk
   PRIVATE libservice
   PRIVATE libsqlite

@@ -13,7 +13,8 @@ target_include_directories(libcore_symbols_db
 )
 
 target_link_libraries(libcore_symbols_db
-  PRIVATE libcore
-  PRIVATE libsqlite
+  PUBLIC libcore
+  PUBLIC libsqldb
+
   PRIVATE range-v3::range-v3
 )

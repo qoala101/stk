@@ -6,8 +6,6 @@ add_executable(service_symbol_prices_stream
 
 target_link_libraries(service_symbol_prices_stream
   PRIVATE libcli
-  PRIVATE libcore
-  PRIVATE libcore_symbols_db
   PRIVATE libcore_symbol_prices_stream
   PRIVATE librestsdk
   PRIVATE libservice
