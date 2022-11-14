@@ -17,8 +17,8 @@ target_include_directories(libaws
 )
 
 target_link_libraries(libaws
+  PUBLIC libkvdb
   PUBLIC liblog
-  PUBLIC libnosqldb
 
   PRIVATE AWS::dynamodb
   PRIVATE fmt::fmt

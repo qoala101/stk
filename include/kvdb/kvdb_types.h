@@ -1,23 +1,23 @@
-#ifndef STONKS_NOSQLDB_NOSQLDB_TYPES_H_
-#define STONKS_NOSQLDB_NOSQLDB_TYPES_H_
+#ifndef STONKS_KVDB_KVDB_TYPES_H_
+#define STONKS_KVDB_KVDB_TYPES_H_
 
 #include <string>
 
 #include "cpp_typed_struct.h"
 
-namespace stonks::nosqldb {
+namespace stonks::kvdb {
 /**
- * @brief Name of NoSQL table which stores string key-value pairs.
+ * @brief Name of Key-Value table which stores string key-value pairs.
  */
 struct Table : public cpp::TypedStruct<std::string> {};
 
 /**
- * @brief NoSQL table key.
+ * @brief Key-Value table key.
  */
 struct Key : public cpp::TypedStruct<std::string> {};
 
 /**
- * @brief NoSQL table item.
+ * @brief Key-Value table item.
  */
 struct Item {
   Key key{};
@@ -27,6 +27,6 @@ struct Item {
   friend auto operator== [[nodiscard]] (const Item &, const Item &)
   -> bool = default;
 };
-}  // namespace stonks::nosqldb
+}  // namespace stonks::kvdb
 
-#endif  // STONKS_NOSQLDB_NOSQLDB_TYPES_H_
+#endif  // STONKS_KVDB_KVDB_TYPES_H_

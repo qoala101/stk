@@ -17,7 +17,7 @@
 #include "cpp_message_exception.h"
 #include "cpp_optional.h"
 #include "cpp_typed_struct.h"
-#include "nosqldb_types.h"
+#include "kvdb_types.h"
 
 namespace stonks::aws::dynamodb {
 namespace {
@@ -32,11 +32,11 @@ void WaitUntil(const Predicate &predicate) {
 
 SyncDbProxy::SyncDbProxy(AsyncDb async_db) : async_db_{std::move(async_db)} {}
 
-auto SyncDbProxy::IsTableExists(const nosqldb::Table &table) const {
+auto SyncDbProxy::IsTableExists(const kvdb::Table &table) const {
   return GetTableStatus(table).has_value();
 }
 
-auto SyncDbProxy::IsTableReadyForUse(const nosqldb::Table &table) const {
+auto SyncDbProxy::IsTableReadyForUse(const kvdb::Table &table) const {
   const auto status = GetTableStatus(table);
 
   if (!status.has_value()) {
@@ -46,54 +46,54 @@ auto SyncDbProxy::IsTableReadyForUse(const nosqldb::Table &table) const {
   return *status == Aws::DynamoDB::Model::TableStatus::ACTIVE;
 }
 
-void SyncDbProxy::CreateTableIfNotExists(const nosqldb::Table &table) {
+void SyncDbProxy::CreateTableIfNotExists(const kvdb::Table &table) {
   async_db_.CreateTableIfNotExists(table);
 
   WaitUntil([this, &table]() { return IsTableReadyForUse(table); });
   Ensures(IsTableReadyForUse(table));
 }
 
-void SyncDbProxy::DropTableIfExists(const nosqldb::Table &table) {
+void SyncDbProxy::DropTableIfExists(const kvdb::Table &table) {
   async_db_.DropTableIfExists(table);
 
   WaitUntil([this, &table]() { return !IsTableExists(table); });
   Ensures(!IsTableExists(table));
 }
 
-auto SyncDbProxy::SelectItem(const nosqldb::Table &table,
-                             const nosqldb::Key &key) const
-    -> cpp::Opt<nosqldb::Item> {
+auto SyncDbProxy::SelectItem(const kvdb::Table &table,
+                             const kvdb::Key &key) const
+    -> cpp::Opt<kvdb::Item> {
   return async_db_.SelectItem(table, key);
 }
 
-auto SyncDbProxy::IsItemExists(const nosqldb::Table &table,
-                               const nosqldb::Key &key) const {
+auto SyncDbProxy::IsItemExists(const kvdb::Table &table,
+                               const kvdb::Key &key) const {
   return async_db_.SelectItem(table, key).has_value();
 }
 
-auto SyncDbProxy::IsItemExists(const nosqldb::Table &table,
-                               const nosqldb::Item &item) const {
+auto SyncDbProxy::IsItemExists(const kvdb::Table &table,
+                               const kvdb::Item &item) const {
   const auto selected_item = async_db_.SelectItem(table, item.key);
   return selected_item.has_value() && (*selected_item == item);
 }
 
-void SyncDbProxy::InsertOrUpdateItem(const nosqldb::Table &table,
-                                     nosqldb::Item item) {
+void SyncDbProxy::InsertOrUpdateItem(const kvdb::Table &table,
+                                     kvdb::Item item) {
   async_db_.InsertOrUpdateItem(table, item);
 
   WaitUntil([this, &table, &item]() { return IsItemExists(table, item); });
   Ensures(IsItemExists(table, item));
 }
 
-void SyncDbProxy::DeleteItemIfExists(const nosqldb::Table &table,
-                                     const nosqldb::Key &key) {
+void SyncDbProxy::DeleteItemIfExists(const kvdb::Table &table,
+                                     const kvdb::Key &key) {
   async_db_.DeleteItemIfExists(table, key);
 
   WaitUntil([this, &table, &key]() { return !IsItemExists(table, key); });
   Ensures(!IsItemExists(table, key));
 }
 
-auto SyncDbProxy::GetTableStatus(const nosqldb::Table &table) const
+auto SyncDbProxy::GetTableStatus(const kvdb::Table &table) const
     -> cpp::Opt<Aws::DynamoDB::Model::TableStatus> {
   const auto request =
       Aws::DynamoDB::Model::DescribeTableRequest{}.WithTableName(table);

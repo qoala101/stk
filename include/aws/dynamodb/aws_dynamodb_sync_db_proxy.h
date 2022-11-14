@@ -3,8 +3,8 @@
 
 #include "aws_dynamodb_async_db.h"
 #include "cpp_optional.h"
-#include "nosqldb_i_db.h"
-#include "nosqldb_types.h"
+#include "kvdb_i_db.h"
+#include "kvdb_types.h"
 
 namespace Aws::DynamoDB::Model {
 enum class TableStatus;
@@ -15,7 +15,7 @@ namespace stonks::aws::dynamodb {
  * @brief Synchronization proxy to the asynchronous DynamoDB implementation.
  * Blocks after each operation until the result of it can be verified.
  */
-class SyncDbProxy : public nosqldb::IDb {
+class SyncDbProxy : public kvdb::IDb {
  public:
   /**
    * @param async_db_ Proxied DB.
@@ -23,46 +23,45 @@ class SyncDbProxy : public nosqldb::IDb {
   explicit SyncDbProxy(AsyncDb async_db_);
 
   /**
-   * @copydoc nosqldb::IDb::CreateTableIfNotExists
+   * @copydoc kvdb::IDb::CreateTableIfNotExists
    */
-  void CreateTableIfNotExists(const nosqldb::Table &table) override;
+  void CreateTableIfNotExists(const kvdb::Table &table) override;
 
   /**
-   * @copydoc nosqldb::IDb::DropTableIfExists
+   * @copydoc kvdb::IDb::DropTableIfExists
    */
-  void DropTableIfExists(const nosqldb::Table &table) override;
+  void DropTableIfExists(const kvdb::Table &table) override;
 
   /**
-   * @copydoc nosqldb::IDb::SelectItem
+   * @copydoc kvdb::IDb::SelectItem
    */
   auto SelectItem
-      [[nodiscard]] (const nosqldb::Table &table, const nosqldb::Key &key) const
-      -> cpp::Opt<nosqldb::Item> override;
+      [[nodiscard]] (const kvdb::Table &table, const kvdb::Key &key) const
+      -> cpp::Opt<kvdb::Item> override;
 
   /**
-   * @copydoc nosqldb::IDb::InsertOrUpdateItem
+   * @copydoc kvdb::IDb::InsertOrUpdateItem
    */
-  void InsertOrUpdateItem(const nosqldb::Table &table,
-                          nosqldb::Item item) override;
+  void InsertOrUpdateItem(const kvdb::Table &table, kvdb::Item item) override;
 
   /**
-   * @copydoc nosqldb::IDb::DeleteItemIfExists
+   * @copydoc kvdb::IDb::DeleteItemIfExists
    */
-  void DeleteItemIfExists(const nosqldb::Table &table,
-                          const nosqldb::Key &key) override;
+  void DeleteItemIfExists(const kvdb::Table &table,
+                          const kvdb::Key &key) override;
 
  private:
-  auto GetTableStatus [[nodiscard]] (const nosqldb::Table &table) const
+  auto GetTableStatus [[nodiscard]] (const kvdb::Table &table) const
       -> cpp::Opt<Aws::DynamoDB::Model::TableStatus>;
 
-  auto IsTableExists [[nodiscard]] (const nosqldb::Table &table) const;
+  auto IsTableExists [[nodiscard]] (const kvdb::Table &table) const;
 
-  auto IsTableReadyForUse [[nodiscard]] (const nosqldb::Table &table) const;
+  auto IsTableReadyForUse [[nodiscard]] (const kvdb::Table &table) const;
 
-  auto IsItemExists [[nodiscard]] (const nosqldb::Table &table,
-                                   const nosqldb::Key &key) const;
-  auto IsItemExists [[nodiscard]] (const nosqldb::Table &table,
-                                   const nosqldb::Item &item) const;
+  auto IsItemExists
+      [[nodiscard]] (const kvdb::Table &table, const kvdb::Key &key) const;
+  auto IsItemExists
+      [[nodiscard]] (const kvdb::Table &table, const kvdb::Item &item) const;
 
   AsyncDb async_db_;
 };

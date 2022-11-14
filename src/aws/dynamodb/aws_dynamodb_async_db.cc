@@ -39,7 +39,7 @@ auto AsyncDb::operator=(AsyncDb &&) noexcept -> AsyncDb & = default;
 
 AsyncDb::~AsyncDb() = default;
 
-void AsyncDb::CreateTableIfNotExists(const nosqldb::Table &table) {
+void AsyncDb::CreateTableIfNotExists(const kvdb::Table &table) {
   const auto attribute =
       Aws::DynamoDB::Model::AttributeDefinition{}
           .WithAttributeName("Key")
@@ -68,7 +68,7 @@ void AsyncDb::CreateTableIfNotExists(const nosqldb::Table &table) {
   }
 }
 
-void AsyncDb::DropTableIfExists(const nosqldb::Table &table) {
+void AsyncDb::DropTableIfExists(const kvdb::Table &table) {
   const auto request =
       Aws::DynamoDB::Model::DeleteTableRequest{}.WithTableName(table);
 
@@ -86,9 +86,8 @@ void AsyncDb::DropTableIfExists(const nosqldb::Table &table) {
   }
 }
 
-auto AsyncDb::SelectItem(const nosqldb::Table &table,
-                         const nosqldb::Key &key) const
-    -> cpp::Opt<nosqldb::Item> {
+auto AsyncDb::SelectItem(const kvdb::Table &table, const kvdb::Key &key) const
+    -> cpp::Opt<kvdb::Item> {
   const auto attr_key = Aws::DynamoDB::Model::AttributeValue{key};
 
   const auto request =
@@ -110,11 +109,10 @@ auto AsyncDb::SelectItem(const nosqldb::Table &table,
     return std::nullopt;
   }
 
-  return nosqldb::Item{.key = key, .value = iter->second.GetS()};
+  return kvdb::Item{.key = key, .value = iter->second.GetS()};
 }
 
-void AsyncDb::InsertOrUpdateItem(const nosqldb::Table &table,
-                                 nosqldb::Item item) {
+void AsyncDb::InsertOrUpdateItem(const kvdb::Table &table, kvdb::Item item) {
   const auto attr_key = Aws::DynamoDB::Model::AttributeValue{item.key};
   const auto attr_value = Aws::DynamoDB::Model::AttributeValue{item.value};
 
@@ -135,8 +133,8 @@ void AsyncDb::InsertOrUpdateItem(const nosqldb::Table &table,
   }
 }
 
-void AsyncDb::DeleteItemIfExists(const nosqldb::Table &table,
-                                 const nosqldb::Key &key) {
+void AsyncDb::DeleteItemIfExists(const kvdb::Table &table,
+                                 const kvdb::Key &key) {
   const auto attr_key = Aws::DynamoDB::Model::AttributeValue{key};
 
   const auto request =

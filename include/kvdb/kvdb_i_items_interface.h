@@ -1,12 +1,12 @@
-#ifndef STONKS_NOSQLDB_NOSQLDB_I_ITEMS_INTERFACE_H_
-#define STONKS_NOSQLDB_NOSQLDB_I_ITEMS_INTERFACE_H_
+#ifndef STONKS_KVDB_KVDB_I_ITEMS_INTERFACE_H_
+#define STONKS_KVDB_KVDB_I_ITEMS_INTERFACE_H_
 
 #include "cpp_optional.h"
-#include "nosqldb_types.h"
+#include "kvdb_types.h"
 
-namespace stonks::nosqldb {
+namespace stonks::kvdb {
 /**
- * @brief Generic NoSQL DB interface to manipulate the items.
+ * @brief Generic Key-Value DB interface to manipulate the items.
  */
 // NOLINTNEXTLINE(*-special-member-functions)
 class IItemsInterface {
@@ -30,6 +30,6 @@ class IItemsInterface {
    */
   virtual void DeleteItemIfExists(const Table &table, const Key &key) = 0;
 };
-}  // namespace stonks::nosqldb
+}  // namespace stonks::kvdb
 
-#endif  // STONKS_NOSQLDB_NOSQLDB_I_ITEMS_INTERFACE_H_
+#endif  // STONKS_KVDB_KVDB_I_ITEMS_INTERFACE_H_

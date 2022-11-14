@@ -1,11 +1,11 @@
-#ifndef STONKS_NOSQLDB_NOSQLDB_I_TABLES_INTERFACE_H_
-#define STONKS_NOSQLDB_NOSQLDB_I_TABLES_INTERFACE_H_
+#ifndef STONKS_KVDB_KVDB_I_TABLES_INTERFACE_H_
+#define STONKS_KVDB_KVDB_I_TABLES_INTERFACE_H_
 
-#include "nosqldb_types.h"
+#include "kvdb_types.h"
 
-namespace stonks::nosqldb {
+namespace stonks::kvdb {
 /**
- * @brief Generic NoSQL DB interface to manipulate the tables.
+ * @brief Generic Key-Value DB interface to manipulate the tables.
  */
 // NOLINTNEXTLINE(*-special-member-functions)
 class ITablesInterface {
@@ -22,6 +22,6 @@ class ITablesInterface {
    */
   virtual void DropTableIfExists(const Table &table) = 0;
 };
-}  // namespace stonks::nosqldb
+}  // namespace stonks::kvdb
 
-#endif  // STONKS_NOSQLDB_NOSQLDB_I_TABLES_INTERFACE_H_
+#endif  // STONKS_KVDB_KVDB_I_TABLES_INTERFACE_H_

@@ -4,8 +4,8 @@
 #include "aws_api_handle.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
-#include "nosqldb_i_db.h"
-#include "nosqldb_types.h"
+#include "kvdb_i_db.h"
+#include "kvdb_types.h"
 
 namespace Aws::DynamoDB {
 class DynamoDBClient;
@@ -17,7 +17,7 @@ enum class TableStatus;
 
 namespace stonks::aws::dynamodb {
 /**
- * @brief Implementation of NoSQL DB interface using DynamoDB from AWS.
+ * @brief Implementation of Key-Value DB interface using DynamoDB from AWS.
  * @remark All operations are asynchronous. Calling one operation immediately
  * after another might lead to unexpected results, because the AWS server might
  * not yet processed the preceding one.
@@ -25,7 +25,7 @@ namespace stonks::aws::dynamodb {
  * in the current environment following the guide:
  * https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/credentials.html
  */
-class AsyncDb : public nosqldb::IDb {
+class AsyncDb : public kvdb::IDb {
  public:
   explicit AsyncDb(ApiHandle api_handle);
 
@@ -38,33 +38,32 @@ class AsyncDb : public nosqldb::IDb {
   ~AsyncDb() override;
 
   /**
-   * @copydoc nosqldb::IDb::CreateTableIfNotExists
+   * @copydoc kvdb::IDb::CreateTableIfNotExists
    */
-  void CreateTableIfNotExists(const nosqldb::Table &table) override;
+  void CreateTableIfNotExists(const kvdb::Table &table) override;
 
   /**
-   * @copydoc nosqldb::IDb::DropTableIfExists
+   * @copydoc kvdb::IDb::DropTableIfExists
    */
-  void DropTableIfExists(const nosqldb::Table &table) override;
+  void DropTableIfExists(const kvdb::Table &table) override;
 
   /**
-   * @copydoc nosqldb::IDb::SelectItem
+   * @copydoc kvdb::IDb::SelectItem
    */
   auto SelectItem
-      [[nodiscard]] (const nosqldb::Table &table, const nosqldb::Key &key) const
-      -> cpp::Opt<nosqldb::Item> override;
+      [[nodiscard]] (const kvdb::Table &table, const kvdb::Key &key) const
+      -> cpp::Opt<kvdb::Item> override;
 
   /**
-   * @copydoc nosqldb::IDb::InsertOrUpdateItem
+   * @copydoc kvdb::IDb::InsertOrUpdateItem
    */
-  void InsertOrUpdateItem(const nosqldb::Table &table,
-                          nosqldb::Item item) override;
+  void InsertOrUpdateItem(const kvdb::Table &table, kvdb::Item item) override;
 
   /**
-   * @copydoc nosqldb::IDb::DeleteItemIfExists
+   * @copydoc kvdb::IDb::DeleteItemIfExists
    */
-  void DeleteItemIfExists(const nosqldb::Table &table,
-                          const nosqldb::Key &key) override;
+  void DeleteItemIfExists(const kvdb::Table &table,
+                          const kvdb::Key &key) override;
 
   /**
    * @brief Gives a native DynamoDB handle.
