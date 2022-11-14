@@ -11,32 +11,32 @@
 #include "network_ws_client_builder.h"
 #include "not_null.hpp"
 
-namespace stonks::app::sps {
+namespace stonks::core {
 namespace {
 auto SymbolPriceRecordFrom
-    [[nodiscard]] (core::Symbol symbol, const BinanceBookTick &book_tick) {
-  return core::SymbolPriceRecord{
-      .symbol = std::move(symbol),
-      .price = {(std::stod(book_tick.best_bid_price) +
-                 std::stod(book_tick.best_ask_price)) /
-                2},
-      .time = absl::Now()};
+    [[nodiscard]] (Symbol symbol, const sps::BinanceBookTick &book_tick) {
+  return SymbolPriceRecord{.symbol = std::move(symbol),
+                           .price = {(std::stod(book_tick.best_bid_price) +
+                                      std::stod(book_tick.best_ask_price)) /
+                                     2},
+                           .time = absl::Now()};
 }
 }  // namespace
 
-auto App::BinanceSymbolBookTickerStream(core::Symbol symbol,
-                                        cpp::NnUp<sdb::IApp> sdb_app) {
+auto SymbolPricesStream::BinanceSymbolBookTickerStream(
+    Symbol symbol, cpp::NnUp<ISymbolsDb> symbols_db) {
   return [symbol = std::move(symbol),
-          sdb_app = std::move(sdb_app)](auto message) mutable {
+          symbols_db = std::move(symbols_db)](auto message) mutable {
     auto record = SymbolPriceRecordFrom(symbol, message);
-    sdb_app->InsertSymbolPriceRecord(std::move(record));
+    symbols_db->InsertSymbolPriceRecord(std::move(record));
   };
 }
 
-App::App(core::Symbol symbol, network::WsClientBuilder ws_client_builder,
-         cpp::NnUp<sdb::IApp> sdb_app)
+SymbolPricesStream::SymbolPricesStream(
+    Symbol symbol, network::WsClientBuilder ws_client_builder,
+    cpp::NnUp<ISymbolsDb> symbols_db)
     : ws_connection_{ws_client_builder
                          .Handling(BinanceSymbolBookTickerStream(
-                             std::move(symbol), std::move(sdb_app)))
+                             std::move(symbol), std::move(symbols_db)))
                          .Connect()} {}
-}  // namespace stonks::app::sps
+}  // namespace stonks::core

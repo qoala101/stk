@@ -21,14 +21,14 @@ auto main(int argc, const char *const *argv) -> int {
   stonks::cli::App{argc, argv}.Run([](const auto &options) {
     struct TypedWsEndpointFactory {
       auto operator() [[nodiscard]] (stonks::core::Symbol symbol) {
-        return stonks::app::sps::endpoints::BinanceSymbolBookTickerStream(
+        return stonks::core::sps::endpoints::BinanceSymbolBookTickerStream(
             std::move(symbol));
       }
     };
 
     const auto injector = stonks::di::MakeInjector(
-        stonks::app::injectors::CreateNetworkRestsdkInjector(),
-        stonks::app::injectors::CreateLogSpdlogInjector(),
+        stonks::service::injectors::CreateNetworkRestsdkInjector(),
+        stonks::service::injectors::CreateLogSpdlogInjector(),
         stonks::di::BindTypeToValue<stonks::core::Symbol>(
             stonks::core::Symbol{options.GetOptionOr("symbol", "BTCUSDT")}),
         stonks::di::BindTypeToValue<stonks::network::Uri>(
@@ -39,9 +39,9 @@ auto main(int argc, const char *const *argv) -> int {
                                               TypedWsEndpointFactory,
                                               stonks::core::Symbol>(),
         stonks::di::BindInterfaceToImplementation<
-            stonks::app::sdb::IApp,
-            stonks::app::a::Connection<stonks::app::sdb::IApp>>());
+            stonks::core::ISymbolsDb,
+            stonks::service::Connection<stonks::core::ISymbolsDb>>());
 
-    return injector.template create<stonks::app::sps::App>();
+    return injector.template create<stonks::core::SymbolPricesStream>();
   });
 }

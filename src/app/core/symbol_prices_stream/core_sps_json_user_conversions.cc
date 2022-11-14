@@ -7,7 +7,7 @@
 
 namespace stonks::network {
 template <>
-auto JsonParser<app::sps::BinanceBookTick>::operator()(const IJson &json) const
+auto JsonParser<core::sps::BinanceBookTick>::operator()(const IJson &json) const
     -> Type {
   return {.best_bid_price = ParseFromJsonChild<std::string>(json, "b"),
           .best_ask_price = ParseFromJsonChild<std::string>(json, "a")};

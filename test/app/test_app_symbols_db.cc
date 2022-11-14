@@ -15,10 +15,10 @@
 #include "test_app_injector.h"
 
 namespace {
-auto db = stonks::cpp::Sp<stonks::app::sdb::App>{};
+auto db = stonks::cpp::Sp<stonks::core::SymbolsDb>{};
 
 TEST(AppSymbolsDb, UpdateSymbolsInfo) {
-  db = test::app::Injector().create<stonks::cpp::Sp<stonks::app::sdb::App>>();
+  db = test::app::Injector().create<stonks::cpp::Sp<stonks::core::SymbolsDb>>();
 
   db->UpdateAssets({{"YYY"}, {"USDT"}});
   auto assets = db->SelectAssets();

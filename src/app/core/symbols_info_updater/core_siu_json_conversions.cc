@@ -11,7 +11,7 @@
 
 namespace stonks::network {
 template <>
-auto JsonParser<app::siu::BinanceSymbolExchangeInfo>::operator()(
+auto JsonParser<core::siu::BinanceSymbolExchangeInfo>::operator()(
     const IJson &json) const -> Type {
   auto value = MakeFromJson<Type>(json, "symbol", "baseAsset", "quoteAsset");
   auto filters = json.GetChild("filters");
@@ -42,9 +42,9 @@ auto JsonParser<app::siu::BinanceSymbolExchangeInfo>::operator()(
 }
 
 template <>
-auto JsonParser<app::siu::BinanceExchangeInfo>::operator()(
+auto JsonParser<core::siu::BinanceExchangeInfo>::operator()(
     const IJson &json) const -> Type {
-  return {ParseFromJsonChild<std::vector<app::siu::BinanceSymbolExchangeInfo>>(
+  return {ParseFromJsonChild<std::vector<core::siu::BinanceSymbolExchangeInfo>>(
       json, "symbols")};
 }
 }  // namespace stonks::network

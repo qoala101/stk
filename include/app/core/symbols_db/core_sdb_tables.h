@@ -9,9 +9,9 @@
 #include "cpp_type_list.h"
 #include "sqldb_table.h"
 
-namespace stonks::app::sdb::tables {
+namespace stonks::core::sdb::tables {
 /**
- * @copydoc core::Asset
+ * @copydoc Asset
  */
 struct Asset : public sqldb::Table<Asset> {
   struct id : public Column<int64_t, id> {
@@ -28,7 +28,7 @@ struct Asset : public sqldb::Table<Asset> {
 };
 
 /**
- * @copydoc core::SymbolInfo
+ * @copydoc SymbolInfo
  */
 struct SymbolInfo : public sqldb::Table<SymbolInfo> {
   struct id : public Column<int64_t, id> {
@@ -71,7 +71,7 @@ struct SymbolInfo : public sqldb::Table<SymbolInfo> {
 };
 
 /**
- * @copydoc core::SymbolPriceRecord
+ * @copydoc SymbolPriceRecord
  */
 struct SymbolPriceRecord : public sqldb::Table<SymbolPriceRecord> {
   struct symbol_id : public Column<int64_t, symbol_id> {
@@ -87,6 +87,6 @@ struct SymbolPriceRecord : public sqldb::Table<SymbolPriceRecord> {
 
   using Columns = cpp::TypeList<symbol_id, price, time>;
 };
-}  // namespace stonks::app::sdb::tables
+}  // namespace stonks::core::sdb::tables
 
 #endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_SD_TABLES_H_

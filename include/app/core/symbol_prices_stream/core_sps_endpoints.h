@@ -4,12 +4,12 @@
 #include "core_types.h"
 #include "network_typed_ws_endpoint.h"
 
-namespace stonks::app::sps::endpoints {
+namespace stonks::core::sps::endpoints {
 /**
  * @brief Gives endpoint for the specified symbol.
  */
-auto BinanceSymbolBookTickerStream [[nodiscard]] (core::Symbol symbol)
+auto BinanceSymbolBookTickerStream [[nodiscard]] (Symbol symbol)
 -> network::TypedWsEndpoint;
-}  // namespace stonks::app::sps::endpoints
+}  // namespace stonks::core::sps::endpoints
 
 #endif  // STONKS_APP_CORE_SYMBOL_PRICES_STREAM_CORE_SPS_ENDPOINTS_H_

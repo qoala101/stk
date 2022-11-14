@@ -7,25 +7,25 @@
 #include "network_ws_client_builder.h"
 #include "network_ws_connection.h"
 
-namespace stonks::app::sps {
+namespace stonks::core {
 /**
  * @brief Receives single symbol prices from Binance
  * and sends them to the Symbols DB.
  */
-class App {
+class SymbolPricesStream {
  public:
-  App(core::Symbol symbol, network::WsClientBuilder ws_client_builder,
-      cpp::NnUp<sdb::IApp> sdb_app);
+  SymbolPricesStream(Symbol symbol, network::WsClientBuilder ws_client_builder,
+                     cpp::NnUp<ISymbolsDb> symbols_db);
 
  private:
   /**
    * @copydoc endpoints::BinanceSymbolBookTickerStream
    */
   static auto BinanceSymbolBookTickerStream
-      [[nodiscard]] (core::Symbol symbol, cpp::NnUp<sdb::IApp> sdb_app);
+      [[nodiscard]] (Symbol symbol, cpp::NnUp<ISymbolsDb> symbols_db);
 
   network::WsConnection ws_connection_;
 };
-}  // namespace stonks::app::sps
+}  // namespace stonks::core
 
 #endif  // STONKS_APP_CORE_SYMBOL_PRICES_STREAM_CORE_SYMBOL_PRICES_STREAM_H_

@@ -1,6 +1,5 @@
 #include <fmt/core.h>
 
-#include <boost/di.hpp>
 #include <memory>
 
 #include "cli_app.h"
@@ -15,16 +14,15 @@
 auto main(int argc, const char *const *argv) -> int {
   stonks::cli::App{argc, argv}.Run([](const auto &options) {
     const auto injector = stonks::di::MakeInjector(
-        stonks::app::injectors::CreateNetworkRestsdkInjector(),
-        stonks::app::injectors::CreateSqldbSqliteInjector(),
-        stonks::app::injectors::CreateLogSpdlogInjector(),
+        stonks::service::injectors::CreateNetworkRestsdkInjector(),
+        stonks::service::injectors::CreateSqldbSqliteInjector(),
+        stonks::service::injectors::CreateLogSpdlogInjector(),
         stonks::di::BindTypeToValue<stonks::network::Uri>(
             stonks::network::Uri{fmt::format(
                 "http://0.0.0.0:{}", options.GetOptionOr("port", 6506))}),
         stonks::di::BindTypeToValue<stonks::sqlite::FilePath>(
             stonks::sqlite::FilePath{"symbols_db.db"}));
 
-    // return injector.create<stonks::app::sdb::AppServer>();
     return 0;
   });
 }

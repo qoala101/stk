@@ -6,6 +6,7 @@
 #include "cli_app.h"
 #include "core_i_symbols_db.h"
 #include "core_symbols_info_updater.h"
+#include "di_bind_interface_to_implementation.h"
 #include "di_bind_type_to_factory_function.h"
 #include "di_bind_type_to_value.h"
 #include "di_make_injector.h"
@@ -24,24 +25,24 @@ auto main(int argc, const char *const *argv) -> int {
     };
 
     auto base_injector = stonks::di::MakeInjector(
-        stonks::app::injectors::CreateNetworkRestsdkInjector(),
-        stonks::app::injectors::CreateLogSpdlogInjector(),
+        stonks::service::injectors::CreateNetworkRestsdkInjector(),
+        stonks::service::injectors::CreateLogSpdlogInjector(),
         stonks::di::BindTypeToValue<int64_t>(options.GetOptionOr(
             "interval", int64_t{absl::ToInt64Milliseconds(absl::Hours(1))})),
         stonks::di::BindTypeToFactoryFunction<absl::Duration, DurationFactory,
                                               int64_t>(),
         stonks::di::BindInterfaceToImplementation<
-            stonks::app::sdb::IApp,
-            stonks::app::a::Connection<stonks::app::sdb::IApp>>());
+            stonks::core::ISymbolsDb,
+            stonks::service::Connection<stonks::core::ISymbolsDb>>());
 
     const auto injector = stonks::di::OverrideBindingsForType<
-        stonks::app::a::Connection<stonks::app::sdb::IApp>>(
+        stonks::service::Connection<stonks::core::ISymbolsDb>>(
         base_injector,
         stonks::di::BindTypeToValue<stonks::network::Uri>(
             stonks::network::Uri{fmt::format(
                 "http://{}:{}", options.GetOptionOr("sdb_host", "0.0.0.0"),
                 options.GetOptionOr("sdb_port", 6506))}));
 
-    return injector.template create<stonks::app::siu::App>();
+    return injector.template create<stonks::core::SymbolsInfoUpdater>();
   });
 }

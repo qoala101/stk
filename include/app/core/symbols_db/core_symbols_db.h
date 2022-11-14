@@ -15,74 +15,74 @@
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 
-namespace stonks::app::sdb {
+namespace stonks::core {
 /**
- * @copydoc IApp
+ * @copydoc ISymbolsDb
  */
-class App : public IApp {
+class SymbolsDb : public ISymbolsDb {
  public:
   /**
    * @param db DB handle to operate on.
    */
-  explicit App(cpp::NnUp<sqldb::IDb> db);
+  explicit SymbolsDb(cpp::NnUp<sqldb::IDb> db);
 
   /**
-   * @copydoc IApp::SelectAssets
+   * @copydoc ISymbolsDb::SelectAssets
    */
-  auto SelectAssets [[nodiscard]] () const -> std::vector<core::Asset> override;
+  auto SelectAssets [[nodiscard]] () const -> std::vector<Asset> override;
 
   /**
-   * @copydoc IApp::UpdateAssets
+   * @copydoc ISymbolsDb::UpdateAssets
    */
-  void UpdateAssets(std::vector<core::Asset> assets) override;
+  void UpdateAssets(std::vector<Asset> assets) override;
 
   /**
-   * @copydoc IApp::SelectSymbolsWithPriceRecords
+   * @copydoc ISymbolsDb::SelectSymbolsWithPriceRecords
    */
   auto SelectSymbolsWithPriceRecords [[nodiscard]] () const
-      -> std::vector<core::Symbol> override;
+      -> std::vector<Symbol> override;
 
   /**
-   * @copydoc IApp::SelectSymbolInfo
+   * @copydoc ISymbolsDb::SelectSymbolInfo
    */
-  auto SelectSymbolInfo [[nodiscard]] (core::Symbol symbol) const
-      -> cpp::Opt<core::SymbolInfo> override;
+  auto SelectSymbolInfo [[nodiscard]] (Symbol symbol) const
+      -> cpp::Opt<SymbolInfo> override;
 
   /**
-   * @copydoc IApp::SelectSymbolsInfo
+   * @copydoc ISymbolsDb::SelectSymbolsInfo
    */
   auto SelectSymbolsInfo [[nodiscard]] () const
-      -> std::vector<core::SymbolInfo> override;
+      -> std::vector<SymbolInfo> override;
 
   /**
-   * @copydoc IApp::UpdateSymbolsInfo
+   * @copydoc ISymbolsDb::UpdateSymbolsInfo
    */
-  void UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos) override;
+  void UpdateSymbolsInfo(std::vector<SymbolInfo> infos) override;
 
   /**
-   * @copydoc IApp::SelectSymbolPriceRecords
+   * @copydoc ISymbolsDb::SelectSymbolPriceRecords
    */
   auto SelectSymbolPriceRecords
       [[nodiscard]] (const SelectSymbolPriceRecordsArgs &args) const
-      -> std::vector<core::SymbolPriceRecord> override;
+      -> std::vector<SymbolPriceRecord> override;
 
   /**
-   * @copydoc IApp::InsertSymbolPriceRecord
+   * @copydoc ISymbolsDb::InsertSymbolPriceRecord
    */
-  void InsertSymbolPriceRecord(core::SymbolPriceRecord record) override;
+  void InsertSymbolPriceRecord(SymbolPriceRecord record) override;
 
   /**
-   * @copydoc IApp::DeleteSymbolPriceRecords
+   * @copydoc ISymbolsDb::DeleteSymbolPriceRecords
    */
   void DeleteSymbolPriceRecords(absl::Time before_time) override;
 
  private:
-  void InsertAsset(core::Asset asset);
-  void DeleteAsset(core::Asset asset);
+  void InsertAsset(Asset asset);
+  void DeleteAsset(Asset asset);
 
-  void InsertSymbolInfo(core::SymbolInfo info);
-  void UpdateSymbolInfo(core::SymbolInfo info);
-  void DeleteSymbolInfo(core::SymbolInfo info);
+  void InsertSymbolInfo(SymbolInfo info);
+  void UpdateSymbolInfo(SymbolInfo info);
+  void DeleteSymbolInfo(SymbolInfo info);
 
   cpp::NnSp<sqldb::p::Db> db_;
 
@@ -104,6 +104,6 @@ class App : public IApp {
     cpp::Up<sqldb::IUpdateStatement> delete_symbol_price_records{};
   } mutable prepared_statements_{};
 };
-}  // namespace stonks::app::sdb
+}  // namespace stonks::core
 
 #endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_SYMBOLS_DB_H_

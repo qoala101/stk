@@ -4,7 +4,7 @@
 #include "core_siu_types.h"
 #include "network_rest_client.h"
 
-namespace stonks::app::siu {
+namespace stonks::core::siu {
 /**
  * @brief Client to Binance REST API.
  */
@@ -20,6 +20,6 @@ class BinanceClient {
  private:
   network::RestClient rest_client_;
 };
-}  // namespace stonks::app::siu
+}  // namespace stonks::core::siu
 
 #endif  // STONKS_APP_CORE_SYMBOLS_INFO_UPDATER_CORE_SIU_BINANCE_CLIENT_H_

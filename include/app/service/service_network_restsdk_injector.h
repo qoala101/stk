@@ -10,7 +10,7 @@
 #include "restsdk_rest_request_sender.h"
 #include "restsdk_ws_client.h"
 
-namespace stonks::app::injectors {
+namespace stonks::service::injectors {
 inline auto CreateNetworkRestsdkInjector [[nodiscard]] () {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<network::IRestRequestReceiver,
@@ -20,6 +20,6 @@ inline auto CreateNetworkRestsdkInjector [[nodiscard]] () {
       di::BindInterfaceToImplementation<network::IWsClient,
                                         restsdk::WsClient>());
 }
-}  // namespace stonks::app::injectors
+}  // namespace stonks::service::injectors
 
 #endif  // STONKS_APP_SERVICE_SERVICE_NETWORK_RESTSDK_INJECTOR_H_

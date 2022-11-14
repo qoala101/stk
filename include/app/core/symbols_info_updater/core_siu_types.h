@@ -5,7 +5,7 @@
 
 #include "cpp_typed_struct.h"
 
-namespace stonks::app::siu {
+namespace stonks::core::siu {
 struct BinanceSymbolExchangeInfo {
   std::string symbol{};
   std::string base_asset{};
@@ -18,6 +18,6 @@ struct BinanceSymbolExchangeInfo {
 
 struct BinanceExchangeInfo
     : public cpp::TypedStruct<std::vector<BinanceSymbolExchangeInfo>> {};
-}  // namespace stonks::app::siu
+}  // namespace stonks::core::siu
 
 #endif  // STONKS_APP_CORE_SYMBOLS_INFO_UPDATER_CORE_SIU_TYPES_H_

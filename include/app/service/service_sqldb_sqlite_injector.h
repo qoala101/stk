@@ -8,7 +8,7 @@
 #include "sqldb_i_db.h"
 #include "sqlite_db.h"
 
-namespace stonks::app::injectors {
+namespace stonks::service::injectors {
 inline auto CreateSqldbSqliteInjector [[nodiscard]] () {
   struct SqliteDbHandleFactory {
     auto operator() [[nodiscard]] (const sqlite::DbHandlesFactory &factory,
@@ -25,6 +25,6 @@ inline auto CreateSqldbSqliteInjector [[nodiscard]] () {
       di::BindTypeToOtherType<sqlite::SqliteDbHandleVariant,
                               sqlite::SqliteDbFileHandle>());
 }
-}  // namespace stonks::app::injectors
+}  // namespace stonks::service::injectors
 
 #endif  // STONKS_APP_SERVICE_SERVICE_SQLDB_SQLITE_INJECTOR_H_

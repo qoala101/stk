@@ -8,13 +8,12 @@
 #include "cpp_typed_struct.h"
 #include "network_typed_endpoint.h"
 
-namespace stonks::app::sps::endpoints {
-auto BinanceSymbolBookTickerStream(core::Symbol symbol)
-    -> network::TypedWsEndpoint {
+namespace stonks::core::sps::endpoints {
+auto BinanceSymbolBookTickerStream(Symbol symbol) -> network::TypedWsEndpoint {
   absl::AsciiStrToLower(&*symbol);
   return {.endpoint = {fmt::format(
               "wss://stream.binance.com:9443/ws/{}@bookTicker", *symbol)},
           .expected_types = {.received_message =
                                  network::ExpectedType<BinanceBookTick>()}};
 };
-}  // namespace stonks::app::sps::endpoints
+}  // namespace stonks::core::sps::endpoints

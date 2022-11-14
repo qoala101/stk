@@ -1,20 +1,21 @@
 #ifndef STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_
 #define STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_
 
-#include <callable.hpp>
+#include <absl/time/time.h>
+
+#include <callable.hpp>  // IWYU pragma: keep
 #include <utility>
 #include <vector>
 
 #include "core_i_symbols_db.h"
 #include "core_types.h"
-#include "cpp_concepts.h"
 #include "cpp_optional.h"
+#include "member_function.hpp"
 #include "network_auto_parsable_request.h"
 #include "network_rest_client.h"
-#include "network_rest_server_builder.h"
 #include "network_typed_endpoint.h"
 
-namespace stonks::app::a {
+namespace stonks::service {
 template <typename T>
 class Connection;
 
@@ -44,67 +45,67 @@ struct Handler {
 };
 
 /**
- * @copydoc IApp
+ * @copydoc core::ISymbolsDb
  */
 template <>
-class Connection<sdb::IApp> : public sdb::IApp {
+class Connection<core::ISymbolsDb> : public core::ISymbolsDb {
  public:
   explicit Connection(network::RestClient rest_client)
       : rest_client_{std::move(rest_client)} {}
 
   /**
-   * @copydoc IApp::SelectAssets
+   * @copydoc core::ISymbolsDb::SelectAssets
    */
   auto SelectAssets [[nodiscard]] () const -> std::vector<core::Asset> override;
 
   /**
-   * @copydoc IApp::UpdateAssets
+   * @copydoc core::ISymbolsDb::UpdateAssets
    */
   void UpdateAssets(std::vector<core::Asset> assets) override;
 
   /**
-   * @copydoc IApp::SelectSymbolsWithPriceRecords
+   * @copydoc core::ISymbolsDb::SelectSymbolsWithPriceRecords
    */
   auto SelectSymbolsWithPriceRecords [[nodiscard]] () const
       -> std::vector<core::Symbol> override;
 
   /**
-   * @copydoc IApp::SelectSymbolInfo
+   * @copydoc core::ISymbolsDb::SelectSymbolInfo
    */
   auto SelectSymbolInfo [[nodiscard]] (core::Symbol symbol) const
       -> cpp::Opt<core::SymbolInfo> override;
 
   /**
-   * @copydoc IApp::SelectSymbolsInfo
+   * @copydoc core::ISymbolsDb::SelectSymbolsInfo
    */
   auto SelectSymbolsInfo [[nodiscard]] () const
       -> std::vector<core::SymbolInfo> override;
 
   /**
-   * @copydoc IApp::UpdateSymbolsInfo
+   * @copydoc core::ISymbolsDb::UpdateSymbolsInfo
    */
   void UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos) override;
 
   /**
-   * @copydoc IApp::SelectSymbolPriceRecords
+   * @copydoc core::ISymbolsDb::SelectSymbolPriceRecords
    */
   auto SelectSymbolPriceRecords
       [[nodiscard]] (const SelectSymbolPriceRecordsArgs &args) const
       -> std::vector<core::SymbolPriceRecord> override;
 
   /**
-   * @copydoc IApp::InsertSymbolPriceRecord
+   * @copydoc core::ISymbolsDb::InsertSymbolPriceRecord
    */
   void InsertSymbolPriceRecord(core::SymbolPriceRecord record) override;
 
   /**
-   * @copydoc IApp::DeleteSymbolPriceRecords
+   * @copydoc core::ISymbolsDb::DeleteSymbolPriceRecords
    */
   void DeleteSymbolPriceRecords(absl::Time before_time) override;
 
  private:
   network::RestClient rest_client_;
 };
-}  // namespace stonks::app::a
+}  // namespace stonks::service
 
 #endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_
