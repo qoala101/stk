@@ -13,7 +13,6 @@
 
 #include "cpp_message_exception.h"
 #include "cpp_typed_struct.h"
-#include "not_null.hpp"
 #include "sqldb_types.h"
 #include "sqlite_prepared_statement_facade.h"
 #include "sqlite_types.h"
@@ -21,22 +20,16 @@
 namespace stonks::sqlite {
 namespace {
 auto GetColumns [[nodiscard]] (sqldb::ResultDefinition &result_definition) {
-  auto columns = *result_definition |
-                 ranges::views::transform([](auto &column_type) {
-                   return std::move(column_type.column);
-                 }) |
-                 ranges::to_vector;
-  Ensures(columns.size() == result_definition->size());
-  return columns;
+  return *result_definition | ranges::views::transform([](auto &column_type) {
+    return std::move(column_type.column);
+  }) | ranges::to_vector;
 }
 
 auto GetTypes [[nodiscard]] (const sqldb::ResultDefinition &result_definition) {
-  auto types = *result_definition |
-               ranges::views::transform(
-                   [](const auto &column_type) { return column_type.type; }) |
-               ranges::to_vector;
-  Ensures(types.size() == result_definition->size());
-  return types;
+  return *result_definition |
+         ranges::views::transform(
+             [](const auto &column_type) { return column_type.type; }) |
+         ranges::to_vector;
 }
 }  // namespace
 

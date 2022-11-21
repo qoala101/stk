@@ -5,6 +5,7 @@
 
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <range/v3/functional/identity.hpp>
 #include <range/v3/numeric/accumulate.hpp>
 #include <type_traits>
@@ -12,7 +13,6 @@
 #include <variant>
 
 #include "cpp_typed_struct.h"
-#include "not_null.hpp"
 #include "sqldb_qb_types.h"
 
 namespace stonks::sqldb::qb {

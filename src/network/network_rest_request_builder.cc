@@ -2,13 +2,13 @@
 
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <string>
 #include <type_traits>
 #include <utility>
 
 #include "cpp_typed_struct.h"
 #include "network_types.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 RestRequestBuilder::RestRequestBuilder() : request_{std::in_place} {}

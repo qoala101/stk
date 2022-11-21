@@ -4,11 +4,11 @@
 
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <string_view>
 #include <utility>
 
 #include "cpp_typed_struct.h"
-#include "not_null.hpp"
 #include "sqldb_p_types.h"
 
 namespace stonks::sqldb::qb {

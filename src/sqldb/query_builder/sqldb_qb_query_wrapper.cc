@@ -2,10 +2,10 @@
 
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <utility>
 
 #include "cpp_typed_struct.h"
-#include "not_null.hpp"
 
 namespace stonks::sqldb::qb {
 QueryWrapper::QueryWrapper(p::Parametrized<Query> query)

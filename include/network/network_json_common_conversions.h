@@ -28,14 +28,14 @@ template <Parsable T>
 auto ParseFromJson [[nodiscard]] (const IJson &json) -> T;
 
 namespace detail {
-template <cpp::Variant T, int Index>
-  requires Parsable<std::variant_alternative_t<Index, T>>
+template <cpp::Variant T, unsigned kIndex>
+  requires Parsable<std::variant_alternative_t<kIndex, T>>
 struct JsonVariantParser {
   auto operator() [[nodiscard]] (const IJson &json) const -> T try {
-    return ParseFromJson<std::variant_alternative_t<Index, T>>(json);
+    return ParseFromJson<std::variant_alternative_t<kIndex, T>>(json);
   } catch (const std::exception &) {
-    if constexpr (Index > 0) {
-      return JsonVariantParser<T, Index - 1>{}(json);
+    if constexpr (kIndex > 0) {
+      return JsonVariantParser<T, kIndex - 1>{}(json);
     } else {
       throw cpp::MessageException{"Couldn't parse any variant type"};
     }
@@ -143,7 +143,6 @@ struct JsonParser<std::vector<T>> {
       vector.emplace_back(ParseFromJson<T>(*json.GetChild(i)));
     }
 
-    Ensures(gsl::narrow_cast<int>(vector.size()) == json.GetSize());
     return vector;
   }
 };
@@ -159,7 +158,6 @@ auto ConvertToJson [[nodiscard]] (const std::vector<T> &value) {
     json->SetChild(i, ConvertToJson(value[i]));
   }
 
-  Ensures(json->GetSize() == gsl::narrow_cast<int>(value.size()));
   return json;
 }
 

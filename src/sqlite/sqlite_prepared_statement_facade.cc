@@ -132,7 +132,6 @@ auto PreparedStatementFacade::GetStepValues(
     values.emplace_back(GetValue(*sqlite_statement_, i, value_types[i]));
   }
 
-  Ensures(values.size() == value_types.size());
   return values;
 }
 

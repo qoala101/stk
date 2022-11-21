@@ -4,6 +4,7 @@
 
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <range/v3/detail/variant.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
@@ -17,7 +18,6 @@
 #include <vector>
 
 #include "cpp_typed_struct.h"
-#include "not_null.hpp"
 #include "sqldb_p_types.h"
 #include "sqldb_qb_query_wrapper.h"
 #include "sqldb_qb_select.h"

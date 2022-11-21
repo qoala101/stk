@@ -5,6 +5,7 @@
 
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <range/v3/detail/variant.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
@@ -17,7 +18,6 @@
 #include <utility>
 
 #include "cpp_typed_struct.h"
-#include "not_null.hpp"
 #include "sqldb_p_types.h"
 #include "sqldb_qb_types.h"
 #include "sqldb_types.h"

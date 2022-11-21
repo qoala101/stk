@@ -15,6 +15,7 @@
 #include <map>
 #include <memory>
 #include <nameof.hpp>
+#include <not_null.hpp>
 #include <utility>
 
 #include "cpp_polymorphic_value.h"
@@ -22,7 +23,6 @@
 #include "network_enums.h"
 #include "network_i_json.h"
 #include "network_types.h"
-#include "not_null.hpp"
 #include "restsdk_json.h"
 #include "restsdk_json_native_handle.h"
 

@@ -5,12 +5,12 @@
 #include <gsl/assert>
 #include <gsl/util>
 #include <memory>
+#include <not_null.hpp>
 #include <utility>
 
 #include "cpp_move_if.h"
 #include "cpp_not_null.h"
 #include "network_i_json.h"
-#include "not_null.hpp"
 
 namespace stonks::restsdk {
 Json::Json(bool value) : native_handle_{web::json::value::boolean(value)} {}

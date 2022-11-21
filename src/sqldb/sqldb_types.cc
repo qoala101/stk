@@ -1,8 +1,7 @@
 #include "sqldb_types.h"
 
 #include <memory>
-
-#include "not_null.hpp"
+#include <not_null.hpp>
 
 namespace stonks::sqldb {
 auto operator<=>
