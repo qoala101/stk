@@ -38,9 +38,11 @@
 #include "network_rest_request_builder.h"
 #include "network_rest_server.h"
 #include "network_rest_server_builder.h"
-#include "network_te_endpoint_types_from.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
+#include "networkx_common.h"
+#include "networkx_endpoint_function_traits_facade.h"
+#include "networkx_types.h"
 #include "test_restsdk_injector.h"
 
 namespace {
@@ -78,36 +80,46 @@ class Entity : public EntityInterface {
  private:
   std::vector<stonks::core::Symbol> symbols_{};
 };
+}  // namespace
 
+namespace stonks::networkx {
+template <>
+struct EndpointFunctionTraits<&Entity::PushSymbol> {
+  static constexpr auto kMethod = network::Method::kPost;
+  static constexpr auto kParams = ParamList(RequestBody{});
+};
+
+template <>
+struct EndpointFunctionTraits<&Entity::GetSymbol> {
+  static constexpr auto kMethod = network::Method::kGet;
+  static constexpr auto kParams = ParamList("index");
+};
+
+template <>
+struct EndpointFunctionTraits<&Entity::GetSize> {
+  static constexpr auto kMethod = network::Method::kGet;
+};
+}  // namespace stonks::networkx
+
+namespace {
 class EntityServer {
  public:
   static auto PushSymbolEndpointDesc [[nodiscard]] ()
   -> stonks::network::TypedEndpoint {
-    return stonks::network::TypedEndpoint{
-        .endpoint = {.method = stonks::network::Method::kPost,
-                     .uri = {"/PushSymbol"}},
-        .expected_types =
-            stonks::network::te::EndpointTypesFrom<&Entity::PushSymbol>(
-                stonks::network::te::Body{})};
+    return stonks::networkx::EndpointFunctionTraitsFacade<
+        &Entity::PushSymbol>::AsTypedEndpoint();
   }
 
   static auto GetSymbolEndpointDesc [[nodiscard]] ()
   -> stonks::network::TypedEndpoint {
-    return stonks::network::TypedEndpoint{
-        .endpoint = {.method = stonks::network::Method::kGet,
-                     .uri = {"/GetSymbol"}},
-        .expected_types =
-            stonks::network::te::EndpointTypesFrom<&Entity::GetSymbol>(
-                "index")};
+    return stonks::networkx::EndpointFunctionTraitsFacade<
+        &Entity::GetSymbol>::AsTypedEndpoint();
   }
 
   static auto GetSizeEndpointDesc [[nodiscard]] ()
   -> stonks::network::TypedEndpoint {
-    return stonks::network::TypedEndpoint{
-        .endpoint = {.method = stonks::network::Method::kGet,
-                     .uri = {"/GetSize"}},
-        .expected_types =
-            stonks::network::te::EndpointTypesFrom<&Entity::GetSize>()};
+    return stonks::networkx::EndpointFunctionTraitsFacade<
+        &Entity::GetSize>::AsTypedEndpoint();
   }
 
   explicit EntityServer(stonks::network::Uri base_uri)
@@ -263,18 +275,18 @@ TEST(ClientServer, WrongClientTypesReceived) {
                stonks::cpp::NnUp<stonks::network::IRestRequestHandler>>{};
 
   handlers.emplace(EntityServer::PushSymbolEndpointDesc().endpoint,
-                   stonks::cpp::MakeNnUp<FunctionHandler>([](const auto&) {
+                   stonks::cpp::MakeNnUp<FunctionHandler>([](const auto &) {
                      return stonks::network::RestResponse{
                          .status = stonks::network::Status::kOk,
                          .result = stonks::network::ConvertToJson(0)};
                    }));
   handlers.emplace(EntityServer::GetSymbolEndpointDesc().endpoint,
-                   stonks::cpp::MakeNnUp<FunctionHandler>([](const auto&) {
+                   stonks::cpp::MakeNnUp<FunctionHandler>([](const auto &) {
                      return stonks::network::RestResponse{
                          .status = stonks::network::Status::kOk};
                    }));
   handlers.emplace(EntityServer::PushSymbolEndpointDesc().endpoint,
-                   stonks::cpp::MakeNnUp<FunctionHandler>([](const auto&) {
+                   stonks::cpp::MakeNnUp<FunctionHandler>([](const auto &) {
                      return stonks::network::RestResponse{
                          .status = stonks::network::Status::kOk,
                          .result = stonks::network::ConvertToJson("NOT_INT")};
@@ -338,7 +350,7 @@ TEST(ClientServer, HandlingException) {
   const auto client_exception = [&entity_client]() {
     try {
       std::ignore = entity_client.GetSymbol(2);
-    } catch (const std::exception& exception) {
+    } catch (const std::exception &exception) {
       return std::string{exception.what()};
     }
 

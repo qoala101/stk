@@ -3,70 +3,11 @@
 
 #include <string>
 
+#include "cpp_for_each_type.h"
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_qb_types.h"
 
 namespace stonks::sqldb::qb {
-namespace detail {
-template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
-void GetNamesImpl(std::vector<std::string> &values) {
-  values.emplace_back(Column::GetName());
-
-  if constexpr (sizeof...(OtherColumns) > 0) {
-    GetNamesImpl<OtherColumns...>(values);
-  }
-}
-
-template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
-void GetCreateColumnsDataImpl(std::vector<CreateColumnData> &data) {
-  data.emplace_back(CreateColumnData{.name = Column::GetName(),
-                                     .type = Column::GetType(),
-                                     .unique = Column::IsUnique()});
-
-  if constexpr (sizeof...(OtherColumns) > 0) {
-    GetCreateColumnsDataImpl<OtherColumns...>(data);
-  }
-}
-
-template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
-void GetPrimaryKeysDataImpl(std::vector<PrimaryKeyData> &data) {
-  if constexpr (Column::IsPrimaryKey()) {
-    data.emplace_back(
-        PrimaryKeyData{.column_name = Column::GetName(),
-                       .auto_increment = Column::HasAutoIncrement()});
-  }
-
-  if constexpr (sizeof...(OtherColumns) > 0) {
-    GetPrimaryKeysDataImpl<OtherColumns...>(data);
-  }
-}
-
-template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
-void GetForeignKeysDataImpl(std::vector<ForeignKeyData> &data) {
-  if constexpr (Column::IsForeignKey()) {
-    data.emplace_back(ForeignKeyData{
-        .column_name = Column::GetName(),
-        .target_table_name = Column::ForeignKey::Table::GetName(),
-        .target_column_name = Column::ForeignKey::GetName()});
-  }
-
-  if constexpr (sizeof...(OtherColumns) > 0) {
-    GetForeignKeysDataImpl<OtherColumns...>(data);
-  }
-}
-
-template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
-void GetSelectColumnsDataImpl(std::vector<SelectColumnData> &data) {
-  data.emplace_back(SelectColumnData{.name = Column::GetName(),
-                                     .full_name = Column::GetFullName(),
-                                     .type = Column::GetType()});
-
-  if constexpr (sizeof...(OtherColumns) > 0) {
-    GetSelectColumnsDataImpl<OtherColumns...>(data);
-  }
-}
-}  // namespace detail
-
 template <typename T>
 struct ColumnsTraits;
 
@@ -83,7 +24,11 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
    */
   static auto GetNames [[nodiscard]] () {
     auto names = std::vector<std::string>{};
-    detail::GetNamesImpl<Columns...>(names);
+
+    cpp::ForEachType<Columns...>([&names]<typename Column>(Column) {
+      names.emplace_back(Column::Type::GetName());
+    });
+
     return names;
   }
 
@@ -92,7 +37,13 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
    */
   static auto GetCreateColumnsData [[nodiscard]] () {
     auto data = std::vector<CreateColumnData>{};
-    detail::GetCreateColumnsDataImpl<Columns...>(data);
+
+    cpp::ForEachType<Columns...>([&data]<typename Column>(Column) {
+      data.emplace_back(CreateColumnData{.name = Column::Type::GetName(),
+                                         .type = Column::Type::GetType(),
+                                         .unique = Column::Type::IsUnique()});
+    });
+
     return data;
   }
 
@@ -101,7 +52,15 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
    */
   static auto GetPrimaryKeysData [[nodiscard]] () {
     auto data = std::vector<PrimaryKeyData>{};
-    detail::GetPrimaryKeysDataImpl<Columns...>(data);
+
+    cpp::ForEachType<Columns...>([&data]<typename Column>(Column) {
+      if constexpr (Column::Type::IsPrimaryKey()) {
+        data.emplace_back(
+            PrimaryKeyData{.column_name = Column::Type::GetName(),
+                           .auto_increment = Column::Type::HasAutoIncrement()});
+      }
+    });
+
     return data;
   }
 
@@ -110,7 +69,16 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
    */
   static auto GetForeignKeysData [[nodiscard]] () {
     auto data = std::vector<ForeignKeyData>{};
-    detail::GetForeignKeysDataImpl<Columns...>(data);
+
+    cpp::ForEachType<Columns...>([&data]<typename Column>(Column) {
+      if constexpr (Column::Type::IsForeignKey()) {
+        data.emplace_back(ForeignKeyData{
+            .column_name = Column::Type::GetName(),
+            .target_table_name = Column::Type::ForeignKey::Table::GetName(),
+            .target_column_name = Column::Type::ForeignKey::GetName()});
+      }
+    });
+
     return data;
   }
 
@@ -119,7 +87,14 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
    */
   static auto GetSelectColumnsData [[nodiscard]] () {
     auto data = std::vector<SelectColumnData>{};
-    detail::GetSelectColumnsDataImpl<Columns...>(data);
+
+    cpp::ForEachType<Columns...>([&data]<typename Column>(Column) {
+      data.emplace_back(
+          SelectColumnData{.name = Column::Type::GetName(),
+                           .full_name = Column::Type::GetFullName(),
+                           .type = Column::Type::GetType()});
+    });
+
     return data;
   }
 };

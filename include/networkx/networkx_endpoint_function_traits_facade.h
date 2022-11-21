@@ -103,9 +103,7 @@ struct EndpointFunctionTraitsFacade : public FunctionTraits {
       endpoint_types.params.emplace(param, std::move(expected_param_type));
     }
 
-    const auto num_remaining_params = GetNumParams() - kParamIndex - 1;
-
-    if constexpr (num_remaining_params > 0) {
+    if constexpr (kParamIndex > 0) {
       AddNextExpectedParamType<kParamIndex - 1>(endpoint_types);
     }
   }
