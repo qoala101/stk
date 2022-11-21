@@ -3,6 +3,7 @@
 
 #include <callable.hpp>
 #include <concepts>
+#include <string>
 #include <tuple>
 #include <type_traits>
 
@@ -32,6 +33,13 @@ constexpr auto IsEndpointFunctions = false;
 template <cpp::MemberFunction... Ts>
 constexpr auto IsEndpointFunctions<std::tuple<Ts...>> = true;
 }  // namespace detail
+
+/**
+ * @brief Valid endpoint parameter type.
+ */
+template <typename T>
+concept EndpointParam =
+    std::convertible_to<T, std::string> || std::same_as<T, RequestBody>;
 
 /**
  * @brief Function for which endpoint function traits are defined.

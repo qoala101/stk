@@ -15,7 +15,7 @@
 
 namespace stonks::networkx {
 namespace detail {
-template <typename Param>
+template <EndpointParam Param>
 auto GetParamValue [[nodiscard]] (network::AutoParsableRestRequest &request,
                                   const Param &param) {
   if constexpr (std::is_same_v<Param, RequestBody>) {

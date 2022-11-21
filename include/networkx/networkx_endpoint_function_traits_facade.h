@@ -66,7 +66,7 @@ struct EndpointFunctionTraitsFacade : public FunctionTraits {
   static auto AsTypedEndpoint [[nodiscard]] () {
     return network::TypedEndpoint{
         .endpoint = {.method = FunctionTraits::kMethod,
-                     .uri = ToUri(nameof::nameof_member<kFunction>())},
+                     .uri = detail::ToUri(nameof::nameof_member<kFunction>())},
         .expected_types = GetExpectedTypes()};
   }
 
