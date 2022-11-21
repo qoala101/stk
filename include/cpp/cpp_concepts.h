@@ -1,6 +1,8 @@
 #ifndef STONKS_CPP_CPP_CONCEPTS_H_
 #define STONKS_CPP_CPP_CONCEPTS_H_
 
+#include <callable.hpp>
+#include <member_function.hpp>
 #include <type_traits>
 #include <variant>
 #include <vector>
@@ -15,10 +17,10 @@
 namespace stonks::cpp {
 namespace detail {
 template <typename T>
-struct IsTypeList : public std::false_type {};
+constexpr auto IsTypeList = false;
 
 template <typename... Ts>
-struct IsTypeList<cpp::TypeList<Ts...>> : public std::true_type {};
+constexpr auto IsTypeList<cpp::TypeList<Ts...>> = true;
 }  // namespace detail
 
 template <typename T>
@@ -57,7 +59,7 @@ concept IsTypedStruct =
     std::derived_from<T, TypedStruct<typename T::ValueType>>;
 
 template <typename T>
-concept IsTypeList = detail::IsTypeList<T>::value;
+concept IsTypeList = detail::IsTypeList<T>;
 
 template <typename T>
 concept Vector = std::same_as<T, std::vector<typename T::value_type>>;
@@ -71,6 +73,10 @@ concept AssignableFrom = requires(T t, U &&u) { t = std::forward<U>(u); };
 
 template <typename T>
 concept MemberFunction = std::is_member_function_pointer_v<T>;
+
+template <typename T, typename Parent>
+concept MemberFunctionOf =
+    std::same_as<typename member_function_traits<T>::class_type, Parent>;
 
 template <typename T, typename U>
 concept InvocableReturning = requires(T t) {

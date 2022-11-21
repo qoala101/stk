@@ -16,6 +16,7 @@ target_include_directories(libcpp
 )
 
 target_link_libraries(libcpp
+  PUBLIC callable
   PUBLIC function2::function2
   PUBLIC Microsoft.GSL::GSL
   PUBLIC NotNull

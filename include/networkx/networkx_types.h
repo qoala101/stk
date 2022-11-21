@@ -1,0 +1,28 @@
+#ifndef STONKS_NETWORKX_NETWORKX_TYPES_H_
+#define STONKS_NETWORKX_NETWORKX_TYPES_H_
+
+#include "cpp_concepts.h"  // IWYU pragma: keep
+
+namespace stonks::networkx {
+/**
+ * @brief Passing the instance to API instead of parameter name
+ * would make it to parse parameter as body.
+ */
+struct RequestBody {};
+
+/**
+ * @brief Traits of endpoint function.
+ * Must define kMethod and kParams with param names for each param.
+ */
+template <cpp::MemberFunction auto kFunction>
+struct EndpointFunctionTraits;
+
+/**
+ * @brief Traits of client-server type.
+ * Must define its endpoint methods as kEndpoints.
+ */
+template <typename T>
+struct ClientServerTypeTraits;
+}  // namespace stonks::networkx
+
+#endif  // STONKS_NETWORKX_NETWORKX_TYPES_H_
