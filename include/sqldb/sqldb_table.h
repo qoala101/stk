@@ -63,14 +63,14 @@ class Table {
     /**
      * @brief Tells whether column is part of the primary key.
      */
-    static consteval auto IsPrimaryKey [[nodiscard]] () {
+    static constexpr auto IsPrimaryKey [[nodiscard]] () {
       return requires { typename ColumnT::PrimaryKey; };
     }
 
     /**
      * @brief Tells whether column is foreign key.
      */
-    static consteval auto IsForeignKey [[nodiscard]] () {
+    static constexpr auto IsForeignKey [[nodiscard]] () {
       return requires { typename ColumnT::ForeignKey; };
     }
 

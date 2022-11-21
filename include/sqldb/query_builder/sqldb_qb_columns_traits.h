@@ -7,6 +7,66 @@
 #include "sqldb_qb_types.h"
 
 namespace stonks::sqldb::qb {
+namespace detail {
+template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
+void GetNamesImpl(std::vector<std::string> &values) {
+  values.emplace_back(Column::GetName());
+
+  if constexpr (sizeof...(OtherColumns) > 0) {
+    GetNamesImpl<OtherColumns...>(values);
+  }
+}
+
+template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
+void GetCreateColumnsDataImpl(std::vector<CreateColumnData> &data) {
+  data.emplace_back(CreateColumnData{.name = Column::GetName(),
+                                     .type = Column::GetType(),
+                                     .unique = Column::IsUnique()});
+
+  if constexpr (sizeof...(OtherColumns) > 0) {
+    GetCreateColumnsDataImpl<OtherColumns...>(data);
+  }
+}
+
+template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
+void GetPrimaryKeysDataImpl(std::vector<PrimaryKeyData> &data) {
+  if constexpr (Column::IsPrimaryKey()) {
+    data.emplace_back(
+        PrimaryKeyData{.column_name = Column::GetName(),
+                       .auto_increment = Column::HasAutoIncrement()});
+  }
+
+  if constexpr (sizeof...(OtherColumns) > 0) {
+    GetPrimaryKeysDataImpl<OtherColumns...>(data);
+  }
+}
+
+template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
+void GetForeignKeysDataImpl(std::vector<ForeignKeyData> &data) {
+  if constexpr (Column::IsForeignKey()) {
+    data.emplace_back(ForeignKeyData{
+        .column_name = Column::GetName(),
+        .target_table_name = Column::ForeignKey::Table::GetName(),
+        .target_column_name = Column::ForeignKey::GetName()});
+  }
+
+  if constexpr (sizeof...(OtherColumns) > 0) {
+    GetForeignKeysDataImpl<OtherColumns...>(data);
+  }
+}
+
+template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
+void GetSelectColumnsDataImpl(std::vector<SelectColumnData> &data) {
+  data.emplace_back(SelectColumnData{.name = Column::GetName(),
+                                     .full_name = Column::GetFullName(),
+                                     .type = Column::GetType()});
+
+  if constexpr (sizeof...(OtherColumns) > 0) {
+    GetSelectColumnsDataImpl<OtherColumns...>(data);
+  }
+}
+}  // namespace detail
+
 template <typename T>
 struct ColumnsTraits;
 
@@ -23,7 +83,7 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
    */
   static auto GetNames [[nodiscard]] () {
     auto names = std::vector<std::string>{};
-    GetNamesImpl<Columns...>(names);
+    detail::GetNamesImpl<Columns...>(names);
     return names;
   }
 
@@ -32,7 +92,7 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
    */
   static auto GetCreateColumnsData [[nodiscard]] () {
     auto data = std::vector<CreateColumnData>{};
-    GetCreateColumnsDataImpl<Columns...>(data);
+    detail::GetCreateColumnsDataImpl<Columns...>(data);
     return data;
   }
 
@@ -41,7 +101,7 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
    */
   static auto GetPrimaryKeysData [[nodiscard]] () {
     auto data = std::vector<PrimaryKeyData>{};
-    GetPrimaryKeysDataImpl<Columns...>(data);
+    detail::GetPrimaryKeysDataImpl<Columns...>(data);
     return data;
   }
 
@@ -50,7 +110,7 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
    */
   static auto GetForeignKeysData [[nodiscard]] () {
     auto data = std::vector<ForeignKeyData>{};
-    GetForeignKeysDataImpl<Columns...>(data);
+    detail::GetForeignKeysDataImpl<Columns...>(data);
     return data;
   }
 
@@ -59,67 +119,8 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
    */
   static auto GetSelectColumnsData [[nodiscard]] () {
     auto data = std::vector<SelectColumnData>{};
-    GetSelectColumnsDataImpl<Columns...>(data);
+    detail::GetSelectColumnsDataImpl<Columns...>(data);
     return data;
-  }
-
- private:
-  template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
-  static void GetNamesImpl(std::vector<std::string> &values) {
-    values.emplace_back(Column::GetName());
-
-    if constexpr (sizeof...(OtherColumns) > 0) {
-      GetNamesImpl<OtherColumns...>(values);
-    }
-  }
-
-  template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
-  static void GetCreateColumnsDataImpl(std::vector<CreateColumnData> &data) {
-    data.emplace_back(CreateColumnData{.name = Column::GetName(),
-                                       .type = Column::GetType(),
-                                       .unique = Column::IsUnique()});
-
-    if constexpr (sizeof...(OtherColumns) > 0) {
-      GetCreateColumnsDataImpl<OtherColumns...>(data);
-    }
-  }
-
-  template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
-  static void GetPrimaryKeysDataImpl(std::vector<PrimaryKeyData> &data) {
-    if constexpr (Column::IsPrimaryKey()) {
-      data.emplace_back(
-          PrimaryKeyData{.column_name = Column::GetName(),
-                         .auto_increment = Column::HasAutoIncrement()});
-    }
-
-    if constexpr (sizeof...(OtherColumns) > 0) {
-      GetPrimaryKeysDataImpl<OtherColumns...>(data);
-    }
-  }
-
-  template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
-  static void GetForeignKeysDataImpl(std::vector<ForeignKeyData> &data) {
-    if constexpr (Column::IsForeignKey()) {
-      data.emplace_back(ForeignKeyData{
-          .column_name = Column::GetName(),
-          .target_table_name = Column::ForeignKey::Table::GetName(),
-          .target_column_name = Column::ForeignKey::GetName()});
-    }
-
-    if constexpr (sizeof...(OtherColumns) > 0) {
-      GetForeignKeysDataImpl<OtherColumns...>(data);
-    }
-  }
-
-  template <ColumnDefinition Column, ColumnDefinition... OtherColumns>
-  static void GetSelectColumnsDataImpl(std::vector<SelectColumnData> &data) {
-    data.emplace_back(SelectColumnData{.name = Column::GetName(),
-                                       .full_name = Column::GetFullName(),
-                                       .type = Column::GetType()});
-
-    if constexpr (sizeof...(OtherColumns) > 0) {
-      GetSelectColumnsDataImpl<OtherColumns...>(data);
-    }
   }
 };
 }  // namespace stonks::sqldb::qb
