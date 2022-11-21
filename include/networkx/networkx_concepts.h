@@ -48,7 +48,7 @@ template <auto kFunction>
 concept EndpointFunction = requires {
                              {
                                EndpointFunctionTraits<kFunction>::kMethod
-                               } -> cpp::DecaysTo<network::Method>;
+                               } -> cpp::Is<network::Method>;
                            } && detail::HasParamForEachArg<kFunction>();
 
 /**

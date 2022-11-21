@@ -18,7 +18,7 @@ namespace stonks::network {
 namespace detail {
 template <typename... Keys>
 auto MakeFromJsonImpl
-    [[nodiscard]] (cpp::DecaysTo<IJson> auto &json, Keys &&...keys) {
+    [[nodiscard]] (cpp::Is<IJson> auto &json, Keys &&...keys) {
   return AutoParsable{json.GetChild(std::forward<Keys>(keys)...)};
 }
 
@@ -49,7 +49,7 @@ auto ParseFromJson [[nodiscard]] (const IJson &json) -> T {
  */
 template <Parsable T, typename... Keys>
 auto MakeFromJson
-    [[nodiscard]] (cpp::DecaysTo<IJson> auto &json, Keys &&...keys) {
+    [[nodiscard]] (cpp::Is<IJson> auto &json, Keys &&...keys) {
   return T{detail::MakeFromJsonImpl(json, std::forward<Keys>(keys))...};
 }
 

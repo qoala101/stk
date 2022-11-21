@@ -15,7 +15,7 @@ auto Options::GetOptionOrImpl(std::string name, T &&default_value) const {
     return std::forward<T>(default_value);
   }
 
-  return option->as<std::decay_t<T>>();
+  return option->as<std::remove_cvref_t<T>>();
 }
 
 auto Options::GetOptionOr(std::string name, int default_value) const -> int {

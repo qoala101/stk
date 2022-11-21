@@ -42,7 +42,7 @@ auto ConditionFrom
 auto ToString [[nodiscard]] (const Value &value) {
   return std::visit(
       [](const auto &v) -> std::string {
-        using V = std::decay_t<decltype(v)>;
+        using V = std::remove_cvref_t<decltype(v)>;
 
         if constexpr (std::is_same_v<V, std::string>) {
           return fmt::format(R"("{}")", v);

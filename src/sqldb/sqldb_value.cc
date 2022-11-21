@@ -51,7 +51,7 @@ auto Value::Get<std::string>() -> std::string& {
 auto Value::GetType() const -> DataTypeVariant {
   return std::visit(
       [](const auto& v) -> DataTypeVariant {
-        using V = std::decay_t<decltype(v)>;
+        using V = std::remove_cvref_t<decltype(v)>;
 
         if constexpr (!std::is_same_v<V, std::monostate>) {
           return {DataType<V>{}};

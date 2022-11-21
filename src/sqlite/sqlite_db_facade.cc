@@ -19,8 +19,8 @@
 
 namespace stonks::sqlite {
 namespace {
-using NullableSqliteStatementHandle =
-    std::decay_t<decltype(std::declval<SqliteStatementHandle>().as_nullable())>;
+using NullableSqliteStatementHandle = std::remove_cvref_t<
+    decltype(std::declval<SqliteStatementHandle>().as_nullable())>;
 
 auto GetAssociatedFileName [[nodiscard]] (sqlite3 &sqlite_db) -> std::string {
   const auto *const file_name = sqlite3_db_filename(&sqlite_db, nullptr);

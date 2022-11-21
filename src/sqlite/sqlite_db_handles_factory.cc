@@ -20,7 +20,7 @@
 namespace stonks::sqlite {
 namespace {
 using NullableSqliteDbHandle =
-    std::decay_t<decltype(std::declval<SqliteDbHandle>().as_nullable())>;
+    std::remove_cvref_t<decltype(std::declval<SqliteDbHandle>().as_nullable())>;
 }  // namespace
 
 DbHandlesFactory::DbHandlesFactory(di::Factory<log::ILogger> logger_factory)

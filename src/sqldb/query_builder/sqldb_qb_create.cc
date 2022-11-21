@@ -20,7 +20,7 @@ namespace {
 auto ToString [[nodiscard]] (const DataTypeVariant &type) {
   return std::visit(
       [](const auto &v) {
-        using V = typename std::decay_t<decltype(v)>::Type;
+        using V = typename std::remove_cvref_t<decltype(v)>::Type;
 
         if constexpr (std::is_same_v<V, bool> || std::is_same_v<V, int> ||
                       std::is_same_v<V, int64_t>) {

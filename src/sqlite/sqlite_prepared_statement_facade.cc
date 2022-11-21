@@ -64,7 +64,7 @@ auto GetValue [[nodiscard]] (sqlite3_stmt &statement, int index,
 
   return std::visit(
       [&statement, index](const auto &v) {
-        using V = typename std::decay_t<decltype(v)>::Type;
+        using V = typename std::remove_cvref_t<decltype(v)>::Type;
 
         if constexpr (std::is_same_v<V, bool>) {
           return sqldb::Value{

@@ -45,7 +45,7 @@ template <typename T>
 concept Rvalue = std::is_rvalue_reference_v<T>;
 
 template <typename T, typename U>
-concept DecaysTo = std::same_as<std::decay_t<T>, U>;
+concept Is = std::same_as<std::remove_cvref_t<T>, U>;
 
 template <typename T>
 concept Optional = std::same_as<T, Opt<typename T::value_type>>;
