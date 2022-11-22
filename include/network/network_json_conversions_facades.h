@@ -4,6 +4,7 @@
 #include <utility>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
+#include "cpp_for_each_arg.h"
 #include "network_auto_parsable.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_json.h"
@@ -15,25 +16,6 @@
  */
 
 namespace stonks::network {
-namespace detail {
-template <typename... Keys>
-auto MakeFromJsonImpl
-    [[nodiscard]] (cpp::Is<IJson> auto &json, Keys &&...keys) {
-  return AutoParsable{json.GetChild(std::forward<Keys>(keys)...)};
-}
-
-template <typename Key, Convertible Value, typename... KeyValues>
-void BuildJsonFromImpl(IJson &json, Key &&key, Value &&value,
-                       KeyValues &&...key_values) {
-  json.SetChild(std::forward<Key>(key),
-                ConvertToJson(std::forward<Value>(value)));
-
-  if constexpr (sizeof...(KeyValues) > 0) {
-    BuildJsonFromImpl(json, std::forward<KeyValues>(key_values)...);
-  }
-}
-}  // namespace detail
-
 /**
  * @brief Alias for JSON parser operator which converts JSON to an object.
  */
@@ -48,9 +30,8 @@ auto ParseFromJson [[nodiscard]] (const IJson &json) -> T {
  * @param keys List of JSON children names.
  */
 template <Parsable T, typename... Keys>
-auto MakeFromJson
-    [[nodiscard]] (cpp::Is<IJson> auto &json, Keys &&...keys) {
-  return T{detail::MakeFromJsonImpl(json, std::forward<Keys>(keys))...};
+auto MakeFromJson [[nodiscard]] (cpp::Is<IJson> auto &json, Keys &&...keys) {
+  return T{AutoParsable{json.GetChild(std::forward<Keys>(keys))}...};
 }
 
 /**
@@ -69,7 +50,14 @@ auto ParseFromJsonChild [[nodiscard]] (const IJson &json, Key &&child_key) {
 template <typename... KeyValues>
 auto BuildJsonFrom [[nodiscard]] (KeyValues &&...key_values) {
   auto json = stonks::network::CreateNullJson();
-  detail::BuildJsonFromImpl(*json, std::forward<KeyValues>(key_values)...);
+
+  cpp::ForEachArg<2>(
+      [&json]<typename Key, typename Value>(Key &&key, Value &&value) {
+        json->SetChild(std::forward<Key>(key),
+                       ConvertToJson(std::forward<Value>(value)));
+      },
+      std::forward<KeyValues>(key_values)...);
+
   return json;
 }
 }  // namespace stonks::network

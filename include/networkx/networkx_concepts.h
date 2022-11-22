@@ -3,6 +3,7 @@
 
 #include <callable.hpp>
 #include <concepts>
+#include <member_function.hpp>
 #include <string>
 #include <tuple>
 #include <type_traits>
