@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_ALIASES_CPP_OPTIONAL_H_
-#define STONKS_CPP_ALIASES_CPP_OPTIONAL_H_
+#ifndef STONKS_CPP_ALIAS_CPP_OPTIONAL_H_
+#define STONKS_CPP_ALIAS_CPP_OPTIONAL_H_
 
 #include <optional>
 
@@ -17,4 +17,4 @@ auto MakeOpt [[nodiscard]] (Args &&...args) {
 }
 }  // namespace stonks::cpp
 
-#endif  // STONKS_CPP_ALIASES_CPP_OPTIONAL_H_
+#endif  // STONKS_CPP_ALIAS_CPP_OPTIONAL_H_

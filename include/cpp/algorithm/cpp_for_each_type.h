@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_CPP_FOR_EACH_TYPE_H_
-#define STONKS_CPP_CPP_FOR_EACH_TYPE_H_
+#ifndef STONKS_CPP_ALGORITHM_CPP_FOR_EACH_TYPE_H_
+#define STONKS_CPP_ALGORITHM_CPP_FOR_EACH_TYPE_H_
 
 namespace stonks::cpp {
 /**
@@ -23,6 +23,7 @@ void ForEachTypeImpl(const auto &function) {
 
 /**
  * @brief Calls the function for each type parameter.
+ * @param function Function taking current type traits.
  */
 template <typename... Types>
 void ForEachType(const auto &function) {
@@ -30,4 +31,4 @@ void ForEachType(const auto &function) {
 }
 }  // namespace stonks::cpp
 
-#endif  // STONKS_CPP_CPP_FOR_EACH_TYPE_H_
+#endif  // STONKS_CPP_ALGORITHM_CPP_FOR_EACH_TYPE_H_

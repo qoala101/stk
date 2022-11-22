@@ -52,7 +52,7 @@ auto BuildJsonFrom [[nodiscard]] (KeyValues &&...key_values) {
   auto json = stonks::network::CreateNullJson();
 
   cpp::ForEachArg<2>(
-      [&json]<typename Key, typename Value>(Key &&key, Value &&value) {
+      [&json]<typename Key, typename Value>(Key &&key, Value &&value, auto) {
         json->SetChild(std::forward<Key>(key),
                        ConvertToJson(std::forward<Value>(value)));
       },

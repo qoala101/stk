@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_ALIASES_CPP_VARIANT_STRUCT_H_
-#define STONKS_CPP_ALIASES_CPP_VARIANT_STRUCT_H_
+#ifndef STONKS_CPP_ALIAS_CPP_VARIANT_STRUCT_H_
+#define STONKS_CPP_ALIAS_CPP_VARIANT_STRUCT_H_
 
 #include <variant>
 
@@ -13,4 +13,4 @@ template <typename... Ts>
 using VariantStruct = TypedStruct<std::variant<Ts...>>;
 }  // namespace stonks::cpp
 
-#endif  // STONKS_CPP_ALIASES_CPP_VARIANT_STRUCT_H_
+#endif  // STONKS_CPP_ALIAS_CPP_VARIANT_STRUCT_H_

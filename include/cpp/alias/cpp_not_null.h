@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_ALIASES_CPP_NOT_NULL_H_
-#define STONKS_CPP_ALIASES_CPP_NOT_NULL_H_
+#ifndef STONKS_CPP_ALIAS_CPP_NOT_NULL_H_
+#define STONKS_CPP_ALIAS_CPP_NOT_NULL_H_
 
 #include <not_null.hpp>
 
@@ -40,4 +40,4 @@ auto MakeNnSp [[nodiscard]] (Args &&...args) {
 }
 }  // namespace stonks::cpp
 
-#endif  // STONKS_CPP_ALIASES_CPP_NOT_NULL_H_
+#endif  // STONKS_CPP_ALIAS_CPP_NOT_NULL_H_

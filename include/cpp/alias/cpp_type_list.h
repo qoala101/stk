@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_ALIASES_CPP_TYPE_LIST_H_
-#define STONKS_CPP_ALIASES_CPP_TYPE_LIST_H_
+#ifndef STONKS_CPP_ALIAS_CPP_TYPE_LIST_H_
+#define STONKS_CPP_ALIAS_CPP_TYPE_LIST_H_
 
 #include <tuple>
 
@@ -11,4 +11,4 @@ template <typename... Ts>
 using TypeList = std::tuple<Ts...>;
 }  // namespace stonks::cpp
 
-#endif  // STONKS_CPP_ALIASES_CPP_TYPE_LIST_H_
+#endif  // STONKS_CPP_ALIAS_CPP_TYPE_LIST_H_

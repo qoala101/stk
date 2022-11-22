@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
+#include "cpp_for_each_arg.h"
 #include "member_function.hpp"
 #include "network_rest_client.h"
 #include "network_rest_client_request_builder.h"
@@ -29,33 +30,11 @@ template <cpp::MemberFunction auto kFunction>
   requires EndpointFunction<kFunction>
 class CallImpl {
  private:
-  using FunctionType = decltype(kFunction);
   using FunctionTraits = EndpointFunctionTraitsFacade<kFunction>;
-
-  template <typename Arg, typename... Args>
-  void SetParamFromNextArg(Arg &&arg, Args &&...args) {
-    const auto num_params = FunctionTraits::GetNumParams();
-    const auto num_remaining_args = sizeof...(Args);
-    const auto param_index = num_params - num_remaining_args - 1;
-
-    const auto param = FunctionTraits::template GetParam<param_index>();
-
-    using ParamType = std::remove_cvref_t<decltype(param)>;
-
-    if constexpr (const auto is_body = std::is_same_v<ParamType, RequestBody>) {
-      request_builder_.WithBody(std::forward<Arg>(arg));
-    } else {
-      request_builder_.WithParam(param, std::forward<Arg>(arg));
-    }
-
-    if constexpr (num_remaining_args > 0) {
-      SetParamFromNextArg(std::forward<Args>(args)...);
-    }
-  }
 
   auto ExecuteAndGetResult [[nodiscard]] () {
     using ResultType =
-        typename member_function_traits<FunctionType>::return_type;
+        typename member_function_traits<decltype(kFunction)>::return_type;
 
     if constexpr (std::is_same_v<ResultType, void>) {
       request_builder_.DiscardingResult();
@@ -72,7 +51,22 @@ class CallImpl {
   template <typename... Args>
   auto operator() [[nodiscard]] (Args &&...args) {
     if constexpr (FunctionTraits::HasParams()) {
-      SetParamFromNextArg(std::forward<Args>(args)...);
+      cpp::ForEachArg(
+          [&request_builder = request_builder_]<typename Arg, typename Current>(
+              Arg &&arg, Current) {
+            const auto param =
+                FunctionTraits::template GetParam<Current::kIndex>();
+
+            using ParamType = std::remove_cvref_t<decltype(param)>;
+
+            if constexpr (const auto is_body =
+                              std::is_same_v<ParamType, RequestBody>) {
+              request_builder.WithBody(std::forward<Arg>(arg));
+            } else {
+              request_builder.WithParam(param, std::forward<Arg>(arg));
+            }
+          },
+          std::forward<Args>(args)...);
     }
 
     return ExecuteAndGetResult();
@@ -97,7 +91,7 @@ class Client : public detail::ClientBase {
   template <cpp::MemberFunctionOf<Target> auto kFunction, typename... Args,
             typename FunctionType = decltype(kFunction)>
     requires EndpointFunction<kFunction> &&
-             std::is_invocable_v<FunctionType, Target &, Args...>
+             std::invocable<FunctionType, Target &, Args...>
   auto Call [[nodiscard]] (Args &&...args) const {
     return detail::CallImpl<kFunction>{GetRestClient()}(
         std::forward<Args>(args)...);

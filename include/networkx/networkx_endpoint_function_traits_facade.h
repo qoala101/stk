@@ -7,6 +7,7 @@
 #include <type_traits>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
+#include "cpp_for_each_index.h"
 #include "cpp_optional.h"
 #include "member_function.hpp"
 #include "network_typed_endpoint.h"
@@ -82,38 +83,33 @@ struct EndpointFunctionTraitsFacade : public FunctionTraits {
     }
   }
 
-  template <unsigned kParamIndex>
-  static void AddNextExpectedParamType(network::EndpointTypes &endpoint_types) {
-    using FunctionArgType = typename member_function_traits<
-        FunctionType>::template argument_type<kParamIndex>;
-
-    auto expected_param_type =
-        network::ExpectedType<typename detail::FunctionArgTypeTraits<
-            FunctionArgType>::ExpectedType>();
-
-    const auto param = GetParam<kParamIndex>();
-
-    using ParamType = std::remove_cvref_t<decltype(param)>;
-
-    if constexpr (const auto is_body = std::is_same_v<ParamType, RequestBody>) {
-      Expects(endpoint_types.body.empty());
-      endpoint_types.body = std::move(expected_param_type);
-    } else {
-      Expects(!endpoint_types.params.contains(param));
-      endpoint_types.params.emplace(param, std::move(expected_param_type));
-    }
-
-    if constexpr (kParamIndex > 0) {
-      AddNextExpectedParamType<kParamIndex - 1>(endpoint_types);
-    }
-  }
-
   static auto GetExpectedTypes [[nodiscard]] () {
     auto endpoint_types =
         network::EndpointTypes{.result = GetExpectedResultType()};
 
     if constexpr (HasParams()) {
-      AddNextExpectedParamType<GetNumParams() - 1>(endpoint_types);
+      cpp::ForEachIndex<GetNumParams()>([&endpoint_types]<typename Current>(
+                                            Current) {
+        using FunctionArgType = typename member_function_traits<
+            FunctionType>::template argument_type<Current::kIndex>;
+
+        auto expected_param_type =
+            network::ExpectedType<typename detail::FunctionArgTypeTraits<
+                FunctionArgType>::ExpectedType>();
+
+        const auto param = GetParam<Current::kIndex>();
+
+        using ParamType = std::remove_cvref_t<decltype(param)>;
+
+        if constexpr (const auto is_body =
+                          std::is_same_v<ParamType, RequestBody>) {
+          Expects(endpoint_types.body.empty());
+          endpoint_types.body = std::move(expected_param_type);
+        } else {
+          Expects(!endpoint_types.params.contains(param));
+          endpoint_types.params.emplace(param, std::move(expected_param_type));
+        }
+      });
     }
 
     return endpoint_types;

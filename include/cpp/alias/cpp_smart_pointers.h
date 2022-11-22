@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_ALIASES_CPP_SMART_POINTERS_H_
-#define STONKS_CPP_ALIASES_CPP_SMART_POINTERS_H_
+#ifndef STONKS_CPP_ALIAS_CPP_SMART_POINTERS_H_
+#define STONKS_CPP_ALIAS_CPP_SMART_POINTERS_H_
 
 #include <memory>
 
@@ -28,4 +28,4 @@ auto MakeSp [[nodiscard]] (Args &&...args) {
 }
 }  // namespace stonks::cpp
 
-#endif  // STONKS_CPP_ALIASES_CPP_SMART_POINTERS_H_
+#endif  // STONKS_CPP_ALIAS_CPP_SMART_POINTERS_H_

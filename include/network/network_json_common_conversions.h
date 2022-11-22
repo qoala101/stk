@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
+#include "cpp_for_each_index.h"
 #include "cpp_message_exception.h"
 #include "cpp_optional.h"
 #include "cpp_polymorphic_value.h"
@@ -26,22 +27,6 @@
 namespace stonks::network {
 template <Parsable T>
 auto ParseFromJson [[nodiscard]] (const IJson &json) -> T;
-
-namespace detail {
-template <cpp::Variant T, unsigned kIndex>
-  requires Parsable<std::variant_alternative_t<kIndex, T>>
-struct JsonVariantParser {
-  auto operator() [[nodiscard]] (const IJson &json) const -> T try {
-    return ParseFromJson<std::variant_alternative_t<kIndex, T>>(json);
-  } catch (const std::exception &) {
-    if constexpr (kIndex > 0) {
-      return JsonVariantParser<T, kIndex - 1>{}(json);
-    } else {
-      throw cpp::MessageException{"Couldn't parse any variant type"};
-    }
-  }
-};
-}  // namespace detail
 
 /**
  * @remark Added to avoid implicit conversion to bool.
@@ -88,8 +73,19 @@ struct JsonParser<T> {
   using Type = T;
 
   auto operator() [[nodiscard]] (const IJson &json) const -> Type {
-    return detail::JsonVariantParser<Type, std::variant_size_v<Type> - 1>{}(
-        json);
+    return cpp::ForEachIndex<std::variant_size_v<Type>>(
+        [&json]<typename Current>(Current) -> cpp::Opt<Type> {
+          try {
+            return ParseFromJson<
+                std::variant_alternative_t<Current::kIndex, Type>>(json);
+          } catch (const std::exception &) {
+            if constexpr (Current::kIndex <= 0) {
+              throw cpp::MessageException{"Couldn't parse any variant type"};
+            }
+          }
+
+          return std::nullopt;
+        });
   }
 };
 
