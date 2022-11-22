@@ -19,7 +19,7 @@ struct CurrentIndexTraits {
 
 namespace detail {
 template <unsigned kIndex, typename ResultType>
-auto ForEachIndexImpl(const auto &function) {
+auto ForEachIndexImpl [[nodiscard]] (const auto &function) {
   if constexpr (!std::is_same_v<ResultType, void>) {
     static_assert(cpp::Optional<ResultType>);
 
@@ -51,7 +51,7 @@ auto ForEachIndexImpl(const auto &function) {
  * Has to either return optional value or nothing.
  */
 template <unsigned kSize>
-auto ForEachIndex(const auto &function) {
+auto ForEachIndex [[nodiscard]] (const auto &function) {
   using ResultType = decltype(function(CurrentIndexTraits<0>{}));
 
   return detail::ForEachIndexImpl<kSize - 1, ResultType>(function);
