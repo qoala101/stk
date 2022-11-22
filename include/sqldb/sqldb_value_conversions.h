@@ -22,6 +22,16 @@ auto AsValue [[nodiscard]] (T &&t) {
 }  // namespace detail
 
 /**
+ * @brief Transforms arguments to values.
+ * @remark In order to make the type convertible to the value, client must
+ * define ConvertToValue which takes the type argument.
+ */
+template <typename... Args>
+auto AsValues(Args &&...args) {
+  return std::vector<Value>{detail::AsValue(std::forward<Args>(args))...};
+}
+
+/**
  * @brief Parses user type from the value.
  */
 template <typename T>
@@ -31,16 +41,6 @@ struct ValueParser {
   auto operator() [[nodiscard]] (const Value &value) const -> Type;
   auto operator() [[nodiscard]] (Value &&value) const -> Type;
 };
-
-/**
- * @brief Transforms arguments to values.
- * @remark In order to make the type convertible to the value, client must
- * define ConvertToValue which takes the type argument.
- */
-template <typename... Args>
-auto AsValues(Args &&...args) {
-  return std::vector<Value>{detail::AsValue(std::forward<Args>(args))...};
-}
 
 /**
  * @brief Transforms value to specified type.
