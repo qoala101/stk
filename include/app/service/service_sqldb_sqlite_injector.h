@@ -10,18 +10,14 @@
 
 namespace stonks::service::injectors {
 inline auto CreateSqldbSqliteInjector [[nodiscard]] () {
-  struct SqliteDbHandleFactory {
-    auto operator() [[nodiscard]] (const sqlite::DbHandlesFactory &factory,
-                                   const sqlite::FilePath &file_path) {
-      return factory.LoadDbFromFileToMemory(file_path);
-    }
-  };
-
   return di::MakeInjector(
       di::BindInterfaceToImplementation<sqldb::IDb, sqlite::Db>(),
-      di::BindTypeToFactoryFunction<
-          sqlite::SqliteDbHandle, SqliteDbHandleFactory,
-          sqlite::DbHandlesFactory, sqlite::FilePath>(),
+      di::BindTypeToFactoryFunction<sqlite::SqliteDbHandle,
+                                    +[](const sqlite::DbHandlesFactory &factory,
+                                        const sqlite::FilePath &file_path) {
+                                      return factory.LoadDbFromFileToMemory(
+                                          file_path);
+                                    }>(),
       di::BindTypeToOtherType<sqlite::SqliteDbHandleVariant,
                               sqlite::SqliteDbFileHandle>());
 }

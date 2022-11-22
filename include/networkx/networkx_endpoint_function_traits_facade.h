@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORKX_NETWORKX_ENDPOINT_FUNCTION_TRAITS_FACADE_H_
 #define STONKS_NETWORKX_NETWORKX_ENDPOINT_FUNCTION_TRAITS_FACADE_H_
 
+#include <callable.hpp>
 #include <gsl/assert>
 #include <nameof.hpp>
 #include <string_view>
@@ -9,7 +10,6 @@
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_for_each_index.h"
 #include "cpp_optional.h"
-#include "member_function.hpp"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 #include "networkx_concepts.h"  // IWYU pragma: keep

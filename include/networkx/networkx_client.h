@@ -1,12 +1,12 @@
 #ifndef STONKS_NETWORKX_NETWORKX_CLIENT_H_
 #define STONKS_NETWORKX_NETWORKX_CLIENT_H_
 
+#include <callable.hpp>
 #include <type_traits>
 #include <utility>
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_for_each_arg.h"
-#include "member_function.hpp"
 #include "network_rest_client.h"
 #include "network_rest_client_request_builder.h"
 #include "networkx_concepts.h"  // IWYU pragma: keep

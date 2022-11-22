@@ -9,6 +9,7 @@
 #include "network_auto_parsable_request.h"
 #include "network_i_rest_request_handler.h"
 #include "network_json_base_conversions.h"
+#include "network_json_common_conversions.h"
 #include "network_types.h"
 
 namespace stonks::network {

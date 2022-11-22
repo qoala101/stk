@@ -2,32 +2,39 @@
 #define STONKS_DI_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_
 
 #include <boost/di.hpp>
+#include <callable.hpp>
 #include <type_traits>
+
+#include "cpp_concepts.h"  // IWYU pragma: keep
 
 namespace stonks::di {
 namespace detail {
-template <typename T, typename FactoryFunction, typename... Args>
-  requires std::is_invocable_r_v<T, FactoryFunction, Args...>
-struct FactoryFunctionInjector : public T {
+template <typename T, auto kFactoryFunction,
+          typename FactoryFunction = decltype(kFactoryFunction)>
+struct FactoryFunctionInjector;
+
+template <typename T, auto kFactoryFunction, typename... Args>
+  requires cpp::InvocableReturningTaking<decltype(kFactoryFunction), T, Args...>
+struct FactoryFunctionInjector<T, kFactoryFunction, T (*)(Args...)> : public T {
   explicit FactoryFunctionInjector(Args... args)
-      : T{FactoryFunction{}(std::move(args)...)} {}
+      : T{kFactoryFunction(std::move(args)...)} {}
 };
 }  // namespace detail
 
 /**
  * @brief Binds type to the factory function.
- * @tparam FactoryFunction Callable which accepts list of Args.
- * Can accept by both, value and reference.
- * @tparam Args Arguments used by the factory function.
- * Typically those would be factory and arguments to its create method.
+ * @tparam kFactoryFunction Stateless callable which accepts list of arguments
+ * to be injected.
  * @remark Can be used for types which don't have public constructors.
+ * @remark Lambdas should be prepended with + before []
+ * in order to treat them as function pointers.
  */
-template <typename T, typename FactoryFunction, typename... Args>
-  requires std::is_invocable_r_v<T, FactoryFunction, Args...>
+template <typename T, auto kFactoryFunction>
+  requires std::same_as<
+      typename callable_traits<decltype(kFactoryFunction)>::return_type, T>
 auto BindTypeToFactoryFunction [[nodiscard]] () {
   return boost::di::bind<T>()
-      .template to<
-          detail::FactoryFunctionInjector<T, FactoryFunction, Args...>>();
+      .template to<detail::FactoryFunctionInjector<T, kFactoryFunction>>();
 }
 }  // namespace stonks::di
 

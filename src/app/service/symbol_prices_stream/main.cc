@@ -1,6 +1,6 @@
 #include <fmt/core.h>
 
-#include <utility>
+#include <boost/di.hpp>
 
 #include "cli_app.h"
 #include "core_i_symbols_db.h"
@@ -19,13 +19,6 @@
 
 auto main(int argc, const char *const *argv) -> int {
   stonks::cli::App{argc, argv}.Run([](const auto &options) {
-    struct TypedWsEndpointFactory {
-      auto operator() [[nodiscard]] (stonks::core::Symbol symbol) {
-        return stonks::core::sps::endpoints::BinanceSymbolBookTickerStream(
-            std::move(symbol));
-      }
-    };
-
     const auto injector = stonks::di::MakeInjector(
         stonks::service::injectors::CreateNetworkRestsdkInjector(),
         stonks::service::injectors::CreateLogSpdlogInjector(),
@@ -35,12 +28,11 @@ auto main(int argc, const char *const *argv) -> int {
             stonks::network::Uri{fmt::format(
                 "http://{}:{}", options.GetOptionOr("sdb_host", "0.0.0.0"),
                 options.GetOptionOr("sdb_port", 6506))}),
-        stonks::di::BindTypeToFactoryFunction<stonks::network::TypedWsEndpoint,
-                                              TypedWsEndpointFactory,
-                                              stonks::core::Symbol>(),
+        stonks::di::BindTypeToFactoryFunction<
+            stonks::network::TypedWsEndpoint,
+            &stonks::core::sps::endpoints::BinanceSymbolBookTickerStream>(),
         stonks::di::BindInterfaceToImplementation<
-            stonks::core::ISymbolsDb,
-            stonks::service::Connection<stonks::core::ISymbolsDb>>());
+            stonks::core::ISymbolsDb, stonks::service::SymbolsDb>());
 
     return injector.template create<stonks::core::SymbolPricesStream>();
   });
