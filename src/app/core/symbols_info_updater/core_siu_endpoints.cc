@@ -9,9 +9,9 @@
 
 namespace stonks::core::siu::endpoints {
 auto BinanceExchangeInfo() -> network::TypedEndpoint {
-  return {.endpoint = {.method = network::Method::kGet,
-                       .uri = {"https://api.binance.com/api/v3/exchangeInfo"}},
-          .expected_types = {
-              .result = network::ExpectedType<struct BinanceExchangeInfo>()}};
+  return {
+      .endpoint = {.method = network::Method::kGet, .uri = {"/exchangeInfo"}},
+      .expected_types = {
+          .result = network::ExpectedType<struct BinanceExchangeInfo>()}};
 };
 }  // namespace stonks::core::siu::endpoints

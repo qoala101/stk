@@ -3,7 +3,6 @@
 
 #include <absl/time/time.h>
 
-#include <limits>
 #include <vector>
 
 #include "core_types.h"
@@ -17,16 +16,6 @@ namespace stonks::core {
 // NOLINTNEXTLINE(*-special-member-functions)
 class ISymbolsDb {
  public:
-  /**
-   * @copydoc SelectSymbolPriceRecords
-   */
-  struct SelectSymbolPriceRecordsArgs {
-    Symbol symbol{};
-    absl::Time start_time{absl::InfinitePast()};
-    absl::Time end_time{absl::InfiniteFuture()};
-    int limit{std::numeric_limits<int>::max()};
-  };
-
   virtual ~ISymbolsDb() = default;
 
   /**
@@ -67,7 +56,8 @@ class ISymbolsDb {
    * @brief Selects symbol price records following the conditions.
    */
   virtual auto SelectSymbolPriceRecords
-      [[nodiscard]] (const SelectSymbolPriceRecordsArgs &args) const
+      [[nodiscard]] (const Symbol &symbol, const absl::Time *start_time,
+                     const absl::Time *end_time, const int *limit) const
       -> std::vector<SymbolPriceRecord> = 0;
 
   /**

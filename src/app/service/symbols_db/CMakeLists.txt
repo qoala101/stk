@@ -14,11 +14,9 @@ target_include_directories(libservice_symbols_db
 
 target_link_libraries(libservice_symbols_db
   PUBLIC libcore_symbols_db
-  PUBLIC libnetwork
+  PUBLIC libnetworkx
 
   PRIVATE libservice
-  PUBLIC callable # TODO(vh): Remove
-  PUBLIC fmt::fmt # TODO(vh): Remove
 )
 
 add_executable(service_symbols_db
@@ -30,6 +28,7 @@ target_link_libraries(service_symbols_db
   PRIVATE libcore_symbols_db
   PRIVATE librestsdk
   PRIVATE libservice
+  PRIVATE libservice_symbols_db
   PRIVATE libsqlite
   PRIVATE libspdlog
   PRIVATE fmt::fmt

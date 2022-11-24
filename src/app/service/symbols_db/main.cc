@@ -1,3 +1,7 @@
+// clang-format off
+#include "service_json_conversions.h"
+// clang-format on
+
 #include <fmt/core.h>
 
 #include <memory>
@@ -12,7 +16,6 @@
 #include "network_rest_server_builder.h"
 #include "network_types.h"
 #include "networkx_make_server_for.h"
-#include "service_json_conversions.h"  // IWYU pragma: keep
 #include "service_log_spdlog_injector.h"
 #include "service_network_restsdk_injector.h"
 #include "service_sqldb_sqlite_injector.h"

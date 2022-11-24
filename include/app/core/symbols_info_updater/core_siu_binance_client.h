@@ -2,6 +2,8 @@
 #define STONKS_APP_CORE_SYMBOLS_INFO_UPDATER_CORE_SIU_BINANCE_CLIENT_H_
 
 #include "core_siu_types.h"
+#include "di_factory.h"
+#include "network_i_rest_request_sender.h"
 #include "network_rest_client.h"
 
 namespace stonks::core::siu {
@@ -10,7 +12,8 @@ namespace stonks::core::siu {
  */
 class BinanceClient {
  public:
-  explicit BinanceClient(network::RestClient rest_client);
+  explicit BinanceClient(
+      di::Factory<network::IRestRequestSender> request_sender_factory);
 
   /**
    * @copydoc endpoints::BinanceExchangeInfo

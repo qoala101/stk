@@ -1,5 +1,6 @@
 #include "core_siu_binance_client.h"
 
+#include <memory>
 #include <utility>
 
 #include "core_siu_endpoints.h"
@@ -7,8 +8,10 @@
 #include "network_rest_client_request_builder.h"
 
 namespace stonks::core::siu {
-BinanceClient::BinanceClient(network::RestClient rest_client)
-    : rest_client_{std::move(rest_client)} {}
+BinanceClient::BinanceClient(
+    di::Factory<network::IRestRequestSender> request_sender_factory)
+    : rest_client_{{"https://api.binance.com/api/v3"},
+                   std::move(request_sender_factory)} {}
 
 auto BinanceClient::BinanceExchangeInfo() const -> struct BinanceExchangeInfo {
   return rest_client_.Call(endpoints::BinanceExchangeInfo())

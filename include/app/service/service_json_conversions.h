@@ -9,17 +9,12 @@
 
 namespace stonks::network {
 auto ConvertToJson [[nodiscard]] (absl::Time value) -> cpp::Pv<IJson>;
+auto ConvertToJson [[nodiscard]] (const core::AssetInfo &value)
+-> cpp::Pv<IJson>;
+auto ConvertToJson [[nodiscard]] (const core::SymbolInfo &value)
+-> cpp::Pv<IJson>;
+auto ConvertToJson [[nodiscard]] (const core::SymbolPriceRecord &value)
+-> cpp::Pv<IJson>;
 }  // namespace stonks::network
-
-namespace stonks::core {
-auto ConvertToJson [[nodiscard]] (const AssetInfo &value)
--> cpp::Pv<network::IJson>;
-
-auto ConvertToJson [[nodiscard]] (const SymbolInfo &value)
--> cpp::Pv<network::IJson>;
-
-auto ConvertToJson [[nodiscard]] (const SymbolPriceRecord &value)
--> cpp::Pv<network::IJson>;
-}  // namespace stonks::core
 
 #endif  // STONKS_APP_SERVICE_SERVICE_JSON_CONVERSIONS_H_

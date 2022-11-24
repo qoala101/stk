@@ -1,6 +1,7 @@
 #include "core_symbols_info_updater.h"
 
 #include <memory>
+#include <not_null.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/move.hpp>
@@ -14,7 +15,6 @@
 #include "core_siu_types.h"
 #include "core_types.h"
 #include "cpp_typed_struct.h"
-#include "not_null.hpp"
 
 namespace stonks::core {
 namespace {

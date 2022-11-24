@@ -63,7 +63,8 @@ class SymbolsDb : public ISymbolsDb {
    * @copydoc ISymbolsDb::SelectSymbolPriceRecords
    */
   auto SelectSymbolPriceRecords
-      [[nodiscard]] (const SelectSymbolPriceRecordsArgs &args) const
+      [[nodiscard]] (const Symbol &symbol, const absl::Time *start_time,
+                     const absl::Time *end_time, const int *limit) const
       -> std::vector<SymbolPriceRecord> override;
 
   /**

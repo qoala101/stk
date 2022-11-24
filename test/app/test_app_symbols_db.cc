@@ -71,10 +71,14 @@ TEST(AppSymbolsDb, UpdateSymbolsInfo) {
 
   db->InsertSymbolPriceRecord(
       stonks::core::SymbolPriceRecord{.symbol = {"BTCUSDT"}});
-  EXPECT_FALSE(db->SelectSymbolPriceRecords({.symbol = {"BTCUSDT"}}).empty());
+  EXPECT_FALSE(
+      db->SelectSymbolPriceRecords({"BTCUSDT"}, nullptr, nullptr, nullptr)
+          .empty());
 
   db->UpdateAssets({{"NONE_ASSET"}});
-  EXPECT_TRUE(db->SelectSymbolPriceRecords({.symbol = {"BTCUSDT"}}).empty());
+  EXPECT_TRUE(
+      db->SelectSymbolPriceRecords({"BTCUSDT"}, nullptr, nullptr, nullptr)
+          .empty());
 }
 
 TEST(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
@@ -87,7 +91,7 @@ TEST(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
        {.symbol = {btc_usdt}, .base_asset = {"BTC"}, .quote_asset = {"USDT"}}});
 
   const auto symbol_price_records =
-      db->SelectSymbolPriceRecords({.symbol = eth_usdt});
+      db->SelectSymbolPriceRecords(eth_usdt, nullptr, nullptr, nullptr);
   EXPECT_TRUE(symbol_price_records.empty());
 
   const auto eth_price_records = std::vector<stonks::core::SymbolPriceRecord>{
@@ -121,31 +125,31 @@ TEST(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
   }
 
   const auto eth_price_records_received =
-      db->SelectSymbolPriceRecords({.symbol = eth_usdt});
+      db->SelectSymbolPriceRecords(eth_usdt, nullptr, nullptr, nullptr);
   EXPECT_EQ(eth_price_records_received, eth_price_records);
 
   const auto btc_price_records_received =
-      db->SelectSymbolPriceRecords({.symbol = btc_usdt});
+      db->SelectSymbolPriceRecords(btc_usdt, nullptr, nullptr, nullptr);
   EXPECT_EQ(btc_price_records_received, btc_price_records);
 }
 
 TEST(AppSymbolsDb, SelectPeriod) {
   const auto symbol = stonks::core::Symbol{"ETHUSDT"};
-  auto price_records = db->SelectSymbolPriceRecords({.symbol = symbol});
+  auto price_records =
+      db->SelectSymbolPriceRecords(symbol, nullptr, nullptr, nullptr);
   EXPECT_EQ(price_records.size(), 3);
 
   price_records = db->SelectSymbolPriceRecords(
-      {.symbol = symbol, .start_time = absl::FromUnixMillis(1001)});
+      symbol, &static_cast<const int64_t &>(1001), nullptr, nullptr);
   EXPECT_EQ(price_records.size(), 2);
 
   price_records = db->SelectSymbolPriceRecords(
-      {.symbol = symbol, .end_time = absl::FromUnixMillis(2999)});
+      symbol, nullptr, &static_cast<const int64_t &>(2999), nullptr);
   EXPECT_EQ(price_records.size(), 2);
 
-  price_records =
-      db->SelectSymbolPriceRecords({.symbol = symbol,
-                                    .start_time = absl::FromUnixMillis(1001),
-                                    .end_time = absl::FromUnixMillis(2999)});
+  price_records = db->SelectSymbolPriceRecords(
+      symbol, &static_cast<const int64_t &>(1001),
+      &static_cast<const int64_t &>(2999), nullptr);
   EXPECT_EQ(price_records.size(), 1);
 }
 

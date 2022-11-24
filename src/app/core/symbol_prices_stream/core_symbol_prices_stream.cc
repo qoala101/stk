@@ -3,13 +3,13 @@
 #include <absl/time/clock.h>
 
 #include <memory>
+#include <not_null.hpp>
 #include <string>
 #include <utility>
 
 #include "core_sps_types.h"
 #include "core_types.h"
 #include "network_ws_client_builder.h"
-#include "not_null.hpp"
 
 namespace stonks::core {
 namespace {

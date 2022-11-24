@@ -1,6 +1,7 @@
 find_package(range-v3 REQUIRED)
 
 add_library(libcore_symbols_db
+  core_sdb_value_conversions.cc
   core_symbols_db.cc
 )
 

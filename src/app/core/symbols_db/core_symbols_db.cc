@@ -1,7 +1,6 @@
 #include "core_symbols_db.h"
 
 #include <absl/time/time.h>
-#include <stdint.h>
 
 #include <compare>
 #include <functional>
@@ -22,11 +21,11 @@
 #include <vector>
 
 #include "core_sdb_tables.h"
+#include "core_sdb_value_conversions.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
 #include "cpp_typed_struct.h"
 #include "sqldb_alias_to_table.h"
-#include "sqldb_as_values.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_p_db.h"
@@ -41,6 +40,8 @@
 #include "sqldb_query_builder.h"
 #include "sqldb_rows.h"
 #include "sqldb_value.h"
+#include "sqldb_value_common_conversions.h"
+#include "sqldb_value_conversions.h"
 
 namespace stonks::core {
 namespace {
@@ -93,14 +94,15 @@ auto SymbolsInfoFrom [[nodiscard]] (sqldb::Rows rows) {
 
   for (auto i = 0; i < num_rows; ++i) {
     infos.emplace_back(SymbolInfo{
-        .symbol = {std::move(names[i].Get<std::string>())},
-        .base_asset = {.asset = {std::move(base_assets[i].Get<std::string>())},
-                       .min_amount = base_asset_min_amounts[i].Get<double>(),
-                       .price_step = base_asset_price_steps[i].Get<double>()},
+        .symbol = ValueAs<Symbol>(std::move(names[i])),
+        .base_asset = {.asset = ValueAs<Asset>(std::move(base_assets[i])),
+                       .min_amount = ValueAs<double>(base_asset_min_amounts[i]),
+                       .price_step =
+                           ValueAs<double>(base_asset_price_steps[i])},
         .quote_asset = {
-            .asset = {std::move(quote_assets[i].Get<std::string>())},
-            .min_amount = quote_asset_min_amounts[i].Get<double>(),
-            .price_step = quote_asset_price_steps[i].Get<double>()}});
+            .asset = ValueAs<Asset>(std::move(quote_assets[i])),
+            .min_amount = ValueAs<double>(quote_asset_min_amounts[i]),
+            .price_step = ValueAs<double>(quote_asset_price_steps[i])}});
   }
 
   return infos;
@@ -189,7 +191,7 @@ auto SymbolsDb::SelectAssets() const -> std::vector<Asset> {
 
   Ensures(statement);
   return names | ranges::views::transform([](auto &name) {
-           return Asset{std::move(name.template Get<std::string>())};
+           return ValueAs<Asset>(std::move(name));
          }) |
          ranges::to_vector;
 }
@@ -228,7 +230,7 @@ auto SymbolsDb::SelectSymbolsWithPriceRecords() const -> std::vector<Symbol> {
 
   Ensures(statement);
   return names | ranges::views::transform([](auto &name) {
-           return Symbol{std::move(name.template Get<std::string>())};
+           return ValueAs<Symbol>(std::move(name));
          }) |
          ranges::to_vector;
 }
@@ -283,8 +285,10 @@ void SymbolsDb::UpdateSymbolsInfo(std::vector<SymbolInfo> infos) {
               &SymbolInfoLess, &SymbolInfoEquals);
 }
 
-auto SymbolsDb::SelectSymbolPriceRecords(
-    const SelectSymbolPriceRecordsArgs &args) const
+auto SymbolsDb::SelectSymbolPriceRecords(const Symbol &symbol,
+                                         const absl::Time *start_time,
+                                         const absl::Time *end_time,
+                                         const int *limit) const
     -> std::vector<SymbolPriceRecord> {
   auto &statement = prepared_statements_.select_symbol_price_records;
 
@@ -316,9 +320,10 @@ auto SymbolsDb::SelectSymbolPriceRecords(
             .as_nullable();
   }
 
-  const auto rows = statement->Execute(
-      sqldb::AsValues(args.symbol, absl::ToUnixMillis(args.start_time),
-                      absl::ToUnixMillis(args.end_time) /*, args.limit*/));
+  const auto rows = statement->Execute(sqldb::AsValues(
+      symbol, (start_time == nullptr) ? absl::InfinitePast() : *start_time,
+      (end_time == nullptr) ? absl::InfiniteFuture() : *end_time
+      /*, args.limit ? std::numeric_limits<int>::max()*/));
 
   const auto &prices =
       rows.GetColumnValues<sdb::tables::SymbolPriceRecord::price>();
@@ -330,10 +335,10 @@ auto SymbolsDb::SelectSymbolPriceRecords(
   price_ticks.reserve(num_rows);
 
   for (auto i = 0; i < num_rows; ++i) {
-    price_ticks.emplace_back(SymbolPriceRecord{
-        .symbol = args.symbol,
-        .price = Price{prices[i].Get<double>()},
-        .time = absl::FromUnixMillis(times[i].Get<int64_t>())});
+    price_ticks.emplace_back(
+        SymbolPriceRecord{.symbol = symbol,
+                          .price = ValueAs<Price>(prices[i]),
+                          .time = ValueAs<absl::Time>(times[i])});
   }
 
   Ensures(statement);
@@ -366,8 +371,8 @@ void SymbolsDb::InsertSymbolPriceRecord(SymbolPriceRecord record) {
             .as_nullable();
   }
 
-  statement->Execute(sqldb::AsValues(std::move(record.symbol), record.price,
-                                     absl::ToUnixMillis(record.time)));
+  statement->Execute(
+      sqldb::AsValues(std::move(record.symbol), record.price, record.time));
   Ensures(statement);
 }
 
@@ -386,7 +391,7 @@ void SymbolsDb::DeleteSymbolPriceRecords(absl::Time before_time) {
                     .as_nullable();
   }
 
-  statement->Execute(sqldb::AsValues(absl::ToUnixMillis(before_time)));
+  statement->Execute(sqldb::AsValues(before_time));
   Ensures(statement);
 }
 
