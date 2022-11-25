@@ -1,4 +1,4 @@
-find_package(fmt REQUIRED) # TODO(vh): Remove
+find_package(fmt REQUIRED)
 
 add_library(libservice_symbols_db
   service_symbols_db.cc
