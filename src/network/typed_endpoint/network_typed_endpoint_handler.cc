@@ -74,10 +74,11 @@ TypedEndpointHandler::TypedEndpointHandler(
       handler_{std::move(handler)} {}
 
 auto TypedEndpointHandler::HandleRequestAndGiveResponse(
-    RestRequest request) const -> RestResponse {
+    RestRequest request) const -> cppcoro::task<RestResponse> {
   type_checker_->ValidateRequest(request);
-  auto response = handler_->HandleRequestAndGiveResponse(std::move(request));
+  auto response =
+      co_await handler_->HandleRequestAndGiveResponse(std::move(request));
   type_checker_->ValidateResponse(response);
-  return response;
+  co_return response;
 }
 }  // namespace stonks::network

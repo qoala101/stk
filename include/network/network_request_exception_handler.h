@@ -19,7 +19,7 @@ class RequestExceptionHandler : public IRestRequestHandler {
    * to the response.
    */
   auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request) const
-      -> RestResponse override;
+      -> cppcoro::task<RestResponse> override;
 
  private:
   cpp::NnUp<IRestRequestHandler> handler_;

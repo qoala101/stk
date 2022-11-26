@@ -26,7 +26,7 @@ class TypedEndpointHandler : public IRestRequestHandler {
    * after receiving it from handler.
    */
   auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request) const
-      -> RestResponse override;
+      -> cppcoro::task<RestResponse> override;
 
  private:
   cpp::NnUp<te::EndpointTypesValidatorTemplate> type_checker_;

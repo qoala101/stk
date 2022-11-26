@@ -13,14 +13,14 @@ EndpointRequestDispatcher::EndpointRequestDispatcher(
     : endpoint_handlers_{std::move(endpoint_handlers)} {}
 
 auto EndpointRequestDispatcher::HandleRequestAndGiveResponse(
-    RestRequest request) const -> RestResponse {
+    RestRequest request) const -> cppcoro::task<RestResponse> {
   const auto endpoint_handler = endpoint_handlers_.find(request.endpoint);
 
   if (endpoint_handler == endpoint_handlers_.end()) {
-    return {.status = Status::kNotFound};
+    co_return RestResponse{.status = Status::kNotFound};
   }
 
-  return endpoint_handler->second->HandleRequestAndGiveResponse(
+  co_return co_await endpoint_handler->second->HandleRequestAndGiveResponse(
       std::move(request));
 }
 }  // namespace stonks::network

@@ -17,7 +17,7 @@ add_executable(unittests
   cpp/test_cpp_move_if.cc
   cpp/test_cpp_typed_struct.cc
 
-  network/test_network_te_endpoint_types_from.cc
+  networkx/test_networkx_function_traits_facade.cc
 
   restsdk/test_restsdk_client_server.cc
   restsdk/test_restsdk_json_common_conversions.cc
@@ -47,6 +47,7 @@ target_link_libraries(unittests
   PRIVATE libcore
   PRIVATE libcore_symbols_db
   PRIVATE libcpp
+  PRIVATE libnetworkx
   PRIVATE librestsdk
   PRIVATE libspdlog
   PRIVATE libsqlite
@@ -55,4 +56,5 @@ target_link_libraries(unittests
   PRIVATE function2::function2
   PRIVATE nameof::nameof
   PRIVATE range-v3::range-v3
+  PRIVATE cpprestsdk::cpprest
 )

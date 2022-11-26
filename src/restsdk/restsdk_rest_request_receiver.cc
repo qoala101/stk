@@ -8,6 +8,8 @@
 #include <polymorphic_value.h>
 #include <pplx/pplxtasks.h>
 
+#include <cppcoro/single_consumer_event.hpp>
+#include <cppcoro/sync_wait.hpp>
 #include <gsl/assert>
 #include <map>
 #include <memory>
@@ -118,19 +120,27 @@ auto HttpResponseFrom [[nodiscard]] (const network::RestResponse &response) {
   return http_response;
 }
 
-void HandleHttpRequest(const network::IRestRequestHandler &handler,
+auto HandleHttpRequest(const network::IRestRequestHandler &handler,
                        log::ILogger &logger,
-                       const web::http::http_request &request) {
+                       const web::http::http_request &request)
+    -> cppcoro::task<> {
   const auto request_uri = request.absolute_uri().path();
   logger.LogEvent(
       fmt::format("Received {} request on {}", request.method(), request_uri));
 
   auto rest_request = RestRequestFrom(request);
-  const auto rest_response =
-      handler.HandleRequestAndGiveResponse(std::move(rest_request));
-  const auto http_response = HttpResponseFrom(rest_response);
-  request.reply(http_response).wait();
 
+  const auto rest_response =
+      co_await handler.HandleRequestAndGiveResponse(std::move(rest_request));
+  const auto http_response = HttpResponseFrom(rest_response);
+
+  auto replied_to_request = cppcoro::single_consumer_event{};
+
+  request.reply(http_response).then([&replied_to_request]() {
+    replied_to_request.set();
+  });
+
+  co_await replied_to_request;
   logger.LogEvent(fmt::format("Replied {} on {}",
                               nameof::nameof_enum(rest_response.status),
                               request_uri));
@@ -169,7 +179,7 @@ void RestRequestReceiver::Receive(
   http_listener_->support(
       [handler = cpp::NnSp<network::IRestRequestHandler>{std::move(handler)},
        logger = logger_](const auto &request) {
-        HandleHttpRequest(*handler, *logger, request);
+        cppcoro::sync_wait(HandleHttpRequest(*handler, *logger, request));
       });
 
   logger_->LogImportantEvent(

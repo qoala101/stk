@@ -33,8 +33,7 @@ ResponseExceptionHandler::ResponseExceptionHandler(
 auto ResponseExceptionHandler::SendRequestAndGetResponse(
     RestRequest request) const -> cppcoro::task<RestResponse> {
   try {
-    co_return co_await request_sender_->SendRequestAndGetResponse(
-        std::move(request));
+    return request_sender_->SendRequestAndGetResponse(std::move(request));
   } catch (const WrongTypeException &e) {
     auto server_exception = TryToParseException(*e.GetJson());
 

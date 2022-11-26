@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_H_
 #define STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_H_
 
+#include <cppcoro/task.hpp>
 #include <utility>
 
 #include "cpp_typed_struct.h"
@@ -19,14 +20,16 @@ namespace stonks::network {
  */
 class AutoParsableRequestHandler : public IRestRequestHandler {
  public:
-  template <cpp::VoidInvocable Handler>
+  template <cpp::InvocableReturning<cppcoro::task<>> Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{
             aprh::HandlerVariant::ValueType{std::in_place_type<aprh::Handler>,
                                             std::forward<Handler>(handler)}} {}
 
-  template <cpp::VoidInvocableTaking<AutoParsableRestRequest> Handler>
+  template <
+      cpp::InvocableReturningTaking<cppcoro::task<>, AutoParsableRestRequest>
+          Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
@@ -38,8 +41,9 @@ class AutoParsableRequestHandler : public IRestRequestHandler {
   explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
             std::in_place_type<aprh::HandlerWithResponse>,
-            [handler = std::forward<Handler>(handler)]() {
-              return ConvertToJson(handler());
+            [handler = std::forward<Handler>(
+                 handler)]() -> cppcoro::task<cpp::Pv<IJson>> {
+              co_return ConvertToJson(co_await handler());
             }}} {}
 
   template <aprh::ConvertibleInvocableTaking<AutoParsableRestRequest> Handler>
@@ -47,15 +51,16 @@ class AutoParsableRequestHandler : public IRestRequestHandler {
   explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
             std::in_place_type<aprh::HandlerWithRequestAndResponse>,
-            [handler = std::forward<Handler>(handler)](auto request) {
-              return ConvertToJson(handler(std::move(request)));
+            [handler = std::forward<Handler>(handler)](
+                auto request) -> cppcoro::task<cpp::Pv<IJson>> {
+              co_return ConvertToJson(co_await handler(std::move(request)));
             }}} {}
 
   /**
    * @brief Wraps request in auto-parsable and forwards it to the handler.
    */
   auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request) const
-      -> RestResponse override;
+      -> cppcoro::task<RestResponse> override;
 
  private:
   mutable aprh::HandlerVariant handler_{};

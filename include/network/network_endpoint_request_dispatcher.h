@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
 #define STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
 
+#include <cppcoro/task.hpp>
 #include <map>
 
 #include "cpp_not_null.h"
@@ -26,7 +27,7 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
    * @brief Forwards the request to the appropriate handler.
    */
   auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request) const
-      -> RestResponse override;
+      -> cppcoro::task<RestResponse> override;
 
  private:
   std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};

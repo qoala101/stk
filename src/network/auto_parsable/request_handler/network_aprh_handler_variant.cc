@@ -10,25 +10,27 @@
 #include "network_types.h"
 
 namespace stonks::network::aprh {
-auto HandlerVariant::operator()(RestRequest request) -> RestResponse {
-  return std::visit(
-      [&request](auto &v) {
+auto HandlerVariant::operator()(RestRequest request)
+    -> cppcoro::task<RestResponse> {
+  co_return co_await std::visit(
+      [&request](auto &v) -> cppcoro::task<RestResponse> {
         Expects(!v.empty());
 
         using V = std::remove_cvref_t<decltype(v)>;
 
         if constexpr (std::is_same_v<V, Handler>) {
-          v();
-          return RestResponse{.status = Status::kOk};
+          co_await v();
+          co_return RestResponse{.status = Status::kOk};
         } else if constexpr (std::is_same_v<V, HandlerWithRequest>) {
-          v(AutoParsableRestRequest{std::move(request)});
-          return RestResponse{.status = Status::kOk};
+          co_await v(AutoParsableRestRequest{std::move(request)});
+          co_return RestResponse{.status = Status::kOk};
         } else if constexpr (std::is_same_v<V, HandlerWithResponse>) {
-          return RestResponse{.status = Status::kOk, .result = v()};
+          co_return RestResponse{.status = Status::kOk, .result = co_await v()};
         } else if constexpr (std::is_same_v<V, HandlerWithRequestAndResponse>) {
-          return RestResponse{
+          co_return RestResponse{
               .status = Status::kOk,
-              .result = v(AutoParsableRestRequest{std::move(request)})};
+              .result =
+                  co_await v(AutoParsableRestRequest{std::move(request)})};
         } else {
           Expects(false);
         }

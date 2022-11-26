@@ -17,13 +17,16 @@ RequestExceptionHandler::RequestExceptionHandler(
     : handler_{std::move(handler)} {}
 
 auto RequestExceptionHandler::HandleRequestAndGiveResponse(
-    RestRequest request) const -> RestResponse {
+    RestRequest request) const -> cppcoro::task<RestResponse> {
   try {
-    return handler_->HandleRequestAndGiveResponse(std::move(request));
+    co_return co_await handler_->HandleRequestAndGiveResponse(
+        std::move(request));
   } catch (const Exception &e) {
-    return {.status = Status::kBadRequest, .result = ConvertToJson(e)};
+    co_return RestResponse{.status = Status::kBadRequest,
+                           .result = ConvertToJson(e)};
   } catch (const std::exception &e) {
-    return {.status = Status::kInternalError, .result = ConvertToJson(e)};
+    co_return RestResponse{.status = Status::kInternalError,
+                           .result = ConvertToJson(e)};
   }
 }
 }  // namespace stonks::network
