@@ -4,6 +4,7 @@
 #include <absl/time/time.h>
 
 #include <callable.hpp>  // IWYU pragma: keep
+#include <cppcoro/task.hpp>
 #include <vector>
 
 #include "core_i_symbols_db.h"
@@ -23,35 +24,38 @@ class SymbolsDb : public core::ISymbolsDb {
   /**
    * @copydoc core::ISymbolsDb::SelectAssets
    */
-  auto SelectAssets [[nodiscard]] () const -> std::vector<core::Asset> override;
+  auto SelectAssets [[nodiscard]] () const
+      -> cppcoro::task<std::vector<core::Asset>> override;
 
   /**
    * @copydoc core::ISymbolsDb::UpdateAssets
    */
-  void UpdateAssets(std::vector<core::Asset> assets) override;
+  auto UpdateAssets(std::vector<core::Asset> assets)
+      -> cppcoro::task<> override;
 
   /**
    * @copydoc core::ISymbolsDb::SelectSymbolsWithPriceRecords
    */
   auto SelectSymbolsWithPriceRecords [[nodiscard]] () const
-      -> std::vector<core::Symbol> override;
+      -> cppcoro::task<std::vector<core::Symbol>> override;
 
   /**
    * @copydoc core::ISymbolsDb::SelectSymbolInfo
    */
   auto SelectSymbolInfo [[nodiscard]] (core::Symbol symbol) const
-      -> cpp::Opt<core::SymbolInfo> override;
+      -> cppcoro::task<cpp::Opt<core::SymbolInfo>> override;
 
   /**
    * @copydoc core::ISymbolsDb::SelectSymbolsInfo
    */
   auto SelectSymbolsInfo [[nodiscard]] () const
-      -> std::vector<core::SymbolInfo> override;
+      -> cppcoro::task<std::vector<core::SymbolInfo>> override;
 
   /**
    * @copydoc core::ISymbolsDb::UpdateSymbolsInfo
    */
-  void UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos) override;
+  auto UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos)
+      -> cppcoro::task<> override;
 
   /**
    * @copydoc core::ISymbolsDb::SelectSymbolPriceRecords
@@ -59,17 +63,19 @@ class SymbolsDb : public core::ISymbolsDb {
   auto SelectSymbolPriceRecords
       [[nodiscard]] (const core::Symbol &symbol, const absl::Time *start_time,
                      const absl::Time *end_time, const int *limit) const
-      -> std::vector<core::SymbolPriceRecord> override;
+      -> cppcoro::task<std::vector<core::SymbolPriceRecord>> override;
 
   /**
    * @copydoc core::ISymbolsDb::InsertSymbolPriceRecord
    */
-  void InsertSymbolPriceRecord(core::SymbolPriceRecord record) override;
+  auto InsertSymbolPriceRecord(core::SymbolPriceRecord record)
+      -> cppcoro::task<> override;
 
   /**
    * @copydoc core::ISymbolsDb::DeleteSymbolPriceRecords
    */
-  void DeleteSymbolPriceRecords(absl::Time before_time) override;
+  auto DeleteSymbolPriceRecords(absl::Time before_time)
+      -> cppcoro::task<> override;
 
  private:
   networkx::Client<core::ISymbolsDb> client_;

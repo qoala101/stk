@@ -33,12 +33,11 @@ class CallImpl {
   using FunctionTraits = EndpointFunctionTraitsFacade<kFunction>;
 
   auto ExecuteAndGetResult [[nodiscard]] () {
-    using ResultType =
-        typename member_function_traits<decltype(kFunction)>::return_type;
+    using ResultType = typename member_function_traits<
+        decltype(kFunction)>::return_type::value_type;
 
     if constexpr (std::is_same_v<ResultType, void>) {
-      request_builder_.DiscardingResult();
-      return;
+      return request_builder_.DiscardingResult();
     } else {
       return request_builder_.template AndReceive<ResultType>();
     }

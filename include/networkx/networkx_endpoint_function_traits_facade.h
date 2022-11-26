@@ -74,7 +74,7 @@ struct EndpointFunctionTraitsFacade : public FunctionTraits {
  private:
   static auto GetExpectedResultType [[nodiscard]] () {
     using ResultType =
-        typename member_function_traits<FunctionType>::return_type;
+        typename member_function_traits<FunctionType>::return_type::value_type;
 
     if constexpr (std::is_same_v<ResultType, void>) {
       return network::ParseTypeCheck{};
