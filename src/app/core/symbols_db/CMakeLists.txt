@@ -1,3 +1,4 @@
+find_package(cppcoro REQUIRED)
 find_package(range-v3 REQUIRED)
 
 add_library(libcore_symbols_db
@@ -14,6 +15,7 @@ target_include_directories(libcore_symbols_db
 )
 
 target_link_libraries(libcore_symbols_db
+  PUBLIC cppcoro::cppcoro
   PUBLIC libcore
   PUBLIC libsqldb
 

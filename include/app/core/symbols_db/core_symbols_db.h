@@ -3,6 +3,7 @@
 
 #include <absl/time/time.h>
 
+#include <cppcoro/task.hpp>
 #include <vector>
 
 #include "core_i_symbols_db.h"
@@ -29,35 +30,37 @@ class SymbolsDb : public ISymbolsDb {
   /**
    * @copydoc ISymbolsDb::SelectAssets
    */
-  auto SelectAssets [[nodiscard]] () const -> std::vector<Asset> override;
+  auto SelectAssets [[nodiscard]] () const
+      -> cppcoro::task<std::vector<Asset>> override;
 
   /**
    * @copydoc ISymbolsDb::UpdateAssets
    */
-  void UpdateAssets(std::vector<Asset> assets) override;
+  auto UpdateAssets(std::vector<Asset> assets) -> cppcoro::task<> override;
 
   /**
    * @copydoc ISymbolsDb::SelectSymbolsWithPriceRecords
    */
   auto SelectSymbolsWithPriceRecords [[nodiscard]] () const
-      -> std::vector<Symbol> override;
+      -> cppcoro::task<std::vector<Symbol>> override;
 
   /**
    * @copydoc ISymbolsDb::SelectSymbolInfo
    */
   auto SelectSymbolInfo [[nodiscard]] (Symbol symbol) const
-      -> cpp::Opt<SymbolInfo> override;
+      -> cppcoro::task<cpp::Opt<SymbolInfo>> override;
 
   /**
    * @copydoc ISymbolsDb::SelectSymbolsInfo
    */
   auto SelectSymbolsInfo [[nodiscard]] () const
-      -> std::vector<SymbolInfo> override;
+      -> cppcoro::task<std::vector<SymbolInfo>> override;
 
   /**
    * @copydoc ISymbolsDb::UpdateSymbolsInfo
    */
-  void UpdateSymbolsInfo(std::vector<SymbolInfo> infos) override;
+  auto UpdateSymbolsInfo(std::vector<SymbolInfo> infos)
+      -> cppcoro::task<> override;
 
   /**
    * @copydoc ISymbolsDb::SelectSymbolPriceRecords
@@ -65,22 +68,27 @@ class SymbolsDb : public ISymbolsDb {
   auto SelectSymbolPriceRecords
       [[nodiscard]] (const Symbol &symbol, const absl::Time *start_time,
                      const absl::Time *end_time, const int *limit) const
-      -> std::vector<SymbolPriceRecord> override;
+      -> cppcoro::task<std::vector<SymbolPriceRecord>> override;
 
   /**
    * @copydoc ISymbolsDb::InsertSymbolPriceRecord
    */
-  void InsertSymbolPriceRecord(SymbolPriceRecord record) override;
+  auto InsertSymbolPriceRecord(SymbolPriceRecord record)
+      -> cppcoro::task<> override;
 
   /**
    * @copydoc ISymbolsDb::DeleteSymbolPriceRecords
    */
-  void DeleteSymbolPriceRecords(absl::Time before_time) override;
+  auto DeleteSymbolPriceRecords(absl::Time before_time)
+      -> cppcoro::task<> override;
 
  private:
+  auto SelectAssetsImpl [[nodiscard]] () const;
+
   void InsertAsset(Asset asset);
   void DeleteAsset(Asset asset);
 
+  auto SelectSymbolsInfoImpl [[nodiscard]] () const;
   void InsertSymbolInfo(SymbolInfo info);
   void UpdateSymbolInfo(SymbolInfo info);
   void DeleteSymbolInfo(SymbolInfo info);

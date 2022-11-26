@@ -175,7 +175,7 @@ SymbolsDb::SymbolsDb(cpp::NnUp<sqldb::IDb> db)
   inner_db.CreateTableIfNotExists<sdb::tables::SymbolPriceRecord>();
 }
 
-auto SymbolsDb::SelectAssets() const -> std::vector<Asset> {
+auto SymbolsDb::SelectAssetsImpl() const {
   auto &statement = prepared_statements_.select_assets;
 
   if (statement == nullptr) {
@@ -196,15 +196,21 @@ auto SymbolsDb::SelectAssets() const -> std::vector<Asset> {
          ranges::to_vector;
 }
 
-void SymbolsDb::UpdateAssets(std::vector<Asset> assets) {
+auto SymbolsDb::SelectAssets() const -> cppcoro::task<std::vector<Asset>> {
+  co_return SelectAssetsImpl();
+}
+
+auto SymbolsDb::UpdateAssets(std::vector<Asset> assets) -> cppcoro::task<> {
   UpdateItems(
-      std::move(assets), std::bind_front(&SymbolsDb::SelectAssets, this),
+      std::move(assets), std::bind_front(&SymbolsDb::SelectAssetsImpl, this),
       std::bind_front(&SymbolsDb::InsertAsset, this), [](const auto &) {},
       std::bind_front(&SymbolsDb::DeleteAsset, this), &DefaultLess<Asset>,
       &DefaultEquals<Asset>);
+  co_return;
 }
 
-auto SymbolsDb::SelectSymbolsWithPriceRecords() const -> std::vector<Symbol> {
+auto SymbolsDb::SelectSymbolsWithPriceRecords() const
+    -> cppcoro::task<std::vector<Symbol>> {
   auto &statement = prepared_statements_.select_symbols_with_price_records;
 
   if (statement == nullptr) {
@@ -229,13 +235,13 @@ auto SymbolsDb::SelectSymbolsWithPriceRecords() const -> std::vector<Symbol> {
   auto &names = rows.GetColumnValues<sdb::tables::SymbolInfo::name>();
 
   Ensures(statement);
-  return names | ranges::views::transform([](auto &name) {
-           return ValueAs<Symbol>(std::move(name));
-         }) |
-         ranges::to_vector;
+  co_return names | ranges::views::transform([](auto &name) {
+    return ValueAs<Symbol>(std::move(name));
+  }) | ranges::to_vector;
 }
 
-auto SymbolsDb::SelectSymbolInfo(Symbol symbol) const -> cpp::Opt<SymbolInfo> {
+auto SymbolsDb::SelectSymbolInfo(Symbol symbol) const
+    -> cppcoro::task<cpp::Opt<SymbolInfo>> {
   auto &statement = prepared_statements_.select_symbol_info;
 
   if (statement == nullptr) {
@@ -253,16 +259,16 @@ auto SymbolsDb::SelectSymbolInfo(Symbol symbol) const -> cpp::Opt<SymbolInfo> {
   auto infos = SymbolsInfoFrom(std::move(rows));
 
   if (infos.empty()) {
-    return std::nullopt;
+    co_return std::nullopt;
   }
 
   Expects(infos.size() == 1);
 
   Ensures(statement);
-  return std::move(infos.front());
+  co_return std::move(infos.front());
 }
 
-auto SymbolsDb::SelectSymbolsInfo() const -> std::vector<SymbolInfo> {
+auto SymbolsDb::SelectSymbolsInfoImpl() const {
   auto &statement = prepared_statements_.select_symbols_info;
 
   if (statement == nullptr) {
@@ -276,20 +282,27 @@ auto SymbolsDb::SelectSymbolsInfo() const -> std::vector<SymbolInfo> {
   return SymbolsInfoFrom(std::move(rows));
 }
 
-void SymbolsDb::UpdateSymbolsInfo(std::vector<SymbolInfo> infos) {
+auto SymbolsDb::SelectSymbolsInfo() const
+    -> cppcoro::task<std::vector<SymbolInfo>> {
+  co_return SelectSymbolsInfoImpl();
+}
+
+auto SymbolsDb::UpdateSymbolsInfo(std::vector<SymbolInfo> infos)
+    -> cppcoro::task<> {
   UpdateItems(std::move(infos),
-              std::bind_front(&SymbolsDb::SelectSymbolsInfo, this),
+              std::bind_front(&SymbolsDb::SelectSymbolsInfoImpl, this),
               std::bind_front(&SymbolsDb::InsertSymbolInfo, this),
               std::bind_front(&SymbolsDb::UpdateSymbolInfo, this),
               std::bind_front(&SymbolsDb::DeleteSymbolInfo, this),
               &SymbolInfoLess, &SymbolInfoEquals);
+  co_return;
 }
 
 auto SymbolsDb::SelectSymbolPriceRecords(const Symbol &symbol,
                                          const absl::Time *start_time,
                                          const absl::Time *end_time,
                                          const int *limit) const
-    -> std::vector<SymbolPriceRecord> {
+    -> cppcoro::task<std::vector<SymbolPriceRecord>> {
   auto &statement = prepared_statements_.select_symbol_price_records;
 
   if (statement == nullptr) {
@@ -342,10 +355,11 @@ auto SymbolsDb::SelectSymbolPriceRecords(const Symbol &symbol,
   }
 
   Ensures(statement);
-  return price_ticks;
+  co_return price_ticks;
 }
 
-void SymbolsDb::InsertSymbolPriceRecord(SymbolPriceRecord record) {
+auto SymbolsDb::InsertSymbolPriceRecord(SymbolPriceRecord record)
+    -> cppcoro::task<> {
   auto &statement = prepared_statements_.insert_symbol_price_record;
 
   if (statement == nullptr) {
@@ -374,9 +388,11 @@ void SymbolsDb::InsertSymbolPriceRecord(SymbolPriceRecord record) {
   statement->Execute(
       sqldb::AsValues(std::move(record.symbol), record.price, record.time));
   Ensures(statement);
+  co_return;
 }
 
-void SymbolsDb::DeleteSymbolPriceRecords(absl::Time before_time) {
+auto SymbolsDb::DeleteSymbolPriceRecords(absl::Time before_time)
+    -> cppcoro::task<> {
   auto &statement = prepared_statements_.delete_symbol_price_records;
 
   if (statement == nullptr) {
@@ -393,6 +409,7 @@ void SymbolsDb::DeleteSymbolPriceRecords(absl::Time before_time) {
 
   statement->Execute(sqldb::AsValues(before_time));
   Ensures(statement);
+  co_return;
 }
 
 void SymbolsDb::InsertAsset(Asset asset) {
