@@ -1,3 +1,4 @@
+find_package(cppcoro REQUIRED)
 find_package(fmt REQUIRED)
 find_package(function2 REQUIRED)
 
@@ -39,6 +40,7 @@ target_include_directories(libnetwork
 )
 
 target_link_libraries(libnetwork
+  PUBLIC cppcoro::cppcoro
   PUBLIC libdi
   PUBLIC function2::function2
 

@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
 #define STONKS_NETWORK_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
 
+#include <cppcoro/task.hpp>
 #include <optional>
 #include <string>
 #include <utility>
@@ -44,27 +45,27 @@ class RequestBuilder {
   /**
    * @brief Sends the request discarding result.
    */
-  void DiscardingResult() const;
+  auto DiscardingResult() const -> cppcoro::task<>;
 
   /**
    * @remark Other methods should not be called after this.
    */
-  void DiscardingResult();
+  auto DiscardingResult() -> cppcoro::task<>;
 
   /**
    * @brief Sends the request and converts result to the specified type.
    */
   template <Parsable T>
-  auto AndReceive [[nodiscard]] () const {
-    return ParseFromJson<T>(*SendRequestAndGetResult());
+  auto AndReceive [[nodiscard]] () const -> cppcoro::task<T> {
+    co_return ParseFromJson<T>(*co_await SendRequestAndGetResult());
   }
 
   /**
    * @remark Other methods should not be called after this.
    */
   template <Parsable T>
-  auto AndReceive [[nodiscard]] () {
-    return ParseFromJson<T>(*SendRequestAndGetResult());
+  auto AndReceive [[nodiscard]] () -> cppcoro::task<T> {
+    co_return ParseFromJson<T>(*co_await SendRequestAndGetResult());
   }
 
  private:
@@ -73,18 +74,21 @@ class RequestBuilder {
   RequestBuilder(Endpoint endpoint,
                  cpp::NnUp<IRestRequestSender> request_sender);
 
-  static void DiscardingResultImpl(cpp::This<RequestBuilder> auto &t);
+  static auto DiscardingResultImpl(cpp::This<RequestBuilder> auto &t);
 
+  template <Parsable T>
   static auto SendRequestAndGetResultImpl
-      [[nodiscard]] (cpp::This<RequestBuilder> auto &t);
+      [[nodiscard]] (cpp::This<RequestBuilder> auto &t) -> cppcoro::task<T>;
 
   auto WithParam [[nodiscard]] (std::string key, Param value)
   -> RequestBuilder &;
 
   auto WithBody [[nodiscard]] (Body::value_type body) -> RequestBuilder &;
 
-  auto SendRequestAndGetResult [[nodiscard]] () const -> Result::value_type;
-  auto SendRequestAndGetResult [[nodiscard]] () -> Result::value_type;
+  auto SendRequestAndGetResult [[nodiscard]] () const
+      -> cppcoro::task<Result::value_type>;
+  auto SendRequestAndGetResult [[nodiscard]] ()
+  -> cppcoro::task<Result::value_type>;
 
   cpp::Opt<RestRequest> request_{};
   cpp::NnUp<IRestRequestSender> request_sender_;

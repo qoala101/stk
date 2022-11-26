@@ -11,6 +11,8 @@
 #include <polymorphic_value.h>
 #include <pplx/pplxtasks.h>
 
+#include <cppcoro/single_consumer_event.hpp>
+#include <cppcoro/sync_wait.hpp>
 #include <gsl/assert>
 #include <map>
 #include <memory>
@@ -124,8 +126,8 @@ auto WebUriFrom [[nodiscard]] (const network::RestRequest &request) {
 RestRequestSender::RestRequestSender(cpp::NnUp<log::ILogger> logger)
     : logger_{std::move(logger)} {}
 
-auto RestRequestSender::SendRequestAndGetResponse(
-    network::RestRequest request) const -> network::RestResponse {
+auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
+    const -> cppcoro::task<network::RestResponse> {
   const auto full_uri = WebUriFrom(request);
 
   logger_->LogImportantEvent(fmt::format(
@@ -134,17 +136,26 @@ auto RestRequestSender::SendRequestAndGetResponse(
 
   auto http_client = web::http::client::http_client{full_uri};
   const auto http_request = HttpRequestFrom(request);
-  const auto http_response = http_client.request(http_request).get();
 
-  auto response =
-      network::RestResponse{.status = StatusFrom(http_response.status_code())};
-  auto http_response_json = http_response.extract_json().get();
+  auto response = network::RestResponse{};
+  auto response_is_ready = cppcoro::single_consumer_event{};
 
-  if (!http_response_json.is_null()) {
-    response.result = cpp::MakePv<network::IJson, Json>(
-        network::IJson::NativeHandle{std::move(http_response_json)});
-  }
+  http_client.request(http_request)
+      .then([&response](const web::http::http_response &http_response) {
+        response.status = StatusFrom(http_response.status_code());
+        return http_response.extract_json();
+      })
+      .then(
+          [&response, &response_is_ready](web::json::value http_response_json) {
+            if (!http_response_json.is_null()) {
+              response.result = cpp::MakePv<network::IJson, Json>(
+                  network::IJson::NativeHandle{std::move(http_response_json)});
+            }
 
-  return response;
+            response_is_ready.set();
+          });
+
+  co_await response_is_ready;
+  co_return response;
 }
 }  // namespace stonks::restsdk

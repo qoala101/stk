@@ -65,11 +65,11 @@ TypedEndpointSender::TypedEndpointSender(
       request_sender_{std::move(request_sender)} {}
 
 auto TypedEndpointSender::SendRequestAndGetResponse(RestRequest request) const
-    -> RestResponse {
+    -> cppcoro::task<RestResponse> {
   type_checker_->ValidateRequest(request);
   auto response =
-      request_sender_->SendRequestAndGetResponse(std::move(request));
+      co_await request_sender_->SendRequestAndGetResponse(std::move(request));
   type_checker_->ValidateResponse(response);
-  return response;
+  co_return response;
 }
 }  // namespace stonks::network

@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORK_NETWORK_I_REST_REQUEST_SENDER_H_
 #define STONKS_NETWORK_NETWORK_I_REST_REQUEST_SENDER_H_
 
+#include <cppcoro/task.hpp>
 #include <utility>
 
 #include "network_types.h"
@@ -19,7 +20,8 @@ class IRestRequestSender {
    * @brief Executes the request and returns response JSON.
    */
   virtual auto SendRequestAndGetResponse
-      [[nodiscard]] (RestRequest request) const -> RestResponse = 0;
+      [[nodiscard]] (RestRequest request) const
+      -> cppcoro::task<RestResponse> = 0;
 };
 }  // namespace stonks::network
 

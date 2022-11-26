@@ -2,6 +2,7 @@
 
 #include <polymorphic_value.h>
 
+#include <cppcoro/task.hpp>
 #include <gsl/assert>
 #include <string>
 #include <tuple>
@@ -12,16 +13,18 @@
 
 namespace stonks::network::rest_client {
 template <cpp::This<RequestBuilder> This>
-void RequestBuilder::DiscardingResultImpl(This& t) {
+auto RequestBuilder::DiscardingResultImpl(This& t) {
   Expects(t.request_.has_value());
-  std::ignore = t.request_sender_->SendRequestAndGetResponse(
+  return t.request_sender_->SendRequestAndGetResponse(
       cpp::MoveIfNotConst<This>(*t.request_));
 }
 
-void RequestBuilder::DiscardingResult() const { DiscardingResultImpl(*this); }
+auto RequestBuilder::DiscardingResult() const -> cppcoro::task<> {
+  co_await DiscardingResultImpl(*this);
+}
 
-void RequestBuilder::DiscardingResult() {
-  DiscardingResultImpl(*this);
+auto RequestBuilder::DiscardingResult() -> cppcoro::task<> {
+  co_await DiscardingResultImpl(*this);
   request_.reset();
   Ensures(!request_.has_value());
 }
@@ -31,15 +34,14 @@ RequestBuilder::RequestBuilder(Endpoint endpoint,
     : request_{{.endpoint = std::move(endpoint)}},
       request_sender_{std::move(request_sender)} {}
 
-template <cpp::This<RequestBuilder> This>
-auto RequestBuilder::SendRequestAndGetResultImpl(This& t) {
+template <Parsable T, cpp::This<RequestBuilder> This>
+auto RequestBuilder::SendRequestAndGetResultImpl(This& t) -> cppcoro::task<T> {
   Expects(t.request_.has_value());
-  auto result =
-      t.request_sender_
-          ->SendRequestAndGetResponse(cpp::MoveIfNotConst<This>(*t.request_))
-          .result;
+  auto result = (co_await t.request_sender_->SendRequestAndGetResponse(
+                     cpp::MoveIfNotConst<This>(*t.request_)))
+                    .result;
   Expects(result.has_value());
-  return std::move(*result);
+  co_return std::move(*result);
 }
 
 auto RequestBuilder::WithParam(std::string key, Param value)
@@ -58,12 +60,14 @@ auto RequestBuilder::WithBody(Body::value_type body) -> RequestBuilder& {
   return *this;
 }
 
-auto RequestBuilder::SendRequestAndGetResult() const -> Result::value_type {
-  return SendRequestAndGetResultImpl(*this);
+auto RequestBuilder::SendRequestAndGetResult() const
+    -> cppcoro::task<Result::value_type> {
+  return SendRequestAndGetResultImpl<Result::value_type>(*this);
 }
 
-auto RequestBuilder::SendRequestAndGetResult() -> Result::value_type {
-  auto result = SendRequestAndGetResultImpl(*this);
+auto RequestBuilder::SendRequestAndGetResult()
+    -> cppcoro::task<Result::value_type> {
+  auto result = SendRequestAndGetResultImpl<Result::value_type>(*this);
   request_.reset();
   Ensures(!request_.has_value());
   return result;
