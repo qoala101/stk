@@ -36,7 +36,7 @@ class SymbolsDb : public ISymbolsDb {
   /**
    * @copydoc ISymbolsDb::UpdateAssets
    */
-  auto UpdateAssets(std::vector<Asset> assets) -> cppcoro::task<> override;
+  auto UpdateAssets [[nodiscard]] (std::vector<Asset> assets) -> cppcoro::task<> override;
 
   /**
    * @copydoc ISymbolsDb::SelectSymbolsWithPriceRecords
@@ -59,7 +59,7 @@ class SymbolsDb : public ISymbolsDb {
   /**
    * @copydoc ISymbolsDb::UpdateSymbolsInfo
    */
-  auto UpdateSymbolsInfo(std::vector<SymbolInfo> infos)
+  auto UpdateSymbolsInfo [[nodiscard]] (std::vector<SymbolInfo> infos)
       -> cppcoro::task<> override;
 
   /**
@@ -73,13 +73,13 @@ class SymbolsDb : public ISymbolsDb {
   /**
    * @copydoc ISymbolsDb::InsertSymbolPriceRecord
    */
-  auto InsertSymbolPriceRecord(SymbolPriceRecord record)
+  auto InsertSymbolPriceRecord [[nodiscard]] (SymbolPriceRecord record)
       -> cppcoro::task<> override;
 
   /**
    * @copydoc ISymbolsDb::DeleteSymbolPriceRecords
    */
-  auto DeleteSymbolPriceRecords(absl::Time before_time)
+  auto DeleteSymbolPriceRecords [[nodiscard]] (absl::Time before_time)
       -> cppcoro::task<> override;
 
  private:

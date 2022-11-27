@@ -28,7 +28,8 @@ class ISymbolsDb {
   /**
    * @brief Updates the list of all assets.
    */
-  virtual auto UpdateAssets(std::vector<Asset> assets) -> cppcoro::task<> = 0;
+  virtual auto UpdateAssets [[nodiscard]] (std::vector<Asset> assets)
+  -> cppcoro::task<> = 0;
 
   /**
    * @brief Selects symbols which have price records.
@@ -52,8 +53,8 @@ class ISymbolsDb {
   /**
    * @brief Updates the list of all symbol infos.
    */
-  virtual auto UpdateSymbolsInfo(std::vector<SymbolInfo> infos)
-      -> cppcoro::task<> = 0;
+  virtual auto UpdateSymbolsInfo [[nodiscard]] (std::vector<SymbolInfo> infos)
+  -> cppcoro::task<> = 0;
 
   /**
    * @brief Selects symbol price records following the conditions.
@@ -66,14 +67,14 @@ class ISymbolsDb {
   /**
    * @brief Records symbol price.
    */
-  virtual auto InsertSymbolPriceRecord(SymbolPriceRecord record)
-      -> cppcoro::task<> = 0;
+  virtual auto InsertSymbolPriceRecord [[nodiscard]] (SymbolPriceRecord record)
+  -> cppcoro::task<> = 0;
 
   /**
    * @brief Deletes symbol price records older than specified time.
    */
-  virtual auto DeleteSymbolPriceRecords(absl::Time before_time)
-      -> cppcoro::task<> = 0;
+  virtual auto DeleteSymbolPriceRecords [[nodiscard]] (absl::Time before_time)
+  -> cppcoro::task<> = 0;
 };
 }  // namespace stonks::core
 

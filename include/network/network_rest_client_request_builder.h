@@ -45,12 +45,12 @@ class RequestBuilder {
   /**
    * @brief Sends the request discarding result.
    */
-  auto DiscardingResult() const -> cppcoro::task<>;
+  auto DiscardingResult [[nodiscard]] () const -> cppcoro::task<>;
 
   /**
    * @remark Other methods should not be called after this.
    */
-  auto DiscardingResult() -> cppcoro::task<>;
+  auto DiscardingResult [[nodiscard]] () -> cppcoro::task<>;
 
   /**
    * @brief Sends the request and converts result to the specified type.
@@ -74,8 +74,8 @@ class RequestBuilder {
   RequestBuilder(Endpoint endpoint,
                  cpp::NnUp<IRestRequestSender> request_sender);
 
-  static auto DiscardingResultImpl(cpp::This<RequestBuilder> auto &t)
-      -> cppcoro::task<>;
+  static auto DiscardingResultImpl
+      [[nodiscard]] (cpp::This<RequestBuilder> auto &t) -> cppcoro::task<>;
 
   template <Parsable T>
   static auto SendRequestAndGetResultImpl

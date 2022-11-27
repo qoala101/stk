@@ -120,7 +120,7 @@ auto HttpResponseFrom [[nodiscard]] (const network::RestResponse &response) {
   return http_response;
 }
 
-auto HandleHttpRequest(const network::IRestRequestHandler &handler,
+auto HandleHttpRequest [[nodiscard]] (const network::IRestRequestHandler &handler,
                        log::ILogger &logger,
                        const web::http::http_request &request)
     -> cppcoro::task<> {
