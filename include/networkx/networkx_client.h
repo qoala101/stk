@@ -2,6 +2,7 @@
 #define STONKS_NETWORKX_NETWORKX_CLIENT_H_
 
 #include <callable.hpp>
+#include <cppcoro/task.hpp>
 #include <type_traits>
 #include <utility>
 
@@ -31,15 +32,13 @@ template <cpp::MemberFunction auto kFunction>
 class CallImpl {
  private:
   using FunctionTraits = EndpointFunctionTraitsFacade<kFunction>;
+  using ResultType = typename FunctionTraits::ResultType;
 
-  auto ExecuteAndGetResult [[nodiscard]] () {
-    using ResultType = typename member_function_traits<
-        decltype(kFunction)>::return_type::value_type;
-
+  auto ExecuteAndGetResult [[nodiscard]] () -> cppcoro::task<ResultType> {
     if constexpr (std::is_same_v<ResultType, void>) {
-      return request_builder_.DiscardingResult();
+      co_await request_builder_.DiscardingResult();
     } else {
-      return request_builder_.template AndReceive<ResultType>();
+      co_return co_await request_builder_.template AndReceive<ResultType>();
     }
   }
 
@@ -48,7 +47,7 @@ class CallImpl {
       : request_builder_{rest_client.Call(FunctionTraits::AsTypedEndpoint())} {}
 
   template <typename... Args>
-  auto operator() [[nodiscard]] (Args &&...args) {
+  auto operator() [[nodiscard]] (Args &&...args) -> cppcoro::task<ResultType> {
     if constexpr (FunctionTraits::HasParams()) {
       cpp::ForEachArg(
           [&request_builder = request_builder_]<typename Arg, typename Current>(
@@ -68,7 +67,7 @@ class CallImpl {
           std::forward<Args>(args)...);
     }
 
-    return ExecuteAndGetResult();
+    co_return co_await ExecuteAndGetResult();
   }
 
  private:
@@ -88,11 +87,14 @@ class Client : public detail::ClientBase {
    * @brief Remotely calls specified function with provided arguments.
    */
   template <cpp::MemberFunctionOf<Target> auto kFunction, typename... Args,
-            typename FunctionType = decltype(kFunction)>
+            typename FunctionType = decltype(kFunction),
+            typename ResultType =
+                typename EndpointFunctionTraitsFacade<kFunction>::ResultType>
     requires EndpointFunction<kFunction> &&
              std::invocable<FunctionType, Target &, Args...>
-  auto Call [[nodiscard]] (Args &&...args) const {
-    return detail::CallImpl<kFunction>{GetRestClient()}(
+             auto Call [[nodiscard]] (Args &&...args) const
+             -> cppcoro::task<ResultType> {
+    co_return co_await detail::CallImpl<kFunction>{GetRestClient()}(
         std::forward<Args>(args)...);
   }
 };

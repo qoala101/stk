@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORKX_NETWORKX_MAKE_SERVER_FOR_H_
 #define STONKS_NETWORKX_NETWORKX_MAKE_SERVER_FOR_H_
 
+#include <cppcoro/task.hpp>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -27,23 +28,22 @@ auto GetParamValue [[nodiscard]] (network::AutoParsableRestRequest &request,
   }
 }
 
-template <cpp::MemberFunction auto kFunction, ClientServerType Target>
+template <cpp::MemberFunction auto kFunction, ClientServerType Target,
+          typename FunctionTraits = EndpointFunctionTraitsFacade<kFunction>,
+          typename ResultType = typename FunctionTraits::ResultType>
   requires EndpointFunction<kFunction> &&
            cpp::MemberFunctionOf<decltype(kFunction), Target>
-auto InvokeWithRequestParams
-    [[nodiscard]] (Target &target, network::AutoParsableRestRequest &request) {
-  using FunctionTraits = EndpointFunctionTraitsFacade<kFunction>;
-
-  if constexpr (FunctionTraits::HasParams()) {
-    return std::apply(
-        [&target, &request]<typename... Params>(Params &&...params) {
-          return (target.*kFunction)(
-              GetParamValue(request, std::forward<Params>(params))...);
-        },
-        FunctionTraits::kParams);
-  } else {
-    return (target.*kFunction)();
-  }
+           auto InvokeWithRequestParams
+           [[nodiscard]] (Target &target,
+                          network::AutoParsableRestRequest &request)
+           -> cppcoro::task<ResultType> {
+  co_return co_await std::apply(
+      [&target, &request]<typename... Params>(
+          Params &&...params) -> cppcoro::task<ResultType> {
+        co_return co_await (target.*kFunction)(
+            GetParamValue(request, std::forward<Params>(params))...);
+      },
+      FunctionTraits::kParams);
 }
 
 template <ClientServerType Target>
@@ -56,11 +56,25 @@ void SetEndpointHandlers(network::RestServerBuilder &server_builder,
         constexpr auto function =
             TargetTraits::template GetEndpointFunction<Current::kIndex>();
 
-        server_builder.Handling(
-            EndpointFunctionTraitsFacade<function>::AsTypedEndpoint(),
-            [target](auto request) {
-              return InvokeWithRequestParams<function>(*target, request);
-            });
+        using FunctionTraits = EndpointFunctionTraitsFacade<function>;
+
+        auto endpoint = FunctionTraits::AsTypedEndpoint();
+
+        using ResultType = typename FunctionTraits::ResultType;
+
+        if constexpr (FunctionTraits::HasParams()) {
+          server_builder.Handling(
+              std::move(endpoint),
+              [target](auto request) -> cppcoro::task<ResultType> {
+                co_return co_await InvokeWithRequestParams<function>(*target,
+                                                                     request);
+              });
+        } else {
+          server_builder.Handling(std::move(endpoint),
+                                  [target]() -> cppcoro::task<ResultType> {
+                                    co_return co_await (*target.*function)();
+                                  });
+        }
       });
 }
 }  // namespace detail

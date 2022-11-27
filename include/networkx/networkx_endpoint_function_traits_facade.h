@@ -38,6 +38,8 @@ template <cpp::MemberFunction auto kFunction,
   requires EndpointFunction<kFunction>
 struct EndpointFunctionTraitsFacade : public FunctionTraits {
   using FunctionType = decltype(kFunction);
+  using ResultType =
+      typename member_function_traits<FunctionType>::return_type::value_type;
 
   /**
    * @brief Tells whether function has params.
@@ -73,9 +75,6 @@ struct EndpointFunctionTraitsFacade : public FunctionTraits {
 
  private:
   static auto GetExpectedResultType [[nodiscard]] () {
-    using ResultType =
-        typename member_function_traits<FunctionType>::return_type::value_type;
-
     if constexpr (std::is_same_v<ResultType, void>) {
       return network::ParseTypeCheck{};
     } else {
