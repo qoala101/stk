@@ -56,5 +56,4 @@ target_link_libraries(unittests
   PRIVATE function2::function2
   PRIVATE nameof::nameof
   PRIVATE range-v3::range-v3
-  PRIVATE cpprestsdk::cpprest
 )

@@ -3,6 +3,7 @@
 #include <gtest/gtest-test-part.h>
 #include <polymorphic_value.h>
 
+#include <cppcoro/sync_wait.hpp>
 #include <map>
 #include <memory>
 #include <not_null.hpp>
@@ -61,45 +62,48 @@ auto ConvertToJson(const SymbolPrice &value) -> cpp::Pv<IJson> {
 
 namespace {
 TEST(RestRequestReceiver, SendRequest) {
-  struct Handler : public stonks::network::IRestRequestHandler {
-    auto HandleRequestAndGiveResponse
-        [[nodiscard]] (stonks::network::RestRequest request) const
-        -> stonks::network::RestResponse override {
-      EXPECT_EQ(request.endpoint.method, stonks::network::Method::kGet);
-      EXPECT_EQ(request.endpoint.uri, stonks::network::Uri{"/Test"});
-      return {
-          stonks::network::Status::kOk,
-          stonks::network::ConvertToJson(SymbolPrice{
-              .symbol = stonks::network::ParseFromJson<stonks::core::Symbol>(
-                  **request.body),
-              .price = stonks::network::ParseFromJson<double>(
-                  *request.params.at("price"))})};
-    }
-  };
+  cppcoro::sync_wait([]() -> cppcoro::task<> {
+    struct Handler : public stonks::network::IRestRequestHandler {
+      auto HandleRequestAndGiveResponse
+          [[nodiscard]] (stonks::network::RestRequest request) const
+          -> cppcoro::task<stonks::network::RestResponse> override {
+        EXPECT_EQ(request.endpoint.method, stonks::network::Method::kGet);
+        EXPECT_EQ(request.endpoint.uri, stonks::network::Uri{"/Test"});
+        co_return stonks::network::RestResponse{
+            stonks::network::Status::kOk,
+            stonks::network::ConvertToJson(SymbolPrice{
+                .symbol = stonks::network::ParseFromJson<stonks::core::Symbol>(
+                    **request.body),
+                .price = stonks::network::ParseFromJson<double>(
+                    *request.params.at("price"))})};
+      }
+    };
 
-  const auto receiver = []() {
-    auto receiver =
-        test::restsdk::Injector()
-            .create<stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
-    receiver->Receive({"http://0.0.0.0:6506"},
-                      stonks::cpp::MakeNnUp<Handler>());
-    return receiver;
-  }();
+    const auto receiver = []() {
+      auto receiver =
+          test::restsdk::Injector()
+              .create<
+                  stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
+      receiver->Receive({"http://0.0.0.0:6506"},
+                        stonks::cpp::MakeNnUp<Handler>());
+      return receiver;
+    }();
 
-  const auto request = stonks::network::RestRequestBuilder{}
-                           .WithMethod(stonks::network::Method::kGet)
-                           .WithBaseUri({"http://0.0.0.0:6506"})
-                           .AppendUri({"Test"})
-                           .WithBody("BTCUSDT")
-                           .AddParam("price", 123.456)
-                           .Build();
-  const auto sender =
-      test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
-  const auto response = sender.SendRequestAndGetResponse(request);
-  const auto response_price =
-      stonks::network::ParseFromJson<SymbolPrice>(**response.result);
-  EXPECT_EQ(response.status, stonks::network::Status::kOk);
-  EXPECT_EQ(response_price.symbol, stonks::core::Symbol{"BTCUSDT"});
-  EXPECT_EQ(response_price.price, 123.456);
+    const auto request = stonks::network::RestRequestBuilder{}
+                             .WithMethod(stonks::network::Method::kGet)
+                             .WithBaseUri({"http://0.0.0.0:6506"})
+                             .AppendUri({"Test"})
+                             .WithBody("BTCUSDT")
+                             .AddParam("price", 123.456)
+                             .Build();
+    const auto sender =
+        test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
+    const auto response = co_await sender.SendRequestAndGetResponse(request);
+    const auto response_price =
+        stonks::network::ParseFromJson<SymbolPrice>(**response.result);
+    EXPECT_EQ(response.status, stonks::network::Status::kOk);
+    EXPECT_EQ(response_price.symbol, stonks::core::Symbol{"BTCUSDT"});
+    EXPECT_EQ(response_price.price, 123.456);
+  }());
 }
 }  // namespace

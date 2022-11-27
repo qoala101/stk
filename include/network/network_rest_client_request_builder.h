@@ -74,7 +74,8 @@ class RequestBuilder {
   RequestBuilder(Endpoint endpoint,
                  cpp::NnUp<IRestRequestSender> request_sender);
 
-  static auto DiscardingResultImpl(cpp::This<RequestBuilder> auto &t);
+  static auto DiscardingResultImpl(cpp::This<RequestBuilder> auto &t)
+      -> cppcoro::task<>;
 
   template <Parsable T>
   static auto SendRequestAndGetResultImpl

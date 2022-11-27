@@ -4,6 +4,7 @@
 #include <polymorphic_value.h>
 
 #include <boost/di.hpp>
+#include <cppcoro/sync_wait.hpp>
 #include <cstdint>
 #include <map>
 #include <string>
@@ -128,23 +129,25 @@ TEST(RestRequestSender, ParameterTypesToString) {
 }
 
 TEST(RestRequestSender, SendRequest) {
-  const auto request = stonks::network::RestRequestBuilder{}
-                           .WithBaseUri({"https://api.binance.com/api/v3"})
-                           .AppendUri({"avgPrice"})
-                           .AddParam("symbol", "BTCUSDT")
-                           .Build();
-  const auto sender =
-      test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
-  const auto response = sender.SendRequestAndGetResponse(request);
-  const auto response_price =
-      stonks::network::ParseFromJson<AvgPrice>(**response.result);
-  EXPECT_GT(response_price.mins, 0);
-  EXPECT_GT(response_price.price, 0);
+  cppcoro::sync_wait([]() -> cppcoro::task<> {
+    const auto request = stonks::network::RestRequestBuilder{}
+                             .WithBaseUri({"https://api.binance.com/api/v3"})
+                             .AppendUri({"avgPrice"})
+                             .AddParam("symbol", "BTCUSDT")
+                             .Build();
+    const auto sender =
+        test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
+    const auto response = co_await sender.SendRequestAndGetResponse(request);
+    const auto response_price =
+        stonks::network::ParseFromJson<AvgPrice>(**response.result);
+    EXPECT_GT(response_price.mins, 0);
+    EXPECT_GT(response_price.price, 0);
 
-  const auto response_price_json =
-      stonks::network::ConvertToJson(response_price);
-  const auto json_price =
-      stonks::network::ParseFromJson<AvgPrice>(*response_price_json);
-  EXPECT_EQ(response_price, json_price);
+    const auto response_price_json =
+        stonks::network::ConvertToJson(response_price);
+    const auto json_price =
+        stonks::network::ParseFromJson<AvgPrice>(*response_price_json);
+    EXPECT_EQ(response_price, json_price);
+  }());
 }
 }  // namespace

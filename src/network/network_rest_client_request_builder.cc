@@ -13,9 +13,9 @@
 
 namespace stonks::network::rest_client {
 template <cpp::This<RequestBuilder> This>
-auto RequestBuilder::DiscardingResultImpl(This& t) {
+auto RequestBuilder::DiscardingResultImpl(This& t) -> cppcoro::task<> {
   Expects(t.request_.has_value());
-  return t.request_sender_->SendRequestAndGetResponse(
+  co_await t.request_sender_->SendRequestAndGetResponse(
       cpp::MoveIfNotConst<This>(*t.request_));
 }
 
@@ -62,14 +62,14 @@ auto RequestBuilder::WithBody(Body::value_type body) -> RequestBuilder& {
 
 auto RequestBuilder::SendRequestAndGetResult() const
     -> cppcoro::task<Result::value_type> {
-  return SendRequestAndGetResultImpl<Result::value_type>(*this);
+  co_return co_await SendRequestAndGetResultImpl<Result::value_type>(*this);
 }
 
 auto RequestBuilder::SendRequestAndGetResult()
     -> cppcoro::task<Result::value_type> {
-  auto result = SendRequestAndGetResultImpl<Result::value_type>(*this);
+  auto result = co_await SendRequestAndGetResultImpl<Result::value_type>(*this);
   request_.reset();
   Ensures(!request_.has_value());
-  return result;
+  co_return result;
 }
 }  // namespace stonks::network::rest_client

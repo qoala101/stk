@@ -5,6 +5,8 @@
 #include <polymorphic_value.h>
 
 #include <cassert>
+#include <cppcoro/sync_wait.hpp>
+#include <cppcoro/task.hpp>
 #include <exception>
 #include <functional>
 #include <map>
@@ -53,28 +55,29 @@ class EntityInterface {
  public:
   virtual ~EntityInterface() = default;
 
-  virtual void PushSymbol(stonks::core::Symbol symbol) = 0;
+  virtual auto PushSymbol(stonks::core::Symbol symbol) -> cppcoro::task<> = 0;
 
   virtual auto GetSymbol [[nodiscard]] (int index) const
-      -> stonks::core::Symbol = 0;
+      -> cppcoro::task<stonks::core::Symbol> = 0;
 
-  virtual auto GetSize [[nodiscard]] () const -> int = 0;
+  virtual auto GetSize [[nodiscard]] () const -> cppcoro::task<int> = 0;
 };
 
 class Entity : public EntityInterface {
  public:
-  void PushSymbol(stonks::core::Symbol symbol) override {
+  auto PushSymbol(stonks::core::Symbol symbol) -> cppcoro::task<> override {
     symbols_.emplace_back(std::move(symbol));
+    co_return;
   }
 
   auto GetSymbol [[nodiscard]] (int index) const
-      -> stonks::core::Symbol override {
+      -> cppcoro::task<stonks::core::Symbol> override {
     EXPECT_GT(symbols_.size(), index);
-    return symbols_[index];
+    co_return symbols_[index];
   }
 
-  auto GetSize [[nodiscard]] () const -> int override {
-    return symbols_.size();
+  auto GetSize [[nodiscard]] () const -> cppcoro::task<int> override {
+    co_return symbols_.size();
   }
 
  private:
@@ -143,24 +146,26 @@ class EntityServer {
                          .Start()} {}
 
  private:
-  void PushSymbolEndpointHandler(
-      stonks::network::AutoParsableRestRequest request) {
-    entity_.PushSymbol(request.Body());
+  auto PushSymbolEndpointHandler(
+      stonks::network::AutoParsableRestRequest request) -> cppcoro::task<> {
+    return entity_.PushSymbol(request.Body());
   }
 
   auto GetSymbolEndpointHandler(
       stonks::network::AutoParsableRestRequest request)
-      -> stonks::core::Symbol {
+      -> cppcoro::task<stonks::core::Symbol> {
     const auto index = int{request.Param("index")};
 
-    if (index >= entity_.GetSize()) {
+    if (index >= co_await entity_.GetSize()) {
       throw std::runtime_error{kIndexOutOfBoundsMessage};
     }
 
-    return entity_.GetSymbol(index);
+    co_return co_await entity_.GetSymbol(index);
   }
 
-  auto GetSizeEndpointHandler() -> int { return entity_.GetSize(); }
+  auto GetSizeEndpointHandler() -> cppcoro::task<int> {
+    return entity_.GetSize();
+  }
 
   Entity entity_{};
   stonks::network::RestServer rest_server_;
@@ -174,21 +179,22 @@ class EntityClient : public EntityInterface {
                     .create<stonks::di::Factory<
                         stonks::network::IRestRequestSender>>()} {}
 
-  void PushSymbol(stonks::core::Symbol symbol) override {
-    client_.Call(EntityServer::PushSymbolEndpointDesc())
+  auto PushSymbol(stonks::core::Symbol symbol) -> cppcoro::task<> override {
+    co_return co_await client_.Call(EntityServer::PushSymbolEndpointDesc())
         .WithBody(symbol)
         .DiscardingResult();
   }
 
   auto GetSymbol [[nodiscard]] (int index) const
-      -> stonks::core::Symbol override {
-    return client_.Call(EntityServer::GetSymbolEndpointDesc())
+      -> cppcoro::task<stonks::core::Symbol> override {
+    co_return co_await client_.Call(EntityServer::GetSymbolEndpointDesc())
         .WithParam("index", index)
         .AndReceive<stonks::core::Symbol>();
   }
 
-  auto GetSize [[nodiscard]] () const -> int override {
-    return client_.Call(EntityServer::GetSizeEndpointDesc()).AndReceive<int>();
+  auto GetSize [[nodiscard]] () const -> cppcoro::task<int> override {
+    co_return co_await client_.Call(EntityServer::GetSizeEndpointDesc())
+        .AndReceive<int>();
   }
 
  private:
@@ -196,116 +202,136 @@ class EntityClient : public EntityInterface {
 };
 
 TEST(ClientServer, ApiTest) {
-  auto entity = Entity{};
-  entity.PushSymbol({"ETHUSDT"});
-  entity.PushSymbol({"BTCUSDT"});
+  cppcoro::sync_wait([]() -> cppcoro::task<> {
+    auto entity = Entity{};
+    co_await entity.PushSymbol({"ETHUSDT"});
+    co_await entity.PushSymbol({"BTCUSDT"});
 
-  auto entity_server = EntityServer{kBaseUri};
+    auto entity_server = EntityServer{kBaseUri};
 
-  auto entity_client = EntityClient{kBaseUri};
-  entity_client.PushSymbol({"ETHUSDT"});
-  entity_client.PushSymbol({"BTCUSDT"});
+    auto entity_client = EntityClient{kBaseUri};
+    co_await entity_client.PushSymbol({"ETHUSDT"});
+    co_await entity_client.PushSymbol({"BTCUSDT"});
 
-  EXPECT_EQ(entity.GetSize(), entity_client.GetSize());
-  EXPECT_EQ(entity.GetSymbol(0), entity_client.GetSymbol(0));
-  EXPECT_EQ(entity.GetSymbol(1), entity_client.GetSymbol(1));
+    EXPECT_EQ(co_await entity.GetSize(), co_await entity_client.GetSize());
+    EXPECT_EQ(co_await entity.GetSymbol(0),
+              co_await entity_client.GetSymbol(0));
+    EXPECT_EQ(co_await entity.GetSymbol(1),
+              co_await entity_client.GetSymbol(1));
+  }());
 }
 
 TEST(ClientServerDeathTest, WrongClientTypes) {
-  auto entity_server = EntityServer{kBaseUri};
-  auto rest_client = stonks::network::RestClient{
-      kBaseUri,
-      test::restsdk::Injector()
-          .create<stonks::di::Factory<stonks::network::IRestRequestSender>>()};
+  cppcoro::sync_wait([]() -> cppcoro::task<> {
+    auto entity_server = EntityServer{kBaseUri};
+    auto rest_client = stonks::network::RestClient{
+        kBaseUri,
+        test::restsdk::Injector()
+            .create<
+                stonks::di::Factory<stonks::network::IRestRequestSender>>()};
 
-  EXPECT_DEATH(rest_client.Call(EntityServer::PushSymbolEndpointDesc())
-                   .WithBody(0)
-                   .DiscardingResult(),
-               "");
-  EXPECT_DEATH(rest_client.Call(EntityServer::PushSymbolEndpointDesc())
-                   .DiscardingResult(),
-               "");
-  EXPECT_DEATH(rest_client.Call(EntityServer::PushSymbolEndpointDesc())
-                   .WithParam("NOT_EXPECTED_PARAM", 1)
-                   .WithBody("BTC")
-                   .DiscardingResult(),
-               "");
-  rest_client.Call(EntityServer::PushSymbolEndpointDesc())
-      .WithBody("BTC")
-      .DiscardingResult();
+    EXPECT_DEATH(
+        co_await rest_client.Call(EntityServer::PushSymbolEndpointDesc())
+            .WithBody(0)
+            .DiscardingResult(),
+        "");
+    EXPECT_DEATH(
+        co_await rest_client.Call(EntityServer::PushSymbolEndpointDesc())
+            .DiscardingResult(),
+        "");
+    EXPECT_DEATH(
+        co_await rest_client.Call(EntityServer::PushSymbolEndpointDesc())
+            .WithParam("NOT_EXPECTED_PARAM", 1)
+            .WithBody("BTC")
+            .DiscardingResult(),
+        "");
+    co_await rest_client.Call(EntityServer::PushSymbolEndpointDesc())
+        .WithBody("BTC")
+        .DiscardingResult();
 
-  auto endpoint_with_added_param = EntityServer::GetSymbolEndpointDesc();
-  endpoint_with_added_param.expected_types.params.emplace(
-      "NOT_SENT_PARAM", stonks::network::ExpectedType<int>());
-  EXPECT_DEATH(std::ignore = rest_client.Call(endpoint_with_added_param)
-                                 .WithParam("index", 0)
-                                 .AndReceive<stonks::core::Symbol>(),
-               "");
-  EXPECT_DEATH(std::ignore = rest_client.Call(endpoint_with_added_param)
-                                 .WithParam("index", 0)
-                                 .WithParam("UNKNOWN_PARAM", 0)
-                                 .AndReceive<stonks::core::Symbol>(),
-               "");
+    auto endpoint_with_added_param = EntityServer::GetSymbolEndpointDesc();
+    endpoint_with_added_param.expected_types.params.emplace(
+        "NOT_SENT_PARAM", stonks::network::ExpectedType<int>());
+    EXPECT_DEATH(co_await rest_client.Call(endpoint_with_added_param)
+                     .WithParam("index", 0)
+                     .AndReceive<stonks::core::Symbol>(),
+                 "");
+    EXPECT_DEATH(co_await rest_client.Call(endpoint_with_added_param)
+                     .WithParam("index", 0)
+                     .WithParam("UNKNOWN_PARAM", 0)
+                     .AndReceive<stonks::core::Symbol>(),
+                 "");
+  }());
 }
 
 class FunctionHandler : public stonks::network::IRestRequestHandler {
  public:
-  explicit FunctionHandler(fu2::unique_function<stonks::network::RestResponse(
-                               stonks::network::RestRequest) const>
-                               handler)
+  explicit FunctionHandler(
+      fu2::unique_function<cppcoro::task<stonks::network::RestResponse>(
+          stonks::network::RestRequest) const>
+          handler)
       : handler_{std::move(handler)} {}
 
   auto HandleRequestAndGiveResponse
       [[nodiscard]] (stonks::network::RestRequest request) const
-      -> stonks::network::RestResponse override {
-    return handler_(request);
+      -> cppcoro::task<stonks::network::RestResponse> override {
+    co_return co_await handler_(request);
   }
 
  private:
-  fu2::unique_function<stonks::network::RestResponse(
+  fu2::unique_function<cppcoro::task<stonks::network::RestResponse>(
       stonks::network::RestRequest) const>
       handler_{};
 };
 
 TEST(ClientServer, WrongClientTypesReceived) {
-  auto entity_client = EntityClient{kBaseUri};
+  cppcoro::sync_wait([]() -> cppcoro::task<> {
+    auto entity_client = EntityClient{kBaseUri};
 
-  auto handlers =
-      std::map<stonks::network::Endpoint,
-               stonks::cpp::NnUp<stonks::network::IRestRequestHandler>>{};
+    auto handlers =
+        std::map<stonks::network::Endpoint,
+                 stonks::cpp::NnUp<stonks::network::IRestRequestHandler>>{};
 
-  handlers.emplace(EntityServer::PushSymbolEndpointDesc().endpoint,
-                   stonks::cpp::MakeNnUp<FunctionHandler>([](const auto &) {
-                     return stonks::network::RestResponse{
-                         .status = stonks::network::Status::kOk,
-                         .result = stonks::network::ConvertToJson(0)};
-                   }));
-  handlers.emplace(EntityServer::GetSymbolEndpointDesc().endpoint,
-                   stonks::cpp::MakeNnUp<FunctionHandler>([](const auto &) {
-                     return stonks::network::RestResponse{
-                         .status = stonks::network::Status::kOk};
-                   }));
-  handlers.emplace(EntityServer::PushSymbolEndpointDesc().endpoint,
-                   stonks::cpp::MakeNnUp<FunctionHandler>([](const auto &) {
-                     return stonks::network::RestResponse{
-                         .status = stonks::network::Status::kOk,
-                         .result = stonks::network::ConvertToJson("NOT_INT")};
-                   }));
+    handlers.emplace(
+        EntityServer::PushSymbolEndpointDesc().endpoint,
+        stonks::cpp::MakeNnUp<FunctionHandler>(
+            [](const auto &) -> cppcoro::task<stonks::network::RestResponse> {
+              co_return stonks::network::RestResponse{
+                  .status = stonks::network::Status::kOk,
+                  .result = stonks::network::ConvertToJson(0)};
+            }));
+    handlers.emplace(
+        EntityServer::GetSymbolEndpointDesc().endpoint,
+        stonks::cpp::MakeNnUp<FunctionHandler>(
+            [](const auto &) -> cppcoro::task<stonks::network::RestResponse> {
+              co_return stonks::network::RestResponse{
+                  .status = stonks::network::Status::kOk};
+            }));
+    handlers.emplace(
+        EntityServer::PushSymbolEndpointDesc().endpoint,
+        stonks::cpp::MakeNnUp<FunctionHandler>(
+            [](const auto &) -> cppcoro::task<stonks::network::RestResponse> {
+              co_return stonks::network::RestResponse{
+                  .status = stonks::network::Status::kOk,
+                  .result = stonks::network::ConvertToJson("NOT_INT")};
+            }));
 
-  const auto entity_server = [&handlers]() {
-    auto entity_server =
-        test::restsdk::Injector()
-            .create<stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
-    entity_server->Receive(
-        kBaseUri,
-        stonks::cpp::MakeNnUp<stonks::network::EndpointRequestDispatcher>(
-            std::move(handlers)));
-    return entity_server;
-  }();
+    const auto entity_server = [&handlers]() {
+      auto entity_server =
+          test::restsdk::Injector()
+              .create<
+                  stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
+      entity_server->Receive(
+          kBaseUri,
+          stonks::cpp::MakeNnUp<stonks::network::EndpointRequestDispatcher>(
+              std::move(handlers)));
+      return entity_server;
+    }();
 
-  EXPECT_ANY_THROW(entity_client.PushSymbol({"BTC"}));
-  EXPECT_ANY_THROW(std::ignore = entity_client.GetSymbol(0));
-  EXPECT_ANY_THROW(std::ignore = entity_client.GetSize());
+    EXPECT_ANY_THROW(co_await entity_client.PushSymbol({"BTC"}));
+    EXPECT_ANY_THROW(co_await entity_client.GetSymbol(0));
+    EXPECT_ANY_THROW(co_await entity_client.GetSize());
+  }());
 }
 
 TEST(ClientServerDeathTest, WrongServerTypes) {
@@ -322,16 +348,16 @@ TEST(ClientServerDeathTest, WrongServerTypes) {
               .create<
                   stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>()}
           .Handling(EntityServer::PushSymbolEndpointDesc(),
-                    [&entity](auto request) {
-                      entity.PushSymbol(request.Body());
-                      return 55;
+                    [&entity](auto request) -> cppcoro::task<int> {
+                      co_await entity.PushSymbol(request.Body());
+                      co_return 55;
                     })
           .Handling(EntityServer::GetSymbolEndpointDesc(),
-                    [&entity](auto request) {
-                      std::ignore = entity.GetSymbol(request.Param("index"));
+                    [&entity](auto request) -> cppcoro::task<> {
+                      co_await entity.GetSymbol(request.Param("index"));
                     })
           .Handling(EntityServer::GetSizeEndpointDesc(),
-                    []() { return "NOT_INT"; })
+                    []() -> cppcoro::task<std::string> { co_return "NOT_INT"; })
           .Start();
 
   // TODO(vh): EXPECT_DEATH doesn't work here and just blocks the app.
@@ -344,85 +370,95 @@ TEST(ClientServerDeathTest, WrongServerTypes) {
 }
 
 TEST(ClientServer, HandlingException) {
-  auto entity_server = EntityServer{kBaseUri};
-  auto entity_client = EntityClient{kBaseUri};
+  cppcoro::sync_wait([]() -> cppcoro::task<> {
+    auto entity_server = EntityServer{kBaseUri};
+    auto entity_client = EntityClient{kBaseUri};
 
-  const auto client_exception = [&entity_client]() {
-    try {
-      std::ignore = entity_client.GetSymbol(2);
-    } catch (const std::exception &exception) {
-      return std::string{exception.what()};
-    }
+    const auto client_exception =
+        co_await [&entity_client]() -> cppcoro::task<std::string> {
+      try {
+        co_await entity_client.GetSymbol(2);
+      } catch (const std::exception &exception) {
+        co_return std::string{exception.what()};
+      }
 
-    std::terminate();
-  }();
+      std::terminate();
+    }();
 
-  EXPECT_EQ(client_exception, kIndexOutOfBoundsMessage);
+    EXPECT_EQ(client_exception, kIndexOutOfBoundsMessage);
+  }());
 }
 
 TEST(ClientServer, ServerReceivedWrongTypeException) {
-  auto entity_server = EntityServer{kBaseUri};
-  auto sender =
-      test::restsdk::Injector()
-          .create<stonks::cpp::NnUp<stonks::network::IRestRequestSender>>();
+  cppcoro::sync_wait([]() -> cppcoro::task<> {
+    auto entity_server = EntityServer{kBaseUri};
+    auto sender =
+        test::restsdk::Injector()
+            .create<stonks::cpp::NnUp<stonks::network::IRestRequestSender>>();
 
-  auto request =
-      stonks::network::RestRequestBuilder{}
-          .WithMethod(EntityServer::PushSymbolEndpointDesc().endpoint.method)
-          .WithBaseUri(kBaseUri)
-          .AppendUri(EntityServer::PushSymbolEndpointDesc().endpoint.uri)
-          .WithBody(123)
-          .Build();
+    auto request =
+        stonks::network::RestRequestBuilder{}
+            .WithMethod(EntityServer::PushSymbolEndpointDesc().endpoint.method)
+            .WithBaseUri(kBaseUri)
+            .AppendUri(EntityServer::PushSymbolEndpointDesc().endpoint.uri)
+            .WithBody(123)
+            .Build();
 
-  auto response = sender->SendRequestAndGetResponse(std::move(request));
+    auto response =
+        co_await sender->SendRequestAndGetResponse(std::move(request));
 
-  EXPECT_EQ(response.status, stonks::network::Status::kBadRequest);
-  ASSERT_TRUE(response.result.has_value());
-  EXPECT_NO_THROW(
-      std::ignore =
-          stonks::network::ParseFromJson<stonks::cpp::MessageException>(
-              **response.result));
+    EXPECT_EQ(response.status, stonks::network::Status::kBadRequest);
+    EXPECT_TRUE(response.result.has_value());
+    EXPECT_NO_THROW(
+        std::ignore =
+            stonks::network::ParseFromJson<stonks::cpp::MessageException>(
+                **response.result));
 
-  request =
-      stonks::network::RestRequestBuilder{}
-          .WithMethod(EntityServer::PushSymbolEndpointDesc().endpoint.method)
-          .WithBaseUri(kBaseUri)
-          .AppendUri(EntityServer::PushSymbolEndpointDesc().endpoint.uri)
-          .AddParam("UNKNOWN_PARAM", 0)
-          .Build();
+    request =
+        stonks::network::RestRequestBuilder{}
+            .WithMethod(EntityServer::PushSymbolEndpointDesc().endpoint.method)
+            .WithBaseUri(kBaseUri)
+            .AppendUri(EntityServer::PushSymbolEndpointDesc().endpoint.uri)
+            .AddParam("UNKNOWN_PARAM", 0)
+            .Build();
 
-  response = sender->SendRequestAndGetResponse(std::move(request));
+    response = co_await sender->SendRequestAndGetResponse(std::move(request));
 
-  EXPECT_EQ(response.status, stonks::network::Status::kBadRequest);
-  ASSERT_TRUE(response.result.has_value());
-  EXPECT_NO_THROW(
-      std::ignore =
-          stonks::network::ParseFromJson<stonks::cpp::MessageException>(
-              **response.result));
+    EXPECT_EQ(response.status, stonks::network::Status::kBadRequest);
+    EXPECT_TRUE(response.result.has_value());
+    EXPECT_NO_THROW(
+        std::ignore =
+            stonks::network::ParseFromJson<stonks::cpp::MessageException>(
+                **response.result));
+  }());
 }
 
 TEST(ClientServer, ClientReceivedWrongTypeException) {
-  class Handler : public stonks::network::IRestRequestHandler {
-   public:
-    auto HandleRequestAndGiveResponse
-        [[nodiscard]] (stonks::network::RestRequest /*unused*/) const
-        -> stonks::network::RestResponse override {
-      return {.status = stonks::network::Status::kOk};
-    }
+  cppcoro::sync_wait([]() -> cppcoro::task<> {
+    class Handler : public stonks::network::IRestRequestHandler {
+     public:
+      auto HandleRequestAndGiveResponse
+          [[nodiscard]] (stonks::network::RestRequest /*unused*/) const
+          -> cppcoro::task<stonks::network::RestResponse> override {
+        co_return stonks::network::RestResponse{
+            .status = stonks::network::Status::kOk};
+      }
 
-   private:
-    mutable Entity entity_{};
-  };
+     private:
+      mutable Entity entity_{};
+    };
 
-  const auto handler = []() {
-    auto handler =
-        test::restsdk::Injector()
-            .create<stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
-    handler->Receive(kBaseUri, stonks::cpp::MakeNnUp<Handler>());
-    return handler;
-  }();
-  const auto entity_client = EntityClient{kBaseUri};
+    const auto handler = []() {
+      auto handler =
+          test::restsdk::Injector()
+              .create<
+                  stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
+      handler->Receive(kBaseUri, stonks::cpp::MakeNnUp<Handler>());
+      return handler;
+    }();
+    const auto entity_client = EntityClient{kBaseUri};
 
-  EXPECT_ANY_THROW(std::ignore = entity_client.GetSize());
+    EXPECT_ANY_THROW(co_await entity_client.GetSize());
+  }());
 }
 }  // namespace

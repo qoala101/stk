@@ -3,6 +3,7 @@
 #include <gtest/gtest-test-part.h>
 #include <gtest/gtest.h>
 
+#include <cppcoro/task.hpp>
 #include <memory>
 #include <type_traits>
 #include <utility>
@@ -16,32 +17,67 @@
 
 namespace {
 struct Type {
-  void Params(std::string value, const std::string const_value,
+  auto Params(std::string value, const std::string const_value,
               const std::string &const_ref, const std::string *pointer,
               const stonks::cpp::Opt<std::string> &opt,
-              const std::vector<std::string> &vec) const {}
+              const std::vector<std::string> &vec) const -> cppcoro::task<> {
+    co_return;
+  }
 
-  void BodyValue(std::string body) {}
-  void BodyConstValue(int, const std::string body, int, int, int, int) {}
-  void BodyConstRef(int, int, const std::string &body, int, int, int) {}
-  void BodyPointer(int, int, int, const std::string *body, int, int) {}
-  void BodyOpt(int, int, int, int, const stonks::cpp::Opt<std::string> &body,
-               int) {}
-  void BodyVec(int, int, int, int, int, const std::vector<std::string> &body) {}
+  auto BodyValue(std::string body) -> cppcoro::task<> { co_return; }
 
-  void ResultVoid() {}
-  auto ResultValue [[nodiscard]] () { return std::string{}; }
-  auto ResultOpt [[nodiscard]] () { return stonks::cpp::Opt<std::string>{}; }
-  auto ResultVec [[nodiscard]] () { return std::vector<std::string>{}; }
+  auto BodyConstValue(int, const std::string body, int, int, int, int)
+      -> cppcoro::task<> {
+    co_return;
+  }
 
-  void Death1(std::string value, const std::string const_value,
+  auto BodyConstRef(int, int, const std::string &body, int, int, int)
+      -> cppcoro::task<> {
+    co_return;
+  }
+
+  auto BodyPointer(int, int, int, const std::string *body, int, int)
+      -> cppcoro::task<> {
+    co_return;
+  }
+
+  auto BodyOpt(int, int, int, int, const stonks::cpp::Opt<std::string> &body,
+               int) -> cppcoro::task<> {
+    co_return;
+  }
+
+  auto BodyVec(int, int, int, int, int, const std::vector<std::string> &body)
+      -> cppcoro::task<> {
+    co_return;
+  }
+
+  auto ResultVoid() -> cppcoro::task<> { co_return; }
+
+  auto ResultValue [[nodiscard]] () -> cppcoro::task<std::string> {
+    co_return std::string{};
+  }
+
+  auto ResultOpt [[nodiscard]] ()
+  -> cppcoro::task<stonks::cpp::Opt<std::string>> {
+    co_return stonks::cpp::Opt<std::string>{};
+  }
+
+  auto ResultVec [[nodiscard]] () -> cppcoro::task<std::vector<std::string>> {
+    co_return std::vector<std::string>{};
+  }
+
+  auto Death1(std::string value, const std::string const_value,
               const std::string &const_ref, const std::string *pointer,
               const stonks::cpp::Opt<std::string> &opt,
-              const std::vector<std::string> &vec) const {}
-  void Death2(std::string value, const std::string const_value,
+              const std::vector<std::string> &vec) const -> cppcoro::task<> {
+    co_return;
+  }
+  auto Death2(std::string value, const std::string const_value,
               const std::string &const_ref, const std::string *pointer,
               const stonks::cpp::Opt<std::string> &opt,
-              const std::vector<std::string> &vec) const {}
+              const std::vector<std::string> &vec) const -> cppcoro::task<> {
+    co_return;
+  }
 };
 }  // namespace
 
