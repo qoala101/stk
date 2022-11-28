@@ -3,7 +3,6 @@
 
 #include "cpp_not_null.h"
 #include "network_i_ws_client.h"
-#include "network_i_ws_message_handler.h"
 #include "network_typed_ws_endpoint.h"
 #include "network_ws_types.h"
 
@@ -21,14 +20,15 @@ class TypedWsClient : public IWsClient {
   void Connect(WsEndpoint endpoint) override;
 
   /**
-   * @copydoc IWsClient::SetMessagesHandler
+   * @copydoc IWsClient::ReceiveMessage
    */
-  void SetMessageHandler(cpp::NnUp<IWsMessageHandler> handler) override;
+  auto ReceiveMessage [[nodiscard]] () -> cppcoro::task<WsMessage> override;
 
   /**
    * @copydoc IWsClient::SendMessage
    */
-  void SendMessage(WsMessage message) const override;
+  auto SendMessage [[nodiscard]] (WsMessage message) const
+      -> cppcoro::task<> override;
 
  private:
   WsEndpointTypes endpoint_types_{};

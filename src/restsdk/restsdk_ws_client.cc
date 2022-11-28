@@ -7,6 +7,7 @@
 #include <fmt/core.h>
 #include <pplx/pplxtasks.h>
 
+#include <cppcoro/single_consumer_event.hpp>
 #include <memory>
 #include <not_null.hpp>
 #include <utility>
@@ -19,24 +20,9 @@
 #include "restsdk_parse_json_fom_string.h"
 
 namespace stonks::restsdk {
-namespace {
-void HandleWsMessage(
-    const network::IWsMessageHandler &handler,
-    const web::websockets::client::websocket_incoming_message &message) {
-  if (const auto non_text_message =
-          message.message_type() !=
-          web::websockets::client::websocket_message_type::text_message) {
-    return;
-  }
-
-  const auto message_text = message.extract_string().get();
-  handler.HandleMessage(ParseJsonFromString(message_text));
-}
-}  // namespace
-
 WsClient::WsClient(cpp::NnUp<log::ILogger> logger)
     : native_ws_client_{cpp::MakeNnUp<
-          web::websockets::client::websocket_callback_client>()},
+          web::websockets::client::websocket_client>()},
       logger_{std::move(logger)} {}
 
 WsClient::WsClient(WsClient &&) noexcept = default;
@@ -68,18 +54,46 @@ void WsClient::Connect(network::WsEndpoint endpoint) {
       fmt::format("Connected to web socket: {}", **endpoint));
 }
 
-void WsClient::SetMessageHandler(
-    cpp::NnUp<network::IWsMessageHandler> handler) {
-  native_ws_client_->set_message_handler(
-      [handler = cpp::NnSp<network::IWsMessageHandler>{std::move(handler)}](
-          const auto &message) { HandleWsMessage(*handler, message); });
-}
-
-void WsClient::SendMessage(network::WsMessage message) const {
+auto WsClient::SendMessage(network::WsMessage message) const
+    -> cppcoro::task<> {
   auto native_ws_message =
       web::websockets::client::websocket_outgoing_message{};
   native_ws_message.set_utf8_message(message->GetNativeHandle()->serialize());
 
-  native_ws_client_->send(std::move(native_ws_message)).wait();
+  auto message_sent = cppcoro::single_consumer_event{};
+
+  native_ws_client_->send(std::move(native_ws_message)).then([&message_sent]() {
+    message_sent.set();
+  });
+
+  co_await message_sent;
+}
+
+auto WsClient::ReceiveMessage() -> cppcoro::task<network::WsMessage> {
+  auto message = network::WsMessage{};
+  auto message_received = cppcoro::single_consumer_event{};
+
+  native_ws_client_->receive()
+      .then([](const web::websockets::client::websocket_incoming_message
+                   &native_message) {
+        if (const auto non_text_message =
+                native_message.message_type() !=
+                web::websockets::client::websocket_message_type::text_message) {
+          return pplx::task<std::string>{};
+        }
+
+        return native_message.extract_string();
+      })
+      .then([&message, &message_received](const std::string &message_text) {
+        if (message_text.empty()) {
+          return;
+        }
+
+        message = ParseJsonFromString(message_text);
+        message_received.set();
+      });
+
+  co_await message_received;
+  co_return message;
 }
 }  // namespace stonks::restsdk
