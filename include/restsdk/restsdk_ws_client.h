@@ -32,13 +32,13 @@ class WsClient : public network::IWsClient {
   void Connect(network::WsEndpoint endpoint) override;
 
   /**
-   * @copydoc IWsClient::ReceiveMessage
+   * @copydoc network::IWsClient::ReceiveMessage
    */
   auto ReceiveMessage [[nodiscard]] ()
   -> cppcoro::task<network::WsMessage> override;
 
   /**
-   * @copydoc IWsClient::SendMessage
+   * @copydoc network::IWsClient::SendMessage
    */
   auto SendMessage [[nodiscard]] (network::WsMessage message) const
       -> cppcoro::task<> override;
