@@ -10,7 +10,7 @@
 
 namespace stonks::network::aprh {
 using HandlerWithWsMessage =
-    fu2::unique_function<cppcoro::task<>(AutoParsableWsMessage)>;
+    fu2::unique_function<auto(AutoParsableWsMessage)->cppcoro::task<>>;
 
 /**
  * @brief Variant of auto-parsable web socket message handler.

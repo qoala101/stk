@@ -9,14 +9,13 @@
 #include "network_types.h"
 
 namespace stonks::network::aprh {
-using Handler = fu2::unique_function<cppcoro::task<>()>;
+using Handler = fu2::unique_function<auto()->cppcoro::task<>>;
 using HandlerWithRequest =
-    fu2::unique_function<cppcoro::task<>(AutoParsableRestRequest)>;
+    fu2::unique_function<auto(AutoParsableRestRequest)->cppcoro::task<>>;
 using HandlerWithResponse =
-    fu2::unique_function<cppcoro::task<Result::value_type>()>;
-using HandlerWithRequestAndResponse =
-    fu2::unique_function<cppcoro::task<Result::value_type>(
-        AutoParsableRestRequest)>;
+    fu2::unique_function<auto()->cppcoro::task<Result::value_type>>;
+using HandlerWithRequestAndResponse = fu2::unique_function<
+    auto(AutoParsableRestRequest)->cppcoro::task<Result::value_type>>;
 
 /**
  * @brief Variant of auto-parsable request handler.
