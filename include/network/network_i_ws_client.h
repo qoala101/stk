@@ -3,6 +3,8 @@
 
 #include <cppcoro/task.hpp>
 
+#include "cpp_not_null.h"
+#include "network_i_ws_message_handler.h"
 #include "network_ws_types.h"
 
 namespace stonks::network {
@@ -20,9 +22,9 @@ class IWsClient {
   virtual void Connect(WsEndpoint endpoint) = 0;
 
   /**
-   * @brief Receives message from the connected socket.
+   * @brief Redirects received messages to the handler.
    */
-  virtual auto ReceiveMessage [[nodiscard]] () -> cppcoro::task<WsMessage> = 0;
+  virtual void SetMessageHandler(cpp::NnUp<IWsMessageHandler> handler) = 0;
 
   /**
    * @brief Sends message to the connected socket.

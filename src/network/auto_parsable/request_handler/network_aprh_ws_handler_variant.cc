@@ -6,17 +6,17 @@
 #include <variant>
 
 namespace stonks::network::aprh {
-void WsHandlerVariant::operator()(WsMessage message) {
-  std::visit(
-      [&message](auto &v) {
+auto WsHandlerVariant::operator()(WsMessage message) -> cppcoro::task<> {
+  co_await std::visit(
+      [&message](auto &v) -> cppcoro::task<> {
         Expects(!v.empty());
 
         using V = std::remove_cvref_t<decltype(v)>;
 
         if constexpr (std::is_same_v<V, Handler>) {
-          v();
+          co_await v();
         } else if constexpr (std::is_same_v<V, HandlerWithWsMessage>) {
-          v(AutoParsable{std::move(message)});
+          co_await v(AutoParsableWsMessage{std::move(message)});
         } else {
           Expects(false);
         }

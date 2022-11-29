@@ -2,8 +2,6 @@
 
 #include <bits/exception.h>
 
-#include <cppcoro/single_consumer_event.hpp>
-#include <cppcoro/task.hpp>
 #include <function2/function2.hpp>
 #include <gsl/assert>
 #include <memory>
@@ -11,7 +9,7 @@
 #include <utility>
 
 #include "network_typed_endpoint.h"
-#include "network_ws_types.h"
+#include "network_typed_ws_message_handler.h"
 
 namespace stonks::network {
 TypedWsClient::TypedWsClient(WsEndpointTypes endpoint_types,
@@ -23,21 +21,13 @@ void TypedWsClient::Connect(WsEndpoint endpoint) {
   ws_client_->Connect(std::move(endpoint));
 }
 
-auto TypedWsClient::ReceiveMessage() -> cppcoro::task<WsMessage> {
-  auto message = WsMessage{};
-  auto valid_message_received = false;
+void TypedWsClient::SetMessageHandler(cpp::NnUp<IWsMessageHandler> handler) {
+  Expects(!endpoint_types_.received_message.empty());
+  ws_client_->SetMessageHandler(cpp::MakeNnUp<TypedWsMessageHandler>(
+      std::move(endpoint_types_.received_message), std::move(handler)));
 
-  while (!valid_message_received) {
-    message = co_await ws_client_->ReceiveMessage();
-
-    try {
-      endpoint_types_.received_message(*message);
-      valid_message_received = true;
-    } catch (const std::exception &) {
-    }
-  }
-
-  co_return message;
+  endpoint_types_.received_message = ParseTypeCheck{};
+  Ensures(endpoint_types_.received_message.empty());
 }
 
 auto TypedWsClient::SendMessage(WsMessage message) const -> cppcoro::task<> {

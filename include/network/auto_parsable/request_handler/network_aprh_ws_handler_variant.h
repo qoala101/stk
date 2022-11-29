@@ -5,11 +5,12 @@
 
 #include "cpp_variant_struct.h"
 #include "network_aprh_handler_variant.h"
-#include "network_auto_parsable.h"
+#include "network_auto_parsable_ws_message.h"
 #include "network_ws_types.h"
 
 namespace stonks::network::aprh {
-using HandlerWithWsMessage = fu2::unique_function<void(AutoParsable)>;
+using HandlerWithWsMessage =
+    fu2::unique_function<cppcoro::task<>(AutoParsableWsMessage)>;
 
 /**
  * @brief Variant of auto-parsable web socket message handler.
@@ -19,7 +20,7 @@ struct WsHandlerVariant
   /**
    * @brief Calls operator of the current handler variant.
    */
-  void operator()(WsMessage message);
+  auto operator()(WsMessage message) -> cppcoro::task<>;
 };
 }  // namespace stonks::network::aprh
 
