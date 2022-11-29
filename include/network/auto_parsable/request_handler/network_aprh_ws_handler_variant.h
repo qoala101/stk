@@ -20,7 +20,7 @@ struct WsHandlerVariant
   /**
    * @brief Calls operator of the current handler variant.
    */
-  auto operator()(WsMessage message) -> cppcoro::task<>;
+  auto operator() [[nodiscard]] (WsMessage message) -> cppcoro::task<>;
 };
 }  // namespace stonks::network::aprh
 

@@ -17,7 +17,8 @@ class IWsMessageHandler {
   /**
    * @param message Message received from the web socket.
    */
-  virtual auto HandleMessage(WsMessage message) const -> cppcoro::task<> = 0;
+  virtual auto HandleMessage [[nodiscard]] (WsMessage message) const
+      -> cppcoro::task<> = 0;
 };
 }  // namespace stonks::network
 

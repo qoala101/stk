@@ -43,7 +43,7 @@ class WsClient : public network::IWsClient {
   /**
    * @copydoc network::IWsClient::SendMessage
    */
-  auto SendMessage(network::WsMessage message) const
+  auto SendMessage [[nodiscard]] (network::WsMessage message) const
       -> cppcoro::task<> override;
 
  private:

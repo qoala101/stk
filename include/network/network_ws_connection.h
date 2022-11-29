@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_WS_SENDER_H_
-#define STONKS_NETWORK_NETWORK_WS_SENDER_H_
+#ifndef STONKS_NETWORK_NETWORK_WS_CONNECTION_H_
+#define STONKS_NETWORK_NETWORK_WS_CONNECTION_H_
 
 #include <cppcoro/task.hpp>
 #include <utility>
@@ -24,7 +24,7 @@ class WsConnection {
    * @brief Sends the object to the previously connected web socket.
    */
   template <Convertible T>
-  auto Send(T &&t) const -> cppcoro::task<> {
+  auto Send [[nodiscard]] (T &&t) const -> cppcoro::task<> {
     co_await Send(ConvertToJson(std::forward<T>(t)));
   }
 
@@ -33,10 +33,10 @@ class WsConnection {
 
   explicit WsConnection(cpp::NnUp<IWsClient> ws_client);
 
-  auto Send(WsMessage message) const -> cppcoro::task<>;
+  auto Send [[nodiscard]] (WsMessage message) const -> cppcoro::task<>;
 
   cpp::NnUp<IWsClient> ws_client_;
 };
 }  // namespace stonks::network
 
-#endif  // STONKS_NETWORK_NETWORK_WS_SENDER_H_
+#endif  // STONKS_NETWORK_NETWORK_WS_CONNECTION_H_

@@ -39,7 +39,8 @@ class AutoParsableWsMessageHandler : public IWsMessageHandler {
   /**
    * @brief Wraps request in auto-parsable and forwards it to the handler.
    */
-  auto HandleMessage(WsMessage message) const -> cppcoro::task<> override;
+  auto HandleMessage [[nodiscard]] (WsMessage message) const
+      -> cppcoro::task<> override;
 
  private:
   mutable aprh::WsHandlerVariant handler_{};

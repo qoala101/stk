@@ -28,7 +28,8 @@ class TypedWsClient : public IWsClient {
   /**
    * @copydoc IWsClient::SendMessage
    */
-  auto SendMessage(WsMessage message) const -> cppcoro::task<> override;
+  auto SendMessage [[nodiscard]] (WsMessage message) const
+      -> cppcoro::task<> override;
 
  private:
   WsEndpointTypes endpoint_types_{};

@@ -64,7 +64,7 @@ class WebSocketHandler : public stonks::network::IWsMessageHandler {
       stonks::cpp::Nn<std::vector<MessageVariant> *> messages)
       : messages_{messages} {}
 
-  auto HandleMessage(stonks::network::WsMessage message) const
+  auto HandleMessage [[nodiscard]] (stonks::network::WsMessage message) const
       -> cppcoro::task<> override {
     try {
       messages_->emplace_back(
