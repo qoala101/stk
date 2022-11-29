@@ -71,17 +71,17 @@ QueryValue::QueryValue(std::string column_name)
 QueryValue::QueryValue(const p::Parametrized<SelectQuery> &query)
     : QueryWrapper{{fmt::format("({})", *query), query.params}} {}
 
-auto operator== [[nodiscard]] (const QueryValue &left, const QueryValue &right)
+auto operator==(const QueryValue &left, const QueryValue &right)
 -> Condition {
   return ConditionFrom("{} == {}", left, right);
 }
 
-auto operator<[[nodiscard]] (const QueryValue &left, const QueryValue &right)
+auto operator<(const QueryValue &left, const QueryValue &right)
 -> Condition {
   return ConditionFrom("{} < {}", left, right);
 }
 
-auto operator>= [[nodiscard]] (const QueryValue &left, const QueryValue &right)
+auto operator>=(const QueryValue &left, const QueryValue &right)
 -> Condition {
   return ConditionFrom("{} >= {}", left, right);
 }

@@ -118,7 +118,7 @@ TEST(WebSocket, Facade) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
     auto received_messages = std::vector<BinanceWebSocketMessage>{};
 
-    const auto client = stonks::network::WsClientBuilder{
+    auto client = stonks::network::WsClientBuilder{
         kTypedSocket,
         test::restsdk::Injector()
             .create<stonks::cpp::NnUp<stonks::network::IWsClient>>()};
