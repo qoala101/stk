@@ -10,6 +10,7 @@
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "network_enums.h"
+#include "network_ws_types.h"
 #include "networkx_types.h"
 
 namespace stonks::networkx {
@@ -58,6 +59,18 @@ concept EndpointFunction = requires {
 template <typename T>
 concept ClientServerType = detail::IsEndpointFunctions<std::remove_cvref_t<
     decltype(ClientServerTypeTraits<T>::kEndpointFunctions)>>;
+
+/**
+ * @brief Type which can be used by Web Socket.
+ * Must provide endpoint and optionally Receive and SetSender members
+ * for interaction with the socket.
+ */
+template <typename T>
+concept WebSocketType = requires(T t) {
+                          {
+                            t.GetEndpoint()
+                            } -> std::same_as<network::WsEndpoint>;
+                        };
 }  // namespace stonks::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_CONCEPTS_H_

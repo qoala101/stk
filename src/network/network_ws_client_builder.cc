@@ -33,10 +33,7 @@ auto WsClientBuilder::Connect() -> WsConnection {
   }
 
   typed_client->Connect(std::move(endpoint_->endpoint));
-
-  ws_client_.reset();
   endpoint_.reset();
-  handler_.reset();
 
   Ensures(ws_client_ == nullptr);
   Ensures(!endpoint_.has_value());
