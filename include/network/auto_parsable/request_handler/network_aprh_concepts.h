@@ -8,10 +8,17 @@
 #include "network_concepts.h"  // IWYU pragma: keep
 
 /**
- * @file Concepts used by auto-parsable request handler.
+ * @file Concepts used by auto-parsable handlers.
  */
 
 namespace stonks::network::aprh {
+template <typename T>
+concept VoidInvocable = cpp::InvocableReturning<T, cppcoro::task<>>;
+
+template <typename T, typename U>
+concept VoidInvocableTaking =
+    cpp::InvocableReturningTaking<T, cppcoro::task<>, U>;
+
 template <typename T, typename... Args>
 concept ConvertibleInvocableTaking =
     Convertible<typename decltype(std::declval<T>()(

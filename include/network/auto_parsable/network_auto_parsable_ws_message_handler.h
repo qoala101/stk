@@ -6,6 +6,7 @@
 
 #include "cpp_concepts.h"
 #include "cpp_typed_struct.h"
+#include "network_aprh_concepts.h"
 #include "network_aprh_handler_variant.h"
 #include "network_aprh_ws_handler_variant.h"
 #include "network_auto_parsable.h"
@@ -20,16 +21,14 @@ namespace stonks::network {
  */
 class AutoParsableWsMessageHandler : public IWsMessageHandler {
  public:
-  template <cpp::InvocableReturning<cppcoro::task<>> Handler>
+  template <aprh::VoidInvocable Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableWsMessageHandler(Handler &&handler)
       : handler_{aprh::WsHandlerVariant::ValueType{
             std::in_place_type<aprh::Handler>,
             std::forward<Handler>(handler)}} {}
 
-  template <
-      cpp::InvocableReturningTaking<cppcoro::task<>, AutoParsableWsMessage>
-          Handler>
+  template <aprh::VoidInvocableTaking<AutoParsableWsMessage> Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableWsMessageHandler(Handler &&handler)
       : handler_{aprh::WsHandlerVariant::ValueType{

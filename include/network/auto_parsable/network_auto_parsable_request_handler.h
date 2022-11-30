@@ -20,16 +20,14 @@ namespace stonks::network {
  */
 class AutoParsableRequestHandler : public IRestRequestHandler {
  public:
-  template <cpp::InvocableReturning<cppcoro::task<>> Handler>
+  template <aprh::VoidInvocable Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{
             aprh::HandlerVariant::ValueType{std::in_place_type<aprh::Handler>,
                                             std::forward<Handler>(handler)}} {}
 
-  template <
-      cpp::InvocableReturningTaking<cppcoro::task<>, AutoParsableRestRequest>
-          Handler>
+  template <aprh::VoidInvocableTaking<AutoParsableRestRequest> Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
