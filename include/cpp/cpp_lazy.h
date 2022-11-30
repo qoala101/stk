@@ -78,7 +78,7 @@ class Lazy {
     return AssumeNn(&*t);
   }
 
-  mutable fu2::unique_function<auto()->T> initializer_{};
+  mutable fu2::unique_function<auto() const->T> initializer_{};
   mutable Opt<T> object_{};
 };
 }  // namespace stonks::cpp
