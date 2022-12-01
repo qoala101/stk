@@ -2,6 +2,7 @@
 #define STONKS_CPP_CPP_TYPED_STRUCT_H_
 
 #include <compare>
+#include <ostream>
 #include <utility>
 
 #include "cpp_move_if.h"
@@ -58,6 +59,11 @@ struct TypedStruct {
   friend auto operator<=>
       [[nodiscard]] (const TypedStruct &, const TypedStruct &)
       -> std::partial_ordering = default;
+
+  friend auto operator<<(std::ostream &stream,
+                         const TypedStruct<ValueType> &value) -> auto & {
+    return stream << *value;
+  }
 
   template <This<TypedStruct> This>
   static auto OperatorValueTypeImpl [[nodiscard]] (This &&t) {
