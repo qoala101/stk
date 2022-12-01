@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "core_siu_types.h"
+#include "binance_types.h"
 #include "network_i_json.h"
 #include "network_json_base_conversions.h"
 #include "network_json_common_conversions.h"
@@ -11,7 +11,7 @@
 
 namespace stonks::network {
 template <>
-auto JsonParser<core::siu::BinanceSymbolExchangeInfo>::operator()(
+auto JsonParser<binance::SymbolExchangeInfo>::operator()(
     const IJson &json) const -> Type {
   auto value = MakeFromJson<Type>(json, "symbol", "baseAsset", "quoteAsset");
   auto filters = json.GetChild("filters");
@@ -42,9 +42,9 @@ auto JsonParser<core::siu::BinanceSymbolExchangeInfo>::operator()(
 }
 
 template <>
-auto JsonParser<core::siu::BinanceExchangeInfo>::operator()(
-    const IJson &json) const -> Type {
-  return {ParseFromJsonChild<std::vector<core::siu::BinanceSymbolExchangeInfo>>(
+auto JsonParser<binance::ExchangeInfo>::operator()(const IJson &json) const
+    -> Type {
+  return {ParseFromJsonChild<std::vector<binance::SymbolExchangeInfo>>(
       json, "symbols")};
 }
 }  // namespace stonks::network

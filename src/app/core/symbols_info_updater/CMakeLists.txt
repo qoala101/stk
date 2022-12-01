@@ -1,9 +1,6 @@
 find_package(range-v3 REQUIRED)
 
 add_library(libcore_symbols_info_updater
-  core_siu_binance_client.cc
-  core_siu_endpoints.cc
-  core_siu_json_conversions.cc
   core_symbols_info_updater.cc
 )
 
@@ -16,8 +13,8 @@ target_include_directories(libcore_symbols_info_updater
 )
 
 target_link_libraries(libcore_symbols_info_updater
+  PUBLIC libbinance
   PUBLIC libcore_symbols_db
-  PUBLIC libnetwork
 
   PRIVATE range-v3::range-v3
 )

@@ -61,7 +61,7 @@ struct EndpointFunctionTraits<&core::ISymbolsDb::DeleteSymbolPriceRecords> {
 };
 
 template <>
-struct ClientServerTypeTraits<stonks::core::ISymbolsDb> {
+struct ClientServerTypeTraits<core::ISymbolsDb> {
   static constexpr auto kEndpointFunctions = EndpointFunctionList(
       &core::ISymbolsDb::SelectAssets, &core::ISymbolsDb::UpdateAssets,
       &core::ISymbolsDb::SelectSymbolsWithPriceRecords,
