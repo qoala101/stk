@@ -8,6 +8,7 @@ add_executable(service_symbols_info_updater
 target_link_libraries(service_symbols_info_updater
   PRIVATE libcli
   PRIVATE libcore_symbols_info_updater
+  PRIVATE libnetwork
   PRIVATE librestsdk
   PRIVATE libservice
   PRIVATE libservice_symbols_db

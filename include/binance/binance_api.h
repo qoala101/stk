@@ -27,7 +27,7 @@ class BinanceApi {
   auto exchangeInfo [[nodiscard]] () const -> cppcoro::task<ExchangeInfo>;
 
  private:
-  struct Impl;
+  class Impl;
 
   cpp::NnUp<Impl> impl_;
 };

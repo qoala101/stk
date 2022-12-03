@@ -16,8 +16,7 @@ class Timer {
    * @brief Starts the thread which executes event.
    * @param interval Minimum time between the starts of consecutive events.
    */
-  explicit Timer(fu2::unique_function<auto() const->void> event,
-                 absl::Duration interval);
+  Timer(fu2::unique_function<void() const> event, absl::Duration interval);
 
   Timer(const Timer &) = delete;
   Timer(Timer &&) noexcept = default;

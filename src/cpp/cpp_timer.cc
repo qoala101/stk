@@ -8,8 +8,7 @@
 #include <utility>
 
 namespace stonks::cpp {
-Timer::Timer(fu2::unique_function<auto() const->void> event,
-             absl::Duration interval)
+Timer::Timer(fu2::unique_function<void() const> event, absl::Duration interval)
     : thread_{[event = std::move(event),
                interval](const std::stop_token &stop_token) {
         while (!stop_token.stop_requested()) {

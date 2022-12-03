@@ -6,11 +6,14 @@
 #include "networkx_client.h"
 
 namespace stonks::binance {
-struct BinanceApi::Impl {
-  explicit Impl(di::Factory<network::IRestRequestSender> request_sender_factory)
-      : client{{network::Uri{"https://api.binance.com/api/v3"},
-                std::move(request_sender_factory)}} {}
+class BinanceApi::Impl {
+ public:
+  explicit Impl(networkx::Client<BinanceApi> client)
+      : client{std::move(client)} {}
 
+  auto GetClient [[nodiscard]] () -> auto & { return client; }
+
+ private:
   networkx::Client<BinanceApi> client;
 };
 
@@ -22,11 +25,12 @@ BinanceApi::~BinanceApi() = default;
 
 BinanceApi::BinanceApi(
     di::Factory<network::IRestRequestSender> request_sender_factory)
-    : impl_{
-          cpp::MakeNnUp<BinanceApi::Impl>(std::move(request_sender_factory))} {}
+    : impl_{cpp::MakeNnUp<BinanceApi::Impl>(
+          networkx::Client<BinanceApi>{{{"https://api.binance.com/api/v3"},
+                                        std::move(request_sender_factory)}})} {}
 
 auto BinanceApi::exchangeInfo() const -> cppcoro::task<ExchangeInfo> {
-  co_return co_await impl_->client
-      .template Call<&binance::BinanceApi::exchangeInfo>();
+  co_return co_await impl_->GetClient()
+      .Call<&binance::BinanceApi::exchangeInfo>();
 }
 }  // namespace stonks::binance

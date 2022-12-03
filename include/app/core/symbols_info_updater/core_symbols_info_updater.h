@@ -6,19 +6,21 @@
 #include "binance_api.h"
 #include "core_i_symbols_db.h"
 #include "cpp_not_null.h"
+#include "cpp_timer.h"
 
 namespace stonks::core {
 /**
  * @brief Polls symbols info from Binance at the specified interval
- * and updates them in the Symbols DB.
+ * and it in the Symbols DB.
  */
 class SymbolsInfoUpdater {
  public:
-  SymbolsInfoUpdater(absl::Duration interval, cpp::NnUp<ISymbolsDb> symbols_db,
-                     binance::BinanceApi binance_api);
+  explicit SymbolsInfoUpdater(cpp::NnUp<ISymbolsDb> symbols_db,
+                              binance::BinanceApi binance_api,
+                              absl::Duration update_interval);
 
  private:
-  binance::BinanceApi binance_api_;
+  cpp::Timer timer_;
 };
 }  // namespace stonks::core
 
