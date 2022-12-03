@@ -29,8 +29,7 @@ void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
         using V = typename decltype(v)::Type;
 
         if constexpr (std::is_same_v<V, bool>) {
-          return sqlite3_bind_int(&statement, index,
-                                  static_cast<int>(value.Get<V>()));
+          return sqlite3_bind_int(&statement, index, int{value.Get<V>()});
         } else if constexpr (std::is_same_v<V, int>) {
           return sqlite3_bind_int(&statement, index, value.Get<V>());
         } else if constexpr (std::is_same_v<V, int64_t>) {

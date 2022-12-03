@@ -25,7 +25,7 @@ BinanceApi::BinanceApi(
     : impl_{
           cpp::MakeNnUp<BinanceApi::Impl>(std::move(request_sender_factory))} {}
 
-auto BinanceApi::exchangeInfo() -> cppcoro::task<ExchangeInfo> {
+auto BinanceApi::exchangeInfo() const -> cppcoro::task<ExchangeInfo> {
   co_return co_await impl_->client
       .template Call<&binance::BinanceApi::exchangeInfo>();
 }

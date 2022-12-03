@@ -1,9 +1,11 @@
+find_package(absl REQUIRED)
 find_package(function2 REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
 find_package(polymorphic_value REQUIRED)
 
 add_library(libcpp
   cpp_message_exception.cc
+  cpp_timer.cc
 )
 
 set_target_properties(libcpp PROPERTIES
@@ -17,6 +19,7 @@ target_include_directories(libcpp
 )
 
 target_link_libraries(libcpp
+  PUBLIC absl::absl
   PUBLIC callable
   PUBLIC function2::function2
   PUBLIC Microsoft.GSL::GSL
