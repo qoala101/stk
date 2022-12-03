@@ -5,8 +5,10 @@
 #include "cpp_this.h"  // IWYU pragma: keep
 #include "network_i_json.h"
 
+// IWYU pragma: no_include <cpprest/json.h>
+
 namespace web::json {
-class value;
+class value;  // IWYU pragma: keep
 }  // namespace web::json
 
 namespace stonks::network {

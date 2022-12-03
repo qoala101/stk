@@ -1,8 +1,6 @@
 #include "cli_options.h"
 
 #include <CLI/App.hpp>
-#include <CLI/TypeTools.hpp>
-#include <memory>
 #include <type_traits>
 #include <utility>
 

@@ -8,8 +8,10 @@
 #include "network_i_rest_request_receiver.h"
 #include "network_types.h"
 
+// IWYU pragma: no_include <cpprest/http_listener.h>
+
 namespace web::http::experimental::listener {
-class http_listener;
+class http_listener;  // IWYU pragma: keep
 }  // namespace web::http::experimental::listener
 
 namespace stonks::restsdk {

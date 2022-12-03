@@ -1,9 +1,12 @@
 #include "binance_api.h"
 
-#include "binance_api_traits.h"
-#include "network_rest_client.h"
-#include "network_types.h"
+#include <coroutine>
+#include <memory>
+#include <utility>
+
+#include "binance_api_traits.h"  // IWYU pragma: keep
 #include "networkx_client.h"
+#include "not_null.hpp"
 
 namespace stonks::binance {
 class BinanceApi::Impl {

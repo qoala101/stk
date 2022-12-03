@@ -1,6 +1,8 @@
 #ifndef STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_WS_CLIENT_H_
 #define STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_WS_CLIENT_H_
 
+#include <cppcoro/task.hpp>
+
 #include "cpp_not_null.h"
 #include "network_i_ws_client.h"
 #include "network_i_ws_message_handler.h"

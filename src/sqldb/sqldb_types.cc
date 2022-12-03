@@ -1,7 +1,7 @@
 #include "sqldb_types.h"
 
-#include <memory>
 #include <not_null.hpp>
+#include <variant>
 
 namespace stonks::sqldb {
 auto operator<=>(const DataTypeVariant& left, const DataTypeVariant& right)

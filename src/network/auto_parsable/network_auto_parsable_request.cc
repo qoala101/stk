@@ -1,7 +1,5 @@
 #include "network_auto_parsable_request.h"
 
-#include <polymorphic_value.h>
-
 #include <gsl/assert>
 #include <map>
 #include <string>

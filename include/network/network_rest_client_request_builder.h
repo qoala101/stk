@@ -2,7 +2,6 @@
 #define STONKS_NETWORK_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
 
 #include <cppcoro/task.hpp>
-#include <optional>
 #include <string>
 #include <utility>
 

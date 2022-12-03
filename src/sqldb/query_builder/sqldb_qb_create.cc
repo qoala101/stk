@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 #include <gsl/assert>
-#include <memory>
 #include <not_null.hpp>
 #include <range/v3/functional/identity.hpp>
 #include <range/v3/numeric/accumulate.hpp>

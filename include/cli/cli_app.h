@@ -5,6 +5,7 @@
 
 #include "cli_options.h"
 #include "cli_run_scope.h"
+#include "cpp_concepts.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 

@@ -3,7 +3,6 @@
 #include <fmt/core.h>
 
 #include <gsl/assert>
-#include <memory>
 #include <not_null.hpp>
 #include <range/v3/detail/variant.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
@@ -71,18 +70,15 @@ QueryValue::QueryValue(std::string column_name)
 QueryValue::QueryValue(const p::Parametrized<SelectQuery> &query)
     : QueryWrapper{{fmt::format("({})", *query), query.params}} {}
 
-auto operator==(const QueryValue &left, const QueryValue &right)
--> Condition {
+auto operator==(const QueryValue &left, const QueryValue &right) -> Condition {
   return ConditionFrom("{} == {}", left, right);
 }
 
-auto operator<(const QueryValue &left, const QueryValue &right)
--> Condition {
+auto operator<(const QueryValue &left, const QueryValue &right) -> Condition {
   return ConditionFrom("{} < {}", left, right);
 }
 
-auto operator>=(const QueryValue &left, const QueryValue &right)
--> Condition {
+auto operator>=(const QueryValue &left, const QueryValue &right) -> Condition {
   return ConditionFrom("{} >= {}", left, right);
 }
 }  // namespace stonks::sqldb::qb

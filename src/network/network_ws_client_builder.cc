@@ -3,7 +3,6 @@
 #include <gsl/assert>
 #include <memory>
 #include <not_null.hpp>
-#include <type_traits>
 
 #include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"

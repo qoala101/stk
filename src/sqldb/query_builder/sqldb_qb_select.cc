@@ -4,9 +4,10 @@
 #include <fmt/core.h>
 
 #include <gsl/assert>
-#include <memory>
 #include <not_null.hpp>
 #include <range/v3/detail/variant.hpp>
+#include <range/v3/functional/bind_back.hpp>
+#include <range/v3/functional/invoke.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/utility/get.hpp>
@@ -16,6 +17,7 @@
 #include <range/v3/view/view.hpp>
 #include <string>
 #include <utility>
+#include <variant>
 
 #include "cpp_typed_struct.h"
 #include "sqldb_p_types.h"

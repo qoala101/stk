@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "cpp_lazy.h"
+#include "sqldb_concepts.h"
 #include "sqldb_p_types.h"
 #include "sqldb_qb_columns_traits.h"
 #include "sqldb_qb_query_value.h"

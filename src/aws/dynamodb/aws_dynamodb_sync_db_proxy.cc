@@ -9,8 +9,10 @@
 #include <aws/dynamodb/model/TableStatus.h>
 #include <fmt/core.h>
 
+#include <concepts>
 #include <gsl/assert>
 #include <optional>
+#include <string>
 #include <utility>
 
 #include "aws_dynamodb_async_db.h"

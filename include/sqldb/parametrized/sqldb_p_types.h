@@ -1,6 +1,7 @@
 #ifndef STONKS_SQLDB_PARAMETRIZED_SQLDB_P_TYPES_H_
 #define STONKS_SQLDB_PARAMETRIZED_SQLDB_P_TYPES_H_
 
+#include <concepts>
 #include <vector>
 
 #include "cpp_typed_struct.h"

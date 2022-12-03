@@ -10,6 +10,7 @@
 #include "sqldb_types.h"
 #include "sqlite_db_facade.h"
 #include "sqlite_db_handle_variant.h"
+#include "sqlite_ps_common_impl.h"
 
 namespace stonks::sqlite {
 /**

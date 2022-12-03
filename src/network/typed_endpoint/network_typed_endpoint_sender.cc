@@ -1,7 +1,7 @@
 #include "network_typed_endpoint_sender.h"
 
-#include <bits/exception.h>
-
+#include <coroutine>
+#include <exception>
 #include <gsl/assert>
 #include <memory>
 #include <string>

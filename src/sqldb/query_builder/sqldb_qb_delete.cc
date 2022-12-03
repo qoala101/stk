@@ -3,7 +3,6 @@
 #include <fmt/core.h>
 
 #include <gsl/assert>
-#include <memory>
 #include <not_null.hpp>
 #include <string>
 #include <utility>

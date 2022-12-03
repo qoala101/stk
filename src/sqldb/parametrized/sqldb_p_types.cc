@@ -1,6 +1,5 @@
 #include "sqldb_p_types.h"
 
-#include <memory>
 #include <not_null.hpp>
 
 namespace stonks::sqldb::p {

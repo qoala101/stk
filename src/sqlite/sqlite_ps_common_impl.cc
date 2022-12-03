@@ -2,7 +2,7 @@
 
 #include <fmt/core.h>
 
-#include <memory>
+#include <string>
 #include <utility>
 
 #include "cpp_not_null.h"

@@ -3,8 +3,8 @@
 #include <fmt/core.h>
 
 #include <CLI/App.hpp>
-#include <memory>
 #include <not_null.hpp>
+#include <string>
 #include <utility>
 
 #include "cli_wait_for_interrupt.h"

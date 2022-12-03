@@ -1,8 +1,8 @@
 #include "sqldb_qb_query_wrapper.h"
 
 #include <gsl/assert>
-#include <memory>
 #include <not_null.hpp>
+#include <string>
 #include <utility>
 
 #include "cpp_typed_struct.h"

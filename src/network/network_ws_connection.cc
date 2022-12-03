@@ -1,7 +1,7 @@
 #include "network_ws_connection.h"
 
+#include <coroutine>
 #include <cppcoro/task.hpp>
-#include <memory>
 
 namespace stonks::network {
 WsConnection::WsConnection(cpp::NnUp<IWsClient> ws_client)

@@ -5,13 +5,15 @@
 #include <cpprest/ws_client.h>
 #include <cpprest/ws_msg.h>
 #include <fmt/core.h>
+#include <pplx/pplx.h>
 #include <pplx/pplxtasks.h>
 
+#include <coroutine>
 #include <cppcoro/single_consumer_event.hpp>
 #include <cppcoro/sync_wait.hpp>
 #include <cppcoro/task.hpp>
-#include <memory>
 #include <not_null.hpp>
+#include <string>
 #include <utility>
 
 #include "cpp_not_null.h"

@@ -1,7 +1,7 @@
 #ifndef STONKS_NETWORKX_NETWORKX_CLIENT_H_
 #define STONKS_NETWORKX_NETWORKX_CLIENT_H_
 
-#include <callable.hpp>
+#include <concepts>
 #include <cppcoro/task.hpp>
 #include <type_traits>
 #include <utility>

@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "cpp_this.h"  // IWYU pragma: keep
+#include "sqldb_concepts.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 

@@ -1,5 +1,6 @@
 #include "network_auto_parsable_ws_message_handler.h"
 
+#include <coroutine>
 #include <cppcoro/task.hpp>
 #include <utility>
 

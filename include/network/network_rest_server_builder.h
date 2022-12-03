@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_SERVER_BUILDER_H_
 #define STONKS_NETWORK_NETWORK_REST_SERVER_BUILDER_H_
 
+#include <concepts>
 #include <map>
 #include <utility>
 

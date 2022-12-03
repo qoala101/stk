@@ -2,6 +2,8 @@
 
 #include <fmt/core.h>
 
+#include <string>
+
 #include "cpp_typed_struct.h"
 #include "sqldb_qb_select.h"
 

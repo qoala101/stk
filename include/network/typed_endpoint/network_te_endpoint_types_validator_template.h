@@ -1,8 +1,7 @@
 #ifndef STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TE_ENDPOINT_TYPES_VALIDATOR_TEMPLATE_H_
 #define STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TE_ENDPOINT_TYPES_VALIDATOR_TEMPLATE_H_
 
-#include <bits/exception.h>
-
+#include <exception>
 #include <string_view>
 
 #include "network_typed_endpoint.h"

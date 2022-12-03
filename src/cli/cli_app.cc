@@ -3,7 +3,6 @@
 #include <CLI/App.hpp>
 #include <CLI/Config.hpp>     // IWYU pragma: keep
 #include <CLI/Formatter.hpp>  // IWYU pragma: keep
-#include <memory>
 #include <not_null.hpp>
 
 #include "cli_run_scope.h"

@@ -1,6 +1,7 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_QUERY_WRAPPER_H_
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_QUERY_WRAPPER_H_
 
+#include "cpp_this.h"
 #include "sqldb_p_types.h"
 #include "sqldb_types.h"
 

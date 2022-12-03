@@ -1,7 +1,6 @@
 #include "sqlite_db_file_handle.h"
 
-#include <bits/exception.h>
-
+#include <exception>
 #include <memory>
 #include <not_null.hpp>
 #include <utility>

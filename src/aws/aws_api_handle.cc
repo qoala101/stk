@@ -2,12 +2,11 @@
 
 #include <aws/core/Aws.h>
 #include <aws/core/monitoring/MonitoringManager.h>
-#include <bits/exception.h>
-
+#include <not_null.hpp>
 #include <gsl/assert>
 #include <memory>
-#include <not_null.hpp>
 #include <utility>
+#include <exception>
 
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"

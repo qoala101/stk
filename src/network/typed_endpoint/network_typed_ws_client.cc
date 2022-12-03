@@ -1,7 +1,7 @@
 #include "network_typed_ws_client.h"
 
-#include <bits/exception.h>
-
+#include <coroutine>
+#include <exception>
 #include <function2/function2.hpp>
 #include <gsl/assert>
 #include <memory>

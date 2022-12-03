@@ -5,6 +5,7 @@
 #include <string_view>
 
 #include "cpp_template_constructor.h"
+#include "sqldb_concepts.h"
 #include "sqldb_p_types.h"
 #include "sqldb_qb_query_value.h"
 #include "sqldb_qb_wrapped_conditions.h"

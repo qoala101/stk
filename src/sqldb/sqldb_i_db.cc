@@ -1,6 +1,5 @@
 #include "sqldb_i_db.h"
 
-#include <memory>
 #include <not_null.hpp>
 
 namespace stonks::sqldb {

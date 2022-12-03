@@ -1,8 +1,9 @@
 #include "network_typed_endpoint_handler.h"
 
-#include <bits/exception.h>
 #include <fmt/core.h>
 
+#include <coroutine>
+#include <exception>
 #include <gsl/assert>
 #include <memory>
 #include <string>

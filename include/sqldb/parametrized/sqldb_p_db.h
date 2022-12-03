@@ -2,6 +2,7 @@
 #define STONKS_SQLDB_PARAMETRIZED_SQLDB_P_DB_H_
 
 #include "cpp_not_null.h"
+#include "cpp_this.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"

@@ -1,12 +1,13 @@
 #include "network_rest_request_builder.h"
 
+#include <polymorphic_value.h>
+
 #include <gsl/assert>
-#include <memory>
 #include <not_null.hpp>
 #include <string>
-#include <type_traits>
 #include <utility>
 
+#include "cpp_polymorphic_value.h"
 #include "cpp_typed_struct.h"
 #include "network_types.h"
 

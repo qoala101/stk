@@ -4,6 +4,7 @@
 #include <cppcoro/task.hpp>
 
 #include "binance_types.h"
+#include "cpp_not_null.h"
 #include "di_factory.h"
 #include "network_i_rest_request_sender.h"
 

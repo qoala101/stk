@@ -4,7 +4,8 @@
 #include <sqlite3.h>
 
 #include <gsl/assert>
-#include <memory>
+#include <range/v3/functional/bind_back.hpp>
+#include <range/v3/functional/invoke.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>

@@ -1,13 +1,9 @@
 #ifndef STONKS_NETWORK_NETWORK_JSON_COMMON_CONVERSIONS_H_
 #define STONKS_NETWORK_NETWORK_JSON_COMMON_CONVERSIONS_H_
 
-#include <bits/exception.h>
-#include <polymorphic_value.h>
-
-#include <gsl/assert>
+#include <exception>
 #include <gsl/util>
 #include <optional>
-#include <string>
 #include <variant>
 #include <vector>
 

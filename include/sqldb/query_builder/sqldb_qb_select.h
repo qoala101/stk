@@ -8,6 +8,7 @@
 #include "cpp_lazy.h"
 #include "cpp_template_constructor.h"
 #include "cpp_type_list.h"
+#include "sqldb_concepts.h"
 #include "sqldb_p_types.h"
 #include "sqldb_qb_columns_traits.h"
 #include "sqldb_qb_query_value.h"

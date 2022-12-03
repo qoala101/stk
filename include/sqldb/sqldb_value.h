@@ -6,8 +6,8 @@
 #include <utility>
 #include <variant>
 
+#include "cpp_concepts.h"
 #include "cpp_this.h"  // IWYU pragma: keep
-#include "cpp_typed_struct.h"
 #include "cpp_variant_struct.h"
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"

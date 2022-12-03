@@ -6,10 +6,6 @@
 #include "kvdb_i_db.h"
 #include "kvdb_types.h"
 
-namespace Aws::DynamoDB::Model {
-enum class TableStatus;
-}  // namespace Aws::DynamoDB::Model
-
 namespace stonks::aws::dynamodb {
 /**
  * @brief Synchronization proxy to the asynchronous DynamoDB implementation.

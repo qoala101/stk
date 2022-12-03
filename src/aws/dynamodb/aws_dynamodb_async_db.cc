@@ -1,6 +1,8 @@
 #include "aws_dynamodb_async_db.h"
 
 #include <aws/core/utils/Outcome.h>
+#include <aws/core/utils/memory/stl/AWSMap.h>
+#include <aws/core/utils/memory/stl/AWSString.h>
 #include <aws/dynamodb/DynamoDBClient.h>
 #include <aws/dynamodb/DynamoDBErrors.h>
 #include <aws/dynamodb/model/AttributeDefinition.h>
@@ -18,7 +20,6 @@
 #include <fmt/core.h>
 
 #include <map>
-#include <memory>
 #include <not_null.hpp>
 #include <optional>
 #include <string>

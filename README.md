@@ -4,7 +4,7 @@
 
 ```bash
 apt update && \
-apt -y install cmake git iwyu pip snap && \
+apt -y install cmake git pip snap && \
 pip --no-input install conan && \
 snap install ngrok
 ```
@@ -28,6 +28,17 @@ cd build
 ```bash
 conan install .. --build=missing -pr=../conanprofile.txt
 ```
+
+### Build IWYU for development
+
+Build standalone version by following the instructions on https://github.com/include-what-you-use/include-what-you-use.
+Build might require
+
+```bash
+apt install libclang-15-dev
+```
+
+Then move resulting binary to /usr/local/bin.
 
 ### Build
 
@@ -78,6 +89,7 @@ Fix includes in changed files via VS Code Include What You Use command in source
 ## Docker
 
 ### Installation
+
 TODO(vh): Rewrite with the install-from-repository approach
 
 ```bash

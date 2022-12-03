@@ -6,7 +6,6 @@
 #include <gsl/assert>
 #include <map>
 #include <string>
-#include <type_traits>
 #include <utility>
 
 namespace stonks::network::te {

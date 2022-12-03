@@ -1,8 +1,9 @@
 #ifndef STONKS_NETWORKX_NETWORKX_ENDPOINT_FUNCTION_TRAITS_FACADE_H_
 #define STONKS_NETWORKX_NETWORKX_ENDPOINT_FUNCTION_TRAITS_FACADE_H_
 
-#include <callable.hpp>
+#include <callable.hpp>  // IWYU pragma: keep
 #include <gsl/assert>
+#include <member_function.hpp>
 #include <nameof.hpp>
 #include <string_view>
 #include <type_traits>

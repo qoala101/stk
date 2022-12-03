@@ -1,6 +1,6 @@
 #include "network_endpoint_request_dispatcher.h"
 
-#include <memory>
+#include <coroutine>
 #include <not_null.hpp>
 #include <utility>
 

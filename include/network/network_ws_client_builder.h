@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORK_NETWORK_WS_CLIENT_BUILDER_H_
 #define STONKS_NETWORK_NETWORK_WS_CLIENT_BUILDER_H_
 
+#include <concepts>
 #include <utility>
 
 #include "cpp_not_null.h"

@@ -6,10 +6,13 @@
 #include <cpprest/json.h>
 #include <fmt/core.h>
 #include <polymorphic_value.h>
+#include <pplx/pplx.h>
 #include <pplx/pplxtasks.h>
 
+#include <coroutine>
 #include <cppcoro/single_consumer_event.hpp>
 #include <cppcoro/sync_wait.hpp>
+#include <cppcoro/task.hpp>
 #include <gsl/assert>
 #include <map>
 #include <memory>
@@ -21,6 +24,7 @@
 #include <range/v3/view/all.hpp>
 #include <range/v3/view/transform.hpp>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include "cpp_not_null.h"
@@ -120,9 +124,9 @@ auto HttpResponseFrom [[nodiscard]] (const network::RestResponse &response) {
   return http_response;
 }
 
-auto HandleHttpRequest [[nodiscard]] (const network::IRestRequestHandler &handler,
-                       log::ILogger &logger,
-                       const web::http::http_request &request)
+auto HandleHttpRequest
+    [[nodiscard]] (const network::IRestRequestHandler &handler,
+                   log::ILogger &logger, const web::http::http_request &request)
     -> cppcoro::task<> {
   const auto request_uri = request.absolute_uri().path();
   logger.LogEvent(

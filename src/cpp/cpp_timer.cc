@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <stop_token>
+#include <type_traits>
 #include <utility>
 
 namespace stonks::cpp {

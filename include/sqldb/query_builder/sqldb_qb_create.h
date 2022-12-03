@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "cpp_template_constructor.h"
+#include "sqldb_concepts.h"
 #include "sqldb_qb_columns_traits.h"
 #include "sqldb_qb_types.h"
 #include "sqldb_types.h"

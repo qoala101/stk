@@ -1,11 +1,9 @@
 #include "sqlite_raw_handles.h"
 
-#include <bits/exception.h>
-
+#include <exception>
 #include <gsl/assert>
 #include <memory>
 #include <not_null.hpp>
-#include <type_traits>
 #include <utility>
 
 #include "cpp_not_null.h"

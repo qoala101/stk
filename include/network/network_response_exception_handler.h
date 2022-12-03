@@ -1,6 +1,8 @@
 #ifndef STONKS_NETWORK_NETWORK_RESPONSE_EXCEPTION_HANDLER_H_
 #define STONKS_NETWORK_NETWORK_RESPONSE_EXCEPTION_HANDLER_H_
 
+#include <cppcoro/task.hpp>
+
 #include "cpp_not_null.h"
 #include "network_i_rest_request_sender.h"
 #include "network_types.h"

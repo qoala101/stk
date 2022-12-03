@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <not_null.hpp>
-#include <type_traits>
 #include <utility>
 
 #include "cpp_not_null.h"

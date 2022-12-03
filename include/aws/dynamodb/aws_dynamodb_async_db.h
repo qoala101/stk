@@ -7,11 +7,13 @@
 #include "kvdb_i_db.h"
 #include "kvdb_types.h"
 
+// IWYU pragma: no_include <aws/dynamodb/DynamoDBClient.h>
+
 namespace Aws::DynamoDB {
-class DynamoDBClient;
+class DynamoDBClient;  // IWYU pragma: keep
 
 namespace Model {
-enum class TableStatus;
+enum class TableStatus;  // IWYU pragma: keep
 }  // namespace Model
 }  // namespace Aws::DynamoDB
 

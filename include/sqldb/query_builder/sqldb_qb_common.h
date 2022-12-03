@@ -2,6 +2,7 @@
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COMMON_H_
 
 #include "cpp_template_constructor.h"
+#include "sqldb_concepts.h"
 #include "sqldb_p_types.h"
 #include "sqldb_qb_condition.h"
 #include "sqldb_qb_query_value.h"

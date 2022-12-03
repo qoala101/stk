@@ -1,6 +1,5 @@
 #include "restsdk_rest_request_sender.h"
 
-#include <cpprest/asyncrt_utils.h>
 #include <cpprest/base_uri.h>
 #include <cpprest/http_client.h>
 #include <cpprest/http_headers.h>
@@ -9,15 +8,18 @@
 #include <cpprest/uri_builder.h>
 #include <fmt/core.h>
 #include <polymorphic_value.h>
+#include <pplx/pplx.h>
 #include <pplx/pplxtasks.h>
 
+#include <coroutine>
 #include <cppcoro/single_consumer_event.hpp>
-#include <cppcoro/sync_wait.hpp>
 #include <gsl/assert>
 #include <map>
 #include <memory>
 #include <nameof.hpp>
 #include <not_null.hpp>
+#include <string>
+#include <string_view>
 #include <utility>
 
 #include "cpp_polymorphic_value.h"

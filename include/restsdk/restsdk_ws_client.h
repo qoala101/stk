@@ -9,8 +9,10 @@
 #include "network_i_ws_message_handler.h"
 #include "network_ws_types.h"
 
+// IWYU pragma: no_include <cpprest/ws_client.h>
+
 namespace web::websockets::client {
-class websocket_callback_client;
+class websocket_callback_client;  // IWYU pragma: keep
 }  // namespace web::websockets::client
 
 namespace stonks::restsdk {
