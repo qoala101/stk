@@ -1,29 +1,30 @@
 #include "core_symbols_info_updater.h"
 
-#include <absl/time/clock.h>
-
+#include <array>
+#include <compare>
+#include <coroutine>
 #include <cppcoro/sync_wait.hpp>
 #include <cppcoro/task.hpp>
-#include <iostream>
-#include <memory>
-#include <not_null.hpp>
+#include <function2/function2.hpp>
+#include <range/v3/action/action.hpp>
 #include <range/v3/action/sort.hpp>
 #include <range/v3/action/unique.hpp>
-#include <range/v3/algorithm/sort.hpp>
+#include <range/v3/functional/bind_back.hpp>
+#include <range/v3/functional/invoke.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
-#include <range/v3/view/concat.hpp>
+#include <range/v3/utility/get.hpp>
+#include <range/v3/view/all.hpp>
 #include <range/v3/view/join.hpp>
 #include <range/v3/view/move.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
-#include <stop_token>
 #include <string>
-#include <thread>
 #include <utility>
 #include <vector>
 
 #include "binance_api.h"
+#include "binance_types.h"
 #include "core_types.h"
 #include "cpp_typed_struct.h"
 
@@ -53,19 +54,13 @@ class SymbolsInfoUpdaterImpl {
     auto symbols_info = *exchange_info | ranges::views::move |
                         ranges::views::transform(ToSymbolInfo) |
                         ranges::to_vector;
-    auto assets = ranges::views::concat(
-                      symbols_info |
-                          ranges::views::transform([](const auto &symbol_info) {
-                            return symbol_info.base_asset.asset;
-                          }),
-                      // TODO(vh): first transform might change symbols_info
-                      // iterators
-                      symbols_info |
-                          ranges::views::transform([](const auto &symbol_info) {
-                            return symbol_info.quote_asset.asset;
-                          })) |
-                  ranges::to_vector | ranges::actions::sort |
-                  ranges::actions::unique;
+    auto assets = symbols_info |
+                  ranges::views::transform([](const auto &symbol_info) {
+                    return std::array{symbol_info.base_asset.asset,
+                                      symbol_info.quote_asset.asset};
+                  }) |
+                  ranges::views::join | ranges::to_vector |
+                  ranges::actions::sort | ranges::actions::unique;
 
     co_await symbols_db_->UpdateAssets(std::move(assets));
     co_await symbols_db_->UpdateSymbolsInfo(std::move(symbols_info));
