@@ -1,11 +1,11 @@
 #ifndef STONKS_NETWORKX_NETWORKX_WEB_SOCKET_H_
 #define STONKS_NETWORKX_NETWORKX_WEB_SOCKET_H_
 
-#include <callable.hpp>
-#include <member_function.hpp>
+#include <concepts>
+#include <gsl/assert>
 
-#include "cpp_not_null.h"
-#include "network_typed_endpoint.h"
+#include "cpp_concepts.h"  // IWYU pragma: keep
+#include "network_i_ws_client.h"
 #include "network_typed_ws_endpoint.h"
 #include "network_ws_client_builder.h"
 #include "network_ws_connection.h"
@@ -13,92 +13,109 @@
 #include "networkx_web_socket_sender.h"
 
 namespace stonks::networkx {
-namespace detail {
-template <typename Target>
-struct ReceiverTraits {};
-
-template <ReceivesFromWebSocket Target>
-struct ReceiverTraits<Target> {
-  using ReceivesType = ArgType<&Target::Receive>;
-};
-
-template <typename Target>
-struct SenderTraits {};
-
-template <SendsToWebSocket Target>
-struct SenderTraits<Target> {
-  using SendsType = typename ArgType<&Target::SetSender>::SendsType;
-};
-}  // namespace detail
+template <cpp::MemberFunction auto F>
+class WebSocket;
 
 /**
- * @brief API to build strongly typed web socket client.
- * Owns an object of web socket type which is responsible for providing
- * an endpoint and optionally receiving and sending messages.
- * @tparam Target Must provide endpoint via GetEndpoint.
- * Can receive messages on Receive which accepts a single object to be parsed
- * from each incoming message.
- * Can get a message sender of specified type via SetReceiver.
+ * @brief Convenience API which connects to specified web socket and redirects
+ * received objects of specified type to receiver.
  */
-template <WebSocketType Target>
-class WebSocket {
+template <cpp::MemberFunction auto kFunction>
+  requires WebSocketReceiver<kFunction>
+class WebSocket<kFunction> {
  private:
-  using ReceiverTraits = detail::ReceiverTraits<Target>;
-  using SenderTraits = detail::SenderTraits<Target>;
-
-  static const auto kReceivesFromWebSocket = ReceivesFromWebSocket<Target>;
-  static const auto kSendsToWebSocket = SendsToWebSocket<Target>;
+  using Parent = ParentType<kFunction>;
+  using ReceivesType = ArgType<kFunction, 0>;
 
  public:
   /**
-   * @brief Connects to web socket specified by endpoint specified by target
-   * and redirects incoming messages to its Receive function.
-   * Calls SetSender with required sender if target provides it.
+   * @param parent Receiver function parent.
    */
-  WebSocket(cpp::NnUp<Target> target, cpp::NnUp<network::IWsClient> ws_client)
-      : ws_connection_{[parent = cpp::NnSp<Target>{std::move(target)},
-                        &ws_client]() {
-          auto ws_client_builder =
-              network::WsClientBuilder{{.endpoint = parent->GetEndpoint(),
-                                        .expected_types = ExpectedTypes()},
-                                       std::move(ws_client)};
-
-          if constexpr (kReceivesFromWebSocket) {
-            ws_client_builder.Handling(
-                [parent](auto message) -> cppcoro::task<> {
-                  co_await parent->Receive(*message);
-                });
-          }
-
-          auto ws_connection =
-              cpp::MakeNnSp<network::WsConnection>(ws_client_builder.Connect());
-
-          if constexpr (kSendsToWebSocket) {
-            parent->SetSender(WebSocketSender<typename SenderTraits::SendsType>{
-                ws_connection});
-          }
-
-          return ws_connection;
+  WebSocket(network::WsEndpoint endpoint,
+            cpp::NnUp<network::IWsClient> ws_client, Parent parent)
+      : connection_{[&endpoint, &ws_client, &parent]() {
+          return network::WsClientBuilder{{.endpoint = std::move(endpoint),
+                                           .expected_types = EndpointTypes()},
+                                          std::move(ws_client)}
+              .Handling(ReceiverCaller(std::move(parent)))
+              .Connect();
         }()} {}
 
  private:
-  static auto ExpectedTypes() -> network::WsEndpointTypes {
-    auto expected_types = network::WsEndpointTypes{};
-
-    if constexpr (kReceivesFromWebSocket) {
-      expected_types.received_message =
-          network::ExpectedType<typename ReceiverTraits::ReceivesType>();
-    }
-
-    if constexpr (kSendsToWebSocket) {
-      expected_types.sent_message =
-          network::ExpectedType<typename SenderTraits::SendsType>();
-    }
-
-    return expected_types;
+  static auto EndpointTypes [[nodiscard]] () {
+    return network::WsEndpointTypes{.received_message =
+                                        network::ExpectedType<ReceivesType>()};
   }
 
-  cpp::NnSp<network::WsConnection> ws_connection_;
+  static auto ReceiverCaller [[nodiscard]] (Parent parent) {
+    return [parent = std::move(parent)](auto message) -> cppcoro::task<> {
+      co_await (*parent) (*kFunction)(*message);
+    };
+  }
+
+  network::WsConnection connection_;
+};
+
+/**
+ * @brief Convenience API which connects to specified web socket and redirects
+ * received objects of specified type to receiver with ability to reply.
+ */
+template <cpp::MemberFunction auto kFunction>
+  requires WebSocketReceiverSender<kFunction>
+class WebSocket<kFunction> {
+ private:
+  using Parent = ParentType<kFunction>;
+  using ReceivesType = ArgType<kFunction, 0>;
+  using SendsType =
+      typename std::remove_cvref_t<ArgType<kFunction, 1>>::SendsType;
+  using Sender = WebSocketSender<SendsType>;
+
+ public:
+  /**
+   * @param parent Receiver function parent.
+   */
+  WebSocket(network::WsEndpoint endpoint,
+            cpp::NnUp<network::IWsClient> ws_client, Parent parent)
+      : sender_{[&endpoint, &ws_client, &parent]() {
+          auto sender = cpp::MakeNnSp<cpp::Opt<Sender>>();
+
+          *sender = Sender{
+              network::WsClientBuilder{{.endpoint = std::move(endpoint),
+                                        .expected_types = EndpointTypes()},
+                                       std::move(ws_client)}
+                  .Handling(ReceiverCaller(std::move(parent), sender))
+                  .Connect()};
+
+          return sender;
+        }()} {
+    Ensures(sender_->has_value());
+  }
+
+  /**
+   * @brief Gives sender which allows to send objects to the connected socket.
+   */
+  auto GetSender [[nodiscard]] () const -> auto& {
+    Expects(sender_->has_value());
+    return **sender_;
+  }
+
+ private:
+  static auto EndpointTypes() {
+    return network::WsEndpointTypes{
+        .received_message = network::ExpectedType<ReceivesType>(),
+        .sent_message = network::ExpectedType<SendsType>()};
+  }
+
+  static auto ReceiverCaller
+      [[nodiscard]] (Parent parent, cpp::NnSp<cpp::Opt<Sender>> sender) {
+    return [parent = std::move(parent),
+            sender = std::move(sender)](auto message) -> cppcoro::task<> {
+      Expects(sender->has_value());
+      co_await (parent.*kFunction)(*message, **sender);
+    };
+  }
+
+  cpp::NnSp<cpp::Opt<Sender>> sender_;
 };
 }  // namespace stonks::networkx
 

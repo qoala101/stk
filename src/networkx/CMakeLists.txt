@@ -4,6 +4,7 @@ find_package(nameof REQUIRED)
 add_library(libnetworkx
   networkx_client.cc
   networkx_endpoint_function_traits_facade.cc
+  networkx_web_socket_sender.cc
 )
 
 set_target_properties(libnetworkx PROPERTIES

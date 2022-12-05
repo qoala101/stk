@@ -12,16 +12,11 @@
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "network_auto_parsable.h"
 #include "network_enums.h"
-#include "network_ws_types.h"
 #include "networkx_types.h"
 #include "networkx_web_socket_sender.h"
 
 namespace stonks::networkx {
 namespace detail {
-template <cpp::MemberFunction auto F>
-using ArgType =
-    typename member_function_traits<decltype(F)>::template argument_type<0>;
-
 template <cpp::MemberFunction auto kFunction>
 constexpr auto HasParamForEachArg [[nodiscard]] () {
   const auto num_args = member_function_traits<decltype(kFunction)>::argc;
@@ -41,9 +36,6 @@ constexpr auto IsEndpointFunctions = false;
 
 template <cpp::MemberFunction... Ts>
 constexpr auto IsEndpointFunctions<std::tuple<Ts...>> = true;
-
-template <cpp::MemberFunction auto F>
-constexpr auto HasSingleArg = member_function_traits<decltype(F)>::argc == 1;
 }  // namespace detail
 
 /**
@@ -71,39 +63,31 @@ concept ClientServerType = detail::IsEndpointFunctions<std::remove_cvref_t<
     decltype(ClientServerTypeTraits<T>::kEndpointFunctions)>>;
 
 /**
- * @brief Web socket type with correctly declared Receive function.
+ * @brief Function which can be used as web socket receiver.
  */
-template <typename T>
-concept ReceivesFromWebSocket =
-    requires(T t) {
+template <auto kFunction>
+concept WebSocketReceiver =
+    requires(ParentType<kFunction> parent) {
       {
-        t.Receive(std::declval<network::AutoParsable>())
+        (parent.*kFunction)(std::declval<network::AutoParsable>())
         } -> std::same_as<cppcoro::task<>>;
     };
 
 /**
- * @brief Web socket type with correctly declared SetSender function.
+ * @brief Function which can be used as web socket receiver with ability
+ * to reply.
  */
-template <typename T>
-concept SendsToWebSocket =
-    requires(T t) {
+template <auto kFunction>
+concept WebSocketReceiverSender =
+    (member_function_traits<decltype(kFunction)>::argc == 2) &&
+    requires(ParentType<kFunction> parent) {
       {
-        t.SetSender(std::declval<WebSocketSender<
-                        typename detail::ArgType<&T::SetSender>::SendsType>>())
-        } -> std::same_as<void>;
+        (parent.*kFunction)(
+            std::declval<network::AutoParsable>(),
+            std::declval<WebSocketSender<typename std::remove_cvref_t<
+                ArgType<kFunction, 1>>::SendsType>>())
+        } -> std::same_as<cppcoro::task<>>;
     };
-
-/**
- * @brief Type which can be used by Web Socket.
- * Must provide endpoint and optional Receive and SetSender members
- * for interaction with the socket.
- */
-template <typename T>
-concept WebSocketType = requires(T t) {
-                          {
-                            t.GetEndpoint()
-                            } -> std::same_as<network::WsEndpoint>;
-                        } && (ReceivesFromWebSocket<T> || SendsToWebSocket<T>);
 }  // namespace stonks::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_CONCEPTS_H_

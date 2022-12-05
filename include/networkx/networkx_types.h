@@ -1,6 +1,9 @@
 #ifndef STONKS_NETWORKX_NETWORKX_TYPES_H_
 #define STONKS_NETWORKX_NETWORKX_TYPES_H_
 
+#include <callable.hpp>
+#include <member_function.hpp>
+
 #include "cpp_concepts.h"  // IWYU pragma: keep
 
 namespace stonks::networkx {
@@ -23,6 +26,20 @@ struct EndpointFunctionTraits;
  */
 template <typename T>
 struct ClientServerTypeTraits;
+
+/**
+ * @brief Type of the member function parent.
+ */
+template <cpp::MemberFunction auto kFunction>
+using ParentType =
+    typename member_function_traits<decltype(kFunction)>::class_type;
+
+/**
+ * @brief Argument type of the member function.
+ */
+template <cpp::MemberFunction auto kFunction, unsigned kIndex>
+using ArgType = typename member_function_traits<
+    decltype(kFunction)>::template argument_type<kIndex>;
 }  // namespace stonks::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_TYPES_H_

@@ -31,7 +31,7 @@ class SymbolsDb : public core::ISymbolsDb {
    * @copydoc core::ISymbolsDb::UpdateAssets
    */
   auto UpdateAssets [[nodiscard]] (std::vector<core::Asset> assets)
-      -> cppcoro::task<> override;
+  -> cppcoro::task<> override;
 
   /**
    * @copydoc core::ISymbolsDb::SelectSymbolsWithPriceRecords
@@ -55,7 +55,7 @@ class SymbolsDb : public core::ISymbolsDb {
    * @copydoc core::ISymbolsDb::UpdateSymbolsInfo
    */
   auto UpdateSymbolsInfo [[nodiscard]] (std::vector<core::SymbolInfo> infos)
-      -> cppcoro::task<> override;
+  -> cppcoro::task<> override;
 
   /**
    * @copydoc core::ISymbolsDb::SelectSymbolPriceRecords
@@ -69,13 +69,13 @@ class SymbolsDb : public core::ISymbolsDb {
    * @copydoc core::ISymbolsDb::InsertSymbolPriceRecord
    */
   auto InsertSymbolPriceRecord [[nodiscard]] (core::SymbolPriceRecord record)
-      -> cppcoro::task<> override;
+  -> cppcoro::task<> override;
 
   /**
    * @copydoc core::ISymbolsDb::DeleteSymbolPriceRecords
    */
   auto DeleteSymbolPriceRecords [[nodiscard]] (absl::Time before_time)
-      -> cppcoro::task<> override;
+  -> cppcoro::task<> override;
 
  private:
   networkx::Client<core::ISymbolsDb> client_;

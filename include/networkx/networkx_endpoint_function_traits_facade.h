@@ -90,8 +90,7 @@ struct EndpointFunctionTraitsFacade : public FunctionTraits {
     if constexpr (HasParams()) {
       cpp::ForEachIndex<GetNumParams()>([&endpoint_types]<typename Current>(
                                             Current) {
-        using FunctionArgType = typename member_function_traits<
-            FunctionType>::template argument_type<Current::kIndex>;
+        using FunctionArgType = ArgType<kFunction, Current::kIndex>;
 
         auto expected_param_type =
             network::ExpectedType<typename detail::FunctionArgTypeTraits<

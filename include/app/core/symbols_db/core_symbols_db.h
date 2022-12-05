@@ -36,7 +36,8 @@ class SymbolsDb : public ISymbolsDb {
   /**
    * @copydoc ISymbolsDb::UpdateAssets
    */
-  auto UpdateAssets [[nodiscard]] (std::vector<Asset> assets) -> cppcoro::task<> override;
+  auto UpdateAssets [[nodiscard]] (std::vector<Asset> assets)
+  -> cppcoro::task<> override;
 
   /**
    * @copydoc ISymbolsDb::SelectSymbolsWithPriceRecords
@@ -60,7 +61,7 @@ class SymbolsDb : public ISymbolsDb {
    * @copydoc ISymbolsDb::UpdateSymbolsInfo
    */
   auto UpdateSymbolsInfo [[nodiscard]] (std::vector<SymbolInfo> infos)
-      -> cppcoro::task<> override;
+  -> cppcoro::task<> override;
 
   /**
    * @copydoc ISymbolsDb::SelectSymbolPriceRecords
@@ -74,13 +75,13 @@ class SymbolsDb : public ISymbolsDb {
    * @copydoc ISymbolsDb::InsertSymbolPriceRecord
    */
   auto InsertSymbolPriceRecord [[nodiscard]] (SymbolPriceRecord record)
-      -> cppcoro::task<> override;
+  -> cppcoro::task<> override;
 
   /**
    * @copydoc ISymbolsDb::DeleteSymbolPriceRecords
    */
   auto DeleteSymbolPriceRecords [[nodiscard]] (absl::Time before_time)
-      -> cppcoro::task<> override;
+  -> cppcoro::task<> override;
 
  private:
   auto SelectAssetsImpl [[nodiscard]] () const;
