@@ -1,8 +1,14 @@
+// clang-format off
+#include "core_sdb_value_conversions.h"   // IWYU pragma: keep
+// clang-format on
+
 #include "core_symbols_db.h"
 
 #include <absl/time/time.h>
 
 #include <compare>
+#include <concepts>
+#include <coroutine>
 #include <functional>
 #include <gsl/assert>
 #include <memory>
@@ -11,18 +17,19 @@
 #include <range/v3/action/action.hpp>
 #include <range/v3/action/sort.hpp>
 #include <range/v3/action/unique.hpp>
+#include <range/v3/functional/bind_back.hpp>
+#include <range/v3/functional/invoke.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/set_algorithm.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
-#include <string>
 #include <utility>
 #include <vector>
 
 #include "core_sdb_tables.h"
-#include "core_sdb_value_conversions.h"
 #include "core_types.h"
+#include "cpp_concepts.h"
 #include "cpp_not_null.h"
 #include "cpp_typed_struct.h"
 #include "sqldb_alias_to_table.h"
@@ -40,8 +47,7 @@
 #include "sqldb_query_builder.h"
 #include "sqldb_rows.h"
 #include "sqldb_value.h"
-#include "sqldb_value_common_conversions.h"
-#include "sqldb_value_conversions.h"
+#include "sqldb_value_common_conversions.h"  // IWYU pragma: keep
 
 namespace stonks::core {
 namespace {

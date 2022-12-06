@@ -6,9 +6,12 @@
 
 #include <absl/time/time.h>
 
+#include <coroutine>
 #include <string>
+#include <tuple>
 #include <utility>
 
+#include "network_json_common_conversions.h"
 #include "networkx_client.h"
 
 namespace stonks::service {

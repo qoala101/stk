@@ -14,25 +14,24 @@
 #include "service_log_spdlog_injector.h"
 #include "service_network_restsdk_injector.h"
 #include "service_symbols_db.h"
+#include "service_symbols_db_injector.h"
 
 auto main(int argc, const char *const *argv) -> int {
   stonks::cli::App{argc, argv}.Run([](const auto &options) {
+    const auto update_interval = options.GetOptionOr(
+        "update_interval", int64_t{absl::ToInt64Milliseconds(absl::Hours(1))});
+
     const auto injector = stonks::di::MakeInjector(
         stonks::service::injectors::CreateNetworkRestsdkInjector(),
         stonks::service::injectors::CreateLogSpdlogInjector(),
-        stonks::di::BindTypeToValue<int64_t>(options.GetOptionOr(
-            "interval", int64_t{absl::ToInt64Milliseconds(absl::Hours(1))})),
+        stonks::service::CreateSymbolsDbInjector(options),
+
+        stonks::di::BindTypeToValue<int64_t>(update_interval),
         stonks::di::BindTypeToFactoryFunction<absl::Duration,
                                               +[](int64_t milliseconds) {
                                                 return absl::Milliseconds(
                                                     milliseconds);
-                                              }>(),
-        stonks::di::BindTypeToValue<stonks::network::Uri>(
-            stonks::network::Uri{fmt::format(
-                "http://{}:{}", options.GetOptionOr("sdb_host", "0.0.0.0"),
-                options.GetOptionOr("sdb_port", 6506))}),
-        stonks::di::BindInterfaceToImplementation<
-            stonks::core::ISymbolsDb, stonks::service::SymbolsDb>());
+                                              }>());
 
     return injector.template create<stonks::core::SymbolsInfoUpdater>();
   });

@@ -2,6 +2,8 @@
 
 #include <absl/time/time.h>
 
+#include <cstdint>
+
 #include "sqldb_value_conversions.h"
 
 namespace stonks::sqldb {

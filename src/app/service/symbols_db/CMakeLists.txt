@@ -26,6 +26,7 @@ add_executable(service_symbols_db
 target_link_libraries(service_symbols_db
   PRIVATE libcli
   PRIVATE libcore_symbols_db
+  PRIVATE libnetwork
   PRIVATE librestsdk
   PRIVATE libservice
   PRIVATE libservice_symbols_db
