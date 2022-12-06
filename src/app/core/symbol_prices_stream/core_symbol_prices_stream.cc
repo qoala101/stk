@@ -1,42 +1,30 @@
 #include "core_symbol_prices_stream.h"
 
-#include <absl/time/clock.h>
+#include <absl/strings/ascii.h>
+#include <fmt/core.h>
 
-#include <memory>
-#include <not_null.hpp>
 #include <string>
 #include <utility>
 
-#include "core_sps_types.h"
 #include "core_types.h"
-#include "network_ws_client_builder.h"
+#include "cpp_not_null.h"
+#include "cpp_typed_struct.h"
+#include "network_ws_types.h"
 
 namespace stonks::core {
 namespace {
-auto SymbolPriceRecordFrom
-    [[nodiscard]] (Symbol symbol, const sps::BinanceBookTick &book_tick) {
-  return SymbolPriceRecord{.symbol = std::move(symbol),
-                           .price = {(std::stod(book_tick.best_bid_price) +
-                                      std::stod(book_tick.best_ask_price)) /
-                                     2},
-                           .time = absl::Now()};
+auto BookTickerEndpointFor [[nodiscard]] (const Symbol &symbol) {
+  return network::WsEndpoint{
+      fmt::format("wss://stream.binance.com:9443/ws/{}@bookTicker",
+                  absl::AsciiStrToLower(*symbol))};
 }
 }  // namespace
 
-auto SymbolPricesStream::BinanceSymbolBookTickerStream(
-    Symbol symbol, cpp::NnUp<ISymbolsDb> symbols_db) {
-  return [symbol = std::move(symbol),
-          symbols_db = std::move(symbols_db)](auto message) mutable {
-    auto record = SymbolPriceRecordFrom(symbol, message);
-    symbols_db->InsertSymbolPriceRecord(std::move(record));
-  };
-}
+SymbolPricesStream::SymbolPricesStream(Symbol symbol,
+                                       cpp::NnUp<ISymbolsDb> symbols_db,
+                                       cpp::NnUp<network::IWsClient> ws_client)
+    : web_socket_{
+          BookTickerEndpointFor(symbol), std::move(ws_client),
+          sps::BookTickHandler{std::move(symbol), std::move(symbols_db)}} {}
 
-SymbolPricesStream::SymbolPricesStream(
-    Symbol symbol, network::WsClientBuilder ws_client_builder,
-    cpp::NnUp<ISymbolsDb> symbols_db)
-    : ws_connection_{ws_client_builder
-                         .Handling(BinanceSymbolBookTickerStream(
-                             std::move(symbol), std::move(symbols_db)))
-                         .Connect()} {}
 }  // namespace stonks::core

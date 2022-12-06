@@ -18,6 +18,11 @@ struct SymbolExchangeInfo {
 
 struct ExchangeInfo : public cpp::TypedStruct<std::vector<SymbolExchangeInfo>> {
 };
+
+struct BookTick {
+  std::string best_bid_price{};
+  std::string best_ask_price{};
+};
 }  // namespace stonks::binance
 
 #endif  // STONKS_BINANCE_BINANCE_TYPES_H_

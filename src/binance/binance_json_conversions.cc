@@ -46,4 +46,11 @@ auto JsonParser<binance::ExchangeInfo>::operator()(const IJson &json) const
   return {ParseFromJsonChild<std::vector<binance::SymbolExchangeInfo>>(
       json, "symbols")};
 }
+
+template <>
+auto JsonParser<binance::BookTick>::operator()(const IJson &json) const
+    -> Type {
+  return {.best_bid_price = ParseFromJsonChild<std::string>(json, "b"),
+          .best_ask_price = ParseFromJsonChild<std::string>(json, "a")};
+}
 }  // namespace stonks::network
