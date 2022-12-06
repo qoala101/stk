@@ -17,6 +17,8 @@ add_executable(unittests
   cpp/test_cpp_move_if.cc
   cpp/test_cpp_typed_struct.cc
 
+  network/test_network_auto_parsable.cc
+
   networkx/test_networkx_function_traits_facade.cc
 
   restsdk/test_restsdk_client_server.cc

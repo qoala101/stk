@@ -21,6 +21,16 @@ auto ParseFromJson [[nodiscard]] (const IJson &json) -> T;
  * @brief Implicitly converts JSON to any type which can be parsed from it.
  */
 class AutoParsable {
+ private:
+  template <Parsable T>
+  auto OperatorTImpl [[nodiscard]] () {
+    Expects(json_.has_value());
+    auto value = ParseFromJson<std::remove_cvref_t<T>>(**json_);
+    json_.reset();
+    Ensures(!json_.has_value());
+    return value;
+  }
+
  public:
   explicit AutoParsable(cpp::Pv<IJson> json);
 
@@ -31,11 +41,7 @@ class AutoParsable {
   template <Parsable T>
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   [[nodiscard]] operator T() {
-    Expects(json_.has_value());
-    auto value = ParseFromJson<std::remove_cvref_t<T>>(**json_);
-    json_.reset();
-    Ensures(!json_.has_value());
-    return std::move(value);
+    return OperatorTImpl<T>();
   }
 
   /**
@@ -48,7 +54,7 @@ class AutoParsable {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   [[nodiscard]] operator const T *() {
     Expects(!pointed_.has_value());
-    auto value = cpp::Opt<T>{std::move(*this)};
+    auto value = OperatorTImpl<cpp::Opt<T>>();
 
     if (!value.has_value()) {
       return nullptr;
