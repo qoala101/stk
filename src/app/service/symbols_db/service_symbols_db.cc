@@ -65,9 +65,10 @@ auto SymbolsDb::InsertSymbolPriceRecord(core::SymbolPriceRecord record)
       std::move(record));
 }
 
-auto SymbolsDb::DeleteSymbolPriceRecords(absl::Time before_time)
+auto SymbolsDb::DeleteSymbolPriceRecords(const absl::Time *start_time,
+                                         const absl::Time *end_time)
     -> cppcoro::task<> {
-  co_await client_.Call<&core::ISymbolsDb::DeleteSymbolPriceRecords>(
-      before_time);
+  co_await client_.Call<&core::ISymbolsDb::DeleteSymbolPriceRecords>(start_time,
+                                                                     end_time);
 }
 }  // namespace stonks::service

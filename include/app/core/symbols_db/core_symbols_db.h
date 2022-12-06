@@ -80,8 +80,9 @@ class SymbolsDb : public ISymbolsDb {
   /**
    * @copydoc ISymbolsDb::DeleteSymbolPriceRecords
    */
-  auto DeleteSymbolPriceRecords [[nodiscard]] (absl::Time before_time)
-  -> cppcoro::task<> override;
+  auto DeleteSymbolPriceRecords
+      [[nodiscard]] (const absl::Time *start_time, const absl::Time *end_time)
+      -> cppcoro::task<> override;
 
  private:
   auto SelectAssetsImpl [[nodiscard]] () const;

@@ -4,6 +4,7 @@
 
 #include <fmt/core.h>
 
+#include <boost/di.hpp>
 #include <string>
 #include <utility>
 
@@ -12,11 +13,9 @@
 #include "core_symbols_db.h"
 #include "cpp_not_null.h"
 #include "di_bind_interface_to_implementation.h"
-#include "di_bind_type_to_factory_function.h"
 #include "di_bind_type_to_value.h"
 #include "di_make_injector.h"
 #include "network_json_common_conversions.h"  // IWYU pragma: keep
-#include "network_rest_server.h"
 #include "network_rest_server_builder.h"
 #include "network_types.h"
 #include "networkx_make_server_for.h"
@@ -41,14 +40,10 @@ auto main(int argc, const char *const *argv) -> int {
         stonks::di::BindTypeToValue<stonks::sqlite::FilePath>(
             stonks::sqlite::FilePath{std::move(db_file_path)}),
         stonks::di::BindInterfaceToImplementation<stonks::core::ISymbolsDb,
-                                                  stonks::core::SymbolsDb>(),
-        stonks::di::BindTypeToFactoryFunction<
-            stonks::network::RestServer,
-            +[](const stonks::cpp::NnSp<stonks::core::ISymbolsDb> &target,
-                stonks::network::RestServerBuilder server_builder) {
-              return stonks::networkx::MakeServerFor(target, server_builder);
-            }>());
+                                                  stonks::core::SymbolsDb>());
 
-    return injector.template create<stonks::network::RestServer>();
+    return stonks::networkx::MakeServerFor(
+        injector.template create<stonks::cpp::NnSp<stonks::core::ISymbolsDb>>(),
+        injector.template create<stonks::network::RestServerBuilder>());
   });
 }

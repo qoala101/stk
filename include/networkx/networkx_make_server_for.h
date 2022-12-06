@@ -85,7 +85,7 @@ void SetEndpointHandlers(network::RestServerBuilder &server_builder,
  */
 template <ClientServerType Target>
 auto MakeServerFor [[nodiscard]] (const cpp::NnSp<Target> &target,
-                                  network::RestServerBuilder &server_builder) {
+                                  network::RestServerBuilder server_builder) {
   detail::SetEndpointHandlers(server_builder, target);
   return server_builder.Start();
 }

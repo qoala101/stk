@@ -71,10 +71,11 @@ class ISymbolsDb {
   -> cppcoro::task<> = 0;
 
   /**
-   * @brief Deletes symbol price records older than specified time.
+   * @brief Deletes symbol price records in specified time range.
    */
-  virtual auto DeleteSymbolPriceRecords [[nodiscard]] (absl::Time before_time)
-  -> cppcoro::task<> = 0;
+  virtual auto DeleteSymbolPriceRecords
+      [[nodiscard]] (const absl::Time *start_time, const absl::Time *end_time)
+      -> cppcoro::task<> = 0;
 };
 }  // namespace stonks::core
 

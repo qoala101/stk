@@ -48,6 +48,7 @@
 #include "sqldb_rows.h"
 #include "sqldb_value.h"
 #include "sqldb_value_common_conversions.h"  // IWYU pragma: keep
+#include "sqldb_value_conversions.h"
 
 namespace stonks::core {
 namespace {
@@ -170,6 +171,14 @@ auto SymbolInfoLess
 auto SymbolInfoEquals
     [[nodiscard]] (const SymbolInfo &left, const SymbolInfo &right) {
   return left.symbol == right.symbol;
+}
+
+auto StartTimeFrom [[nodiscard]] (const absl::Time *time) {
+  return (time == nullptr) ? absl::InfinitePast() : *time;
+}
+
+auto EndTimeFrom [[nodiscard]] (const absl::Time *time) {
+  return (time == nullptr) ? absl::InfiniteFuture() : *time;
 }
 }  // namespace
 
@@ -340,8 +349,7 @@ auto SymbolsDb::SelectSymbolPriceRecords(const Symbol &symbol,
   }
 
   const auto rows = statement->Execute(sqldb::AsValues(
-      symbol, (start_time == nullptr) ? absl::InfinitePast() : *start_time,
-      (end_time == nullptr) ? absl::InfiniteFuture() : *end_time
+      symbol, StartTimeFrom(start_time), EndTimeFrom(end_time)
       /*, args.limit ? std::numeric_limits<int>::max()*/));
 
   const auto &prices =
@@ -397,23 +405,30 @@ auto SymbolsDb::InsertSymbolPriceRecord(SymbolPriceRecord record)
   co_return;
 }
 
-auto SymbolsDb::DeleteSymbolPriceRecords(absl::Time before_time)
+auto SymbolsDb::DeleteSymbolPriceRecords(const absl::Time *start_time,
+                                         const absl::Time *end_time)
     -> cppcoro::task<> {
   auto &statement = prepared_statements_.delete_symbol_price_records;
 
   if (statement == nullptr) {
-    statement = db_->PrepareStatement(
-                       sqldb::query_builder::DeleteFromTable<
-                           sdb::tables::SymbolPriceRecord>()
-                           .Where(sqldb::qb::Column<
-                                      sdb::tables::SymbolPriceRecord::time>() <
-                                  sqldb::qb::ParamForColumn<
-                                      sdb::tables::SymbolPriceRecord::time>())
-                           .Build())
-                    .as_nullable();
+    statement =
+        db_->PrepareStatement(
+               sqldb::query_builder::DeleteFromTable<
+                   sdb::tables::SymbolPriceRecord>()
+                   .Where((sqldb::qb::Column<
+                               sdb::tables::SymbolPriceRecord::time>() >=
+                           sqldb::qb::ParamForColumn<
+                               sdb::tables::SymbolPriceRecord::time>()) &&
+                          (sqldb::qb::Column<
+                               sdb::tables::SymbolPriceRecord::time>() <
+                           sqldb::qb::ParamForColumn<
+                               sdb::tables::SymbolPriceRecord::time>()))
+                   .Build())
+            .as_nullable();
   }
 
-  statement->Execute(sqldb::AsValues(before_time));
+  statement->Execute(
+      sqldb::AsValues(StartTimeFrom(start_time), EndTimeFrom(end_time)));
   Ensures(statement);
   co_return;
 }

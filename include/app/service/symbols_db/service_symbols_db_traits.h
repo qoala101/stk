@@ -57,7 +57,7 @@ struct EndpointFunctionTraits<&core::ISymbolsDb::InsertSymbolPriceRecord> {
 template <>
 struct EndpointFunctionTraits<&core::ISymbolsDb::DeleteSymbolPriceRecords> {
   static constexpr auto kMethod = network::Method::kDelete;
-  static constexpr auto kParams = ParamList("before_time");
+  static constexpr auto kParams = ParamList("start_time", "end_time");
 };
 
 template <>

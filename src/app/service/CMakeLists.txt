@@ -19,4 +19,4 @@ target_link_libraries(libservice
 
 add_subdirectory(symbol_prices_stream)
 add_subdirectory(symbols_db)
-add_subdirectory(symbols_info_updater)
+add_subdirectory(symbols_db_updater)
