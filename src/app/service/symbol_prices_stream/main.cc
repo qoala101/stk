@@ -1,6 +1,12 @@
+#include <absl/time/time.h>
+
+#include <boost/di.hpp>
+#include <cstdint>
+#include <memory>
 #include <utility>
 
 #include "cli_app.h"
+#include "cli_options.h"
 #include "core_symbol_prices_stream.h"
 #include "core_types.h"
 #include "di_bind_type_to_value.h"
@@ -10,17 +16,25 @@
 #include "service_symbols_db_injector.h"
 
 auto main(int argc, const char *const *argv) -> int {
-  stonks::cli::App{argc, argv}.Run([](const auto &options) {
-    auto symbol = options.GetOptionOr("symbol", "BTCUSDT");
+  const auto app = stonks::cli::App{argc, argv};
+  const auto &options = app.GetOptions();
 
-    const auto injector = stonks::di::MakeInjector(
-        stonks::service::injectors::CreateNetworkRestsdkInjector(),
-        stonks::service::injectors::CreateLogSpdlogInjector(),
-        stonks::service::CreateSymbolsDbInjector(options),
+  auto symbol = options.GetOptionOr("symbol", "BTCUSDT");
+  const auto reattempt_interval =
+      options.GetOptionOr("reattempt_interval",
+                          int64_t{absl::ToInt64Milliseconds(absl::Minutes(1))});
 
-        stonks::di::BindTypeToValue<stonks::core::Symbol>(
-            stonks::core::Symbol{std::move(symbol)}));
+  const auto injector = stonks::di::MakeInjector(
+      stonks::service::injectors::CreateNetworkRestsdkInjector(),
+      stonks::service::injectors::CreateLogSpdlogInjector(),
+      stonks::service::CreateSymbolsDbInjector(options),
 
+      stonks::di::BindTypeToValue<stonks::core::Symbol>(
+          stonks::core::Symbol{std::move(symbol)}),
+      stonks::di::BindTypeToValue<absl::Duration>(
+          absl::Milliseconds(reattempt_interval)));
+
+  app.Run([&injector]() {
     return injector.template create<stonks::core::SymbolPricesStream>();
   });
 }

@@ -1,8 +1,11 @@
 #include <absl/time/time.h>
 
+#include <boost/di.hpp>
 #include <cstdint>
+#include <memory>
 
 #include "cli_app.h"
+#include "cli_options.h"
 #include "core_sdbu_old_prices_deleter.h"
 #include "core_sdbu_symbols_info_updater.h"
 #include "core_symbols_db_updater.h"
@@ -13,28 +16,32 @@
 #include "service_symbols_db_injector.h"
 
 auto main(int argc, const char *const *argv) -> int {
-  stonks::cli::App{argc, argv}.Run([](const auto &options) {
-    const auto update_symbols_info_interval =
-        options.GetOptionOr("update_symbols_info_interval",
-                            int64_t{absl::ToInt64Milliseconds(absl::Hours(1))});
-    const auto delete_old_prices_interval =
-        options.GetOptionOr("delete_old_prices_interval",
-                            int64_t{absl::ToInt64Milliseconds(absl::Hours(1))});
-    const auto keep_prices_for_duration =
-        options.GetOptionOr("keep_prices_for_duration",
-                            int64_t{absl::ToInt64Milliseconds(absl::Hours(1))});
-    const auto reattempt_interval = options.GetOptionOr(
-        "reattempt_interval",
-        int64_t{absl::ToInt64Milliseconds(absl::Minutes(1))});
+  const auto app = stonks::cli::App{argc, argv};
+  const auto &options = app.GetOptions();
 
-    const auto injector = stonks::di::MakeInjector(
-        stonks::service::injectors::CreateNetworkRestsdkInjector(),
-        stonks::service::injectors::CreateLogSpdlogInjector(),
-        stonks::service::CreateSymbolsDbInjector(options),
+  const auto update_symbols_info_interval =
+      options.GetOptionOr("update_symbols_info_interval",
+                          int64_t{absl::ToInt64Milliseconds(absl::Hours(1))});
+  const auto delete_old_prices_interval =
+      options.GetOptionOr("delete_old_prices_interval",
+                          int64_t{absl::ToInt64Milliseconds(absl::Hours(1))});
+  const auto keep_prices_for_duration =
+      options.GetOptionOr("keep_prices_for_duration",
+                          int64_t{absl::ToInt64Milliseconds(absl::Hours(1))});
+  const auto reattempt_interval =
+      options.GetOptionOr("reattempt_interval",
+                          int64_t{absl::ToInt64Milliseconds(absl::Minutes(1))});
 
-        stonks::di::BindTypeToValue<absl::Duration>(
-            absl::Milliseconds(keep_prices_for_duration)));
+  const auto injector = stonks::di::MakeInjector(
+      stonks::service::injectors::CreateNetworkRestsdkInjector(),
+      stonks::service::injectors::CreateLogSpdlogInjector(),
+      stonks::service::CreateSymbolsDbInjector(options),
 
+      stonks::di::BindTypeToValue<absl::Duration>(
+          absl::Milliseconds(keep_prices_for_duration)));
+
+  app.Run([&injector, update_symbols_info_interval, delete_old_prices_interval,
+           reattempt_interval]() {
     return stonks::core::SymbolsDbUpdater{
         absl::Milliseconds(update_symbols_info_interval),
         injector.template create<stonks::core::sdbu::SymbolsInfoUpdater>(),
