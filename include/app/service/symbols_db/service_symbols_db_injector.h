@@ -13,12 +13,13 @@
 namespace stonks::service {
 inline auto CreateSymbolsDbInjector
     [[nodiscard]] (const cli::Options &options) {
-  const auto sdb_host = options.GetOptionOr("sdb_host", "0.0.0.0");
-  const auto sdb_port = options.GetOptionOr("sdb_port", 6506);
+  const auto symbols_db_host =
+      options.GetOptionOr("symbols_db_host", "0.0.0.0");
+  const auto symbols_db_port = options.GetOptionOr("symbols_db_port", 6506);
 
   return di::MakeInjector(
       stonks::di::BindTypeToValue<stonks::network::Uri>(stonks::network::Uri{
-          fmt::format("http://{}:{}", sdb_host, sdb_port)}),
+          fmt::format("http://{}:{}", symbols_db_host, symbols_db_port)}),
       stonks::di::BindInterfaceToImplementation<stonks::core::ISymbolsDb,
                                                 stonks::service::SymbolsDb>());
 }

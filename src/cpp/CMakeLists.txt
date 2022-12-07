@@ -5,8 +5,9 @@ find_package(polymorphic_value REQUIRED)
 
 add_library(libcpp
   cpp_message_exception.cc
-  cpp_timer_builder.cc
-  cpp_timer.cc
+  timer/cpp_timer_builder.cc
+  timer/cpp_timer_event_loop.cc
+  timer/cpp_timer.cc
 )
 
 set_target_properties(libcpp PROPERTIES
@@ -17,6 +18,7 @@ target_include_directories(libcpp
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/algorithm
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/alias
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/timer
 )
 
 target_link_libraries(libcpp

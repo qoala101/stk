@@ -42,10 +42,10 @@ auto TimerBuilder::Times(int num_reattempts) -> TimerBuilder& {
 
 auto TimerBuilder::Start() -> Timer {
   Expects(event_interval_.has_value());
-  return Timer{
-      std::move(event_),
-      *event_interval_,
-      {.reattempt_interval = reattempt_interval_.value_or(absl::ZeroDuration()),
-       .num_reattempts = num_reattempts_.value_or(0)}};
+  return Timer{{std::move(event_),
+                *event_interval_,
+                {.reattempt_interval =
+                     reattempt_interval_.value_or(absl::ZeroDuration()),
+                 .num_reattempts = num_reattempts_.value_or(0)}}};
 }
 }  // namespace stonks::cpp

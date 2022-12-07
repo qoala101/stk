@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_CPP_TIMER_BUILDER_H_
-#define STONKS_CPP_CPP_TIMER_BUILDER_H_
+#ifndef STONKS_CPP_TIMER_CPP_TIMER_BUILDER_H_
+#define STONKS_CPP_TIMER_CPP_TIMER_BUILDER_H_
 
 #include <absl/time/time.h>
 
@@ -59,4 +59,4 @@ auto Execute [[nodiscard]] (fu2::unique_function<void() const> event)
 -> TimerBuilder;
 }  // namespace stonks::cpp
 
-#endif  // STONKS_CPP_CPP_TIMER_BUILDER_H_
+#endif  // STONKS_CPP_TIMER_CPP_TIMER_BUILDER_H_
