@@ -14,6 +14,10 @@ OldPricesDeleter::OldPricesDeleter(cpp::NnSp<ISymbolsDb> symbols_db,
 auto OldPricesDeleter::DeleteOldPrices [[nodiscard]] () const
     -> cppcoro::task<> {
   const auto end_time = absl::Now() - keep_prices_for_duration_;
-  co_await symbols_db_->DeleteSymbolPriceRecords(nullptr, &end_time);
+
+  try {
+    co_await symbols_db_->DeleteSymbolPriceRecords(nullptr, &end_time);
+  } catch (...) {
+  }
 }
 }  // namespace stonks::core::sdbu

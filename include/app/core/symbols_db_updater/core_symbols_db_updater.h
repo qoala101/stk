@@ -13,10 +13,15 @@ namespace stonks::core {
  */
 class SymbolsDbUpdater {
  public:
-  SymbolsDbUpdater(sdbu::SymbolsInfoUpdater symbols_info_updater,
-                   absl::Duration update_symbols_info_interval,
+  /**
+   * @param reattempt_interval Time in which to reattempt updates if they fail.
+   * Fail could occur if DB or Binance are not available.
+   */
+  SymbolsDbUpdater(absl::Duration update_symbols_info_interval,
+                   sdbu::SymbolsInfoUpdater symbols_info_updater,
+                   absl::Duration delete_old_prices_interval,
                    sdbu::OldPricesDeleter old_prices_deleter,
-                   absl::Duration delete_old_prices_interval);
+                   absl::Duration reattempt_interval);
 
  private:
   cpp::Timer update_symbols_info_timer_;

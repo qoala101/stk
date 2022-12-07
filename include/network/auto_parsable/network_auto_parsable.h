@@ -6,7 +6,6 @@
 #include <any>
 #include <gsl/assert>
 #include <type_traits>
-#include <utility>
 
 #include "cpp_optional.h"
 #include "cpp_polymorphic_value.h"

@@ -8,15 +8,26 @@
 
 namespace stonks::cpp {
 /**
+ * @brief Info about how to reattempt execution of failed event.
+ */
+struct ReattemptPolicy {
+  absl::Duration reattempt_interval{};
+  int num_reattempts{};
+};
+
+/**
  * @brief Executes event at specified interval in the separate thread.
  */
 class Timer {
  public:
   /**
-   * @brief Starts the thread which executes event.
-   * @param interval Minimum time between the starts of consecutive events.
+   * @brief Starts the thread which executes the event.
+   * @param interval Minimum time between the end and start of successful
+   * consecutive events.
+   * @param reattempt Tells how to reattempt the execution if it throws.
    */
-  Timer(fu2::unique_function<void() const> event, absl::Duration interval);
+  Timer(fu2::unique_function<void() const> event, absl::Duration event_interval,
+        const ReattemptPolicy &reattempt_policy = {});
 
   Timer(const Timer &) = delete;
   Timer(Timer &&) noexcept = default;

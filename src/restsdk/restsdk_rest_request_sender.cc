@@ -13,6 +13,7 @@
 
 #include <coroutine>
 #include <cppcoro/single_consumer_event.hpp>
+#include <exception>
 #include <gsl/assert>
 #include <map>
 #include <memory>
@@ -22,6 +23,7 @@
 #include <string_view>
 #include <utility>
 
+#include "cpp_message_exception.h"
 #include "cpp_polymorphic_value.h"
 #include "cpp_typed_struct.h"
 #include "network_enums.h"
@@ -140,6 +142,7 @@ auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
   const auto http_request = HttpRequestFrom(request);
 
   auto response = network::RestResponse{};
+  auto exception_message = std::string{};
   auto response_is_ready = cppcoro::single_consumer_event{};
 
   http_client.request(http_request)
@@ -147,17 +150,33 @@ auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
         response.status = StatusFrom(http_response.status_code());
         return http_response.extract_json();
       })
-      .then(
-          [&response, &response_is_ready](web::json::value http_response_json) {
-            if (!http_response_json.is_null()) {
-              response.result = cpp::MakePv<network::IJson, Json>(
-                  network::IJson::NativeHandle{std::move(http_response_json)});
-            }
+      .then([&response](web::json::value http_response_json) {
+        if (!http_response_json.is_null()) {
+          response.result = cpp::MakePv<network::IJson, Json>(
+              network::IJson::NativeHandle{std::move(http_response_json)});
+        }
+      })
+      .then([&exception_message, &response_is_ready](const auto &task) {
+        try {
+          task.wait();
+        } catch (const std::exception &e) {
+          exception_message = e.what();
+        }
 
-            response_is_ready.set();
-          });
+        response_is_ready.set();
+      });
 
   co_await response_is_ready;
+
+  if (const auto caught_exception = !exception_message.empty()) {
+    logger_->LogErrorCondition(
+        fmt::format("{} request to {} failed: {}",
+                    nameof::nameof_enum(request.endpoint.method),
+                    full_uri.to_string(), exception_message));
+
+    throw cpp::MessageException{std::move(exception_message)};
+  }
+
   co_return response;
 }
 }  // namespace stonks::restsdk

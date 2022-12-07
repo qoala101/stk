@@ -5,6 +5,7 @@ find_package(polymorphic_value REQUIRED)
 
 add_library(libcpp
   cpp_message_exception.cc
+  cpp_timer_builder.cc
   cpp_timer.cc
 )
 

@@ -1,26 +1,35 @@
 #include "core_symbols_db_updater.h"
 
+#include <absl/time/time.h>
+
 #include <cppcoro/sync_wait.hpp>
-#include <function2/function2.hpp>
 #include <type_traits>
 #include <utility>
 
 #include "core_sdbu_old_prices_deleter.h"
 #include "core_sdbu_symbols_info_updater.h"
+#include "cpp_timer_builder.h"
 
 namespace stonks::core {
 SymbolsDbUpdater::SymbolsDbUpdater(
-    sdbu::SymbolsInfoUpdater symbols_info_updater,
     absl::Duration update_symbols_info_interval,
+    sdbu::SymbolsInfoUpdater symbols_info_updater,
+    absl::Duration delete_old_prices_interval,
     sdbu::OldPricesDeleter old_prices_deleter,
-    absl::Duration delete_old_prices_interval)
-    : update_symbols_info_timer_{[updater = std::move(symbols_info_updater)]() {
+    absl::Duration reattempt_interval)
+    : update_symbols_info_timer_{cpp::Execute([updater = std::move(
+                                                   symbols_info_updater)]() {
                                    cppcoro::sync_wait(
                                        updater.GetAndUpdateSymbolsInfo());
-                                 },
-                                 update_symbols_info_interval},
-      delete_old_prices_timer_{[deleter = std::move(old_prices_deleter)]() {
-                                 cppcoro::sync_wait(deleter.DeleteOldPrices());
-                               },
-                               delete_old_prices_interval} {}
+                                 })
+                                     .Every(update_symbols_info_interval)
+                                     .IfThrowsReattemptEvery(reattempt_interval)
+                                     .Start()},
+      delete_old_prices_timer_{
+          cpp::Execute([deleter = std::move(old_prices_deleter)]() {
+            cppcoro::sync_wait(deleter.DeleteOldPrices());
+          })
+              .Every(delete_old_prices_interval)
+              .IfThrowsReattemptEvery(reattempt_interval)
+              .Start()} {}
 }  // namespace stonks::core
