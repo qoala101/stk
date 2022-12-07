@@ -22,10 +22,7 @@ class Lazy {
   template <cpp::InvocableReturning<T> Initializer>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit Lazy(Initializer &&initializer)
-      : initializer_{[&initializer]() {
-          Expects(!initializer.empty());
-          return std::forward<Initializer>(initializer);
-        }()} {
+      : initializer_{std::forward<Initializer>(initializer)} {
     Ensures(!initializer_.empty());
   }
 

@@ -17,15 +17,15 @@ auto main(int argc, const char *const *argv) -> int {
     const auto update_symbols_info_interval =
         options.GetOptionOr("update_symbols_info_interval",
                             int64_t{absl::ToInt64Milliseconds(absl::Hours(1))});
-    const auto delete_old_prices_interval = options.GetOptionOr(
-        "delete_old_prices_interval",
-        int64_t{absl::ToInt64Milliseconds(absl::Minutes(1))});
+    const auto delete_old_prices_interval =
+        options.GetOptionOr("delete_old_prices_interval",
+                            int64_t{absl::ToInt64Milliseconds(absl::Hours(1))});
     const auto keep_prices_for_duration =
         options.GetOptionOr("keep_prices_for_duration",
                             int64_t{absl::ToInt64Milliseconds(absl::Hours(1))});
-    const auto reattempt_interval =
-        options.GetOptionOr("reattempt_interval",
-                            int64_t{absl::ToInt64Milliseconds(absl::Hours(1))});
+    const auto reattempt_interval = options.GetOptionOr(
+        "reattempt_interval",
+        int64_t{absl::ToInt64Milliseconds(absl::Minutes(1))});
 
     const auto injector = stonks::di::MakeInjector(
         stonks::service::injectors::CreateNetworkRestsdkInjector(),

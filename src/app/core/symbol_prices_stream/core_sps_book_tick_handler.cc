@@ -23,6 +23,11 @@ auto BookTickHandler::SymbolPriceRecordFrom(
 auto BookTickHandler::RecordAsPrice(binance::BookTick book_tick) const
     -> cppcoro::task<> {
   auto record = SymbolPriceRecordFrom(book_tick);
-  co_await symbols_db_->InsertSymbolPriceRecord(std::move(record));
+
+  try {
+    co_await symbols_db_->InsertSymbolPriceRecord(std::move(record));
+  } catch (...) {
+    co_return;
+  }
 }
 }  // namespace stonks::core::sps

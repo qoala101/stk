@@ -3,6 +3,7 @@
 #include <absl/time/time.h>
 
 #include <gsl/assert>
+#include <limits>
 #include <utility>
 
 #include "cpp_timer.h"
@@ -42,10 +43,21 @@ auto TimerBuilder::Times(int num_reattempts) -> TimerBuilder& {
 
 auto TimerBuilder::Start() -> Timer {
   Expects(event_interval_.has_value());
+
+  const auto reattempt_interval_set = reattempt_interval_.has_value();
+  const auto num_reattempts =
+      reattempt_interval_set
+          ? num_reattempts_.value_or(std::numeric_limits<int>::max())
+          : 0;
+
   return Timer{{std::move(event_),
                 *event_interval_,
                 {.reattempt_interval =
                      reattempt_interval_.value_or(absl::ZeroDuration()),
-                 .num_reattempts = num_reattempts_.value_or(0)}}};
+                 .num_reattempts = num_reattempts}}};
+}
+
+auto Execute(fu2::unique_function<void() const> event) -> TimerBuilder {
+  return TimerBuilder{std::move(event)};
 }
 }  // namespace stonks::cpp
