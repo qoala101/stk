@@ -2,6 +2,7 @@ find_package(fmt REQUIRED)
 
 add_library(libcore_symbol_prices_stream
   core_sps_book_tick_handler.cc
+  core_sps_book_tick_web_socket_factory.cc
   core_symbol_prices_stream.cc
 )
 

@@ -1,8 +1,6 @@
 #ifndef STONKS_CLI_CLI_APP_H_
 #define STONKS_CLI_CLI_APP_H_
 
-#include <type_traits>
-
 #include "cli_options.h"
 #include "cli_run_scope.h"
 #include "cpp_concepts.h"

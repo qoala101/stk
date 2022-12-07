@@ -25,6 +25,11 @@ class TimerBuilder {
   auto Every(absl::Duration event_interval) -> TimerBuilder &;
 
   /**
+   * @brief Would execute event only once.
+   */
+  auto Once() -> TimerBuilder &;
+
+  /**
    * @brief Makes event to be reattempted immediately when failed.
    */
   auto IfThrowsReattempt() -> TimerBuilder &;

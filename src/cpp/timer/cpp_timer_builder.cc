@@ -19,6 +19,10 @@ auto TimerBuilder::Every(absl::Duration event_interval) -> TimerBuilder& {
   return *this;
 }
 
+auto TimerBuilder::Once() -> TimerBuilder& {
+  return Every(absl::InfiniteDuration());
+}
+
 auto TimerBuilder::IfThrowsReattemptEvery(absl::Duration reattempt_interval)
     -> TimerBuilder& {
   Expects(!reattempt_interval_.has_value());

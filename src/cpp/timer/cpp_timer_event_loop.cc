@@ -1,6 +1,7 @@
 #include "cpp_timer_event_loop.h"
 
 #include <absl/time/clock.h>
+#include <absl/time/time.h>
 
 #include <algorithm>
 #include <gsl/assert>
@@ -33,6 +34,12 @@ void EventLoop::RunEventLoop() const {
 
   while (!stop_token_->stop_requested()) {
     RunReattemptLoop();
+
+    if (const auto single_time_event =
+            event_interval_ == absl::InfiniteDuration()) {
+      break;
+    }
+
     InterruptableSleepFor(event_interval_);
   }
 }
