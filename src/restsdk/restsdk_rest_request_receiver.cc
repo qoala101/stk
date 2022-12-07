@@ -166,11 +166,12 @@ RestRequestReceiver::~RestRequestReceiver() {
   }
 
   const auto uri = http_listener_->uri().to_string();
-  logger_->LogImportantEvent(fmt::format("Stopping REST receiver: {}...", uri));
+  logger_->LogImportantEvent(
+      fmt::format("Stopping REST receiver on {}...", uri));
 
   http_listener_->close().wait();
 
-  logger_->LogImportantEvent(fmt::format("Stopped REST receiver: {}", uri));
+  logger_->LogImportantEvent(fmt::format("Stopped REST receiver on {}", uri));
 }
 
 void RestRequestReceiver::Receive(
@@ -187,11 +188,11 @@ void RestRequestReceiver::Receive(
       });
 
   logger_->LogImportantEvent(
-      fmt::format("Starting REST receiver: {}...", *uri));
+      fmt::format("Starting REST receiver on {}...", *uri));
 
   http_listener_->open().wait();
 
-  logger_->LogImportantEvent(fmt::format("Started REST receiver: {}", *uri));
+  logger_->LogImportantEvent(fmt::format("Started REST receiver on {}", *uri));
 
   Ensures(http_listener_ != nullptr);
 }

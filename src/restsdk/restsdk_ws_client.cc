@@ -12,6 +12,7 @@
 #include <cppcoro/single_consumer_event.hpp>
 #include <cppcoro/sync_wait.hpp>
 #include <cppcoro/task.hpp>
+#include <exception>
 #include <not_null.hpp>
 #include <string>
 #include <utility>
@@ -39,7 +40,7 @@ auto HandleWsMessage(
   auto message_parsed = cppcoro::single_consumer_event{};
 
   native_message.extract_string().then(
-      [&parsed_message, &message_parsed](std::string message_text) {
+      [&parsed_message, &message_parsed](const std::string &message_text) {
         parsed_message = ParseJsonFromString(message_text);
         message_parsed.set();
       });
@@ -65,22 +66,31 @@ WsClient::~WsClient() {
 
   const auto uri = native_ws_client_->uri().to_string();
   logger_->LogImportantEvent(
-      fmt::format("Disconnecting from web socket: {}...", uri));
+      fmt::format("Disconnecting from web socket {}...", uri));
 
-  native_ws_client_->close().wait();
+  try {
+    native_ws_client_->close().wait();
+  } catch (...) {
+  }
 
   logger_->LogImportantEvent(
-      fmt::format("Disconnected from web socket: {}", uri));
+      fmt::format("Disconnected from web socket {}", uri));
 }
 
 void WsClient::Connect(network::WsEndpoint endpoint) {
   logger_->LogImportantEvent(
-      fmt::format("Connecting to web socket: {}...", **endpoint));
+      fmt::format("Connecting to web socket {}...", **endpoint));
 
-  native_ws_client_->connect(**endpoint).wait();
+  try {
+    native_ws_client_->connect(**endpoint).wait();
+  } catch (const std::exception &e) {
+    logger_->LogErrorCondition(fmt::format(
+        "Failed to connect to web socket {}: {}", **endpoint, e.what()));
+    throw;
+  }
 
   logger_->LogImportantEvent(
-      fmt::format("Connected to web socket: {}", **endpoint));
+      fmt::format("Connected to web socket {}", **endpoint));
 }
 
 void WsClient::SetMessageHandler(

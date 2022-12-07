@@ -86,12 +86,12 @@ auto DbFacade::CreatePreparedStatement(const sqldb::Query &query) const
 
   if (sqlite_statement == nullptr) {
     throw cpp::MessageException{
-        fmt::format("Couldn't prepare the statement for query: {}, {}", *query,
+        fmt::format("Couldn't prepare the statement for query {}: {}", *query,
                     result_code)};
   }
 
   logger_->LogImportantEvent(
-      fmt::format("Prepared statement for query: {}", *query));
+      fmt::format("Prepared statement for query {}", *query));
 
   return SqliteStatementHandle{cpp::AssumeNn(NullableSqliteStatementHandle{
       sqlite_statement,
