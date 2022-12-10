@@ -3,6 +3,7 @@ find_package(fmt REQUIRED)
 
 add_library(libcli
   cli_app.cc
+  cli_option.cc
   cli_options.cc
   cli_run_scope.cc
   cli_thread_blocker.cc

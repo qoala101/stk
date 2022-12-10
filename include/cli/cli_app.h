@@ -21,6 +21,11 @@ class App {
   App(int argc, const char *const *argv);
 
   /**
+   * @brief Parses command line arguments and sets option values.
+   */
+  App(int argc, const char *const *argv, const Options &options);
+
+  /**
    * @brief Runs the function until interrupted.
    */
   template <cpp::VoidInvocable Main>
@@ -41,16 +46,10 @@ class App {
     instance = main();
   }
 
-  /**
-   * @brief Gives command line options.
-   */
-  auto GetOptions [[nodiscard]] () const -> const Options &;
-
  private:
   auto CreateRunScope [[nodiscard]] () const -> RunScope;
 
   cpp::NnSp<CLI::App> app_;
-  Options options_;
 };
 }  // namespace stonks::cli
 

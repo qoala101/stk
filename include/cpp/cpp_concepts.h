@@ -54,6 +54,9 @@ template <typename T>
 concept Variant =
     requires { std::declval<std::variant_alternative_t<0, T>>(); };
 
+template <typename T, typename Variant>
+concept VariantOf = requires(Variant variant) { std::get<T>(variant); };
+
 template <typename T>
 concept IsTypedStruct =
     std::derived_from<T, TypedStruct<typename T::ValueType>>;

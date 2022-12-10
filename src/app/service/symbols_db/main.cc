@@ -7,8 +7,10 @@
 #include <boost/di.hpp>
 #include <string>
 #include <utility>
+#include <variant>
 
 #include "cli_app.h"
+#include "cli_option.h"
 #include "cli_options.h"
 #include "core_i_symbols_db.h"
 #include "core_symbols_db.h"
@@ -27,21 +29,20 @@
 #include "sqlite_types.h"
 
 auto main(int argc, const char *const *argv) -> int {
-  const auto app = stonks::cli::App{argc, argv};
-  const auto &options = app.GetOptions();
+  auto options = stonks::cli::Options{};
+  const auto port = options.AddOption("--port", 6506);
+  auto db_file_path = options.AddOption("--db_file_path", "symbols_db.db");
 
-  const auto port = options.GetOptionOr("port", 6506);
-  auto db_file_path = options.GetOptionOr("db_file_path", "symbols_db.db");
-
+  const auto app = stonks::cli::App{argc, argv, options};
   const auto injector = stonks::di::MakeInjector(
       stonks::service::injectors::CreateNetworkRestsdkInjector(),
       stonks::service::injectors::CreateSqldbSqliteInjector(),
       stonks::service::injectors::CreateLogSpdlogInjector(),
 
       stonks::di::BindTypeToValue<stonks::network::Uri>(
-          stonks::network::Uri{fmt::format("http://0.0.0.0:{}", port)}),
+          stonks::network::Uri{fmt::format("http://0.0.0.0:{}", *port)}),
       stonks::di::BindTypeToValue<stonks::sqlite::FilePath>(
-          stonks::sqlite::FilePath{std::move(db_file_path)}),
+          stonks::sqlite::FilePath{std::move(*db_file_path)}),
       stonks::di::BindInterfaceToImplementation<stonks::core::ISymbolsDb,
                                                 stonks::core::SymbolsDb>());
 

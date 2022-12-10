@@ -11,13 +11,16 @@
 #include "cpp_not_null.h"
 
 namespace stonks::cli {
-App::App(int argc, const char* const* argv)
-    : app_{cpp::MakeNnSp<CLI::App>()},
-      options_{cpp::CallExposedPrivateConstructorOf<Options, App>{}(app_)} {
+App::App(int argc, const char* const* argv) : app_{cpp::MakeNnSp<CLI::App>()} {
   app_->parse(argc, argv);
 }
 
-auto App::GetOptions() const -> const Options& { return options_; }
+App::App(int argc, const char* const* argv, const Options& options)
+    : app_{cpp::MakeNnSp<CLI::App>()} {
+  options.AddAsNativeOptions(*app_);
+  app_->parse(argc, argv);
+  options.SetValuesFromNativeOptions(*app_);
+}
 
 auto App::CreateRunScope() const -> RunScope {
   return cpp::CallExposedPrivateConstructorOf<RunScope, App>{}(app_);
