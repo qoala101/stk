@@ -13,7 +13,7 @@ namespace stonks::sqldb {
  */
 template <typename T>
 concept SupportedDataType =
-    std::constructible_from<DataTypeVariant::ValueType, DataType<T>>;
+    cpp::VariantOf<DataType<T>, DataTypeVariant::ValueType>;
 
 /**
  * @brief Type which defines a SQL table.

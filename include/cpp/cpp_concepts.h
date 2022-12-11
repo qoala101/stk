@@ -21,6 +21,13 @@ constexpr auto IsTypeList = false;
 
 template <typename... Ts>
 constexpr auto IsTypeList<cpp::TypeList<Ts...>> = true;
+
+template <typename T, typename Ts>
+constexpr auto IsVariantOf = false;
+
+template <typename T, typename... Ts>
+constexpr auto IsVariantOf<T, std::variant<Ts...>> =
+    std::disjunction<std::is_same<T, Ts>...>::value;
 }  // namespace detail
 
 template <typename T>
@@ -55,7 +62,7 @@ concept Variant =
     requires { std::declval<std::variant_alternative_t<0, T>>(); };
 
 template <typename T, typename Variant>
-concept VariantOf = requires(Variant variant) { std::get<T>(variant); };
+concept VariantOf = detail::IsVariantOf<T, Variant>;
 
 template <typename T>
 concept IsTypedStruct =
