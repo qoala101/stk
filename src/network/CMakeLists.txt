@@ -1,6 +1,7 @@
 find_package(cppcoro REQUIRED)
 find_package(fmt REQUIRED)
 find_package(function2 REQUIRED)
+find_package(magic_enum REQUIRED)
 
 add_library(libnetwork
   auto_parsable/request_handler/network_aprh_handler_variant.cc
@@ -44,6 +45,7 @@ target_link_libraries(libnetwork
   PUBLIC cppcoro::cppcoro
   PUBLIC libdi
   PUBLIC function2::function2
+  PUBLIC magic_enum::magic_enum
 
   PRIVATE fmt::fmt
 )

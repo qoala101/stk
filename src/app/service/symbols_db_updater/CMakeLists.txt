@@ -12,5 +12,4 @@ target_link_libraries(service_symbols_db_updater
   PRIVATE libservice
   PRIVATE libservice_symbols_db
   PRIVATE libspdlog
-  PRIVATE fmt::fmt
 )

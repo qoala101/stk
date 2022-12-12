@@ -3,8 +3,10 @@
 #include <boost/di.hpp>
 #include <cstdint>
 #include <memory>
+#include <variant>
 
 #include "cli_app.h"
+#include "cli_option.h"
 #include "cli_options.h"
 #include "core_sdbu_old_prices_deleter.h"
 #include "core_sdbu_symbols_info_updater.h"

@@ -8,8 +8,6 @@
 #include "cpp_this.h"
 
 namespace stonks::cli {
-class Options;
-
 namespace detail {
 class OptionBase {
  public:

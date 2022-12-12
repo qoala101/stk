@@ -1,6 +1,9 @@
 #ifndef STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_OPTIONS_H_
 #define STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_OPTIONS_H_
 
+#include <string>
+
+#include "cli_option.h"
 #include "cli_options.h"
 
 namespace stonks::service {

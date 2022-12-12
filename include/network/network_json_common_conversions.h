@@ -3,6 +3,7 @@
 
 #include <exception>
 #include <gsl/util>
+#include <magic_enum.hpp>
 #include <optional>
 #include <variant>
 #include <vector>
@@ -164,6 +165,31 @@ auto ConvertToJson [[nodiscard]] (T *value) {
   }
 
   return ConvertToJson(*value);
+}
+
+/**
+ * @brief Parses enums.
+ */
+template <cpp::Enum T>
+struct JsonParser<T> {
+  using Type = T;
+
+  auto operator() [[nodiscard]] (const IJson &json) const -> Type {
+    return magic_enum::enum_cast<T>(ParseFromJson<std::string>(*json.GetChild(
+                                        magic_enum::enum_type_name<T>())))
+        .value();
+  }
+};
+
+/**
+ * @brief Converts enums.
+ */
+template <cpp::Enum T>
+auto ConvertToJson [[nodiscard]] (T value) {
+  auto json = CreateNullJson();
+  json->SetChild(std::string{magic_enum::enum_type_name<T>()},
+                 ConvertToJson(magic_enum::enum_name(value)));
+  return json;
 }
 }  // namespace stonks::network
 
