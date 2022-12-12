@@ -1,5 +1,5 @@
 // clang-format off
-#include "service_json_conversions.h"   // IWYU pragma: keep
+#include "service_json_conversions.h"  // IWYU pragma: keep
 // clang-format on
 
 #include <fmt/core.h>
@@ -30,6 +30,7 @@
 
 auto main(int argc, const char *const *argv) -> int {
   auto options = stonks::cli::Options{};
+
   const auto port = options.AddOption("--port", 6506);
   auto db_file_path = options.AddOption("--db_file_path", "symbols_db.db");
 

@@ -1,8 +1,6 @@
 #ifndef STONKS_APP_SERVICE_BUY_LOW_SELL_HIGH_SERVICE_BUY_LOW_SELL_HIGH_JSON_CONVERSIONS_H_
 #define STONKS_APP_SERVICE_BUY_LOW_SELL_HIGH_SERVICE_BUY_LOW_SELL_HIGH_JSON_CONVERSIONS_H_
 
-#include <absl/time/time.h>
-
 #include "core_blsh_types.h"
 #include "cpp_polymorphic_value.h"
 #include "network_i_json.h"
