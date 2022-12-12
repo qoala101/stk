@@ -6,7 +6,6 @@ add_executable(service_symbols_db_updater
 )
 
 target_link_libraries(service_symbols_db_updater
-  PRIVATE libcli
   PRIVATE libcore_symbols_db_updater
   PRIVATE libnetwork
   PRIVATE librestsdk

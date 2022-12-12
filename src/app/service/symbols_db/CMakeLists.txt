@@ -1,6 +1,7 @@
 find_package(fmt REQUIRED)
 
 add_library(libservice_symbols_db
+  service_symbols_db_options.cc
   service_symbols_db.cc
 )
 
@@ -13,6 +14,7 @@ target_include_directories(libservice_symbols_db
 )
 
 target_link_libraries(libservice_symbols_db
+  PUBLIC libcli
   PUBLIC libcore_symbols_db
   PUBLIC libnetworkx
 
@@ -24,7 +26,6 @@ add_executable(service_symbols_db
 )
 
 target_link_libraries(service_symbols_db
-  PRIVATE libcli
   PRIVATE libcore_symbols_db
   PRIVATE libnetwork
   PRIVATE librestsdk

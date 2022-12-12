@@ -3,23 +3,20 @@
 
 #include <fmt/format.h>
 
-#include "cli_options.h"
 #include "core_i_symbols_db.h"
 #include "di_bind_interface_to_implementation.h"
 #include "di_bind_type_to_value.h"
 #include "network_types.h"
 #include "service_symbols_db.h"
+#include "service_symbols_db_options.h"
 
 namespace stonks::service {
 inline auto CreateSymbolsDbInjector
-    [[nodiscard]] (const cli::Options &options) {
-  const auto symbols_db_host =
-      options.GetOptionOr("symbols_db_host", "0.0.0.0");
-  const auto symbols_db_port = options.GetOptionOr("symbols_db_port", 6506);
-
+    [[nodiscard]] (const SymbolsDbOptions &options) {
   return di::MakeInjector(
       stonks::di::BindTypeToValue<stonks::network::Uri>(stonks::network::Uri{
-          fmt::format("http://{}:{}", symbols_db_host, symbols_db_port)}),
+          fmt::format("http://{}:{}", *options.symbols_db_host,
+                      *options.symbols_db_port)}),
       stonks::di::BindInterfaceToImplementation<stonks::core::ISymbolsDb,
                                                 stonks::service::SymbolsDb>());
 }
