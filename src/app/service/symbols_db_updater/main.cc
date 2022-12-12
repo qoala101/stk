@@ -20,14 +20,15 @@ auto main(int argc, const char *const *argv) -> int {
   auto options = stonks::cli::Options();
 
   const auto update_symbols_info_interval =
-      options.AddOption("update_symbols_info_interval",
+      options.AddOption("--update_symbols_info_interval",
                         absl::ToInt64Milliseconds(absl::Hours(1)));
-  const auto delete_old_prices_interval = options.AddOption(
-      "delete_old_prices_interval", absl::ToInt64Milliseconds(absl::Hours(1)));
+  const auto delete_old_prices_interval =
+      options.AddOption("--delete_old_prices_interval",
+                        absl::ToInt64Milliseconds(absl::Hours(1)));
   const auto keep_prices_for_duration = options.AddOption(
-      "keep_prices_for_duration", absl::ToInt64Milliseconds(absl::Hours(1)));
+      "--keep_prices_for_duration", absl::ToInt64Milliseconds(absl::Hours(1)));
   const auto reattempt_interval = options.AddOption(
-      "reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
+      "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
   const auto symbols_db_options = stonks::service::SymbolsDbOptions{options};
 
   const auto app = stonks::cli::App{argc, argv, options};

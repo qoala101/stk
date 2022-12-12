@@ -18,9 +18,9 @@
 auto main(int argc, const char *const *argv) -> int {
   auto options = stonks::cli::Options{};
 
-  auto symbol = options.AddOption("symbol", "BTCUSDT");
+  auto symbol = options.AddOption("--symbol", "BTCUSDT");
   const auto reattempt_interval = options.AddOption(
-      "reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
+      "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
   const auto symbols_db_options = stonks::service::SymbolsDbOptions{options};
 
   const auto app = stonks::cli::App{argc, argv, options};
