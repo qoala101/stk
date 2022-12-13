@@ -1,5 +1,6 @@
 FROM debian:latest
 WORKDIR /app
+COPY ./thirdparty ./thirdparty
 COPY CMakeLists.txt .
 COPY conanfile.txt .
 COPY conanprofile.txt .

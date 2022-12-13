@@ -1,5 +1,6 @@
-#ifndef STONKS_APPV2_SERVICES_SYMBOLS_DB_DOCKERFILE_
-#define STONKS_APPV2_SERVICES_SYMBOLS_DB_DOCKERFILE_
-
-
-#endif  // STONKS_APPV2_SERVICES_SYMBOLS_DB_DOCKERFILE_
+FROM qoala101/stonks:base
+WORKDIR /app
+COPY --from=qoala101/stonks:binaries \
+  /app/bin/service_symbols_db ./bin/
+ENTRYPOINT ["/app/bin/service_symbols_db"]
+EXPOSE 6506
