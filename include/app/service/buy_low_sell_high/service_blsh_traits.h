@@ -1,8 +1,7 @@
-#ifndef STONKS_APP_SERVICE_BUY_LOW_SELL_HIGH_SERVICE_BUY_LOW_SELL_HIGH_TRAITS_H_
-#define STONKS_APP_SERVICE_BUY_LOW_SELL_HIGH_SERVICE_BUY_LOW_SELL_HIGH_TRAITS_H_
+#ifndef STONKS_APP_SERVICE_BUY_LOW_SELL_HIGH_SERVICE_BLSH_TRAITS_H_
+#define STONKS_APP_SERVICE_BUY_LOW_SELL_HIGH_SERVICE_BLSH_TRAITS_H_
 
 #include "core_buy_low_sell_high.h"
-#include "network_enums.h"
 #include "networkx_common.h"
 #include "networkx_types.h"
 
@@ -21,4 +20,4 @@ struct ClientServerTypeTraits<core::BuyLowSellHigh> {
 };
 }  // namespace stonks::networkx
 
-#endif  // STONKS_APP_SERVICE_BUY_LOW_SELL_HIGH_SERVICE_BUY_LOW_SELL_HIGH_TRAITS_H_
+#endif  // STONKS_APP_SERVICE_BUY_LOW_SELL_HIGH_SERVICE_BLSH_TRAITS_H_

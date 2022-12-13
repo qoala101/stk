@@ -7,7 +7,6 @@
 #include <variant>
 
 #include "network_auto_parsable_request.h"
-#include "network_enums.h"
 #include "network_types.h"
 
 namespace stonks::network::aprh {

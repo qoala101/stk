@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_INJECTOR_H_
-#define STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_INJECTOR_H_
+#ifndef STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_INJECTOR_H_
+#define STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_INJECTOR_H_
 
 #include <fmt/format.h>
 
@@ -7,12 +7,11 @@
 #include "di_bind_interface_to_implementation.h"
 #include "di_bind_type_to_value.h"
 #include "network_types.h"
+#include "service_sdb_options.h"
 #include "service_symbols_db.h"
-#include "service_symbols_db_options.h"
 
-namespace stonks::service {
-inline auto CreateSymbolsDbInjector
-    [[nodiscard]] (const SymbolsDbOptions &options) {
+namespace stonks::service::sdb {
+inline auto CreateInjector [[nodiscard]] (const Options &options) {
   return di::MakeInjector(
       stonks::di::BindTypeToValue<stonks::network::Uri>(stonks::network::Uri{
           fmt::format("http://{}:{}", *options.symbols_db_host,
@@ -20,6 +19,6 @@ inline auto CreateSymbolsDbInjector
       stonks::di::BindInterfaceToImplementation<stonks::core::ISymbolsDb,
                                                 stonks::service::SymbolsDb>());
 }
-}  // namespace stonks::service
+}  // namespace stonks::service::sdb
 
-#endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_INJECTOR_H_
+#endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_INJECTOR_H_

@@ -11,7 +11,7 @@
 #include "core_types.h"
 #include "cpp_optional.h"
 #include "networkx_client.h"
-#include "service_symbols_db_traits.h"  // IWYU pragma: keep
+#include "service_sdb_traits.h"  // IWYU pragma: keep
 
 namespace stonks::service {
 /**

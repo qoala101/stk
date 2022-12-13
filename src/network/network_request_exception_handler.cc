@@ -5,7 +5,6 @@
 #include <utility>
 
 #include "cpp_polymorphic_value.h"
-#include "network_enums.h"
 #include "network_exception.h"
 #include "network_json_common_conversions.h"
 #include "network_types.h"

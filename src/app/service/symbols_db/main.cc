@@ -24,8 +24,8 @@
 #include "networkx_make_server_for.h"
 #include "service_log_spdlog_injector.h"
 #include "service_network_restsdk_injector.h"
+#include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_sqldb_sqlite_injector.h"
-#include "service_symbols_db_traits.h"  // IWYU pragma: keep
 #include "sqlite_types.h"
 
 auto main(int argc, const char *const *argv) -> int {

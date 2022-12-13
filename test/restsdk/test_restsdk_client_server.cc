@@ -29,7 +29,6 @@
 #include "network_auto_parsable.h"
 #include "network_auto_parsable_request.h"
 #include "network_endpoint_request_dispatcher.h"
-#include "network_enums.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_i_rest_request_sender.h"
@@ -337,7 +336,7 @@ TEST(ClientServer, WrongClientTypesReceived) {
 TEST(ClientServerDeathTest, WrongServerTypes) {
   auto entity = []() {
     auto entity = Entity{};
-    entity.PushSymbol({"ETH"});
+    cppcoro::sync_wait(entity.PushSymbol({"ETH"}));
     return entity;
   }();
   auto entity_client = EntityClient{kBaseUri};

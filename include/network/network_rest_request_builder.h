@@ -6,7 +6,6 @@
 
 #include "cpp_optional.h"
 #include "network_concepts.h"  // IWYU pragma: keep
-#include "network_enums.h"
 #include "network_json_base_conversions.h"
 #include "network_types.h"
 

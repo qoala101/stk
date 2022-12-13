@@ -1,6 +1,6 @@
 add_executable(service_buy_low_sell_high
   main.cc
-  service_buy_low_sell_high_json_conversions.cc
+  service_blsh_json_conversions.cc
 )
 
 target_include_directories(service_buy_low_sell_high

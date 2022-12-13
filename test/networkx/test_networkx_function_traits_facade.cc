@@ -8,7 +8,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "network_enums.h"
 #include "network_json_base_conversions.h"
 #include "network_json_common_conversions.h"
 #include "networkx_common.h"

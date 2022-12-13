@@ -8,7 +8,6 @@
 #include "cpp_optional.h"
 #include "cpp_polymorphic_value.h"
 #include "cpp_typed_struct.h"
-#include "network_enums.h"
 #include "network_i_json.h"
 
 namespace stonks::network {
@@ -43,6 +42,11 @@ using Headers = std::map<std::string, std::string>;
 using Body = cpp::Opt<cpp::Pv<IJson>>;
 
 /**
+ * @brief REST request method.
+ */
+enum class Method { kGet, kPost, kDelete, kOther };
+
+/**
  * @brief HTTP endpoint.
  */
 struct Endpoint {
@@ -64,6 +68,21 @@ struct RestRequest {
   Params params{};
   Headers headers{};
   Body body{};
+};
+
+/**
+ * @brief REST response status.
+ */
+enum class Status {
+  kOtherInfo,
+  kOtherSuccess,
+  kOk,
+  kOtherRedirection,
+  kOtherClientError,
+  kBadRequest,
+  kNotFound,
+  kOtherServerError,
+  kInternalError
 };
 
 /**

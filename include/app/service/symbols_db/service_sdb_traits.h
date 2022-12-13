@@ -1,8 +1,7 @@
-#ifndef STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_TRAITS_H_
-#define STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_TRAITS_H_
+#ifndef STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_TRAITS_H_
+#define STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_TRAITS_H_
 
 #include "core_i_symbols_db.h"
-#include "network_enums.h"
 #include "networkx_common.h"
 #include "networkx_types.h"
 
@@ -73,4 +72,4 @@ struct ClientServerTypeTraits<core::ISymbolsDb> {
 };
 }  // namespace stonks::networkx
 
-#endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_TRAITS_H_
+#endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_TRAITS_H_

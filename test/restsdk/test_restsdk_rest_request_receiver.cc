@@ -14,7 +14,6 @@
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 #include "gtest/gtest_pred_impl.h"
-#include "network_enums.h"
 #include "network_i_json.h"
 #include "network_i_rest_request_handler.h"
 #include "network_i_rest_request_receiver.h"

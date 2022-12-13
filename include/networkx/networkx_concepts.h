@@ -11,7 +11,6 @@
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "network_auto_parsable.h"
-#include "network_enums.h"
 #include "networkx_types.h"
 #include "networkx_web_socket_sender.h"
 

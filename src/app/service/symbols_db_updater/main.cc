@@ -15,8 +15,8 @@
 #include "di_make_injector.h"
 #include "service_log_spdlog_injector.h"
 #include "service_network_restsdk_injector.h"
-#include "service_symbols_db_injector.h"
-#include "service_symbols_db_options.h"
+#include "service_sdb_injector.h"
+#include "service_sdb_options.h"
 
 auto main(int argc, const char *const *argv) -> int {
   auto options = stonks::cli::Options();
@@ -31,13 +31,13 @@ auto main(int argc, const char *const *argv) -> int {
       "--keep_prices_for_duration", absl::ToInt64Milliseconds(absl::Hours(1)));
   const auto reattempt_interval = options.AddOption(
       "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
-  const auto symbols_db_options = stonks::service::SymbolsDbOptions{options};
+  const auto sdb_options = stonks::service::sdb::Options{options};
 
   const auto app = stonks::cli::App{argc, argv, options};
   const auto injector = stonks::di::MakeInjector(
       stonks::service::injectors::CreateNetworkRestsdkInjector(),
       stonks::service::injectors::CreateLogSpdlogInjector(),
-      stonks::service::CreateSymbolsDbInjector(symbols_db_options),
+      stonks::service::sdb::CreateInjector(sdb_options),
 
       stonks::di::BindTypeToValue<absl::Duration>(
           absl::Milliseconds(*keep_prices_for_duration)));

@@ -1,7 +1,7 @@
 find_package(fmt REQUIRED)
 
 add_library(libservice_symbols_db
-  service_symbols_db_options.cc
+  service_sdb_options.cc
   service_symbols_db.cc
 )
 

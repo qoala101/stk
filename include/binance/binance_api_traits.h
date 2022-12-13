@@ -2,7 +2,6 @@
 #define STONKS_BINANCE_BINANCE_API_TRAITS_H_
 
 #include "binance_api.h"
-#include "network_enums.h"
 #include "networkx_common.h"
 #include "networkx_types.h"
 

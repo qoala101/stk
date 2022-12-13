@@ -2,7 +2,7 @@
 #include "service_json_conversions.h"
 // clang-format on
 
-#include "service_buy_low_sell_high_json_conversions.h"
+#include "service_blsh_json_conversions.h"
 
 #include "core_blsh_types.h"
 #include "cpp_polymorphic_value.h"
@@ -11,7 +11,6 @@
 #include "network_json_conversions_facades.h"
 
 namespace stonks::network {
-
 template <>
 auto JsonParser<core::blsh::Operation>::operator()(const IJson &json) const
     -> Type {

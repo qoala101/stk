@@ -4,7 +4,6 @@
 #include <not_null.hpp>
 #include <utility>
 
-#include "network_enums.h"
 #include "network_types.h"
 
 namespace stonks::network {
