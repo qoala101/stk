@@ -48,9 +48,10 @@ class WebSocket<kFunction> {
   }
 
   static auto ReceiverCaller [[nodiscard]] (Parent parent) {
-    return [parent = std::move(parent)](auto message) -> cppcoro::task<> {
-      co_await (parent.*kFunction)(*message);
-    };
+    return
+        [parent = std::move(parent)](auto message) mutable -> cppcoro::task<> {
+          co_await (parent.*kFunction)(*message);
+        };
   }
 
   network::WsConnection connection_;

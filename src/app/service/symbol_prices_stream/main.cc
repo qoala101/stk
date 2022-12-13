@@ -2,10 +2,12 @@
 
 #include <boost/di.hpp>
 #include <cstdint>
-#include <memory>
+#include <string>
 #include <utility>
+#include <variant>
 
 #include "cli_app.h"
+#include "cli_option.h"
 #include "cli_options.h"
 #include "core_symbol_prices_stream.h"
 #include "core_types.h"
@@ -14,6 +16,7 @@
 #include "service_log_spdlog_injector.h"
 #include "service_network_restsdk_injector.h"
 #include "service_symbols_db_injector.h"
+#include "service_symbols_db_options.h"
 
 auto main(int argc, const char *const *argv) -> int {
   auto options = stonks::cli::Options{};

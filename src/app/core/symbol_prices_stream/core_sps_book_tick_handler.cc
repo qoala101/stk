@@ -20,12 +20,19 @@ auto BookTickHandler::SymbolPriceRecordFrom(
                            .time = absl::Now()};
 }
 
-auto BookTickHandler::RecordAsPrice(binance::BookTick book_tick) const
+auto BookTickHandler::RecordAsPrice(binance::BookTick book_tick)
     -> cppcoro::task<> {
   auto record = SymbolPriceRecordFrom(book_tick);
+  const auto new_price = record.price;
+
+  if (const auto price_not_changed = last_recorded_price_.has_value() &&
+                                     (*last_recorded_price_ == new_price)) {
+    co_return;
+  }
 
   try {
     co_await symbols_db_->InsertSymbolPriceRecord(std::move(record));
+    last_recorded_price_ = new_price;
   } catch (...) {
     co_return;
   }

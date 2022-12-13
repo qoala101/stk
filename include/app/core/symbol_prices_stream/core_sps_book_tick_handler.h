@@ -19,8 +19,8 @@ class BookTickHandler {
   /**
    * @brief Records book tick as price.
    */
-  auto RecordAsPrice [[nodiscard]] (binance::BookTick book_tick) const
-      -> cppcoro::task<>;
+  auto RecordAsPrice [[nodiscard]] (binance::BookTick book_tick)
+  -> cppcoro::task<>;
 
  private:
   auto SymbolPriceRecordFrom
@@ -28,6 +28,7 @@ class BookTickHandler {
 
   Symbol symbol_{};
   cpp::NnUp<ISymbolsDb> symbols_db_;
+  cpp::Opt<double> last_recorded_price_{};
 };
 }  // namespace stonks::core::sps
 
