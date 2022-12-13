@@ -2,11 +2,11 @@
 
 #include <coroutine>
 #include <memory>
+#include <not_null.hpp>
 #include <utility>
 
 #include "binance_api_traits.h"  // IWYU pragma: keep
 #include "networkx_client.h"
-#include "not_null.hpp"
 
 namespace stonks::binance {
 class BinanceApi::Impl {

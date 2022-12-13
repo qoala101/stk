@@ -2,6 +2,7 @@
 
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 
 #include "cpp_expose_private_constructors.h"
 #include "cpp_not_null.h"
@@ -10,7 +11,6 @@
 #include "network_typed_endpoint.h"
 #include "network_typed_endpoint_handler.h"
 #include "network_types.h"
-#include "not_null.hpp"
 
 namespace stonks::network {
 RestServerBuilder::RestServerBuilder(
