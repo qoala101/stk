@@ -1,7 +1,9 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: stonks-persistent-volume
+  name: persistent-volume
+  labels:
+    app: stonks
 spec:
   storageClassName: local
   accessModes:

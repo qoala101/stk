@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: stonks-symbols-db-deployment
+  name: symbols-db-deployment
   labels:
     app: stonks
     service: symbols-db
@@ -18,20 +18,19 @@ spec:
         service: symbols-db
     spec:
       volumes:
-        - name: stonks-symbols-db-persistent-volume
+        - name: symbols-db-volume
           persistentVolumeClaim:
-            claimName: stonks-symbols-db-persistent-volume-claim
-
+            claimName: symbols-db-persistent-volume-claim
       containers:
-        - name: stonks-symbols-db
+        - name: symbols-db-container
           image: qoala101/stonks:service_symbols_db
-
-          args: ["--db_file_path", "/app/data/new_db_name.db"]
-
+          args: ["--port", "80", "--db_file_path", "/app/data/symbols_db.db"]
+          ports:
+            - containerPort: 80
+              name: symbols-db-port
           volumeMounts:
             - mountPath: "/app/data"
-              name: stonks-symbols-db-persistent-volume
-
+              name: symbols-db-volume
           resources:
             limits:
               memory: "1Gi"

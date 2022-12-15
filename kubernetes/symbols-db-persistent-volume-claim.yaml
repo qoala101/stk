@@ -1,7 +1,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: stonks-symbols-db-persistent-volume-claim
+  name: symbols-db-persistent-volume-claim
+  labels:
+    app: stonks
+    service: symbols-db
 spec:
   storageClassName: local
   accessModes:
