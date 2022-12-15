@@ -17,7 +17,7 @@ class BuyLowSellHigh {
   explicit BuyLowSellHigh(cpp::NnUp<ISymbolsDb> symbols_db);
 
   auto CalculateNextOperations
-      [[nodiscard]] (const Symbol &symbol, double profit,
+      [[nodiscard]] (Symbol symbol, double profit,
                      const blsh::Operation &last_operation,
                      const absl::Time *start_time,
                      const absl::Time *end_time) const
@@ -25,6 +25,7 @@ class BuyLowSellHigh {
 
  private:
   cpp::NnUp<ISymbolsDb> symbols_db_;
+  double commission_{};
 };
 }  // namespace stonks::core
 

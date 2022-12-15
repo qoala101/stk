@@ -8,9 +8,32 @@ enum class OperationType { kBuy, kSell };
 
 struct Operation {
   absl::Time time{};
-  double base_asset_balance{};
-  double quote_asset_balance{};
   OperationType type{};
+
+  /**
+   * @brief Input: price used to buy BTC.
+   */
+  double btc_buy_price{};
+
+  /**
+   * @brief Output: price we wait to sell BTC.
+   */
+  double btc_sell_price_waiting_for{};
+
+  /**
+   * @brief
+   * Input: Amount of BTC we had before and which we would also sell along with
+   * the one we would buy. Output: Amount of BTC we would have on balance after
+   * we sell all our BTC.
+   */
+  double btc_balance{};
+
+  /**
+   * @brief
+   * Input: USD amount we want to spend to buy BTC.
+   * Output: Amount of USD we would have on balance after we sell all our BTC.
+   */
+  double usd_balance{};
 };
 }  // namespace stonks::core::blsh
 
