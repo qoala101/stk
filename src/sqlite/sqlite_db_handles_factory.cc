@@ -46,6 +46,15 @@ auto DbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
     -> SqliteDbHandle {
   Expects(!file_path->empty());
 
+  const auto directory_path = std::filesystem::path{*file_path}.parent_path();
+  const auto directory_path_created =
+      std::filesystem::create_directories(directory_path);
+
+  if (directory_path_created) {
+    logger_->LogImportantEvent(
+        fmt::format("Created directory path to store DB {}", *file_path));
+  }
+
   auto *file_db = static_cast<sqlite3 *>(nullptr);
   const auto result_code = sqlite3_open(file_path->c_str(), &file_db);
 
