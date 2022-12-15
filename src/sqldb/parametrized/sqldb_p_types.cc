@@ -4,6 +4,6 @@
 
 namespace stonks::sqldb::p {
 void QueryParams::operator+=(const QueryParams& other) {
-  value.insert(value.end(), other->begin(), other->end());
+  (*this)->insert((*this)->end(), other->begin(), other->end());
 }
 }  // namespace stonks::sqldb::p

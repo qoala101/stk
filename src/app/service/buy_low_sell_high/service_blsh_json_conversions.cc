@@ -14,13 +14,16 @@ namespace stonks::network {
 template <>
 auto JsonParser<core::blsh::Operation>::operator()(const IJson &json) const
     -> Type {
-  return MakeFromJson<Type>(json, "time", "base_asset_balance",
-                            "quote_asset_balance", "type");
+  return MakeFromJson<Type>(json, "time", "type", "btc_buy_price",
+                            "btc_sell_price_waiting_for", "btc_balance",
+                            "usd_balance");
 }
 
 auto ConvertToJson(const core::blsh::Operation &value) -> cpp::Pv<IJson> {
-  return network::BuildJsonFrom("time", value.time, "base_asset_balance",
-                                value.base_asset_balance, "quote_asset_balance",
-                                value.quote_asset_balance, "type", value.type);
+  return network::BuildJsonFrom(
+      "time", value.time, "type", value.type, "btc_buy_price",
+      value.btc_buy_price, "btc_sell_price_waiting_for",
+      value.btc_sell_price_waiting_for, "btc_balance", value.btc_balance,
+      "usd_balance", value.usd_balance);
 }
 }  // namespace stonks::network

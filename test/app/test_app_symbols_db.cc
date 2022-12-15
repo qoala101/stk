@@ -108,13 +108,16 @@ TEST(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
 
     const auto eth_price_records = std::vector<stonks::core::SymbolPriceRecord>{
         stonks::core::SymbolPriceRecord{.symbol = eth_usdt,
-                                        .price = {0.1},
+                                        .buy_price = {0.1},
+                                        .sell_price = {0.1},
                                         .time = absl::FromUnixMillis(1000)},
         stonks::core::SymbolPriceRecord{.symbol = eth_usdt,
-                                        .price = {0.2},
+                                        .buy_price = {0.2},
+                                        .sell_price = {0.2},
                                         .time = absl::FromUnixMillis(2000)},
         stonks::core::SymbolPriceRecord{.symbol = eth_usdt,
-                                        .price = {0.3},
+                                        .buy_price = {0.3},
+                                        .sell_price = {0.3},
                                         .time = absl::FromUnixMillis(3000)}};
 
     for (const auto &symbol_price_record : eth_price_records) {
@@ -123,13 +126,16 @@ TEST(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
 
     const auto btc_price_records = std::vector<stonks::core::SymbolPriceRecord>{
         stonks::core::SymbolPriceRecord{.symbol = btc_usdt,
-                                        .price = {0.01},
+                                        .buy_price = {0.1},
+                                        .sell_price = {0.1},
                                         .time = absl::FromUnixMillis(10000)},
         stonks::core::SymbolPriceRecord{.symbol = btc_usdt,
-                                        .price = {0.02},
+                                        .buy_price = {0.2},
+                                        .sell_price = {0.2},
                                         .time = absl::FromUnixMillis(20000)},
         stonks::core::SymbolPriceRecord{.symbol = btc_usdt,
-                                        .price = {0.03},
+                                        .buy_price = {0.3},
+                                        .sell_price = {0.3},
                                         .time = absl::FromUnixMillis(30000)}};
 
     for (const auto &symbol_price_record : btc_price_records) {

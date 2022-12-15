@@ -10,26 +10,26 @@
 namespace stonks::sqldb {
 template <>
 auto Value::Get<bool>() const -> bool {
-  Expects(std::holds_alternative<bool>(value));
-  return std::get<bool>(value);
+  Expects(std::holds_alternative<bool>(**this));
+  return std::get<bool>(**this);
 }
 
 template <>
 auto Value::Get<int>() const -> int {
-  Expects(std::holds_alternative<int>(value));
-  return std::get<int>(value);
+  Expects(std::holds_alternative<int>(**this));
+  return std::get<int>(**this);
 }
 
 template <>
 auto Value::Get<int64_t>() const -> int64_t {
-  Expects(std::holds_alternative<int64_t>(value));
-  return std::get<int64_t>(value);
+  Expects(std::holds_alternative<int64_t>(**this));
+  return std::get<int64_t>(**this);
 }
 
 template <>
 auto Value::Get<double>() const -> double {
-  Expects(std::holds_alternative<double>(value));
-  return std::get<double>(value);
+  Expects(std::holds_alternative<double>(**this));
+  return std::get<double>(**this);
 }
 
 template <SupportedDataType T>
@@ -59,10 +59,10 @@ auto Value::GetType() const -> DataTypeVariant {
           Expects(false);
         }
       },
-      value);
+      **this);
 }
 
 auto Value::IsNull() const -> bool {
-  return std::holds_alternative<std::monostate>(value);
+  return std::holds_alternative<std::monostate>(**this);
 }
 }  // namespace stonks::sqldb

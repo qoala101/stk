@@ -45,10 +45,10 @@ auto SqliteDbHandleVariant::GetFilePath() const -> const FilePath & {
           Expects(false);
         }
       },
-      value);
+      **this);
 }
 
 auto SqliteDbHandleVariant::HasFilePath() const -> bool {
-  return std::holds_alternative<SqliteDbFileHandle>(value);
+  return std::holds_alternative<SqliteDbFileHandle>(**this);
 }
 }  // namespace stonks::sqlite

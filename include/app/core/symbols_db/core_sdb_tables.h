@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_SYMBOLS_DB_CORE_SD_TABLES_H_
-#define STONKS_APP_CORE_SYMBOLS_DB_CORE_SD_TABLES_H_
+#ifndef STONKS_APP_CORE_SYMBOLS_DB_CORE_SDB_TABLES_H_
+#define STONKS_APP_CORE_SYMBOLS_DB_CORE_SDB_TABLES_H_
 
 #include <cstdint>
 #include <gsl/assert>
@@ -37,7 +37,8 @@ struct SymbolInfo : public sqldb::Table<SymbolInfo> {
     struct Unique;
   };
 
-  struct name : public Column<decltype(core::SymbolInfo{}.symbol.value), name> {
+  struct name
+      : public Column<decltype(core::SymbolInfo::symbol)::ValueType, name> {
     struct Unique;
   };
 
@@ -78,15 +79,20 @@ struct SymbolPriceRecord : public sqldb::Table<SymbolPriceRecord> {
     using ForeignKey = SymbolInfo::id;
   };
 
-  using price =
-      Column<decltype(core::SymbolPriceRecord{}.price.value), struct price>;
+  using buy_price =
+      Column<decltype(core::SymbolPriceRecord::buy_price)::ValueType,
+             struct buy_price>;
+
+  using sell_price =
+      Column<decltype(core::SymbolPriceRecord::sell_price)::ValueType,
+             struct sell_price>;
 
   struct time : public Column<int64_t, time> {
     struct Unique;
   };
 
-  using Columns = cpp::TypeList<symbol_id, price, time>;
+  using Columns = cpp::TypeList<symbol_id, buy_price, sell_price, time>;
 };
 }  // namespace stonks::core::sdb::tables
 
-#endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_SD_TABLES_H_
+#endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_SDB_TABLES_H_

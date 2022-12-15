@@ -29,7 +29,7 @@ class BookTickHandler {
 
   Symbol symbol_{};
   cpp::NnUp<ISymbolsDb> symbols_db_;
-  cpp::Opt<double> last_recorded_price_{};
+  cpp::Opt<SymbolPriceRecord> last_record_{};
 };
 }  // namespace stonks::core::sps
 

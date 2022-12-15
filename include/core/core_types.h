@@ -58,7 +58,8 @@ struct Price : public cpp::TypedStruct<double> {};
  */
 struct SymbolPriceRecord {
   Symbol symbol{};
-  Price price{};
+  Price buy_price{};
+  Price sell_price{};
   absl::Time time{};
 
  private:

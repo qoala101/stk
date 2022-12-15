@@ -41,12 +41,13 @@ auto ConvertToJson(const core::SymbolInfo &value) -> cpp::Pv<network::IJson> {
 template <>
 auto JsonParser<core::SymbolPriceRecord>::operator()(const IJson &json) const
     -> Type {
-  return MakeFromJson<Type>(json, "symbol", "price", "time");
+  return MakeFromJson<Type>(json, "symbol", "buy_price", "sell_price", "time");
 }
 
 auto ConvertToJson(const core::SymbolPriceRecord &value)
     -> cpp::Pv<network::IJson> {
-  return network::BuildJsonFrom("symbol", value.symbol, "price", value.price,
+  return network::BuildJsonFrom("symbol", value.symbol, "buy_price",
+                                value.buy_price, "sell_price", value.sell_price,
                                 "time", value.time);
 }
 }  // namespace stonks::network

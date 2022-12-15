@@ -22,6 +22,6 @@ auto WsHandlerVariant::operator()(WsMessage message) -> cppcoro::task<> {
           Expects(false);
         }
       },
-      value);
+      **this);
 }
 }  // namespace stonks::network::aprh

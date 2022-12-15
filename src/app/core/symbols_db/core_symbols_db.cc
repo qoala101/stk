@@ -324,7 +324,8 @@ auto SymbolsDb::SelectSymbolPriceRecords(const Symbol &symbol,
     statement =
         db_->PrepareStatement(
                sqldb::query_builder::Select<
-                   sdb::tables::SymbolPriceRecord::price,
+                   sdb::tables::SymbolPriceRecord::buy_price,
+                   sdb::tables::SymbolPriceRecord::sell_price,
                    sdb::tables::SymbolPriceRecord::time>()
                    .From<sdb::tables::SymbolPriceRecord>()
                    .Where((sqldb::qb::Column<
@@ -352,8 +353,10 @@ auto SymbolsDb::SelectSymbolPriceRecords(const Symbol &symbol,
       symbol, StartTimeFrom(start_time), EndTimeFrom(end_time)
       /*, args.limit ? std::numeric_limits<int>::max()*/));
 
-  const auto &prices =
-      rows.GetColumnValues<sdb::tables::SymbolPriceRecord::price>();
+  const auto &buy_prices =
+      rows.GetColumnValues<sdb::tables::SymbolPriceRecord::buy_price>();
+  const auto &sell_prices =
+      rows.GetColumnValues<sdb::tables::SymbolPriceRecord::sell_price>();
   const auto &times =
       rows.GetColumnValues<sdb::tables::SymbolPriceRecord::time>();
 
@@ -364,7 +367,8 @@ auto SymbolsDb::SelectSymbolPriceRecords(const Symbol &symbol,
   for (auto i = 0; i < num_rows; ++i) {
     price_ticks.emplace_back(
         SymbolPriceRecord{.symbol = symbol,
-                          .price = ValueAs<Price>(prices[i]),
+                          .buy_price = ValueAs<Price>(buy_prices[i]),
+                          .sell_price = ValueAs<Price>(sell_prices[i]),
                           .time = ValueAs<absl::Time>(times[i])});
   }
 
@@ -388,9 +392,12 @@ auto SymbolsDb::InsertSymbolPriceRecord(SymbolPriceRecord record)
                                       sdb::tables::SymbolInfo::name>() ==
                                   sqldb::qb::ParamForColumn<
                                       sdb::tables::SymbolInfo::name>()))
-                   .Value<sdb::tables::SymbolPriceRecord::price>(
+                   .Value<sdb::tables::SymbolPriceRecord::buy_price>(
                        sqldb::qb::ParamForColumn<
-                           sdb::tables::SymbolPriceRecord::price>())
+                           sdb::tables::SymbolPriceRecord::buy_price>())
+                   .Value<sdb::tables::SymbolPriceRecord::sell_price>(
+                       sqldb::qb::ParamForColumn<
+                           sdb::tables::SymbolPriceRecord::sell_price>())
                    .Value<sdb::tables::SymbolPriceRecord::time>(
                        sqldb::qb::ParamForColumn<
                            sdb::tables::SymbolPriceRecord::time>())
@@ -399,8 +406,8 @@ auto SymbolsDb::InsertSymbolPriceRecord(SymbolPriceRecord record)
             .as_nullable();
   }
 
-  statement->Execute(
-      sqldb::AsValues(std::move(record.symbol), record.price, record.time));
+  statement->Execute(sqldb::AsValues(std::move(record.symbol), record.buy_price,
+                                     record.sell_price, record.time));
   Ensures(statement);
   co_return;
 }

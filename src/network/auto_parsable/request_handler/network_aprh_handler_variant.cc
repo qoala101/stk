@@ -35,6 +35,6 @@ auto HandlerVariant::operator()(RestRequest request)
           Expects(false);
         }
       },
-      value);
+      **this);
 }
 }  // namespace stonks::network::aprh
