@@ -46,14 +46,7 @@ auto DbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
     -> SqliteDbHandle {
   Expects(!file_path->empty());
 
-  const auto directory_path = std::filesystem::path{*file_path}.parent_path();
-  const auto directory_path_created =
-      std::filesystem::create_directories(directory_path);
-
-  if (directory_path_created) {
-    logger_->LogImportantEvent(
-        fmt::format("Created directory path to store DB {}", *file_path));
-  }
+  CreateParentDirectoryIfNotExists(file_path);
 
   auto *file_db = static_cast<sqlite3 *>(nullptr);
   const auto result_code = sqlite3_open(file_path->c_str(), &file_db);
@@ -85,5 +78,22 @@ auto DbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
 
   logger_->LogImportantEvent(fmt::format("Loaded DB from {}", *file_path));
   return in_memory_db_handle;
+}
+
+void DbHandlesFactory::CreateParentDirectoryIfNotExists(
+    const FilePath &file_path) const {
+  const auto directory_path = std::filesystem::path{*file_path}.parent_path();
+
+  if (const auto file_in_current_dir = directory_path.empty()) {
+    return;
+  }
+
+  const auto directory_path_created =
+      std::filesystem::create_directories(directory_path);
+
+  if (directory_path_created) {
+    logger_->LogImportantEvent(
+        fmt::format("Created directory path to store DB {}", *file_path));
+  }
 }
 }  // namespace stonks::sqlite

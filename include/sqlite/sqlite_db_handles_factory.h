@@ -36,6 +36,8 @@ class DbHandlesFactory {
       -> SqliteDbHandle;
 
  private:
+  void CreateParentDirectoryIfNotExists(const FilePath &file_path) const;
+
   di::Factory<log::ILogger> logger_factory_;
   cpp::NnUp<log::ILogger> logger_;
 };
