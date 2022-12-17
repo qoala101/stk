@@ -12,12 +12,12 @@ namespace stonks::binance {
 class BinanceApi::Impl {
  public:
   explicit Impl(networkx::Client<BinanceApi> client)
-      : client{std::move(client)} {}
+      : client_{std::move(client)} {}
 
-  auto GetClient [[nodiscard]] () -> auto & { return client; }
+  auto GetClient [[nodiscard]] () -> auto & { return client_; }
 
  private:
-  networkx::Client<BinanceApi> client;
+  networkx::Client<BinanceApi> client_;
 };
 
 BinanceApi::BinanceApi(BinanceApi &&) noexcept = default;

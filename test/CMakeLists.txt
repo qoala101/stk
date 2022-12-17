@@ -10,7 +10,7 @@ include(GoogleTest)
 enable_testing()
 
 add_executable(unittests
-  app/test_app_symbols_db.cc
+  app/test_core_app_symbols_db.cc
 
   # Disabled in order to not waste AWS API credits.
   # aws/test_aws_dynamodb_db.cc
