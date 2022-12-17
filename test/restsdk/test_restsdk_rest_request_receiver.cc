@@ -72,7 +72,7 @@ TEST(RestRequestReceiver, SendRequest) {
             stonks::network::Status::kOk,
             stonks::network::ConvertToJson(SymbolPrice{
                 .symbol = stonks::network::ParseFromJson<stonks::core::Symbol>(
-                    **request.body),
+                    *request.body),
                 .price = stonks::network::ParseFromJson<double>(
                     *request.params.at("price"))})};
       }
@@ -99,7 +99,7 @@ TEST(RestRequestReceiver, SendRequest) {
         test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
     const auto response = co_await sender.SendRequestAndGetResponse(request);
     const auto response_price =
-        stonks::network::ParseFromJson<SymbolPrice>(**response.result);
+        stonks::network::ParseFromJson<SymbolPrice>(*response.result);
     EXPECT_EQ(response.status, stonks::network::Status::kOk);
     EXPECT_EQ(response_price.symbol, stonks::core::Symbol{"BTCUSDT"});
     EXPECT_EQ(response_price.price, 123.456);

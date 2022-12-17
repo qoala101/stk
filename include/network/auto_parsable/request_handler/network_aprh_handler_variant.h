@@ -13,10 +13,10 @@ using Handler = fu2::unique_function<auto() const->cppcoro::task<>>;
 using HandlerWithRequest =
     fu2::unique_function<auto(AutoParsableRestRequest) const->cppcoro::task<>>;
 using HandlerWithResponse =
-    fu2::unique_function<auto() const->cppcoro::task<Result::value_type>>;
+    fu2::unique_function<auto() const->cppcoro::task<Result>>;
 using HandlerWithRequestAndResponse =
     fu2::unique_function<auto(AutoParsableRestRequest)
-                             const->cppcoro::task<Result::value_type>>;
+                             const->cppcoro::task<Result>>;
 
 /**
  * @brief Variant of auto-parsable request handler.

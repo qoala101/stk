@@ -94,14 +94,9 @@ auto HeadersFrom
 
 auto BodyFrom [[nodiscard]] (const web::http::http_request &request)
 -> network::Body {
-  auto json = request.extract_json().get();
-
-  if (json.is_null()) {
-    return std::nullopt;
-  }
-
+  auto native_json = request.extract_json().get();
   return cpp::MakePv<network::IJson, Json>(
-      network::IJson::NativeHandle{std::move(json)});
+      network::IJson::NativeHandle{std::move(native_json)});
 }
 
 auto RestRequestFrom [[nodiscard]] (const web::http::http_request &request) {
@@ -116,8 +111,8 @@ auto HttpResponseFrom [[nodiscard]] (const network::RestResponse &response) {
   auto http_response =
       web::http::http_response{HttpStatusFrom(response.status)};
 
-  if (response.result.has_value()) {
-    http_response.set_body(*(*response.result)->GetNativeHandle());
+  if (!response.result->IsNull()) {
+    http_response.set_body(*response.result->GetNativeHandle());
   }
 
   return http_response;

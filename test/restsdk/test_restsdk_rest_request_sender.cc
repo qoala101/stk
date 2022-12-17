@@ -139,7 +139,7 @@ TEST(RestRequestSender, SendRequest) {
         test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
     const auto response = co_await sender.SendRequestAndGetResponse(request);
     const auto response_price =
-        stonks::network::ParseFromJson<AvgPrice>(**response.result);
+        stonks::network::ParseFromJson<AvgPrice>(*response.result);
     EXPECT_GT(response_price.mins, 0);
     EXPECT_GT(response_price.price, 0);
 

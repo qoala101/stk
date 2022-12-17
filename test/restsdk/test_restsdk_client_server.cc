@@ -407,11 +407,10 @@ TEST(ClientServer, ServerReceivedWrongTypeException) {
         co_await sender->SendRequestAndGetResponse(std::move(request));
 
     EXPECT_EQ(response.status, stonks::network::Status::kBadRequest);
-    EXPECT_TRUE(response.result.has_value());
     EXPECT_NO_THROW(
         std::ignore =
             stonks::network::ParseFromJson<stonks::cpp::MessageException>(
-                **response.result));
+                *response.result));
 
     request =
         stonks::network::RestRequestBuilder{}
@@ -424,11 +423,10 @@ TEST(ClientServer, ServerReceivedWrongTypeException) {
     response = co_await sender->SendRequestAndGetResponse(std::move(request));
 
     EXPECT_EQ(response.status, stonks::network::Status::kBadRequest);
-    EXPECT_TRUE(response.result.has_value());
     EXPECT_NO_THROW(
         std::ignore =
             stonks::network::ParseFromJson<stonks::cpp::MessageException>(
-                **response.result));
+                *response.result));
   }());
 }
 

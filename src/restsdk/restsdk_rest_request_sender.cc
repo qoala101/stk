@@ -109,7 +109,7 @@ auto HttpRequestFrom [[nodiscard]] (const network::RestRequest &request) {
   }
 
   if (request.body) {
-    http_request.set_body(*(*request.body)->GetNativeHandle());
+    http_request.set_body(*request.body->GetNativeHandle());
   }
 
   return http_request;
@@ -150,10 +150,8 @@ auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
         return http_response.extract_json();
       })
       .then([&response](web::json::value http_response_json) {
-        if (!http_response_json.is_null()) {
-          response.result = cpp::MakePv<network::IJson, Json>(
-              network::IJson::NativeHandle{std::move(http_response_json)});
-        }
+        response.result = cpp::MakePv<network::IJson, Json>(
+            network::IJson::NativeHandle{std::move(http_response_json)});
       })
       .then([&exception_message, &response_is_ready](const auto &task) {
         try {

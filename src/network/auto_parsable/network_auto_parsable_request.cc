@@ -7,25 +7,28 @@
 
 namespace stonks::network {
 AutoParsableRestRequest::AutoParsableRestRequest(RestRequest rest_request)
-    : rest_request_{std::move(rest_request)} {}
+    : params_{std::move(rest_request.params)},
+      body_{std::move(rest_request.body)} {
+  Ensures(body_.has_value());
+}
 
 auto AutoParsableRestRequest::Param(std::string_view key) -> AutoParsable {
-  const auto value = rest_request_.params.find(key.data());
-  Expects(value != rest_request_.params.end());
+  const auto value = params_.find(key.data());
+  Expects(value != params_.end());
   auto result = AutoParsable{std::move(value->second)};
 
-  rest_request_.params.erase(value);
-  Ensures(!rest_request_.params.contains(key.data()));
+  params_.erase(value);
+  Ensures(!params_.contains(key.data()));
 
   return result;
 }
 
 auto AutoParsableRestRequest::Body() -> AutoParsable {
-  Expects(rest_request_.body.has_value());
-  auto result = AutoParsable{std::move(*rest_request_.body)};
+  Expects(body_.has_value());
+  auto result = AutoParsable{std::move(*body_)};
 
-  rest_request_.body.reset();
-  Ensures(!rest_request_.body.has_value());
+  body_.reset();
+  Ensures(!body_.has_value());
 
   return result;
 }

@@ -44,13 +44,10 @@ class EndpointTypesValidatorTemplate {
       const std::exception &parsing_exception) const;
   virtual void HandleMissingRequestBody() const;
   virtual void HandleWrongRequestBodyType(
-      const Body::value_type &request_body,
-      const std::exception &parsing_exception) const;
+      const Body &request_body, const std::exception &parsing_exception) const;
   virtual void HandleUnexpectedRequestBody() const;
-  virtual void HandleMissingResponseBody() const;
   virtual void HandleWrongResponseBodyType(
-      const Body::value_type &response_body,
-      const std::exception &parsing_exception) const;
+      const Body &response_body, const std::exception &parsing_exception) const;
   virtual void HandleUnexpectedResponseBody() const;
 
   void ValidateRequestParamTypes(const Params &params) const;

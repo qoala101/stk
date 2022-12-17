@@ -9,6 +9,7 @@
 #include "cpp_polymorphic_value.h"
 #include "cpp_typed_struct.h"
 #include "network_i_json.h"
+#include "network_json_base_conversions.h"
 
 namespace stonks::network {
 /**
@@ -19,7 +20,7 @@ struct Uri : public cpp::TypedStruct<std::string> {};
 /**
  * @brief REST response body.
  */
-using Result = cpp::Opt<cpp::Pv<IJson>>;
+using Result = cpp::Pv<IJson>;
 
 /**
  * @brief REST request param.
@@ -39,7 +40,7 @@ using Headers = std::map<std::string, std::string>;
 /**
  * @brief REST request body.
  */
-using Body = cpp::Opt<cpp::Pv<IJson>>;
+using Body = cpp::Pv<IJson>;
 
 /**
  * @brief REST request method.
@@ -67,7 +68,8 @@ struct RestRequest {
   Endpoint endpoint{};
   Params params{};
   Headers headers{};
-  Body body{};
+  // TODO(vh): Find a way to initialize the value with null JSON by default.
+  Body body{CreateNullJson()};
 };
 
 /**
@@ -90,7 +92,8 @@ enum class Status {
  */
 struct RestResponse {
   Status status{};
-  Result result{};
+  // TODO(vh): Find a way to initialize the value with null JSON by default.
+  Result result{CreateNullJson()};
 };
 }  // namespace stonks::network
 

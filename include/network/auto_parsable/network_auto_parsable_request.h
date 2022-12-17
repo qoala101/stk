@@ -28,7 +28,8 @@ class AutoParsableRestRequest {
   auto Body [[nodiscard]] () -> AutoParsable;
 
  private:
-  RestRequest rest_request_;
+  Params params_{};
+  cpp::Opt<network::Body> body_{};
 };
 }  // namespace stonks::network
 

@@ -46,7 +46,7 @@ class TypeChecker : public te::EndpointTypesValidatorTemplate {
   }
 
   void HandleWrongRequestBodyType(
-      const Body::value_type &request_body,
+      const Body &request_body,
       const std::exception &parsing_exception) const override {
     throw WrongTypeException{
         fmt::format("Request body is invalid: {}", parsing_exception.what()),
@@ -57,10 +57,8 @@ class TypeChecker : public te::EndpointTypesValidatorTemplate {
     throw Exception{"Request has unexpected body"};
   }
 
-  void HandleMissingResponseBody() const override { Expects(false); }
-
   void HandleWrongResponseBodyType(
-      const Body::value_type & /*unused*/,
+      const Body & /*unused*/,
       const std::exception & /*unused*/) const override {
     Expects(false);
   }

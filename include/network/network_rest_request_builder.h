@@ -15,8 +15,6 @@ namespace stonks::network {
  */
 class RestRequestBuilder {
  public:
-  RestRequestBuilder();
-
   /**
    * @remark Method is GET by default.
    */
@@ -30,33 +28,32 @@ class RestRequestBuilder {
   /**
    * @brief Appends one more string to the base URI separated with /.
    */
-  auto AppendUri(Uri uri) -> RestRequestBuilder &;
+  auto AppendUri(const Uri &uri) -> RestRequestBuilder &;
 
   /**
    * @brief Adds parameter to be send by request.
-   * @remark Would override existing value with the same key.
    */
-  auto AddParam(std::string key, Param value) -> RestRequestBuilder &;
+  auto AddParam(std::string_view key, Param value) -> RestRequestBuilder &;
 
   /**
    * @copydoc RestRequestBuilder::AddParam
    */
   template <Convertible T>
-  auto AddParam(std::string key, T &&value) -> auto & {
+  auto AddParam(std::string_view key, T &&value) -> auto & {
     return AddParam(key, ConvertToJson(std::forward<T>(value)));
   }
 
   /**
    * @brief Adds header to be send by request.
-   * @remark Would override existing value with the same key.
    */
-  auto AddHeader(std::string key, std::string value) -> RestRequestBuilder &;
+  auto AddHeader(std::string_view key, std::string value)
+      -> RestRequestBuilder &;
 
   /**
    * @brief Sets the JSON body of the request.
    * @remark Should be called once.
    */
-  auto WithBody(Body::value_type body) -> RestRequestBuilder &;
+  auto WithBody(Body body) -> RestRequestBuilder &;
 
   /**
    * @copydoc RestRequestBuilder::WithBody
@@ -77,8 +74,11 @@ class RestRequestBuilder {
   auto Build [[nodiscard]] () -> RestRequest;
 
  private:
-  cpp::Opt<RestRequest> request_{};
-  bool uri_is_set_{};
+  cpp::Opt<Method> method_{};
+  cpp::Opt<Uri> uri_{};
+  Params params_{};
+  Headers headers_{};
+  cpp::Opt<Body> body_{};
 };
 }  // namespace stonks::network
 

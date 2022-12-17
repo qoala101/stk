@@ -31,16 +31,12 @@ void EndpointTypesValidatorTemplate::HandleWrongRequestParamType(
 void EndpointTypesValidatorTemplate::HandleMissingRequestBody() const {}
 
 void EndpointTypesValidatorTemplate::HandleWrongRequestBodyType(
-    const Body::value_type & /*unused*/,
-    const std::exception & /*unused*/) const {}
+    const Body & /*unused*/, const std::exception & /*unused*/) const {}
 
 void EndpointTypesValidatorTemplate::HandleUnexpectedRequestBody() const {}
 
-void EndpointTypesValidatorTemplate::HandleMissingResponseBody() const {}
-
 void EndpointTypesValidatorTemplate::HandleWrongResponseBodyType(
-    const Body::value_type & /*unused*/,
-    const std::exception & /*unused*/) const {}
+    const Body & /*unused*/, const std::exception & /*unused*/) const {}
 
 void EndpointTypesValidatorTemplate::HandleUnexpectedResponseBody() const {}
 
@@ -69,21 +65,16 @@ void EndpointTypesValidatorTemplate::ValidateRequestParamTypes(
 void EndpointTypesValidatorTemplate::ValidateRequestBodyType(
     const Body &body) const {
   if (!endpoint_types_.body.empty()) {
-    if (!body.has_value()) {
-      HandleMissingRequestBody();
-      return;
-    }
-
     try {
-      endpoint_types_.body(**body);
+      endpoint_types_.body(*body);
     } catch (const std::exception &e) {
-      HandleWrongRequestBodyType(*body, e);
+      HandleWrongRequestBodyType(body, e);
     }
 
     return;
   }
 
-  if (body.has_value()) {
+  if (!body->IsNull()) {
     HandleUnexpectedRequestBody();
   }
 }
@@ -91,21 +82,16 @@ void EndpointTypesValidatorTemplate::ValidateRequestBodyType(
 void EndpointTypesValidatorTemplate::ValidateResponse(
     const RestResponse &response) const {
   if (!endpoint_types_.result.empty()) {
-    if (!response.result.has_value()) {
-      HandleMissingResponseBody();
-      return;
-    }
-
     try {
-      endpoint_types_.result(**response.result);
+      endpoint_types_.result(*response.result);
     } catch (const std::exception &e) {
-      HandleWrongResponseBodyType(*response.result, e);
+      HandleWrongResponseBodyType(response.result, e);
     }
 
     return;
   }
 
-  if (response.result.has_value()) {
+  if (!response.result->IsNull()) {
     HandleUnexpectedResponseBody();
   }
 }

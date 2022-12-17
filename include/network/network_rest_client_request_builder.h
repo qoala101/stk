@@ -28,8 +28,8 @@ class RequestBuilder {
    * @remark Overrides the parameter with the same name.
    */
   template <Convertible T>
-  auto WithParam(std::string key, T &&value) -> auto & {
-    return WithParam(std::move(key), ConvertToJson(std::forward<T>(value)));
+  auto WithParam(std::string_view key, T &&value) -> auto & {
+    return WithParam(key, ConvertToJson(std::forward<T>(value)));
   }
 
   /**
@@ -80,17 +80,18 @@ class RequestBuilder {
   static auto SendRequestAndGetResultImpl
       [[nodiscard]] (cpp::This<RequestBuilder> auto &t) -> cppcoro::task<T>;
 
-  auto WithParam [[nodiscard]] (std::string key, Param value)
+  auto WithParam [[nodiscard]] (std::string_view key, Param value)
   -> RequestBuilder &;
 
-  auto WithBody [[nodiscard]] (Body::value_type body) -> RequestBuilder &;
+  auto WithBody [[nodiscard]] (Body body) -> RequestBuilder &;
 
-  auto SendRequestAndGetResult [[nodiscard]] () const
-      -> cppcoro::task<Result::value_type>;
-  auto SendRequestAndGetResult [[nodiscard]] ()
-  -> cppcoro::task<Result::value_type>;
+  auto SendRequestAndGetResult [[nodiscard]] () const -> cppcoro::task<Result>;
+  auto SendRequestAndGetResult [[nodiscard]] () -> cppcoro::task<Result>;
 
-  cpp::Opt<RestRequest> request_{};
+  Endpoint endpoint_{};
+  Params params_{};
+  Headers headers_{};
+  cpp::Opt<Body> body_{};
   cpp::NnUp<IRestRequestSender> request_sender_;
 };
 }  // namespace rest_client
