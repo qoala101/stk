@@ -39,7 +39,7 @@ auto ToSymbolInfo
 }
 }  // namespace
 
-SymbolsInfoUpdater::SymbolsInfoUpdater(cpp::NnSp<ISymbolsDb> symbols_db,
+SymbolsInfoUpdater::SymbolsInfoUpdater(cpp::NnUp<ISymbolsDb> symbols_db,
                                        binance::BinanceApi binance_api)
     : symbols_db_{std::move(symbols_db)},
       binance_api_{std::move(binance_api)} {}

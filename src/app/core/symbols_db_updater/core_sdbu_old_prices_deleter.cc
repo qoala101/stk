@@ -6,7 +6,7 @@
 #include <utility>
 
 namespace stonks::core::sdbu {
-OldPricesDeleter::OldPricesDeleter(cpp::NnSp<ISymbolsDb> symbols_db,
+OldPricesDeleter::OldPricesDeleter(cpp::NnUp<ISymbolsDb> symbols_db,
                                    absl::Duration keep_prices_for_duration)
     : symbols_db_{std::move(symbols_db)},
       keep_prices_for_duration_{keep_prices_for_duration} {}

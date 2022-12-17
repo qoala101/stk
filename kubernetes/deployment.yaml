@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+  labels:
+    app: stonks
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stonks
+  template:
+    metadata:
+      labels:
+        app: stonks
+    spec:
+      volumes:
+        - name: symbols-db-volume
+          persistentVolumeClaim:
+            claimName: persistent-volume-claim
+      containers:
+        - name: buy-low-sell-high-container
+          image: qoala101/stonks:service_buy_low_sell_high
+          args:
+            [
+              "--port",
+              "6507",
+              "--symbols_db_host",
+              "0.0.0.0",
+              "--symbols_db_port",
+              "6506",
+            ]
+          ports:
+            - containerPort: 6507
+              name: blsh-port
+
+        - name: btcusdt-prices-stream-container
+          image: qoala101/stonks:service_symbol_prices_stream
+          args:
+            [
+              "--symbol",
+              "BTCUSDT",
+              "--reattempt_interval",
+              "60000",
+              "--symbols_db_host",
+              "0.0.0.0",
+              "--symbols_db_port",
+              "6506",
+            ]
+
+        - name: ethusdt-prices-stream-container
+          image: qoala101/stonks:service_symbol_prices_stream
+          args:
+            [
+              "--symbol",
+              "ETHUSDT",
+              "--reattempt_interval",
+              "60000",
+              "--symbols_db_host",
+              "0.0.0.0",
+              "--symbols_db_port",
+              "6506",
+            ]
+
+        - name: symbols-db-container
+          image: qoala101/stonks:service_symbols_db
+          args: ["--port", "6506", "--db_file_path", "/app/data/symbols_db.db"]
+          ports:
+            - containerPort: 6506
+              name: sdb-port
+          volumeMounts:
+            - mountPath: "/app/data"
+              name: symbols-db-volume
+
+        - name: symbols-db-updater-container
+          image: qoala101/stonks:service_symbols_db_updater
+          args:
+            [
+              "--update_symbols_info_interval",
+              "3600000",
+              "--delete_old_prices_interval",
+              "3600000",
+              "--keep_prices_for_duration",
+              "3600000",
+              "--reattempt_interval",
+              "60000",
+              "--symbols_db_host",
+              "0.0.0.0",
+              "--symbols_db_port",
+              "6506",
+            ]
