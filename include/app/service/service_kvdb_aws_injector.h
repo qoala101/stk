@@ -7,7 +7,7 @@
 #include "kvdb_i_items_interface.h"
 
 namespace stonks::service::injectors {
-inline auto CreateNosqldbAwsInjector [[nodiscard]] () {
+inline auto CreateKvdbAwsInjector [[nodiscard]] () {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<kvdb::ITablesInterface,
                                         aws::dynamodb::SyncDbProxy>(),

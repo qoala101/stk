@@ -18,6 +18,7 @@ target_link_libraries(libservice
 )
 
 add_subdirectory(buy_low_sell_high)
+add_subdirectory(ngrok_uri_exposer)
 add_subdirectory(symbol_prices_stream)
 add_subdirectory(symbols_db)
 add_subdirectory(symbols_db_updater)

@@ -14,10 +14,10 @@ target_include_directories(libservice_symbols_db
 )
 
 target_link_libraries(libservice_symbols_db
-  PUBLIC fmt::fmt
   PUBLIC libcli
   PUBLIC libcore_symbols_db
   PUBLIC libnetworkx
+  PUBLIC fmt::fmt
 
   PRIVATE libservice
 )

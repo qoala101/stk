@@ -42,8 +42,8 @@ target_include_directories(libnetwork
 )
 
 target_link_libraries(libnetwork
-  PUBLIC cppcoro::cppcoro
   PUBLIC libdi
+  PUBLIC cppcoro::cppcoro
   PUBLIC function2::function2
   PUBLIC magic_enum::magic_enum
 

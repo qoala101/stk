@@ -18,9 +18,8 @@ class NgrokApi {
   /**
    * @param host Host which runs Ngrok.
    */
-  explicit NgrokApi(
-      std::string_view host,
-      di::Factory<network::IRestRequestSender> request_sender_factory);
+  NgrokApi(std::string_view host,
+           di::Factory<network::IRestRequestSender> request_sender_factory);
 
   NgrokApi(const NgrokApi &) = delete;
   NgrokApi(NgrokApi &&) noexcept;
