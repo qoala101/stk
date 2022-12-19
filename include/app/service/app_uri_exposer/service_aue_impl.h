@@ -1,14 +1,14 @@
-#ifndef STONKS_APP_CORE_APP_URI_EXPOSER_CORE_AUE_IMPL_H_
-#define STONKS_APP_CORE_APP_URI_EXPOSER_CORE_AUE_IMPL_H_
+#ifndef STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_AUE_IMPL_H_
+#define STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_AUE_IMPL_H_
 
 #include <cppcoro/task.hpp>
 
-#include "core_aue_public_db.h"
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
 #include "ngrok_api.h"
+#include "service_aue_public_db.h"
 
-namespace stonks::core::aue {
+namespace stonks::service::aue {
 /**
  * @brief App URI exposer implementation.
  */
@@ -31,6 +31,6 @@ class Impl {
   ngrok::NgrokApi ngrok_api_;
   cpp::NnUp<log::ILogger> logger_;
 };
-}  // namespace stonks::core::aue
+}  // namespace stonks::service::aue
 
-#endif  // STONKS_APP_CORE_APP_URI_EXPOSER_CORE_AUE_IMPL_H_
+#endif  // STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_AUE_IMPL_H_

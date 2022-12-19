@@ -9,10 +9,10 @@
 #include "cli_app.h"
 #include "cli_option.h"
 #include "cli_options.h"
-#include "core_app_uri_exposer.h"
-#include "core_aue_impl.h"
 #include "di_bind_type_to_value.h"
 #include "di_make_injector.h"
+#include "service_app_uri_exposer.h"
+#include "service_aue_impl.h"
 #include "service_kvdb_aws_injector.h"
 #include "service_log_spdlog_injector.h"
 #include "service_network_restsdk_injector.h"
@@ -35,9 +35,9 @@ auto main(int argc, const char *const *argv) -> int {
       stonks::di::BindTypeToValue<std::string_view>("0.0.0.0"));
 
   app.Run([&injector, &expose_uri_interval, &reattempt_interval]() {
-    return stonks::core::AppUriExposer{
+    return stonks::service::AppUriExposer{
         absl::Milliseconds(*expose_uri_interval),
-        injector.template create<stonks::core::aue::Impl>(),
+        injector.template create<stonks::service::aue::Impl>(),
         absl::Milliseconds(*reattempt_interval)};
   });
 }

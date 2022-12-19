@@ -1,12 +1,12 @@
-#ifndef STONKS_APP_CORE_APP_URI_EXPOSER_CORE_APP_URI_EXPOSER_H_
-#define STONKS_APP_CORE_APP_URI_EXPOSER_CORE_APP_URI_EXPOSER_H_
+#ifndef STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_APP_URI_EXPOSER_H_
+#define STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_APP_URI_EXPOSER_H_
 
 #include <absl/time/time.h>
 
-#include "core_aue_impl.h"
 #include "cpp_timer.h"
+#include "service_aue_impl.h"
 
-namespace stonks::core {
+namespace stonks::service {
 /**
  * @brief Periodically exposes app URI to outside world.
  */
@@ -23,6 +23,6 @@ class AppUriExposer {
  private:
   cpp::Timer expose_uri_timer_;
 };
-}  // namespace stonks::core
+}  // namespace stonks::service
 
-#endif  // STONKS_APP_CORE_APP_URI_EXPOSER_CORE_APP_URI_EXPOSER_H_
+#endif  // STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_APP_URI_EXPOSER_H_

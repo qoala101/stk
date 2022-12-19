@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_APP_URI_EXPOSER_CORE_AUE_PUBLIC_DB_H_
-#define STONKS_APP_CORE_APP_URI_EXPOSER_CORE_AUE_PUBLIC_DB_H_
+#ifndef STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_AUE_PUBLIC_DB_H_
+#define STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_AUE_PUBLIC_DB_H_
 
 #include <cppcoro/task.hpp>
 
@@ -7,7 +7,7 @@
 #include "kvdb_i_db.h"
 #include "network_types.h"
 
-namespace stonks::core::aue {
+namespace stonks::service::aue {
 /**
  * @brief DB which is exposed to public.
  * Used to share the data with web clients and doesn't require
@@ -25,6 +25,6 @@ class PublicDb {
  private:
   cpp::NnUp<kvdb::IDb> db_;
 };
-}  // namespace stonks::core::aue
+}  // namespace stonks::service::aue
 
-#endif  // STONKS_APP_CORE_APP_URI_EXPOSER_CORE_AUE_PUBLIC_DB_H_
+#endif  // STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_AUE_PUBLIC_DB_H_

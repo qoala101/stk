@@ -1,4 +1,4 @@
-#include "core_aue_public_db.h"
+#include "service_aue_public_db.h"
 
 #include <coroutine>
 #include <string>
@@ -6,7 +6,7 @@
 
 #include "kvdb_types.h"
 
-namespace stonks::core::aue {
+namespace stonks::service::aue {
 PublicDb::PublicDb(cpp::NnUp<kvdb::IDb> db) : db_{std::move(db)} {}
 
 auto PublicDb::InsertOrUpdateAppUri(network::Uri uri) const -> cppcoro::task<> {
@@ -16,4 +16,4 @@ auto PublicDb::InsertOrUpdateAppUri(network::Uri uri) const -> cppcoro::task<> {
   // TODO(vh): Rewrite with co_awaits.
   co_return;
 }
-}  // namespace stonks::core::aue
+}  // namespace stonks::service::aue
