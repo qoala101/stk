@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: symbol-prices-stream-service
+spec:
+  selector:
+    service: symbol-prices-stream
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: symbol-prices-stream-stateful-set
+spec:
+  selector:
+    matchLabels:
+      service: symbol-prices-stream
+  serviceName: symbol-prices-stream-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: symbol-prices-stream
+    spec:
+      containers:
+        - name: symbol-prices-stream-container
+          image: qoala101/stonks:service_symbol_prices_stream
+          args:
+            - --symbol=BTCUSDT
+            - --reattempt_interval=60000
+            - --symbols_db_host=$(MAIN_SERVICE_SERVICE_HOST)
+            - --symbols_db_port=$(MAIN_SERVICE_SERVICE_PORT_SDB_PORT)
