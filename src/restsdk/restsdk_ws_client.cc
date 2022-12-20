@@ -17,6 +17,7 @@
 #include <string>
 #include <utility>
 
+#include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "cpp_typed_struct.h"
 #include "network_i_json.h"
@@ -27,7 +28,7 @@
 namespace stonks::restsdk {
 namespace {
 auto HandleWsMessage(
-    const network::IWsMessageHandler &handler,
+    const network::IWsMessageHandler &handler, log::ILogger &logger,
     const web::websockets::client::websocket_incoming_message &native_message)
     -> cppcoro::task<> {
   if (const auto non_text_message =
@@ -37,15 +38,32 @@ auto HandleWsMessage(
   }
 
   auto parsed_message = network::WsMessage{};
+  auto exception_message = std::string{};
   auto message_parsed = cppcoro::single_consumer_event{};
 
-  native_message.extract_string().then(
-      [&parsed_message, &message_parsed](const std::string &message_text) {
+  native_message.extract_string()
+      .then([&parsed_message](const std::string &message_text) {
         parsed_message = ParseJsonFromString(message_text);
+      })
+      .then([&exception_message, &message_parsed](const auto &task) {
+        try {
+          task.wait();
+        } catch (const std::exception &e) {
+          exception_message = e.what();
+        }
+
         message_parsed.set();
       });
 
   co_await message_parsed;
+
+  if (const auto caught_exception = !exception_message.empty()) {
+    logger.LogErrorCondition(fmt::format(
+        "Couldn't parse web socket message: {}", exception_message));
+
+    throw cpp::MessageException{std::move(exception_message)};
+  }
+
   co_await handler.HandleMessage(std::move(parsed_message));
 }
 }  // namespace
@@ -96,9 +114,9 @@ void WsClient::Connect(network::WsEndpoint endpoint) {
 void WsClient::SetMessageHandler(
     cpp::NnUp<network::IWsMessageHandler> handler) {
   native_ws_client_->set_message_handler(
-      [handler = cpp::NnSp<network::IWsMessageHandler>{std::move(handler)}](
-          const auto &message) {
-        cppcoro::sync_wait(HandleWsMessage(*handler, message));
+      [handler = cpp::NnSp<network::IWsMessageHandler>{std::move(handler)},
+       logger = logger_](const auto &message) {
+        cppcoro::sync_wait(HandleWsMessage(*handler, *logger, message));
       });
 }
 
@@ -108,11 +126,26 @@ auto WsClient::SendMessage(network::WsMessage message) const
       web::websockets::client::websocket_outgoing_message{};
   native_ws_message.set_utf8_message(message->GetNativeHandle()->serialize());
 
+  auto exception_message = std::string{};
   auto message_sent = cppcoro::single_consumer_event{};
 
-  native_ws_client_->send(std::move(native_ws_message)).then([&message_sent]() {
-    message_sent.set();
-  });
+  native_ws_client_->send(std::move(native_ws_message))
+      .then([&exception_message, &message_sent](const auto &task) {
+        try {
+          task.wait();
+        } catch (const std::exception &e) {
+          exception_message = e.what();
+        }
+
+        message_sent.set();
+      });
+
+  if (const auto caught_exception = !exception_message.empty()) {
+    logger_->LogErrorCondition(
+        fmt::format("Couldn't send web socket message: {}", exception_message));
+
+    throw cpp::MessageException{std::move(exception_message)};
+  }
 
   co_await message_sent;
 }

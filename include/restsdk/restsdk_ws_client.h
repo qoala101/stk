@@ -51,7 +51,7 @@ class WsClient : public network::IWsClient {
  private:
   cpp::NnUp<web::websockets::client::websocket_callback_client>
       native_ws_client_;
-  cpp::NnUp<log::ILogger> logger_;
+  cpp::NnSp<log::ILogger> logger_;
 };
 }  // namespace stonks::restsdk
 

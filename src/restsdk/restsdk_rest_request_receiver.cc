@@ -27,6 +27,7 @@
 #include <string_view>
 #include <utility>
 
+#include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 #include "cpp_typed_struct.h"
@@ -132,13 +133,31 @@ auto HandleHttpRequest
       co_await handler.HandleRequestAndGiveResponse(std::move(rest_request));
   const auto http_response = HttpResponseFrom(rest_response);
 
+  auto exception_message = std::string{};
   auto replied_to_request = cppcoro::single_consumer_event{};
 
-  request.reply(http_response).then([&replied_to_request]() {
-    replied_to_request.set();
-  });
+  request.reply(http_response)
+      .then([&exception_message, &replied_to_request](const auto &task) {
+        try {
+          task.wait();
+        } catch (const std::exception &e) {
+          exception_message = e.what();
+        }
+
+        replied_to_request.set();
+      });
 
   co_await replied_to_request;
+
+  if (const auto caught_exception = !exception_message.empty()) {
+    logger.LogErrorCondition(
+        fmt::format("Couldn't reply {} on {}: {}",
+                    nameof::nameof_enum(rest_response.status), request_uri,
+                    exception_message));
+
+    throw cpp::MessageException{std::move(exception_message)};
+  }
+
   logger.LogEvent(fmt::format("Replied {} on {}",
                               nameof::nameof_enum(rest_response.status),
                               request_uri));
