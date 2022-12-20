@@ -47,7 +47,7 @@
 #include "test_restsdk_injector.h"
 
 namespace {
-const auto kBaseUri = stonks::network::Uri{"http://0.0.0.0:6506/Entity"};
+const auto kBaseUri = stonks::network::Uri{"http://0.0.0.0:30001/Entity"};
 const auto kIndexOutOfBoundsMessage = "Index out of bounds";
 
 class EntityInterface {

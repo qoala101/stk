@@ -1,22 +1,22 @@
 x-terminal-emulator -e ./service_buy_low_sell_high \
-  --port 6507 \
+  --port 30000 \
   --symbols_db_host 0.0.0.0 \
-  --symbols_db_port 6506 &
+  --symbols_db_port 30001 &
 
 x-terminal-emulator -e ./service_symbol_prices_stream \
   --symbol BTCUSDT \
   --reattempt_interval 60000 \
   --symbols_db_host 0.0.0.0 \
-  --symbols_db_port 6506 &
+  --symbols_db_port 30001 &
 
 x-terminal-emulator -e ./service_symbol_prices_stream \
   --symbol ETHUSDT \
   --reattempt_interval 60000 \
   --symbols_db_host 0.0.0.0 \
-  --symbols_db_port 6506 &
+  --symbols_db_port 30001 &
 
 x-terminal-emulator -e ./service_symbols_db \
-  --port 6506 \
+  --port 30001 \
   --db_file_path symbols_db.db &
 
 x-terminal-emulator -e ./service_symbols_db_updater \
@@ -25,4 +25,4 @@ x-terminal-emulator -e ./service_symbols_db_updater \
   --keep_prices_for_duration 3600000 \
   --reattempt_interval 60000 \
   --symbols_db_host 0.0.0.0 \
-  --symbols_db_port 6506 &
+  --symbols_db_port 30001 &

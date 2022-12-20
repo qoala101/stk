@@ -31,7 +31,7 @@
 auto main(int argc, const char *const *argv) -> int {
   auto options = stonks::cli::Options{};
 
-  const auto port = options.AddOption("--port", 6506);
+  const auto port = options.AddOption("--port", 30001);
   auto db_file_path = options.AddOption("--db_file_path", "symbols_db.db");
 
   const auto app = stonks::cli::App{argc, argv, options};

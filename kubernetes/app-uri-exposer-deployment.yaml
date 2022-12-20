@@ -1,21 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ngrok-deployment
+  name: app-uri-exposer-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ngrok
+      label: app-uri-exposer
   template:
     metadata:
       labels:
-        app: ngrok
+        label: app-uri-exposer
     spec:
-      volumes:
-        - name: symbols-db-volume
-          persistentVolumeClaim:
-            claimName: persistent-volume-claim
       containers:
         # - name: app-uri-exposer-container
         #   image: qoala101/stonks:service_app_uri_exposer

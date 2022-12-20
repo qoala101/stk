@@ -1,23 +1,25 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: simple-fanout-example
+  name: nginx-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: nginx
   rules:
-  - http:
-      paths:
-      - path: /symbols_db
-        pathType: Prefix
-        backend:
-          service:
-            name: main-service
-            port:
-              number: 6506
-      - path: /buy_low_sell_high
-        pathType: Prefix
-        backend:
-          service:
-            name: main-service
-            port:
-              number: 6507
+    - http:
+        paths:
+          - path: /buy_low_sell_high(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: static-services-service
+                port:
+                  name: blsh-port
+          - path: /symbols_db(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: static-services-service
+                port:
+                  name: sdb-port

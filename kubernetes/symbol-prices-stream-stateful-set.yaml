@@ -4,7 +4,7 @@ metadata:
   name: symbol-prices-stream-service
 spec:
   selector:
-    service: symbol-prices-stream
+    label: symbol-prices-stream
   clusterIP: None
 ---
 apiVersion: apps/v1
@@ -14,13 +14,13 @@ metadata:
 spec:
   selector:
     matchLabels:
-      service: symbol-prices-stream
+      label: symbol-prices-stream
   serviceName: symbol-prices-stream-service
   replicas: 1
   template:
     metadata:
       labels:
-        service: symbol-prices-stream
+        label: symbol-prices-stream
     spec:
       containers:
         - name: symbol-prices-stream-container
@@ -28,5 +28,5 @@ spec:
           args:
             - --symbol=BTCUSDT
             - --reattempt_interval=60000
-            - --symbols_db_host=$(MAIN_SERVICE_SERVICE_HOST)
-            - --symbols_db_port=$(MAIN_SERVICE_SERVICE_PORT_SDB_PORT)
+            - --symbols_db_host=$(STATIC_SERVICES_SERVICE_SERVICE_HOST)
+            - --symbols_db_port=$(STATIC_SERVICES_SERVICE_SERVICE_PORT_SDB_PORT)

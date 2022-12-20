@@ -29,7 +29,7 @@
 auto main(int argc, const char *const *argv) -> int {
   auto options = stonks::cli::Options();
 
-  const auto port = options.AddOption("--port", 6507);
+  const auto port = options.AddOption("--port", 30000);
   const auto sdb_options = stonks::service::sdb::Options{options};
 
   const auto app = stonks::cli::App{argc, argv, options};

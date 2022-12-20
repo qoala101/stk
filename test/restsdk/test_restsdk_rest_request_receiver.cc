@@ -83,14 +83,14 @@ TEST(RestRequestReceiver, SendRequest) {
           test::restsdk::Injector()
               .create<
                   stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
-      receiver->Receive({"http://0.0.0.0:6506"},
+      receiver->Receive({"http://0.0.0.0:30001"},
                         stonks::cpp::MakeNnUp<Handler>());
       return receiver;
     }();
 
     const auto request = stonks::network::RestRequestBuilder{}
                              .WithMethod(stonks::network::Method::kGet)
-                             .WithBaseUri({"http://0.0.0.0:6506"})
+                             .WithBaseUri({"http://0.0.0.0:30001"})
                              .AppendUri({"Test"})
                              .WithBody("BTCUSDT")
                              .AddParam("price", 123.456)
