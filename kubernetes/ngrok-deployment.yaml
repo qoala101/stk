@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ngrok-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ngrok
+  template:
+    metadata:
+      labels:
+        app: ngrok
+    spec:
+      volumes:
+        - name: symbols-db-volume
+          persistentVolumeClaim:
+            claimName: persistent-volume-claim
+      containers:
+        # - name: app-uri-exposer-container
+        #   image: qoala101/stonks:service_app_uri_exposer
+
+        - name: ngrok-container
+          image: wernight/ngrok:latest
+          command:
+            - ngrok
+          args:
+            - http
+            - ingress-nginx-controller.ingress-nginx

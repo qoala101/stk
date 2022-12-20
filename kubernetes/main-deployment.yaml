@@ -75,6 +75,3 @@ spec:
         #   image: wernight/ngrok:latest
         #   command: ["ngrok"]
         #   args: ["http", "6506"]
-
-        - name: nginx-container
-          image: nginx:latest
