@@ -19,6 +19,8 @@
 #include <aws/dynamodb/model/UpdateItemRequest.h>
 #include <fmt/core.h>
 
+#include <cppcoro/single_consumer_event.hpp>
+#include <cppcoro/task.hpp>
 #include <map>
 #include <not_null.hpp>
 #include <optional>
@@ -40,7 +42,8 @@ auto AsyncDb::operator=(AsyncDb &&) noexcept -> AsyncDb & = default;
 
 AsyncDb::~AsyncDb() = default;
 
-void AsyncDb::CreateTableIfNotExists(const kvdb::Table &table) {
+auto AsyncDb::CreateTableIfNotExists(const kvdb::Table &table)
+    -> cppcoro::task<> {
   const auto attribute =
       Aws::DynamoDB::Model::AttributeDefinition{}
           .WithAttributeName("Key")
@@ -60,60 +63,99 @@ void AsyncDb::CreateTableIfNotExists(const kvdb::Table &table) {
                            .AddKeySchema(key_schema)
                            .WithProvisionedThroughput(throughput);
 
-  const auto result = db_client_->CreateTable(request);
+  const auto *result =
+      static_cast<const Aws::DynamoDB::Model::CreateTableOutcome *>(nullptr);
+  auto result_is_ready = cppcoro::single_consumer_event{};
 
-  if (!result.IsSuccess()) {
+  db_client_->CreateTableAsync(
+      request,
+      [result, &result_is_ready](const auto &, const auto &,
+                                 const auto &outcome, const auto &) mutable {
+        result = &outcome;
+        result_is_ready.set();
+      });
+
+  co_await result_is_ready;
+
+  if (!result->IsSuccess()) {
     throw cpp::MessageException{fmt::format("Couldn't create table {}: {}",
                                             *table,
-                                            result.GetError().GetMessage())};
+                                            result->GetError().GetMessage())};
   }
 }
 
-void AsyncDb::DropTableIfExists(const kvdb::Table &table) {
+auto AsyncDb::DropTableIfExists(const kvdb::Table &table) -> cppcoro::task<> {
   const auto request =
       Aws::DynamoDB::Model::DeleteTableRequest{}.WithTableName(table);
 
-  const auto result = db_client_->DeleteTable(request);
+  const auto *result =
+      static_cast<const Aws::DynamoDB::Model::DeleteTableOutcome *>(nullptr);
+  auto result_is_ready = cppcoro::single_consumer_event{};
 
-  if (!result.IsSuccess()) {
+  db_client_->DeleteTableAsync(
+      request,
+      [result, &result_is_ready](const auto &, const auto &,
+                                 const auto &outcome, const auto &) mutable {
+        result = &outcome;
+        result_is_ready.set();
+      });
+
+  co_await result_is_ready;
+
+  if (!result->IsSuccess()) {
+    const auto &error = result->GetError();
+
     if (const auto table_doesnt_exist =
-            result.GetError().GetErrorType() ==
+            error.GetErrorType() ==
             Aws::DynamoDB::DynamoDBErrors::RESOURCE_NOT_FOUND) {
-      return;
+      co_return;
     }
 
-    throw cpp::MessageException{fmt::format(
-        "Couldn't drop table {}: {}", *table, result.GetError().GetMessage())};
+    throw cpp::MessageException{
+        fmt::format("Couldn't drop table {}: {}", *table, error.GetMessage())};
   }
 }
 
 auto AsyncDb::SelectItem(const kvdb::Table &table, const kvdb::Key &key) const
-    -> cpp::Opt<kvdb::Item> {
+    -> cppcoro::task<cpp::Opt<kvdb::Item>> {
   const auto attr_key = Aws::DynamoDB::Model::AttributeValue{key};
 
   const auto request =
       Aws::DynamoDB::Model::GetItemRequest{}.WithTableName(table).AddKey(
           "Key", attr_key);
 
-  const auto &result = db_client_->GetItem(request);
+  const auto *result =
+      static_cast<const Aws::DynamoDB::Model::GetItemOutcome *>(nullptr);
+  auto result_is_ready = cppcoro::single_consumer_event{};
 
-  if (!result.IsSuccess()) {
+  db_client_->GetItemAsync(
+      request,
+      [result, &result_is_ready](const auto &, const auto &,
+                                 const auto &outcome, const auto &) mutable {
+        result = &outcome;
+        result_is_ready.set();
+      });
+
+  co_await result_is_ready;
+
+  if (!result->IsSuccess()) {
     throw cpp::MessageException{
         fmt::format("Couldn't select item {} from table {}: {}", *key, *table,
-                    result.GetError().GetMessage())};
+                    result->GetError().GetMessage())};
   }
 
-  const auto &result_map = result.GetResult().GetItem();
+  const auto &result_map = result->GetResult().GetItem();
   const auto iter = result_map.find("Value");
 
   if (const auto no_item_in_result = iter == result_map.end()) {
-    return std::nullopt;
+    co_return std::nullopt;
   }
 
-  return kvdb::Item{.key = key, .value = iter->second.GetS()};
+  co_return kvdb::Item{.key = key, .value = iter->second.GetS()};
 }
 
-void AsyncDb::InsertOrUpdateItem(const kvdb::Table &table, kvdb::Item item) {
+auto AsyncDb::InsertOrUpdateItem(const kvdb::Table &table, kvdb::Item item)
+    -> cppcoro::task<> {
   const auto attr_key = Aws::DynamoDB::Model::AttributeValue{item.key};
   const auto attr_value = Aws::DynamoDB::Model::AttributeValue{item.value};
 
@@ -125,29 +167,53 @@ void AsyncDb::InsertOrUpdateItem(const kvdb::Table &table, kvdb::Item item) {
           .WithExpressionAttributeNames({{"#key", "Value"}})
           .WithExpressionAttributeValues({{":value", attr_value}});
 
-  const auto &result = db_client_->UpdateItem(request);
+  const auto *result =
+      static_cast<const Aws::DynamoDB::Model::UpdateItemOutcome *>(nullptr);
+  auto result_is_ready = cppcoro::single_consumer_event{};
 
-  if (!result.IsSuccess()) {
+  db_client_->UpdateItemAsync(
+      request,
+      [result, &result_is_ready](const auto &, const auto &,
+                                 const auto &outcome, const auto &) mutable {
+        result = &outcome;
+        result_is_ready.set();
+      });
+
+  co_await result_is_ready;
+
+  if (!result->IsSuccess()) {
     throw cpp::MessageException{
         fmt::format("Couldn't insert or update item {} in table {}: {}",
-                    *item.key, *table, result.GetError().GetMessage())};
+                    *item.key, *table, result->GetError().GetMessage())};
   }
 }
 
-void AsyncDb::DeleteItemIfExists(const kvdb::Table &table,
-                                 const kvdb::Key &key) {
+auto AsyncDb::DeleteItemIfExists(const kvdb::Table &table, const kvdb::Key &key)
+    -> cppcoro::task<> {
   const auto attr_key = Aws::DynamoDB::Model::AttributeValue{key};
 
   const auto request =
       Aws::DynamoDB::Model::DeleteItemRequest{}.WithTableName(table).AddKey(
           "Key", attr_key);
 
-  const auto &result = db_client_->DeleteItem(request);
+  const auto *result =
+      static_cast<const Aws::DynamoDB::Model::DeleteItemOutcome *>(nullptr);
+  auto result_is_ready = cppcoro::single_consumer_event{};
 
-  if (!result.IsSuccess()) {
+  db_client_->DeleteItemAsync(
+      request,
+      [result, &result_is_ready](const auto &, const auto &,
+                                 const auto &outcome, const auto &) mutable {
+        result = &outcome;
+        result_is_ready.set();
+      });
+
+  co_await result_is_ready;
+
+  if (!result->IsSuccess()) {
     throw cpp::MessageException{
         fmt::format("Couldn't delete item {} from table {}: {}", *key, *table,
-                    result.GetError().GetMessage())};
+                    result->GetError().GetMessage())};
   }
 }
 

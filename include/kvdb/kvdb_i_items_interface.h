@@ -1,6 +1,8 @@
 #ifndef STONKS_KVDB_KVDB_I_ITEMS_INTERFACE_H_
 #define STONKS_KVDB_KVDB_I_ITEMS_INTERFACE_H_
 
+#include <cppcoro/task.hpp>
+
 #include "cpp_optional.h"
 #include "kvdb_types.h"
 
@@ -18,17 +20,19 @@ class IItemsInterface {
    */
   virtual auto SelectItem
       [[nodiscard]] (const Table &table, const Key &key) const
-      -> cpp::Opt<Item> = 0;
+      -> cppcoro::task<cpp::Opt<Item>> = 0;
 
   /**
    * @brief Sets the item value for the specified key.
    */
-  virtual void InsertOrUpdateItem(const Table &table, Item item) = 0;
+  virtual auto InsertOrUpdateItem(const Table &table, Item item)
+      -> cppcoro::task<> = 0;
 
   /**
    * @brief Deletes the item with the specified key.
    */
-  virtual void DeleteItemIfExists(const Table &table, const Key &key) = 0;
+  virtual auto DeleteItemIfExists(const Table &table, const Key &key)
+      -> cppcoro::task<> = 0;
 };
 }  // namespace stonks::kvdb
 

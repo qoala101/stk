@@ -35,7 +35,6 @@ auto BookTickHandler::RecordAsPrice(binance::BookTick book_tick)
     co_await symbols_db_->InsertSymbolPriceRecord(record);
     last_record_ = std::move(record);
   } catch (...) {
-    co_return;
   }
 }
 }  // namespace stonks::core::sps

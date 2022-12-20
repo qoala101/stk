@@ -42,30 +42,32 @@ class AsyncDb : public kvdb::IDb {
   /**
    * @copydoc kvdb::IDb::CreateTableIfNotExists
    */
-  void CreateTableIfNotExists(const kvdb::Table &table) override;
+  auto CreateTableIfNotExists(const kvdb::Table &table)
+      -> cppcoro::task<> override;
 
   /**
    * @copydoc kvdb::IDb::DropTableIfExists
    */
-  void DropTableIfExists(const kvdb::Table &table) override;
+  auto DropTableIfExists(const kvdb::Table &table) -> cppcoro::task<> override;
 
   /**
    * @copydoc kvdb::IDb::SelectItem
    */
   auto SelectItem
       [[nodiscard]] (const kvdb::Table &table, const kvdb::Key &key) const
-      -> cpp::Opt<kvdb::Item> override;
+      -> cppcoro::task<cpp::Opt<kvdb::Item>> override;
 
   /**
    * @copydoc kvdb::IDb::InsertOrUpdateItem
    */
-  void InsertOrUpdateItem(const kvdb::Table &table, kvdb::Item item) override;
+  auto InsertOrUpdateItem(const kvdb::Table &table, kvdb::Item item)
+      -> cppcoro::task<> override;
 
   /**
    * @copydoc kvdb::IDb::DeleteItemIfExists
    */
-  void DeleteItemIfExists(const kvdb::Table &table,
-                          const kvdb::Key &key) override;
+  auto DeleteItemIfExists(const kvdb::Table &table, const kvdb::Key &key)
+      -> cppcoro::task<> override;
 
   /**
    * @brief Gives a native DynamoDB handle.

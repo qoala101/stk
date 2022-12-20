@@ -1,6 +1,8 @@
 #ifndef STONKS_KVDB_KVDB_I_TABLES_INTERFACE_H_
 #define STONKS_KVDB_KVDB_I_TABLES_INTERFACE_H_
 
+#include <cppcoro/task.hpp>
+
 #include "kvdb_types.h"
 
 namespace stonks::kvdb {
@@ -15,12 +17,13 @@ class ITablesInterface {
   /**
    * @brief Creates a table with the specified name if it doesn't exist.
    */
-  virtual void CreateTableIfNotExists(const Table &table) = 0;
+  virtual auto CreateTableIfNotExists(const Table &table)
+      -> cppcoro::task<> = 0;
 
   /**
    * @brief Deletes the table from DB.
    */
-  virtual void DropTableIfExists(const Table &table) = 0;
+  virtual auto DropTableIfExists(const Table &table) -> cppcoro::task<> = 0;
 };
 }  // namespace stonks::kvdb
 
