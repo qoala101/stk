@@ -1,6 +1,8 @@
 #ifndef STONKS_AWS_DYNAMODB_AWS_DYNAMODB_ASYNC_DB_H_
 #define STONKS_AWS_DYNAMODB_AWS_DYNAMODB_ASYNC_DB_H_
 
+#include <cppcoro/task.hpp>
+
 #include "aws_api_handle.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"

@@ -3,6 +3,7 @@
 #include <fmt/core.h>
 
 #include <coroutine>
+#include <not_null.hpp>
 #include <string>
 #include <utility>
 #include <vector>
@@ -10,7 +11,6 @@
 #include "cpp_typed_struct.h"
 #include "network_types.h"
 #include "ngrok_types.h"
-#include "not_null.hpp"
 
 namespace stonks::service::aue {
 Impl::Impl(PublicDb public_db, ngrok::NgrokApi ngrok_api,

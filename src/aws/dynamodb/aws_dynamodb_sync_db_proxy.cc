@@ -9,8 +9,7 @@
 #include <aws/dynamodb/model/TableStatus.h>
 #include <fmt/core.h>
 
-#include <concepts>
-#include <cppcoro/single_consumer_event.hpp>
+#include <coroutine>
 #include <cppcoro/task.hpp>
 #include <gsl/assert>
 #include <optional>
@@ -18,6 +17,7 @@
 #include <utility>
 
 #include "aws_dynamodb_async_db.h"
+#include "aws_dynamodb_call_as_coroutine.h"
 #include "cpp_concepts.h"
 #include "cpp_message_exception.h"
 #include "cpp_optional.h"
@@ -117,22 +117,12 @@ auto SyncDbProxy::GetTableStatus(const kvdb::Table &table) const
   const auto request =
       Aws::DynamoDB::Model::DescribeTableRequest{}.WithTableName(table);
 
-  const auto *result =
-      static_cast<const Aws::DynamoDB::Model::DescribeTableOutcome *>(nullptr);
-  auto result_is_ready = cppcoro::single_consumer_event{};
+  const auto result = co_await CallAsCoroutine<
+      &Aws::DynamoDB::DynamoDBClient::DescribeTableAsync>(
+      async_db_.GetDynamoDbClient(), request);
 
-  async_db_.GetDynamoDbClient().DescribeTableAsync(
-      request,
-      [result, &result_is_ready](const auto &, const auto &,
-                                 const auto &outcome, const auto &) mutable {
-        result = &outcome;
-        result_is_ready.set();
-      });
-
-  co_await result_is_ready;
-
-  if (!result->IsSuccess()) {
-    const auto &error = result->GetError();
+  if (!result.IsSuccess()) {
+    const auto &error = result.GetError();
 
     if (const auto table_doesnt_exist =
             error.GetErrorType() ==
@@ -144,6 +134,6 @@ auto SyncDbProxy::GetTableStatus(const kvdb::Table &table) const
                                             *table, error.GetMessage())};
   }
 
-  co_return result->GetResult().GetTable().GetTableStatus();
+  co_return result.GetResult().GetTable().GetTableStatus();
 }
 }  // namespace stonks::aws::dynamodb

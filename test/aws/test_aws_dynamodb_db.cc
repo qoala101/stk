@@ -1,6 +1,7 @@
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
 
+#include <cppcoro/sync_wait.hpp>
 #include <memory>
 #include <not_null.hpp>
 #include <optional>
@@ -22,34 +23,41 @@ TEST(DynamoDb, Test1) {
       test::aws::Injector()
           .create<stonks::cpp::NnUp<stonks::kvdb::IItemsInterface>>();
 
-  static const auto kTable = stonks::kvdb::Table{"TestTable"};
+  cppcoro::sync_wait([&tables_interface,
+                      &items_interface]() -> cppcoro::task<> {
+    static const auto kTable = stonks::kvdb::Table{"TestTable"};
 
-  tables_interface->DropTableIfExists(kTable);
-  tables_interface->CreateTableIfNotExists(kTable);
+    co_await tables_interface->DropTableIfExists(kTable);
+    co_await tables_interface->CreateTableIfNotExists(kTable);
 
-  const auto item1 =
-      stonks::kvdb::Item{.key = {"TestKey1"}, .value = "TestValue1"};
-  ASSERT_EQ(items_interface->SelectItem(kTable, item1.key), std::nullopt);
+    const auto item1 =
+        stonks::kvdb::Item{.key = {"TestKey1"}, .value = "TestValue1"};
+    EXPECT_EQ(co_await items_interface->SelectItem(kTable, item1.key),
+              std::nullopt);
 
-  items_interface->InsertOrUpdateItem(kTable, item1);
-  ASSERT_EQ(items_interface->SelectItem(kTable, item1.key), item1);
+    co_await items_interface->InsertOrUpdateItem(kTable, item1);
+    EXPECT_EQ(co_await items_interface->SelectItem(kTable, item1.key), item1);
 
-  const auto item1_new_value =
-      stonks::kvdb::Item{.key = item1.key, .value = "TestValue2"};
-  items_interface->InsertOrUpdateItem(kTable, item1_new_value);
-  ASSERT_EQ(items_interface->SelectItem(kTable, item1.key), item1_new_value);
+    const auto item1_new_value =
+        stonks::kvdb::Item{.key = item1.key, .value = "TestValue2"};
+    co_await items_interface->InsertOrUpdateItem(kTable, item1_new_value);
+    EXPECT_EQ(co_await items_interface->SelectItem(kTable, item1.key),
+              item1_new_value);
 
-  const auto item2 =
-      stonks::kvdb::Item{.key = {"TestKey2"}, .value = "TestValue2"};
-  items_interface->InsertOrUpdateItem(kTable, item2);
-  ASSERT_EQ(items_interface->SelectItem(kTable, item2.key), item2);
+    const auto item2 =
+        stonks::kvdb::Item{.key = {"TestKey2"}, .value = "TestValue2"};
+    co_await items_interface->InsertOrUpdateItem(kTable, item2);
+    EXPECT_EQ(co_await items_interface->SelectItem(kTable, item2.key), item2);
 
-  items_interface->DeleteItemIfExists(kTable, item1.key);
-  ASSERT_EQ(items_interface->SelectItem(kTable, item1.key), std::nullopt);
+    co_await items_interface->DeleteItemIfExists(kTable, item1.key);
+    EXPECT_EQ(co_await items_interface->SelectItem(kTable, item1.key),
+              std::nullopt);
 
-  tables_interface->DropTableIfExists(kTable);
-  EXPECT_ANY_THROW(std::ignore =
-                       items_interface->SelectItem(kTable, item1.key));
-  EXPECT_ANY_THROW(items_interface->DeleteItemIfExists(kTable, item2.key));
+    co_await tables_interface->DropTableIfExists(kTable);
+    EXPECT_ANY_THROW(
+        std::ignore = co_await items_interface->SelectItem(kTable, item1.key));
+    EXPECT_ANY_THROW(
+        co_await items_interface->DeleteItemIfExists(kTable, item2.key));
+  }());
 }
 }  // namespace
