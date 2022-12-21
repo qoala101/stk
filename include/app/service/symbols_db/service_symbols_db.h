@@ -3,7 +3,6 @@
 
 #include <absl/time/time.h>
 
-#include <callable.hpp>  // IWYU pragma: keep
 #include <cppcoro/task.hpp>
 #include <vector>
 

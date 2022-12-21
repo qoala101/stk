@@ -1,4 +1,5 @@
 add_subdirectory(buy_low_sell_high)
 add_subdirectory(symbol_prices_stream)
+add_subdirectory(symbol_prices_streams_controller)
 add_subdirectory(symbols_db)
 add_subdirectory(symbols_db_updater)
