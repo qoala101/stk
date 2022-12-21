@@ -28,6 +28,7 @@
 #include "cpp_typed_struct.h"
 #include "network_i_json.h"
 #include "network_types.h"
+#include "restsdk_call_as_coroutine.h"
 #include "restsdk_json.h"
 #include "restsdk_json_native_handle.h"
 
@@ -141,37 +142,24 @@ auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
   const auto http_request = HttpRequestFrom(request);
 
   auto response = network::RestResponse{};
-  auto exception_message = std::string{};
-  auto response_is_ready = cppcoro::single_consumer_event{};
 
-  http_client.request(http_request)
-      .then([&response](const web::http::http_response &http_response) {
-        response.status = StatusFrom(http_response.status_code());
-        return http_response.extract_json();
-      })
-      .then([&response](web::json::value http_response_json) {
-        response.result = cpp::MakePv<network::IJson, Json>(
-            network::IJson::NativeHandle{std::move(http_response_json)});
-      })
-      .then([&exception_message, &response_is_ready](const auto &task) {
-        try {
-          task.wait();
-        } catch (const std::exception &e) {
-          exception_message = e.what();
-        }
-
-        response_is_ready.set();
-      });
-
-  co_await response_is_ready;
-
-  if (const auto caught_exception = !exception_message.empty()) {
+  try {
+    co_await CallAsCoroutine(
+        http_client.request(http_request)
+            .then([&response](const web::http::http_response &http_response) {
+              response.status = StatusFrom(http_response.status_code());
+              return http_response.extract_json();
+            })
+            .then([&response](web::json::value http_response_json) {
+              response.result = cpp::MakePv<network::IJson, Json>(
+                  network::IJson::NativeHandle{std::move(http_response_json)});
+            }));
+  } catch (const std::exception &e) {
     logger_->LogErrorCondition(
         fmt::format("{} request to {} failed: {}",
                     nameof::nameof_enum(request.endpoint.method),
-                    full_uri.to_string(), exception_message));
-
-    throw cpp::MessageException{std::move(exception_message)};
+                    full_uri.to_string(), e.what()));
+    throw;
   }
 
   co_return response;

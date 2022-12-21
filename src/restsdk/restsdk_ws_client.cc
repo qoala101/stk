@@ -22,6 +22,7 @@
 #include "cpp_typed_struct.h"
 #include "network_i_json.h"
 #include "network_types.h"
+#include "restsdk_call_as_coroutine.h"
 #include "restsdk_json_native_handle.h"
 #include "restsdk_parse_json_fom_string.h"
 
@@ -38,30 +39,16 @@ auto HandleWsMessage(
   }
 
   auto parsed_message = network::WsMessage{};
-  auto exception_message = std::string{};
-  auto message_parsed = cppcoro::single_consumer_event{};
 
-  native_message.extract_string()
-      .then([&parsed_message](const std::string &message_text) {
-        parsed_message = ParseJsonFromString(message_text);
-      })
-      .then([&exception_message, &message_parsed](const auto &task) {
-        try {
-          task.wait();
-        } catch (const std::exception &e) {
-          exception_message = e.what();
-        }
-
-        message_parsed.set();
-      });
-
-  co_await message_parsed;
-
-  if (const auto caught_exception = !exception_message.empty()) {
-    logger.LogErrorCondition(fmt::format(
-        "Couldn't parse web socket message: {}", exception_message));
-
-    throw cpp::MessageException{std::move(exception_message)};
+  try {
+    co_await CallAsCoroutine(native_message.extract_string().then(
+        [&parsed_message](const std::string &message_text) {
+          parsed_message = ParseJsonFromString(message_text);
+        }));
+  } catch (const std::exception &e) {
+    logger.LogErrorCondition(
+        fmt::format("Couldn't parse web socket message: {}", e.what()));
+    throw;
   }
 
   co_await handler.HandleMessage(std::move(parsed_message));
@@ -126,27 +113,13 @@ auto WsClient::SendMessage(network::WsMessage message) const
       web::websockets::client::websocket_outgoing_message{};
   native_ws_message.set_utf8_message(message->GetNativeHandle()->serialize());
 
-  auto exception_message = std::string{};
-  auto message_sent = cppcoro::single_consumer_event{};
-
-  native_ws_client_->send(std::move(native_ws_message))
-      .then([&exception_message, &message_sent](const auto &task) {
-        try {
-          task.wait();
-        } catch (const std::exception &e) {
-          exception_message = e.what();
-        }
-
-        message_sent.set();
-      });
-
-  if (const auto caught_exception = !exception_message.empty()) {
+  try {
+    co_await CallAsCoroutine(
+        native_ws_client_->send(std::move(native_ws_message)));
+  } catch (const std::exception &e) {
     logger_->LogErrorCondition(
-        fmt::format("Couldn't send web socket message: {}", exception_message));
-
-    throw cpp::MessageException{std::move(exception_message)};
+        fmt::format("Couldn't send web socket message: {}", e.what()));
+    throw;
   }
-
-  co_await message_sent;
 }
 }  // namespace stonks::restsdk

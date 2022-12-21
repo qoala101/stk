@@ -42,7 +42,6 @@ auto CallAsCoroutine
   co_await result_is_ready;
   co_return result;
 }
-
 }  // namespace stonks::aws::dynamodb
 
 #endif  // STONKS_AWS_DYNAMODB_AWS_DYNAMODB_CALL_AS_COROUTINE_H_

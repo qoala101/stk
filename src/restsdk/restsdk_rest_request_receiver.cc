@@ -34,6 +34,7 @@
 #include "cpprest/http_msg.h"
 #include "network_i_json.h"
 #include "network_types.h"
+#include "restsdk_call_as_coroutine.h"
 #include "restsdk_json.h"
 #include "restsdk_json_native_handle.h"
 #include "restsdk_parse_json_fom_string.h"
@@ -133,29 +134,13 @@ auto HandleHttpRequest
       co_await handler.HandleRequestAndGiveResponse(std::move(rest_request));
   const auto http_response = HttpResponseFrom(rest_response);
 
-  auto exception_message = std::string{};
-  auto replied_to_request = cppcoro::single_consumer_event{};
-
-  request.reply(http_response)
-      .then([&exception_message, &replied_to_request](const auto &task) {
-        try {
-          task.wait();
-        } catch (const std::exception &e) {
-          exception_message = e.what();
-        }
-
-        replied_to_request.set();
-      });
-
-  co_await replied_to_request;
-
-  if (const auto caught_exception = !exception_message.empty()) {
-    logger.LogErrorCondition(
-        fmt::format("Couldn't reply {} on {}: {}",
-                    nameof::nameof_enum(rest_response.status), request_uri,
-                    exception_message));
-
-    throw cpp::MessageException{std::move(exception_message)};
+  try {
+    co_await CallAsCoroutine(request.reply(http_response));
+  } catch (const std::exception &e) {
+    logger.LogErrorCondition(fmt::format(
+        "Couldn't reply {} on {}: {}",
+        nameof::nameof_enum(rest_response.status), request_uri, e.what()));
+    throw;
   }
 
   logger.LogEvent(fmt::format("Replied {} on {}",
