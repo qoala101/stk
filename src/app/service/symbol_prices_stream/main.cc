@@ -17,23 +17,24 @@
 #include "service_network_restsdk_injector.h"
 #include "service_sdb_injector.h"
 #include "service_sdb_options.h"
+#include "service_spsc_injector.h"
+#include "service_spsc_options.h"
 
 auto main(int argc, const char *const *argv) -> int {
   auto options = stonks::cli::Options{};
 
-  auto symbol = options.AddOption("--symbol", "BTCUSDT");
   const auto reattempt_interval = options.AddOption(
       "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
   const auto sdb_options = stonks::service::sdb::Options{options};
+  const auto spsc_options = stonks::service::spsc::Options{options};
 
   const auto app = stonks::cli::App{argc, argv, options};
   const auto injector = stonks::di::MakeInjector(
       stonks::service::injectors::CreateNetworkRestsdkInjector(),
       stonks::service::injectors::CreateLogSpdlogInjector(),
       stonks::service::sdb::CreateInjector(sdb_options),
+      stonks::service::spsc::CreateInjector(spsc_options),
 
-      stonks::di::BindTypeToValue<stonks::core::Symbol>(
-          stonks::core::Symbol{std::move(*symbol)}),
       stonks::di::BindTypeToValue<absl::Duration>(
           absl::Milliseconds(*reattempt_interval)));
 

@@ -1,5 +1,6 @@
 #include "core_symbol_prices_stream.h"
 
+#include <cppcoro/sync_wait.hpp>
 #include <optional>
 #include <type_traits>
 #include <utility>
@@ -17,7 +18,7 @@ SymbolPricesStream::SymbolPricesStream(
       connect_to_web_socket_timer_{
           cpp::Execute([web_socket = web_socket_,
                         web_socket_factory = std::move(web_socket_factory)]() {
-            *web_socket = web_socket_factory.Create();
+            *web_socket = cppcoro::sync_wait(web_socket_factory.Create());
           })
               .Once()
               .IfThrowsReattemptEvery(reattempt_interval)

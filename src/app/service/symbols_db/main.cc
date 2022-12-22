@@ -40,8 +40,10 @@ auto main(int argc, const char *const *argv) -> int {
       stonks::service::injectors::CreateSqldbSqliteInjector(),
       stonks::service::injectors::CreateLogSpdlogInjector(),
 
-      stonks::di::BindTypeToValue<stonks::network::Uri>(
-          stonks::network::Uri{fmt::format("http://0.0.0.0:{}", *port)}),
+      stonks::di::BindTypeToValue<
+          stonks::networkx::Uri<stonks::core::ISymbolsDb>>(
+          stonks::networkx::Uri<stonks::core::ISymbolsDb>{
+              fmt::format("http://0.0.0.0:{}", *port)}),
       stonks::di::BindTypeToValue<stonks::sqlite::FilePath>(
           stonks::sqlite::FilePath{std::move(*db_file_path)}),
       stonks::di::BindInterfaceToImplementation<stonks::core::ISymbolsDb,
@@ -50,6 +52,9 @@ auto main(int argc, const char *const *argv) -> int {
   app.Run([&injector]() {
     return stonks::networkx::MakeServerFor(
         injector.template create<stonks::cpp::NnSp<stonks::core::ISymbolsDb>>(),
-        injector.template create<stonks::network::RestServerBuilder>());
+        injector
+            .template create<stonks::networkx::Uri<stonks::core::ISymbolsDb>>(),
+        injector.template create<
+            stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>());
   });
 }

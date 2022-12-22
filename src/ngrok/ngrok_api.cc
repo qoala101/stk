@@ -31,9 +31,9 @@ NgrokApi::~NgrokApi() = default;
 NgrokApi::NgrokApi(
     std::string_view host,
     di::Factory<network::IRestRequestSender> request_sender_factory)
-    : impl_{cpp::MakeNnUp<NgrokApi::Impl>(networkx::Client<NgrokApi>{
-          {{fmt::format("https://{}:4040/api", host)},
-           std::move(request_sender_factory)}})} {}
+    : impl_{cpp::MakeNnUp<NgrokApi::Impl>(
+          networkx::Client<NgrokApi>{{fmt::format("https://{}:4040/api", host)},
+                                     std::move(request_sender_factory)})} {}
 
 auto NgrokApi::tunnels() const -> cppcoro::task<Tunnels> {
   co_return co_await impl_->GetClient().Call<&NgrokApi::tunnels>();

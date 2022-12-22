@@ -7,6 +7,7 @@ target_link_libraries(service_symbol_prices_stream
   PRIVATE libnetwork
   PRIVATE librestsdk
   PRIVATE libservice
+  PRIVATE libservice_symbol_prices_streams_controller
   PRIVATE libservice_symbols_db
   PRIVATE libspdlog
 )

@@ -13,10 +13,12 @@
 namespace stonks::service::spsc {
 inline auto CreateInjector [[nodiscard]] (const Options &options) {
   return di::MakeInjector(
-      stonks::di::BindTypeToValue<stonks::network::Uri>(
-          stonks::network::Uri{fmt::format(
-              "http://{}:{}", *options.symbol_prices_streams_controller_host,
-              *options.symbol_prices_streams_controller_port)}),
+      stonks::di::BindTypeToValue<
+          stonks::networkx::Uri<core::ISymbolPricesStreamsController>>(
+          stonks::networkx::Uri<core::ISymbolPricesStreamsController>{
+              fmt::format("http://{}:{}",
+                          *options.symbol_prices_streams_controller_host,
+                          *options.symbol_prices_streams_controller_port)}),
       stonks::di::BindInterfaceToImplementation<
           stonks::core::ISymbolPricesStreamsController,
           stonks::service::SymbolPricesStreamsController>());

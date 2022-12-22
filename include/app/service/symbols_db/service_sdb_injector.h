@@ -13,9 +13,10 @@
 namespace stonks::service::sdb {
 inline auto CreateInjector [[nodiscard]] (const Options &options) {
   return di::MakeInjector(
-      stonks::di::BindTypeToValue<stonks::network::Uri>(stonks::network::Uri{
-          fmt::format("http://{}:{}", *options.symbols_db_host,
-                      *options.symbols_db_port)}),
+      stonks::di::BindTypeToValue<stonks::networkx::Uri<core::ISymbolsDb>>(
+          stonks::networkx::Uri<core::ISymbolsDb>{
+              fmt::format("http://{}:{}", *options.symbols_db_host,
+                          *options.symbols_db_port)}),
       stonks::di::BindInterfaceToImplementation<stonks::core::ISymbolsDb,
                                                 stonks::service::SymbolsDb>());
 }

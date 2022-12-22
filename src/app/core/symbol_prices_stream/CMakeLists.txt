@@ -16,6 +16,7 @@ target_include_directories(libcore_symbol_prices_stream
 
 target_link_libraries(libcore_symbol_prices_stream
   PUBLIC libbinance
+  PUBLIC libcore_symbol_prices_streams_controller
   PUBLIC libcore_symbols_db
   PUBLIC libnetworkx
 

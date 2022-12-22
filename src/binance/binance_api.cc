@@ -29,8 +29,8 @@ BinanceApi::~BinanceApi() = default;
 BinanceApi::BinanceApi(
     di::Factory<network::IRestRequestSender> request_sender_factory)
     : impl_{cpp::MakeNnUp<BinanceApi::Impl>(
-          networkx::Client<BinanceApi>{{{"https://api.binance.com/api/v3"},
-                                        std::move(request_sender_factory)}})} {}
+          networkx::Client<BinanceApi>{{"https://api.binance.com/api/v3"},
+                                       std::move(request_sender_factory)})} {}
 
 auto BinanceApi::exchangeInfo() const -> cppcoro::task<ExchangeInfo> {
   co_return co_await impl_->GetClient()

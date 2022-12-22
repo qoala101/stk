@@ -15,6 +15,9 @@ namespace stonks::service {
 class SymbolPricesStreamsController
     : public core::ISymbolPricesStreamsController {
  public:
+  explicit SymbolPricesStreamsController(
+      networkx::Client<core::ISymbolPricesStreamsController> client);
+
   /**
    * @copydoc core::ISymbolPricesStreamsController::GetSymbolForStream
    */

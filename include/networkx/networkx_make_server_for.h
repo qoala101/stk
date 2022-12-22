@@ -15,6 +15,7 @@
 #include "networkx_concepts.h"  // IWYU pragma: keep
 #include "networkx_endpoint_function_traits_facade.h"
 #include "networkx_types.h"
+#include "networkx_uri.h"
 
 namespace stonks::networkx {
 namespace detail {
@@ -84,8 +85,11 @@ void SetEndpointHandlers(network::RestServerBuilder &server_builder,
  * Server would handle request according to the object client-server traits.
  */
 template <ClientServerType Target>
-auto MakeServerFor [[nodiscard]] (const cpp::NnSp<Target> &target,
-                                  network::RestServerBuilder server_builder) {
+auto MakeServerFor
+    [[nodiscard]] (const cpp::NnSp<Target> &target, Uri<Target> uri,
+                   cpp::NnUp<network::IRestRequestReceiver> request_receiver) {
+  auto server_builder =
+      network::RestServerBuilder{std::move(uri), std::move(request_receiver)};
   detail::SetEndpointHandlers(server_builder, target);
   return server_builder.Start();
 }

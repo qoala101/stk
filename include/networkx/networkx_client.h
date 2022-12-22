@@ -13,14 +13,15 @@
 #include "networkx_concepts.h"  // IWYU pragma: keep
 #include "networkx_endpoint_function_traits_facade.h"
 #include "networkx_types.h"
+#include "networkx_uri.h"
 
 namespace stonks::networkx {
 namespace detail {
 class ClientBase {
- public:
-  explicit ClientBase(network::RestClient rest_client);
-
  protected:
+  ClientBase(network::Uri &uri,
+             di::Factory<network::IRestRequestSender> &request_sender_factory);
+
   auto GetRestClient [[nodiscard]] () const -> const network::RestClient &;
 
  private:
@@ -81,7 +82,12 @@ class CallImpl {
 template <ClientServerType Target>
 class Client : public detail::ClientBase {
  public:
-  using ClientBase::ClientBase;
+  /**
+   * @param uri Server URI.
+   */
+  Client(Uri<Target> uri,
+         di::Factory<network::IRestRequestSender> request_sender_factory)
+      : ClientBase{uri, request_sender_factory} {}
 
   /**
    * @brief Remotely calls specified function with provided arguments.
