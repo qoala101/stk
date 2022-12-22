@@ -16,6 +16,8 @@
 #include "cpp_not_null.h"
 #include "di_bind_interface_to_implementation.h"
 #include "di_bind_type_to_value.h"
+#include "di_bind_value_type_to_value.h"
+#include "di_call_with_injected_args.h"
 #include "di_make_injector.h"
 #include "network_json_common_conversions.h"  // IWYU pragma: keep
 #include "network_rest_server_builder.h"
@@ -35,8 +37,7 @@ auto main(int argc, const char *const *argv) -> int {
       stonks::service::injectors::CreateNetworkRestsdkInjector(),
       stonks::service::injectors::CreateLogSpdlogInjector(),
 
-      stonks::di::BindTypeToValue<
-          stonks::networkx::Uri<stonks::core::ISymbolPricesStreamsController>>(
+      stonks::di::BindValueTypeToValue(
           stonks::networkx::Uri<stonks::core::ISymbolPricesStreamsController>{
               fmt::format("http://0.0.0.0:{}", *port)}),
       stonks::di::BindInterfaceToImplementation<
@@ -44,12 +45,9 @@ auto main(int argc, const char *const *argv) -> int {
           stonks::core::SymbolPricesStreamsController>());
 
   app.Run([&injector]() {
-    return stonks::networkx::MakeServerFor(
-        injector.template create<
-            stonks::cpp::NnSp<stonks::core::ISymbolPricesStreamsController>>(),
-        injector.template create<stonks::networkx::Uri<
-            stonks::core::ISymbolPricesStreamsController>>(),
-        injector.template create<
-            stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>());
+    return stonks::di::CallWithInjectedArgs(
+        stonks::networkx::MakeServerFor<
+            stonks::core::ISymbolPricesStreamsController>,
+        injector);
   });
 }

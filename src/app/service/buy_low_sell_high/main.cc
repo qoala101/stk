@@ -13,11 +13,15 @@
 #include "cli_options.h"
 #include "core_buy_low_sell_high.h"
 #include "cpp_not_null.h"
+#include "di_auto_injectable.h"
+#include "di_bind_type_to_factory_function.h"
 #include "di_bind_type_to_value.h"
+#include "di_call_with_injected_args.h"
 #include "di_enable_nn_pointers.h"
 #include "di_make_injector.h"
 #include "network_i_rest_request_receiver.h"
 #include "network_json_common_conversions.h"  // IWYU pragma: keep
+#include "network_rest_server.h"
 #include "network_rest_server_builder.h"
 #include "network_types.h"
 #include "networkx_make_server_for.h"
@@ -46,12 +50,8 @@ auto main(int argc, const char *const *argv) -> int {
       stonks::di::EnableNnPointers<stonks::core::BuyLowSellHigh>());
 
   app.Run([&injector]() {
-    return stonks::networkx::MakeServerFor(
-        injector
-            .template create<stonks::cpp::NnSp<stonks::core::BuyLowSellHigh>>(),
-        injector.template create<
-            stonks::networkx::Uri<stonks::core::BuyLowSellHigh>>(),
-        injector.template create<
-            stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>());
+    return stonks::di::CallWithInjectedArgs(
+        stonks::networkx::MakeServerFor<stonks::core::BuyLowSellHigh>,
+        injector);
   });
 }

@@ -18,6 +18,7 @@
 #include "di_bind_interface_to_implementation.h"
 #include "di_bind_type_to_value.h"
 #include "di_bind_value_type_to_value.h"
+#include "di_call_with_injected_args.h"
 #include "di_make_injector.h"
 #include "network_json_common_conversions.h"  // IWYU pragma: keep
 #include "network_rest_server_builder.h"
@@ -50,11 +51,7 @@ auto main(int argc, const char *const *argv) -> int {
                                                 stonks::core::SymbolsDb>());
 
   app.Run([&injector]() {
-    return stonks::networkx::MakeServerFor(
-        injector.template create<stonks::cpp::NnSp<stonks::core::ISymbolsDb>>(),
-        injector
-            .template create<stonks::networkx::Uri<stonks::core::ISymbolsDb>>(),
-        injector.template create<
-            stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>());
+    return stonks::di::CallWithInjectedArgs(
+        stonks::networkx::MakeServerFor<stonks::core::ISymbolsDb>, injector);
   });
 }
