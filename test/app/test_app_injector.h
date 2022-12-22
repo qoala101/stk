@@ -5,6 +5,7 @@
 #include "di_bind_type_to_factory_function.h"
 #include "di_bind_type_to_other_type.h"
 #include "di_bind_type_to_value.h"
+#include "di_bind_value_type_to_value.h"
 #include "di_make_injector.h"
 #include "spdlog_logger.h"
 #include "sqldb_i_db.h"
@@ -18,7 +19,7 @@
 namespace test::app {
 inline auto Injector [[nodiscard]] () -> auto & {
   static auto injector = stonks::di::MakeInjector(
-      stonks::di::BindTypeToValue<stonks::sqlite::FilePath>(
+      stonks::di::BindValueTypeToValue(
           stonks::sqlite::FilePath{"app_symbols_db_test.db"}),
       stonks::di::BindInterfaceToImplementation<stonks::log::ILogger,
                                                 stonks::spdlog::Logger>(),

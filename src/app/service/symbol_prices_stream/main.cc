@@ -35,7 +35,7 @@ auto main(int argc, const char *const *argv) -> int {
       stonks::service::sdb::CreateInjector(sdb_options),
       stonks::service::spsc::CreateInjector(spsc_options),
 
-      stonks::di::BindTypeToValue<absl::Duration>(
+      stonks::di::BindValueTypeToValue(
           absl::Milliseconds(*reattempt_interval)));
 
   app.Run([&injector]() {

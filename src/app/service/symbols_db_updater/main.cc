@@ -39,7 +39,7 @@ auto main(int argc, const char *const *argv) -> int {
       stonks::service::injectors::CreateLogSpdlogInjector(),
       stonks::service::sdb::CreateInjector(sdb_options),
 
-      stonks::di::BindTypeToValue<absl::Duration>(
+      stonks::di::BindValueTypeToValue(
           absl::Milliseconds(*keep_prices_for_duration)));
 
   app.Run([&injector, &update_symbols_info_interval,

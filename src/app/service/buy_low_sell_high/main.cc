@@ -40,8 +40,7 @@ auto main(int argc, const char *const *argv) -> int {
       stonks::service::injectors::CreateLogSpdlogInjector(),
       stonks::service::sdb::CreateInjector(sdb_options),
 
-      stonks::di::BindTypeToValue<
-          stonks::networkx::Uri<stonks::core::BuyLowSellHigh>>(
+      stonks::di::BindValueTypeToValue(
           stonks::networkx::Uri<stonks::core::BuyLowSellHigh>{
               fmt::format("http://0.0.0.0:{}", *port)}),
       stonks::di::EnableNnPointers<stonks::core::BuyLowSellHigh>());

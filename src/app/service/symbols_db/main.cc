@@ -17,6 +17,7 @@
 #include "cpp_not_null.h"
 #include "di_bind_interface_to_implementation.h"
 #include "di_bind_type_to_value.h"
+#include "di_bind_value_type_to_value.h"
 #include "di_make_injector.h"
 #include "network_json_common_conversions.h"  // IWYU pragma: keep
 #include "network_rest_server_builder.h"
@@ -40,11 +41,10 @@ auto main(int argc, const char *const *argv) -> int {
       stonks::service::injectors::CreateSqldbSqliteInjector(),
       stonks::service::injectors::CreateLogSpdlogInjector(),
 
-      stonks::di::BindTypeToValue<
-          stonks::networkx::Uri<stonks::core::ISymbolsDb>>(
+      stonks::di::BindValueTypeToValue(
           stonks::networkx::Uri<stonks::core::ISymbolsDb>{
               fmt::format("http://0.0.0.0:{}", *port)}),
-      stonks::di::BindTypeToValue<stonks::sqlite::FilePath>(
+      stonks::di::BindValueTypeToValue(
           stonks::sqlite::FilePath{std::move(*db_file_path)}),
       stonks::di::BindInterfaceToImplementation<stonks::core::ISymbolsDb,
                                                 stonks::core::SymbolsDb>());
