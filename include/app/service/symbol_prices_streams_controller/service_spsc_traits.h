@@ -14,6 +14,8 @@ struct EndpointFunctionTraits<
 
 template <>
 struct ClientServerTypeTraits<core::ISymbolPricesStreamsController> {
+  static constexpr auto kName = "symbol_prices_streams_controller";
+  static constexpr auto kDefaultPort = "30002";
   static constexpr auto kEndpointFunctions = EndpointFunctionList(
       &core::ISymbolPricesStreamsController::GetSymbolForStream);
 };

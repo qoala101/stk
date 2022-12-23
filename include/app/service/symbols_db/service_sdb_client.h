@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_
-#define STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_
+#ifndef STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_CLIENT_H_
+#define STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_CLIENT_H_
 
 #include <absl/time/time.h>
 
@@ -9,16 +9,18 @@
 #include "core_i_symbols_db.h"
 #include "core_types.h"
 #include "cpp_optional.h"
-#include "networkx_client.h"
+#include "service_client.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 
 namespace stonks::service {
 /**
  * @copydoc core::ISymbolsDb
  */
-class SymbolsDb : public core::ISymbolsDb {
+template <>
+class ServiceClient<core::ISymbolsDb>
+    : public ServiceClientBase<core::ISymbolsDb> {
  public:
-  explicit SymbolsDb(networkx::Client<core::ISymbolsDb> client);
+  using ServiceClientBase::ServiceClientBase;
 
   /**
    * @copydoc core::ISymbolsDb::SelectAssets
@@ -76,10 +78,7 @@ class SymbolsDb : public core::ISymbolsDb {
   auto DeleteSymbolPriceRecords
       [[nodiscard]] (const absl::Time *start_time, const absl::Time *end_time)
       -> cppcoro::task<> override;
-
- private:
-  networkx::Client<core::ISymbolsDb> client_;
 };
 }  // namespace stonks::service
 
-#endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_
+#endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_CLIENT_H_

@@ -14,16 +14,14 @@
 #include "cli_options.h"
 #include "core_i_symbols_db.h"
 #include "core_symbols_db.h"
-#include "cpp_not_null.h"
 #include "di_bind_interface_to_implementation.h"
-#include "di_bind_type_to_value.h"
 #include "di_bind_value_type_to_value.h"
 #include "di_call_with_injected_args.h"
 #include "di_make_injector.h"
 #include "network_json_common_conversions.h"  // IWYU pragma: keep
-#include "network_rest_server_builder.h"
-#include "network_types.h"
+#include "network_rest_server.h"
 #include "networkx_make_server_for.h"
+#include "networkx_uri.h"
 #include "service_log_spdlog_injector.h"
 #include "service_network_restsdk_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
@@ -43,10 +41,10 @@ auto main(int argc, const char *const *argv) -> int {
       stonks::service::injectors::CreateLogSpdlogInjector(),
 
       stonks::di::BindValueTypeToValue(
+          stonks::sqlite::FilePath{std::move(*db_file_path)}),
+      stonks::di::BindValueTypeToValue(
           stonks::networkx::Uri<stonks::core::ISymbolsDb>{
               fmt::format("http://0.0.0.0:{}", *port)}),
-      stonks::di::BindValueTypeToValue(
-          stonks::sqlite::FilePath{std::move(*db_file_path)}),
       stonks::di::BindInterfaceToImplementation<stonks::core::ISymbolsDb,
                                                 stonks::core::SymbolsDb>());
 

@@ -15,6 +15,8 @@ struct EndpointFunctionTraits<&core::BuyLowSellHigh::CalculateNextOperations> {
 
 template <>
 struct ClientServerTypeTraits<core::BuyLowSellHigh> {
+  static constexpr auto kName = "buy_low_sell_high";
+  static constexpr auto kDefaultPort = "30001";
   static constexpr auto kEndpointFunctions =
       EndpointFunctionList(&core::BuyLowSellHigh::CalculateNextOperations);
 };

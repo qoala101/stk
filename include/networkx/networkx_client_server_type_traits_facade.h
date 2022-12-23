@@ -27,6 +27,39 @@ struct ClientServerTypeTraitsFacade {
   static constexpr auto GetEndpointFunction [[nodiscard]] () {
     return std::get<kIndex>(TargetTraits::kEndpointFunctions);
   }
+
+  /**
+   * @brief Gives client-server name.
+   */
+  static constexpr auto GetName [[nodiscard]] () {
+    if constexpr (requires { TargetTraits::kName; }) {
+      return TargetTraits::kName;
+    } else {
+      return "";
+    }
+  }
+
+  /**
+   * @brief Gives default server host.
+   */
+  static constexpr auto GetDefaultHost [[nodiscard]] () {
+    if constexpr (requires { TargetTraits::kDefaultHost; }) {
+      return TargetTraits::kDefaultHost;
+    } else {
+      return "0.0.0.0";
+    }
+  }
+
+  /**
+   * @brief Gives default server port.
+   */
+  static constexpr auto GetDefaultPort [[nodiscard]] () {
+    if constexpr (requires { TargetTraits::kDefaultPort; }) {
+      return TargetTraits::kDefaultPort;
+    } else {
+      return "80";
+    }
+  }
 };
 }  // namespace stonks::networkx
 
