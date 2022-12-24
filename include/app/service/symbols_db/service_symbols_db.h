@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_CLIENT_H_
-#define STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_CLIENT_H_
+#ifndef STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_
+#define STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_
 
 #include <absl/time/time.h>
 
@@ -9,18 +9,16 @@
 #include "core_i_symbols_db.h"
 #include "core_types.h"
 #include "cpp_optional.h"
-#include "service_client.h"
+#include "service_client_base.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 
 namespace stonks::service {
 /**
  * @copydoc core::ISymbolsDb
  */
-template <>
-class ServiceClient<core::ISymbolsDb>
-    : public ServiceClientBase<core::ISymbolsDb> {
+class SymbolsDb : public ClientBase<core::ISymbolsDb> {
  public:
-  using ServiceClientBase::ServiceClientBase;
+  using ClientBase::ClientBase;
 
   /**
    * @copydoc core::ISymbolsDb::SelectAssets
@@ -81,4 +79,4 @@ class ServiceClient<core::ISymbolsDb>
 };
 }  // namespace stonks::service
 
-#endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_CLIENT_H_
+#endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_

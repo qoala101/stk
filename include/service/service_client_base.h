@@ -1,17 +1,17 @@
-#ifndef STONKS_APP_SERVICE_SERVICE_CLIENT_H_
-#define STONKS_APP_SERVICE_SERVICE_CLIENT_H_
+#ifndef STONKS_SERVICE_SERVICE_CLIENT_BASE_H_
+#define STONKS_SERVICE_SERVICE_CLIENT_BASE_H_
 
 #include "networkx_client.h"
 #include "networkx_concepts.h"
 
 namespace stonks::service {
 /**
- * @brief Base for service clients.
+ * @brief Convenience base for service clients.
  */
 template <networkx::ClientServerType TargetT>
-class ServiceClientBase : public TargetT {
+class ClientBase : public TargetT {
  public:
-  explicit ServiceClientBase(networkx::Client<TargetT> client)
+  explicit ClientBase(networkx::Client<TargetT> client)
       : client_{std::move(client)} {}
 
  protected:
@@ -31,14 +31,6 @@ class ServiceClientBase : public TargetT {
  private:
   networkx::Client<Target> client_;
 };
-
-/**
- * @brief Client to service.
- * Should extend service client base and implement all target virtual functions
- * using provided Call.
- */
-template <networkx::ClientServerType Target>
-class ServiceClient;
 }  // namespace stonks::service
 
-#endif  // STONKS_APP_SERVICE_SERVICE_CLIENT_H_
+#endif  // STONKS_SERVICE_SERVICE_CLIENT_BASE_H_

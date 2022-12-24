@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_SERVICE_OPTIONS_H_
-#define STONKS_APP_SERVICE_SERVICE_OPTIONS_H_
+#ifndef STONKS_SERVICE_SERVICE_CLIENT_OPTIONS_H_
+#define STONKS_SERVICE_SERVICE_CLIENT_OPTIONS_H_
 
 #include <string>
 
@@ -11,11 +11,11 @@
 
 namespace stonks::service {
 namespace detail {
-class ServiceOptionsBase {
+class ClientOptionsBase {
  protected:
-  ServiceOptionsBase(cli::Options &options, std::string_view name,
-                     std::string_view default_host,
-                     std::string_view default_port);
+  ClientOptionsBase(cli::Options &options, std::string_view name,
+                    std::string_view default_host,
+                    std::string_view default_port);
 
   auto GetUri [[nodiscard]] () const -> network::Uri;
 
@@ -29,26 +29,26 @@ class ServiceOptionsBase {
  * @brief Command line options required to connect to service.
  */
 template <networkx::ClientServerType Target>
-class ServiceOptions : public detail::ServiceOptionsBase {
+class ClientOptions : public detail::ClientOptionsBase {
  private:
   using TargetTraits = networkx::ClientServerTypeTraitsFacade<Target>;
 
  public:
   /**
-   * @brief Adds command line options required to connect to service.
+   * @brief Adds required command line options.
    */
-  explicit ServiceOptions(cli::Options &options)
-      : ServiceOptionsBase{options, TargetTraits::GetName(),
-                           TargetTraits::GetDefaultHost(),
-                           TargetTraits::GetDefaultPort()} {}
+  explicit ClientOptions(cli::Options &options)
+      : ClientOptionsBase{options, TargetTraits::GetName(),
+                          TargetTraits::GetDefaultHost(),
+                          TargetTraits::GetDefaultPort()} {}
 
   /**
    * @brief Parses options and builds service URI from it.
    */
   auto GetUri [[nodiscard]] () const {
-    return networkx::Uri<Target>{ServiceOptionsBase::GetUri()};
+    return networkx::Uri<Target>{ClientOptionsBase::GetUri()};
   }
 };
 }  // namespace stonks::service
 
-#endif  // STONKS_APP_SERVICE_SERVICE_OPTIONS_H_
+#endif  // STONKS_SERVICE_SERVICE_CLIENT_OPTIONS_H_

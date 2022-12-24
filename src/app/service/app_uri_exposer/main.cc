@@ -9,13 +9,13 @@
 #include "cli_app.h"
 #include "cli_option.h"
 #include "cli_options.h"
+#include "common_kvdb_aws_injector.h"
+#include "common_log_spdlog_injector.h"
+#include "common_network_restsdk_injector.h"
 #include "di_bind_type_to_value.h"
 #include "di_make_injector.h"
 #include "service_app_uri_exposer.h"
 #include "service_aue_impl.h"
-#include "service_kvdb_aws_injector.h"
-#include "service_log_spdlog_injector.h"
-#include "service_network_restsdk_injector.h"
 
 auto main(int argc, const char *const *argv) -> int {
   auto options = stonks::cli::Options{};
@@ -27,9 +27,9 @@ auto main(int argc, const char *const *argv) -> int {
 
   const auto app = stonks::cli::App{argc, argv, options};
   const auto injector = stonks::di::MakeInjector(
-      stonks::service::injectors::CreateNetworkRestsdkInjector(),
-      stonks::service::injectors::CreateLogSpdlogInjector(),
-      stonks::service::injectors::CreateKvdbAwsInjector(),
+      stonks::common::CreateNetworkRestsdkInjector(),
+      stonks::common::CreateLogSpdlogInjector(),
+      stonks::common::CreateKvdbAwsInjector(),
 
       // TODO(vh): Remove this because Ngrok always runs on local host?
       stonks::di::BindTypeToValue<std::string_view>("0.0.0.0"));
