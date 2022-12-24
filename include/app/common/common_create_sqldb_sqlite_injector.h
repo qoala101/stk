@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_COMMON_COMMON_SQLDB_SQLITE_INJECTOR_H_
-#define STONKS_APP_COMMON_COMMON_SQLDB_SQLITE_INJECTOR_H_
+#ifndef STONKS_APP_COMMON_COMMON_CREATE_SQLDB_SQLITE_INJECTOR_H_
+#define STONKS_APP_COMMON_COMMON_CREATE_SQLDB_SQLITE_INJECTOR_H_
 
 #include "di_bind_interface_to_implementation.h"
 #include "di_bind_type_to_factory_function.h"
@@ -23,4 +23,4 @@ inline auto CreateSqldbSqliteInjector [[nodiscard]] () {
 }
 }  // namespace stonks::common
 
-#endif  // STONKS_APP_COMMON_COMMON_SQLDB_SQLITE_INJECTOR_H_
+#endif  // STONKS_APP_COMMON_COMMON_CREATE_SQLDB_SQLITE_INJECTOR_H_

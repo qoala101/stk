@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_COMMON_COMMON_NETWORK_RESTSDK_INJECTOR_H_
-#define STONKS_APP_COMMON_COMMON_NETWORK_RESTSDK_INJECTOR_H_
+#ifndef STONKS_APP_COMMON_COMMON_CREATE_NETWORK_RESTSDK_INJECTOR_H_
+#define STONKS_APP_COMMON_COMMON_CREATE_NETWORK_RESTSDK_INJECTOR_H_
 
 #include "di_bind_interface_to_implementation.h"
 #include "di_make_injector.h"
@@ -22,4 +22,4 @@ inline auto CreateNetworkRestsdkInjector [[nodiscard]] () {
 }
 }  // namespace stonks::common
 
-#endif  // STONKS_APP_COMMON_COMMON_NETWORK_RESTSDK_INJECTOR_H_
+#endif  // STONKS_APP_COMMON_COMMON_CREATE_NETWORK_RESTSDK_INJECTOR_H_

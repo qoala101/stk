@@ -7,8 +7,8 @@
 
 #include "cli_app.h"
 #include "cli_options.h"
-#include "common_log_spdlog_injector.h"
-#include "common_network_restsdk_injector.h"
+#include "common_create_log_spdlog_injector.h"
+#include "common_create_network_restsdk_injector.h"
 #include "core_buy_low_sell_high.h"
 #include "core_i_symbols_db.h"
 #include "di_call_with_injected_args.h"

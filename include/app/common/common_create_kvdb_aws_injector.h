@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_COMMON_COMMON_KVDB_AWS_INJECTOR_H_
-#define STONKS_APP_COMMON_COMMON_KVDB_AWS_INJECTOR_H_
+#ifndef STONKS_APP_COMMON_COMMON_CREATE_KVDB_AWS_INJECTOR_H_
+#define STONKS_APP_COMMON_COMMON_CREATE_KVDB_AWS_INJECTOR_H_
 
 #include "aws_dynamodb_sync_db_proxy.h"
 #include "di_bind_interface_to_implementation.h"
@@ -18,4 +18,4 @@ inline auto CreateKvdbAwsInjector [[nodiscard]] () {
 }
 }  // namespace stonks::common
 
-#endif  // STONKS_APP_COMMON_COMMON_KVDB_AWS_INJECTOR_H_
+#endif  // STONKS_APP_COMMON_COMMON_CREATE_KVDB_AWS_INJECTOR_H_
