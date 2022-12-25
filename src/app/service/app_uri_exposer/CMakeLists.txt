@@ -1,23 +1,41 @@
+find_package(absl REQUIRED)
+find_package(cppcoro REQUIRED)
+find_package(di REQUIRED)
 find_package(fmt REQUIRED)
+find_package(function2 REQUIRED)
+find_package(polymorphic_value REQUIRED)
 
-add_executable(service_app_exposer
+add_executable(service_app_uri_exposer
   main.cc
   service_app_uri_exposer.cc
   service_aue_impl.cc
   service_aue_public_db.cc
 )
 
-target_include_directories(service_app_exposer
+target_include_directories(service_app_uri_exposer
   PUBLIC ${PROJECT_SOURCE_DIR}/include/app/service/app_uri_exposer
 )
 
-target_link_libraries(service_app_exposer
+target_link_libraries(service_app_uri_exposer
   PRIVATE libaws
   PRIVATE libcli
+  PRIVATE libcommon
+  PRIVATE libcpp
+  PRIVATE libdi
+  PRIVATE libkvdb
+  PRIVATE liblog
   PRIVATE libnetwork
   PRIVATE libngrok
   PRIVATE librestsdk
   PRIVATE libservice
   PRIVATE libspdlog
+
+  PRIVATE absl::absl
+  PRIVATE callable
+  PRIVATE cppcoro::cppcoro
+  PRIVATE di::di
   PRIVATE fmt::fmt
+  PRIVATE function2::function2
+  PRIVATE NotNull
+  PRIVATE polymorphic_value::polymorphic_value
 )

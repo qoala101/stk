@@ -1,6 +1,9 @@
+find_package(cppcoro REQUIRED)
 find_package(cpprestsdk REQUIRED)
 find_package(fmt REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
 find_package(nameof REQUIRED)
+find_package(polymorphic_value REQUIRED)
 find_package(range-v3 REQUIRED)
 
 add_library(librestsdk
@@ -27,11 +30,17 @@ target_include_directories(librestsdk
 )
 
 target_link_libraries(librestsdk
-  PUBLIC liblog
-  PUBLIC libnetwork
+  PRIVATE libcpp
+  PRIVATE liblog
+  PRIVATE libnetwork
 
+  PRIVATE callable
+  PRIVATE cppcoro::cppcoro
   PRIVATE cpprestsdk::cpprest
   PRIVATE fmt::fmt
+  PRIVATE Microsoft.GSL::GSL
   PRIVATE nameof::nameof
+  PRIVATE NotNull
   PRIVATE range-v3::range-v3
+  PRIVATE polymorphic_value::polymorphic_value
 )

@@ -4,10 +4,10 @@ find_package(Microsoft.GSL REQUIRED)
 find_package(polymorphic_value REQUIRED)
 
 add_library(libcpp
-  cpp_message_exception.cc
   timer/cpp_timer_builder.cc
   timer/cpp_timer_event_loop.cc
   timer/cpp_timer.cc
+  cpp_message_exception.cc
 )
 
 set_target_properties(libcpp PROPERTIES
@@ -22,10 +22,10 @@ target_include_directories(libcpp
 )
 
 target_link_libraries(libcpp
-  PUBLIC absl::absl
-  PUBLIC callable
-  PUBLIC function2::function2
-  PUBLIC Microsoft.GSL::GSL
-  PUBLIC NotNull
-  PUBLIC polymorphic_value::polymorphic_value
+  PRIVATE absl::absl
+  PRIVATE callable
+  PRIVATE function2::function2
+  PRIVATE Microsoft.GSL::GSL
+  PRIVATE NotNull
+  PRIVATE polymorphic_value::polymorphic_value
 )

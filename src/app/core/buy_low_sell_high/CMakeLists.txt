@@ -1,3 +1,7 @@
+find_package(absl REQUIRED)
+find_package(cppcoro REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
+
 add_library(libcore_buy_low_sell_high
   core_buy_low_sell_high.cc
 )
@@ -11,5 +15,13 @@ target_include_directories(libcore_buy_low_sell_high
 )
 
 target_link_libraries(libcore_buy_low_sell_high
-  PUBLIC libcore_symbols_db
+  PRIVATE libcore
+  PRIVATE libcore_symbols_db
+  PRIVATE libcpp
+
+  PRIVATE absl::absl
+  PRIVATE callable
+  PRIVATE cppcoro::cppcoro
+  PRIVATE Microsoft.GSL::GSL
+  PRIVATE NotNull
 )

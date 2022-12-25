@@ -1,5 +1,7 @@
 find_package(absl REQUIRED)
 find_package(fmt REQUIRED)
+find_package(function2 REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
 find_package(nameof REQUIRED)
 find_package(range-v3 REQUIRED)
 
@@ -42,11 +44,15 @@ target_include_directories(libsqldb
 )
 
 target_link_libraries(libsqldb
-  PUBLIC libcpp
-  PUBLIC libdi
-  PUBLIC nameof::nameof
+  PRIVATE libcpp
+  PRIVATE libdi
 
   PRIVATE absl::absl
+  PRIVATE callable
   PRIVATE fmt::fmt
+  PRIVATE function2::function2
+  PRIVATE Microsoft.GSL::GSL
+  PRIVATE nameof::nameof
+  PRIVATE NotNull
   PRIVATE range-v3::range-v3
 )

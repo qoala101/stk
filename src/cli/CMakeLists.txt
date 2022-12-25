@@ -1,5 +1,6 @@
 find_package(CLI11 REQUIRED)
 find_package(fmt REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
 
 add_library(libcli
   cli_app.cc
@@ -19,8 +20,11 @@ target_include_directories(libcli
 )
 
 target_link_libraries(libcli
-  PUBLIC libcpp
+  PRIVATE libcpp
 
+  PRIVATE callable
   PRIVATE CLI11::CLI11
   PRIVATE fmt::fmt
+  PRIVATE Microsoft.GSL::GSL
+  PRIVATE NotNull
 )

@@ -1,5 +1,7 @@
 find_package(AWSSDK REQUIRED)
+find_package(cppcoro REQUIRED)
 find_package(fmt REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
 
 add_library(libaws
   dynamodb/aws_dynamodb_async_db.cc
@@ -17,9 +19,14 @@ target_include_directories(libaws
 )
 
 target_link_libraries(libaws
-  PUBLIC libkvdb
-  PUBLIC liblog
+  PRIVATE libcpp
+  PRIVATE libkvdb
+  PRIVATE liblog
 
   PRIVATE AWS::dynamodb
+  PRIVATE callable
+  PRIVATE cppcoro::cppcoro
   PRIVATE fmt::fmt
+  PRIVATE Microsoft.GSL::GSL
+  PRIVATE NotNull
 )

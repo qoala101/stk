@@ -1,3 +1,4 @@
+find_package(absl REQUIRED)
 find_package(cppcoro REQUIRED)
 find_package(fmt REQUIRED)
 
@@ -14,9 +15,13 @@ target_include_directories(libcore_symbol_prices_streams_controller
 )
 
 target_link_libraries(libcore_symbol_prices_streams_controller
-  PUBLIC libcore
-  PUBLIC liblog
-  PUBLIC cppcoro::cppcoro
+  PRIVATE libcore
+  PRIVATE libcpp
+  PRIVATE liblog
 
+  PRIVATE absl::absl
+  PRIVATE callable
+  PRIVATE cppcoro::cppcoro
   PRIVATE fmt::fmt
+  PRIVATE NotNull
 )

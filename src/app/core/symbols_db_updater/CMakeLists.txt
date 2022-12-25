@@ -1,3 +1,8 @@
+find_package(absl REQUIRED)
+find_package(cppcoro REQUIRED)
+find_package(di REQUIRED)
+find_package(function2 REQUIRED)
+find_package(polymorphic_value REQUIRED)
 find_package(range-v3 REQUIRED)
 
 add_library(libcore_symbols_db_updater
@@ -15,8 +20,19 @@ target_include_directories(libcore_symbols_db_updater
 )
 
 target_link_libraries(libcore_symbols_db_updater
-  PUBLIC libbinance
-  PUBLIC libcore_symbols_db
+  PRIVATE libbinance
+  PRIVATE libcore
+  PRIVATE libcore_symbols_db
+  PRIVATE libcpp
+  PRIVATE libdi
+  PRIVATE libnetwork
 
+  PRIVATE absl::absl
+  PRIVATE callable
+  PRIVATE cppcoro::cppcoro
+  PRIVATE di::di
+  PRIVATE function2::function2
+  PRIVATE NotNull
+  PRIVATE polymorphic_value::polymorphic_value
   PRIVATE range-v3::range-v3
 )

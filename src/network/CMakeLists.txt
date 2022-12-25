@@ -1,7 +1,10 @@
 find_package(cppcoro REQUIRED)
+find_package(di REQUIRED)
 find_package(fmt REQUIRED)
 find_package(function2 REQUIRED)
 find_package(magic_enum REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
+find_package(polymorphic_value REQUIRED)
 
 add_library(libnetwork
   auto_parsable/request_handler/network_aprh_handler_variant.cc
@@ -42,10 +45,16 @@ target_include_directories(libnetwork
 )
 
 target_link_libraries(libnetwork
-  PUBLIC libdi
-  PUBLIC cppcoro::cppcoro
-  PUBLIC function2::function2
-  PUBLIC magic_enum::magic_enum
+  PRIVATE libcpp
+  PRIVATE libdi
 
+  PRIVATE callable
+  PRIVATE cppcoro::cppcoro
+  PRIVATE di::di
   PRIVATE fmt::fmt
+  PRIVATE function2::function2
+  PRIVATE magic_enum::magic_enum
+  PRIVATE Microsoft.GSL::GSL
+  PRIVATE NotNull
+  PRIVATE polymorphic_value::polymorphic_value
 )

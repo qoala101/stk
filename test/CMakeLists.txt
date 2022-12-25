@@ -1,8 +1,13 @@
 find_package(absl REQUIRED)
+find_package(cppcoro REQUIRED)
+find_package(di REQUIRED)
 find_package(fmt REQUIRED)
 find_package(function2 REQUIRED)
 find_package(GTest REQUIRED)
+find_package(magic_enum REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
 find_package(nameof REQUIRED)
+find_package(polymorphic_value REQUIRED)
 find_package(range-v3 REQUIRED)
 
 include(GoogleTest)
@@ -13,7 +18,7 @@ add_executable(unittests
   app/test_core_app_symbols_db.cc
 
   # Disabled in order to not waste AWS API credits.
-  # aws/test_aws_dynamodb_db.cc
+  aws/test_aws_dynamodb_db.cc
   cpp/test_cpp_move_if.cc
   cpp/test_cpp_typed_struct.cc
 
@@ -46,16 +51,32 @@ gtest_discover_tests(unittests)
 
 target_link_libraries(unittests
   PRIVATE libaws
+  PRIVATE libcommon
   PRIVATE libcore
   PRIVATE libcore_symbols_db
   PRIVATE libcpp
+  PRIVATE libdi
+  PRIVATE libkvdb
+  PRIVATE liblog
+  PRIVATE libnetwork
   PRIVATE libnetworkx
+  PRIVATE libngrok
   PRIVATE librestsdk
+  PRIVATE libservice
   PRIVATE libspdlog
+  PRIVATE libsqldb
   PRIVATE libsqlite
+
   PRIVATE absl::absl
+  PRIVATE callable
+  PRIVATE cppcoro::cppcoro
+  PRIVATE di::di
   PRIVATE fmt::fmt
   PRIVATE function2::function2
+  PRIVATE magic_enum::magic_enum
+  PRIVATE Microsoft.GSL::GSL
   PRIVATE nameof::nameof
+  PRIVATE NotNull
+  PRIVATE polymorphic_value::polymorphic_value
   PRIVATE range-v3::range-v3
 )
