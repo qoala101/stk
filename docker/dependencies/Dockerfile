@@ -6,7 +6,6 @@ COPY conanfile.txt .
 COPY conanprofile.txt .
 RUN apt update && \
   apt -y install \
-  cmake \
   \
   # Required to fetch git dependencies by cmake.
   git \
@@ -14,7 +13,7 @@ RUN apt update && \
   # Required to install latest clang.
   lsb-release software-properties-common gnupg wget \
   \
-  # Required to install conan.
+  # Required to install conan and latest cmake.
   pip && \
   \
   # Installs latest clang.
@@ -25,7 +24,9 @@ RUN apt update && \
   apt autoremove && \
   apt clean && \
   rm -rf /var/lib/apt/lists/* &&\
-  pip --no-input install conan && \
+  pip --no-input install && \
+  cmake && \
+  conan && \
   \
   mkdir build && \
   cd build && \

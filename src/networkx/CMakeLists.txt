@@ -1,6 +1,7 @@
 add_library(libnetworkx
   networkx_client.cc
   networkx_endpoint_function_traits_facade.cc
+  networkx_uri.cc
   networkx_web_socket_sender.cc
 )
 

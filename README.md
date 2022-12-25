@@ -4,8 +4,8 @@
 
 ```bash
 apt update && \
-apt -y install cmake git pip snap && \
-pip --no-input install conan && \
+apt -y install git pip snap && \
+pip --no-input install cmake conan && \
 snap install ngrok
 ```
 
@@ -134,4 +134,10 @@ sudo apt install -y kubectl
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
 sudo dpkg -i minikube_latest_amd64.deb
 minikube start
+```
+
+## nginx-ingress
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
 ```
