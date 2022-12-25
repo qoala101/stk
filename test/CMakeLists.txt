@@ -1,15 +1,3 @@
-find_package(absl REQUIRED)
-find_package(cppcoro REQUIRED)
-find_package(di REQUIRED)
-find_package(fmt REQUIRED)
-find_package(function2 REQUIRED)
-find_package(GTest REQUIRED)
-find_package(magic_enum REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
-find_package(nameof REQUIRED)
-find_package(polymorphic_value REQUIRED)
-find_package(range-v3 REQUIRED)
-
 include(GoogleTest)
 
 enable_testing()
@@ -18,7 +6,7 @@ add_executable(unittests
   app/test_core_app_symbols_db.cc
 
   # Disabled in order to not waste AWS API credits.
-  aws/test_aws_dynamodb_db.cc
+  # aws/test_aws_dynamodb_db.cc
   cpp/test_cpp_move_if.cc
   cpp/test_cpp_typed_struct.cc
 

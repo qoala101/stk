@@ -1,8 +1,3 @@
-find_package(AWSSDK REQUIRED)
-find_package(cppcoro REQUIRED)
-find_package(fmt REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
-
 add_library(libaws
   dynamodb/aws_dynamodb_async_db.cc
   dynamodb/aws_dynamodb_sync_db_proxy.cc

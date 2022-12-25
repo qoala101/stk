@@ -1,11 +1,3 @@
-find_package(cppcoro REQUIRED)
-find_package(cpprestsdk REQUIRED)
-find_package(fmt REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
-find_package(nameof REQUIRED)
-find_package(polymorphic_value REQUIRED)
-find_package(range-v3 REQUIRED)
-
 add_library(librestsdk
   restsdk_json_basic_conversions.cc
   restsdk_json_native_handle.cc

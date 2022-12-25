@@ -1,8 +1,3 @@
-find_package(absl REQUIRED)
-find_package(magic_enum REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
-find_package(polymorphic_value REQUIRED)
-
 add_library(libcommon
   common_json_conversions.cc
 )

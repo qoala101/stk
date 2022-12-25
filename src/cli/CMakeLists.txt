@@ -1,7 +1,3 @@
-find_package(CLI11 REQUIRED)
-find_package(fmt REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
-
 add_library(libcli
   cli_app.cc
   cli_option.cc

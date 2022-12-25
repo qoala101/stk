@@ -1,10 +1,3 @@
-find_package(absl REQUIRED)
-find_package(cppcoro REQUIRED)
-find_package(di REQUIRED)
-find_package(fmt REQUIRED)
-find_package(function2 REQUIRED)
-find_package(polymorphic_value REQUIRED)
-
 add_executable(service_app_uri_exposer
   main.cc
   service_app_uri_exposer.cc

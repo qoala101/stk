@@ -1,7 +1,3 @@
-find_package(absl REQUIRED)
-find_package(cppcoro REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
-
 add_library(libcore_buy_low_sell_high
   core_buy_low_sell_high.cc
 )

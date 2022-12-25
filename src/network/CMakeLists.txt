@@ -1,11 +1,3 @@
-find_package(cppcoro REQUIRED)
-find_package(di REQUIRED)
-find_package(fmt REQUIRED)
-find_package(function2 REQUIRED)
-find_package(magic_enum REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
-find_package(polymorphic_value REQUIRED)
-
 add_library(libnetwork
   auto_parsable/request_handler/network_aprh_handler_variant.cc
   auto_parsable/request_handler/network_aprh_ws_handler_variant.cc

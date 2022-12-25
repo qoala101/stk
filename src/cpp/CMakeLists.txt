@@ -1,8 +1,3 @@
-find_package(absl REQUIRED)
-find_package(function2 REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
-find_package(polymorphic_value REQUIRED)
-
 add_library(libcpp
   timer/cpp_timer_builder.cc
   timer/cpp_timer_event_loop.cc

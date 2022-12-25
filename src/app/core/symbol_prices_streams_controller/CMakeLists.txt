@@ -1,7 +1,3 @@
-find_package(absl REQUIRED)
-find_package(cppcoro REQUIRED)
-find_package(fmt REQUIRED)
-
 add_library(libcore_symbol_prices_streams_controller
   core_symbol_prices_streams_controller.cc
 )

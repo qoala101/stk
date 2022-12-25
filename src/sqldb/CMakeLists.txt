@@ -1,10 +1,3 @@
-find_package(absl REQUIRED)
-find_package(fmt REQUIRED)
-find_package(function2 REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
-find_package(nameof REQUIRED)
-find_package(range-v3 REQUIRED)
-
 add_library(libsqldb
   parametrized/sqldb_p_common.cc
   parametrized/sqldb_p_db.cc

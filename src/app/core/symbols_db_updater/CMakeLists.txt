@@ -1,10 +1,3 @@
-find_package(absl REQUIRED)
-find_package(cppcoro REQUIRED)
-find_package(di REQUIRED)
-find_package(function2 REQUIRED)
-find_package(polymorphic_value REQUIRED)
-find_package(range-v3 REQUIRED)
-
 add_library(libcore_symbols_db_updater
   core_sdbu_old_prices_deleter.cc
   core_sdbu_symbols_info_updater.cc

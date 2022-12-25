@@ -1,5 +1,3 @@
-find_package(spdlog REQUIRED)
-
 add_library(libspdlog
   spdlog_logger.cc
 )

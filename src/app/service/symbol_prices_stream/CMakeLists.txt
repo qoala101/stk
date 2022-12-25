@@ -1,12 +1,3 @@
-find_package(absl REQUIRED)
-find_package(cppcoro REQUIRED)
-find_package(di REQUIRED)
-find_package(function2 REQUIRED)
-find_package(magic_enum REQUIRED)
-find_package(Microsoft.GSL REQUIRED)
-find_package(nameof REQUIRED)
-find_package(polymorphic_value REQUIRED)
-
 add_executable(service_symbol_prices_stream
   main.cc
 )
