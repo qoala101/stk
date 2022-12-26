@@ -11,7 +11,9 @@ namespace stonks::cli {
  * @brief Command line option value.
  */
 struct OptionValueVariant
-    : public cpp::VariantStruct<int, int64_t, std::string> {};
+    : public cpp::VariantStruct<int, int64_t, std::string, std::vector<int>,
+                                std::vector<int64_t>,
+                                std::vector<std::string>> {};
 }  // namespace stonks::cli
 
 #endif  // STONKS_CLI_CLI_TYPES_H_

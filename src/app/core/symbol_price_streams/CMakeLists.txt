@@ -1,21 +1,21 @@
-add_library(libcore_symbol_prices_stream
+add_library(libcore_symbol_price_streams
   core_sps_book_tick_handler.cc
   core_sps_book_tick_web_socket_factory.cc
-  core_symbol_prices_stream.cc
+  core_sps_stream_handle.cc
+  core_symbol_price_streams.cc
 )
 
-set_target_properties(libcore_symbol_prices_stream PROPERTIES
-  OUTPUT_NAME core_symbol_prices_stream
+set_target_properties(libcore_symbol_price_streams PROPERTIES
+  OUTPUT_NAME core_symbol_price_streams
 )
 
-target_include_directories(libcore_symbol_prices_stream
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/app/core/symbol_prices_stream
+target_include_directories(libcore_symbol_price_streams
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/app/core/symbol_price_streams
 )
 
-target_link_libraries(libcore_symbol_prices_stream
+target_link_libraries(libcore_symbol_price_streams
   PRIVATE libbinance
   PRIVATE libcore
-  PRIVATE libcore_symbol_prices_streams_controller
   PRIVATE libcore_symbols_db
   PRIVATE libcpp
   PRIVATE libdi
@@ -32,4 +32,5 @@ target_link_libraries(libcore_symbol_prices_stream
   PRIVATE Microsoft.GSL::GSL
   PRIVATE NotNull
   PRIVATE polymorphic_value::polymorphic_value
+  PRIVATE range-v3::range-v3
 )

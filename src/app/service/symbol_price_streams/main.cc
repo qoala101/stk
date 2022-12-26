@@ -2,6 +2,9 @@
 
 #include <boost/di.hpp>
 #include <cstdint>
+#include <iostream>
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/view/transform.hpp>
 #include <string>
 #include <variant>
 
@@ -10,16 +13,14 @@
 #include "cli_options.h"
 #include "common_create_log_spdlog_injector.h"
 #include "common_create_network_restsdk_injector.h"
-#include "core_i_symbol_prices_streams_controller.h"
 #include "core_i_symbols_db.h"
-#include "core_symbol_prices_stream.h"
+#include "core_symbol_price_streams.h"
+#include "di_auto_injectable.h"
 #include "di_bind_value_type_to_value.h"
 #include "di_make_injector.h"
 #include "service_client_options.h"
 #include "service_create_client_injector.h"
-#include "service_sdb_traits.h"   // IWYU pragma: keep
-#include "service_spsc_traits.h"  // IWYU pragma: keep
-#include "service_symbol_prices_streams_controller.h"
+#include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_symbols_db.h"
 
 auto main(int argc, const char *const *argv) -> int {
@@ -27,8 +28,8 @@ auto main(int argc, const char *const *argv) -> int {
 
   const auto symbols_db_client_options =
       stonks::service::ClientOptions<stonks::core::ISymbolsDb>{options};
-  const auto controller_client_options = stonks::service::ClientOptions<
-      stonks::core::ISymbolPricesStreamsController>{options};
+  auto symbols = options.AddOption(
+      "--symbols", std::vector<std::string>{"BTCUSDT", "ETHUSDT"});
   const auto reattempt_interval = options.AddOption(
       "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
 
@@ -39,14 +40,17 @@ auto main(int argc, const char *const *argv) -> int {
 
       stonks::service::CreateClientInjector<stonks::service::SymbolsDb>(
           symbols_db_client_options),
-      stonks::service::CreateClientInjector<
-          stonks::service::SymbolPricesStreamsController>(
-          controller_client_options),
 
       stonks::di::BindValueTypeToValue(
           absl::Milliseconds(*reattempt_interval)));
 
-  app.Run([&injector]() {
-    return injector.template create<stonks::core::SymbolPricesStream>();
+  app.Run([injector = stonks::cpp::AssumeNn(&injector), &symbols]() {
+    return stonks::core::SymbolPriceStreams{
+        *symbols | ranges::views::transform([](auto &symbol) {
+          return stonks::core::Symbol{std::move(symbol)};
+        }) | ranges::to_vector,
+        stonks::di::AutoInjectable{injector},
+        stonks::di::AutoInjectable{injector},
+        stonks::di::AutoInjectable{injector}};
   });
 }

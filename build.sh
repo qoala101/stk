@@ -14,13 +14,13 @@ docker build -t qoala101/stonks:binaries -f ./docker/binaries/Dockerfile .
 # Build service images.
 # Should be rebuild when binaries image is changed.
 docker build -t qoala101/stonks:service_buy_low_sell_high -f ./src/app/service/buy_low_sell_high/Dockerfile .
-docker build -t qoala101/stonks:service_symbol_prices_stream -f ./src/app/service/symbol_prices_stream/Dockerfile .
+docker build -t qoala101/stonks:service_symbol_price_streams -f ./src/app/service/symbol_price_streams/Dockerfile .
 docker build -t qoala101/stonks:service_symbols_db -f ./src/app/service/symbols_db/Dockerfile .
 docker build -t qoala101/stonks:service_symbols_db_updater -f ./src/app/service/symbols_db_updater/Dockerfile .
 
 # Upload service images to Docker Hub.
 docker push -t qoala101/stonks:service_buy_low_sell_high
-docker push -t qoala101/stonks:service_symbol_prices_stream
+docker push -t qoala101/stonks:service_symbol_price_streams
 docker push -t qoala101/stonks:service_symbols_db
 docker push -t qoala101/stonks:service_symbols_db_updater
 
