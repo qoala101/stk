@@ -19,8 +19,8 @@ namespace stonks::networkx {
 namespace detail {
 class ClientBase {
  protected:
-  ClientBase(network::Uri &uri,
-             di::Factory<network::IRestRequestSender> &request_sender_factory);
+  ClientBase(network::Uri uri,
+             di::Factory<network::IRestRequestSender> request_sender_factory);
 
   auto GetRestClient [[nodiscard]] () const -> const network::RestClient &;
 
@@ -87,7 +87,7 @@ class Client : public detail::ClientBase {
    */
   Client(Uri<Target> uri,
          di::Factory<network::IRestRequestSender> request_sender_factory)
-      : ClientBase{uri, request_sender_factory} {}
+      : ClientBase{std::move(uri), std::move(request_sender_factory)} {}
 
   /**
    * @brief Remotely calls specified function with provided arguments.

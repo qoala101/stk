@@ -20,10 +20,12 @@
 
 namespace stonks::sqlite {
 namespace {
-auto GetColumns [[nodiscard]] (sqldb::ResultDefinition &result_definition) {
-  return *result_definition | ranges::views::transform([](auto &column_type) {
-    return std::move(column_type.column);
-  }) | ranges::to_vector;
+auto GetColumns
+    [[nodiscard]] (const sqldb::ResultDefinition &result_definition) {
+  return *result_definition |
+         ranges::views::transform(
+             [](const auto &column_type) { return column_type.column; }) |
+         ranges::to_vector;
 }
 
 auto GetTypes [[nodiscard]] (const sqldb::ResultDefinition &result_definition) {
@@ -34,8 +36,8 @@ auto GetTypes [[nodiscard]] (const sqldb::ResultDefinition &result_definition) {
 }
 }  // namespace
 
-SelectStatement::SelectStatement(ps::CommonImpl impl,
-                                 sqldb::ResultDefinition result_definition)
+SelectStatement::SelectStatement(
+    ps::CommonImpl impl, const sqldb::ResultDefinition &result_definition)
     : impl_{std::move(impl)},
       result_columns_{GetColumns(result_definition)},
       result_types_{GetTypes(result_definition)} {

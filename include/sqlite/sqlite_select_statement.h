@@ -20,7 +20,7 @@ class SelectStatement : public sqldb::ISelectStatement {
    * statement result.
    */
   SelectStatement(ps::CommonImpl impl,
-                  sqldb::ResultDefinition result_definition);
+                  const sqldb::ResultDefinition &result_definition);
 
   /**
    * @copydoc sqldb::ISelectStatement::Execute

@@ -25,7 +25,7 @@ class OptionsBase {
   void SetValuesFromNativeOptions(const CLI::App &app) const;
 
  protected:
-  void StoreOptionValue(std::string &option_name,
+  void StoreOptionValue(std::string option_name,
                         const cpp::NnSp<OptionValueVariant> &default_value) {
     option_values_.emplace(std::move(option_name), default_value.as_nullable());
   }
@@ -50,7 +50,7 @@ class Options : public detail::OptionsBase {
   -> Option<T> {
     auto option_value = cpp::MakeNnSp<OptionValueVariant>(
         OptionValueVariant{std::forward<T>(default_value)});
-    StoreOptionValue(name, option_value);
+    StoreOptionValue(std::move(name), option_value);
     return Option<T>{std::move(option_value)};
   }
 

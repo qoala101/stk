@@ -32,8 +32,9 @@ auto Db::PsCommonImplFrom(sqldb::Query query) const {
 
 auto Db::PrepareStatement(sqldb::SelectQuery query)
     -> cpp::NnUp<sqldb::ISelectStatement> {
+  const auto result_definition = query.result_definition;
   return cpp::MakeNnUp<SelectStatement>(PsCommonImplFrom(std::move(query)),
-                                        std::move(query.result_definition));
+                                        result_definition);
 }
 
 auto Db::PrepareStatement(sqldb::Query query)
