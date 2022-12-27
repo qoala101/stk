@@ -125,7 +125,7 @@ auto HandleHttpRequest
                    log::ILogger &logger, const web::http::http_request &request)
     -> cppcoro::task<> {
   const auto request_uri = request.absolute_uri().to_string();
-  logger.LogEvent(
+  logger.LogImportantEvent(
       fmt::format("Received {} request on {}", request.method(), request_uri));
 
   auto rest_request = RestRequestFrom(request);
@@ -143,9 +143,9 @@ auto HandleHttpRequest
     throw;
   }
 
-  logger.LogEvent(fmt::format("Replied {} on {}",
-                              nameof::nameof_enum(rest_response.status),
-                              request_uri));
+  logger.LogImportantEvent(
+      fmt::format("Replied {} on {}", nameof::nameof_enum(rest_response.status),
+                  request_uri));
 }
 }  // namespace
 

@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "log_types.h"
+
 namespace stonks::log {
 // NOLINTNEXTLINE(*-special-member-functions)
 class ILogger {
@@ -10,24 +12,24 @@ class ILogger {
   virtual ~ILogger() = default;
 
   /**
-   * @brief Log not important event.
+   * @brief Logs message with specified level.
    */
-  virtual void LogEvent(std::string message) = 0;
+  virtual void Log(Level level, std::string message) = 0;
 
   /**
-   * @brief Log important event.
+   * @brief Logs important event.
    */
-  virtual void LogImportantEvent(std::string message);
+  void LogImportantEvent(std::string message);
 
   /**
-   * @brief Log unexpected event.
+   * @brief Logs unexpected event.
    */
-  virtual void LogStrangeEvent(std::string message);
+  void LogStrangeEvent(std::string message);
 
   /**
-   * @brief Log error condition.
+   * @brief Logs error condition.
    */
-  virtual void LogErrorCondition(std::string message);
+  void LogErrorCondition(std::string message);
 };
 }  // namespace stonks::log
 

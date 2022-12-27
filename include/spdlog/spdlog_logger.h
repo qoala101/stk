@@ -4,6 +4,7 @@
 #include <string>
 
 #include "log_i_logger.h"
+#include "log_types.h"
 
 namespace stonks::spdlog {
 /**
@@ -12,19 +13,9 @@ namespace stonks::spdlog {
 class Logger : public log::ILogger {
  public:
   /**
-   * @copydoc log::ILogger::LogEvent
+   * @copydoc log::ILogger::Log
    */
-  void LogEvent(std::string message) override;
-
-  /**
-   * @copydoc log::ILogger::LogStrangeEvent
-   */
-  void LogStrangeEvent(std::string message) override;
-
-  /**
-   * @copydoc log::ILogger::LogErrorCondition
-   */
-  void LogErrorCondition(std::string message) override;
+  void Log(log::Level level, std::string message) override;
 };
 }  // namespace stonks::spdlog
 
