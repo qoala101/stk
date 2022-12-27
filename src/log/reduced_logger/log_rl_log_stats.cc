@@ -32,14 +32,20 @@ void LogStats::LogMessageStats() {
     const auto num_messages =
         message_stats.num_messages_.exchange(0, std::memory_order_relaxed);
 
-    if (num_messages > 0) {
-      const auto time_from_last_log = absl::Now() - last_log_time_;
-
-      logger_->Log(level,
-                   fmt::format("In last {} logged {} messages. Last: {}",
-                               absl::FormatDuration(time_from_last_log),
-                               num_messages, message_stats.last_message_));
+    if (num_messages <= 0) {
+      continue;
     }
+
+    if (num_messages == 1) {
+      logger_->Log(level, message_stats.last_message_);
+      continue;
+    }
+
+    const auto time_from_last_log = absl::Now() - last_log_time_;
+
+    logger_->Log(level, fmt::format("In last {} logged {} messages. Last: {}",
+                                    absl::FormatDuration(time_from_last_log),
+                                    num_messages, message_stats.last_message_));
   }
 
   last_log_time_ = absl::Now();

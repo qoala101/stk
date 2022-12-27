@@ -27,7 +27,6 @@
 #include <string_view>
 #include <utility>
 
-#include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 #include "cpp_typed_struct.h"
