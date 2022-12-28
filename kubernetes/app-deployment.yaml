@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: persistent-volume
+spec:
+  storageClassName: local
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  hostPath:
+    path: /mnt/data
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: persistent-volume-claim
+spec:
+  storageClassName: local
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  selector:
+    label: app
+  ports:
+    - name: blsh-port
+      port: 30001
+    - name: sdb-port
+      port: 30000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      label: app
+  template:
+    metadata:
+      labels:
+        label: app
+    spec:
+      volumes:
+        - name: symbols-db-volume
+          persistentVolumeClaim:
+            claimName: persistent-volume-claim
+
+      containers:
+        - name: buy-low-sell-high-container
+          image: qoala101/stonks:service_buy_low_sell_high
+          args:
+            - --port=$(APP_SERVICE_SERVICE_PORT_BLSH_PORT)
+            - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
+            - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
+
+        - name: symbol-price-streams-container
+          image: qoala101/stonks:service_symbol_price_streams
+          args:
+            - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
+            - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
+            - --symbols=BTCUSDT,ETHUSDT,BNBUSDT
+            - --reattempt_interval=60000
+
+        - name: symbols-db-container
+          image: qoala101/stonks:service_symbols_db
+          args:
+            - --port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
+            - --db_file_path=/app/data/symbols_db.db
+          volumeMounts:
+            - mountPath: "/app/data"
+              name: symbols-db-volume
+
+        - name: symbols-db-updater-container
+          image: qoala101/stonks:service_symbols_db_updater
+          args:
+            - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
+            - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
+            - --update_symbols_info_interval=3600000
+            - --delete_old_prices_interval=3600000
+            - --keep_prices_for_duration=3600000
+            - --reattempt_interval=60000
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /buy_low_sell_high
+            pathType: Prefix
+            backend:
+              service:
+                name: app-service
+                port:
+                  name: blsh-port
+
+          - path: /symbols_db
+            pathType: Prefix
+            backend:
+              service:
+                name: app-service
+                port:
+                  name: sdb-port
