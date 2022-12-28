@@ -1,7 +1,7 @@
 #ifndef STONKS_CLI_CLI_CONCEPTS_H_
 #define STONKS_CLI_CLI_CONCEPTS_H_
 
-#include "cli_types.h"
+#include "cli_option_value_variant.h"
 #include "cpp_concepts.h"
 
 namespace stonks::cli {

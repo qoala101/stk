@@ -2,7 +2,7 @@
 #define STONKS_CLI_CLI_OPTION_H_
 
 #include "cli_concepts.h"
-#include "cli_types.h"
+#include "cli_option_value_variant.h"
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_not_null.h"
 #include "cpp_this.h"

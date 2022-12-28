@@ -17,7 +17,7 @@ App::App(int argc, const char* const* argv) : app_{cpp::MakeNnSp<CLI::App>()} {
 
 App::App(int argc, const char* const* argv, const Options& options)
     : app_{cpp::MakeNnSp<CLI::App>()} {
-  options.AddAsNativeOptions(*app_);
+  options.AddToNativeApp(*app_);
   app_->parse(argc, argv);
   options.SetValuesFromNativeOptions(*app_);
 }

@@ -1,5 +1,6 @@
 add_library(libcli
   cli_app.cc
+  cli_option_value_variant.cc
   cli_option.cc
   cli_options.cc
   cli_run_scope.cc

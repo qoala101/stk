@@ -10,9 +10,15 @@
 #include "cpp_typed_struct.h"
 
 namespace stonks::cli::detail {
-void OptionsBase::AddAsNativeOptions(CLI::App &app) const {
-  for (const auto &[name, value] : option_values_) {
-    app.add_option(name);
+void OptionsBase::AddToNativeApp(CLI::App &app) const {
+  for (const auto &[name, weak_value] : option_values_) {
+    auto value = weak_value.lock();
+
+    if (value == nullptr) {
+      continue;
+    }
+
+    value->AddOptionToNativeApp(name, app);
   }
 }
 
@@ -31,13 +37,7 @@ void OptionsBase::SetValuesFromNativeOptions(const CLI::App &app) const {
       continue;
     }
 
-    std::visit(
-        [native_option](auto &v) {
-          using V = std::remove_cvref_t<decltype(v)>;
-
-          v = native_option->as<V>();
-        },
-        **value);
+    value->SetValueFromNativeOption(*native_option);
   }
 }
 }  // namespace stonks::cli::detail

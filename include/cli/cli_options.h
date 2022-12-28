@@ -7,7 +7,7 @@
 
 #include "cli_concepts.h"
 #include "cli_option.h"
-#include "cli_types.h"
+#include "cli_option_value_variant.h"
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
@@ -20,7 +20,7 @@ namespace stonks::cli {
 namespace detail {
 class OptionsBase {
  public:
-  void AddAsNativeOptions(CLI::App &app) const;
+  void AddToNativeApp(CLI::App &app) const;
 
   void SetValuesFromNativeOptions(const CLI::App &app) const;
 
