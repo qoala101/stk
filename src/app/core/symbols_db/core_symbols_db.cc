@@ -350,8 +350,8 @@ auto SymbolsDb::SelectSymbolPriceRecords(const Symbol &symbol,
   }
 
   const auto rows = statement->Execute(sqldb::AsValues(
-      symbol, StartTimeFrom(start_time), EndTimeFrom(end_time)
-      /*, args.limit ? std::numeric_limits<int>::max()*/));
+      symbol, StartTimeFrom(start_time), EndTimeFrom(end_time),
+      (limit != nullptr) ? *limit : std::numeric_limits<int>::max()));
 
   const auto &buy_prices =
       rows.GetColumnValues<sdb::tables::SymbolPriceRecord::buy_price>();
