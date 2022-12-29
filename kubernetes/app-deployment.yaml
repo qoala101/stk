@@ -39,6 +39,39 @@ spec:
       port: 30000
 
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /buy_low_sell_high/(?x)(
+              CalculateNextOperations)
+            pathType: Prefix
+            backend:
+              service:
+                name: app-service
+                port:
+                  name: blsh-port
+
+          - path: /symbols_db/(?x)(
+              SelectAssets|
+              SelectSymbolsWithPriceRecords|
+              SelectSymbolInfo|
+              SelectSymbolPriceRecords)
+            pathType: Prefix
+            backend:
+              service:
+                name: app-service
+                port:
+                  name: sdb-port
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -92,29 +125,3 @@ spec:
             - --delete_old_prices_interval=3600000
             - --keep_prices_for_duration=3600000
             - --reattempt_interval=60000
-
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: nginx-ingress
-spec:
-  ingressClassName: nginx
-  rules:
-    - http:
-        paths:
-          - path: /buy_low_sell_high
-            pathType: Prefix
-            backend:
-              service:
-                name: app-service
-                port:
-                  name: blsh-port
-
-          - path: /symbols_db
-            pathType: Prefix
-            backend:
-              service:
-                name: app-service
-                port:
-                  name: sdb-port

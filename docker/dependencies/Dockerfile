@@ -23,7 +23,8 @@ RUN apt update && \
   apt autoclean && \
   apt autoremove && \
   apt clean && \
-  rm -rf /var/lib/apt/lists/* &&\
+  rm -rf /var/lib/apt/lists/* && \
+  \
   pip --no-input install && \
   cmake && \
   conan && \
