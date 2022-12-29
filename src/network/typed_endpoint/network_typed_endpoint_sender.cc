@@ -21,8 +21,6 @@ class TypeChecker : public te::EndpointTypesValidatorTemplate {
       : EndpointTypesValidatorTemplate{std::move(endpoint_types)} {}
 
  private:
-  void HandleWrongParamsSize() const override { Expects(false); }
-
   void HandleUnknownParam(std::string_view /*unused*/) const override {
     Expects(false);
   }

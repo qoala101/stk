@@ -37,7 +37,6 @@ class EndpointTypesValidatorTemplate {
   explicit EndpointTypesValidatorTemplate(EndpointTypes endpoint_types);
 
  private:
-  virtual void HandleWrongParamsSize() const;
   virtual void HandleUnknownParam(std::string_view param_name) const;
   virtual void HandleWrongRequestParamType(
       std::string_view param_name, const Param &value,

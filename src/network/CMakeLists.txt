@@ -49,4 +49,5 @@ target_link_libraries(libnetwork
   PRIVATE Microsoft.GSL::GSL
   PRIVATE NotNull
   PRIVATE polymorphic_value::polymorphic_value
+  PRIVATE range-v3::range-v3
 )

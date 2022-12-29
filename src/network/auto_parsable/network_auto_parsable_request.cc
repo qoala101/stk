@@ -5,6 +5,8 @@
 #include <string>
 #include <utility>
 
+#include "network_json_base_conversions.h"
+
 namespace stonks::network {
 AutoParsableRestRequest::AutoParsableRestRequest(RestRequest rest_request)
     : params_{std::move(rest_request.params)},
@@ -14,12 +16,16 @@ AutoParsableRestRequest::AutoParsableRestRequest(RestRequest rest_request)
 
 auto AutoParsableRestRequest::Param(std::string_view key) -> AutoParsable {
   const auto value = params_.find(key.data());
-  Expects(value != params_.end());
-  auto result = AutoParsable{std::move(value->second)};
+  const auto request_has_param = value != params_.end();
 
-  params_.erase(value);
+  auto json = request_has_param ? std::move(value->second) : CreateNullJson();
+  auto result = AutoParsable{std::move(json)};
+
+  if (request_has_param) {
+    params_.erase(value);
+  }
+
   Ensures(!params_.contains(key.data()));
-
   return result;
 }
 

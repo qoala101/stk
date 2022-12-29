@@ -24,10 +24,6 @@ class TypeChecker : public te::EndpointTypesValidatorTemplate {
       : EndpointTypesValidatorTemplate{std::move(endpoint_types)} {}
 
  private:
-  void HandleWrongParamsSize() const override {
-    throw Exception{"Wrong number of request params"};
-  }
-
   void HandleUnknownParam(std::string_view param_name) const override {
     throw Exception{fmt::format("Unknown request param: {}", param_name)};
   }

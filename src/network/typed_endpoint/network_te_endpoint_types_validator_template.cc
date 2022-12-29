@@ -5,8 +5,14 @@
 #include <function2/function2.hpp>
 #include <gsl/assert>
 #include <map>
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/to_container.hpp>
+#include <range/v3/view/filter.hpp>
+#include <range/v3/view/transform.hpp>
 #include <string>
 #include <utility>
+
+#include "network_json_base_conversions.h"
 
 namespace stonks::network::te {
 EndpointTypesValidatorTemplate::EndpointTypesValidatorTemplate(
@@ -18,8 +24,6 @@ void EndpointTypesValidatorTemplate::ValidateRequest(
   ValidateRequestParamTypes(request.params);
   ValidateRequestBodyType(request.body);
 }
-
-void EndpointTypesValidatorTemplate::HandleWrongParamsSize() const {}
 
 void EndpointTypesValidatorTemplate::HandleUnknownParam(
     std::string_view /*unused*/) const {}
@@ -42,22 +46,32 @@ void EndpointTypesValidatorTemplate::HandleUnexpectedResponseBody() const {}
 
 void EndpointTypesValidatorTemplate::ValidateRequestParamTypes(
     const Params &params) const {
-  if (params.size() != endpoint_types_.params.size()) {
-    HandleWrongParamsSize();
-  }
+  const auto null_params =
+      endpoint_types_.params |
+      ranges::views::transform(
+          [](const auto &endpoint_param) { return endpoint_param.first; }) |
+      ranges::views::filter([&params](const auto &endpoint_param_name) {
+        return !params.contains(endpoint_param_name);
+      }) |
+      ranges::views::transform([](const auto &endpoint_param_name) {
+        return std::pair{endpoint_param_name, CreateNullJson()};
+      }) |
+      ranges::to<Params>;
 
-  for (const auto &[key, value] : params) {
-    const auto param_type = endpoint_types_.params.find(key);
+  for (const auto &param_map : {&params, &null_params}) {
+    for (const auto &[key, value] : *param_map) {
+      const auto param_type = endpoint_types_.params.find(key);
 
-    if (param_type == endpoint_types_.params.end()) {
-      HandleUnknownParam(key);
-    }
+      if (param_type == endpoint_types_.params.end()) {
+        HandleUnknownParam(key);
+      }
 
-    try {
-      Expects(!param_type->second.empty());
-      param_type->second(*value);
-    } catch (const std::exception &e) {
-      HandleWrongRequestParamType(key, value, e);
+      try {
+        Expects(!param_type->second.empty());
+        param_type->second(*value);
+      } catch (const std::exception &e) {
+        HandleWrongRequestParamType(key, value, e);
+      }
     }
   }
 }
