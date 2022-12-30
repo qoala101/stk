@@ -1,3 +1,8 @@
+cd build
+cmake ..
+cmake --build .
+cd ..
+
 # Build an image which should be used as base for all apps.
 # Contains base OS image and packages required for networking to work.
 # No need for rebuild.

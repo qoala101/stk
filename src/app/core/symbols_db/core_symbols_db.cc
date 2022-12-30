@@ -36,6 +36,7 @@
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_p_db.h"
+#include "sqldb_p_types.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_condition.h"
 #include "sqldb_qb_delete.h"
@@ -46,6 +47,7 @@
 #include "sqldb_qb_update.h"
 #include "sqldb_query_builder.h"
 #include "sqldb_rows.h"
+#include "sqldb_types.h"
 #include "sqldb_value.h"
 #include "sqldb_value_common_conversions.h"  // IWYU pragma: keep
 #include "sqldb_value_conversions.h"
@@ -345,6 +347,7 @@ auto SymbolsDb::SelectSymbolPriceRecords(const Symbol &symbol,
                                sdb::tables::SymbolPriceRecord::time>() <
                            sqldb::qb::ParamForColumn<
                                sdb::tables::SymbolPriceRecord::time>()))
+                   .Limit(sqldb::qb::ParamOfType<int>())
                    .Build())
             .as_nullable();
   }

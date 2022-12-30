@@ -29,11 +29,19 @@ auto Column [[nodiscard]] () -> QueryValue {
 }
 
 /**
+ * @brief Creates a query param of specified type.
+ */
+template <SupportedDataType T>
+auto ParamOfType [[nodiscard]] () -> QueryValue {
+  return p::QueryParam{DataType<T>{}};
+}
+
+/**
  * @brief Creates a query param of column type.
  */
 template <ColumnDefinition Column>
 auto ParamForColumn [[nodiscard]] () -> QueryValue {
-  return p::QueryParam{DataType<typename Column::DataType>{}};
+  return ParamOfType<typename Column::DataType>();
 }
 }  // namespace stonks::sqldb::qb
 
