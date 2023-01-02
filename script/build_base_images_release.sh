@@ -9,6 +9,12 @@ docker build -t qoala101/stonks:dependencies -f ./docker/dependencies/Dockerfile
 
 # Build image which contains all project binaries.
 # Should be rebuilt when dependencies image or any source files are changed.
-docker build -t qoala101/stonks:binaries -f ./docker/binaries/release/Dockerfile .
+docker build -t qoala101/stonks:binaries -f ./docker/binaries/Dockerfile .
 
-bash ./script/build_container_images.sh
+# Build service images.
+# Should be rebuild when binaries image is changed.
+docker build -t qoala101/stonks:service_app_uri_exposer -f ./docker/service/release/app_uri_exposer/Dockerfile .
+docker build -t qoala101/stonks:service_buy_low_sell_high -f ./docker/service/release/buy_low_sell_high/Dockerfile .
+docker build -t qoala101/stonks:service_symbol_price_streams -f ./docker/service/release/symbol_price_streams/Dockerfile .
+docker build -t qoala101/stonks:service_symbols_db -f ./docker/service/release/symbols_db/Dockerfile .
+docker build -t qoala101/stonks:service_symbols_db_updater -f ./docker/service/release/symbols_db_updater/Dockerfile .
