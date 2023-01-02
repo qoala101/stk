@@ -19,19 +19,15 @@
 namespace test::app {
 inline auto Injector [[nodiscard]] () -> auto & {
   static auto injector = stonks::di::MakeInjector(
-      stonks::di::BindValueTypeToValue(
-          stonks::sqlite::FilePath{"app_symbols_db_test.db"}),
       stonks::di::BindInterfaceToImplementation<stonks::log::ILogger,
                                                 stonks::spdlog::Logger>(),
       stonks::di::BindInterfaceToImplementation<stonks::sqldb::IDb,
                                                 stonks::sqlite::Db>(),
-      stonks::di::BindTypeToOtherType<stonks::sqlite::SqliteDbHandleVariant,
-                                      stonks::sqlite::SqliteDbFileHandle>(),
       stonks::di::BindTypeToFactoryFunction<
-          stonks::sqlite::SqliteDbHandle,
-          +[](const stonks::sqlite::DbHandlesFactory &factory,
-              const stonks::sqlite::FilePath &file_path) {
-            return factory.LoadDbFromFileToMemory(file_path);
+          stonks::sqlite::SqliteDbHandleVariant,
+          +[](const stonks::sqlite::DbHandlesFactory &factory) {
+            return stonks::sqlite::SqliteDbHandleVariant{
+                factory.CreateInMemoryDb()};
           }>());
   return injector;
 }

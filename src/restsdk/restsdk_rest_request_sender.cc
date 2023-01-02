@@ -23,7 +23,6 @@
 #include <string_view>
 #include <utility>
 
-#include "cpp_message_exception.h"
 #include "cpp_polymorphic_value.h"
 #include "cpp_typed_struct.h"
 #include "network_i_json.h"
@@ -109,7 +108,7 @@ auto HttpRequestFrom [[nodiscard]] (const network::RestRequest &request) {
     http_request.headers().add(key, value);
   }
 
-  if (request.body) {
+  if (!request.body->IsNull()) {
     http_request.set_body(*request.body->GetNativeHandle());
   }
 
