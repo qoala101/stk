@@ -18,11 +18,26 @@ spec:
           args:
             - --expose_uri_interval=60000
             - --reattempt_interval=60000
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: aws-access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: aws-secret-access-key
 
         - name: ngrok-container
-          image: wernight/ngrok:latest
-          command:
-            - ngrok
+          image: ngrok/ngrok:latest
           args:
             - http
             - ingress-nginx-controller.ingress-nginx
+          env:
+            - name: NGROK_AUTHTOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: ngrok-authtoken
