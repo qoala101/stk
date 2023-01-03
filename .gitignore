@@ -1,6 +1,7 @@
-bin
-build
-lib
 .cache
 .TODO
 .vscode
+bin
+build
+kubernetes/app-secret.yaml
+lib
