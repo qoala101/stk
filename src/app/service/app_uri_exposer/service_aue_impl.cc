@@ -3,6 +3,7 @@
 #include <fmt/core.h>
 
 #include <coroutine>
+#include <exception>
 #include <not_null.hpp>
 #include <string>
 #include <utility>
@@ -31,7 +32,13 @@ auto Impl::ExposeNgrokUri() const -> cppcoro::task<> {
   logger_->LogImportantEvent(
       fmt::format("Updating public app URI {}...", *uri));
 
-  co_await public_db_.InsertOrUpdateAppUri({(*tunnels)[0].public_url});
+  try {
+    co_await public_db_.InsertOrUpdateAppUri(uri);
+  } catch (const std::exception &e) {
+    logger_->LogErrorCondition(
+        fmt::format("Couldn't update public app URI: {}", e.what()));
+    throw;
+  }
   logger_->LogImportantEvent(fmt::format("Updated public app URI {}", *uri));
 }
 }  // namespace stonks::service::aue

@@ -15,11 +15,8 @@ namespace stonks::ngrok {
  */
 class NgrokApi {
  public:
-  /**
-   * @param host Host which runs Ngrok.
-   */
-  NgrokApi(std::string_view host,
-           di::Factory<network::IRestRequestSender> request_sender_factory);
+  explicit NgrokApi(
+      di::Factory<network::IRestRequestSender> request_sender_factory);
 
   NgrokApi(const NgrokApi &) = delete;
   NgrokApi(NgrokApi &&) noexcept;

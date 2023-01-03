@@ -72,12 +72,27 @@ class AsyncDb : public kvdb::IDb {
       -> cppcoro::task<> override;
 
   /**
+   * @brief Checks whether table exists.
+   */
+  auto IsTableExists [[nodiscard]] (const kvdb::Table &table) const
+      -> cppcoro::task<bool>;
+
+  /**
+   * @brief Checks whether table exists and available for use.
+   */
+  auto IsTableReadyForUse [[nodiscard]] (const kvdb::Table &table) const
+      -> cppcoro::task<bool>;
+
+  /**
    * @brief Gives a native DynamoDB handle.
    */
   auto GetDynamoDbClient [[nodiscard]] () const
       -> const Aws::DynamoDB::DynamoDBClient &;
 
  private:
+  auto GetTableStatus [[nodiscard]] (const kvdb::Table &table) const
+      -> cppcoro::task<cpp::Opt<Aws::DynamoDB::Model::TableStatus>>;
+
   ApiHandle api_handle_;
   cpp::NnUp<Aws::DynamoDB::DynamoDBClient> db_client_;
 };

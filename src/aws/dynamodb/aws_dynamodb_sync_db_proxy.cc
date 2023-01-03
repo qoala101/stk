@@ -37,30 +37,14 @@ auto WaitUntil(const Predicate &predicate) -> cppcoro::task<> {
 
 SyncDbProxy::SyncDbProxy(AsyncDb async_db) : async_db_{std::move(async_db)} {}
 
-auto SyncDbProxy::IsTableExists(const kvdb::Table &table) const
-    -> cppcoro::task<bool> {
-  co_return (co_await GetTableStatus(table)).has_value();
-}
-
-auto SyncDbProxy::IsTableReadyForUse(const kvdb::Table &table) const
-    -> cppcoro::task<bool> {
-  const auto status = co_await GetTableStatus(table);
-
-  if (!status.has_value()) {
-    co_return false;
-  }
-
-  co_return *status == Aws::DynamoDB::Model::TableStatus::ACTIVE;
-}
-
 auto SyncDbProxy::CreateTableIfNotExists(const kvdb::Table &table)
     -> cppcoro::task<> {
   co_await async_db_.CreateTableIfNotExists(table);
 
   co_await WaitUntil([this, &table]() -> cppcoro::task<bool> {
-    co_return co_await IsTableReadyForUse(table);
+    co_return co_await async_db_.IsTableReadyForUse(table);
   });
-  Ensures(co_await IsTableReadyForUse(table));
+  Ensures(co_await async_db_.IsTableReadyForUse(table));
 }
 
 auto SyncDbProxy::DropTableIfExists(const kvdb::Table &table)
@@ -68,28 +52,15 @@ auto SyncDbProxy::DropTableIfExists(const kvdb::Table &table)
   co_await async_db_.DropTableIfExists(table);
 
   co_await WaitUntil([this, &table]() -> cppcoro::task<bool> {
-    co_return !co_await IsTableExists(table);
+    co_return !co_await async_db_.IsTableExists(table);
   });
-  Ensures(!co_await IsTableExists(table));
+  Ensures(!co_await async_db_.IsTableExists(table));
 }
 
 auto SyncDbProxy::SelectItem(const kvdb::Table &table,
                              const kvdb::Key &key) const
     -> cppcoro::task<cpp::Opt<kvdb::Item>> {
   co_return co_await async_db_.SelectItem(table, key);
-}
-
-auto SyncDbProxy::IsItemExists(const kvdb::Table &table,
-                               const kvdb::Key &key) const
-    -> cppcoro::task<bool> {
-  co_return (co_await async_db_.SelectItem(table, key)).has_value();
-}
-
-auto SyncDbProxy::IsItemExists(const kvdb::Table &table,
-                               const kvdb::Item &item) const
-    -> cppcoro::task<bool> {
-  const auto selected_item = co_await async_db_.SelectItem(table, item.key);
-  co_return selected_item.has_value() && (*selected_item == item);
 }
 
 auto SyncDbProxy::InsertOrUpdateItem(const kvdb::Table &table, kvdb::Item item)
@@ -112,28 +83,16 @@ auto SyncDbProxy::DeleteItemIfExists(const kvdb::Table &table,
   Ensures(!co_await IsItemExists(table, key));
 }
 
-auto SyncDbProxy::GetTableStatus(const kvdb::Table &table) const
-    -> cppcoro::task<cpp::Opt<Aws::DynamoDB::Model::TableStatus>> {
-  const auto request =
-      Aws::DynamoDB::Model::DescribeTableRequest{}.WithTableName(table);
+auto SyncDbProxy::IsItemExists(const kvdb::Table &table,
+                               const kvdb::Key &key) const
+    -> cppcoro::task<bool> {
+  co_return (co_await async_db_.SelectItem(table, key)).has_value();
+}
 
-  const auto result = co_await CallAsCoroutine<
-      &Aws::DynamoDB::DynamoDBClient::DescribeTableAsync>(
-      async_db_.GetDynamoDbClient(), request);
-
-  if (!result.IsSuccess()) {
-    const auto &error = result.GetError();
-
-    if (const auto table_doesnt_exist =
-            error.GetErrorType() ==
-            Aws::DynamoDB::DynamoDBErrors::RESOURCE_NOT_FOUND) {
-      co_return std::nullopt;
-    }
-
-    throw cpp::MessageException{fmt::format("Couldn't get table status {}: {}",
-                                            *table, error.GetMessage())};
-  }
-
-  co_return result.GetResult().GetTable().GetTableStatus();
+auto SyncDbProxy::IsItemExists(const kvdb::Table &table,
+                               const kvdb::Item &item) const
+    -> cppcoro::task<bool> {
+  const auto selected_item = co_await async_db_.SelectItem(table, item.key);
+  co_return selected_item.has_value() && (*selected_item == item);
 }
 }  // namespace stonks::aws::dynamodb

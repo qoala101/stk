@@ -10,6 +10,7 @@
 #include <aws/dynamodb/model/CreateTableRequest.h>
 #include <aws/dynamodb/model/DeleteItemRequest.h>
 #include <aws/dynamodb/model/DeleteTableRequest.h>
+#include <aws/dynamodb/model/DescribeTableRequest.h>
 #include <aws/dynamodb/model/GetItemRequest.h>
 #include <aws/dynamodb/model/GetItemResult.h>
 #include <aws/dynamodb/model/KeySchemaElement.h>
@@ -45,6 +46,10 @@ AsyncDb::~AsyncDb() = default;
 
 auto AsyncDb::CreateTableIfNotExists(const kvdb::Table &table)
     -> cppcoro::task<> {
+  if (co_await IsTableReadyForUse(table)) {
+    co_return;
+  }
+
   const auto attribute =
       Aws::DynamoDB::Model::AttributeDefinition{}
           .WithAttributeName("Key")
@@ -68,13 +73,24 @@ auto AsyncDb::CreateTableIfNotExists(const kvdb::Table &table)
       &Aws::DynamoDB::DynamoDBClient::CreateTableAsync>(*db_client_, request);
 
   if (!result.IsSuccess()) {
+    const auto &error = result.GetError();
+
+    if (const auto table_already_exists =
+            error.GetErrorType() ==
+            Aws::DynamoDB::DynamoDBErrors::RESOURCE_IN_USE) {
+      co_return;
+    }
+
     throw cpp::MessageException{fmt::format("Couldn't create table {}: {}",
-                                            *table,
-                                            result.GetError().GetMessage())};
+                                            *table, error.GetMessage())};
   }
 }
 
 auto AsyncDb::DropTableIfExists(const kvdb::Table &table) -> cppcoro::task<> {
+  if (co_await IsTableExists(table)) {
+    co_return;
+  }
+
   const auto request =
       Aws::DynamoDB::Model::DeleteTableRequest{}.WithTableName(table);
 
@@ -166,8 +182,48 @@ auto AsyncDb::DeleteItemIfExists(const kvdb::Table &table, const kvdb::Key &key)
   }
 }
 
+auto AsyncDb::IsTableExists(const kvdb::Table &table) const
+    -> cppcoro::task<bool> {
+  co_return (co_await GetTableStatus(table)).has_value();
+}
+
+auto AsyncDb::IsTableReadyForUse(const kvdb::Table &table) const
+    -> cppcoro::task<bool> {
+  const auto status = co_await GetTableStatus(table);
+
+  if (!status.has_value()) {
+    co_return false;
+  }
+
+  co_return *status == Aws::DynamoDB::Model::TableStatus::ACTIVE;
+}
+
 auto AsyncDb::GetDynamoDbClient() const
     -> const Aws::DynamoDB::DynamoDBClient & {
   return *db_client_;
+}
+
+auto AsyncDb::GetTableStatus(const kvdb::Table &table) const
+    -> cppcoro::task<cpp::Opt<Aws::DynamoDB::Model::TableStatus>> {
+  const auto request =
+      Aws::DynamoDB::Model::DescribeTableRequest{}.WithTableName(table);
+
+  const auto result = co_await CallAsCoroutine<
+      &Aws::DynamoDB::DynamoDBClient::DescribeTableAsync>(*db_client_, request);
+
+  if (!result.IsSuccess()) {
+    const auto &error = result.GetError();
+
+    if (const auto table_doesnt_exist =
+            error.GetErrorType() ==
+            Aws::DynamoDB::DynamoDBErrors::RESOURCE_NOT_FOUND) {
+      co_return std::nullopt;
+    }
+
+    throw cpp::MessageException{fmt::format("Couldn't get table status {}: {}",
+                                            *table, error.GetMessage())};
+  }
+
+  co_return result.GetResult().GetTable().GetTableStatus();
 }
 }  // namespace stonks::aws::dynamodb

@@ -2,11 +2,13 @@
 
 #include <aws/core/Aws.h>
 #include <aws/core/monitoring/MonitoringManager.h>
-#include <not_null.hpp>
+#include <fmt/core.h>
+
+#include <exception>
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <utility>
-#include <exception>
 
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
@@ -30,7 +32,8 @@ class ApiHandleImpl {
     try {
       Aws::ShutdownAPI(Aws::SDKOptions{});
     } catch (const std::exception &e) {
-      logger_->LogErrorCondition(e.what());
+      logger_->LogErrorCondition(
+          fmt::format("Couldn't close AWS handle: {}", e.what()));
     }
   }
 

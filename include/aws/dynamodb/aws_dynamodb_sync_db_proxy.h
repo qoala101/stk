@@ -51,15 +51,6 @@ class SyncDbProxy : public kvdb::IDb {
       -> cppcoro::task<> override;
 
  private:
-  auto GetTableStatus [[nodiscard]] (const kvdb::Table &table) const
-      -> cppcoro::task<cpp::Opt<Aws::DynamoDB::Model::TableStatus>>;
-
-  auto IsTableExists [[nodiscard]] (const kvdb::Table &table) const
-      -> cppcoro::task<bool>;
-
-  auto IsTableReadyForUse [[nodiscard]] (const kvdb::Table &table) const
-      -> cppcoro::task<bool>;
-
   auto IsItemExists
       [[nodiscard]] (const kvdb::Table &table, const kvdb::Key &key) const
       -> cppcoro::task<bool>;
