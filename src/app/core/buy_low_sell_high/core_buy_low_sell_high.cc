@@ -89,9 +89,13 @@ auto BuyLowSellHigh::CalculateNextOperations(
          //  .btc_would_be_taken_from_balance = btc_sell_order_amount,
          //  .usd_would_be_added_to_balance =
          //      usd_would_be_actually_added_to_balance_after_order_is_executed,
-         .btc_balance = last_operation.btc_balance - btc_sell_order_amount,
+         .btc_balance =
+             last_operation.btc_balance +
+             btc_would_be_actually_added_to_balance_after_order_is_executed -
+             btc_sell_order_amount,
          .usd_balance =
-             last_operation.usd_balance +
+             last_operation.usd_balance -
+             usd_would_be_actually_withdrawn_from_balance_to_place_order +
              usd_would_be_actually_added_to_balance_after_order_is_executed}};
   }
 

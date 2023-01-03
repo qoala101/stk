@@ -3,6 +3,7 @@ include(GoogleTest)
 enable_testing()
 
 add_executable(unittests
+  app/test_app_core_buy_low_sell_high.cc
   app/test_app_core_symbols_db.cc
 
   # Disabled in order to not waste AWS API credits.
@@ -41,6 +42,7 @@ target_link_libraries(unittests
   PRIVATE libaws
   PRIVATE libcommon
   PRIVATE libcore
+  PRIVATE libcore_buy_low_sell_high
   PRIVATE libcore_symbols_db
   PRIVATE libcpp
   PRIVATE libdi
