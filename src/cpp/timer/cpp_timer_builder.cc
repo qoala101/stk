@@ -9,7 +9,7 @@
 #include "cpp_timer.h"
 
 namespace stonks::cpp {
-TimerBuilder::TimerBuilder(fu2::unique_function<void() const> event)
+TimerBuilder::TimerBuilder(fu2::unique_function<void()> event)
     : event_{std::move(event)} {}
 
 auto TimerBuilder::Every(absl::Duration event_interval) -> TimerBuilder& {
@@ -61,7 +61,7 @@ auto TimerBuilder::Start() -> Timer {
                  .num_reattempts = num_reattempts}}};
 }
 
-auto Execute(fu2::unique_function<void() const> event) -> TimerBuilder {
+auto Execute(fu2::unique_function<void()> event) -> TimerBuilder {
   return TimerBuilder{std::move(event)};
 }
 }  // namespace stonks::cpp

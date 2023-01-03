@@ -17,7 +17,7 @@ class TimerBuilder {
   /**
    * @param event Event to be executed on timer tick.
    */
-  explicit TimerBuilder(fu2::unique_function<void() const> event);
+  explicit TimerBuilder(fu2::unique_function<void()> event);
 
   /**
    * @brief Sets event interval.
@@ -51,7 +51,7 @@ class TimerBuilder {
   auto Start [[nodiscard]] () -> Timer;
 
  private:
-  fu2::unique_function<void() const> event_{};
+  fu2::unique_function<void()> event_{};
   cpp::Opt<absl::Duration> event_interval_{};
   cpp::Opt<absl::Duration> reattempt_interval_{};
   cpp::Opt<int> num_reattempts_{};
@@ -60,8 +60,7 @@ class TimerBuilder {
 /**
  * @brief Begins timer builder.
  */
-auto Execute [[nodiscard]] (fu2::unique_function<void() const> event)
--> TimerBuilder;
+auto Execute [[nodiscard]] (fu2::unique_function<void()> event) -> TimerBuilder;
 }  // namespace stonks::cpp
 
 #endif  // STONKS_CPP_TIMER_CPP_TIMER_BUILDER_H_

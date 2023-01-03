@@ -8,7 +8,7 @@
 #include <utility>
 
 namespace stonks::cpp::timer {
-EventLoop::EventLoop(fu2::unique_function<void() const> event,
+EventLoop::EventLoop(fu2::unique_function<void()> event,
                      absl::Duration event_interval,
                      ReattemptPolicy reattempt_policy)
     : event_{[&event]() {
@@ -29,7 +29,7 @@ void EventLoop::operator()(const std::stop_token &stop_token) {
   stop_token_ = nullptr;
 }
 
-void EventLoop::RunEventLoop() const {
+void EventLoop::RunEventLoop() {
   Expects(stop_token_ != nullptr);
 
   while (!stop_token_->stop_requested()) {
@@ -44,7 +44,7 @@ void EventLoop::RunEventLoop() const {
   }
 }
 
-auto EventLoop::ExecuteEvent [[nodiscard]] () const {
+auto EventLoop::ExecuteEvent [[nodiscard]] () {
   auto event_succeeded = true;
 
   try {
@@ -56,7 +56,7 @@ auto EventLoop::ExecuteEvent [[nodiscard]] () const {
   return event_succeeded;
 }
 
-void EventLoop::RunReattemptLoop() const {
+void EventLoop::RunReattemptLoop() {
   Expects(stop_token_ != nullptr);
 
   auto num_attempts = 0;

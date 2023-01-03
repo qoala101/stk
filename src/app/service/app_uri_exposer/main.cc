@@ -20,7 +20,7 @@ auto main(int argc, const char *const *argv) -> int {
   auto options = stonks::cli::Options{};
 
   const auto expose_uri_interval = options.AddOption(
-      "--expose_uri_interval", absl::ToInt64Milliseconds(absl::Hours(1)));
+      "--expose_uri_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
   const auto reattempt_interval = options.AddOption(
       "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
 

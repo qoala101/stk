@@ -13,8 +13,11 @@ spec:
         label: app-uri-exposer
     spec:
       containers:
-        # - name: app-uri-exposer-container
-        #   image: qoala101/stonks:service_app_uri_exposer
+        - name: app-uri-exposer-container
+          image: qoala101/stonks:service_app_uri_exposer
+          args:
+            - --expose_uri_interval=60000
+            - --reattempt_interval=60000
 
         - name: ngrok-container
           image: wernight/ngrok:latest

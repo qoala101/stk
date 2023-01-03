@@ -20,7 +20,7 @@ Impl::Impl(PublicDb public_db, ngrok::NgrokApi ngrok_api,
       ngrok_api_{std::move(ngrok_api)},
       logger_{std::move(logger)} {}
 
-auto Impl::ExposeNgrokUri() const -> cppcoro::task<> {
+auto Impl::ExposeNgrokUriIfChanged() -> cppcoro::task<> {
   const auto tunnels = co_await ngrok_api_.tunnels();
 
   if (tunnels->empty()) {
@@ -28,17 +28,28 @@ auto Impl::ExposeNgrokUri() const -> cppcoro::task<> {
     co_return;
   }
 
-  const auto uri = network::Uri{(*tunnels)[0].public_url};
+  auto new_uri = network::Uri{(*tunnels)[0].public_url};
+
+  if (new_uri == last_exposed_uri_) {
+    logger_->LogImportantEvent(
+        fmt::format("Public app URI hasn't changed {}", *new_uri));
+    co_return;
+  }
+
   logger_->LogImportantEvent(
-      fmt::format("Updating public app URI {}...", *uri));
+      fmt::format("Updating public app URI {}...", *new_uri));
 
   try {
-    co_await public_db_.InsertOrUpdateAppUri(uri);
+    co_await public_db_.InsertOrUpdateAppUri(new_uri);
   } catch (const std::exception &e) {
     logger_->LogErrorCondition(
         fmt::format("Couldn't update public app URI: {}", e.what()));
     throw;
   }
-  logger_->LogImportantEvent(fmt::format("Updated public app URI {}", *uri));
+
+  logger_->LogImportantEvent(
+      fmt::format("Updated public app URI {}", *new_uri));
+
+  last_exposed_uri_ = std::move(new_uri);
 }
 }  // namespace stonks::service::aue

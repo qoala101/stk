@@ -5,6 +5,7 @@
 
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
+#include "network_types.h"
 #include "ngrok_api.h"
 #include "service_aue_public_db.h"
 
@@ -24,12 +25,13 @@ class Impl {
   /**
    * @brief Writes URI from Ngrok to public DB as app URI.
    */
-  auto ExposeNgrokUri [[nodiscard]] () const -> cppcoro::task<>;
+  auto ExposeNgrokUriIfChanged [[nodiscard]] () -> cppcoro::task<>;
 
  private:
   PublicDb public_db_;
   ngrok::NgrokApi ngrok_api_;
   cpp::NnUp<log::ILogger> logger_;
+  network::Uri last_exposed_uri_{};
 };
 }  // namespace stonks::service::aue
 

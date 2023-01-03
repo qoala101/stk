@@ -19,8 +19,8 @@ class EventLoop {
    * consecutive events.
    * @param reattempt_policy Tells how to reattempt the execution if it throws.
    */
-  EventLoop(fu2::unique_function<void() const> event,
-            absl::Duration event_interval, ReattemptPolicy reattempt_policy);
+  EventLoop(fu2::unique_function<void()> event, absl::Duration event_interval,
+            ReattemptPolicy reattempt_policy);
 
   /**
    * @brief Starts the loop which can be interrupted via stop token.
@@ -28,15 +28,15 @@ class EventLoop {
   void operator()(const std::stop_token& stop_token);
 
  private:
-  void RunEventLoop() const;
+  void RunEventLoop();
 
-  auto ExecuteEvent [[nodiscard]] () const;
+  auto ExecuteEvent [[nodiscard]] ();
 
-  void RunReattemptLoop() const;
+  void RunReattemptLoop();
 
   void InterruptableSleepFor(absl::Duration sleep_duration) const;
 
-  fu2::unique_function<void() const> event_{};
+  fu2::unique_function<void()> event_{};
   absl::Duration event_interval_{};
   ReattemptPolicy reattempt_policy_{};
   const std::stop_token* stop_token_{};
