@@ -104,12 +104,6 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 Restart PC.
 
-### Build stonks_dependencies image
-
-```bash
-docker build -t stonks_dependencies .
-```
-
 ### Setup
 
 ```bash
@@ -128,16 +122,13 @@ sudo apt update
 sudo apt install -y kubectl
 ```
 
-## minikube
+Enable Kubernetes cluster in Docker Desktop settings.
+
+## helm and ingress-nginx
 
 ```bash
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
-sudo dpkg -i minikube_latest_amd64.deb
-minikube start
-```
-
-## nginx-ingress
-
-```bash
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
+snap install helm --classic
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm install ingress-nginx ingress-nginx/ingress-nginx
 ```

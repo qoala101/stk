@@ -34,7 +34,7 @@ spec:
           image: ngrok/ngrok:latest
           args:
             - http
-            - ingress-nginx-controller.ingress-nginx
+            - ingress-nginx-controller
           env:
             - name: NGROK_AUTHTOKEN
               valueFrom:
