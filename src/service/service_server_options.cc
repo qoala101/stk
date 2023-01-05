@@ -6,7 +6,7 @@ namespace stonks::service::detail {
 ServerOptionsBase::ServerOptionsBase(cli::Options &options,
                                      std::string_view name,
                                      std::string_view default_port)
-    : port{options.AddOption(fmt::format("--{}_port", name),
+    : port{options.AddOption(fmt::format("--port", name),
                              default_port.data())} {}
 
 auto ServerOptionsBase::GetUri() const -> network::Uri {
