@@ -18,12 +18,6 @@ struct EndpointFunctionTraits<&core::ISymbolsDb::UpdateAssets> {
 };
 
 template <>
-struct EndpointFunctionTraits<
-    &core::ISymbolsDb::SelectSymbolsWithPriceRecords> {
-  static constexpr auto kMethod = network::Method::kGet;
-};
-
-template <>
 struct EndpointFunctionTraits<&core::ISymbolsDb::SelectSymbolInfo> {
   static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams = ParamList("symbol");
@@ -65,7 +59,6 @@ struct ClientServerTypeTraits<core::ISymbolsDb> {
   static constexpr auto kDefaultPort = "30000";
   static constexpr auto kEndpointFunctions = EndpointFunctionList(
       &core::ISymbolsDb::SelectAssets, &core::ISymbolsDb::UpdateAssets,
-      &core::ISymbolsDb::SelectSymbolsWithPriceRecords,
       &core::ISymbolsDb::SelectSymbolInfo, &core::ISymbolsDb::SelectSymbolsInfo,
       &core::ISymbolsDb::UpdateSymbolsInfo,
       &core::ISymbolsDb::SelectSymbolPriceRecords,

@@ -226,37 +226,6 @@ auto SymbolsDb::UpdateAssets(std::vector<Asset> assets) -> cppcoro::task<> {
   co_return;
 }
 
-auto SymbolsDb::SelectSymbolsWithPriceRecords() const
-    -> cppcoro::task<std::vector<Symbol>> {
-  auto &statement = prepared_statements_.select_symbols_with_price_records;
-
-  if (statement == nullptr) {
-    statement =
-        db_->PrepareStatement(
-               sqldb::query_builder::Select<sdb::tables::SymbolInfo::name>()
-                   .From<sdb::tables::SymbolInfo>()
-                   .Where(sqldb::qb::Exists(
-                       sqldb::query_builder::SelectOne()
-                           .From<sdb::tables::SymbolPriceRecord>()
-                           .Where(
-                               sqldb::qb::Column<
-                                   sdb::tables::SymbolPriceRecord::
-                                       symbol_id>() ==
-                               sqldb::qb::Column<sdb::tables::SymbolInfo::id>())
-                           .Limit(sqldb::Value{1})))
-                   .Build())
-            .as_nullable();
-  }
-
-  auto rows = statement->Execute();
-  auto &names = rows.GetColumnValues<sdb::tables::SymbolInfo::name>();
-
-  Ensures(statement);
-  co_return names | ranges::views::transform([](auto &name) {
-    return ValueAs<Symbol>(std::move(name));
-  }) | ranges::to_vector;
-}
-
 auto SymbolsDb::SelectSymbolInfo(Symbol symbol) const
     -> cppcoro::task<cpp::Opt<SymbolInfo>> {
   auto &statement = prepared_statements_.select_symbol_info;

@@ -37,6 +37,8 @@ spec:
       port: 30001
     - name: sdb-port
       port: 30000
+    - name: sps-port
+      port: 30002
 
 ---
 apiVersion: networking.k8s.io/v1
@@ -60,9 +62,17 @@ spec:
                 port:
                   name: blsh-port
 
+          - path: /symbol_price_streams/(?x)(
+              GetStreamedSymbols)
+            pathType: Prefix
+            backend:
+              service:
+                name: app-service
+                port:
+                  name: sps-port
+
           - path: /symbols_db/(?x)(
               SelectAssets|
-              SelectSymbolsWithPriceRecords|
               SelectSymbolInfo|
               SelectSymbolPriceRecords)
             pathType: Prefix
@@ -103,6 +113,7 @@ spec:
         - name: symbol-price-streams-container
           image: qoala101/stonks:service_symbol_price_streams
           args:
+            - --port=$(APP_SERVICE_SERVICE_PORT_SPS_PORT)
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
             - --symbols=BTCUSDT,ETHUSDT,BNBUSDT

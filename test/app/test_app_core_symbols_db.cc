@@ -185,11 +185,4 @@ TEST(AppSymbolsDb, SelectLimit) {
     EXPECT_EQ(price_records.size(), 2);
   }());
 }
-
-TEST(AppSymbolsDb, SelectSymbolsWithPriceRecords) {
-  cppcoro::sync_wait([]() -> cppcoro::task<> {
-    const auto symbols = co_await symbols_db.SelectSymbolsWithPriceRecords();
-    EXPECT_EQ(symbols.size(), 2);
-  }());
-}
 }  // namespace

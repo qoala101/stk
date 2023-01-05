@@ -9,11 +9,12 @@
 
 namespace stonks::core {
 SymbolPriceStreams::SymbolPriceStreams(
-    const std::vector<Symbol> &symbols, absl::Duration reattempt_interval,
+    std::vector<Symbol> symbols, absl::Duration reattempt_interval,
     const di::Factory<ISymbolsDb> &symbols_db_factory,
     const di::Factory<network::IWsClient> &ws_client_factory)
-    : stream_handles_{[&symbols, reattempt_interval, &symbols_db_factory,
-                       &ws_client_factory]() {
+    : symbols_{std::move(symbols)},
+      stream_handles_{[&symbols = symbols_, reattempt_interval,
+                       &symbols_db_factory, &ws_client_factory]() {
         return symbols |
                ranges::views::transform(
                    [reattempt_interval, &symbols_db_factory,
@@ -24,4 +25,9 @@ SymbolPriceStreams::SymbolPriceStreams(
                    }) |
                ranges::to_vector;
       }()} {}
+
+auto SymbolPriceStreams::GetStreamedSymbols() const
+    -> cppcoro::task<std::vector<Symbol>> {
+  co_return symbols_;
+}
 }  // namespace stonks::core

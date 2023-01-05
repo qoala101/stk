@@ -33,12 +33,6 @@ class SymbolsDb : public ClientBase<core::ISymbolsDb> {
   -> cppcoro::task<> override;
 
   /**
-   * @copydoc core::ISymbolsDb::SelectSymbolsWithPriceRecords
-   */
-  auto SelectSymbolsWithPriceRecords [[nodiscard]] () const
-      -> cppcoro::task<std::vector<core::Symbol>> override;
-
-  /**
    * @copydoc core::ISymbolsDb::SelectSymbolInfo
    */
   auto SelectSymbolInfo [[nodiscard]] (core::Symbol symbol) const

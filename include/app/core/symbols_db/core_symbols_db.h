@@ -40,12 +40,6 @@ class SymbolsDb : public ISymbolsDb {
   -> cppcoro::task<> override;
 
   /**
-   * @copydoc ISymbolsDb::SelectSymbolsWithPriceRecords
-   */
-  auto SelectSymbolsWithPriceRecords [[nodiscard]] () const
-      -> cppcoro::task<std::vector<Symbol>> override;
-
-  /**
    * @copydoc ISymbolsDb::SelectSymbolInfo
    */
   auto SelectSymbolInfo [[nodiscard]] (Symbol symbol) const

@@ -2,6 +2,10 @@ add_executable(service_symbol_price_streams
   main.cc
 )
 
+target_include_directories(service_symbol_price_streams
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/app/service/symbol_price_streams
+)
+
 target_link_libraries(service_symbol_price_streams
   PRIVATE libbinance
   PRIVATE libcli
