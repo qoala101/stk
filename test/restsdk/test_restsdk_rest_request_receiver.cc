@@ -64,7 +64,7 @@ TEST(RestRequestReceiver, SendRequest) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
     struct Handler : public stonks::network::IRestRequestHandler {
       auto HandleRequestAndGiveResponse
-          [[nodiscard]] (stonks::network::RestRequest request) const
+          [[nodiscard]] (stonks::network::RestRequest request)
           -> cppcoro::task<stonks::network::RestResponse> override {
         EXPECT_EQ(request.endpoint.method, stonks::network::Method::kGet);
         EXPECT_EQ(request.endpoint.uri, stonks::network::Uri{"/Test"});

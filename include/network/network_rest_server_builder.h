@@ -24,8 +24,8 @@ class RestServerBuilder {
   /**
    * @param base_uri Base URI on which requests are to be handled.
    */
-  explicit RestServerBuilder(Uri base_uri,
-                             cpp::NnUp<IRestRequestReceiver> request_receiver);
+  RestServerBuilder(Uri base_uri,
+                    cpp::NnUp<IRestRequestReceiver> request_receiver);
 
   /**
    * @brief Registers handler for particular endpoint.

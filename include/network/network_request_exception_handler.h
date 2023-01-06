@@ -20,8 +20,8 @@ class RequestExceptionHandler : public IRestRequestHandler {
    * @brief Catches exception thrown by the handler and transforms it
    * to the response.
    */
-  auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request) const
-      -> cppcoro::task<RestResponse> override;
+  auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request)
+  -> cppcoro::task<RestResponse> override;
 
  private:
   cpp::NnUp<IRestRequestHandler> handler_;

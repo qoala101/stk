@@ -26,8 +26,8 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
   /**
    * @brief Forwards the request to the appropriate handler.
    */
-  auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request) const
-      -> cppcoro::task<RestResponse> override;
+  auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request)
+  -> cppcoro::task<RestResponse> override;
 
  private:
   std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};

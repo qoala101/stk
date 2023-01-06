@@ -23,7 +23,7 @@ class TypedWsMessageHandler : public IWsMessageHandler {
   /**
    * @brief Validates request prior forwarding it to the handler.
    */
-  auto HandleMessage [[nodiscard]] (WsMessage message) const
+  auto HandleMessage [[nodiscard]] (WsMessage message)
       -> cppcoro::task<> override;
 
  private:

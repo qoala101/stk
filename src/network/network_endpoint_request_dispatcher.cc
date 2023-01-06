@@ -12,7 +12,7 @@ EndpointRequestDispatcher::EndpointRequestDispatcher(
     : endpoint_handlers_{std::move(endpoint_handlers)} {}
 
 auto EndpointRequestDispatcher::HandleRequestAndGiveResponse(
-    RestRequest request) const -> cppcoro::task<RestResponse> {
+    RestRequest request) -> cppcoro::task<RestResponse> {
   const auto endpoint_handler = endpoint_handlers_.find(request.endpoint);
 
   if (endpoint_handler == endpoint_handlers_.end()) {

@@ -58,11 +58,11 @@ class AutoParsableRequestHandler : public IRestRequestHandler {
   /**
    * @brief Wraps request in auto-parsable and forwards it to the handler.
    */
-  auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request) const
-      -> cppcoro::task<RestResponse> override;
+  auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request)
+  -> cppcoro::task<RestResponse> override;
 
  private:
-  mutable aprh::HandlerVariant handler_{};
+  aprh::HandlerVariant handler_{};
 };
 }  // namespace stonks::network
 

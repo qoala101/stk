@@ -17,9 +17,8 @@ class IRestRequestHandler {
   /**
    * @return Response for the given request.
    */
-  virtual auto HandleRequestAndGiveResponse
-      [[nodiscard]] (RestRequest request) const
-      -> cppcoro::task<RestResponse> = 0;
+  virtual auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request)
+  -> cppcoro::task<RestResponse> = 0;
 };
 }  // namespace stonks::network
 

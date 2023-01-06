@@ -29,7 +29,7 @@
 namespace stonks::restsdk {
 namespace {
 auto HandleWsMessage(
-    const network::IWsMessageHandler &handler, log::ILogger &logger,
+    network::IWsMessageHandler &handler, log::ILogger &logger,
     const web::websockets::client::websocket_incoming_message &native_message)
     -> cppcoro::task<> {
   if (const auto non_text_message =

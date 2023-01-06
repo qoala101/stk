@@ -15,7 +15,7 @@ RequestExceptionHandler::RequestExceptionHandler(
     : handler_{std::move(handler)} {}
 
 auto RequestExceptionHandler::HandleRequestAndGiveResponse(
-    RestRequest request) const -> cppcoro::task<RestResponse> {
+    RestRequest request) -> cppcoro::task<RestResponse> {
   try {
     co_return co_await handler_->HandleRequestAndGiveResponse(
         std::move(request));

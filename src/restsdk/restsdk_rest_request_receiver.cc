@@ -120,7 +120,7 @@ auto HttpResponseFrom [[nodiscard]] (const network::RestResponse &response) {
 }
 
 auto HandleHttpRequest
-    [[nodiscard]] (const network::IRestRequestHandler &handler,
+    [[nodiscard]] (network::IRestRequestHandler &handler,
                    log::ILogger &logger, const web::http::http_request &request)
     -> cppcoro::task<> {
   const auto request_uri = request.absolute_uri().to_string();

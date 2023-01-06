@@ -4,7 +4,7 @@
 
 namespace stonks::network {
 auto AutoParsableRequestHandler::HandleRequestAndGiveResponse(
-    RestRequest request) const -> cppcoro::task<RestResponse> {
+    RestRequest request) -> cppcoro::task<RestResponse> {
   co_return co_await handler_(request);
 }
 }  // namespace stonks::network

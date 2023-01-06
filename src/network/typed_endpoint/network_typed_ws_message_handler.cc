@@ -17,7 +17,7 @@ TypedWsMessageHandler::TypedWsMessageHandler(
       }()},
       handler_{std::move(handler)} {}
 
-auto TypedWsMessageHandler::HandleMessage(WsMessage message) const
+auto TypedWsMessageHandler::HandleMessage(WsMessage message)
     -> cppcoro::task<> {
   try {
     received_message_type_(*message);

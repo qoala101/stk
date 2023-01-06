@@ -69,7 +69,7 @@ TypedEndpointHandler::TypedEndpointHandler(
       handler_{std::move(handler)} {}
 
 auto TypedEndpointHandler::HandleRequestAndGiveResponse(
-    RestRequest request) const -> cppcoro::task<RestResponse> {
+    RestRequest request) -> cppcoro::task<RestResponse> {
   type_checker_->ValidateRequest(request);
   auto response =
       co_await handler_->HandleRequestAndGiveResponse(std::move(request));

@@ -272,7 +272,7 @@ class FunctionHandler : public stonks::network::IRestRequestHandler {
       : handler_{std::move(handler)} {}
 
   auto HandleRequestAndGiveResponse
-      [[nodiscard]] (stonks::network::RestRequest request) const
+      [[nodiscard]] (stonks::network::RestRequest request)
       -> cppcoro::task<stonks::network::RestResponse> override {
     co_return co_await handler_(request);
   }
@@ -435,7 +435,7 @@ TEST(ClientServer, ClientReceivedWrongTypeException) {
     class Handler : public stonks::network::IRestRequestHandler {
      public:
       auto HandleRequestAndGiveResponse
-          [[nodiscard]] (stonks::network::RestRequest /*unused*/) const
+          [[nodiscard]] (stonks::network::RestRequest /*unused*/)
           -> cppcoro::task<stonks::network::RestResponse> override {
         co_return stonks::network::RestResponse{
             .status = stonks::network::Status::kOk};

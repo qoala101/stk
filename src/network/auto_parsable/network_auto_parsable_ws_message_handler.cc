@@ -5,7 +5,7 @@
 #include <utility>
 
 namespace stonks::network {
-auto AutoParsableWsMessageHandler::HandleMessage(WsMessage message) const
+auto AutoParsableWsMessageHandler::HandleMessage(WsMessage message)
     -> cppcoro::task<> {
   co_await handler_(std::move(message));
 }

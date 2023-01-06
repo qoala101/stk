@@ -27,8 +27,8 @@ class TypedEndpointHandler : public IRestRequestHandler {
    * @brief Validates request prior forwarding it to the handler and response
    * after receiving it from handler.
    */
-  auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request) const
-      -> cppcoro::task<RestResponse> override;
+  auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request)
+  -> cppcoro::task<RestResponse> override;
 
  private:
   cpp::NnUp<te::EndpointTypesValidatorTemplate> type_checker_;
