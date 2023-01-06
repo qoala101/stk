@@ -75,9 +75,8 @@ Select::Select(const std::vector<SelectColumnData>& select_columns_data) {
   SetResultDefinitionFrom(select_columns_data);
 }
 
-auto Select::From(
-    std::string table_name,
-    const cpp::Lazy<std::vector<SelectColumnData>>& select_columns_data)
+auto Select::From(std::string table_name,
+                  cpp::Lazy<std::vector<SelectColumnData>> select_columns_data)
     -> Select& {
   Expects(table_name_->empty());
   Expects(!table_name.empty());

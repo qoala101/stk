@@ -55,10 +55,9 @@ class Insert {
 
   void ValueImpl(std::string_view column_name, const QueryValue& value);
 
-  auto Into
-      [[nodiscard]] (std::string table_name,
-                     const cpp::Lazy<std::vector<std::string>>& column_names)
-      -> Insert&;
+  auto Into [[nodiscard]] (std::string table_name,
+                           cpp::Lazy<std::vector<std::string>> column_names)
+  -> Insert&;
 
   bool insert_all_{};
   Query table_name_{};

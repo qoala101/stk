@@ -36,7 +36,7 @@ auto main(int argc, const char *const *argv) -> int {
   const auto symbols_db_client_options =
       stonks::service::ClientOptions<stonks::core::ISymbolsDb>{options};
   auto symbols = options.AddOption(
-      "--symbols", std::vector<std::string>{"BTCUSDT", "ETHUSDT"});
+      "--symbols", std::vector<std::string>{"BTCUSDT", "ETHUSDT", "BNBUSDT"});
   const auto reattempt_interval = options.AddOption(
       "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
 
@@ -53,17 +53,17 @@ auto main(int argc, const char *const *argv) -> int {
       stonks::di::BindValueTypeToValue(
           absl::Milliseconds(*reattempt_interval)));
 
-  app.Run([injector = stonks::cpp::AssumeNn(&injector), &symbols]() {
+  app.Run([&injector, &symbols]() {
+    auto auto_injectable =
+        stonks::di::AutoInjectable{stonks::cpp::AssumeNn(&injector)};
+
     return stonks::networkx::MakeServerFor<stonks::core::SymbolPriceStreams>(
         stonks::cpp::MakeNnSp<stonks::core::SymbolPriceStreams>(
             stonks::core::SymbolPriceStreams{
                 *symbols | ranges::views::transform([](auto &symbol) {
                   return stonks::core::Symbol{std::move(symbol)};
                 }) | ranges::to_vector,
-                stonks::di::AutoInjectable{injector},
-                stonks::di::AutoInjectable{injector},
-                stonks::di::AutoInjectable{injector}}),
-        stonks::di::AutoInjectable{injector},
-        stonks::di::AutoInjectable{injector});
+                auto_injectable, auto_injectable, auto_injectable}),
+        auto_injectable, auto_injectable);
   });
 }

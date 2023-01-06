@@ -79,8 +79,7 @@ class Select {
 
   auto From [[nodiscard]] (
       std::string table_name,
-      const cpp::Lazy<std::vector<SelectColumnData>> &select_columns_data)
-  -> Select &;
+      cpp::Lazy<std::vector<SelectColumnData>> select_columns_data) -> Select &;
 
   auto Join [[nodiscard]] (std::string_view table_name,
                            const OnCondition &condition) -> Select &;

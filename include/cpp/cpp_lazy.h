@@ -29,43 +29,20 @@ class Lazy {
   /**
    * @brief Gives lazy initialized object.
    */
-  auto GetObject [[nodiscard]] () const -> auto & {
-    return GetObjectImpl(*this);
-  }
-
-  auto GetObject [[nodiscard]] () -> auto & { return GetObjectImpl(*this); }
-
-  /**
-   * @brief Gives an object the lazy initialized one points to.
-   */
-  auto operator* [[nodiscard]] () const -> auto & {
-    return OperatorAsteriskImpl(*this);
-  }
-
-  auto operator* [[nodiscard]] () -> auto & {
-    return OperatorAsteriskImpl(*this);
-  }
-
-  /**
-   * @brief Gives an object the lazy initialized one points to.
-   */
-  auto operator->[[nodiscard]] () const { return OperatorArrowImpl(*this); }
-
-  auto operator->[[nodiscard]] () { return OperatorArrowImpl(*this); }
-
- private:
-  static auto GetObjectImpl [[nodiscard]] (This<Lazy> auto &t) -> auto & {
-    if (!t.object_.has_value()) {
-      t.object_ = t.initializer_();
+  auto GetObject [[nodiscard]] () -> auto & {
+    if (!object_.has_value()) {
+      object_ = initializer_();
     }
 
-    Ensures(t.object_.has_value());
-    return *t.object_;
+    Ensures(object_.has_value());
+    return *object_;
   }
 
-  static auto OperatorAsteriskImpl [[nodiscard]] (This<Lazy> auto &t)
-  -> auto & {
-    auto &object = t.GetObject();
+  /**
+   * @brief Gives an object the lazy initialized one points to.
+   */
+  auto operator* [[nodiscard]] () -> auto & {
+    auto &object = GetObject();
 
     if constexpr (PointerLike<T>) {
       return *object;
@@ -74,12 +51,14 @@ class Lazy {
     }
   }
 
-  static auto OperatorArrowImpl [[nodiscard]] (This<Lazy> auto &t) {
-    return AssumeNn(&*t);
-  }
+  /**
+   * @brief Gives an object the lazy initialized one points to.
+   */
+  auto operator->[[nodiscard]] () { return AssumeNn(&*(*this)); }
 
-  mutable fu2::unique_function<auto() const->T> initializer_{};
-  mutable Opt<T> object_{};
+ private:
+  fu2::unique_function<auto()->T> initializer_{};
+  Opt<T> object_{};
 };
 }  // namespace stonks::cpp
 

@@ -54,8 +54,7 @@ void Insert::ValueImpl(std::string_view column_name, const QueryValue& value) {
 }
 
 auto Insert::Into(std::string table_name,
-                  const cpp::Lazy<std::vector<std::string>>& column_names)
-    -> Insert& {
+                  cpp::Lazy<std::vector<std::string>> column_names) -> Insert& {
   Expects(table_name_->empty());
   Expects(!table_name.empty());
   *table_name_ = std::move(table_name);
