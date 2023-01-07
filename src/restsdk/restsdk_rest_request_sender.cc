@@ -15,9 +15,9 @@
 #include <cppcoro/single_consumer_event.hpp>
 #include <exception>
 #include <gsl/assert>
+#include <magic_enum.hpp>
 #include <map>
 #include <memory>
-#include <nameof.hpp>
 #include <not_null.hpp>
 #include <string>
 #include <string_view>
@@ -134,8 +134,8 @@ auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
   const auto full_uri = WebUriFrom(request);
 
   logger_->LogImportantEvent(fmt::format(
-      "Sending {} request to {}", nameof::nameof_enum(request.endpoint.method),
-      full_uri.to_string()));
+      "Sending {} request to {}",
+      magic_enum::enum_name(request.endpoint.method), full_uri.to_string()));
 
   auto http_client = web::http::client::http_client{full_uri};
   const auto http_request = HttpRequestFrom(request);
@@ -156,7 +156,7 @@ auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
   } catch (const std::exception &e) {
     logger_->LogErrorCondition(
         fmt::format("{} request to {} failed: {}",
-                    nameof::nameof_enum(request.endpoint.method),
+                    magic_enum::enum_name(request.endpoint.method),
                     full_uri.to_string(), e.what()));
     throw;
   }

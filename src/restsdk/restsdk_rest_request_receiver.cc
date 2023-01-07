@@ -14,9 +14,9 @@
 #include <cppcoro/sync_wait.hpp>
 #include <cppcoro/task.hpp>
 #include <gsl/assert>
+#include <magic_enum.hpp>
 #include <map>
 #include <memory>
-#include <nameof.hpp>
 #include <not_null.hpp>
 #include <optional>
 #include <range/v3/iterator/basic_iterator.hpp>
@@ -120,9 +120,8 @@ auto HttpResponseFrom [[nodiscard]] (const network::RestResponse &response) {
 }
 
 auto HandleHttpRequest
-    [[nodiscard]] (network::IRestRequestHandler &handler,
-                   log::ILogger &logger, const web::http::http_request &request)
-    -> cppcoro::task<> {
+    [[nodiscard]] (network::IRestRequestHandler &handler, log::ILogger &logger,
+                   const web::http::http_request &request) -> cppcoro::task<> {
   const auto request_uri = request.absolute_uri().to_string();
   logger.LogImportantEvent(
       fmt::format("Received {} request on {}", request.method(), request_uri));
@@ -138,13 +137,13 @@ auto HandleHttpRequest
   } catch (const std::exception &e) {
     logger.LogErrorCondition(fmt::format(
         "Couldn't reply {} on {}: {}",
-        nameof::nameof_enum(rest_response.status), request_uri, e.what()));
+        magic_enum::enum_name(rest_response.status), request_uri, e.what()));
     throw;
   }
 
   logger.LogImportantEvent(
-      fmt::format("Replied {} on {}", nameof::nameof_enum(rest_response.status),
-                  request_uri));
+      fmt::format("Replied {} on {}",
+                  magic_enum::enum_name(rest_response.status), request_uri));
 }
 }  // namespace
 

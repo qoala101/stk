@@ -30,8 +30,8 @@ target_link_libraries(librestsdk
   PRIVATE cppcoro::cppcoro
   PRIVATE cpprestsdk::cpprest
   PRIVATE fmt::fmt
+  PRIVATE magic_enum::magic_enum
   PRIVATE Microsoft.GSL::GSL
-  PRIVATE nameof::nameof
   PRIVATE NotNull
   PRIVATE range-v3::range-v3
   PRIVATE polymorphic_value::polymorphic_value
