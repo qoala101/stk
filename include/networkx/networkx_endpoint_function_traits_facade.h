@@ -40,8 +40,8 @@ template <cpp::MemberFunction auto kFunction,
   requires EndpointFunction<kFunction>
 struct EndpointFunctionTraitsFacade : public FunctionTraits {
   using FunctionType = decltype(kFunction);
-  using ResultType =
-      typename member_function_traits<FunctionType>::return_type::value_type;
+  using NativeTraits = member_function_traits<FunctionType>;
+  using ResultType = typename NativeTraits::return_type::value_type;
 
   /**
    * @brief Tells whether function has params.
@@ -63,6 +63,13 @@ struct EndpointFunctionTraitsFacade : public FunctionTraits {
   template <unsigned kIndex>
   static constexpr auto GetParam [[nodiscard]] () -> auto & {
     return std::get<kIndex>(FunctionTraits::kParams);
+  }
+
+  /**
+   * @brief Tells whether function is const.
+   */
+  static constexpr auto IsConst [[nodiscard]] () {
+    return NativeTraits::is_const;
   }
 
   /**

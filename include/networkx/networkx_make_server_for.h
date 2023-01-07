@@ -57,7 +57,7 @@ auto CallSynchronized(
         &async_callable,
     std::shared_mutex &target_mutex) -> cppcoro::task<ResultType> {
   if constexpr (FunctionTraits::IsSynchronized()) {
-    if constexpr (FunctionTraits::kMethod == network::Method::kGet) {
+    if constexpr (FunctionTraits::IsConst()) {
       auto lock = std::shared_lock{target_mutex};
       co_return co_await async_callable();
     } else {
