@@ -41,12 +41,20 @@ class DbFacade {
   void EnableForeignKeys() const;
 
   /**
+   * @brief Turns native synchronization off.
+   * @remark Synchronization is enabled by default.
+   */
+  void TurnOffSynchronization() const;
+
+  /**
    * @brief Closes DB.
    * @remark Other methods should not be called after this.
    */
   void Close();
 
  private:
+  void SetPragma(std::string_view pragma_name, std::string_view value) const;
+
   di::Factory<log::ILogger> logger_factory_;
   cpp::NnUp<log::ILogger> logger_;
   sqlite3 *sqlite_db_{};

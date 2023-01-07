@@ -13,6 +13,7 @@
 #include "cpp_optional.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
+#include "networkx_client_server_type_traits_facade.h"
 #include "networkx_concepts.h"  // IWYU pragma: keep
 #include "networkx_types.h"
 
@@ -62,6 +63,19 @@ struct EndpointFunctionTraitsFacade : public FunctionTraits {
   template <unsigned kIndex>
   static constexpr auto GetParam [[nodiscard]] () -> auto & {
     return std::get<kIndex>(FunctionTraits::kParams);
+  }
+
+  /**
+   * @brief Tells whether function should be synchronized.
+   * @remark Overrides server value.
+   */
+  static constexpr auto IsSynchronized [[nodiscard]] () {
+    if constexpr (requires { FunctionTraits::kSynchronized; }) {
+      return FunctionTraits::kSynchronized;
+    } else {
+      return ClientServerTypeTraitsFacade<
+          ParentType<kFunction>>::IsSynchronized();
+    }
   }
 
   /**

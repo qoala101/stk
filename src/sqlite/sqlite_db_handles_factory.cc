@@ -36,7 +36,9 @@ auto DbHandlesFactory::CreateInMemoryDb() const -> SqliteDbHandle {
         fmt::format("Couldn't create in memory DB: {}", result_code)};
   }
 
-  DbFacade{logger_factory_, cpp::AssumeNn(in_memory_db)}.EnableForeignKeys();
+  const auto db_facade = DbFacade{logger_factory_, cpp::AssumeNn(in_memory_db)};
+  db_facade.EnableForeignKeys();
+  db_facade.TurnOffSynchronization();
 
   return {cpp::AssumeNn(NullableSqliteDbHandle{
       in_memory_db, detail::SqliteDbCloser{logger_factory_}})};

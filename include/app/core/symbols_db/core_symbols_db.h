@@ -81,33 +81,31 @@ class SymbolsDb : public ISymbolsDb {
  private:
   auto SelectAssetsImpl [[nodiscard]] () const;
 
-  void InsertAsset(Asset asset);
-  void DeleteAsset(Asset asset);
+  void InsertAsset(Asset asset) const;
+  void DeleteAsset(Asset asset) const;
 
   auto SelectSymbolsInfoImpl [[nodiscard]] () const;
-  void InsertSymbolInfo(SymbolInfo info);
-  void UpdateSymbolInfo(SymbolInfo info);
-  void DeleteSymbolInfo(SymbolInfo info);
+  void InsertSymbolInfo(SymbolInfo info) const;
+  void UpdateSymbolInfo(SymbolInfo info) const;
+  void DeleteSymbolInfo(SymbolInfo info) const;
 
   cpp::NnSp<sqldb::p::Db> db_;
 
   struct PreparedStatements {
-    cpp::Up<sqldb::ISelectStatement> select_assets{};
-    cpp::Up<sqldb::IUpdateStatement> insert_asset{};
-    cpp::Up<sqldb::IUpdateStatement> delete_asset{};
+    cpp::NnUp<sqldb::ISelectStatement> select_assets;
+    cpp::NnUp<sqldb::IUpdateStatement> insert_asset;
+    cpp::NnUp<sqldb::IUpdateStatement> delete_asset;
 
-    cpp::Up<sqldb::ISelectStatement> select_symbols_with_price_records{};
+    cpp::NnUp<sqldb::ISelectStatement> select_symbol_info;
+    cpp::NnUp<sqldb::ISelectStatement> select_symbols_info;
+    cpp::NnUp<sqldb::IUpdateStatement> insert_symbol_info;
+    cpp::NnUp<sqldb::IUpdateStatement> update_symbol_info;
+    cpp::NnUp<sqldb::IUpdateStatement> delete_symbol_info;
 
-    cpp::Up<sqldb::ISelectStatement> select_symbol_info{};
-    cpp::Up<sqldb::ISelectStatement> select_symbols_info{};
-    cpp::Up<sqldb::IUpdateStatement> insert_symbol_info{};
-    cpp::Up<sqldb::IUpdateStatement> update_symbol_info{};
-    cpp::Up<sqldb::IUpdateStatement> delete_symbol_info{};
-
-    cpp::Up<sqldb::ISelectStatement> select_symbol_price_records{};
-    cpp::Up<sqldb::IUpdateStatement> insert_symbol_price_record{};
-    cpp::Up<sqldb::IUpdateStatement> delete_symbol_price_records{};
-  } mutable prepared_statements_{};
+    cpp::NnUp<sqldb::ISelectStatement> select_symbol_price_records;
+    cpp::NnUp<sqldb::IUpdateStatement> insert_symbol_price_record;
+    cpp::NnUp<sqldb::IUpdateStatement> delete_symbol_price_records;
+  } prepared_statements_;
 };
 }  // namespace stonks::core
 

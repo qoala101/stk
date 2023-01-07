@@ -2,6 +2,7 @@
 #define STONKS_NETWORKX_NETWORKX_MAKE_SERVER_FOR_H_
 
 #include <cppcoro/task.hpp>
+#include <shared_mutex>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -34,7 +35,7 @@ template <cpp::MemberFunction auto kFunction, ClientServerType Target,
           typename ResultType = typename FunctionTraits::ResultType>
   requires EndpointFunction<kFunction> &&
            cpp::MemberFunctionOf<decltype(kFunction), Target>
-           auto InvokeWithRequestParams
+           auto CallWithRequestParams
            [[nodiscard]] (Target &target,
                           network::AutoParsableRestRequest &request)
            -> cppcoro::task<ResultType> {
@@ -47,13 +48,36 @@ template <cpp::MemberFunction auto kFunction, ClientServerType Target,
       FunctionTraits::kParams);
 }
 
+template <cpp::MemberFunction auto kFunction,
+          typename FunctionTraits = EndpointFunctionTraitsFacade<kFunction>,
+          typename ResultType = typename FunctionTraits::ResultType>
+  requires EndpointFunction<kFunction>
+auto CallSynchronized(
+    const cpp::CallableReturning<cppcoro::task<ResultType>> auto
+        &async_callable,
+    std::shared_mutex &target_mutex) -> cppcoro::task<ResultType> {
+  if constexpr (FunctionTraits::IsSynchronized()) {
+    if constexpr (FunctionTraits::kMethod == network::Method::kGet) {
+      auto lock = std::shared_lock{target_mutex};
+      co_return co_await async_callable();
+    } else {
+      auto lock = std::unique_lock{target_mutex};
+      co_return co_await async_callable();
+    }
+  } else {
+    co_return co_await async_callable();
+  }
+}
+
 template <ClientServerType Target>
 void SetEndpointHandlers(network::RestServerBuilder &server_builder,
                          const cpp::NnSp<Target> &target) {
   using TargetTraits = ClientServerTypeTraitsFacade<Target>;
 
   cpp::ForEachIndex<TargetTraits::GetNumEndpoints()>(
-      [&server_builder, &target]<typename Current>(Current) {
+      [&server_builder, &target,
+       target_mutex =
+           cpp::MakeNnSp<std::shared_mutex>()]<typename Current>(Current) {
         constexpr auto function =
             TargetTraits::template GetEndpointFunction<Current::kIndex>();
 
@@ -66,15 +90,25 @@ void SetEndpointHandlers(network::RestServerBuilder &server_builder,
         if constexpr (FunctionTraits::HasParams()) {
           server_builder.Handling(
               std::move(endpoint),
-              [target](auto request) -> cppcoro::task<ResultType> {
-                co_return co_await InvokeWithRequestParams<function>(*target,
-                                                                     request);
+              [target,
+               target_mutex](auto request) -> cppcoro::task<ResultType> {
+                co_return co_await CallSynchronized<function>(
+                    [&target, &request]() -> cppcoro::task<ResultType> {
+                      co_return co_await CallWithRequestParams<function>(
+                          *target, request);
+                    },
+                    *target_mutex);
               });
         } else {
-          server_builder.Handling(std::move(endpoint),
-                                  [target]() -> cppcoro::task<ResultType> {
-                                    co_return co_await (*target.*function)();
-                                  });
+          server_builder.Handling(
+              std::move(endpoint),
+              [target, target_mutex]() -> cppcoro::task<ResultType> {
+                co_return co_await CallSynchronized<function>(
+                    [&target]() -> cppcoro::task<ResultType> {
+                      co_return co_await (*target.*function)();
+                    },
+                    *target_mutex);
+              });
         }
       });
 }
@@ -83,6 +117,8 @@ void SetEndpointHandlers(network::RestServerBuilder &server_builder,
 /**
  * @brief Creates REST server for the target object on specified URI.
  * Server would handle request according to the object client-server traits.
+ * For endpoints which set Synchronized flag, shared mutex would be used
+ * to protect read-write operations based on method.
  */
 template <ClientServerType Target>
 auto MakeServerFor

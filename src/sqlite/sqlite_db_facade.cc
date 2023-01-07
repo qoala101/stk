@@ -98,17 +98,9 @@ auto DbFacade::CreatePreparedStatement(const sqldb::Query &query) const
       detail::SqliteStatementFinalizer{logger_factory_.Create()}})};
 }
 
-void DbFacade::EnableForeignKeys() const {
-  Expects(sqlite_db_ != nullptr);
+void DbFacade::EnableForeignKeys() const { SetPragma("foreign_keys", "ON"); }
 
-  const auto result_code = sqlite3_exec(sqlite_db_, "PRAGMA foreign_keys = ON",
-                                        nullptr, nullptr, nullptr);
-
-  if (result_code != SQLITE_OK) {
-    throw cpp::MessageException{fmt::format(
-        "Couldn't set foreign_keys pragma on new DB: {}", result_code)};
-  }
-}
+void DbFacade::TurnOffSynchronization() const { SetPragma("synchronous", "OFF"); }
 
 void DbFacade::Close() {
   Expects(sqlite_db_ != nullptr);
@@ -125,5 +117,19 @@ void DbFacade::Close() {
 
   sqlite_db_ = nullptr;
   Ensures(sqlite_db_ == nullptr);
+}
+
+void DbFacade::SetPragma(std::string_view pragma,
+                         std::string_view value) const {
+  Expects(sqlite_db_ != nullptr);
+
+  const auto query = fmt::format("PRAGMA {} = {}", pragma, value);
+  const auto result_code =
+      sqlite3_exec(sqlite_db_, query.c_str(), nullptr, nullptr, nullptr);
+
+  if (result_code != SQLITE_OK) {
+    throw cpp::MessageException{fmt::format("Couldn't set {} pragma to {}: {}",
+                                            pragma, value, result_code)};
+  }
 }
 }  // namespace stonks::sqlite

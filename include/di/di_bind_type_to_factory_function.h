@@ -14,7 +14,7 @@ template <typename T, auto kFactoryFunction,
 struct FactoryFunctionInjector;
 
 template <typename T, auto kFactoryFunction, typename... Args>
-  requires cpp::InvocableReturningTaking<decltype(kFactoryFunction), T, Args...>
+  requires cpp::CallableReturningTaking<decltype(kFactoryFunction), T, Args...>
 struct FactoryFunctionInjector<T, kFactoryFunction, T (*)(Args...)> : public T {
   explicit FactoryFunctionInjector(Args... args)
       : T{kFactoryFunction(std::move(args)...)} {}

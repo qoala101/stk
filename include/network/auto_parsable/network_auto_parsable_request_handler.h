@@ -21,21 +21,21 @@ namespace stonks::network {
  */
 class AutoParsableRequestHandler : public IRestRequestHandler {
  public:
-  template <aprh::VoidInvocable Handler>
+  template <aprh::VoidCallable Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{
             aprh::HandlerVariant::ValueType{std::in_place_type<aprh::Handler>,
                                             std::forward<Handler>(handler)}} {}
 
-  template <aprh::VoidInvocableTaking<AutoParsableRestRequest> Handler>
+  template <aprh::VoidCallableTaking<AutoParsableRestRequest> Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
             std::in_place_type<aprh::HandlerWithRequest>,
             std::forward<Handler>(handler)}} {}
 
-  template <aprh::ConvertibleInvocable Handler>
+  template <aprh::ConvertibleCallable Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{aprh::HandlerVariant::ValueType{
@@ -45,7 +45,7 @@ class AutoParsableRequestHandler : public IRestRequestHandler {
               co_return ConvertToJson(co_await handler());
             }}} {}
 
-  template <aprh::ConvertibleInvocableTaking<AutoParsableRestRequest> Handler>
+  template <aprh::ConvertibleCallableTaking<AutoParsableRestRequest> Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableRequestHandler(Handler &&handler)
       : handler_{aprh::HandlerVariant::ValueType{

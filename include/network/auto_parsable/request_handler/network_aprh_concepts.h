@@ -13,19 +13,19 @@
 
 namespace stonks::network::aprh {
 template <typename T>
-concept VoidInvocable = cpp::InvocableReturning<T, cppcoro::task<>>;
+concept VoidCallable = cpp::CallableReturning<T, cppcoro::task<>>;
 
 template <typename T, typename U>
-concept VoidInvocableTaking =
-    cpp::InvocableReturningTaking<T, cppcoro::task<>, U>;
+concept VoidCallableTaking =
+    cpp::CallableReturningTaking<T, cppcoro::task<>, U>;
 
 template <typename T, typename... Args>
-concept ConvertibleInvocableTaking =
+concept ConvertibleCallableTaking =
     Convertible<typename decltype(std::declval<T>()(
         std::declval<Args>()...))::value_type>;
 
 template <typename T>
-concept ConvertibleInvocable = ConvertibleInvocableTaking<T>;
+concept ConvertibleCallable = ConvertibleCallableTaking<T>;
 }  // namespace stonks::network::aprh
 
 #endif  // STONKS_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_NETWORK_APRH_CONCEPTS_H_

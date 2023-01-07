@@ -19,14 +19,14 @@ namespace stonks::network {
  */
 class AutoParsableWsMessageHandler : public IWsMessageHandler {
  public:
-  template <aprh::VoidInvocable Handler>
+  template <aprh::VoidCallable Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableWsMessageHandler(Handler &&handler)
       : handler_{aprh::WsHandlerVariant::ValueType{
             std::in_place_type<aprh::Handler>,
             std::forward<Handler>(handler)}} {}
 
-  template <aprh::VoidInvocableTaking<AutoParsableWsMessage> Handler>
+  template <aprh::VoidCallableTaking<AutoParsableWsMessage> Handler>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit AutoParsableWsMessageHandler(Handler &&handler)
       : handler_{aprh::WsHandlerVariant::ValueType{

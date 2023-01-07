@@ -60,6 +60,18 @@ struct ClientServerTypeTraitsFacade {
       return "80";
     }
   }
+
+  /**
+   * @brief Gives default synchronization setting for server.
+   * @remark Can be overriden for each endpoint function.
+   */
+  static constexpr auto IsSynchronized [[nodiscard]] () {
+    if constexpr (requires { TargetTraits::kSynchronized; }) {
+      return TargetTraits::kSynchronized;
+    } else {
+      return false;
+    }
+  }
 };
 }  // namespace stonks::networkx
 

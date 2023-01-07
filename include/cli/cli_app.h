@@ -28,7 +28,7 @@ class App {
   /**
    * @brief Runs the function until interrupted.
    */
-  template <cpp::VoidInvocable Main>
+  template <cpp::VoidCallable Main>
   void Run(const Main &main) const {
     const auto run_scope = CreateRunScope();
     main();
@@ -39,7 +39,7 @@ class App {
    * @tparam Main Callable which returns an instance which would be kept alive
    * until interrupt occurs.
    */
-  template <cpp::NonVoidInvocable Main>
+  template <cpp::NonVoidCallable Main>
   void Run(const Main &main) const {
     auto instance = cpp::Opt<decltype(main())>{};
     const auto run_scope = CreateRunScope();

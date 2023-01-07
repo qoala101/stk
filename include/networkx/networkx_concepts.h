@@ -30,6 +30,15 @@ constexpr auto HasParamForEachArg [[nodiscard]] () {
   }
 }
 
+template <cpp::MemberFunction auto kFunction>
+constexpr auto HasConstCorrectMethod [[nodiscard]] () {
+  const auto is_const_function =
+      member_function_traits<decltype(kFunction)>::is_const;
+  const auto is_get_method =
+      EndpointFunctionTraits<kFunction>::kMethod == network::Method::kGet;
+  return is_const_function == is_get_method;
+}
+
 template <typename T>
 constexpr auto IsEndpointFunctions = false;
 
@@ -48,11 +57,8 @@ concept EndpointParam =
  * @brief Function for which endpoint function traits are defined.
  */
 template <auto kFunction>
-concept EndpointFunction = requires {
-                             {
-                               EndpointFunctionTraits<kFunction>::kMethod
-                               } -> cpp::Is<network::Method>;
-                           } && detail::HasParamForEachArg<kFunction>();
+concept EndpointFunction = detail::HasConstCorrectMethod<kFunction>() &&
+                           detail::HasParamForEachArg<kFunction>();
 
 /**
  * @brief Type for which client-server traits are defined.

@@ -57,6 +57,7 @@ template <>
 struct ClientServerTypeTraits<core::ISymbolsDb> {
   static constexpr auto kName = "symbols_db";
   static constexpr auto kDefaultPort = "30000";
+  static constexpr auto kSynchronized = true;
   static constexpr auto kEndpointFunctions = EndpointFunctionList(
       &core::ISymbolsDb::SelectAssets, &core::ISymbolsDb::UpdateAssets,
       &core::ISymbolsDb::SelectSymbolInfo, &core::ISymbolsDb::SelectSymbolsInfo,

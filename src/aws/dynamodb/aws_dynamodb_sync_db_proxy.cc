@@ -26,7 +26,7 @@
 
 namespace stonks::aws::dynamodb {
 namespace {
-template <cpp::InvocableReturning<cppcoro::task<bool>> Predicate>
+template <cpp::CallableReturning<cppcoro::task<bool>> Predicate>
 auto WaitUntil(const Predicate &predicate) -> cppcoro::task<> {
   while (!co_await predicate()) {
   }

@@ -92,31 +92,31 @@ concept MemberFunctionOf =
     std::same_as<typename member_function_traits<T>::class_type, Parent>;
 
 template <typename T, typename U>
-concept InvocableReturning = requires(T t) {
-                               { t() } -> std::same_as<U>;
-                             };
+concept CallableReturning = requires(T t) {
+                              { t() } -> std::same_as<U>;
+                            };
 
 template <typename T>
-concept VoidInvocable = InvocableReturning<T, void>;
+concept VoidCallable = CallableReturning<T, void>;
 
 template <typename T>
-concept NonVoidInvocable = requires(T t) { t(); } && !
-VoidInvocable<T>;
+concept NonVoidCallable = requires(T t) { t(); } && !
+VoidCallable<T>;
 
 template <typename T, typename U, typename... Args>
-concept InvocableReturningTaking = requires(T t, Args &&...args) {
-                                     {
-                                       t(std::forward<Args>(args)...)
-                                       } -> std::same_as<U>;
-                                   };
+concept CallableReturningTaking = requires(T t, Args &&...args) {
+                                    {
+                                      t(std::forward<Args>(args)...)
+                                      } -> std::same_as<U>;
+                                  };
 
 template <typename T, typename... Args>
-concept VoidInvocableTaking = InvocableReturningTaking<T, void, Args...>;
+concept VoidCallableTaking = CallableReturningTaking<T, void, Args...>;
 
 template <typename T, typename... Args>
-concept NonVoidInvocableTaking =
+concept NonVoidCallableTaking =
     requires(T t, Args &&...args) { t(std::forward<Args>(args)...); } && !
-VoidInvocableTaking<T, Args...>;
+VoidCallableTaking<T, Args...>;
 }  // namespace stonks::cpp
 
 #endif  // STONKS_CPP_CPP_CONCEPTS_H_

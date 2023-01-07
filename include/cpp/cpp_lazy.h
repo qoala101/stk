@@ -19,7 +19,7 @@ class Lazy {
    * @param initializer Would be called to create the object
    * when it's requested the first time.
    */
-  template <cpp::InvocableReturning<T> Initializer>
+  template <cpp::CallableReturning<T> Initializer>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
   explicit Lazy(Initializer &&initializer)
       : initializer_{std::forward<Initializer>(initializer)} {
