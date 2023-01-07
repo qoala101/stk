@@ -28,6 +28,12 @@ template <typename T>
 struct ClientServerTypeTraits;
 
 /**
+ * @brief Optional traits of web socket receiver function.
+ */
+template <cpp::MemberFunction auto kFunction>
+struct WebSocketReceiverTraits {};
+
+/**
  * @brief Type of the member function parent.
  */
 template <cpp::MemberFunction auto kFunction>

@@ -9,7 +9,9 @@
 #include "network_typed_ws_endpoint.h"
 #include "network_ws_client_builder.h"
 #include "network_ws_connection.h"
+#include "networkx_common.h"
 #include "networkx_concepts.h"  // IWYU pragma: keep
+#include "networkx_web_socket_receiver_traits_facade.h"
 #include "networkx_web_socket_sender.h"
 
 namespace stonks::networkx {
@@ -48,10 +50,15 @@ class WebSocket<kFunction> {
   }
 
   static auto ReceiverCaller [[nodiscard]] (Parent parent) {
-    return
-        [parent = std::move(parent)](auto message) mutable -> cppcoro::task<> {
-          co_await (parent.*kFunction)(*message);
-        };
+    return [parent = std::move(parent),
+            read_write_mutex = cpp::MakeNnSp<std::shared_mutex>()](
+               auto message) mutable -> cppcoro::task<> {
+      co_await CallSynchronized<WebSocketReceiverTraitsFacade<kFunction>, void>(
+          [&parent, &message]() -> cppcoro::task<void> {
+            co_await (parent.*kFunction)(*message);
+          },
+          *read_write_mutex);
+    };
   }
 
   network::WsConnection connection_;
@@ -109,10 +116,16 @@ class WebSocket<kFunction> {
 
   static auto ReceiverCaller
       [[nodiscard]] (Parent parent, cpp::NnSp<cpp::Opt<Sender>> sender) {
-    return [parent = std::move(parent),
-            sender = std::move(sender)](auto message) -> cppcoro::task<> {
+    return [parent = std::move(parent), sender = std::move(sender),
+            read_write_mutex = cpp::MakeNnSp<std::shared_mutex>()](
+               auto message) -> cppcoro::task<> {
       Expects(sender->has_value());
-      co_await (parent.*kFunction)(*message, **sender);
+
+      co_await CallSynchronized<WebSocketReceiverTraitsFacade<kFunction>>(
+          [&parent, &sender, &message]() -> cppcoro::task<void> {
+            co_await (parent.*kFunction)(*message, **sender);
+          },
+          *read_write_mutex);
     };
   }
 

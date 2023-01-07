@@ -8,8 +8,10 @@
 #include "core_types.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
+#include "networkx_types.h"
 
-namespace stonks::core::sps {
+namespace stonks {
+namespace core::sps {
 /**
  * @brief Records symbol prices to Symbols DB.
  */
@@ -31,6 +33,14 @@ class BookTickHandler {
   cpp::NnUp<ISymbolsDb> symbols_db_;
   cpp::Opt<SymbolPriceRecord> last_record_{};
 };
-}  // namespace stonks::core::sps
+}  // namespace core::sps
+
+namespace networkx {
+template <>
+struct WebSocketReceiverTraits<&core::sps::BookTickHandler::RecordAsPrice> {
+  static constexpr auto kSynchronized = true;
+};
+}  // namespace networkx
+}  // namespace stonks
 
 #endif  // STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_BOOK_TICK_HANDLER_H_

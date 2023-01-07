@@ -13,6 +13,7 @@
 #include "network_auto_parsable_request.h"
 #include "network_rest_server_builder.h"
 #include "networkx_client_server_type_traits_facade.h"
+#include "networkx_common.h"
 #include "networkx_concepts.h"  // IWYU pragma: keep
 #include "networkx_endpoint_function_traits_facade.h"
 #include "networkx_types.h"
@@ -48,27 +49,6 @@ template <cpp::MemberFunction auto kFunction, ClientServerType Target,
       FunctionTraits::kParams);
 }
 
-template <cpp::MemberFunction auto kFunction,
-          typename FunctionTraits = EndpointFunctionTraitsFacade<kFunction>,
-          typename ResultType = typename FunctionTraits::ResultType>
-  requires EndpointFunction<kFunction>
-auto CallSynchronized(
-    const cpp::CallableReturning<cppcoro::task<ResultType>> auto
-        &async_callable,
-    std::shared_mutex &target_mutex) -> cppcoro::task<ResultType> {
-  if constexpr (FunctionTraits::IsSynchronized()) {
-    if constexpr (FunctionTraits::IsConst()) {
-      auto lock = std::shared_lock{target_mutex};
-      co_return co_await async_callable();
-    } else {
-      auto lock = std::unique_lock{target_mutex};
-      co_return co_await async_callable();
-    }
-  } else {
-    co_return co_await async_callable();
-  }
-}
-
 template <ClientServerType Target>
 void SetEndpointHandlers(network::RestServerBuilder &server_builder,
                          const cpp::NnSp<Target> &target) {
@@ -76,7 +56,7 @@ void SetEndpointHandlers(network::RestServerBuilder &server_builder,
 
   cpp::ForEachIndex<TargetTraits::GetNumEndpoints()>(
       [&server_builder, &target,
-       target_mutex =
+       read_write_mutex =
            cpp::MakeNnSp<std::shared_mutex>()]<typename Current>(Current) {
         constexpr auto function =
             TargetTraits::template GetEndpointFunction<Current::kIndex>();
@@ -91,23 +71,23 @@ void SetEndpointHandlers(network::RestServerBuilder &server_builder,
           server_builder.Handling(
               std::move(endpoint),
               [target,
-               target_mutex](auto request) -> cppcoro::task<ResultType> {
-                co_return co_await CallSynchronized<function>(
+               read_write_mutex](auto request) -> cppcoro::task<ResultType> {
+                co_return co_await CallSynchronized<FunctionTraits>(
                     [&target, &request]() -> cppcoro::task<ResultType> {
                       co_return co_await CallWithRequestParams<function>(
                           *target, request);
                     },
-                    *target_mutex);
+                    *read_write_mutex);
               });
         } else {
           server_builder.Handling(
               std::move(endpoint),
-              [target, target_mutex]() -> cppcoro::task<ResultType> {
-                co_return co_await CallSynchronized<function>(
+              [target, read_write_mutex]() -> cppcoro::task<ResultType> {
+                co_return co_await CallSynchronized<FunctionTraits>(
                     [&target]() -> cppcoro::task<ResultType> {
                       co_return co_await (*target.*function)();
                     },
-                    *target_mutex);
+                    *read_write_mutex);
               });
         }
       });
