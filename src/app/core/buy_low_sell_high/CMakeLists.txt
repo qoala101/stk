@@ -18,6 +18,7 @@ target_link_libraries(libcore_buy_low_sell_high
   PRIVATE absl::absl
   PRIVATE callable
   PRIVATE cppcoro::cppcoro
+  PRIVATE fmt::fmt
   PRIVATE Microsoft.GSL::GSL
   PRIVATE NotNull
 )

@@ -44,6 +44,7 @@ target_link_libraries(libsqldb
   PRIVATE callable
   PRIVATE fmt::fmt
   PRIVATE function2::function2
+  PRIVATE magic_enum::magic_enum
   PRIVATE Microsoft.GSL::GSL
   PRIVATE nameof::nameof
   PRIVATE NotNull

@@ -70,6 +70,11 @@ struct SymbolPriceRecord {
       [[nodiscard]] (const SymbolPriceRecord &, const SymbolPriceRecord &)
       -> std::partial_ordering = default;
 };
+
+/**
+ * @brief Order of time sorting.
+ */
+enum class TimeOrder { kNewFirst, kOldFirst };
 }  // namespace stonks::core
 
 #endif  // STONKS_CORE_CORE_TYPES_H_

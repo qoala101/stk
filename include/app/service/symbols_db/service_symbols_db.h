@@ -54,8 +54,9 @@ class SymbolsDb : public ClientBase<core::ISymbolsDb> {
    * @copydoc core::ISymbolsDb::SelectSymbolPriceRecords
    */
   auto SelectSymbolPriceRecords
-      [[nodiscard]] (const core::Symbol &symbol, const absl::Time *start_time,
-                     const absl::Time *end_time, const int *limit) const
+      [[nodiscard]] (const core::Symbol &symbol, const core::TimeOrder *order,
+                     const absl::Time *start_time, const absl::Time *end_time,
+                     const int *limit) const
       -> cppcoro::task<std::vector<core::SymbolPriceRecord>> override;
 
   /**

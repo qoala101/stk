@@ -4,6 +4,7 @@
 #include <fmt/core.h>
 
 #include <gsl/assert>
+#include <magic_enum.hpp>
 #include <not_null.hpp>
 #include <range/v3/detail/variant.hpp>
 #include <range/v3/functional/bind_back.hpp>
@@ -23,6 +24,20 @@
 #include "sqldb_p_types.h"
 #include "sqldb_qb_types.h"
 #include "sqldb_types.h"
+
+template <>
+constexpr auto magic_enum::customize::enum_name(
+    stonks::sqldb::qb::Order value) noexcept
+    -> magic_enum::customize::customize_t {
+  switch (value) {
+    case stonks::sqldb::qb::Order::kAscending:
+      return "ASC";
+    case stonks::sqldb::qb::Order::kDescending:
+      return "DESC";
+    default:
+      return invalid_tag;
+  }
+}
 
 namespace stonks::sqldb::qb {
 Select::Select(All /*unused*/) : select_all_{true}, columns_query_{"*"} {
@@ -47,6 +62,8 @@ auto Select::Where(WhereCondition condition) -> Select& {
 }
 
 auto Select::Limit(const QueryValue& value) -> Select& {
+  Expects(limit_query_->empty());
+
   const auto& value_query = value.GetQuery();
   Expects(!value_query->empty());
 
@@ -61,8 +78,8 @@ auto Select::Build() const -> p::Parametrized<SelectQuery> {
   Expects(!columns_query_->empty());
 
   auto query =
-      fmt::format("SELECT {} FROM {}{}{}{}", *columns_query_, *table_name_,
-                  *join_query_, *where_query_, *limit_query_);
+      fmt::format("SELECT {} FROM {}{}{}{}{}", *columns_query_, *table_name_,
+                  *join_query_, *where_query_, *order_by_query_, *limit_query_);
   auto params = ranges::views::concat(*join_query_.params, *where_query_.params,
                                       *limit_query_.params) |
                 ranges::to_vector;
@@ -99,6 +116,19 @@ auto Select::Join(std::string_view table_name, const OnCondition& condition)
   join_query_.params += condition_query.params;
 
   Ensures(!join_query_->empty());
+  return *this;
+}
+
+auto Select::OrderBy(std::string_view column_name, Order order) -> Select& {
+  if (order_by_query_->empty()) {
+    *order_by_query_ = " ORDER BY";
+  } else {
+    *order_by_query_ += ",";
+  }
+
+  *order_by_query_ +=
+      fmt::format(" {} {}", column_name, magic_enum::enum_name(order));
+  Ensures(!order_by_query_->empty());
   return *this;
 }
 

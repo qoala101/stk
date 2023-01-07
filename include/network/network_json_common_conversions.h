@@ -156,19 +156,6 @@ auto ConvertToJson [[nodiscard]] (const std::vector<T> &value) {
 }
 
 /**
- * @brief Converts pointers.
- * @remark Use optional values when need to parse nullable pointers.
- */
-template <Convertible T>
-auto ConvertToJson [[nodiscard]] (T *value) {
-  if (value == nullptr) {
-    return CreateNullJson();
-  }
-
-  return ConvertToJson(*value);
-}
-
-/**
  * @brief Parses enums.
  */
 template <cpp::Enum T>
@@ -191,6 +178,19 @@ auto ConvertToJson [[nodiscard]] (T value) {
   json->SetChild(std::string{magic_enum::enum_type_name<T>()},
                  ConvertToJson(magic_enum::enum_name(value)));
   return json;
+}
+
+/**
+ * @brief Converts pointers.
+ * @remark Use optional values when need to parse nullable pointers.
+ */
+template <Convertible T>
+auto ConvertToJson [[nodiscard]] (T *value) {
+  if (value == nullptr) {
+    return CreateNullJson();
+  }
+
+  return ConvertToJson(*value);
 }
 }  // namespace stonks::network
 

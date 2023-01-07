@@ -1,6 +1,7 @@
 #include <absl/time/time.h>
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
+#include <gtest/gtest.h>
 
 #include <boost/di.hpp>
 #include <cppcoro/sync_wait.hpp>
@@ -79,12 +80,12 @@ TEST(AppSymbolsDb, UpdateSymbolsInfo) {
     co_await symbols_db.InsertSymbolPriceRecord(
         stonks::core::SymbolPriceRecord{.symbol = {"BTCUSDT"}});
     EXPECT_FALSE((co_await symbols_db.SelectSymbolPriceRecords(
-                      {"BTCUSDT"}, nullptr, nullptr, nullptr))
+                      {"BTCUSDT"}, nullptr, nullptr, nullptr, nullptr))
                      .empty());
 
     co_await symbols_db.UpdateAssets({{"NONE_ASSET"}});
     EXPECT_TRUE((co_await symbols_db.SelectSymbolPriceRecords(
-                     {"BTCUSDT"}, nullptr, nullptr, nullptr))
+                     {"BTCUSDT"}, nullptr, nullptr, nullptr, nullptr))
                     .empty());
   }());
 }
@@ -103,7 +104,7 @@ TEST(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
 
     const auto symbol_price_records =
         co_await symbols_db.SelectSymbolPriceRecords(eth_usdt, nullptr, nullptr,
-                                                     nullptr);
+                                                     nullptr, nullptr);
     EXPECT_TRUE(symbol_price_records.empty());
 
     const auto eth_price_records = std::vector<stonks::core::SymbolPriceRecord>{
@@ -144,12 +145,12 @@ TEST(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
 
     const auto eth_price_records_received =
         co_await symbols_db.SelectSymbolPriceRecords(eth_usdt, nullptr, nullptr,
-                                                     nullptr);
+                                                     nullptr, nullptr);
     EXPECT_EQ(eth_price_records_received, eth_price_records);
 
     const auto btc_price_records_received =
         co_await symbols_db.SelectSymbolPriceRecords(btc_usdt, nullptr, nullptr,
-                                                     nullptr);
+                                                     nullptr, nullptr);
     EXPECT_EQ(btc_price_records_received, btc_price_records);
   }());
 }
@@ -158,31 +159,47 @@ TEST(AppSymbolsDb, SelectPeriod) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
     const auto symbol = stonks::core::Symbol{"ETHUSDT"};
     auto price_records = co_await symbols_db.SelectSymbolPriceRecords(
-        symbol, nullptr, nullptr, nullptr);
+        symbol, nullptr, nullptr, nullptr, nullptr);
     EXPECT_EQ(price_records.size(), 3);
 
     price_records = co_await symbols_db.SelectSymbolPriceRecords(
-        symbol, &static_cast<const absl::Time &>(absl::FromUnixMillis(1001)),
-        nullptr, nullptr);
+        symbol, nullptr,
+        &static_cast<const absl::Time &>(absl::FromUnixMillis(1001)), nullptr,
+        nullptr);
     EXPECT_EQ(price_records.size(), 2);
 
     price_records = co_await symbols_db.SelectSymbolPriceRecords(
-        symbol, nullptr,
+        symbol, nullptr, nullptr,
         &static_cast<const absl::Time &>(absl::FromUnixMillis(2999)), nullptr);
     EXPECT_EQ(price_records.size(), 2);
 
     price_records = co_await symbols_db.SelectSymbolPriceRecords(
-        symbol, &static_cast<const absl::Time &>(absl::FromUnixMillis(1001)),
+        symbol, nullptr,
+        &static_cast<const absl::Time &>(absl::FromUnixMillis(1001)),
         &static_cast<const absl::Time &>(absl::FromUnixMillis(2999)), nullptr);
     EXPECT_EQ(price_records.size(), 1);
   }());
 }
 
-TEST(AppSymbolsDb, SelectLimit) {
+TEST(AppSymbolsDb, SelectOrderedAndLimited) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
-    const auto price_records = co_await symbols_db.SelectSymbolPriceRecords(
-        {"ETHUSDT"}, nullptr, nullptr, &static_cast<const int &>(2));
-    EXPECT_EQ(price_records.size(), 2);
+    const auto new_price_records = co_await symbols_db.SelectSymbolPriceRecords(
+        {"ETHUSDT"},
+        &static_cast<const stonks::core::TimeOrder &>(
+            stonks::core::TimeOrder::kNewFirst),
+        nullptr, nullptr, &static_cast<const int &>(2));
+    EXPECT_EQ(new_price_records.size(), 2);
+    EXPECT_GT(new_price_records[0].time, new_price_records[1].time);
+
+    const auto old_price_records = co_await symbols_db.SelectSymbolPriceRecords(
+        {"ETHUSDT"},
+        &static_cast<const stonks::core::TimeOrder &>(
+            stonks::core::TimeOrder::kOldFirst),
+        nullptr, nullptr, &static_cast<const int &>(2));
+    EXPECT_EQ(old_price_records.size(), 2);
+    EXPECT_LT(old_price_records[0].time, old_price_records[1].time);
+
+    EXPECT_GT(new_price_records[0].time, old_price_records[0].time);
   }());
 }
 }  // namespace

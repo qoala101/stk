@@ -11,6 +11,7 @@
 #include <tuple>
 #include <utility>
 
+#include "core_types.h"
 #include "network_json_common_conversions.h"
 #include "networkx_client.h"
 
@@ -41,12 +42,13 @@ auto SymbolsDb::UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos)
 }
 
 auto SymbolsDb::SelectSymbolPriceRecords(const core::Symbol &symbol,
+                                         const core::TimeOrder *order,
                                          const absl::Time *start_time,
                                          const absl::Time *end_time,
                                          const int *limit) const
     -> cppcoro::task<std::vector<core::SymbolPriceRecord>> {
-  co_return co_await Call<&Target::SelectSymbolPriceRecords>(symbol, start_time,
-                                                             end_time, limit);
+  co_return co_await Call<&Target::SelectSymbolPriceRecords>(
+      symbol, order, start_time, end_time, limit);
 }
 
 auto SymbolsDb::InsertSymbolPriceRecord(core::SymbolPriceRecord record)

@@ -65,6 +65,14 @@ class Select {
   auto Where [[nodiscard]] (WhereCondition condition) -> Select &;
 
   /**
+   * @brief Specifies the ordering on column.
+   */
+  template <ColumnDefinition Column>
+  auto OrderBy [[nodiscard]] (Order order) -> Select & {
+    return OrderBy(Column::GetFullName(), order);
+  }
+
+  /**
    * @brief Specifies the limit of returned rows.
    */
   auto Limit [[nodiscard]] (const QueryValue &value) -> Select &;
@@ -84,6 +92,9 @@ class Select {
   auto Join [[nodiscard]] (std::string_view table_name,
                            const OnCondition &condition) -> Select &;
 
+  auto OrderBy [[nodiscard]] (std::string_view column_name,
+                              Order order = Order::kAscending) -> Select &;
+
   void SetColumnsQueryFrom(
       const std::vector<SelectColumnData> &select_columns_data);
 
@@ -93,6 +104,7 @@ class Select {
   bool select_all_{};
   Query table_name_{};
   Query columns_query_{};
+  Query order_by_query_{};
   p::Parametrized<Query> where_query_{};
   p::Parametrized<Query> limit_query_{};
   p::Parametrized<Query> join_query_{};

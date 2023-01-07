@@ -61,8 +61,9 @@ class SymbolsDb : public ISymbolsDb {
    * @copydoc ISymbolsDb::SelectSymbolPriceRecords
    */
   auto SelectSymbolPriceRecords
-      [[nodiscard]] (const Symbol &symbol, const absl::Time *start_time,
-                     const absl::Time *end_time, const int *limit) const
+      [[nodiscard]] (const Symbol &symbol, const TimeOrder *order,
+                     const absl::Time *start_time, const absl::Time *end_time,
+                     const int *limit) const
       -> cppcoro::task<std::vector<SymbolPriceRecord>> override;
 
   /**
@@ -102,7 +103,11 @@ class SymbolsDb : public ISymbolsDb {
     cpp::NnUp<sqldb::IUpdateStatement> update_symbol_info;
     cpp::NnUp<sqldb::IUpdateStatement> delete_symbol_info;
 
-    cpp::NnUp<sqldb::ISelectStatement> select_symbol_price_records;
+    struct SelectSymbolPriceRecords {
+      cpp::NnUp<sqldb::ISelectStatement> order_by_time_ascending;
+      cpp::NnUp<sqldb::ISelectStatement> order_by_time_descending;
+    } select_symbol_price_records;
+
     cpp::NnUp<sqldb::IUpdateStatement> insert_symbol_price_record;
     cpp::NnUp<sqldb::IUpdateStatement> delete_symbol_price_records;
   } prepared_statements_;

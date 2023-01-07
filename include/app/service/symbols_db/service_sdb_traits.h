@@ -38,7 +38,7 @@ template <>
 struct EndpointFunctionTraits<&core::ISymbolsDb::SelectSymbolPriceRecords> {
   static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams =
-      ParamList("symbol", "start_time", "end_time", "limit");
+      ParamList("symbol", "order", "start_time", "end_time", "limit");
 };
 
 template <>

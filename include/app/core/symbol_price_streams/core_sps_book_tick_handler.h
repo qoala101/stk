@@ -31,7 +31,8 @@ class BookTickHandler {
 
   Symbol symbol_{};
   cpp::NnUp<ISymbolsDb> symbols_db_;
-  cpp::Opt<SymbolPriceRecord> last_record_{};
+  SymbolInfo symbol_info_{};
+  SymbolPriceRecord last_record_{};
 };
 }  // namespace core::sps
 

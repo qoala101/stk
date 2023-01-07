@@ -54,8 +54,9 @@ class ISymbolsDb {
    * @brief Selects symbol price records following the conditions.
    */
   virtual auto SelectSymbolPriceRecords
-      [[nodiscard]] (const Symbol &symbol, const absl::Time *start_time,
-                     const absl::Time *end_time, const int *limit) const
+      [[nodiscard]] (const Symbol &symbol, const TimeOrder *order,
+                     const absl::Time *start_time, const absl::Time *end_time,
+                     const int *limit) const
       -> cppcoro::task<std::vector<SymbolPriceRecord>> = 0;
 
   /**

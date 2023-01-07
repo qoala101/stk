@@ -15,6 +15,11 @@ auto GetFullAliasName
 }  // namespace detail
 
 /**
+ * @brief Order for select statements.
+ */
+enum class Order { kAscending, kDescending };
+
+/**
  * @brief Tag for all columns.
  */
 struct All {};
