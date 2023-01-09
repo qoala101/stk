@@ -46,8 +46,8 @@ auto BuyLowSellHigh::CalculateNextOperations(
     const auto btc_order_amount_not_stepped =
         usd_user_wants_to_spend / btc_buy_price;
     const auto btc_order_amount =
-        core::Ceil({.value = btc_order_amount_not_stepped,
-                    .precision = symbol_info->base_asset.price_step});
+        Ceil({.value = btc_order_amount_not_stepped,
+              .precision = symbol_info->base_asset.price_step});
 
     const auto usd_would_be_actually_withdrawn_from_balance_to_place_order =
         btc_order_amount * btc_buy_price;
@@ -60,8 +60,8 @@ auto BuyLowSellHigh::CalculateNextOperations(
         last_operation.btc_balance +
         btc_would_be_actually_added_to_balance_after_order_is_executed;
     const auto btc_sell_order_amount =
-        core::Floor({.value = btc_sell_order_amount_not_stepped,
-                     .precision = symbol_info->base_asset.price_step});
+        Floor({.value = btc_sell_order_amount_not_stepped,
+               .precision = symbol_info->base_asset.price_step});
 
     const auto usd_we_spent_to_purchase_btc_we_would_sell =
         usd_would_be_actually_withdrawn_from_balance_to_place_order *
@@ -78,8 +78,8 @@ auto BuyLowSellHigh::CalculateNextOperations(
     const auto btc_sell_price_not_stepped =
         usd_we_need_to_receive_with_commission / btc_sell_order_amount;
     const auto btc_sell_price =
-        core::Ceil({.value = btc_sell_price_not_stepped,
-                    .precision = symbol_info->quote_asset.price_step});
+        Ceil({.value = btc_sell_price_not_stepped,
+              .precision = symbol_info->quote_asset.price_step});
 
     //////////////////////////
 

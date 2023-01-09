@@ -1,11 +1,15 @@
 #include "core_common.h"
 
+#include <gsl/assert>
+
 namespace stonks::core {
 auto Ceil(const detail::CeilFloorArgs &args) -> double {
+  Expects(args.precision != 0);
   return std::ceil(args.value / args.precision) * args.precision;
 }
 
 auto Floor(const detail::CeilFloorArgs &args) -> double {
+  Expects(args.precision != 0);
   return std::floor(args.value / args.precision) * args.precision;
 }
 

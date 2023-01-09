@@ -3,15 +3,16 @@
 
 #include <absl/time/time.h>
 
+#include "core_i_symbols_db_updater.h"
 #include "core_sdbu_old_prices_deleter.h"
 #include "core_sdbu_symbols_info_updater.h"
 #include "cpp_timer.h"
 
 namespace stonks::core {
 /**
- * @brief Periodically updates Symbols DB.
+ * @copydoc ISymbolsDbUpdater
  */
-class SymbolsDbUpdater {
+class SymbolsDbUpdater : public ISymbolsDbUpdater {
  public:
   /**
    * @param reattempt_interval Time in which to reattempt updates if they fail.
@@ -23,7 +24,14 @@ class SymbolsDbUpdater {
                    sdbu::OldPricesDeleter old_prices_deleter,
                    absl::Duration reattempt_interval);
 
+  /**
+   * @copydoc ISymbolsDbUpdater::GetUpdateSymbolsInfoInterval
+   */
+  auto GetUpdateSymbolsInfoInterval [[nodiscard]] () const
+      -> cppcoro::task<absl::Duration> override;
+
  private:
+  absl::Duration update_symbols_info_interval_{};
   cpp::Timer update_symbols_info_timer_;
   cpp::Timer delete_old_prices_timer_;
 };

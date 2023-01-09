@@ -8,6 +8,7 @@
 #include "network_i_json.h"
 
 namespace stonks::network {
+auto ConvertToJson [[nodiscard]] (absl::Duration value) -> cpp::Pv<IJson>;
 auto ConvertToJson [[nodiscard]] (absl::Time value) -> cpp::Pv<IJson>;
 auto ConvertToJson [[nodiscard]] (const core::AssetInfo &value)
 -> cpp::Pv<IJson>;

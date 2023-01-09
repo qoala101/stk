@@ -7,7 +7,6 @@
 #include "core_i_symbols_db.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
-#include "cpp_optional.h"
 #include "networkx_types.h"
 
 namespace stonks {
@@ -29,9 +28,13 @@ class BookTickHandler {
   auto SymbolPriceRecordFrom
       [[nodiscard]] (const binance::BookTick &book_tick) const;
 
+  auto GetBaseAssetPriceStep [[nodiscard]] () -> cppcoro::task<double>;
+
+  auto GetLastPriceRecord [[nodiscard]] () -> cppcoro::task<SymbolPriceRecord>;
+
   Symbol symbol_{};
   cpp::NnUp<ISymbolsDb> symbols_db_;
-  SymbolInfo symbol_info_{};
+  double base_asset_price_step_;
   SymbolPriceRecord last_record_{};
 };
 }  // namespace core::sps

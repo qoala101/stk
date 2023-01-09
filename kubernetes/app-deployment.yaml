@@ -10,6 +10,8 @@ spec:
       port: 30001
     - name: sdb-port
       port: 30000
+    - name: sdu-port
+      port: 30003
     - name: sps-port
       port: 30002
 
@@ -82,6 +84,8 @@ spec:
             - --port=$(APP_SERVICE_SERVICE_PORT_BLSH_PORT)
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
+            - --symbols_db_updater_host=$(APP_SERVICE_SERVICE_HOST)
+            - --symbols_db_updater_port=$(APP_SERVICE_SERVICE_PORT_SDU_PORT)
 
         - name: symbol-price-streams-container
           image: qoala101/stonks:service_symbol_price_streams
@@ -89,6 +93,8 @@ spec:
             - --port=$(APP_SERVICE_SERVICE_PORT_SPS_PORT)
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
+            - --symbols_db_updater_host=$(APP_SERVICE_SERVICE_HOST)
+            - --symbols_db_updater_port=$(APP_SERVICE_SERVICE_PORT_SDU_PORT)
             - --symbols=BTCUSDT,ETHUSDT,BNBUSDT
             - --reattempt_interval=60000
 
@@ -104,6 +110,7 @@ spec:
         - name: symbols-db-updater-container
           image: qoala101/stonks:service_symbols_db_updater
           args:
+            - --port=$(APP_SERVICE_SERVICE_PORT_SDU_PORT)
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
             - --update_symbols_info_interval=3600000

@@ -15,5 +15,6 @@ target_link_libraries(libcore
 
   PRIVATE absl::absl
   PRIVATE callable
+  PRIVATE Microsoft.GSL::GSL
   PRIVATE NotNull
 )

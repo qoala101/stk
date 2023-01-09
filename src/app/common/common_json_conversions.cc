@@ -1,5 +1,7 @@
 #include "common_json_conversions.h"
 
+#include <absl/time/time.h>
+
 #include <cstdint>
 
 #include "core_types.h"
@@ -7,6 +9,15 @@
 #include "network_json_conversions_facades.h"
 
 namespace stonks::network {
+template <>
+auto JsonParser<absl::Duration>::operator()(const IJson &json) const -> Type {
+  return absl::Milliseconds(ParseFromJson<int64_t>(json));
+}
+
+auto ConvertToJson(absl::Duration value) -> cpp::Pv<IJson> {
+  return ConvertToJson(absl::ToInt64Milliseconds(value));
+}
+
 template <>
 auto JsonParser<absl::Time>::operator()(const IJson &json) const -> Type {
   return absl::FromUnixMillis(ParseFromJson<int64_t>(json));

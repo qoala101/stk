@@ -28,7 +28,7 @@ auto Impl::ExposeNgrokUriIfChanged() -> cppcoro::task<> {
     co_return;
   }
 
-  auto new_uri = network::Uri{(*tunnels)[0].public_url};
+  auto new_uri = network::Uri{tunnels->front().public_url};
 
   if (new_uri == last_exposed_uri_) {
     logger_->LogImportantEvent(
