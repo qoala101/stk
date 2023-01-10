@@ -6,6 +6,7 @@
 #include "binance_types.h"
 #include "core_i_symbols_db.h"
 #include "core_types.h"
+#include "cpp_auto_updatable.h"
 #include "cpp_not_null.h"
 #include "networkx_types.h"
 
@@ -25,16 +26,14 @@ class BookTickHandler {
   -> cppcoro::task<>;
 
  private:
-  auto SymbolPriceRecordFrom
-      [[nodiscard]] (const binance::BookTick &book_tick) const;
-
-  auto GetBaseAssetPriceStep [[nodiscard]] () -> cppcoro::task<double>;
+  auto SymbolPriceRecordFrom [[nodiscard]] (const binance::BookTick &book_tick)
+  -> cppcoro::task<SymbolPriceRecord>;
 
   auto GetLastPriceRecord [[nodiscard]] () -> cppcoro::task<SymbolPriceRecord>;
 
   Symbol symbol_{};
-  cpp::NnUp<ISymbolsDb> symbols_db_;
-  double base_asset_price_step_;
+  cpp::NnSp<ISymbolsDb> symbols_db_;
+  cpp::AutoUpdatable<double> base_asset_price_step_;
   SymbolPriceRecord last_record_{};
 };
 }  // namespace core::sps

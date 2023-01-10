@@ -1,6 +1,7 @@
 #include "core_sps_book_tick_handler.h"
 
 #include <absl/time/clock.h>
+#include <absl/time/time.h>
 #include <fmt/core.h>
 
 #include <coroutine>
@@ -18,27 +19,47 @@
 #include "cpp_typed_struct.h"
 
 namespace stonks::core::sps {
+namespace {
+auto GetBaseAssetPriceStep(const Symbol &symbol, const ISymbolsDb &symbols_db)
+    -> cppcoro::task<double> {
+  auto symbol_info = co_await symbols_db.SelectSymbolInfo(symbol);
+
+  if (!symbol_info.has_value()) {
+    throw cpp::MessageException{
+        fmt::format("Couldn't get symbol info for {}", *symbol)};
+  }
+
+  co_return symbol_info->base_asset.price_step;
+}
+}  // namespace
+
 BookTickHandler::BookTickHandler(Symbol symbol,
                                  cpp::NnUp<ISymbolsDb> symbols_db)
     : symbol_{std::move(symbol)},
       symbols_db_{std::move(symbols_db)},
-      base_asset_price_step_{cppcoro::sync_wait(GetBaseAssetPriceStep())},
+      base_asset_price_step_{
+          [symbol = symbol_,
+           symbols_db = symbols_db_]() -> cppcoro::task<double> {
+            return GetBaseAssetPriceStep(symbol, *symbols_db);
+          },
+          absl::Seconds(1)},
       last_record_{cppcoro::sync_wait(GetLastPriceRecord())} {}
 
-auto BookTickHandler::SymbolPriceRecordFrom(
-    const binance::BookTick &book_tick) const {
-  return SymbolPriceRecord{
+auto BookTickHandler::SymbolPriceRecordFrom(const binance::BookTick &book_tick)
+    -> cppcoro::task<SymbolPriceRecord> {
+  const auto lock = base_asset_price_step_.LockUpdates();
+  co_return SymbolPriceRecord{
       .symbol = symbol_,
       .buy_price = {Ceil({.value = std::stod(book_tick.best_ask_price),
-                          .precision = base_asset_price_step_})},
+                          .precision = co_await *base_asset_price_step_})},
       .sell_price = {Floor({.value = std::stod(book_tick.best_bid_price),
-                            .precision = base_asset_price_step_})},
+                            .precision = co_await *base_asset_price_step_})},
       .time = absl::Now()};
 }
 
 auto BookTickHandler::RecordAsPrice(binance::BookTick book_tick)
     -> cppcoro::task<> {
-  auto record = SymbolPriceRecordFrom(book_tick);
+  auto record = co_await SymbolPriceRecordFrom(book_tick);
 
   if (const auto price_not_changed =
           (*last_record_.buy_price == record.buy_price) &&
@@ -51,17 +72,6 @@ auto BookTickHandler::RecordAsPrice(binance::BookTick book_tick)
     last_record_ = std::move(record);
   } catch (...) {
   }
-}
-
-auto BookTickHandler::GetBaseAssetPriceStep() -> cppcoro::task<double> {
-  auto symbol_info = co_await symbols_db_->SelectSymbolInfo(symbol_);
-
-  if (!symbol_info.has_value()) {
-    throw cpp::MessageException{
-        fmt::format("Couldn't get symbol info for {}", *symbol_)};
-  }
-
-  co_return symbol_info->base_asset.price_step;
 }
 
 auto BookTickHandler::GetLastPriceRecord() -> cppcoro::task<SymbolPriceRecord> {

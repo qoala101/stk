@@ -39,7 +39,7 @@ class Lazy {
   }
 
   /**
-   * @brief Gives an object the lazy initialized one points to.
+   * @brief Gives tne object the lazy initialized one points to.
    */
   auto operator* [[nodiscard]] () -> auto & {
     auto &object = GetObject();
@@ -52,7 +52,7 @@ class Lazy {
   }
 
   /**
-   * @brief Gives an object the lazy initialized one points to.
+   * @brief Gives the object the lazy initialized one points to.
    */
   auto operator->[[nodiscard]] () { return AssumeNn(&*(*this)); }
 
