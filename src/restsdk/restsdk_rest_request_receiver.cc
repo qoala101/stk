@@ -29,6 +29,7 @@
 
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
+#include "cpp_share.h"
 #include "cpp_typed_struct.h"
 #include "cpprest/http_msg.h"
 #include "network_i_json.h"
@@ -177,11 +178,10 @@ void RestRequestReceiver::Receive(
   http_listener_ =
       cpp::MakeUp<web::http::experimental::listener::http_listener>(
           std::move(*uri));
-  http_listener_->support(
-      [handler = cpp::NnSp<network::IRestRequestHandler>{std::move(handler)},
-       logger = logger_](const auto &request) {
-        cppcoro::sync_wait(HandleHttpRequest(*handler, *logger, request));
-      });
+  http_listener_->support([handler = cpp::Share(std::move(handler)),
+                           logger = logger_](const auto &request) {
+    cppcoro::sync_wait(HandleHttpRequest(*handler, *logger, request));
+  });
 
   logger_->LogImportantEvent(
       fmt::format("Starting REST receiver on {}...", *uri));

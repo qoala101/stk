@@ -19,6 +19,7 @@
 
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
+#include "cpp_share.h"
 #include "cpp_typed_struct.h"
 #include "network_i_json.h"
 #include "network_types.h"
@@ -101,7 +102,7 @@ void WsClient::Connect(network::WsEndpoint endpoint) {
 void WsClient::SetMessageHandler(
     cpp::NnUp<network::IWsMessageHandler> handler) {
   native_ws_client_->set_message_handler(
-      [handler = cpp::NnSp<network::IWsMessageHandler>{std::move(handler)},
+      [handler = cpp::Share(std::move(handler)),
        logger = logger_](const auto &message) {
         cppcoro::sync_wait(HandleWsMessage(*handler, *logger, message));
       });
