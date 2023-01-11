@@ -20,8 +20,8 @@ class ResponseExceptionHandler : public IRestRequestSender {
   /**
    * @brief Checks whether response is an exception, parses, and throws it.
    */
-  auto SendRequestAndGetResponse [[nodiscard]] (RestRequest request) const
-      -> cppcoro::task<RestResponse> override;
+  auto SendRequestAndGetResponse [[nodiscard]] (RestRequest request)
+  -> cppcoro::task<RestResponse> override;
 
  private:
   cpp::NnUp<IRestRequestSender> request_sender_;

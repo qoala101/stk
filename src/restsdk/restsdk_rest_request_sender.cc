@@ -32,7 +32,7 @@
 
 namespace stonks::restsdk {
 namespace {
-auto HttpMethodFrom [[nodiscard]] (network::Method method) {
+auto NativeMethodFrom [[nodiscard]] (network::Method method) {
   switch (method) {
     case network::Method::kGet:
       return web::http::methods::GET;
@@ -99,7 +99,24 @@ auto ConvertToRequestParam [[nodiscard]] (const network::IJson &json) {
   return rest_json->serialize();
 }
 
-auto WebUriFrom [[nodiscard]] (const network::RestRequest &request) {
+auto NativeRequestFrom [[nodiscard]] (const network::RestRequest &request,
+                                      const web::uri &native_uri) {
+  auto native_request =
+      web::http::http_request{NativeMethodFrom(request.endpoint.method)};
+  native_request.set_request_uri(native_uri.resource());
+
+  for (const auto &[key, value] : request.headers) {
+    native_request.headers().add(key, value);
+  }
+
+  if (!request.body->IsNull()) {
+    native_request.set_body(*request.body->GetNativeHandle());
+  }
+
+  return native_request;
+}
+
+auto NativeUriFrom [[nodiscard]] (const network::RestRequest &request) {
   auto uri_builder = web::http::uri_builder{*request.endpoint.uri};
 
   for (const auto &[key, value] : request.params) {
@@ -108,27 +125,10 @@ auto WebUriFrom [[nodiscard]] (const network::RestRequest &request) {
 
   return uri_builder.to_uri();
 }
-
-auto HttpRequestFrom [[nodiscard]] (const network::RestRequest &request) {
-  auto http_request =
-      web::http::http_request{HttpMethodFrom(request.endpoint.method)};
-  http_request.set_request_uri(WebUriFrom(request));
-
-  for (const auto &[key, value] : request.headers) {
-    http_request.headers().add(key, value);
-  }
-
-  if (!request.body->IsNull()) {
-    http_request.set_body(*request.body->GetNativeHandle());
-  }
-
-  return http_request;
-}
 }  // namespace
 
 RestRequestSender::RestRequestSender(cpp::NnUp<log::ILogger> logger)
-    : http_client_{cpp::MakeNnUp<web::http::client::http_client>(web::uri{})},
-      logger_{std::move(logger)} {}
+    : logger_{std::move(logger)} {}
 
 RestRequestSender::RestRequestSender(RestRequestSender &&) noexcept = default;
 
@@ -138,19 +138,21 @@ auto RestRequestSender::operator=(RestRequestSender &&) noexcept
 RestRequestSender::~RestRequestSender() = default;
 
 auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
-    const -> cppcoro::task<network::RestResponse> {
-  const auto http_request = HttpRequestFrom(request);
-  const auto request_uri = http_request.request_uri().to_string();
+    -> cppcoro::task<network::RestResponse> {
+  const auto request_uri = NativeUriFrom(request);
 
-  logger_->LogImportantEvent(
-      fmt::format("Sending {} request to {}",
-                  magic_enum::enum_name(request.endpoint.method), request_uri));
+  ConnectClientTo(request_uri.authority());
 
+  const auto native_request = NativeRequestFrom(request, request_uri);
   auto response = network::RestResponse{};
+
+  logger_->LogImportantEvent(fmt::format(
+      "Sending {} request to {}",
+      magic_enum::enum_name(request.endpoint.method), request_uri.to_string()));
 
   try {
     co_await CallAsCoroutine(
-        http_client_->request(http_request)
+        http_client_->request(native_request)
             .then([&response](const web::http::http_response &http_response) {
               response.status = StatusFrom(http_response.status_code());
               return http_response.extract_json();
@@ -160,12 +162,24 @@ auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
                   network::IJson::NativeHandle{std::move(http_response_json)});
             }));
   } catch (const std::exception &e) {
-    logger_->LogErrorCondition(fmt::format(
-        "{} request to {} failed: {}",
-        magic_enum::enum_name(request.endpoint.method), request_uri, e.what()));
+    logger_->LogErrorCondition(
+        fmt::format("{} request to {} failed: {}",
+                    magic_enum::enum_name(request.endpoint.method),
+                    request_uri.to_string(), e.what()));
     throw;
   }
 
   co_return response;
+}
+
+void RestRequestSender::ConnectClientTo(const web::uri &authority) {
+  if ((http_client_ == nullptr) ||
+      (http_client_->base_uri().authority() != authority)) {
+    http_client_ = cpp::MakeUp<web::http::client::http_client>(authority);
+    logger_->LogImportantEvent(
+        fmt::format("Connected request sender to {}", authority.to_string()));
+  }
+
+  Ensures(http_client_ != nullptr);
 }
 }  // namespace stonks::restsdk

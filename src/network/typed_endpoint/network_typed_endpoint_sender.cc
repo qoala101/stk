@@ -58,7 +58,7 @@ TypedEndpointSender::TypedEndpointSender(
     : type_checker_{cpp::MakeNnUp<TypeChecker>(std::move(endpoint_types))},
       request_sender_{std::move(request_sender)} {}
 
-auto TypedEndpointSender::SendRequestAndGetResponse(RestRequest request) const
+auto TypedEndpointSender::SendRequestAndGetResponse(RestRequest request)
     -> cppcoro::task<RestResponse> {
   type_checker_->ValidateRequest(request);
   auto response =

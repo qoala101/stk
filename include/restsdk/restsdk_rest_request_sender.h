@@ -8,9 +8,13 @@
 #include "network_i_rest_request_sender.h"
 #include "network_types.h"
 
-namespace web::http::client {
+namespace web {
+class uri;
+
+namespace http::client {
 class http_client;  // IWYU pragma: keep
-}  // namespace web::http::client
+}  // namespace http::client
+}  // namespace web
 
 namespace stonks::restsdk {
 /**
@@ -31,12 +35,13 @@ class RestRequestSender : public network::IRestRequestSender {
   /**
    * @copydoc network::IRestRequestSender::SendRequestAndGetResponse
    */
-  auto SendRequestAndGetResponse
-      [[nodiscard]] (network::RestRequest request) const
-      -> cppcoro::task<network::RestResponse> override;
+  auto SendRequestAndGetResponse [[nodiscard]] (network::RestRequest request)
+  -> cppcoro::task<network::RestResponse> override;
 
  private:
-  cpp::NnUp<web::http::client::http_client> http_client_;
+  void ConnectClientTo(const web::uri &authority);
+
+  cpp::Up<web::http::client::http_client> http_client_{};
   cpp::NnUp<log::ILogger> logger_;
 };
 }  // namespace stonks::restsdk

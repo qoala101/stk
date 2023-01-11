@@ -29,7 +29,7 @@
 
 namespace stonks::restsdk {
 namespace {
-auto HandleWsMessage(
+auto HandleNativeMessage(
     network::IWsMessageHandler &handler, log::ILogger &logger,
     const web::websockets::client::websocket_incoming_message &native_message)
     -> cppcoro::task<> {
@@ -104,19 +104,18 @@ void WsClient::SetMessageHandler(
   native_ws_client_->set_message_handler(
       [handler = cpp::Share(std::move(handler)),
        logger = logger_](const auto &message) {
-        cppcoro::sync_wait(HandleWsMessage(*handler, *logger, message));
+        cppcoro::sync_wait(HandleNativeMessage(*handler, *logger, message));
       });
 }
 
 auto WsClient::SendMessage(network::WsMessage message) const
     -> cppcoro::task<> {
-  auto native_ws_message =
-      web::websockets::client::websocket_outgoing_message{};
-  native_ws_message.set_utf8_message(message->GetNativeHandle()->serialize());
+  auto native_message = web::websockets::client::websocket_outgoing_message{};
+  native_message.set_utf8_message(message->GetNativeHandle()->serialize());
 
   try {
     co_await CallAsCoroutine(
-        native_ws_client_->send(std::move(native_ws_message)));
+        native_ws_client_->send(std::move(native_message)));
   } catch (const std::exception &e) {
     logger_->LogErrorCondition(
         fmt::format("Couldn't send web socket message: {}", e.what()));

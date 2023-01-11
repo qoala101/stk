@@ -45,9 +45,11 @@ auto MethodFrom [[nodiscard]] (const web::http::method &method) {
   if (method == web::http::methods::GET) {
     return network::Method::kGet;
   }
+
   if (method == web::http::methods::POST) {
     return network::Method::kPost;
   }
+
   if (method == web::http::methods::DEL) {
     return network::Method::kDelete;
   }
@@ -55,7 +57,7 @@ auto MethodFrom [[nodiscard]] (const web::http::method &method) {
   return network::Method::kOther;
 }
 
-auto HttpStatusFrom [[nodiscard]] (network::Status status) {
+auto NativeStatusFrom [[nodiscard]] (network::Status status) {
   switch (status) {
     case network::Status::kOk:
       return web::http::status_codes::OK;
@@ -101,7 +103,7 @@ auto BodyFrom [[nodiscard]] (const web::http::http_request &request)
       network::IJson::NativeHandle{std::move(native_json)});
 }
 
-auto RestRequestFrom [[nodiscard]] (const web::http::http_request &request) {
+auto RequestFrom [[nodiscard]] (const web::http::http_request &request) {
   return network::RestRequest{
       .endpoint = EndpointFrom(request),
       .params = ParamsFrom(request.request_uri().query()),
@@ -109,42 +111,41 @@ auto RestRequestFrom [[nodiscard]] (const web::http::http_request &request) {
       .body = BodyFrom(request)};
 }
 
-auto HttpResponseFrom [[nodiscard]] (const network::RestResponse &response) {
-  auto http_response =
-      web::http::http_response{HttpStatusFrom(response.status)};
+auto NativeResponseFrom [[nodiscard]] (const network::RestResponse &response) {
+  auto native_response =
+      web::http::http_response{NativeStatusFrom(response.status)};
 
   if (!response.result->IsNull()) {
-    http_response.set_body(*response.result->GetNativeHandle());
+    native_response.set_body(*response.result->GetNativeHandle());
   }
 
-  return http_response;
+  return native_response;
 }
 
-auto HandleHttpRequest
+auto HandleNativeRequest
     [[nodiscard]] (network::IRestRequestHandler &handler, log::ILogger &logger,
-                   const web::http::http_request &request) -> cppcoro::task<> {
-  const auto request_uri = request.absolute_uri().to_string();
-  logger.LogImportantEvent(
-      fmt::format("Received {} request on {}", request.method(), request_uri));
+                   const web::http::http_request &native_request)
+    -> cppcoro::task<> {
+  const auto request_uri = native_request.absolute_uri().to_string();
+  logger.LogImportantEvent(fmt::format("Received {} request on {}",
+                                       native_request.method(), request_uri));
 
-  auto rest_request = RestRequestFrom(request);
-
-  const auto rest_response =
-      co_await handler.HandleRequestAndGiveResponse(std::move(rest_request));
-  const auto http_response = HttpResponseFrom(rest_response);
+  auto request = RequestFrom(native_request);
+  const auto response =
+      co_await handler.HandleRequestAndGiveResponse(std::move(request));
+  const auto native_response = NativeResponseFrom(response);
 
   try {
-    co_await CallAsCoroutine(request.reply(http_response));
+    co_await CallAsCoroutine(native_request.reply(native_response));
   } catch (const std::exception &e) {
-    logger.LogErrorCondition(fmt::format(
-        "Couldn't reply {} on {}: {}",
-        magic_enum::enum_name(rest_response.status), request_uri, e.what()));
+    logger.LogErrorCondition(fmt::format("Couldn't reply {} on {}: {}",
+                                         magic_enum::enum_name(response.status),
+                                         request_uri, e.what()));
     throw;
   }
 
-  logger.LogImportantEvent(
-      fmt::format("Replied {} on {}",
-                  magic_enum::enum_name(rest_response.status), request_uri));
+  logger.LogImportantEvent(fmt::format(
+      "Replied {} on {}", magic_enum::enum_name(response.status), request_uri));
 }
 }  // namespace
 
@@ -180,7 +181,7 @@ void RestRequestReceiver::Receive(
           std::move(*uri));
   http_listener_->support([handler = cpp::Share(std::move(handler)),
                            logger = logger_](const auto &request) {
-    cppcoro::sync_wait(HandleHttpRequest(*handler, *logger, request));
+    cppcoro::sync_wait(HandleNativeRequest(*handler, *logger, request));
   });
 
   logger_->LogImportantEvent(

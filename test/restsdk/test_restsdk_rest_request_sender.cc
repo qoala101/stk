@@ -135,7 +135,7 @@ TEST(RestRequestSender, SendRequest) {
                              .AppendUri({"avgPrice"})
                              .AddParam("symbol", "BTCUSDT")
                              .Build();
-    const auto sender =
+    auto sender =
         test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
     const auto response = co_await sender.SendRequestAndGetResponse(request);
     const auto response_price =

@@ -29,8 +29,8 @@ ResponseExceptionHandler::ResponseExceptionHandler(
     cpp::NnUp<IRestRequestSender> request_sender)
     : request_sender_{std::move(request_sender)} {}
 
-auto ResponseExceptionHandler::SendRequestAndGetResponse(
-    RestRequest request) const -> cppcoro::task<RestResponse> {
+auto ResponseExceptionHandler::SendRequestAndGetResponse(RestRequest request)
+    -> cppcoro::task<RestResponse> {
   try {
     co_return co_await request_sender_->SendRequestAndGetResponse(
         std::move(request));
