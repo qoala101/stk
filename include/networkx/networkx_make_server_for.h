@@ -10,6 +10,7 @@
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_for_each_index.h"
 #include "cpp_not_null.h"
+#include "cpp_share.h"
 #include "network_auto_parsable_request.h"
 #include "network_rest_server_builder.h"
 #include "networkx_client_server_type_traits_facade.h"
@@ -102,11 +103,13 @@ void SetEndpointHandlers(network::RestServerBuilder &server_builder,
  */
 template <ClientServerType Target>
 auto MakeServerFor
-    [[nodiscard]] (const cpp::NnSp<Target> &target, Uri<Target> uri,
+    [[nodiscard]] (cpp::NnUp<Target> target, Uri<Target> uri,
                    cpp::NnUp<network::IRestRequestReceiver> request_receiver) {
   auto server_builder =
       network::RestServerBuilder{std::move(uri), std::move(request_receiver)};
-  detail::SetEndpointHandlers(server_builder, target);
+  auto shared_target = cpp::Share(std::move(target));
+
+  detail::SetEndpointHandlers(server_builder, shared_target);
   return server_builder.Start();
 }
 }  // namespace stonks::networkx

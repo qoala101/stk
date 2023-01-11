@@ -68,11 +68,12 @@ auto main(int argc, const char *const *argv) -> int {
         stonks::di::AutoInjectable{stonks::cpp::AssumeNn(&injector)};
 
     return stonks::networkx::MakeServerFor<stonks::core::SymbolPriceStreams>(
-        stonks::cpp::Share(stonks::core::SymbolPriceStreams{
-            *symbols | ranges::views::transform([](auto &symbol) {
-              return stonks::core::Symbol{std::move(symbol)};
-            }) | ranges::to_vector,
-            auto_injectable, auto_injectable}),
+        stonks::cpp::MakeNnUp<stonks::core::SymbolPriceStreams>(
+            stonks::core::SymbolPriceStreams{
+                *symbols | ranges::views::transform([](auto &symbol) {
+                  return stonks::core::Symbol{std::move(symbol)};
+                }) | ranges::to_vector,
+                auto_injectable, auto_injectable}),
         auto_injectable, auto_injectable);
   });
 }

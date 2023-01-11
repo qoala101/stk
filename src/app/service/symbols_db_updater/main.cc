@@ -67,10 +67,12 @@ auto main(int argc, const char *const *argv) -> int {
         stonks::di::AutoInjectable{stonks::cpp::AssumeNn(&injector)};
 
     return stonks::networkx::MakeServerFor<stonks::core::ISymbolsDbUpdater>(
-        stonks::cpp::Share(stonks::core::SymbolsDbUpdater{
-            absl::Milliseconds(*update_symbols_info_interval), auto_injectable,
-            absl::Milliseconds(*delete_old_prices_interval), auto_injectable,
-            absl::Milliseconds(*reattempt_interval)}),
+        stonks::cpp::MakeNnUp<stonks::core::SymbolsDbUpdater>(
+            stonks::core::SymbolsDbUpdater{
+                absl::Milliseconds(*update_symbols_info_interval),
+                auto_injectable,
+                absl::Milliseconds(*delete_old_prices_interval),
+                auto_injectable, absl::Milliseconds(*reattempt_interval)}),
         auto_injectable, auto_injectable);
   });
 }
