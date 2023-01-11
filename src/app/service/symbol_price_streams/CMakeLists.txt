@@ -13,6 +13,7 @@ target_link_libraries(service_symbol_price_streams
   PRIVATE libcore
   PRIVATE libcore_symbol_price_streams
   PRIVATE libcore_symbols_db
+  PRIVATE libcore_symbols_db_updater
   PRIVATE libcpp
   PRIVATE libdi
   PRIVATE liblog
@@ -21,6 +22,7 @@ target_link_libraries(service_symbol_price_streams
   PRIVATE librestsdk
   PRIVATE libservice
   PRIVATE libservice_symbols_db
+  PRIVATE libservice_symbols_db_updater
   PRIVATE libspdlog
 
   PRIVATE absl::absl

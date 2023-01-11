@@ -178,7 +178,7 @@ auto SymbolInfoEquals
 }  // namespace
 
 SymbolsDb::SymbolsDb(cpp::NnUp<sqldb::IDb> db)
-    : db_{cpp::MakeNnSp<sqldb::p::Db>(std::move(db))},
+    : db_{cpp::MakeNnUp<sqldb::p::Db>(std::move(db))},
       prepared_statements_{[&db = db_]() {
         auto &sql_db = db->GetDb();
         sql_db.CreateTableIfNotExists<sdb::tables::Asset>();

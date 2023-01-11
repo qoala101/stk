@@ -4,15 +4,12 @@
 #include <absl/time/time.h>
 
 #include <cppcoro/task.hpp>
+#include <vector>
 
-#include "core_sps_book_tick_handler.h"
 #include "core_sps_book_tick_web_socket_factory.h"
 #include "core_sps_stream_handle.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
-#include "cpp_optional.h"
-#include "cpp_timer.h"
-#include "networkx_web_socket.h"
 
 namespace stonks::core {
 /**
@@ -25,10 +22,9 @@ class SymbolPriceStreams {
    * @param reattempt_interval Time in which to reattempt stream connection
    * if it fails.
    */
-  SymbolPriceStreams(std::vector<Symbol> symbols,
-                     absl::Duration reattempt_interval,
-                     const di::Factory<ISymbolsDb> &symbols_db_factory,
-                     const di::Factory<network::IWsClient> &ws_client_factory);
+  SymbolPriceStreams(
+      std::vector<Symbol> symbols, absl::Duration reattempt_interval,
+      cpp::NnUp<sps::BookTickWebSocketFactory> web_socket_factory);
 
   /**
    * @brief Gives symbols for which prices are streamed.

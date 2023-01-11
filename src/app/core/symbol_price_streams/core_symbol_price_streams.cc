@@ -1,30 +1,34 @@
 #include "core_symbol_price_streams.h"
 
-#include <cppcoro/sync_wait.hpp>
-#include <optional>
+#include <coroutine>
+#include <range/v3/functional/bind_back.hpp>
+#include <range/v3/functional/invoke.hpp>
+#include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
-#include <type_traits>
+#include <range/v3/view/view.hpp>
 #include <utility>
+
+#include "core_sps_book_tick_web_socket_factory.h"
 
 namespace stonks::core {
 SymbolPriceStreams::SymbolPriceStreams(
     std::vector<Symbol> symbols, absl::Duration reattempt_interval,
-    const di::Factory<ISymbolsDb> &symbols_db_factory,
-    const di::Factory<network::IWsClient> &ws_client_factory)
+    cpp::NnUp<sps::BookTickWebSocketFactory> web_socket_factory)
     : symbols_{std::move(symbols)},
-      stream_handles_{[&symbols = symbols_, reattempt_interval,
-                       &symbols_db_factory, &ws_client_factory]() {
-        return symbols |
-               ranges::views::transform(
-                   [reattempt_interval, &symbols_db_factory,
-                    &ws_client_factory](const auto &symbol) {
-                     return sps::StreamHandle{
-                         {symbol, symbols_db_factory, ws_client_factory},
-                         reattempt_interval};
-                   }) |
-               ranges::to_vector;
-      }()} {}
+      stream_handles_{
+          [&symbols = symbols_, reattempt_interval,
+           web_socket_factory = cpp::NnSp<sps::BookTickWebSocketFactory>{
+               std::move(web_socket_factory)}]() {
+            return symbols |
+                   ranges::views::transform(
+                       [reattempt_interval,
+                        &web_socket_factory](const auto &symbol) {
+                         return sps::StreamHandle{symbol, reattempt_interval,
+                                                  web_socket_factory};
+                       }) |
+                   ranges::to_vector;
+          }()} {}
 
 auto SymbolPriceStreams::GetStreamedSymbols() const
     -> cppcoro::task<std::vector<Symbol>> {

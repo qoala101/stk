@@ -14,19 +14,24 @@
 #include "common_create_log_spdlog_injector.h"
 #include "common_create_network_restsdk_injector.h"
 #include "core_i_symbols_db.h"
+#include "core_i_symbols_db_updater.h"
+#include "core_sps_book_tick_web_socket_factory.h"
 #include "core_symbol_price_streams.h"
 #include "cpp_not_null.h"
 #include "di_auto_injectable.h"
 #include "di_bind_value_type_to_value.h"
+#include "di_enable_nn_pointers.h"
 #include "di_make_injector.h"
 #include "networkx_make_server_for.h"
 #include "service_client_options.h"
 #include "service_create_client_injector.h"
 #include "service_create_server_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
+#include "service_sdu_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
 #include "service_sps_traits.h"  // IWYU pragma: keep
 #include "service_symbols_db.h"
+#include "service_symbols_db_updater.h"
 
 auto main(int argc, const char *const *argv) -> int {
   auto options = stonks::cli::Options{};
@@ -35,6 +40,8 @@ auto main(int argc, const char *const *argv) -> int {
       stonks::service::ServerOptions<stonks::core::SymbolPriceStreams>{options};
   const auto symbols_db_client_options =
       stonks::service::ClientOptions<stonks::core::ISymbolsDb>{options};
+  const auto symbols_db_updater_client_options =
+      stonks::service::ClientOptions<stonks::core::ISymbolsDbUpdater>{options};
   auto symbols = options.AddOption(
       "--symbols", std::vector<std::string>{"BTCUSDT", "ETHUSDT", "BNBUSDT"});
   const auto reattempt_interval = options.AddOption(
@@ -49,9 +56,12 @@ auto main(int argc, const char *const *argv) -> int {
           server_options),
       stonks::service::CreateClientInjector<stonks::service::SymbolsDb>(
           symbols_db_client_options),
+      stonks::service::CreateClientInjector<stonks::service::SymbolsDbUpdater>(
+          symbols_db_updater_client_options),
 
-      stonks::di::BindValueTypeToValue(
-          absl::Milliseconds(*reattempt_interval)));
+      stonks::di::BindValueTypeToValue(absl::Milliseconds(*reattempt_interval)),
+      stonks::di::EnableNnPointers<
+          stonks::core::sps::BookTickWebSocketFactory>());
 
   app.Run([&injector, &symbols]() {
     auto auto_injectable =
@@ -63,7 +73,7 @@ auto main(int argc, const char *const *argv) -> int {
                 *symbols | ranges::views::transform([](auto &symbol) {
                   return stonks::core::Symbol{std::move(symbol)};
                 }) | ranges::to_vector,
-                auto_injectable, auto_injectable, auto_injectable}),
+                auto_injectable, auto_injectable}),
         auto_injectable, auto_injectable);
   });
 }

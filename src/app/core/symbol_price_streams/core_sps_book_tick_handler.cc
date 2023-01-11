@@ -15,35 +15,17 @@
 
 #include "core_common.h"
 #include "core_types.h"
-#include "cpp_message_exception.h"
 #include "cpp_typed_struct.h"
 
 namespace stonks::core::sps {
-namespace {
-auto GetBaseAssetPriceStep(const Symbol &symbol, const ISymbolsDb &symbols_db)
-    -> cppcoro::task<double> {
-  auto symbol_info = co_await symbols_db.SelectSymbolInfo(symbol);
-
-  if (!symbol_info.has_value()) {
-    throw cpp::MessageException{
-        fmt::format("Couldn't get symbol info for {}", *symbol)};
-  }
-
-  co_return symbol_info->base_asset.price_step;
-}
-}  // namespace
-
-BookTickHandler::BookTickHandler(Symbol symbol,
-                                 cpp::NnUp<ISymbolsDb> symbols_db)
+BookTickHandler::BookTickHandler(
+    Symbol symbol, cpp::NnSp<ISymbolsDb> symbols_db,
+    cpp::AutoUpdatable<double> base_asset_price_step,
+    cpp::Opt<SymbolPriceRecord> last_price_record)
     : symbol_{std::move(symbol)},
       symbols_db_{std::move(symbols_db)},
-      base_asset_price_step_{
-          [symbol = symbol_,
-           symbols_db = symbols_db_]() -> cppcoro::task<double> {
-            return GetBaseAssetPriceStep(symbol, *symbols_db);
-          },
-          absl::Seconds(1)},
-      last_record_{cppcoro::sync_wait(GetLastPriceRecord())} {}
+      base_asset_price_step_{std::move(base_asset_price_step)},
+      last_price_record_{std::move(last_price_record)} {}
 
 auto BookTickHandler::SymbolPriceRecordFrom(const binance::BookTick &book_tick)
     -> cppcoro::task<SymbolPriceRecord> {
@@ -59,38 +41,19 @@ auto BookTickHandler::SymbolPriceRecordFrom(const binance::BookTick &book_tick)
 
 auto BookTickHandler::RecordAsPrice(binance::BookTick book_tick)
     -> cppcoro::task<> {
-  auto record = co_await SymbolPriceRecordFrom(book_tick);
+  auto new_price_record = co_await SymbolPriceRecordFrom(book_tick);
 
   if (const auto price_not_changed =
-          (*last_record_.buy_price == record.buy_price) &&
-          (*last_record_.sell_price == record.sell_price)) {
+          last_price_record_.has_value() &&
+          (*last_price_record_->buy_price == new_price_record.buy_price) &&
+          (*last_price_record_->sell_price == new_price_record.sell_price)) {
     co_return;
   }
 
   try {
-    co_await symbols_db_->InsertSymbolPriceRecord(record);
-    last_record_ = std::move(record);
+    co_await symbols_db_->InsertSymbolPriceRecord(new_price_record);
+    last_price_record_ = std::move(new_price_record);
   } catch (...) {
   }
-}
-
-auto BookTickHandler::GetLastPriceRecord() -> cppcoro::task<SymbolPriceRecord> {
-  const auto order = TimeOrder::kNewFirst;
-  const auto limit = 1;
-
-  auto records = std::vector<SymbolPriceRecord>{};
-
-  try {
-    records = co_await symbols_db_->SelectSymbolPriceRecords(
-        symbol_, &order, nullptr, nullptr, &limit);
-  } catch (...) {
-    co_return SymbolPriceRecord{};
-  }
-
-  if (records.empty()) {
-    co_return SymbolPriceRecord{};
-  }
-
-  co_return std::move(records.front());
 }
 }  // namespace stonks::core::sps

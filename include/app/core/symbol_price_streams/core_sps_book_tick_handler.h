@@ -17,7 +17,9 @@ namespace core::sps {
  */
 class BookTickHandler {
  public:
-  BookTickHandler(Symbol symbol, cpp::NnUp<ISymbolsDb> symbols_db);
+  BookTickHandler(Symbol symbol, cpp::NnSp<ISymbolsDb> symbols_db,
+                  cpp::AutoUpdatable<double> base_asset_price_step,
+                  cpp::Opt<SymbolPriceRecord> last_price_record);
 
   /**
    * @brief Records book tick as price.
@@ -29,12 +31,10 @@ class BookTickHandler {
   auto SymbolPriceRecordFrom [[nodiscard]] (const binance::BookTick &book_tick)
   -> cppcoro::task<SymbolPriceRecord>;
 
-  auto GetLastPriceRecord [[nodiscard]] () -> cppcoro::task<SymbolPriceRecord>;
-
   Symbol symbol_{};
   cpp::NnSp<ISymbolsDb> symbols_db_;
   cpp::AutoUpdatable<double> base_asset_price_step_;
-  SymbolPriceRecord last_record_{};
+  cpp::Opt<SymbolPriceRecord> last_price_record_{};
 };
 }  // namespace core::sps
 

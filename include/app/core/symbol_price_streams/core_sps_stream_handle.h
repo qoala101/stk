@@ -15,8 +15,8 @@ class StreamHandle {
    * @brief Creates connection and starts receiving book ticks.
    * Would reattempt connection if it fails.
    */
-  StreamHandle(sps::BookTickWebSocketFactory web_socket_factory,
-               absl::Duration reattempt_interval);
+  StreamHandle(Symbol symbol, absl::Duration reattempt_interval,
+               cpp::NnSp<sps::BookTickWebSocketFactory> web_socket_factory);
 
  private:
   cpp::NnSp<cpp::Opt<networkx::WebSocket<&sps::BookTickHandler::RecordAsPrice>>>

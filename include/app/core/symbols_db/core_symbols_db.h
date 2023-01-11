@@ -90,7 +90,7 @@ class SymbolsDb : public ISymbolsDb {
   void UpdateSymbolInfo(SymbolInfo info) const;
   void DeleteSymbolInfo(SymbolInfo info) const;
 
-  cpp::NnSp<sqldb::p::Db> db_;
+  cpp::NnUp<sqldb::p::Db> db_;
 
   struct PreparedStatements {
     cpp::NnUp<sqldb::ISelectStatement> select_assets;
