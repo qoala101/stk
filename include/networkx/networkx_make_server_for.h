@@ -2,7 +2,6 @@
 #define STONKS_NETWORKX_NETWORKX_MAKE_SERVER_FOR_H_
 
 #include <cppcoro/task.hpp>
-#include <shared_mutex>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -56,9 +55,7 @@ void SetEndpointHandlers(network::RestServerBuilder &server_builder,
   using TargetTraits = ClientServerTypeTraitsFacade<Target>;
 
   cpp::ForEachIndex<TargetTraits::GetNumEndpoints()>(
-      [&server_builder, &target,
-       read_write_mutex =
-           cpp::MakeNnSp<std::shared_mutex>()]<typename Current>(Current) {
+      [&server_builder, &target]<typename Current>(Current) {
         constexpr auto function =
             TargetTraits::template GetEndpointFunction<Current::kIndex>();
 
@@ -71,25 +68,15 @@ void SetEndpointHandlers(network::RestServerBuilder &server_builder,
         if constexpr (FunctionTraits::HasParams()) {
           server_builder.Handling(
               std::move(endpoint),
-              [target,
-               read_write_mutex](auto request) -> cppcoro::task<ResultType> {
-                co_return co_await CallSynchronized<FunctionTraits>(
-                    [&target, &request]() -> cppcoro::task<ResultType> {
-                      co_return co_await CallWithRequestParams<function>(
-                          *target, request);
-                    },
-                    *read_write_mutex);
+              [target](auto request) -> cppcoro::task<ResultType> {
+                co_return co_await CallWithRequestParams<function>(*target,
+                                                                   request);
               });
         } else {
-          server_builder.Handling(
-              std::move(endpoint),
-              [target, read_write_mutex]() -> cppcoro::task<ResultType> {
-                co_return co_await CallSynchronized<FunctionTraits>(
-                    [&target]() -> cppcoro::task<ResultType> {
-                      co_return co_await (*target.*function)();
-                    },
-                    *read_write_mutex);
-              });
+          server_builder.Handling(std::move(endpoint),
+                                  [target]() -> cppcoro::task<ResultType> {
+                                    co_return co_await (*target.*function)();
+                                  });
         }
       });
 }
@@ -98,8 +85,6 @@ void SetEndpointHandlers(network::RestServerBuilder &server_builder,
 /**
  * @brief Creates REST server for the target object on specified URI.
  * Server would handle request according to the object client-server traits.
- * For endpoints which set Synchronized flag, shared mutex would be used
- * to protect read-write operations based on method.
  */
 template <ClientServerType Target>
 auto MakeServerFor

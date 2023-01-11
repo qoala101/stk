@@ -73,19 +73,6 @@ struct EndpointFunctionTraitsFacade : public FunctionTraits {
   }
 
   /**
-   * @brief Tells whether function should be synchronized.
-   * @remark Overrides server value.
-   */
-  static constexpr auto IsSynchronized [[nodiscard]] () {
-    if constexpr (requires { FunctionTraits::kSynchronized; }) {
-      return FunctionTraits::kSynchronized;
-    } else {
-      return ClientServerTypeTraitsFacade<
-          ParentType<kFunction>>::IsSynchronized();
-    }
-  }
-
-  /**
    * @brief Creates typed endpoint using provided traits.
    */
   static auto AsTypedEndpoint [[nodiscard]] () {

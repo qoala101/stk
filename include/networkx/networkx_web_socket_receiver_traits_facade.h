@@ -22,17 +22,6 @@ struct WebSocketReceiverTraitsFacade : public FunctionTraits {
   static constexpr auto IsConst [[nodiscard]] () {
     return member_function_traits<decltype(kFunction)>::is_const;
   }
-
-  /**
-   * @brief Tells whether receiver should be synchronized.
-   */
-  static constexpr auto IsSynchronized [[nodiscard]] () {
-    if constexpr (requires { FunctionTraits::kSynchronized; }) {
-      return FunctionTraits::kSynchronized;
-    } else {
-      return false;
-    }
-  }
 };
 }  // namespace stonks::networkx
 
