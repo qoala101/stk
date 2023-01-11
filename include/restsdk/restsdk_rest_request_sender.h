@@ -8,6 +8,10 @@
 #include "network_i_rest_request_sender.h"
 #include "network_types.h"
 
+namespace web::http::client {
+class http_client;  // IWYU pragma: keep
+}  // namespace web::http::client
+
 namespace stonks::restsdk {
 /**
  * @copydoc network::IRestRequestSender
@@ -15,6 +19,14 @@ namespace stonks::restsdk {
 class RestRequestSender : public network::IRestRequestSender {
  public:
   explicit RestRequestSender(cpp::NnUp<log::ILogger> logger);
+
+  RestRequestSender(const RestRequestSender &) = delete;
+  RestRequestSender(RestRequestSender &&) noexcept;
+
+  auto operator=(const RestRequestSender &) -> RestRequestSender & = delete;
+  auto operator=(RestRequestSender &&) noexcept -> RestRequestSender &;
+
+  ~RestRequestSender() override;
 
   /**
    * @copydoc network::IRestRequestSender::SendRequestAndGetResponse
@@ -24,6 +36,7 @@ class RestRequestSender : public network::IRestRequestSender {
       -> cppcoro::task<network::RestResponse> override;
 
  private:
+  cpp::NnUp<web::http::client::http_client> http_client_;
   cpp::NnUp<log::ILogger> logger_;
 };
 }  // namespace stonks::restsdk

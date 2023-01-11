@@ -15,7 +15,7 @@
 namespace stonks::core {
 SymbolPriceStreams::SymbolPriceStreams(
     std::vector<Symbol> symbols, absl::Duration reattempt_interval,
-    cpp::NnUp<sps::BookTickWebSocketFactory> web_socket_factory)
+    sps::BookTickWebSocketFactory web_socket_factory)
     : symbols_{std::move(symbols)},
       stream_handles_{
           [&symbols = symbols_, reattempt_interval,

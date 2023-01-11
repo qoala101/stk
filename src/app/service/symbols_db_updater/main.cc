@@ -18,6 +18,7 @@
 #include "core_sdbu_old_prices_deleter.h"
 #include "core_sdbu_symbols_info_updater.h"
 #include "core_symbols_db_updater.h"
+#include "cpp_share.h"
 #include "di_auto_injectable.h"
 #include "di_make_injector.h"
 #include "networkx_make_server_for.h"
@@ -66,12 +67,10 @@ auto main(int argc, const char *const *argv) -> int {
         stonks::di::AutoInjectable{stonks::cpp::AssumeNn(&injector)};
 
     return stonks::networkx::MakeServerFor<stonks::core::ISymbolsDbUpdater>(
-        stonks::cpp::MakeNnSp<stonks::core::SymbolsDbUpdater>(
-            stonks::core::SymbolsDbUpdater{
-                absl::Milliseconds(*update_symbols_info_interval),
-                auto_injectable,
-                absl::Milliseconds(*delete_old_prices_interval),
-                auto_injectable, absl::Milliseconds(*reattempt_interval)}),
+        stonks::cpp::Share(stonks::core::SymbolsDbUpdater{
+            absl::Milliseconds(*update_symbols_info_interval), auto_injectable,
+            absl::Milliseconds(*delete_old_prices_interval), auto_injectable,
+            absl::Milliseconds(*reattempt_interval)}),
         auto_injectable, auto_injectable);
   });
 }

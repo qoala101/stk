@@ -10,6 +10,7 @@
 #include "cli_option_value_variant.h"
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_not_null.h"
+#include "cpp_share.h"
 #include "cpp_smart_pointers.h"
 
 namespace CLI {
@@ -48,8 +49,8 @@ class Options : public detail::OptionsBase {
   template <SupportedOptionType T>
   auto AddOption [[nodiscard]] (std::string name, T default_value)
   -> Option<T> {
-    auto option_value = cpp::MakeNnSp<OptionValueVariant>(
-        OptionValueVariant{std::forward<T>(default_value)});
+    auto option_value =
+        cpp::Share(OptionValueVariant{std::forward<T>(default_value)});
     StoreOptionValue(std::move(name), option_value);
     return Option<T>{std::move(option_value)};
   }

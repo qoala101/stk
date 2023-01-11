@@ -22,9 +22,9 @@ class SymbolPriceStreams {
    * @param reattempt_interval Time in which to reattempt stream connection
    * if it fails.
    */
-  SymbolPriceStreams(
-      std::vector<Symbol> symbols, absl::Duration reattempt_interval,
-      cpp::NnUp<sps::BookTickWebSocketFactory> web_socket_factory);
+  SymbolPriceStreams(std::vector<Symbol> symbols,
+                     absl::Duration reattempt_interval,
+                     sps::BookTickWebSocketFactory web_socket_factory);
 
   /**
    * @brief Gives symbols for which prices are streamed.

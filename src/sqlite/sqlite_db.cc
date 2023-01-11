@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "cpp_not_null.h"
+#include "cpp_share.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqlite_db_facade.h"
@@ -18,8 +19,7 @@ namespace stonks::sqlite {
 Db::Db(di::Factory<log::ILogger> logger_factory,
        SqliteDbHandleVariant sqlite_db_handle)
     : logger_factory_{std::move(logger_factory)},
-      sqlite_db_handle_{
-          cpp::MakeNnSp<SqliteDbHandleVariant>(std::move(sqlite_db_handle))},
+      sqlite_db_handle_{cpp::Share(std::move(sqlite_db_handle))},
       sqlite_db_facade_{logger_factory_,
                         cpp::AssumeNn(&sqlite_db_handle_->GetSqliteDb())} {}
 

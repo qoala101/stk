@@ -12,7 +12,6 @@
 #include <pplx/pplxtasks.h>
 
 #include <coroutine>
-#include <cppcoro/single_consumer_event.hpp>
 #include <exception>
 #include <gsl/assert>
 #include <magic_enum.hpp>
@@ -100,9 +99,20 @@ auto ConvertToRequestParam [[nodiscard]] (const network::IJson &json) {
   return rest_json->serialize();
 }
 
+auto WebUriFrom [[nodiscard]] (const network::RestRequest &request) {
+  auto uri_builder = web::http::uri_builder{*request.endpoint.uri};
+
+  for (const auto &[key, value] : request.params) {
+    uri_builder.append_query(key, ConvertToRequestParam(*value));
+  }
+
+  return uri_builder.to_uri();
+}
+
 auto HttpRequestFrom [[nodiscard]] (const network::RestRequest &request) {
   auto http_request =
       web::http::http_request{HttpMethodFrom(request.endpoint.method)};
+  http_request.set_request_uri(WebUriFrom(request));
 
   for (const auto &[key, value] : request.headers) {
     http_request.headers().add(key, value);
@@ -114,37 +124,33 @@ auto HttpRequestFrom [[nodiscard]] (const network::RestRequest &request) {
 
   return http_request;
 }
-
-auto WebUriFrom [[nodiscard]] (const network::RestRequest &request) {
-  auto uri_builder = web::http::uri_builder{*request.endpoint.uri};
-
-  for (const auto &[key, value] : request.params) {
-    uri_builder.append_query(key, ConvertToRequestParam(*value));
-  }
-
-  return uri_builder.to_uri();
-}
 }  // namespace
 
 RestRequestSender::RestRequestSender(cpp::NnUp<log::ILogger> logger)
-    : logger_{std::move(logger)} {}
+    : http_client_{cpp::MakeNnUp<web::http::client::http_client>(web::uri{})},
+      logger_{std::move(logger)} {}
+
+RestRequestSender::RestRequestSender(RestRequestSender &&) noexcept = default;
+
+auto RestRequestSender::operator=(RestRequestSender &&) noexcept
+    -> RestRequestSender & = default;
+
+RestRequestSender::~RestRequestSender() = default;
 
 auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
     const -> cppcoro::task<network::RestResponse> {
-  const auto full_uri = WebUriFrom(request);
-
-  logger_->LogImportantEvent(fmt::format(
-      "Sending {} request to {}",
-      magic_enum::enum_name(request.endpoint.method), full_uri.to_string()));
-
-  auto http_client = web::http::client::http_client{full_uri};
   const auto http_request = HttpRequestFrom(request);
+  const auto request_uri = http_request.request_uri().to_string();
+
+  logger_->LogImportantEvent(
+      fmt::format("Sending {} request to {}",
+                  magic_enum::enum_name(request.endpoint.method), request_uri));
 
   auto response = network::RestResponse{};
 
   try {
     co_await CallAsCoroutine(
-        http_client.request(http_request)
+        http_client_->request(http_request)
             .then([&response](const web::http::http_response &http_response) {
               response.status = StatusFrom(http_response.status_code());
               return http_response.extract_json();
@@ -154,10 +160,9 @@ auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
                   network::IJson::NativeHandle{std::move(http_response_json)});
             }));
   } catch (const std::exception &e) {
-    logger_->LogErrorCondition(
-        fmt::format("{} request to {} failed: {}",
-                    magic_enum::enum_name(request.endpoint.method),
-                    full_uri.to_string(), e.what()));
+    logger_->LogErrorCondition(fmt::format(
+        "{} request to {} failed: {}",
+        magic_enum::enum_name(request.endpoint.method), request_uri, e.what()));
     throw;
   }
 
