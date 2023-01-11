@@ -25,7 +25,7 @@ class SymbolsDb : public ISymbolsDb {
   /**
    * @param db DB handle to operate on.
    */
-  explicit SymbolsDb(cpp::NnUp<sqldb::IDb> db);
+  explicit SymbolsDb(sqldb::p::Db db);
 
   /**
    * @copydoc ISymbolsDb::SelectAssets
@@ -89,8 +89,6 @@ class SymbolsDb : public ISymbolsDb {
   void InsertSymbolInfo(SymbolInfo info) const;
   void UpdateSymbolInfo(SymbolInfo info) const;
   void DeleteSymbolInfo(SymbolInfo info) const;
-
-  cpp::NnUp<sqldb::p::Db> db_;
 
   struct PreparedStatements {
     cpp::NnUp<sqldb::ISelectStatement> select_assets;

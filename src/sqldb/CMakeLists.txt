@@ -16,6 +16,9 @@ add_library(libsqldb
   query_builder/sqldb_qb_types.cc
   query_builder/sqldb_qb_update.cc
   query_builder/sqldb_qb_wrapped_conditions.cc
+  thread_safe/sqldb_ts_db.cc
+  thread_safe/sqldb_ts_select_statement.cc
+  thread_safe/sqldb_ts_update_statement.cc
   sqldb_i_db.cc
   sqldb_i_select_statement.cc
   sqldb_i_update_statement.cc
@@ -34,6 +37,7 @@ target_include_directories(libsqldb
   PUBLIC ${PROJECT_SOURCE_DIR}/include/sqldb
   PUBLIC ${PROJECT_SOURCE_DIR}/include/sqldb/parametrized
   PUBLIC ${PROJECT_SOURCE_DIR}/include/sqldb/query_builder
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/sqldb/thread_safe
 )
 
 target_link_libraries(libsqldb
