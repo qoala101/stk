@@ -10,7 +10,12 @@
 
 namespace stonks::cpp {
 TimerBuilder::TimerBuilder(fu2::unique_function<void()> event)
-    : event_{std::move(event)} {}
+    : event_{[&event]() {
+        Expects(!event.empty());
+        return std::move(event);
+      }()} {
+  Ensures(!event_.empty());
+}
 
 auto TimerBuilder::Every(absl::Duration event_interval) -> TimerBuilder& {
   Expects(!event_interval_.has_value());
@@ -46,6 +51,7 @@ auto TimerBuilder::Times(int num_reattempts) -> TimerBuilder& {
 }
 
 auto TimerBuilder::Start() -> Timer {
+  Expects(!event_.empty());
   Expects(event_interval_.has_value());
 
   const auto reattempt_interval_set = reattempt_interval_.has_value();
@@ -53,12 +59,14 @@ auto TimerBuilder::Start() -> Timer {
       reattempt_interval_set
           ? num_reattempts_.value_or(std::numeric_limits<int>::max())
           : 0;
+  auto timer = Timer{{std::move(event_),
+                      *event_interval_,
+                      {.reattempt_interval =
+                           reattempt_interval_.value_or(absl::ZeroDuration()),
+                       .num_reattempts = num_reattempts}}};
 
-  return Timer{{std::move(event_),
-                *event_interval_,
-                {.reattempt_interval =
-                     reattempt_interval_.value_or(absl::ZeroDuration()),
-                 .num_reattempts = num_reattempts}}};
+  Ensures(event_.empty());
+  return timer;
 }
 
 auto Execute(fu2::unique_function<void()> event) -> TimerBuilder {

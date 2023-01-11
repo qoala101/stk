@@ -19,6 +19,8 @@ class StreamHandle {
                cpp::NnSp<sps::BookTickWebSocketFactory> web_socket_factory);
 
  private:
+  cpp::NnSp<cpp::Opt<networkx::WebSocket<&sps::BookTickHandler::RecordAsPrice>>>
+      web_socket_;
   cpp::Timer connect_to_web_socket_timer_;
 };
 }  // namespace stonks::core::sps
