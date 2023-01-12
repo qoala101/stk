@@ -6,6 +6,7 @@ add_library(libnetwork
   auto_parsable/network_auto_parsable_ws_message_handler.cc
   auto_parsable/network_auto_parsable_ws_message.cc
   auto_parsable/network_auto_parsable.cc
+  thread_safe/network_ts_rest_request_sender.cc
   typed_endpoint/network_te_endpoint_types_validator_template.cc
   typed_endpoint/network_typed_endpoint_handler.cc
   typed_endpoint/network_typed_endpoint_sender.cc
@@ -33,6 +34,7 @@ target_include_directories(libnetwork
   PUBLIC ${PROJECT_SOURCE_DIR}/include/network
   PUBLIC ${PROJECT_SOURCE_DIR}/include/network/auto_parsable
   PUBLIC ${PROJECT_SOURCE_DIR}/include/network/auto_parsable/request_handler
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/network/thread_safe
   PUBLIC ${PROJECT_SOURCE_DIR}/include/network/typed_endpoint
 )
 

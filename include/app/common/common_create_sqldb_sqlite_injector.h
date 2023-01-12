@@ -1,7 +1,6 @@
 #ifndef STONKS_APP_COMMON_COMMON_CREATE_SQLDB_SQLITE_INJECTOR_H_
 #define STONKS_APP_COMMON_COMMON_CREATE_SQLDB_SQLITE_INJECTOR_H_
 
-#include "cpp_smart_pointers.h"
 #include "di_bind_interface_to_implementation.h"
 #include "di_bind_type_to_factory_function.h"
 #include "di_bind_type_to_other_type.h"
@@ -9,7 +8,6 @@
 #include "sqldb_i_db.h"
 #include "sqldb_ts_db.h"
 #include "sqlite_db.h"
-#include "sqlite_db_facade.h"
 
 namespace stonks::common {
 namespace detail {
