@@ -1,10 +1,10 @@
 #include "sqldb_ts_select_statement.h"
 
-namespace stonks::sqldb::ts {
-SelectStatement::SelectStatement(cpp::NnUp<ISelectStatement> statement)
-    : statement_{std::move(statement)} {}
+#include <mutex>
 
+namespace stonks::sqldb::ts {
 auto SelectStatement::Execute(std::vector<Value> params) const -> Rows {
-  return statement_->Execute(std::move(params));
+  const auto lock = std::lock_guard{GetMutex()};
+  return GetStatement().Execute(std::move(params));
 }
 }  // namespace stonks::sqldb::ts

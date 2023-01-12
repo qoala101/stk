@@ -46,11 +46,9 @@ namespace {
 auto GetCachedApiHandle [[nodiscard]] (cpp::NnUp<log::ILogger> logger) {
   static auto last_instance = cpp::Wp<detail::ApiHandleImpl>{};
 
-  auto last_instance_lock = last_instance.lock();
-
-  if (const auto last_instance_is_alive = last_instance_lock != nullptr) {
+  if (auto last_instance_lock = last_instance.lock()) {
     Ensures(!last_instance.expired());
-    return cpp::AssumeNn(last_instance_lock);
+    return cpp::AssumeNn(std::move(last_instance_lock));
   }
 
   auto new_instance = cpp::MakeNnSp<detail::ApiHandleImpl>(std::move(logger));

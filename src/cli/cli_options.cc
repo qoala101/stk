@@ -12,13 +12,9 @@
 namespace stonks::cli::detail {
 void OptionsBase::AddToNativeApp(CLI::App &app) const {
   for (const auto &[name, weak_value] : option_values_) {
-    auto value = weak_value.lock();
-
-    if (value == nullptr) {
-      continue;
+    if (const auto value = weak_value.lock()) {
+      value->AddOptionToNativeApp(name, app);
     }
-
-    value->AddOptionToNativeApp(name, app);
   }
 }
 
@@ -31,13 +27,9 @@ void OptionsBase::SetValuesFromNativeOptions(const CLI::App &app) const {
       continue;
     }
 
-    auto value = weak_value.lock();
-
-    if (value == nullptr) {
-      continue;
+    if (const auto value = weak_value.lock()) {
+      value->SetValueFromNativeOption(*native_option);
     }
-
-    value->SetValueFromNativeOption(*native_option);
   }
 }
 }  // namespace stonks::cli::detail

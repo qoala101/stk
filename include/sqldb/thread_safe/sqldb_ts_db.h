@@ -1,6 +1,8 @@
 #ifndef STONKS_SQLDB_THREAD_SAFE_SQLDB_TS_DB_H_
 #define STONKS_SQLDB_THREAD_SAFE_SQLDB_TS_DB_H_
 
+#include <mutex>
+
 #include "cpp_not_null.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
@@ -32,6 +34,7 @@ class Db : public IDb {
 
  private:
   cpp::NnUp<IDb> db_;
+  cpp::NnSp<std::mutex> execute_statement_mutex_;
 };
 }  // namespace stonks::sqldb::ts
 
