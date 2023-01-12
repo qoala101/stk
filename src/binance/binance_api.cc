@@ -26,11 +26,9 @@ auto BinanceApi::operator=(BinanceApi &&) noexcept -> BinanceApi & = default;
 
 BinanceApi::~BinanceApi() = default;
 
-BinanceApi::BinanceApi(
-    di::Factory<network::IRestRequestSender> request_sender_factory)
-    : impl_{cpp::MakeNnUp<BinanceApi::Impl>(
-          networkx::Client<BinanceApi>{{"https://api.binance.com/api/v3"},
-                                       std::move(request_sender_factory)})} {}
+BinanceApi::BinanceApi(cpp::NnUp<network::IRestRequestSender> request_sender)
+    : impl_{cpp::MakeNnUp<BinanceApi::Impl>(networkx::Client<BinanceApi>{
+          {"https://api.binance.com/api/v3"}, std::move(request_sender)})} {}
 
 auto BinanceApi::exchangeInfo() const -> cppcoro::task<ExchangeInfo> {
   co_return co_await impl_->GetClient()

@@ -5,7 +5,6 @@
 
 #include "binance_types.h"
 #include "cpp_not_null.h"
-#include "di_factory.h"
 #include "network_i_rest_request_sender.h"
 
 namespace stonks::binance {
@@ -14,8 +13,7 @@ namespace stonks::binance {
  */
 class BinanceApi {
  public:
-  explicit BinanceApi(
-      di::Factory<network::IRestRequestSender> request_sender_factory);
+  explicit BinanceApi(cpp::NnUp<network::IRestRequestSender> request_sender);
 
   BinanceApi(const BinanceApi &) = delete;
   BinanceApi(BinanceApi &&) noexcept;

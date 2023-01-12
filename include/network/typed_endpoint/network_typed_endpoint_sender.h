@@ -21,7 +21,7 @@ class TypedEndpointSender : public IRestRequestSender {
    * those.
    */
   TypedEndpointSender(EndpointTypes endpoint_types,
-                      cpp::NnUp<IRestRequestSender> request_sender);
+                      cpp::NnSp<IRestRequestSender> request_sender);
 
   /**
    * @brief Validates request prior forwarding it to the sender and response
@@ -32,7 +32,7 @@ class TypedEndpointSender : public IRestRequestSender {
 
  private:
   cpp::NnUp<te::EndpointTypesValidatorTemplate> type_checker_;
-  cpp::NnUp<IRestRequestSender> request_sender_;
+  cpp::NnSp<IRestRequestSender> request_sender_;
 };
 }  // namespace stonks::network
 

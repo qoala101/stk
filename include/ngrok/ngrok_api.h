@@ -5,7 +5,6 @@
 #include <string>
 
 #include "cpp_not_null.h"
-#include "di_factory.h"
 #include "network_i_rest_request_sender.h"
 #include "ngrok_types.h"
 
@@ -15,8 +14,7 @@ namespace stonks::ngrok {
  */
 class NgrokApi {
  public:
-  explicit NgrokApi(
-      di::Factory<network::IRestRequestSender> request_sender_factory);
+  explicit NgrokApi(cpp::NnUp<network::IRestRequestSender> request_sender);
 
   NgrokApi(const NgrokApi &) = delete;
   NgrokApi(NgrokApi &&) noexcept;

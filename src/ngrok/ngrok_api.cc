@@ -28,10 +28,9 @@ auto NgrokApi::operator=(NgrokApi &&) noexcept -> NgrokApi & = default;
 
 NgrokApi::~NgrokApi() = default;
 
-NgrokApi::NgrokApi(
-    di::Factory<network::IRestRequestSender> request_sender_factory)
+NgrokApi::NgrokApi(cpp::NnUp<network::IRestRequestSender> request_sender)
     : impl_{cpp::MakeNnUp<NgrokApi::Impl>(networkx::Client<NgrokApi>{
-          {"http://0.0.0.0:4040/api"}, std::move(request_sender_factory)})} {}
+          {"http://0.0.0.0:4040/api"}, std::move(request_sender)})} {}
 
 auto NgrokApi::tunnels() const -> cppcoro::task<Tunnels> {
   co_return co_await impl_->GetClient().Call<&NgrokApi::tunnels>();

@@ -26,7 +26,7 @@ auto TryToParseException [[nodiscard]] (const IJson &json)
 }  // namespace
 
 ResponseExceptionHandler::ResponseExceptionHandler(
-    cpp::NnUp<IRestRequestSender> request_sender)
+    cpp::NnSp<IRestRequestSender> request_sender)
     : request_sender_{std::move(request_sender)} {}
 
 auto ResponseExceptionHandler::SendRequestAndGetResponse(RestRequest request)

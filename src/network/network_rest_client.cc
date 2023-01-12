@@ -14,9 +14,9 @@
 
 namespace stonks::network {
 RestClient::RestClient(Uri base_uri,
-                       di::Factory<IRestRequestSender> request_sender_factory)
+                       cpp::NnUp<IRestRequestSender> request_sender)
     : base_uri_{std::move(base_uri)},
-      request_sender_factory_{std::move(request_sender_factory)} {}
+      request_sender_{std::move(request_sender)} {}
 
 auto RestClient::Call(TypedEndpoint endpoint) const
     -> rest_client::RequestBuilder {
@@ -24,7 +24,7 @@ auto RestClient::Call(TypedEndpoint endpoint) const
 
   auto decorated_sender = cpp::MakeNnUp<ResponseExceptionHandler>(
       cpp::MakeNnUp<TypedEndpointSender>(std::move(endpoint.expected_types),
-                                         request_sender_factory_.Create()));
+                                         request_sender_));
 
   return cpp::CallExposedPrivateConstructorOf<rest_client::RequestBuilder,
                                               RestClient>{}(

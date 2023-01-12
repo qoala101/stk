@@ -8,6 +8,7 @@
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "cpp_for_each_arg.h"
+#include "cpp_not_null.h"
 #include "network_rest_client.h"
 #include "network_rest_client_request_builder.h"
 #include "networkx_concepts.h"  // IWYU pragma: keep
@@ -17,17 +18,6 @@
 
 namespace stonks::networkx {
 namespace detail {
-class ClientBase {
- protected:
-  ClientBase(network::Uri uri,
-             di::Factory<network::IRestRequestSender> request_sender_factory);
-
-  auto GetRestClient [[nodiscard]] () const -> const network::RestClient &;
-
- private:
-  network::RestClient rest_client_;
-};
-
 template <cpp::MemberFunction auto kFunction>
   requires EndpointFunction<kFunction>
 class CallImpl {
@@ -80,14 +70,13 @@ class CallImpl {
  * @brief Client for remote server with convenient API.
  */
 template <ClientServerType Target>
-class Client : public detail::ClientBase {
+class Client {
  public:
   /**
    * @param uri Server URI.
    */
-  Client(Uri<Target> uri,
-         di::Factory<network::IRestRequestSender> request_sender_factory)
-      : ClientBase{std::move(uri), std::move(request_sender_factory)} {}
+  Client(Uri<Target> uri, cpp::NnUp<network::IRestRequestSender> request_sender)
+      : rest_client_{std::move(uri), std::move(request_sender)} {}
 
   /**
    * @brief Remotely calls specified function with provided arguments.
@@ -100,9 +89,12 @@ class Client : public detail::ClientBase {
              std::invocable<FunctionType, Target &, Args...>
              auto Call [[nodiscard]] (Args &&...args) const
              -> cppcoro::task<ResultType> {
-    co_return co_await detail::CallImpl<kFunction>{GetRestClient()}(
+    co_return co_await detail::CallImpl<kFunction>{rest_client_}(
         std::forward<Args>(args)...);
   }
+
+ private:
+  network::RestClient rest_client_;
 };
 }  // namespace stonks::networkx
 

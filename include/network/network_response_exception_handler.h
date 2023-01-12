@@ -15,7 +15,7 @@ namespace stonks::network {
 class ResponseExceptionHandler : public IRestRequestSender {
  public:
   explicit ResponseExceptionHandler(
-      cpp::NnUp<IRestRequestSender> request_sender);
+      cpp::NnSp<IRestRequestSender> request_sender);
 
   /**
    * @brief Checks whether response is an exception, parses, and throws it.
@@ -24,7 +24,7 @@ class ResponseExceptionHandler : public IRestRequestSender {
   -> cppcoro::task<RestResponse> override;
 
  private:
-  cpp::NnUp<IRestRequestSender> request_sender_;
+  cpp::NnSp<IRestRequestSender> request_sender_;
 };
 }  // namespace stonks::network
 

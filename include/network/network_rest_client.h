@@ -16,8 +16,7 @@ class RestClient {
   /**
    * @param base_uri Base resource URI.
    */
-  RestClient(Uri base_uri,
-             di::Factory<IRestRequestSender> request_sender_factory);
+  RestClient(Uri base_uri, cpp::NnUp<IRestRequestSender> request_sender);
 
   /**
    * @brief Creates request builder which provides a further API for request
@@ -29,7 +28,7 @@ class RestClient {
 
  private:
   Uri base_uri_{};
-  di::Factory<IRestRequestSender> request_sender_factory_;
+  cpp::NnSp<IRestRequestSender> request_sender_;
 };
 }  // namespace stonks::network
 
