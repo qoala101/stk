@@ -39,7 +39,7 @@ auto main(int argc, const char *const *argv) -> int {
   const auto app = stonks::cli::App{argc, argv, options};
   const auto injector = stonks::di::MakeInjector(
       stonks::common::CreateNetworkRestsdkInjector(),
-      stonks::common::CreateSqldbSqliteInjector(),
+      stonks::common::CreateThreadSafeSqldbSqliteInjector(),
       stonks::common::CreateLogSpdlogInjector(),
 
       stonks::service::CreateServerInjector<stonks::core::SymbolsDb>(
