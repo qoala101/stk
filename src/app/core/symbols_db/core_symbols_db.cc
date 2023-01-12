@@ -177,44 +177,45 @@ auto SymbolInfoEquals
 }
 }  // namespace
 
-SymbolsDb::SymbolsDb(sqldb::p::Db db)
-    : prepared_statements_{[&db]() {
-        auto &raw_db = db.GetDb();
+SymbolsDb::SymbolsDb(cpp::NnUp<sqldb::ts::Db> thread_safe_db)
+    : prepared_statements_{[&thread_safe_db]() {
+        auto parametrized_db = sqldb::p::Db{std::move(thread_safe_db)};
+        auto &raw_db = parametrized_db.GetDb();
         raw_db.CreateTableIfNotExists<sdb::tables::Asset>();
         raw_db.CreateTableIfNotExists<sdb::tables::SymbolInfo>();
         raw_db.CreateTableIfNotExists<sdb::tables::SymbolPriceRecord>();
 
         return PreparedStatements{
-            .select_assets = db.PrepareStatement(
+            .select_assets = parametrized_db.PrepareStatement(
                 sqldb::query_builder::Select<sdb::tables::Asset::name>()
                     .From<sdb::tables::Asset>()
                     .Build()),
 
-            .insert_asset = db.PrepareStatement(
+            .insert_asset = parametrized_db.PrepareStatement(
                 sqldb::query_builder::Insert()
                     .Value<sdb::tables::Asset::name>(
                         sqldb::qb::ParamForColumn<sdb::tables::Asset::name>())
                     .Into<sdb::tables::Asset>()
                     .Build()),
 
-            .delete_asset = db.PrepareStatement(
+            .delete_asset = parametrized_db.PrepareStatement(
                 sqldb::query_builder::DeleteFromTable<sdb::tables::Asset>()
                     .Where(
                         sqldb::qb::Column<sdb::tables::Asset::name>() ==
                         sqldb::qb::ParamForColumn<sdb::tables::Asset::name>())
                     .Build()),
 
-            .select_symbol_info = db.PrepareStatement(
+            .select_symbol_info = parametrized_db.PrepareStatement(
                 SelectSymbolsInfoBuilder()
                     .Where(sqldb::qb::Column<sdb::tables::SymbolInfo::name>() ==
                            sqldb::qb::ParamForColumn<
                                sdb::tables::SymbolInfo::name>())
                     .Build()),
 
-            .select_symbols_info =
-                db.PrepareStatement(SelectSymbolsInfoBuilder().Build()),
+            .select_symbols_info = parametrized_db.PrepareStatement(
+                SelectSymbolsInfoBuilder().Build()),
 
-            .insert_symbol_info = db.PrepareStatement(
+            .insert_symbol_info = parametrized_db.PrepareStatement(
                 sqldb::query_builder::Insert()
                     .Value<sdb::tables::SymbolInfo::name>(
                         sqldb::qb::ParamForColumn<
@@ -248,7 +249,7 @@ SymbolsDb::SymbolsDb(sqldb::p::Db db)
                     .Into<sdb::tables::SymbolInfo>()
                     .Build()),
 
-            .update_symbol_info = db.PrepareStatement(
+            .update_symbol_info = parametrized_db.PrepareStatement(
                 sqldb::query_builder::UpdateTable<sdb::tables::SymbolInfo>()
                     .Set<sdb::tables::SymbolInfo::base_asset_id>(
                         sqldb::query_builder::Select<sdb::tables::Asset::id>()
@@ -281,7 +282,7 @@ SymbolsDb::SymbolsDb(sqldb::p::Db db)
                                sdb::tables::SymbolInfo::name>())
                     .Build()),
 
-            .delete_symbol_info = db.PrepareStatement(
+            .delete_symbol_info = parametrized_db.PrepareStatement(
                 sqldb::query_builder::DeleteFromTable<sdb::tables::SymbolInfo>()
                     .Where(sqldb::qb::Column<sdb::tables::SymbolInfo::name>() ==
                            sqldb::qb::ParamForColumn<
@@ -289,7 +290,7 @@ SymbolsDb::SymbolsDb(sqldb::p::Db db)
                     .Build()),
 
             .select_symbol_price_records =
-                [&db]() {
+                [&parametrized_db]() {
                   auto query_builder =
                       sqldb::query_builder::Select<
                           sdb::tables::SymbolPriceRecord::buy_price,
@@ -319,19 +320,23 @@ SymbolsDb::SymbolsDb(sqldb::p::Db db)
                           .Limit(sqldb::qb::ParamOfType<int>());
 
                   return PreparedStatements::SelectSymbolPriceRecords{
-                      .order_by_time_ascending = db.PrepareStatement(
-                          sqldb::qb::Select{query_builder}
-                              .OrderBy<sdb::tables::SymbolPriceRecord::time>(
-                                  sqldb::qb::Order::kAscending)
-                              .Build()),
-                      .order_by_time_descending = db.PrepareStatement(
-                          query_builder
-                              .OrderBy<sdb::tables::SymbolPriceRecord::time>(
-                                  sqldb::qb::Order::kDescending)
-                              .Build())};
+                      .order_by_time_ascending =
+                          parametrized_db.PrepareStatement(
+                              sqldb::qb::Select{query_builder}
+                                  .OrderBy<
+                                      sdb::tables::SymbolPriceRecord::time>(
+                                      sqldb::qb::Order::kAscending)
+                                  .Build()),
+                      .order_by_time_descending =
+                          parametrized_db.PrepareStatement(
+                              query_builder
+                                  .OrderBy<
+                                      sdb::tables::SymbolPriceRecord::time>(
+                                      sqldb::qb::Order::kDescending)
+                                  .Build())};
                 }(),
 
-            .insert_symbol_price_record = db.PrepareStatement(
+            .insert_symbol_price_record = parametrized_db.PrepareStatement(
                 sqldb::query_builder::Insert()
                     .Value<sdb::tables::SymbolPriceRecord::symbol_id>(
                         sqldb::query_builder::Select<
@@ -353,7 +358,7 @@ SymbolsDb::SymbolsDb(sqldb::p::Db db)
                     .Into<sdb::tables::SymbolPriceRecord>()
                     .Build()),
 
-            .delete_symbol_price_records = db.PrepareStatement(
+            .delete_symbol_price_records = parametrized_db.PrepareStatement(
                 sqldb::query_builder::DeleteFromTable<
                     sdb::tables::SymbolPriceRecord>()
                     .Where((sqldb::qb::Column<

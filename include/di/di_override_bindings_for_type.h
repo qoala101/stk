@@ -15,7 +15,7 @@ namespace stonks::di {
  * @param args Bindings to be used when creating type T.
  */
 template <typename T, typename... Args>
-auto OverrideBindingsForType(auto& injector, Args&&... args) {
+auto OverrideBindingsForType [[nodiscard]] (auto& injector, Args&&... args) {
   return MakeInjector(
       boost::di::extension::make_extensible(injector),
       boost::di::injector<T>{MakeInjector(

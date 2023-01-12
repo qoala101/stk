@@ -15,6 +15,7 @@
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_p_db.h"
+#include "sqldb_ts_db.h"
 
 namespace stonks::core {
 /**
@@ -25,7 +26,7 @@ class SymbolsDb : public ISymbolsDb {
   /**
    * @param db DB handle to operate on.
    */
-  explicit SymbolsDb(sqldb::p::Db db);
+  explicit SymbolsDb(cpp::NnUp<sqldb::ts::Db> thread_safe_db);
 
   /**
    * @copydoc ISymbolsDb::SelectAssets

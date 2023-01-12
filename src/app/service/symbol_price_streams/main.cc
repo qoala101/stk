@@ -19,9 +19,12 @@
 #include "core_symbol_price_streams.h"
 #include "cpp_not_null.h"
 #include "di_auto_injectable.h"
+#include "di_bind_type_to_factory_function.h"
 #include "di_bind_value_type_to_value.h"
 #include "di_enable_nn_pointers.h"
 #include "di_make_injector.h"
+#include "network_i_rest_request_sender.h"
+#include "network_ts_rest_request_sender.h"
 #include "networkx_make_server_for.h"
 #include "service_client_options.h"
 #include "service_create_client_injector.h"
@@ -60,6 +63,17 @@ auto main(int argc, const char *const *argv) -> int {
           symbols_db_updater_client_options),
 
       stonks::di::BindValueTypeToValue(absl::Milliseconds(*reattempt_interval)),
+
+      stonks::di::BindTypeToFactoryFunction<
+          stonks::networkx::Client<stonks::core::ISymbolsDb>,
+          +[](stonks::networkx::Uri<stonks::core::ISymbolsDb> uri,
+              stonks::cpp::NnUp<stonks::network::IRestRequestSender>
+                  request_sender) {
+            return stonks::networkx::Client<stonks::core::ISymbolsDb>{
+                std::move(uri),
+                stonks::cpp::MakeNnUp<stonks::network::ts::RestRequestSender>(
+                    std::move(request_sender))};
+          }>(),
       stonks::di::EnableNnPointers<
           stonks::core::sps::BookTickWebSocketFactory>());
 

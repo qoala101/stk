@@ -8,7 +8,8 @@ namespace stonks::di {
  * @brief Calls the function with arguments which are created by injector.
  */
 template <typename... Args>
-auto CallWithInjectedArgs(auto(*function)(Args...), const auto &injector) {
+auto CallWithInjectedArgs
+    [[nodiscard]] (auto(*function)(Args...), const auto &injector) {
   return function(injector.template create<std::remove_cvref_t<Args>>()...);
 }
 }  // namespace stonks::di

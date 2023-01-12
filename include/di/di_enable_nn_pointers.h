@@ -24,12 +24,9 @@ auto EnableNnPointers [[nodiscard]] () {
 }  // namespace detail
 
 /**
- * @brief Enables creation of not null pointers of non-polymorphic type.
- * @remark For polymorphic types not null pointers are automatically enabled
- * when binding implementation to interface.
+ * @brief Enables creation of not null pointers for type.
  */
 template <typename T>
-  requires(!std::is_polymorphic_v<T>)
 auto EnableNnPointers [[nodiscard]] () {
   return detail::EnableNnPointers<T>();
 }
