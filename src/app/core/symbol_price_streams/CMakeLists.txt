@@ -1,6 +1,6 @@
 add_library(libcore_symbol_price_streams
-  core_sps_book_tick_handler.cc
-  core_sps_book_tick_web_socket_factory.cc
+  core_sps_price_recorder.cc
+  core_sps_stream_factory.cc
   core_sps_stream_handle.cc
   core_symbol_price_streams.cc
 )

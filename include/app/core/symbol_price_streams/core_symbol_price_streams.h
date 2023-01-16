@@ -6,14 +6,13 @@
 #include <cppcoro/task.hpp>
 #include <vector>
 
-#include "core_sps_book_tick_web_socket_factory.h"
+#include "core_sps_stream_factory.h"
 #include "core_sps_stream_handle.h"
 #include "core_types.h"
-#include "cpp_not_null.h"
 
 namespace stonks::core {
 /**
- * @brief Keeper of symbol price streams.
+ * @brief Streams prices of specified symbols to Symbols DB.
  */
 class SymbolPriceStreams {
  public:
@@ -24,7 +23,7 @@ class SymbolPriceStreams {
    */
   SymbolPriceStreams(std::vector<Symbol> symbols,
                      absl::Duration reattempt_interval,
-                     sps::BookTickWebSocketFactory web_socket_factory);
+                     sps::StreamFactory stream_factory);
 
   /**
    * @brief Gives symbols for which prices are streamed.

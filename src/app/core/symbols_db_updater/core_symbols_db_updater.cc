@@ -16,7 +16,6 @@ SymbolsDbUpdater::SymbolsDbUpdater(ConstructorArgs args)
     : impl_{[&args]() {
         auto shared_symbols_db = cpp::Share(std::move(*args.symbols_db));
         return Impl{
-            .update_symbols_info_interval{args.update_symbols_info_interval},
             .update_symbols_info_timer{
                 cpp::Execute([updater =
                                   sdbu::SymbolsInfoUpdater{
@@ -36,7 +35,8 @@ SymbolsDbUpdater::SymbolsDbUpdater(ConstructorArgs args)
                 })
                     .Every(args.delete_old_prices_interval)
                     .IfThrowsReattemptEvery(args.reattempt_interval)
-                    .Start()}};
+                    .Start()},
+            .update_symbols_info_interval{args.update_symbols_info_interval}};
       }()} {}
 
 auto SymbolsDbUpdater::GetUpdateSymbolsInfoInterval [[nodiscard]] () const

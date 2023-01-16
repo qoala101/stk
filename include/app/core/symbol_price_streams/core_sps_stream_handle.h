@@ -1,13 +1,13 @@
 #ifndef STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_STREAM_HANDLE_H_
 #define STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_STREAM_HANDLE_H_
 
-#include "core_sps_book_tick_web_socket_factory.h"
+#include "core_sps_stream_factory.h"
 #include "cpp_timer.h"
 
 namespace stonks::core::sps {
 /**
- * @brief While alive, receives single symbol prices from Binance book ticks
- * web socket and records them to Symbols DB.
+ * @brief Keeps web socket connection which redirects received Binance
+ * book ticks to price recorder.
  */
 class StreamHandle {
  public:
@@ -16,10 +16,10 @@ class StreamHandle {
    * Would reattempt connection if it fails.
    */
   StreamHandle(Symbol symbol, absl::Duration reattempt_interval,
-               cpp::NnSp<sps::BookTickWebSocketFactory> web_socket_factory);
+               cpp::NnSp<sps::StreamFactory> web_socket_factory);
 
  private:
-  cpp::NnSp<cpp::Opt<networkx::WebSocket<&sps::BookTickHandler::RecordAsPrice>>>
+  cpp::NnSp<cpp::Opt<networkx::WebSocket<&sps::PriceRecorder::RecordAsPrice>>>
       web_socket_;
   cpp::Timer connect_to_web_socket_timer_;
 };

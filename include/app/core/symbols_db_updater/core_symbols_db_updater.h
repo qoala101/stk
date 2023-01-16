@@ -42,9 +42,9 @@ class SymbolsDbUpdater : public ISymbolsDbUpdater {
 
  private:
   struct Impl {
-    absl::Duration update_symbols_info_interval{};
     cpp::Timer update_symbols_info_timer;
     cpp::Timer delete_old_prices_timer;
+    absl::Duration update_symbols_info_interval{};
   } impl_;
 };
 }  // namespace stonks::core

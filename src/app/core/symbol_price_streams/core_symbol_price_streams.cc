@@ -9,17 +9,17 @@
 #include <range/v3/view/view.hpp>
 #include <utility>
 
-#include "core_sps_book_tick_web_socket_factory.h"
+#include "core_sps_stream_factory.h"
 #include "cpp_share.h"
 
 namespace stonks::core {
-SymbolPriceStreams::SymbolPriceStreams(
-    std::vector<Symbol> symbols, absl::Duration reattempt_interval,
-    sps::BookTickWebSocketFactory web_socket_factory)
+SymbolPriceStreams::SymbolPriceStreams(std::vector<Symbol> symbols,
+                                       absl::Duration reattempt_interval,
+                                       sps::StreamFactory stream_factory)
     : symbols_{std::move(symbols)},
       stream_handles_{
           [&symbols = symbols_, reattempt_interval,
-           web_socket_factory = cpp::Share(std::move(web_socket_factory))]() {
+           web_socket_factory = cpp::Share(std::move(stream_factory))]() {
             return symbols |
                    ranges::views::transform(
                        [reattempt_interval,

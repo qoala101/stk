@@ -1,4 +1,4 @@
-#include "core_sps_book_tick_web_socket_factory.h"
+#include "core_sps_stream_factory.h"
 
 #include <absl/strings/ascii.h>
 #include <fmt/core.h>
@@ -35,7 +35,7 @@ auto GetBaseAssetPriceStep(const Symbol &symbol, const ISymbolsDb &symbols_db)
 }
 }  // namespace
 
-BookTickWebSocketFactory::BookTickWebSocketFactory(
+StreamFactory::StreamFactory(
     common::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
     common::ThreadSafe<cpp::NnUp<ISymbolsDbUpdater>> symbols_db_updater,
     common::ThreadSafe<di::Factory<network::IWsClient>> ws_client_factory)
@@ -43,8 +43,8 @@ BookTickWebSocketFactory::BookTickWebSocketFactory(
       symbols_db_updater_{std::move(symbols_db_updater)},
       ws_client_factory_{std::move(ws_client_factory)} {}
 
-auto BookTickWebSocketFactory::Create(Symbol symbol) const
-    -> cppcoro::task<networkx::WebSocket<&BookTickHandler::RecordAsPrice>> {
+auto StreamFactory::Create(Symbol symbol) const
+    -> cppcoro::task<networkx::WebSocket<&BookTickReceiver::RecordAsPrice>> {
   auto endpoint = BookTickerEndpointFor(symbol);
 
   const auto update_symbols_info_interval =
@@ -58,14 +58,14 @@ auto BookTickWebSocketFactory::Create(Symbol symbol) const
 
   auto last_price_record = co_await GetLastPriceRecord(symbol);
 
-  co_return networkx::WebSocket<&BookTickHandler::RecordAsPrice>{
+  co_return networkx::WebSocket<&BookTickReceiver::RecordAsPrice>{
       std::move(endpoint), ws_client_factory_.Create(),
-      sps::BookTickHandler{std::move(symbol), symbols_db_,
+      sps::BookTickReceiver{std::move(symbol), symbols_db_,
                            std::move(base_asset_price_step),
                            std::move(last_price_record)}};
 }
 
-auto BookTickWebSocketFactory::GetLastPriceRecord(const Symbol &symbol) const
+auto StreamFactory::GetLastPriceRecord(const Symbol &symbol) const
     -> cppcoro::task<cpp::Opt<SymbolPriceRecord>> {
   const auto order = TimeOrder::kNewFirst;
   const auto limit = 1;

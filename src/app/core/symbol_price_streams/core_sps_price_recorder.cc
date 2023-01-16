@@ -1,4 +1,4 @@
-#include "core_sps_book_tick_handler.h"
+#include "core_sps_price_recorder.h"
 
 #include <absl/time/clock.h>
 #include <absl/time/time.h>
@@ -18,28 +18,15 @@
 #include "cpp_typed_struct.h"
 
 namespace stonks::core::sps {
-BookTickHandler::BookTickHandler(
-    Symbol symbol, cpp::NnSp<ISymbolsDb> symbols_db,
-    cpp::AutoUpdatable<double> base_asset_price_step,
-    cpp::Opt<SymbolPriceRecord> last_price_record)
+PriceRecorder::PriceRecorder(Symbol symbol, cpp::NnSp<ISymbolsDb> symbols_db,
+                             cpp::AutoUpdatable<double> base_asset_price_step,
+                             cpp::Opt<SymbolPriceRecord> last_price_record)
     : symbol_{std::move(symbol)},
       symbols_db_{std::move(symbols_db)},
       base_asset_price_step_{std::move(base_asset_price_step)},
       last_price_record_{std::move(last_price_record)} {}
 
-auto BookTickHandler::SymbolPriceRecordFrom(const binance::BookTick &book_tick)
-    -> cppcoro::task<SymbolPriceRecord> {
-  const auto lock = base_asset_price_step_.LockUpdates();
-  co_return SymbolPriceRecord{
-      .symbol = symbol_,
-      .buy_price = {Ceil({.value = std::stod(book_tick.best_ask_price),
-                          .precision = co_await *base_asset_price_step_})},
-      .sell_price = {Floor({.value = std::stod(book_tick.best_bid_price),
-                            .precision = co_await *base_asset_price_step_})},
-      .time = absl::Now()};
-}
-
-auto BookTickHandler::RecordAsPrice(binance::BookTick book_tick)
+auto PriceRecorder::RecordAsPrice(binance::BookTick book_tick)
     -> cppcoro::task<> {
   auto new_price_record = co_await SymbolPriceRecordFrom(book_tick);
 
@@ -55,5 +42,17 @@ auto BookTickHandler::RecordAsPrice(binance::BookTick book_tick)
     last_price_record_ = std::move(new_price_record);
   } catch (...) {
   }
+}
+
+auto PriceRecorder::SymbolPriceRecordFrom(const binance::BookTick &book_tick)
+    -> cppcoro::task<SymbolPriceRecord> {
+  const auto lock = base_asset_price_step_.LockUpdates();
+  co_return SymbolPriceRecord{
+      .symbol = symbol_,
+      .buy_price = {Ceil({.value = std::stod(book_tick.best_ask_price),
+                          .precision = co_await *base_asset_price_step_})},
+      .sell_price = {Floor({.value = std::stod(book_tick.best_bid_price),
+                            .precision = co_await *base_asset_price_step_})},
+      .time = absl::Now()};
 }
 }  // namespace stonks::core::sps

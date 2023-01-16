@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_BOOK_TICK_HANDLER_H_
-#define STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_BOOK_TICK_HANDLER_H_
+#ifndef STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_PRICE_RECORDER_H_
+#define STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_PRICE_RECORDER_H_
 
 #include <cppcoro/task.hpp>
 
@@ -13,11 +13,11 @@ namespace stonks::core::sps {
 /**
  * @brief Records symbol prices to Symbols DB.
  */
-class BookTickHandler {
+class PriceRecorder {
  public:
-  BookTickHandler(Symbol symbol, cpp::NnSp<ISymbolsDb> symbols_db,
-                  cpp::AutoUpdatable<double> base_asset_price_step,
-                  cpp::Opt<SymbolPriceRecord> last_price_record);
+  PriceRecorder(Symbol symbol, cpp::NnSp<ISymbolsDb> symbols_db,
+                cpp::AutoUpdatable<double> base_asset_price_step,
+                cpp::Opt<SymbolPriceRecord> last_price_record);
 
   /**
    * @brief Records book tick as price.
@@ -36,4 +36,4 @@ class BookTickHandler {
 };
 }  // namespace stonks::core::sps
 
-#endif  // STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_BOOK_TICK_HANDLER_H_
+#endif  // STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_PRICE_RECORDER_H_

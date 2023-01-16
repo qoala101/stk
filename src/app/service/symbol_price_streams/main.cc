@@ -15,7 +15,7 @@
 #include "common_create_network_restsdk_injector.h"
 #include "core_i_symbols_db.h"
 #include "core_i_symbols_db_updater.h"
-#include "core_sps_book_tick_web_socket_factory.h"
+#include "core_sps_stream_factory.h"
 #include "core_symbol_price_streams.h"
 #include "cpp_not_null.h"
 #include "cpp_share.h"

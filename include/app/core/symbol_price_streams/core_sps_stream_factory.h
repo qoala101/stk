@@ -1,12 +1,12 @@
-#ifndef STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_BOOK_TICK_WEB_SOCKET_FACTORY_H_
-#define STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_BOOK_TICK_WEB_SOCKET_FACTORY_H_
+#ifndef STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_STREAM_FACTORY_H_
+#define STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_STREAM_FACTORY_H_
 
 #include <cppcoro/task.hpp>
 
 #include "common_thread_safe_tag.h"
 #include "core_i_symbols_db.h"
 #include "core_i_symbols_db_updater.h"
-#include "core_sps_book_tick_handler.h"
+#include "core_sps_price_recorder.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
@@ -18,9 +18,9 @@ namespace stonks::core::sps {
 /**
  * @brief Creates book tick web socket.
  */
-class BookTickWebSocketFactory {
+class StreamFactory {
  public:
-  BookTickWebSocketFactory(
+  StreamFactory(
       common::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
       common::ThreadSafe<cpp::NnUp<ISymbolsDbUpdater>> symbols_db_updater,
       common::ThreadSafe<di::Factory<network::IWsClient>> ws_client_factory);
@@ -30,7 +30,7 @@ class BookTickWebSocketFactory {
    * @param symbol Symbol for which to get book ticks.
    */
   auto Create [[nodiscard]] (Symbol symbol) const
-      -> cppcoro::task<networkx::WebSocket<&BookTickHandler::RecordAsPrice>>;
+      -> cppcoro::task<networkx::WebSocket<&PriceRecorder::RecordAsPrice>>;
 
  private:
   auto GetLastPriceRecord [[nodiscard]] (const Symbol &symbol) const
@@ -42,4 +42,4 @@ class BookTickWebSocketFactory {
 };
 }  // namespace stonks::core::sps
 
-#endif  // STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_BOOK_TICK_WEB_SOCKET_FACTORY_H_
+#endif  // STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_STREAM_FACTORY_H_
