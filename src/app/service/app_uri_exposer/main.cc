@@ -32,8 +32,8 @@ auto main(int argc, const char *const *argv) -> int {
 
   app.Run([&injector, &expose_uri_interval, &reattempt_interval]() {
     return stonks::service::AppUriExposer{
-        absl::Milliseconds(*expose_uri_interval),
-        injector.template create<stonks::service::aue::Impl>(),
-        absl::Milliseconds(*reattempt_interval)};
+        {.exposer = injector.template create<stonks::service::aue::Impl>(),
+         .expose_uri_interval = absl::Milliseconds(*expose_uri_interval),
+         .reattempt_interval = absl::Milliseconds(*reattempt_interval)}};
   });
 }

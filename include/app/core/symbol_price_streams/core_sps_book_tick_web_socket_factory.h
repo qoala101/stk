@@ -3,6 +3,7 @@
 
 #include <cppcoro/task.hpp>
 
+#include "common_thread_safe_tag.h"
 #include "core_i_symbols_db.h"
 #include "core_i_symbols_db_updater.h"
 #include "core_sps_book_tick_handler.h"
@@ -19,9 +20,10 @@ namespace stonks::core::sps {
  */
 class BookTickWebSocketFactory {
  public:
-  BookTickWebSocketFactory(cpp::NnUp<ISymbolsDb> symbols_db,
-                           cpp::NnUp<ISymbolsDbUpdater> symbols_db_updater,
-                           di::Factory<network::IWsClient> ws_client_factory);
+  BookTickWebSocketFactory(
+      common::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
+      common::ThreadSafe<cpp::NnUp<ISymbolsDbUpdater>> symbols_db_updater,
+      common::ThreadSafe<di::Factory<network::IWsClient>> ws_client_factory);
 
   /**
    * @brief Creates web socket from args.

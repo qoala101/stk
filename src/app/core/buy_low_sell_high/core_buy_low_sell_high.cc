@@ -11,17 +11,8 @@
 #include "cpp_message_exception.h"
 
 namespace stonks::core {
-namespace {
-auto StartTimeFrom [[nodiscard]] (const absl::Time *time) {
-  return (time == nullptr) ? absl::InfinitePast() : *time;
-}
-
-auto EndTimeFrom [[nodiscard]] (const absl::Time *time) {
-  return (time == nullptr) ? absl::InfiniteFuture() : *time;
-}
-}  // namespace
-
-BuyLowSellHigh::BuyLowSellHigh(cpp::NnUp<ISymbolsDb> symbols_db)
+BuyLowSellHigh::BuyLowSellHigh(
+    common::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db)
     : symbols_db_{std::move(symbols_db)}, commission_{0.001} {}
 
 auto BuyLowSellHigh::CalculateNextOperations(

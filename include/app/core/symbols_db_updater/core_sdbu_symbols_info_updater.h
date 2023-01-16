@@ -13,7 +13,7 @@ namespace stonks::core::sdbu {
  */
 class SymbolsInfoUpdater {
  public:
-  SymbolsInfoUpdater(cpp::NnUp<ISymbolsDb> symbols_db,
+  SymbolsInfoUpdater(cpp::NnSp<ISymbolsDb> symbols_db,
                      binance::BinanceApi binance_api);
 
   /**
@@ -22,7 +22,7 @@ class SymbolsInfoUpdater {
   auto GetAndUpdateSymbolsInfo [[nodiscard]] () const -> cppcoro::task<>;
 
  private:
-  cpp::NnUp<ISymbolsDb> symbols_db_;
+  cpp::NnSp<ISymbolsDb> symbols_db_;
   binance::BinanceApi binance_api_;
 };
 }  // namespace stonks::core::sdbu

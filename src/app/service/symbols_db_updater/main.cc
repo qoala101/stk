@@ -49,7 +49,7 @@ auto main(int argc, const char *const *argv) -> int {
       "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
 
   const auto app = stonks::cli::App{argc, argv, options};
-  const auto injector = stonks::di::MakeInjector(
+  const auto injector = stonks::cpp::Share(stonks::di::MakeInjector(
       stonks::common::CreateNetworkRestsdkInjector(),
       stonks::common::CreateLogSpdlogInjector(),
 
@@ -59,20 +59,26 @@ auto main(int argc, const char *const *argv) -> int {
           symbols_db_client_options),
 
       stonks::di::BindValueTypeToValue(
-          absl::Milliseconds(*keep_prices_for_duration)));
+          absl::Milliseconds(*keep_prices_for_duration))));
 
   app.Run([&injector, &update_symbols_info_interval,
-           &delete_old_prices_interval, &reattempt_interval]() {
-    auto auto_injectable =
-        stonks::di::AutoInjectable{stonks::cpp::AssumeNn(&injector)};
+           &delete_old_prices_interval, &keep_prices_for_duration,
+           &reattempt_interval]() {
+    auto auto_injectable = stonks::di::AutoInjectable{injector};
 
     return stonks::networkx::MakeServerFor<stonks::core::ISymbolsDbUpdater>(
         stonks::cpp::MakeNnUp<stonks::core::SymbolsDbUpdater>(
             stonks::core::SymbolsDbUpdater{
-                absl::Milliseconds(*update_symbols_info_interval),
-                auto_injectable,
-                absl::Milliseconds(*delete_old_prices_interval),
-                auto_injectable, absl::Milliseconds(*reattempt_interval)}),
+                {.symbols_db = auto_injectable,
+                 .binance_api = auto_injectable,
+                 .update_symbols_info_interval =
+                     absl::Milliseconds(*update_symbols_info_interval),
+                 .delete_old_prices_interval =
+                     absl::Milliseconds(*delete_old_prices_interval),
+                 .keep_prices_for_duration =
+                     absl::Milliseconds(*keep_prices_for_duration),
+                 .reattempt_interval =
+                     absl::Milliseconds(*reattempt_interval)}}),
         auto_injectable, auto_injectable);
   });
 }

@@ -11,6 +11,7 @@ target_include_directories(libcore_buy_low_sell_high
 )
 
 target_link_libraries(libcore_buy_low_sell_high
+  PRIVATE libcommon
   PRIVATE libcore
   PRIVATE libcore_symbols_db
   PRIVATE libcpp

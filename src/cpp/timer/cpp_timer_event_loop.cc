@@ -11,10 +11,7 @@ namespace stonks::cpp::timer {
 EventLoop::EventLoop(fu2::unique_function<void()> event,
                      absl::Duration event_interval,
                      ReattemptPolicy reattempt_policy)
-    : event_{[&event]() {
-        Expects(!event.empty());
-        return std::move(event);
-      }()},
+    : event_{(Expects(!event.empty()), std::move(event))},
       event_interval_{event_interval},
       reattempt_policy_{reattempt_policy} {
   Ensures(!event_.empty());

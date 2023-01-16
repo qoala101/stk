@@ -18,6 +18,7 @@
 #include "core_sps_book_tick_web_socket_factory.h"
 #include "core_symbol_price_streams.h"
 #include "cpp_not_null.h"
+#include "cpp_share.h"
 #include "di_auto_injectable.h"
 #include "di_bind_type_to_factory_function.h"
 #include "di_bind_value_type_to_value.h"
@@ -51,7 +52,7 @@ auto main(int argc, const char *const *argv) -> int {
       "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
 
   const auto app = stonks::cli::App{argc, argv, options};
-  const auto injector = stonks::di::MakeInjector(
+  const auto injector = stonks::cpp::Share(stonks::di::MakeInjector(
       stonks::common::CreateNetworkRestsdkInjector(),
       stonks::common::CreateLogSpdlogInjector(),
 
@@ -62,24 +63,11 @@ auto main(int argc, const char *const *argv) -> int {
       stonks::service::CreateClientInjector<stonks::service::SymbolsDbUpdater>(
           symbols_db_updater_client_options),
 
-      stonks::di::BindValueTypeToValue(absl::Milliseconds(*reattempt_interval)),
-
-      stonks::di::BindTypeToFactoryFunction<
-          stonks::networkx::Client<stonks::core::ISymbolsDb>,
-          +[](stonks::networkx::Uri<stonks::core::ISymbolsDb> uri,
-              stonks::cpp::NnUp<stonks::network::IRestRequestSender>
-                  request_sender) {
-            return stonks::networkx::Client<stonks::core::ISymbolsDb>{
-                std::move(uri),
-                stonks::cpp::MakeNnUp<stonks::network::ts::RestRequestSender>(
-                    std::move(request_sender))};
-          }>(),
-      stonks::di::EnableNnPointers<
-          stonks::core::sps::BookTickWebSocketFactory>());
+      stonks::di::BindValueTypeToValue(
+          absl::Milliseconds(*reattempt_interval))));
 
   app.Run([&injector, &symbols]() {
-    auto auto_injectable =
-        stonks::di::AutoInjectable{stonks::cpp::AssumeNn(&injector)};
+    auto auto_injectable = stonks::di::AutoInjectable{injector};
 
     return stonks::networkx::MakeServerFor<stonks::core::SymbolPriceStreams>(
         stonks::cpp::MakeNnUp<stonks::core::SymbolPriceStreams>(

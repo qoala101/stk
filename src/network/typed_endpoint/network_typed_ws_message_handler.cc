@@ -11,10 +11,8 @@
 namespace stonks::network {
 TypedWsMessageHandler::TypedWsMessageHandler(
     ParseTypeCheck received_message_type, cpp::NnUp<IWsMessageHandler> handler)
-    : received_message_type_{[&received_message_type]() {
-        Expects(!received_message_type.empty());
-        return std::move(received_message_type);
-      }()},
+    : received_message_type_{(Expects(!received_message_type.empty()),
+                              std::move(received_message_type))},
       handler_{std::move(handler)} {}
 
 auto TypedWsMessageHandler::HandleMessage(WsMessage message)

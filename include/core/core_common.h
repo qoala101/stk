@@ -8,16 +8,14 @@
 #include "core_types.h"
 
 namespace stonks::core {
-namespace detail {
 struct CeilFloorArgs {
   double value{};
   double precision{1};
 };
-}  // namespace detail
 
-auto Ceil [[nodiscard]] (const detail::CeilFloorArgs &args) -> double;
+auto Ceil [[nodiscard]] (const CeilFloorArgs &args) -> double;
 
-auto Floor [[nodiscard]] (const detail::CeilFloorArgs &args) -> double;
+auto Floor [[nodiscard]] (const CeilFloorArgs &args) -> double;
 
 auto StartTimeFrom [[nodiscard]] (const absl::Time *time) -> absl::Time;
 

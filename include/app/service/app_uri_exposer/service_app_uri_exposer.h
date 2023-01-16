@@ -12,13 +12,19 @@ namespace stonks::service {
  */
 class AppUriExposer {
  public:
-  /**
-   * @param reattempt_interval Time in which to reattempt the action if it
-   * fails.
-   * Fail could occur if Ngrok or public DB are not available.
-   */
-  AppUriExposer(absl::Duration expose_uri_interval, aue::Impl exposer,
-                absl::Duration reattempt_interval);
+  struct ConstructorArgs {
+    aue::Impl exposer;
+    absl::Duration expose_uri_interval{};
+
+    /**
+     * @brief Time in which to reattempt the action if it
+     * fails.
+     * Fail could occur if Ngrok or public DB are not available.
+     */
+    absl::Duration reattempt_interval{};
+  };
+
+  explicit AppUriExposer(ConstructorArgs args);
 
  private:
   cpp::Timer expose_uri_timer_;

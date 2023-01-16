@@ -177,13 +177,13 @@ auto SymbolInfoEquals
 }
 }  // namespace
 
-SymbolsDb::SymbolsDb(cpp::NnUp<sqldb::ts::Db> thread_safe_db)
-    : prepared_statements_{[&thread_safe_db]() {
-        auto parametrized_db = sqldb::p::Db{std::move(thread_safe_db)};
-        auto &raw_db = parametrized_db.GetDb();
-        raw_db.CreateTableIfNotExists<sdb::tables::Asset>();
-        raw_db.CreateTableIfNotExists<sdb::tables::SymbolInfo>();
-        raw_db.CreateTableIfNotExists<sdb::tables::SymbolPriceRecord>();
+SymbolsDb::SymbolsDb(common::ThreadSafe<cpp::NnUp<sqldb::IDb>> sql_db)
+    : prepared_statements_{[&sql_db]() {
+        (*sql_db)->CreateTableIfNotExists<sdb::tables::Asset>();
+        (*sql_db)->CreateTableIfNotExists<sdb::tables::SymbolInfo>();
+        (*sql_db)->CreateTableIfNotExists<sdb::tables::SymbolPriceRecord>();
+
+        auto parametrized_db = sqldb::p::Db{std::move(sql_db)};
 
         return PreparedStatements{
             .select_assets = parametrized_db.PrepareStatement(

@@ -7,13 +7,12 @@
 #include "cpp_timer_builder.h"
 
 namespace stonks::service {
-AppUriExposer::AppUriExposer(absl::Duration expose_uri_interval,
-                             aue::Impl exposer,
-                             absl::Duration reattempt_interval)
-    : expose_uri_timer_{cpp::Execute([exposer = std::move(exposer)]() mutable {
-                          cppcoro::sync_wait(exposer.ExposeNgrokUriIfChanged());
-                        })
-                            .Every(expose_uri_interval)
-                            .IfThrowsReattemptEvery(reattempt_interval)
-                            .Start()} {}
+AppUriExposer::AppUriExposer(ConstructorArgs args)
+    : expose_uri_timer_{
+          cpp::Execute([exposer = std::move(args.exposer)]() mutable {
+            cppcoro::sync_wait(exposer.ExposeNgrokUriIfChanged());
+          })
+              .Every(args.expose_uri_interval)
+              .IfThrowsReattemptEvery(args.reattempt_interval)
+              .Start()} {}
 }  // namespace stonks::service

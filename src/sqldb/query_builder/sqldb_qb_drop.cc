@@ -14,10 +14,7 @@ auto Drop::Build() const -> Query {
 }
 
 Drop::Drop(std::string table_name)
-    : table_name_{[&table_name]() {
-        Expects(!table_name.empty());
-        return std::move(table_name);
-      }()} {
+    : table_name_{(Expects(!table_name.empty()), std::move(table_name))} {
   Ensures(!table_name_->empty());
 }
 }  // namespace stonks::sqldb::qb

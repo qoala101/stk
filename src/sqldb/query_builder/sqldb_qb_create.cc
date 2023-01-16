@@ -126,10 +126,7 @@ Create::Create(std::string table_name,
                const std::vector<CreateColumnData> &create_columns_data,
                const std::vector<PrimaryKeyData> &primary_keys_data,
                const std::vector<ForeignKeyData> &foreign_keys_data)
-    : table_name_{[&table_name]() {
-        Expects(!table_name.empty());
-        return std::move(table_name);
-      }()},
+    : table_name_{(Expects(!table_name.empty()), std::move(table_name))},
       columns_query_{[&create_columns_data]() {
         auto query = BuildColumnsQuery(create_columns_data);
         Expects(!query->empty());

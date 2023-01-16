@@ -9,10 +9,7 @@
 
 namespace stonks::sqldb::qb {
 QueryWrapper::QueryWrapper(p::Parametrized<Query> query)
-    : query_{[&query]() {
-        Expects(!query->empty());
-        return std::move(query);
-      }()} {
+    : query_{(Expects(!query->empty()), std::move(query))} {
   Ensures(!query_->empty());
 }
 

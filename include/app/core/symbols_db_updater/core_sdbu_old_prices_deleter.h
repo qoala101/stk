@@ -14,7 +14,7 @@ namespace stonks::core::sdbu {
  */
 class OldPricesDeleter {
  public:
-  OldPricesDeleter(cpp::NnUp<ISymbolsDb> symbols_db,
+  OldPricesDeleter(cpp::NnSp<ISymbolsDb> symbols_db,
                    absl::Duration keep_prices_for_duration);
 
   /**
@@ -23,7 +23,7 @@ class OldPricesDeleter {
   auto DeleteOldPrices [[nodiscard]] () const -> cppcoro::task<>;
 
  private:
-  cpp::NnUp<ISymbolsDb> symbols_db_;
+  cpp::NnSp<ISymbolsDb> symbols_db_;
   absl::Duration keep_prices_for_duration_{};
 };
 }  // namespace stonks::core::sdbu

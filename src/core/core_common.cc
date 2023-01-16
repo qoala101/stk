@@ -3,12 +3,12 @@
 #include <gsl/assert>
 
 namespace stonks::core {
-auto Ceil(const detail::CeilFloorArgs &args) -> double {
+auto Ceil(const CeilFloorArgs &args) -> double {
   Expects(args.precision != 0);
   return std::ceil(args.value / args.precision) * args.precision;
 }
 
-auto Floor(const detail::CeilFloorArgs &args) -> double {
+auto Floor(const CeilFloorArgs &args) -> double {
   Expects(args.precision != 0);
   return std::floor(args.value / args.precision) * args.precision;
 }

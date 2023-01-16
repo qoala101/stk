@@ -6,6 +6,7 @@
 #include <cppcoro/task.hpp>
 #include <vector>
 
+#include "common_thread_safe_tag.h"
 #include "core_blsh_types.h"
 #include "core_i_symbols_db.h"
 #include "core_types.h"
@@ -14,7 +15,7 @@
 namespace stonks::core {
 class BuyLowSellHigh {
  public:
-  explicit BuyLowSellHigh(cpp::NnUp<ISymbolsDb> symbols_db);
+  explicit BuyLowSellHigh(common::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db);
 
   auto CalculateNextOperations
       [[nodiscard]] (Symbol symbol, double profit,

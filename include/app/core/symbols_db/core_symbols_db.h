@@ -6,6 +6,7 @@
 #include <cppcoro/task.hpp>
 #include <vector>
 
+#include "common_thread_safe_tag.h"
 #include "core_i_symbols_db.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
@@ -14,8 +15,6 @@
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
-#include "sqldb_p_db.h"
-#include "sqldb_ts_db.h"
 
 namespace stonks::core {
 /**
@@ -26,7 +25,7 @@ class SymbolsDb : public ISymbolsDb {
   /**
    * @param db DB handle to operate on.
    */
-  explicit SymbolsDb(cpp::NnUp<sqldb::ts::Db> thread_safe_db);
+  explicit SymbolsDb(common::ThreadSafe<cpp::NnUp<sqldb::IDb>> sql_db);
 
   /**
    * @copydoc ISymbolsDb::SelectAssets

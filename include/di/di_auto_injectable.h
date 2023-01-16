@@ -10,8 +10,8 @@ namespace stonks::di {
 template <typename Injector>
 class AutoInjectable {
  public:
-  explicit AutoInjectable(cpp::Nn<const Injector *> injector)
-      : injector_{injector} {}
+  explicit AutoInjectable(cpp::NnSp<Injector> injector)
+      : injector_{std::move(injector)} {}
 
   /**
    * @tparam T Type to be created by injector.
@@ -23,7 +23,7 @@ class AutoInjectable {
   }
 
  private:
-  cpp::Nn<const Injector *> injector_;
+  cpp::NnSp<Injector> injector_;
 };
 }  // namespace stonks::di
 

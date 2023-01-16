@@ -10,10 +10,7 @@
 
 namespace stonks::cpp {
 TimerBuilder::TimerBuilder(fu2::unique_function<void()> event)
-    : event_{[&event]() {
-        Expects(!event.empty());
-        return std::move(event);
-      }()} {
+    : event_{(Expects(!event.empty()), std::move(event))} {
   Ensures(!event_.empty());
 }
 

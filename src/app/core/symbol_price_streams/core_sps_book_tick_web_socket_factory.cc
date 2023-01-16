@@ -36,10 +36,10 @@ auto GetBaseAssetPriceStep(const Symbol &symbol, const ISymbolsDb &symbols_db)
 }  // namespace
 
 BookTickWebSocketFactory::BookTickWebSocketFactory(
-    cpp::NnUp<ISymbolsDb> symbols_db,
-    cpp::NnUp<ISymbolsDbUpdater> symbols_db_updater,
-    di::Factory<network::IWsClient> ws_client_factory)
-    : symbols_db_{std::move(symbols_db)},
+    common::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
+    common::ThreadSafe<cpp::NnUp<ISymbolsDbUpdater>> symbols_db_updater,
+    common::ThreadSafe<di::Factory<network::IWsClient>> ws_client_factory)
+    : symbols_db_{std::move(*symbols_db)},
       symbols_db_updater_{std::move(symbols_db_updater)},
       ws_client_factory_{std::move(ws_client_factory)} {}
 
