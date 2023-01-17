@@ -1,5 +1,5 @@
-#ifndef STONKS_CORE_CORE_COMMON_H_
-#define STONKS_CORE_CORE_COMMON_H_
+#ifndef STONKS_APP_CORE_CORE_COMMON_H_
+#define STONKS_APP_CORE_CORE_COMMON_H_
 
 #include <absl/time/time.h>
 
@@ -24,4 +24,4 @@ auto EndTimeFrom [[nodiscard]] (const absl::Time *time) -> absl::Time;
 auto TimeOrderFrom [[nodiscard]] (const TimeOrder *order) -> TimeOrder;
 }  // namespace stonks::core
 
-#endif  // STONKS_CORE_CORE_COMMON_H_
+#endif  // STONKS_APP_CORE_CORE_COMMON_H_

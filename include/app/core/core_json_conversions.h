@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_COMMON_COMMON_JSON_CONVERSIONS_H_
-#define STONKS_APP_COMMON_COMMON_JSON_CONVERSIONS_H_
+#ifndef STONKS_APP_CORE_CORE_JSON_CONVERSIONS_H_
+#define STONKS_APP_CORE_CORE_JSON_CONVERSIONS_H_
 
 #include <absl/time/time.h>
 
@@ -18,4 +18,4 @@ auto ConvertToJson [[nodiscard]] (const core::SymbolPriceRecord &value)
 -> cpp::Pv<IJson>;
 }  // namespace stonks::network
 
-#endif  // STONKS_APP_COMMON_COMMON_JSON_CONVERSIONS_H_
+#endif  // STONKS_APP_CORE_CORE_JSON_CONVERSIONS_H_

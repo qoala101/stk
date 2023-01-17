@@ -9,12 +9,12 @@
 #include "cli_app.h"
 #include "cli_option.h"
 #include "cli_options.h"
-#include "common_create_kvdb_aws_injector.h"
-#include "common_create_log_spdlog_injector.h"
-#include "common_create_network_restsdk_injector.h"
 #include "di_make_injector.h"
 #include "service_app_uri_exposer.h"
 #include "service_aue_impl.h"
+#include "service_create_kvdb_aws_injector.h"
+#include "service_create_log_spdlog_injector.h"
+#include "service_create_network_restsdk_injector.h"
 
 auto main(int argc, const char *const *argv) -> int {
   auto options = stonks::cli::Options{};
@@ -26,9 +26,9 @@ auto main(int argc, const char *const *argv) -> int {
 
   const auto app = stonks::cli::App{argc, argv, options};
   const auto injector =
-      stonks::di::MakeInjector(stonks::common::CreateNetworkRestsdkInjector(),
-                               stonks::common::CreateLogSpdlogInjector(),
-                               stonks::common::CreateKvdbAwsInjector());
+      stonks::di::MakeInjector(stonks::service::CreateNetworkRestsdkInjector(),
+                               stonks::service::CreateLogSpdlogInjector(),
+                               stonks::service::CreateKvdbAwsInjector());
 
   app.Run([&injector, &expose_uri_interval, &reattempt_interval]() {
     return stonks::service::AppUriExposer{

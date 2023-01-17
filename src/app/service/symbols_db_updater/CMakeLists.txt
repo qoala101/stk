@@ -12,7 +12,6 @@ target_include_directories(libservice_symbols_db_updater
 
 target_link_libraries(libservice_symbols_db_updater
   PRIVATE libbinance
-  PRIVATE libcommon
   PRIVATE libcore
   PRIVATE libcore_symbols_db
   PRIVATE libcore_symbols_db_updater
@@ -41,7 +40,6 @@ add_executable(service_symbols_db_updater
 target_link_libraries(service_symbols_db_updater
   PRIVATE libbinance
   PRIVATE libcli
-  PRIVATE libcommon
   PRIVATE libcore
   PRIVATE libcore_symbols_db
   PRIVATE libcore_symbols_db_updater

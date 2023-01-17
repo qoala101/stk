@@ -1,5 +1,5 @@
 // clang-format off
-#include "common_json_conversions.h"  // IWYU pragma: keep
+#include "core_json_conversions.h"  // IWYU pragma: keep
 // clang-format on
 
 #include <fmt/core.h>
@@ -12,9 +12,6 @@
 #include "cli_app.h"
 #include "cli_option.h"
 #include "cli_options.h"
-#include "common_create_log_spdlog_injector.h"
-#include "common_create_network_restsdk_injector.h"
-#include "common_create_sqldb_sqlite_injector.h"
 #include "core_i_symbols_db.h"
 #include "core_symbols_db.h"
 #include "di_bind_value_type_to_value.h"
@@ -24,7 +21,10 @@
 #include "network_rest_server.h"
 #include "networkx_make_server_for.h"
 #include "networkx_uri.h"
+#include "service_create_log_spdlog_injector.h"
+#include "service_create_network_restsdk_injector.h"
 #include "service_create_server_injector.h"
+#include "service_create_sqldb_sqlite_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
 #include "sqlite_types.h"
@@ -38,9 +38,9 @@ auto main(int argc, const char *const *argv) -> int {
 
   const auto app = stonks::cli::App{argc, argv, options};
   const auto injector = stonks::di::MakeInjector(
-      stonks::common::CreateNetworkRestsdkInjector(),
-      stonks::common::CreateSqldbSqliteInjector(),
-      stonks::common::CreateLogSpdlogInjector(),
+      stonks::service::CreateNetworkRestsdkInjector(),
+      stonks::service::CreateSqldbSqliteInjector(),
+      stonks::service::CreateLogSpdlogInjector(),
 
       stonks::service::CreateServerInjector<stonks::core::SymbolsDb>(
           server_options),

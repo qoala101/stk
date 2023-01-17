@@ -1,5 +1,5 @@
-#ifndef STONKS_SERVICE_SERVICE_CLIENT_BASE_H_
-#define STONKS_SERVICE_SERVICE_CLIENT_BASE_H_
+#ifndef STONKS_APP_SERVICE_SERVICE_CLIENT_BASE_H_
+#define STONKS_APP_SERVICE_SERVICE_CLIENT_BASE_H_
 
 #include "networkx_client.h"
 #include "networkx_concepts.h"
@@ -33,4 +33,4 @@ class ClientBase : public TargetT {
 };
 }  // namespace stonks::service
 
-#endif  // STONKS_SERVICE_SERVICE_CLIENT_BASE_H_
+#endif  // STONKS_APP_SERVICE_SERVICE_CLIENT_BASE_H_

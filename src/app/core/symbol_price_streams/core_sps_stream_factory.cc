@@ -9,6 +9,7 @@
 #include <utility>
 #include <vector>
 
+#include "core_sps_price_recorder.h"
 #include "cpp_auto_updatable.h"
 #include "cpp_message_exception.h"
 #include "cpp_typed_struct.h"
@@ -36,15 +37,15 @@ auto GetBaseAssetPriceStep(const Symbol &symbol, const ISymbolsDb &symbols_db)
 }  // namespace
 
 StreamFactory::StreamFactory(
-    common::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
-    common::ThreadSafe<cpp::NnUp<ISymbolsDbUpdater>> symbols_db_updater,
-    common::ThreadSafe<di::Factory<network::IWsClient>> ws_client_factory)
+    cpp::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
+    cpp::ThreadSafe<cpp::NnUp<ISymbolsDbUpdater>> symbols_db_updater,
+    cpp::ThreadSafe<di::Factory<network::IWsClient>> ws_client_factory)
     : symbols_db_{std::move(*symbols_db)},
       symbols_db_updater_{std::move(symbols_db_updater)},
       ws_client_factory_{std::move(ws_client_factory)} {}
 
 auto StreamFactory::Create(Symbol symbol) const
-    -> cppcoro::task<networkx::WebSocket<&BookTickReceiver::RecordAsPrice>> {
+    -> cppcoro::task<networkx::WebSocket<&PriceRecorder::RecordAsPrice>> {
   auto endpoint = BookTickerEndpointFor(symbol);
 
   const auto update_symbols_info_interval =
@@ -58,11 +59,11 @@ auto StreamFactory::Create(Symbol symbol) const
 
   auto last_price_record = co_await GetLastPriceRecord(symbol);
 
-  co_return networkx::WebSocket<&BookTickReceiver::RecordAsPrice>{
+  co_return networkx::WebSocket<&PriceRecorder::RecordAsPrice>{
       std::move(endpoint), ws_client_factory_.Create(),
-      sps::BookTickReceiver{std::move(symbol), symbols_db_,
-                           std::move(base_asset_price_step),
-                           std::move(last_price_record)}};
+      sps::PriceRecorder{std::move(symbol), symbols_db_,
+                         std::move(base_asset_price_step),
+                         std::move(last_price_record)}};
 }
 
 auto StreamFactory::GetLastPriceRecord(const Symbol &symbol) const

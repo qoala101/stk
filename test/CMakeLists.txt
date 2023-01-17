@@ -40,7 +40,6 @@ gtest_discover_tests(unittests)
 
 target_link_libraries(unittests
   PRIVATE libaws
-  PRIVATE libcommon
   PRIVATE libcore
   PRIVATE libcore_buy_low_sell_high
   PRIVATE libcore_symbols_db

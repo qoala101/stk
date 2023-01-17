@@ -177,7 +177,7 @@ auto SymbolInfoEquals
 }
 }  // namespace
 
-SymbolsDb::SymbolsDb(common::ThreadSafe<cpp::NnUp<sqldb::IDb>> sql_db)
+SymbolsDb::SymbolsDb(cpp::ThreadSafe<cpp::NnUp<sqldb::IDb>> sql_db)
     : prepared_statements_{[&sql_db]() {
         (*sql_db)->CreateTableIfNotExists<sdb::tables::Asset>();
         (*sql_db)->CreateTableIfNotExists<sdb::tables::SymbolInfo>();

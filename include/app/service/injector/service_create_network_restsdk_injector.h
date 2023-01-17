@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_COMMON_COMMON_CREATE_NETWORK_RESTSDK_INJECTOR_H_
-#define STONKS_APP_COMMON_COMMON_CREATE_NETWORK_RESTSDK_INJECTOR_H_
+#ifndef STONKS_APP_SERVICE_SERVICE_CREATE_NETWORK_RESTSDK_INJECTOR_H_
+#define STONKS_APP_SERVICE_SERVICE_CREATE_NETWORK_RESTSDK_INJECTOR_H_
 
 #include "di_bind_interface_to_implementation.h"
 #include "di_make_injector.h"
@@ -10,7 +10,7 @@
 #include "restsdk_rest_request_sender.h"
 #include "restsdk_ws_client.h"
 
-namespace stonks::common {
+namespace stonks::service {
 inline auto CreateNetworkRestsdkInjector [[nodiscard]] () {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<network::IRestRequestReceiver,
@@ -20,6 +20,6 @@ inline auto CreateNetworkRestsdkInjector [[nodiscard]] () {
       di::BindInterfaceToImplementation<network::IWsClient,
                                         restsdk::WsClient>());
 }
-}  // namespace stonks::common
+}  // namespace stonks::service
 
-#endif  // STONKS_APP_COMMON_COMMON_CREATE_NETWORK_RESTSDK_INJECTOR_H_
+#endif  // STONKS_APP_SERVICE_SERVICE_CREATE_NETWORK_RESTSDK_INJECTOR_H_

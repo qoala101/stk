@@ -15,7 +15,6 @@ target_include_directories(libcore_symbol_price_streams
 
 target_link_libraries(libcore_symbol_price_streams
   PRIVATE libbinance
-  PRIVATE libcommon
   PRIVATE libcore
   PRIVATE libcore_symbols_db
   PRIVATE libcore_symbols_db_updater

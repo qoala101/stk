@@ -6,11 +6,11 @@
 #include "log_i_logger.h"
 #include "spdlog_logger.h"
 
-namespace stonks::common {
+namespace stonks::service {
 inline auto CreateLogSpdlogInjector [[nodiscard]] () {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<log::ILogger, spdlog::Logger>());
 }
-}  // namespace stonks::common
+}  // namespace stonks::service
 
 #endif  // STONKS_APP_COMMON_COMMON_CREATE_LOG_SPDLOG_INJECTOR_H_

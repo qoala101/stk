@@ -1,15 +1,15 @@
-#ifndef STONKS_APP_COMMON_COMMON_THREAD_SAFE_TAG_H_
-#define STONKS_APP_COMMON_COMMON_THREAD_SAFE_TAG_H_
+#ifndef STONKS_CPP_CPP_THREAD_SAFE_TAG_H_
+#define STONKS_CPP_CPP_THREAD_SAFE_TAG_H_
 
 #include "cpp_typed_struct.h"
 
-namespace stonks::common {
+namespace stonks::cpp {
 /**
  * @brief Used to explicitly mark variables that are expected to be thread safe
  * so that clients can provide specific implementations.
  */
 template <typename T>
 struct ThreadSafe : public cpp::TypedStruct<T> {};
-}  // namespace stonks::common
+}  // namespace stonks::cpp
 
-#endif  // STONKS_APP_COMMON_COMMON_THREAD_SAFE_TAG_H_
+#endif  // STONKS_CPP_CPP_THREAD_SAFE_TAG_H_

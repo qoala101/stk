@@ -3,7 +3,7 @@
 
 #include <cppcoro/task.hpp>
 
-#include "common_thread_safe_tag.h"
+#include "cpp_thread_safe_tag.h"
 #include "core_i_symbols_db.h"
 #include "core_i_symbols_db_updater.h"
 #include "core_sps_price_recorder.h"
@@ -21,9 +21,9 @@ namespace stonks::core::sps {
 class StreamFactory {
  public:
   StreamFactory(
-      common::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
-      common::ThreadSafe<cpp::NnUp<ISymbolsDbUpdater>> symbols_db_updater,
-      common::ThreadSafe<di::Factory<network::IWsClient>> ws_client_factory);
+      cpp::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
+      cpp::ThreadSafe<cpp::NnUp<ISymbolsDbUpdater>> symbols_db_updater,
+      cpp::ThreadSafe<di::Factory<network::IWsClient>> ws_client_factory);
 
   /**
    * @brief Creates web socket from args.

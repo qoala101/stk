@@ -1,5 +1,5 @@
 // clang-format off
-#include "common_json_conversions.h"  // IWYU pragma: keep
+#include "core_json_conversions.h"  // IWYU pragma: keep
 // clang-format on
 
 #include <absl/time/time.h>
@@ -12,8 +12,8 @@
 #include "cli_app.h"
 #include "cli_option.h"
 #include "cli_options.h"
-#include "common_create_log_spdlog_injector.h"
-#include "common_create_network_restsdk_injector.h"
+#include "service_create_log_spdlog_injector.h"
+#include "service_create_network_restsdk_injector.h"
 #include "core_i_symbols_db_updater.h"
 #include "core_sdbu_old_prices_deleter.h"
 #include "core_sdbu_symbols_info_updater.h"
@@ -50,8 +50,8 @@ auto main(int argc, const char *const *argv) -> int {
 
   const auto app = stonks::cli::App{argc, argv, options};
   const auto injector = stonks::cpp::Share(stonks::di::MakeInjector(
-      stonks::common::CreateNetworkRestsdkInjector(),
-      stonks::common::CreateLogSpdlogInjector(),
+      stonks::service::CreateNetworkRestsdkInjector(),
+      stonks::service::CreateLogSpdlogInjector(),
 
       stonks::service::CreateServerInjector<stonks::core::SymbolsDbUpdater>(
           server_options),

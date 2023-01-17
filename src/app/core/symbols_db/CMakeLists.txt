@@ -12,7 +12,6 @@ target_include_directories(libcore_symbols_db
 )
 
 target_link_libraries(libcore_symbols_db
-  PRIVATE libcommon
   PRIVATE libcore
   PRIVATE libcpp
   PRIVATE libsqldb

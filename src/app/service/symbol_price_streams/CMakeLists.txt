@@ -9,7 +9,6 @@ target_include_directories(service_symbol_price_streams
 target_link_libraries(service_symbol_price_streams
   PRIVATE libbinance
   PRIVATE libcli
-  PRIVATE libcommon
   PRIVATE libcore
   PRIVATE libcore_symbol_price_streams
   PRIVATE libcore_symbols_db

@@ -12,7 +12,6 @@ target_include_directories(service_app_uri_exposer
 target_link_libraries(service_app_uri_exposer
   PRIVATE libaws
   PRIVATE libcli
-  PRIVATE libcommon
   PRIVATE libcpp
   PRIVATE libdi
   PRIVATE libkvdb

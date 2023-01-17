@@ -6,7 +6,7 @@
 #include <cppcoro/task.hpp>
 #include <vector>
 
-#include "common_thread_safe_tag.h"
+#include "cpp_thread_safe_tag.h"
 #include "core_i_symbols_db.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
@@ -25,7 +25,7 @@ class SymbolsDb : public ISymbolsDb {
   /**
    * @param db DB handle to operate on.
    */
-  explicit SymbolsDb(common::ThreadSafe<cpp::NnUp<sqldb::IDb>> sql_db);
+  explicit SymbolsDb(cpp::ThreadSafe<cpp::NnUp<sqldb::IDb>> sql_db);
 
   /**
    * @copydoc ISymbolsDb::SelectAssets

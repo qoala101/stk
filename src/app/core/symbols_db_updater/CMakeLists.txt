@@ -14,7 +14,6 @@ target_include_directories(libcore_symbols_db_updater
 
 target_link_libraries(libcore_symbols_db_updater
   PRIVATE libbinance
-  PRIVATE libcommon
   PRIVATE libcore
   PRIVATE libcore_symbols_db
   PRIVATE libcpp

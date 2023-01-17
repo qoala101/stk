@@ -1,5 +1,5 @@
 // clang-format off
-#include "common_json_conversions.h"
+#include "core_json_conversions.h"
 // clang-format on
 
 #include "service_symbols_db.h"

@@ -6,7 +6,7 @@
 #include <cppcoro/task.hpp>
 
 #include "binance_api.h"
-#include "common_thread_safe_tag.h"
+#include "cpp_thread_safe_tag.h"
 #include "core_i_symbols_db.h"
 #include "core_i_symbols_db_updater.h"
 #include "cpp_not_null.h"
@@ -19,7 +19,7 @@ namespace stonks::core {
 class SymbolsDbUpdater : public ISymbolsDbUpdater {
  public:
   struct ConstructorArgs {
-    common::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db;
+    cpp::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db;
     binance::BinanceApi binance_api;
     absl::Duration update_symbols_info_interval{};
     absl::Duration delete_old_prices_interval{};

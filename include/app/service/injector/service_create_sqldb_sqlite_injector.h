@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_COMMON_COMMON_CREATE_SQLDB_SQLITE_INJECTOR_H_
-#define STONKS_APP_COMMON_COMMON_CREATE_SQLDB_SQLITE_INJECTOR_H_
+#ifndef STONKS_APP_SERVICE_INHECTOR_SERVICE_CREATE_SQLDB_SQLITE_INJECTOR_H_
+#define STONKS_APP_SERVICE_INHECTOR_SERVICE_CREATE_SQLDB_SQLITE_INJECTOR_H_
 
 #include "di_bind_interface_to_implementation.h"
 #include "di_bind_type_to_factory_function.h"
@@ -10,7 +10,7 @@
 #include "sqldb_ts_db.h"
 #include "sqlite_db.h"
 
-namespace stonks::common {
+namespace stonks::service {
 inline auto CreateSqldbSqliteInjector [[nodiscard]] () {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<sqldb::IDb, sqlite::Db>(),
@@ -21,9 +21,8 @@ inline auto CreateSqldbSqliteInjector [[nodiscard]] () {
                                           file_path);
                                     }>(),
       di::BindTypeToOtherType<sqlite::SqliteDbHandleVariant,
-                              sqlite::SqliteDbFileHandle>(),
-      di::EnableNnPointers<sqldb::ts::Db>());
+                              sqlite::SqliteDbFileHandle>());
 }
-}  // namespace stonks::common
+}  // namespace stonks::service
 
-#endif  // STONKS_APP_COMMON_COMMON_CREATE_SQLDB_SQLITE_INJECTOR_H_
+#endif  // STONKS_APP_SERVICE_INHECTOR_SERVICE_CREATE_SQLDB_SQLITE_INJECTOR_H_

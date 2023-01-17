@@ -7,8 +7,6 @@
 
 #include "cli_app.h"
 #include "cli_options.h"
-#include "common_create_log_spdlog_injector.h"
-#include "common_create_network_restsdk_injector.h"
 #include "core_buy_low_sell_high.h"
 #include "core_i_symbols_db.h"
 #include "di_call_with_injected_args.h"
@@ -19,6 +17,8 @@
 #include "service_blsh_traits.h"  // IWYU pragma: keep
 #include "service_client_options.h"
 #include "service_create_client_injector.h"
+#include "service_create_log_spdlog_injector.h"
+#include "service_create_network_restsdk_injector.h"
 #include "service_create_server_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
@@ -34,8 +34,8 @@ auto main(int argc, const char *const *argv) -> int {
 
   const auto app = stonks::cli::App{argc, argv, options};
   const auto injector = stonks::di::MakeInjector(
-      stonks::common::CreateNetworkRestsdkInjector(),
-      stonks::common::CreateLogSpdlogInjector(),
+      stonks::service::CreateNetworkRestsdkInjector(),
+      stonks::service::CreateLogSpdlogInjector(),
 
       stonks::service::CreateServerInjector<stonks::core::BuyLowSellHigh>(
           server_options),

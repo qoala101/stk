@@ -11,7 +11,6 @@ target_include_directories(libservice_symbols_db
 )
 
 target_link_libraries(libservice_symbols_db
-  PRIVATE libcommon
   PRIVATE libcore
   PRIVATE libcore_symbols_db
   PRIVATE libcpp
@@ -39,7 +38,7 @@ add_executable(service_symbols_db
 
 target_link_libraries(service_symbols_db
   PRIVATE libcli
-  PRIVATE libcommon
+  # PRIVATE libcommon
   PRIVATE libcore
   PRIVATE libcore_symbols_db
   PRIVATE libcpp
