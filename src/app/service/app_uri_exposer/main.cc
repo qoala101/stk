@@ -16,24 +16,29 @@
 #include "service_create_log_spdlog_injector.h"
 #include "service_create_network_restsdk_injector.h"
 
-auto main(int argc, const char *const *argv) -> int {
-  auto options = stonks::cli::Options{};
+namespace stonks::service::aue {
+void Main(int argc, const char *const *argv) {
+  auto options = cli::Options{};
 
   const auto expose_uri_interval = options.AddOption(
       "--expose_uri_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
   const auto reattempt_interval = options.AddOption(
       "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
 
-  const auto app = stonks::cli::App{argc, argv, options};
+  const auto app = cli::App{argc, argv, options};
   const auto injector =
-      stonks::di::MakeInjector(stonks::service::CreateNetworkRestsdkInjector(),
-                               stonks::service::CreateLogSpdlogInjector(),
-                               stonks::service::CreateKvdbAwsInjector());
+      di::MakeInjector(CreateNetworkRestsdkInjector(),
+                       CreateLogSpdlogInjector(), CreateKvdbAwsInjector());
 
   app.Run([&injector, &expose_uri_interval, &reattempt_interval]() {
-    return stonks::service::AppUriExposer{
-        {.exposer = injector.template create<stonks::service::aue::Impl>(),
+    return AppUriExposer{
+        {.exposer = injector.template create<Impl>(),
          .expose_uri_interval = absl::Milliseconds(*expose_uri_interval),
          .reattempt_interval = absl::Milliseconds(*reattempt_interval)}};
   });
+}
+}  // namespace stonks::service::aue
+
+auto main(int argc, const char *const *argv) -> int {
+  stonks::service::aue::Main(argc, argv);
 }

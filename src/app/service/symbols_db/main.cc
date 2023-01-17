@@ -29,27 +29,29 @@
 #include "service_server_options.h"
 #include "sqlite_types.h"
 
-auto main(int argc, const char *const *argv) -> int {
-  auto options = stonks::cli::Options{};
+namespace stonks::service::sdb {
+void Main(int argc, const char *const *argv) {
+  auto options = cli::Options{};
 
-  const auto server_options =
-      stonks::service::ServerOptions<stonks::core::ISymbolsDb>{options};
+  const auto server_options = ServerOptions<core::ISymbolsDb>{options};
   auto db_file_path = options.AddOption("--db_file_path", "symbols_db.db");
 
-  const auto app = stonks::cli::App{argc, argv, options};
-  const auto injector = stonks::di::MakeInjector(
-      stonks::service::CreateNetworkRestsdkInjector(),
-      stonks::service::CreateSqldbSqliteInjector(),
-      stonks::service::CreateLogSpdlogInjector(),
+  const auto app = cli::App{argc, argv, options};
+  const auto injector = di::MakeInjector(
+      CreateNetworkRestsdkInjector(), CreateSqldbSqliteInjector(),
+      CreateLogSpdlogInjector(),
 
-      stonks::service::CreateServerInjector<stonks::core::SymbolsDb>(
-          server_options),
+      CreateServerInjector<core::SymbolsDb>(server_options),
 
-      stonks::di::BindValueTypeToValue(
-          stonks::sqlite::FilePath{std::move(*db_file_path)}));
+      di::BindValueTypeToValue(sqlite::FilePath{std::move(*db_file_path)}));
 
   app.Run([&injector]() {
-    return stonks::di::CallWithInjectedArgs(
-        stonks::networkx::MakeServerFor<stonks::core::ISymbolsDb>, injector);
+    return di::CallWithInjectedArgs(networkx::MakeServerFor<core::ISymbolsDb>,
+                                    injector);
   });
+}
+}  // namespace stonks::service::sdb
+
+auto main(int argc, const char *const *argv) -> int {
+  stonks::service::sdb::Main(argc, argv);
 }

@@ -24,27 +24,28 @@
 #include "service_server_options.h"
 #include "service_symbols_db.h"
 
-auto main(int argc, const char *const *argv) -> int {
-  auto options = stonks::cli::Options();
+namespace stonks::service::aue {
+void Main(int argc, const char *const *argv) {
+  auto options = cli::Options();
 
-  const auto server_options =
-      stonks::service::ServerOptions<stonks::core::BuyLowSellHigh>{options};
+  const auto server_options = ServerOptions<core::BuyLowSellHigh>{options};
   const auto symbols_db_client_options =
-      stonks::service::ClientOptions<stonks::core::ISymbolsDb>{options};
+      ClientOptions<core::ISymbolsDb>{options};
 
-  const auto app = stonks::cli::App{argc, argv, options};
-  const auto injector = stonks::di::MakeInjector(
-      stonks::service::CreateNetworkRestsdkInjector(),
-      stonks::service::CreateLogSpdlogInjector(),
+  const auto app = cli::App{argc, argv, options};
+  const auto injector = di::MakeInjector(
+      CreateNetworkRestsdkInjector(), CreateLogSpdlogInjector(),
 
-      stonks::service::CreateServerInjector<stonks::core::BuyLowSellHigh>(
-          server_options),
-      stonks::service::CreateClientInjector<stonks::service::SymbolsDb>(
-          symbols_db_client_options));
+      CreateServerInjector<core::BuyLowSellHigh>(server_options),
+      CreateClientInjector<SymbolsDb>(symbols_db_client_options));
 
   app.Run([&injector]() {
-    return stonks::di::CallWithInjectedArgs(
-        stonks::networkx::MakeServerFor<stonks::core::BuyLowSellHigh>,
-        injector);
+    return di::CallWithInjectedArgs(
+        networkx::MakeServerFor<core::BuyLowSellHigh>, injector);
   });
+}
+}  // namespace stonks::service::aue
+
+auto main(int argc, const char *const *argv) -> int {
+  stonks::service::aue::Main(argc, argv);
 }
