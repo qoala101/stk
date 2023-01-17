@@ -27,8 +27,8 @@ NativeDbFileHandle::~NativeDbFileHandle() {
   auto logger = logger_factory_.Create();
 
   try {
-    NativeDbFacade{std::move(logger_factory_), cpp::AssumeNn(native_db)}.WriteToFile(
-        file_path_);
+    NativeDbFacade{std::move(logger_factory_)}.WriteToFile(*native_db,
+                                                           file_path_);
   } catch (const std::exception& e) {
     logger->LogErrorCondition(e.what());
   }

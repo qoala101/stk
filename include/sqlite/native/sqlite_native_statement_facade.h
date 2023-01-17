@@ -3,7 +3,6 @@
 
 #include <vector>
 
-#include "cpp_not_null.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 #include "sqlite_types.h"
@@ -16,41 +15,38 @@ namespace stonks::sqlite {
  */
 class NativeStatementFacade {
  public:
-  explicit NativeStatementFacade(cpp::Nn<sqlite3_stmt *> native_statement);
-
   /**
    * @brief Resets prepared statement.
    * @remark Should be called before new parameters binding.
    */
-  void Reset() const;
+  static void Reset(sqlite3_stmt &native_statement);
 
   /**
    * @brief Binds parameters in the order they defined in the statement.
    */
-  void BindParams(const std::vector<sqldb::Value> &params) const;
+  static void BindParams(sqlite3_stmt &native_statement,
+                         const std::vector<sqldb::Value> &params);
 
   /**
    * @brief Executes the next statement step.
    * @return SQLite result code.
    */
-  auto Step [[nodiscard]] () const -> ResultCode;
+  static auto Step [[nodiscard]] (sqlite3_stmt &native_statement) -> ResultCode;
 
   /**
    * @brief Gives the values of provided types from the current step
    * in the order they are refined in the statement.
    */
-  auto GetStepValues [[nodiscard]] (
-      const std::vector<sqldb::DataTypeVariant> &value_types) const
+  static auto GetStepValues
+      [[nodiscard]] (sqlite3_stmt &native_statement,
+                     const std::vector<sqldb::DataTypeVariant> &value_types)
       -> std::vector<sqldb::Value>;
 
   /**
    * @brief Finalizes the statement.
    * @remark Other methods should not be called after this.
    */
-  void Finalize();
-
- private:
-  sqlite3_stmt *native_statement_;
+  static void Finalize(sqlite3_stmt &native_statement);
 };
 }  // namespace stonks::sqlite
 

@@ -8,6 +8,7 @@
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 #include "sqlite_native_db_handle_variant.h"
+#include "sqlite_native_handles.h"
 #include "sqlite_native_statement_facade.h"
 
 namespace stonks::sqlite::ps {
@@ -26,10 +27,9 @@ class CommonImpl {
              cpp::NnUp<log::ILogger> logger);
 
   /**
-   * @brief Gives a facade to work with a statement.
+   * @brief Gives the statement.
    */
-  auto GetNativeStatementFacade [[nodiscard]] () const
-      -> const NativeStatementFacade &;
+  auto GetNativeStatement [[nodiscard]] () const -> sqlite3_stmt &;
 
   /**
    * @brief Binds new params and logs the query before execution.
@@ -41,7 +41,6 @@ class CommonImpl {
   NativeStatementHandle native_statement_handle_;
   sqldb::Query query_{};
   cpp::NnUp<log::ILogger> logger_;
-  NativeStatementFacade native_statement_facade_;
 };
 }  // namespace stonks::sqlite::ps
 

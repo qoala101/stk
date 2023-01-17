@@ -23,7 +23,7 @@ void NativeDbCloser::operator()(sqlite3* native_db) noexcept {
   auto logger = logger_factory_->Create();
 
   try {
-    NativeDbFacade{std::move(*logger_factory_), cpp::AssumeNn(native_db)}.Close();
+    NativeDbFacade{std::move(*logger_factory_)}.Close(*native_db);
   } catch (const std::exception& e) {
     logger->LogErrorCondition(e.what());
   }
@@ -41,7 +41,7 @@ void NativeStatementFinalizer::operator()(
   Expects(logger_ != nullptr);
 
   try {
-    NativeStatementFacade{cpp::AssumeNn(native_statement)}.Finalize();
+    NativeStatementFacade::Finalize(*native_statement);
   } catch (const std::exception& e) {
     logger_->LogErrorCondition(e.what());
   }

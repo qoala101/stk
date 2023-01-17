@@ -48,16 +48,16 @@ auto SelectStatement::Execute(std::vector<sqldb::Value> params) const
     -> sqldb::Rows {
   impl_.BeforeExecution(params);
 
-  const auto &prepared_statement_facade = impl_.GetNativeStatementFacade();
+  auto &native_statement = impl_.GetNativeStatement();
   auto result_rows = sqldb::Rows{result_columns_};
 
   while (true) {
-    const auto result_code = prepared_statement_facade.Step();
+    const auto result_code = NativeStatementFacade::Step(native_statement);
 
     switch (result_code) {
       case SQLITE_ROW:
-        result_rows.Push(
-            prepared_statement_facade.GetStepValues(result_types_));
+        result_rows.Push(NativeStatementFacade::GetStepValues(native_statement,
+                                                              result_types_));
         continue;
 
       case SQLITE_DONE:

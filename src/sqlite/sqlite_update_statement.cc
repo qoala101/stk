@@ -17,8 +17,8 @@ UpdateStatement::UpdateStatement(ps::CommonImpl impl)
 void UpdateStatement::Execute(std::vector<sqldb::Value> params) const {
   impl_.BeforeExecution(params);
 
-  const auto &prepared_statement_facade = impl_.GetNativeStatementFacade();
-  const auto result_code = prepared_statement_facade.Step();
+  const auto result_code =
+      NativeStatementFacade::Step(impl_.GetNativeStatement());
 
   if (result_code != SQLITE_DONE) {
     throw cpp::MessageException{

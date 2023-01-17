@@ -23,7 +23,8 @@ using NullableNativeDbHandle =
     std::remove_cvref_t<decltype(std::declval<NativeDbHandle>().as_nullable())>;
 }  // namespace
 
-NativeDbHandlesFactory::NativeDbHandlesFactory(di::Factory<log::ILogger> logger_factory)
+NativeDbHandlesFactory::NativeDbHandlesFactory(
+    di::Factory<log::ILogger> logger_factory)
     : logger_factory_{std::move(logger_factory)},
       logger_{logger_factory_.Create()} {}
 
@@ -36,16 +37,15 @@ auto NativeDbHandlesFactory::CreateInMemoryDb() const -> NativeDbHandle {
         fmt::format("Couldn't create in memory DB: {}", result_code)};
   }
 
-  const auto db_facade = NativeDbFacade{logger_factory_, cpp::AssumeNn(in_memory_db)};
-  db_facade.EnableForeignKeys();
-  db_facade.TurnOffSynchronization();
+  NativeDbFacade::EnableForeignKeys(*in_memory_db);
+  NativeDbFacade::TurnOffSynchronization(*in_memory_db);
 
   return {cpp::AssumeNn(NullableNativeDbHandle{
       in_memory_db, detail::NativeDbCloser{logger_factory_}})};
 }
 
-auto NativeDbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
-    -> NativeDbHandle {
+auto NativeDbHandlesFactory::CreateHandleToFileDb(
+    const FilePath &file_path) const -> NativeDbHandle {
   Expects(!file_path->empty());
 
   CreateParentDirectoryIfNotExists(file_path);
@@ -62,8 +62,8 @@ auto NativeDbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) con
       file_db, detail::NativeDbCloser{logger_factory_}})};
 }
 
-auto NativeDbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
-    -> NativeDbHandle {
+auto NativeDbHandlesFactory::LoadDbFromFileToMemory(
+    const FilePath &file_path) const -> NativeDbHandle {
   Expects(!file_path->empty());
 
   auto in_memory_db_handle = CreateInMemoryDb();
@@ -75,8 +75,7 @@ auto NativeDbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) c
   }
 
   auto file_db_handle = CreateHandleToFileDb(file_path);
-  NativeDbFacade{logger_factory_, cpp::AssumeNn(in_memory_db_handle.get())}
-      .CopyDataFrom(*file_db_handle);
+  NativeDbFacade::CopyDataFrom(*in_memory_db_handle, *file_db_handle);
 
   logger_->LogImportantEvent(fmt::format("Loaded DB from {}", *file_path));
   return in_memory_db_handle;

@@ -15,49 +15,49 @@ namespace stonks::sqlite {
  */
 class NativeDbFacade {
  public:
-  NativeDbFacade(di::Factory<log::ILogger> logger_factory,
-           cpp::Nn<sqlite3 *> native_db);
-
-  /**
-   * @brief Writes DB to file.
-   */
-  void WriteToFile(const FilePath &file_path) const;
+  explicit NativeDbFacade(di::Factory<log::ILogger> logger_factory);
 
   /**
    * @brief Replaces current data with the contents of the other DB.
    */
-  void CopyDataFrom(sqlite3 &other_db) const;
-
-  /**
-   * @brief Creates prepared statement for the query.
-   */
-  auto CreatePreparedStatement [[nodiscard]] (const sqldb::Query &query) const
-      -> NativeStatementHandle;
+  static void CopyDataFrom(sqlite3 &native_db, sqlite3 &other_db);
 
   /**
    * @brief Enforces foreign keys on DB.
    * @remark Foreign keys are disabled by default.
    */
-  void EnableForeignKeys() const;
+  static void EnableForeignKeys(sqlite3 &native_db);
 
   /**
    * @brief Turns native synchronization off.
    * @remark Synchronization is enabled by default.
    */
-  void TurnOffSynchronization() const;
+  static void TurnOffSynchronization(sqlite3 &native_db);
+
+  /**
+   * @brief Writes DB to file.
+   */
+  void WriteToFile(sqlite3 &native_db, const FilePath &file_path) const;
+
+  /**
+   * @brief Creates prepared statement for the query.
+   */
+  auto CreatePreparedStatement
+      [[nodiscard]] (sqlite3 &native_db, const sqldb::Query &query) const
+      -> NativeStatementHandle;
 
   /**
    * @brief Closes DB.
    * @remark Other methods should not be called after this.
    */
-  void Close();
+  void Close(sqlite3 &native_db);
 
  private:
-  void SetPragma(std::string_view pragma_name, std::string_view value) const;
+  static void SetPragma(sqlite3 &native_db, std::string_view pragma_name,
+                        std::string_view value);
 
   di::Factory<log::ILogger> logger_factory_;
   cpp::NnUp<log::ILogger> logger_;
-  sqlite3 *native_db_{};
   NativeDbHandlesFactory handles_factory_;
 };
 }  // namespace stonks::sqlite
