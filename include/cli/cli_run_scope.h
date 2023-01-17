@@ -1,7 +1,7 @@
 #ifndef STONKS_CLI_CLI_RUN_SCOPE_H_
 #define STONKS_CLI_CLI_RUN_SCOPE_H_
 
-#include "cpp_expose_private_constructors.h"
+#include "cpp_meta_private_to.h"
 #include "cpp_not_null.h"
 
 namespace CLI {
@@ -18,6 +18,8 @@ class App;
  */
 class RunScope {
  public:
+  RunScope(cpp::meta::PrivateTo<App>, cpp::NnSp<CLI::App> app);
+
   RunScope(const RunScope &) = delete;
   RunScope(RunScope &&) noexcept = delete;
 
@@ -30,10 +32,6 @@ class RunScope {
   ~RunScope();
 
  private:
-  friend class cpp::ExposePrivateConstructorsTo<App, RunScope>;
-
-  explicit RunScope(cpp::NnSp<CLI::App> app);
-
   cpp::NnSp<CLI::App> app_;
 };
 }  // namespace stonks::cli

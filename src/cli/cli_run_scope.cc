@@ -11,7 +11,9 @@
 #include "cpp_not_null.h"
 
 namespace stonks::cli {
-RunScope::RunScope(cpp::NnSp<CLI::App> app) : app_{std::move(app)} {
+RunScope::RunScope(cpp::meta::PrivateTo<App> /*unused*/,
+                   cpp::NnSp<CLI::App> app)
+    : app_{std::move(app)} {
   fmt::print(R"(Starting: {}
 )",
              app_->get_name());

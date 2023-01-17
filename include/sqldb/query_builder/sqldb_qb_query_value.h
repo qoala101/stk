@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "cpp_template_constructor.h"
+#include "cpp_meta_template_constructor.h"
 #include "sqldb_concepts.h"
 #include "sqldb_p_types.h"
 #include "sqldb_qb_condition.h"
@@ -20,7 +20,7 @@ class Select;
 class QueryValue : public QueryWrapper {
  public:
   template <ColumnDefinition Column>
-  explicit QueryValue(cpp::TemplateConstructor<Column> /*unused*/)
+  explicit QueryValue(cpp::meta::TemplateConstructor<Column> /*unused*/)
       : QueryValue{Column::GetFullName()} {}
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)

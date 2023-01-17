@@ -4,7 +4,7 @@
 #include <memory>
 #include <not_null.hpp>
 
-#include "cpp_expose_private_constructors.h"
+#include "cpp_meta_private_to.h"
 #include "cpp_not_null.h"
 #include "network_endpoint_request_dispatcher.h"
 #include "network_request_exception_handler.h"
@@ -30,9 +30,7 @@ auto RestServerBuilder::Start() -> RestServer {
       std::move(*base_uri_),
       cpp::MakeNnUp<EndpointRequestDispatcher>(std::move(endpoint_handlers_)));
 
-  auto server =
-      cpp::CallExposedPrivateConstructorOf<RestServer, RestServerBuilder>{}(
-          cpp::AssumeNn(std::move(request_receiver_)));
+  auto server = RestServer{{}, cpp::AssumeNn(std::move(request_receiver_))};
 
   base_uri_.reset();
   endpoint_handlers_.clear();

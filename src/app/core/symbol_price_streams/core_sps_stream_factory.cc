@@ -37,9 +37,9 @@ auto GetBaseAssetPriceStep(const Symbol &symbol, const ISymbolsDb &symbols_db)
 }  // namespace
 
 StreamFactory::StreamFactory(
-    cpp::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
-    cpp::ThreadSafe<cpp::NnUp<ISymbolsDbUpdater>> symbols_db_updater,
-    cpp::ThreadSafe<di::Factory<network::IWsClient>> ws_client_factory)
+    cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
+    cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDbUpdater>> symbols_db_updater,
+    cpp::meta::ThreadSafe<di::Factory<network::IWsClient>> ws_client_factory)
     : symbols_db_{std::move(*symbols_db)},
       symbols_db_updater_{std::move(symbols_db_updater)},
       ws_client_factory_{std::move(ws_client_factory)} {}

@@ -3,7 +3,7 @@
 #include <string>
 #include <utility>
 
-#include "cpp_expose_private_constructors.h"
+#include "cpp_meta_private_to.h"
 #include "cpp_not_null.h"
 #include "cpp_typed_struct.h"
 #include "di_factory.h"
@@ -26,8 +26,6 @@ auto RestClient::Call(TypedEndpoint endpoint) const
       cpp::MakeNnUp<TypedEndpointSender>(std::move(endpoint.expected_types),
                                          request_sender_));
 
-  return cpp::CallExposedPrivateConstructorOf<rest_client::RequestBuilder,
-                                              RestClient>{}(
-      std::move(endpoint.endpoint), std::move(decorated_sender));
+  return {{}, std::move(endpoint.endpoint), std::move(decorated_sender)};
 }
 }  // namespace stonks::network

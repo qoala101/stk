@@ -14,6 +14,11 @@
 #include "network_types.h"
 
 namespace stonks::network::rest_client {
+RequestBuilder::RequestBuilder(cpp::meta::PrivateTo<RestClient> /*unused*/,
+                               Endpoint endpoint,
+                               cpp::NnUp<IRestRequestSender> request_sender)
+    : RequestBuilder{std::move(endpoint), std::move(request_sender)} {}
+
 template <cpp::This<RequestBuilder> This>
 auto RequestBuilder::DiscardingResultImpl(This& t) -> cppcoro::task<> {
   std::ignore = co_await t.SendRequestAndGetResult();

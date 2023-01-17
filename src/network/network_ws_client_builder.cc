@@ -4,7 +4,7 @@
 #include <memory>
 #include <not_null.hpp>
 
-#include "cpp_expose_private_constructors.h"
+#include "cpp_meta_private_to.h"
 #include "cpp_not_null.h"
 #include "network_typed_ws_client.h"
 #include "network_typed_ws_endpoint.h"
@@ -38,8 +38,7 @@ auto WsClientBuilder::Connect() -> WsConnection {
   Ensures(!endpoint_.has_value());
   Ensures(handler_ == nullptr);
 
-  return cpp::CallExposedPrivateConstructorOf<WsConnection, WsClientBuilder>{}(
-      std::move(typed_client));
+  return WsConnection{{}, std::move(typed_client)};
 }
 
 auto WsClientBuilder::Handling(cpp::NnUp<IWsMessageHandler> handler)

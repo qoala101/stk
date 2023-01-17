@@ -12,7 +12,7 @@
 
 namespace stonks::core {
 BuyLowSellHigh::BuyLowSellHigh(
-    cpp::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db)
+    cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db)
     : symbols_db_{std::move(symbols_db)}, commission_{0.001} {}
 
 auto BuyLowSellHigh::CalculateNextOperations(

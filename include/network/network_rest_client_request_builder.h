@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-#include "cpp_expose_private_constructors.h"
+#include "cpp_meta_private_to.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 #include "cpp_this.h"          // IWYU pragma: keep
@@ -23,6 +23,9 @@ namespace rest_client {
  */
 class RequestBuilder {
  public:
+  RequestBuilder(cpp::meta::PrivateTo<RestClient>, Endpoint endpoint,
+                 cpp::NnUp<IRestRequestSender> request_sender);
+
   /**
    * @brief Sets request parameter.
    * @remark Overrides the parameter with the same name.
@@ -68,8 +71,6 @@ class RequestBuilder {
   }
 
  private:
-  friend class cpp::ExposePrivateConstructorsTo<RestClient, RequestBuilder>;
-
   RequestBuilder(Endpoint endpoint,
                  cpp::NnUp<IRestRequestSender> request_sender);
 

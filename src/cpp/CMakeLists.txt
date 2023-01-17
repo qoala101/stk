@@ -14,6 +14,7 @@ target_include_directories(libcpp
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/algorithm
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/alias
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/meta
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/timer
 )
 

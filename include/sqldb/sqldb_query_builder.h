@@ -1,7 +1,7 @@
 #ifndef STONKS_SQLDB_SQLDB_QUERY_BUILDER_H_
 #define STONKS_SQLDB_SQLDB_QUERY_BUILDER_H_
 
-#include "cpp_template_constructor.h"
+#include "cpp_meta_template_constructor.h"
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_qb_create.h"
 #include "sqldb_qb_delete.h"
@@ -16,7 +16,7 @@ namespace stonks::sqldb::query_builder {
  */
 template <TableDefinition Table>
 auto CreateTable [[nodiscard]] () {
-  return qb::Create{cpp::TemplateConstructor<Table>{}};
+  return qb::Create{cpp::meta::TemplateConstructor<Table>{}};
 }
 
 /**
@@ -24,7 +24,7 @@ auto CreateTable [[nodiscard]] () {
  */
 template <TableDefinition Table>
 auto DropTable [[nodiscard]] () {
-  return qb::Drop{cpp::TemplateConstructor<Table>{}};
+  return qb::Drop{cpp::meta::TemplateConstructor<Table>{}};
 }
 
 /**
@@ -32,7 +32,7 @@ auto DropTable [[nodiscard]] () {
  */
 template <ColumnDefinition... Columns>
 auto Select [[nodiscard]] () {
-  return qb::Select{cpp::TemplateConstructor<Columns...>{}};
+  return qb::Select{cpp::meta::TemplateConstructor<Columns...>{}};
 }
 
 /**
@@ -61,7 +61,7 @@ auto InsertAll [[nodiscard]] () -> qb::Insert;
  */
 template <TableDefinition Table>
 auto UpdateTable [[nodiscard]] () {
-  return qb::Update{cpp::TemplateConstructor<Table>{}};
+  return qb::Update{cpp::meta::TemplateConstructor<Table>{}};
 }
 
 /**
@@ -69,7 +69,7 @@ auto UpdateTable [[nodiscard]] () {
  */
 template <TableDefinition Table>
 auto DeleteFromTable [[nodiscard]] () {
-  return qb::Delete{cpp::TemplateConstructor<Table>{}};
+  return qb::Delete{cpp::meta::TemplateConstructor<Table>{}};
 }
 }  // namespace stonks::sqldb::query_builder
 

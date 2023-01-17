@@ -1,7 +1,7 @@
 #ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COMMON_H_
 #define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COMMON_H_
 
-#include "cpp_template_constructor.h"
+#include "cpp_meta_template_constructor.h"
 #include "sqldb_concepts.h"
 #include "sqldb_p_types.h"
 #include "sqldb_qb_condition.h"
@@ -25,7 +25,7 @@ auto Exists [[nodiscard]] (const Select &query_builder) -> Condition;
  */
 template <ColumnDefinition ColumnT>
 auto Column [[nodiscard]] () -> QueryValue {
-  return QueryValue{cpp::TemplateConstructor<ColumnT>{}};
+  return QueryValue{cpp::meta::TemplateConstructor<ColumnT>{}};
 }
 
 /**
