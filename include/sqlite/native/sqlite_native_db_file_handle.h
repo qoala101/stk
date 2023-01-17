@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLITE_SQLITE_DB_FILE_HANDLE_H_
-#define STONKS_SQLITE_SQLITE_DB_FILE_HANDLE_H_
+#ifndef STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_FILE_HANDLE_H_
+#define STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_FILE_HANDLE_H_
 
 #include "cpp_this.h"  // IWYU pragma: keep
 #include "di_factory.h"
@@ -16,6 +16,7 @@ class NativeDbFileHandle {
   /**
    * @param file_path File from which SQLite DB was read
    * and where it's to be written.
+   * @param native_db_handle Handle to DB on which to operate and write to file.
    */
   NativeDbFileHandle(di::Factory<log::ILogger> logger_factory,
                      NativeDbHandle native_db_handle, FilePath file_path);
@@ -54,4 +55,4 @@ class NativeDbFileHandle {
 };
 }  // namespace stonks::sqlite
 
-#endif  // STONKS_SQLITE_SQLITE_DB_FILE_HANDLE_H_
+#endif  // STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_FILE_HANDLE_H_

@@ -25,7 +25,7 @@ class NativeDbCloser {
 
   explicit NativeDbCloser(di::Factory<log::ILogger> logger_factory);
 
-  void operator()(sqlite3 *native_db) noexcept;
+  void operator()(sqlite3 *db) noexcept;
 
  private:
   cpp::Opt<di::Factory<log::ILogger>> logger_factory_{};
@@ -40,7 +40,7 @@ class NativeStatementFinalizer {
 
   explicit NativeStatementFinalizer(cpp::NnUp<log::ILogger> logger);
 
-  void operator()(sqlite3_stmt *native_statement) noexcept;
+  void operator()(sqlite3_stmt *statement) noexcept;
 
  private:
   cpp::Up<log::ILogger> logger_{};

@@ -85,8 +85,8 @@ auto GetValue [[nodiscard]] (sqlite3_stmt &statement, int index,
 }
 }  // namespace
 
-void NativeStatementFacade::Reset(sqlite3_stmt &native_statement) {
-  const auto result_code = sqlite3_reset(&native_statement);
+void NativeStatementFacade::Reset(sqlite3_stmt &statement) {
+  const auto result_code = sqlite3_reset(&statement);
 
   if (result_code != SQLITE_OK) {
     throw cpp::MessageException{
@@ -95,18 +95,18 @@ void NativeStatementFacade::Reset(sqlite3_stmt &native_statement) {
 }
 
 void NativeStatementFacade::BindParams(
-    sqlite3_stmt &native_statement, const std::vector<sqldb::Value> &params) {
+    sqlite3_stmt &statement, const std::vector<sqldb::Value> &params) {
   for (auto i = 0; i < gsl::narrow_cast<int>(params.size()); ++i) {
-    BindParam(native_statement, i + 1, params[i]);
+    BindParam(statement, i + 1, params[i]);
   }
 }
 
-auto NativeStatementFacade::Step(sqlite3_stmt &native_statement) -> ResultCode {
-  return {sqlite3_step(&native_statement)};
+auto NativeStatementFacade::Step(sqlite3_stmt &statement) -> ResultCode {
+  return {sqlite3_step(&statement)};
 }
 
 auto NativeStatementFacade::GetStepValues(
-    sqlite3_stmt &native_statement,
+    sqlite3_stmt &statement,
     const std::vector<sqldb::DataTypeVariant> &value_types)
     -> std::vector<sqldb::Value> {
   const auto num_values = value_types.size();
@@ -115,14 +115,14 @@ auto NativeStatementFacade::GetStepValues(
   values.reserve(num_values);
 
   for (auto i = 0; i < gsl::narrow_cast<int>(num_values); ++i) {
-    values.emplace_back(GetValue(native_statement, i, value_types[i]));
+    values.emplace_back(GetValue(statement, i, value_types[i]));
   }
 
   return values;
 }
 
-void NativeStatementFacade::Finalize(sqlite3_stmt &native_statement) {
-  const auto result_code = sqlite3_finalize(&native_statement);
+void NativeStatementFacade::Finalize(sqlite3_stmt &statement) {
+  const auto result_code = sqlite3_finalize(&statement);
 
   if (result_code != SQLITE_OK) {
     throw cpp::MessageException{

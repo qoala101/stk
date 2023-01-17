@@ -16,14 +16,14 @@ NativeDbCloser::NativeDbCloser(di::Factory<log::ILogger> logger_factory)
   Ensures(logger_factory_.has_value());
 }
 
-void NativeDbCloser::operator()(sqlite3* native_db) noexcept {
-  Expects(native_db != nullptr);
+void NativeDbCloser::operator()(sqlite3* db) noexcept {
+  Expects(db != nullptr);
   Expects(logger_factory_.has_value());
 
   auto logger = logger_factory_->Create();
 
   try {
-    NativeDbFacade{std::move(*logger_factory_)}.Close(*native_db);
+    NativeDbFacade{std::move(*logger_factory_)}.Close(*db);
   } catch (const std::exception& e) {
     logger->LogErrorCondition(e.what());
   }
@@ -36,12 +36,12 @@ NativeStatementFinalizer::NativeStatementFinalizer(
 }
 
 void NativeStatementFinalizer::operator()(
-    sqlite3_stmt* native_statement) noexcept {
-  Expects(native_statement != nullptr);
+    sqlite3_stmt* statement) noexcept {
+  Expects(statement != nullptr);
   Expects(logger_ != nullptr);
 
   try {
-    NativeStatementFacade::Finalize(*native_statement);
+    NativeStatementFacade::Finalize(*statement);
   } catch (const std::exception& e) {
     logger_->LogErrorCondition(e.what());
   }
