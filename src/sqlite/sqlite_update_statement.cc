@@ -6,7 +6,7 @@
 #include <utility>
 
 #include "cpp_message_exception.h"
-#include "sqlite_prepared_statement_facade.h"
+#include "sqlite_native_statement_facade.h"
 #include "sqlite_ps_common_impl.h"
 #include "sqlite_types.h"
 
@@ -17,7 +17,7 @@ UpdateStatement::UpdateStatement(ps::CommonImpl impl)
 void UpdateStatement::Execute(std::vector<sqldb::Value> params) const {
   impl_.BeforeExecution(params);
 
-  const auto &prepared_statement_facade = impl_.GetPreparedStatementFacade();
+  const auto &prepared_statement_facade = impl_.GetNativeStatementFacade();
   const auto result_code = prepared_statement_facade.Step();
 
   if (result_code != SQLITE_DONE) {

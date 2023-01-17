@@ -1,13 +1,12 @@
 add_library(libsqlite
-  sqlite_db_facade.cc
-  sqlite_db_file_handle.cc
-  sqlite_db_handle_variant.cc
-  sqlite_db_handles_factory.cc
+  native/sqlite_native_db_facade.cc
+  native/sqlite_native_db_file_handle.cc
+  native/sqlite_native_db_handle_variant.cc
+  native/sqlite_native_db_handles_factory.cc
+  native/sqlite_native_handles.cc
+  native/sqlite_native_statement_facade.cc
   sqlite_db.cc
-  sqlite_prepared_statement_facade.cc
-  sqlite_prepared_statement_handle.cc
   sqlite_ps_common_impl.cc
-  sqlite_raw_handles.cc
   sqlite_select_statement.cc
   sqlite_update_statement.cc
 )
@@ -18,6 +17,7 @@ set_target_properties(libsqlite PROPERTIES
 
 target_include_directories(libsqlite
   PUBLIC ${PROJECT_SOURCE_DIR}/include/sqlite
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/sqlite/native
 )
 
 target_link_libraries(libsqlite

@@ -14,9 +14,9 @@ namespace stonks::sqlite {
 /**
  * @brief Convenience API for SQLite prepared statement.
  */
-class PreparedStatementFacade {
+class NativeStatementFacade {
  public:
-  explicit PreparedStatementFacade(cpp::Nn<sqlite3_stmt *> sqlite_statement);
+  explicit NativeStatementFacade(cpp::Nn<sqlite3_stmt *> native_statement);
 
   /**
    * @brief Resets prepared statement.
@@ -50,7 +50,7 @@ class PreparedStatementFacade {
   void Finalize();
 
  private:
-  sqlite3_stmt *sqlite_statement_;
+  sqlite3_stmt *native_statement_;
 };
 }  // namespace stonks::sqlite
 

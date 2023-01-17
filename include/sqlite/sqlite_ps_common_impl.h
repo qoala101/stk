@@ -7,12 +7,13 @@
 #include "log_i_logger.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
-#include "sqlite_prepared_statement_facade.h"
-#include "sqlite_prepared_statement_handle.h"
+#include "sqlite_native_db_handle_variant.h"
+#include "sqlite_native_statement_facade.h"
 
 namespace stonks::sqlite::ps {
 /**
  * @brief Common API and fields for prepared statements implementation.
+ * @remark Keeps DB alive while handle is alive.
  */
 class CommonImpl {
  public:
@@ -20,14 +21,15 @@ class CommonImpl {
    * @param prepared_statement_handle Handle for SQLite prepared statement
    * produced by parent DB.
    */
-  CommonImpl(PreparedStatementHandle prepared_statement_handle,
-             sqldb::Query query, cpp::NnUp<log::ILogger> logger);
+  CommonImpl(cpp::NnSp<NativeDbHandleVariant> native_db_handle,
+             NativeStatementHandle native_statement_handle, sqldb::Query query,
+             cpp::NnUp<log::ILogger> logger);
 
   /**
    * @brief Gives a facade to work with a statement.
    */
-  auto GetPreparedStatementFacade [[nodiscard]] () const
-      -> const PreparedStatementFacade &;
+  auto GetNativeStatementFacade [[nodiscard]] () const
+      -> const NativeStatementFacade &;
 
   /**
    * @brief Binds new params and logs the query before execution.
@@ -35,10 +37,11 @@ class CommonImpl {
   void BeforeExecution(const std::vector<sqldb::Value> &params) const;
 
  private:
-  PreparedStatementHandle prepared_statement_handle_;
+  cpp::NnSp<NativeDbHandleVariant> native_db_handle_;
+  NativeStatementHandle native_statement_handle_;
   sqldb::Query query_{};
   cpp::NnUp<log::ILogger> logger_;
-  PreparedStatementFacade prepared_statement_facade_;
+  NativeStatementFacade native_statement_facade_;
 };
 }  // namespace stonks::sqlite::ps
 

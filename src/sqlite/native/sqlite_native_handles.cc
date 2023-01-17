@@ -1,4 +1,4 @@
-#include "sqlite_raw_handles.h"
+#include "sqlite_native_handles.h"
 
 #include <exception>
 #include <gsl/assert>
@@ -7,41 +7,41 @@
 #include <utility>
 
 #include "cpp_not_null.h"
-#include "sqlite_db_facade.h"
-#include "sqlite_prepared_statement_facade.h"
+#include "sqlite_native_db_facade.h"
+#include "sqlite_native_statement_facade.h"
 
 namespace stonks::sqlite::detail {
-SqliteDbCloser::SqliteDbCloser(di::Factory<log::ILogger> logger_factory)
+NativeDbCloser::NativeDbCloser(di::Factory<log::ILogger> logger_factory)
     : logger_factory_{std::move(logger_factory)} {
   Ensures(logger_factory_.has_value());
 }
 
-void SqliteDbCloser::operator()(sqlite3* sqlite_db) noexcept {
-  Expects(sqlite_db != nullptr);
+void NativeDbCloser::operator()(sqlite3* native_db) noexcept {
+  Expects(native_db != nullptr);
   Expects(logger_factory_.has_value());
 
   auto logger = logger_factory_->Create();
 
   try {
-    DbFacade{std::move(*logger_factory_), cpp::AssumeNn(sqlite_db)}.Close();
+    NativeDbFacade{std::move(*logger_factory_), cpp::AssumeNn(native_db)}.Close();
   } catch (const std::exception& e) {
     logger->LogErrorCondition(e.what());
   }
 }
 
-SqliteStatementFinalizer::SqliteStatementFinalizer(
+NativeStatementFinalizer::NativeStatementFinalizer(
     cpp::NnUp<log::ILogger> logger)
     : logger_{std::move(logger).as_nullable()} {
   Ensures(logger_ != nullptr);
 }
 
-void SqliteStatementFinalizer::operator()(
-    sqlite3_stmt* sqlite_statement) noexcept {
-  Expects(sqlite_statement != nullptr);
+void NativeStatementFinalizer::operator()(
+    sqlite3_stmt* native_statement) noexcept {
+  Expects(native_statement != nullptr);
   Expects(logger_ != nullptr);
 
   try {
-    PreparedStatementFacade{cpp::AssumeNn(sqlite_statement)}.Finalize();
+    NativeStatementFacade{cpp::AssumeNn(native_statement)}.Finalize();
   } catch (const std::exception& e) {
     logger_->LogErrorCondition(e.what());
   }

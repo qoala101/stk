@@ -1,4 +1,4 @@
-#include "sqlite_prepared_statement_facade.h"
+#include "sqlite_native_statement_facade.h"
 
 #include <fmt/core.h>
 #include <sqlite3.h>
@@ -86,16 +86,16 @@ auto GetValue [[nodiscard]] (sqlite3_stmt &statement, int index,
 }
 }  // namespace
 
-PreparedStatementFacade::PreparedStatementFacade(
-    cpp::Nn<sqlite3_stmt *> sqlite_statement)
-    : sqlite_statement_{sqlite_statement.as_nullable()} {
-  Ensures(sqlite_statement_ != nullptr);
+NativeStatementFacade::NativeStatementFacade(
+    cpp::Nn<sqlite3_stmt *> native_statement)
+    : native_statement_{native_statement.as_nullable()} {
+  Ensures(native_statement_ != nullptr);
 }
 
-void PreparedStatementFacade::Reset() const {
-  Expects(sqlite_statement_ != nullptr);
+void NativeStatementFacade::Reset() const {
+  Expects(native_statement_ != nullptr);
 
-  const auto result_code = sqlite3_reset(sqlite_statement_);
+  const auto result_code = sqlite3_reset(native_statement_);
 
   if (result_code != SQLITE_OK) {
     throw cpp::MessageException{
@@ -103,24 +103,24 @@ void PreparedStatementFacade::Reset() const {
   }
 }
 
-void PreparedStatementFacade::BindParams(
+void NativeStatementFacade::BindParams(
     const std::vector<sqldb::Value> &params) const {
-  Expects(sqlite_statement_ != nullptr);
+  Expects(native_statement_ != nullptr);
 
   for (auto i = 0; i < gsl::narrow_cast<int>(params.size()); ++i) {
-    BindParam(*sqlite_statement_, i + 1, params[i]);
+    BindParam(*native_statement_, i + 1, params[i]);
   }
 }
 
-auto PreparedStatementFacade::Step() const -> ResultCode {
-  Expects(sqlite_statement_ != nullptr);
-  return {sqlite3_step(sqlite_statement_)};
+auto NativeStatementFacade::Step() const -> ResultCode {
+  Expects(native_statement_ != nullptr);
+  return {sqlite3_step(native_statement_)};
 }
 
-auto PreparedStatementFacade::GetStepValues(
+auto NativeStatementFacade::GetStepValues(
     const std::vector<sqldb::DataTypeVariant> &value_types) const
     -> std::vector<sqldb::Value> {
-  Expects(sqlite_statement_ != nullptr);
+  Expects(native_statement_ != nullptr);
 
   const auto num_values = value_types.size();
 
@@ -128,23 +128,23 @@ auto PreparedStatementFacade::GetStepValues(
   values.reserve(num_values);
 
   for (auto i = 0; i < gsl::narrow_cast<int>(num_values); ++i) {
-    values.emplace_back(GetValue(*sqlite_statement_, i, value_types[i]));
+    values.emplace_back(GetValue(*native_statement_, i, value_types[i]));
   }
 
   return values;
 }
 
-void PreparedStatementFacade::Finalize() {
-  Expects(sqlite_statement_ != nullptr);
+void NativeStatementFacade::Finalize() {
+  Expects(native_statement_ != nullptr);
 
-  const auto result_code = sqlite3_finalize(sqlite_statement_);
+  const auto result_code = sqlite3_finalize(native_statement_);
 
   if (result_code != SQLITE_OK) {
     throw cpp::MessageException{
         fmt::format("Couldn't finalize prepared statement: {}", result_code)};
   }
 
-  sqlite_statement_ = nullptr;
-  Ensures(sqlite_statement_ == nullptr);
+  native_statement_ = nullptr;
+  Ensures(native_statement_ == nullptr);
 }
 }  // namespace stonks::sqlite

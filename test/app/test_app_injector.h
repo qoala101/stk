@@ -10,10 +10,10 @@
 #include "spdlog_logger.h"
 #include "sqldb_i_db.h"
 #include "sqlite_db.h"
-#include "sqlite_db_file_handle.h"
-#include "sqlite_db_handle_variant.h"
-#include "sqlite_db_handles_factory.h"
-#include "sqlite_raw_handles.h"
+#include "sqlite_native_db_file_handle.h"
+#include "sqlite_native_db_handle_variant.h"
+#include "sqlite_native_db_handles_factory.h"
+#include "sqlite_native_handles.h"
 #include "sqlite_types.h"
 
 namespace test::app {
@@ -24,9 +24,9 @@ inline auto Injector [[nodiscard]] () -> auto & {
       stonks::di::BindInterfaceToImplementation<stonks::sqldb::IDb,
                                                 stonks::sqlite::Db>(),
       stonks::di::BindTypeToFactoryFunction<
-          stonks::sqlite::SqliteDbHandleVariant,
-          +[](const stonks::sqlite::DbHandlesFactory &factory) {
-            return stonks::sqlite::SqliteDbHandleVariant{
+          stonks::sqlite::NativeDbHandleVariant,
+          +[](const stonks::sqlite::NativeDbHandlesFactory &factory) {
+            return stonks::sqlite::NativeDbHandleVariant{
                 factory.CreateInMemoryDb()};
           }>());
   return injector;

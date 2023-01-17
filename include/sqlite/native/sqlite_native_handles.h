@@ -16,31 +16,31 @@ class sqlite3_stmt;
 
 namespace stonks::sqlite {
 namespace detail {
-class SqliteDbCloser {
+class NativeDbCloser {
  public:
   /**
    * @remark Not for use. Added for not null to compile.
    */
-  SqliteDbCloser() = default;
+  NativeDbCloser() = default;
 
-  explicit SqliteDbCloser(di::Factory<log::ILogger> logger_factory);
+  explicit NativeDbCloser(di::Factory<log::ILogger> logger_factory);
 
-  void operator()(sqlite3 *sqlite_db) noexcept;
+  void operator()(sqlite3 *native_db) noexcept;
 
  private:
   cpp::Opt<di::Factory<log::ILogger>> logger_factory_{};
 };
 
-class SqliteStatementFinalizer {
+class NativeStatementFinalizer {
  public:
   /**
    * @remark Not for use. Added for not null to compile.
    */
-  SqliteStatementFinalizer() = default;
+  NativeStatementFinalizer() = default;
 
-  explicit SqliteStatementFinalizer(cpp::NnUp<log::ILogger> logger);
+  explicit NativeStatementFinalizer(cpp::NnUp<log::ILogger> logger);
 
-  void operator()(sqlite3_stmt *sqlite_statement) noexcept;
+  void operator()(sqlite3_stmt *native_statement) noexcept;
 
  private:
   cpp::Up<log::ILogger> logger_{};
@@ -50,13 +50,13 @@ class SqliteStatementFinalizer {
 /**
  * @remark Closes connection when destroyed.
  */
-using SqliteDbHandle = cpp::NnUp<sqlite3, detail::SqliteDbCloser>;
+using NativeDbHandle = cpp::NnUp<sqlite3, detail::NativeDbCloser>;
 
 /**
  * @remark Finalizes statement when destroyed.
  */
-using SqliteStatementHandle =
-    cpp::NnUp<sqlite3_stmt, detail::SqliteStatementFinalizer>;
+using NativeStatementHandle =
+    cpp::NnUp<sqlite3_stmt, detail::NativeStatementFinalizer>;
 }  // namespace stonks::sqlite
 
 #endif  // STONKS_SQLITE_SQLITE_RAW_HANDLES_H_

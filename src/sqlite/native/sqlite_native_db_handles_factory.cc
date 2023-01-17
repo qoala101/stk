@@ -1,4 +1,4 @@
-#include "sqlite_db_handles_factory.h"
+#include "sqlite_native_db_handles_factory.h"
 
 #include <fmt/core.h>
 #include <sqlite3.h>
@@ -14,20 +14,20 @@
 #include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "cpp_typed_struct.h"
-#include "sqlite_db_facade.h"
-#include "sqlite_raw_handles.h"
+#include "sqlite_native_db_facade.h"
+#include "sqlite_native_handles.h"
 
 namespace stonks::sqlite {
 namespace {
-using NullableSqliteDbHandle =
-    std::remove_cvref_t<decltype(std::declval<SqliteDbHandle>().as_nullable())>;
+using NullableNativeDbHandle =
+    std::remove_cvref_t<decltype(std::declval<NativeDbHandle>().as_nullable())>;
 }  // namespace
 
-DbHandlesFactory::DbHandlesFactory(di::Factory<log::ILogger> logger_factory)
+NativeDbHandlesFactory::NativeDbHandlesFactory(di::Factory<log::ILogger> logger_factory)
     : logger_factory_{std::move(logger_factory)},
       logger_{logger_factory_.Create()} {}
 
-auto DbHandlesFactory::CreateInMemoryDb() const -> SqliteDbHandle {
+auto NativeDbHandlesFactory::CreateInMemoryDb() const -> NativeDbHandle {
   auto *in_memory_db = static_cast<sqlite3 *>(nullptr);
   const auto result_code = sqlite3_open(":memory:", &in_memory_db);
 
@@ -36,16 +36,16 @@ auto DbHandlesFactory::CreateInMemoryDb() const -> SqliteDbHandle {
         fmt::format("Couldn't create in memory DB: {}", result_code)};
   }
 
-  const auto db_facade = DbFacade{logger_factory_, cpp::AssumeNn(in_memory_db)};
+  const auto db_facade = NativeDbFacade{logger_factory_, cpp::AssumeNn(in_memory_db)};
   db_facade.EnableForeignKeys();
   db_facade.TurnOffSynchronization();
 
-  return {cpp::AssumeNn(NullableSqliteDbHandle{
-      in_memory_db, detail::SqliteDbCloser{logger_factory_}})};
+  return {cpp::AssumeNn(NullableNativeDbHandle{
+      in_memory_db, detail::NativeDbCloser{logger_factory_}})};
 }
 
-auto DbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
-    -> SqliteDbHandle {
+auto NativeDbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
+    -> NativeDbHandle {
   Expects(!file_path->empty());
 
   CreateParentDirectoryIfNotExists(file_path);
@@ -58,12 +58,12 @@ auto DbHandlesFactory::CreateHandleToFileDb(const FilePath &file_path) const
                                             *file_path, result_code)};
   }
 
-  return {cpp::AssumeNn(NullableSqliteDbHandle{
-      file_db, detail::SqliteDbCloser{logger_factory_}})};
+  return {cpp::AssumeNn(NullableNativeDbHandle{
+      file_db, detail::NativeDbCloser{logger_factory_}})};
 }
 
-auto DbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
-    -> SqliteDbHandle {
+auto NativeDbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
+    -> NativeDbHandle {
   Expects(!file_path->empty());
 
   auto in_memory_db_handle = CreateInMemoryDb();
@@ -75,14 +75,14 @@ auto DbHandlesFactory::LoadDbFromFileToMemory(const FilePath &file_path) const
   }
 
   auto file_db_handle = CreateHandleToFileDb(file_path);
-  DbFacade{logger_factory_, cpp::AssumeNn(in_memory_db_handle.get())}
+  NativeDbFacade{logger_factory_, cpp::AssumeNn(in_memory_db_handle.get())}
       .CopyDataFrom(*file_db_handle);
 
   logger_->LogImportantEvent(fmt::format("Loaded DB from {}", *file_path));
   return in_memory_db_handle;
 }
 
-void DbHandlesFactory::CreateParentDirectoryIfNotExists(
+void NativeDbHandlesFactory::CreateParentDirectoryIfNotExists(
     const FilePath &file_path) const {
   const auto directory_path = std::filesystem::path{*file_path}.parent_path();
 

@@ -14,14 +14,14 @@ namespace stonks::service {
 inline auto CreateSqldbSqliteInjector [[nodiscard]] () {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<sqldb::IDb, sqlite::Db>(),
-      di::BindTypeToFactoryFunction<sqlite::SqliteDbHandle,
-                                    +[](const sqlite::DbHandlesFactory &factory,
+      di::BindTypeToFactoryFunction<sqlite::NativeDbHandle,
+                                    +[](const sqlite::NativeDbHandlesFactory &factory,
                                         const sqlite::FilePath &file_path) {
                                       return factory.LoadDbFromFileToMemory(
                                           file_path);
                                     }>(),
-      di::BindTypeToOtherType<sqlite::SqliteDbHandleVariant,
-                              sqlite::SqliteDbFileHandle>());
+      di::BindTypeToOtherType<sqlite::NativeDbHandleVariant,
+                              sqlite::NativeDbFileHandle>());
 }
 }  // namespace stonks::service
 

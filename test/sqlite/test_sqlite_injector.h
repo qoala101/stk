@@ -10,10 +10,10 @@
 #include "spdlog_logger.h"
 #include "sqldb_i_db.h"
 #include "sqlite_db.h"
-#include "sqlite_db_file_handle.h"
-#include "sqlite_db_handle_variant.h"
-#include "sqlite_db_handles_factory.h"
-#include "sqlite_raw_handles.h"
+#include "sqlite_native_db_file_handle.h"
+#include "sqlite_native_db_handle_variant.h"
+#include "sqlite_native_db_handles_factory.h"
+#include "sqlite_native_handles.h"
 #include "sqlite_types.h"
 
 namespace test::sqlite {
@@ -25,11 +25,11 @@ inline auto Injector [[nodiscard]] () -> auto & {
                                                 stonks::spdlog::Logger>(),
       stonks::di::BindInterfaceToImplementation<stonks::sqldb::IDb,
                                                 stonks::sqlite::Db>(),
-      stonks::di::BindTypeToOtherType<stonks::sqlite::SqliteDbHandleVariant,
-                                      stonks::sqlite::SqliteDbFileHandle>(),
+      stonks::di::BindTypeToOtherType<stonks::sqlite::NativeDbHandleVariant,
+                                      stonks::sqlite::NativeDbFileHandle>(),
       stonks::di::BindTypeToFactoryFunction<
-          stonks::sqlite::SqliteDbHandle,
-          +[](const stonks::sqlite::DbHandlesFactory &factory,
+          stonks::sqlite::NativeDbHandle,
+          +[](const stonks::sqlite::NativeDbHandlesFactory &factory,
               const stonks::sqlite::FilePath &file_path) {
             return factory.LoadDbFromFileToMemory(file_path);
           }>());

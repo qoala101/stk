@@ -15,7 +15,7 @@
 #include "cpp_message_exception.h"
 #include "cpp_typed_struct.h"
 #include "sqldb_types.h"
-#include "sqlite_prepared_statement_facade.h"
+#include "sqlite_native_statement_facade.h"
 #include "sqlite_types.h"
 
 namespace stonks::sqlite {
@@ -48,7 +48,7 @@ auto SelectStatement::Execute(std::vector<sqldb::Value> params) const
     -> sqldb::Rows {
   impl_.BeforeExecution(params);
 
-  const auto &prepared_statement_facade = impl_.GetPreparedStatementFacade();
+  const auto &prepared_statement_facade = impl_.GetNativeStatementFacade();
   auto result_rows = sqldb::Rows{result_columns_};
 
   while (true) {

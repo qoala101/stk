@@ -4,39 +4,39 @@
 #include "cpp_this.h"  // IWYU pragma: keep
 #include "di_factory.h"
 #include "log_i_logger.h"
-#include "sqlite_raw_handles.h"
+#include "sqlite_native_handles.h"
 #include "sqlite_types.h"
 
 namespace stonks::sqlite {
 /**
  * @remark Closes DB connection and writes DB to the file when destroyed.
  */
-class SqliteDbFileHandle {
+class NativeDbFileHandle {
  public:
   /**
    * @param file_path File from which SQLite DB was read
    * and where it's to be written.
    */
-  SqliteDbFileHandle(di::Factory<log::ILogger> logger_factory,
-                     SqliteDbHandle sqlite_db_handle, FilePath file_path);
+  NativeDbFileHandle(di::Factory<log::ILogger> logger_factory,
+                     NativeDbHandle native_db_handle, FilePath file_path);
 
-  SqliteDbFileHandle(const SqliteDbFileHandle &) = delete;
-  SqliteDbFileHandle(SqliteDbFileHandle &&) noexcept = default;
+  NativeDbFileHandle(const NativeDbFileHandle &) = delete;
+  NativeDbFileHandle(NativeDbFileHandle &&) noexcept = default;
 
-  auto operator=(const SqliteDbFileHandle &) -> SqliteDbFileHandle & = delete;
-  auto operator=(SqliteDbFileHandle &&) noexcept
-      -> SqliteDbFileHandle & = default;
+  auto operator=(const NativeDbFileHandle &) -> NativeDbFileHandle & = delete;
+  auto operator=(NativeDbFileHandle &&) noexcept
+      -> NativeDbFileHandle & = default;
 
   /**
    * @brief Closes SQLite DB and writes the changes to file.
    */
-  ~SqliteDbFileHandle();
+  ~NativeDbFileHandle();
 
   /**
    * @brief Gives native SQLite handle.
    */
-  auto GetSqliteDb [[nodiscard]] () const -> const sqlite3 &;
-  auto GetSqliteDb [[nodiscard]] () -> sqlite3 &;
+  auto GetNativeDb [[nodiscard]] () const -> const sqlite3 &;
+  auto GetNativeDb [[nodiscard]] () -> sqlite3 &;
 
   /**
    * @brief Gives file path DB was read from and would be stored to
@@ -45,11 +45,11 @@ class SqliteDbFileHandle {
   auto GetFilePath [[nodiscard]] () const -> const FilePath &;
 
  private:
-  static auto GetSqliteDbImpl
-      [[nodiscard]] (cpp::This<SqliteDbFileHandle> auto &t) -> auto &;
+  static auto GetNativeDbImpl
+      [[nodiscard]] (cpp::This<NativeDbFileHandle> auto &t) -> auto &;
 
   di::Factory<log::ILogger> logger_factory_;
-  SqliteDbHandle sqlite_db_handle_;
+  NativeDbHandle native_db_handle_;
   FilePath file_path_{};
 };
 }  // namespace stonks::sqlite

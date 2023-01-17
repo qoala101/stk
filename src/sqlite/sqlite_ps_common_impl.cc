@@ -10,24 +10,25 @@
 #include "sqldb_types.h"
 
 namespace stonks::sqlite::ps {
-CommonImpl::CommonImpl(PreparedStatementHandle prepared_statement_handle,
+CommonImpl::CommonImpl(cpp::NnSp<NativeDbHandleVariant> native_db_handle,
+                       NativeStatementHandle native_statement_handle,
                        sqldb::Query query, cpp::NnUp<log::ILogger> logger)
-    : prepared_statement_handle_{std::move(prepared_statement_handle)},
+    : native_db_handle_{std::move(native_db_handle)},
+      native_statement_handle_{std::move(native_statement_handle)},
       query_{std::move(query)},
       logger_{std::move(logger)},
-      prepared_statement_facade_{
-          cpp::AssumeNn(&prepared_statement_handle_.GetSqliteStatement())} {}
+      native_statement_facade_{cpp::AssumeNn(native_statement_handle.get())} {}
 
-auto CommonImpl::GetPreparedStatementFacade() const
-    -> const PreparedStatementFacade& {
-  return prepared_statement_facade_;
+auto CommonImpl::GetNativeStatementFacade() const
+    -> const NativeStatementFacade& {
+  return native_statement_facade_;
 }
 
 void CommonImpl::BeforeExecution(
     const std::vector<sqldb::Value>& params) const {
   logger_->LogImportantEvent(fmt::format("Executing query: {}", *query_));
 
-  prepared_statement_facade_.Reset();
-  prepared_statement_facade_.BindParams(params);
+  native_statement_facade_.Reset();
+  native_statement_facade_.BindParams(params);
 }
 }  // namespace stonks::sqlite::ps

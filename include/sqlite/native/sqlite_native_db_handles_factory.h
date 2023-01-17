@@ -4,7 +4,7 @@
 #include "cpp_not_null.h"
 #include "di_factory.h"
 #include "log_i_logger.h"
-#include "sqlite_raw_handles.h"
+#include "sqlite_native_handles.h"
 #include "sqlite_types.h"
 
 /**
@@ -12,20 +12,20 @@
  */
 
 namespace stonks::sqlite {
-class DbHandlesFactory {
+class NativeDbHandlesFactory {
  public:
-  explicit DbHandlesFactory(di::Factory<log::ILogger> logger_factory);
+  explicit NativeDbHandlesFactory(di::Factory<log::ILogger> logger_factory);
 
   /**
    * @brief Creates in-memory SQLite DB.
    */
-  auto CreateInMemoryDb [[nodiscard]] () const -> SqliteDbHandle;
+  auto CreateInMemoryDb [[nodiscard]] () const -> NativeDbHandle;
 
   /**
    * @brief Creates SQLite handle to DB from file.
    */
   auto CreateHandleToFileDb [[nodiscard]] (const FilePath &file_path) const
-      -> SqliteDbHandle;
+      -> NativeDbHandle;
 
   /**
    * @brief Reads SQLite DB from file and copies the contents to the in-memory
@@ -33,7 +33,7 @@ class DbHandlesFactory {
    * @return Handle to in-memory DB.
    */
   auto LoadDbFromFileToMemory [[nodiscard]] (const FilePath &file_path) const
-      -> SqliteDbHandle;
+      -> NativeDbHandle;
 
  private:
   void CreateParentDirectoryIfNotExists(const FilePath &file_path) const;
