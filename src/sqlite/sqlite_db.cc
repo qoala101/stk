@@ -10,7 +10,7 @@
 #include "sqldb_i_update_statement.h"
 #include "sqlite_native_db_facade.h"
 #include "sqlite_native_db_handle_variant.h"
-#include "sqlite_ps_common_impl.h"
+#include "sqlite_prepared_statement_impl.h"
 #include "sqlite_select_statement.h"
 #include "sqlite_update_statement.h"
 
@@ -21,22 +21,23 @@ Db::Db(di::Factory<log::ILogger> logger_factory,
       native_db_handle_{cpp::Share(std::move(native_db_handle))},
       native_db_facade_{logger_factory_} {}
 
-auto Db::PsCommonImplFrom(sqldb::Query query) const {
-  return ps::CommonImpl{native_db_handle_,
-                        native_db_facade_.CreatePreparedStatement(
-                            native_db_handle_->GetNativeDb(), query),
-                        std::move(query), logger_factory_.Create()};
+auto Db::PreparedStatementImplFrom(sqldb::Query query) const {
+  return PreparedStatementImpl{native_db_handle_,
+                               native_db_facade_.CreatePreparedStatement(
+                                   native_db_handle_->GetNativeDb(), query),
+                               std::move(query), logger_factory_.Create()};
 }
 
 auto Db::PrepareStatement(sqldb::SelectQuery query)
     -> cpp::NnUp<sqldb::ISelectStatement> {
   const auto result_definition = query.result_definition;
-  return cpp::MakeNnUp<SelectStatement>(PsCommonImplFrom(std::move(query)),
-                                        result_definition);
+  return cpp::MakeNnUp<SelectStatement>(
+      PreparedStatementImplFrom(std::move(query)), result_definition);
 }
 
 auto Db::PrepareStatement(sqldb::Query query)
     -> cpp::NnUp<sqldb::IUpdateStatement> {
-  return cpp::MakeNnUp<UpdateStatement>(PsCommonImplFrom(std::move(query)));
+  return cpp::MakeNnUp<UpdateStatement>(
+      PreparedStatementImplFrom(std::move(query)));
 }
 }  // namespace stonks::sqlite

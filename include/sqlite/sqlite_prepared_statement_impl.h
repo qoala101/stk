@@ -11,20 +11,20 @@
 #include "sqlite_native_handles.h"
 #include "sqlite_native_statement_facade.h"
 
-namespace stonks::sqlite::ps {
+namespace stonks::sqlite {
 /**
  * @brief Common API and fields for prepared statements implementation.
  * @remark Keeps DB alive while handle is alive.
  */
-class CommonImpl {
+class PreparedStatementImpl {
  public:
   /**
    * @param prepared_statement_handle Handle for SQLite prepared statement
    * produced by parent DB.
    */
-  CommonImpl(cpp::NnSp<NativeDbHandleVariant> native_db_handle,
-             NativeStatementHandle native_statement_handle, sqldb::Query query,
-             cpp::NnUp<log::ILogger> logger);
+  PreparedStatementImpl(cpp::NnSp<NativeDbHandleVariant> native_db_handle,
+                        NativeStatementHandle native_statement_handle,
+                        sqldb::Query query, cpp::NnUp<log::ILogger> logger);
 
   /**
    * @brief Gives the statement.
@@ -42,6 +42,6 @@ class CommonImpl {
   sqldb::Query query_{};
   cpp::NnUp<log::ILogger> logger_;
 };
-}  // namespace stonks::sqlite::ps
+}  // namespace stonks::sqlite
 
 #endif  // STONKS_SQLITE_SQLITE_PS_COMMON_IMPL_H_

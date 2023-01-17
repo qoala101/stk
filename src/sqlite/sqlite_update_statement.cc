@@ -7,11 +7,11 @@
 
 #include "cpp_message_exception.h"
 #include "sqlite_native_statement_facade.h"
-#include "sqlite_ps_common_impl.h"
+#include "sqlite_prepared_statement_impl.h"
 #include "sqlite_types.h"
 
 namespace stonks::sqlite {
-UpdateStatement::UpdateStatement(ps::CommonImpl impl)
+UpdateStatement::UpdateStatement(PreparedStatementImpl impl)
     : impl_{std::move(impl)} {}
 
 void UpdateStatement::Execute(std::vector<sqldb::Value> params) const {

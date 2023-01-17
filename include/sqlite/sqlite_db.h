@@ -36,7 +36,7 @@ class Db : public sqldb::IDb {
   -> cpp::NnUp<sqldb::IUpdateStatement> override;
 
  private:
-  auto PsCommonImplFrom [[nodiscard]] (sqldb::Query query) const;
+  auto PreparedStatementImplFrom [[nodiscard]] (sqldb::Query query) const;
 
   di::Factory<log::ILogger> logger_factory_;
   cpp::NnSp<NativeDbHandleVariant> native_db_handle_;

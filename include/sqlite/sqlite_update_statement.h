@@ -5,7 +5,7 @@
 
 #include "sqldb_i_update_statement.h"
 #include "sqldb_value.h"
-#include "sqlite_ps_common_impl.h"
+#include "sqlite_prepared_statement_impl.h"
 
 namespace stonks::sqlite {
 /**
@@ -13,7 +13,7 @@ namespace stonks::sqlite {
  */
 class UpdateStatement : public sqldb::IUpdateStatement {
  public:
-  explicit UpdateStatement(ps::CommonImpl impl);
+  explicit UpdateStatement(PreparedStatementImpl impl);
 
   /**
    * @copydoc sqldb::IUpdateStatement::Execute
@@ -21,7 +21,7 @@ class UpdateStatement : public sqldb::IUpdateStatement {
   void Execute(std::vector<sqldb::Value> params) const override;
 
  private:
-  ps::CommonImpl impl_;
+  PreparedStatementImpl impl_;
 };
 }  // namespace stonks::sqlite
 

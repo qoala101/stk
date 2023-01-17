@@ -7,7 +7,7 @@
 #include "sqldb_rows.h"
 #include "sqldb_types.h"
 #include "sqldb_value.h"
-#include "sqlite_ps_common_impl.h"
+#include "sqlite_prepared_statement_impl.h"
 
 namespace stonks::sqlite {
 /**
@@ -19,7 +19,7 @@ class SelectStatement : public sqldb::ISelectStatement {
    * @param result_definition Description of rows to be parsed from prepared
    * statement result.
    */
-  SelectStatement(ps::CommonImpl impl,
+  SelectStatement(PreparedStatementImpl impl,
                   const sqldb::ResultDefinition &result_definition);
 
   /**
@@ -29,7 +29,7 @@ class SelectStatement : public sqldb::ISelectStatement {
       -> sqldb::Rows override;
 
  private:
-  ps::CommonImpl impl_;
+  PreparedStatementImpl impl_;
   std::vector<sqldb::Column> result_columns_{};
   std::vector<sqldb::DataTypeVariant> result_types_{};
 };

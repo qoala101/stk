@@ -37,7 +37,7 @@ auto GetTypes [[nodiscard]] (const sqldb::ResultDefinition &result_definition) {
 }  // namespace
 
 SelectStatement::SelectStatement(
-    ps::CommonImpl impl, const sqldb::ResultDefinition &result_definition)
+    PreparedStatementImpl impl, const sqldb::ResultDefinition &result_definition)
     : impl_{std::move(impl)},
       result_columns_{GetColumns(result_definition)},
       result_types_{GetTypes(result_definition)} {

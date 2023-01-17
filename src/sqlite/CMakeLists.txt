@@ -6,7 +6,7 @@ add_library(libsqlite
   native/sqlite_native_handles.cc
   native/sqlite_native_statement_facade.cc
   sqlite_db.cc
-  sqlite_ps_common_impl.cc
+  sqlite_prepared_statement_impl.cc
   sqlite_select_statement.cc
   sqlite_update_statement.cc
 )
