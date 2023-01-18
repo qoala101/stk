@@ -14,7 +14,7 @@
 #include <vector>
 
 #include "cpp_typed_struct.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 
 namespace stonks::sqldb::qb {
 auto Update::Where(WhereCondition condition) -> Update& {
@@ -28,7 +28,7 @@ auto Update::Where(WhereCondition condition) -> Update& {
   return *this;
 }
 
-auto Update::Build() const -> p::Parametrized<Query> {
+auto Update::Build() const -> prm::Parametrized<Query> {
   Expects(!column_values_query_->empty());
 
   return {fmt::format("UPDATE {} SET {}{}", *table_name_, *column_values_query_,

@@ -5,11 +5,11 @@
 
 #include "cpp_not_null.h"
 #include "sqldb_i_select_statement.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_rows.h"
 #include "sqldb_value.h"
 
-namespace stonks::sqldb::p {
+namespace stonks::sqldb::prm {
 /**
  * @brief Validates parameter types before execution.
  */

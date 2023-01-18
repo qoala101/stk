@@ -21,7 +21,7 @@
 #include <variant>
 
 #include "cpp_typed_struct.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_types.h"
 #include "sqldb_types.h"
 
@@ -103,7 +103,7 @@ auto Select::Limit(const QueryValue& value) -> Select& {
   return *this;
 }
 
-auto Select::Build() const -> p::Parametrized<SelectQuery> {
+auto Select::Build() const -> prm::Parametrized<SelectQuery> {
   Expects(!table_name_->empty());
   Expects(!columns_query_->empty());
 

@@ -36,8 +36,8 @@
 #include "sqldb_alias_to_table.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
-#include "sqldb_p_db.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_db.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_condition.h"
 #include "sqldb_qb_delete.h"
@@ -183,7 +183,7 @@ SymbolsDb::SymbolsDb(cpp::meta::ThreadSafe<cpp::NnUp<sqldb::IDb>> sql_db)
         (*sql_db)->CreateTableIfNotExists<sdb::tables::SymbolInfo>();
         (*sql_db)->CreateTableIfNotExists<sdb::tables::SymbolPriceRecord>();
 
-        auto parametrized_db = sqldb::p::Db{std::move(sql_db)};
+        auto parametrized_db = sqldb::prm::Db{std::move(sql_db)};
 
         return PreparedStatements{
             .select_assets = parametrized_db.PrepareStatement(

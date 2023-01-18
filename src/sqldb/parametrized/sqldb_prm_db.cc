@@ -1,4 +1,4 @@
-#include "sqldb_p_db.h"
+#include "sqldb_prm_db.h"
 
 #include <memory>
 #include <not_null.hpp>
@@ -6,10 +6,10 @@
 
 #include "cpp_not_null.h"
 #include "sqldb_i_db.h"
-#include "sqldb_p_select_statement.h"
-#include "sqldb_p_update_statement.h"
+#include "sqldb_prm_select_statement.h"
+#include "sqldb_prm_update_statement.h"
 
-namespace stonks::sqldb::p {
+namespace stonks::sqldb::prm {
 Db::Db(cpp::NnUp<IDb> db) : db_{std::move(db)} {}
 
 auto Db::PrepareStatement(Parametrized<SelectQuery> query)

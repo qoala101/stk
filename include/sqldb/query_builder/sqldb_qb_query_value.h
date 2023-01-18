@@ -5,7 +5,7 @@
 
 #include "cpp_meta_template_constructor.h"
 #include "sqldb_concepts.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_condition.h"
 #include "sqldb_qb_query_wrapper.h"
 #include "sqldb_types.h"
@@ -26,13 +26,13 @@ class QueryValue : public QueryWrapper {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   QueryValue(const Value &value);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  QueryValue(const p::QueryParam &param);
+  QueryValue(const prm::QueryParam &param);
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   QueryValue(const Select &query_builder);
 
  private:
   explicit QueryValue(std::string column_name);
-  explicit QueryValue(const p::Parametrized<SelectQuery> &query);
+  explicit QueryValue(const prm::Parametrized<SelectQuery> &query);
 
   friend auto operator==(const QueryValue &left, const QueryValue &right)
       -> Condition;

@@ -9,7 +9,7 @@
 #include "cpp_meta_template_constructor.h"
 #include "cpp_type_list.h"
 #include "sqldb_concepts.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_columns_traits.h"
 #include "sqldb_qb_query_value.h"
 #include "sqldb_qb_types.h"
@@ -81,7 +81,7 @@ class Select {
   /**
    * @brief Builds the query.
    */
-  auto Build [[nodiscard]] () const -> p::Parametrized<SelectQuery>;
+  auto Build [[nodiscard]] () const -> prm::Parametrized<SelectQuery>;
 
  private:
   Select(const std::vector<SelectColumnData> &select_columns_data,
@@ -102,9 +102,9 @@ class Select {
   Query distinct_query_{};
   Query columns_query_{};
   Query order_by_query_{};
-  p::Parametrized<Query> where_query_{};
-  p::Parametrized<Query> limit_query_{};
-  p::Parametrized<Query> join_query_{};
+  prm::Parametrized<Query> where_query_{};
+  prm::Parametrized<Query> limit_query_{};
+  prm::Parametrized<Query> join_query_{};
   ResultDefinition result_definition_{};
 };
 }  // namespace stonks::sqldb::qb

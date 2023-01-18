@@ -21,7 +21,7 @@ auto Delete::Where(WhereCondition condition) -> Delete& {
   return *this;
 }
 
-auto Delete::Build() const -> p::Parametrized<Query> {
+auto Delete::Build() const -> prm::Parametrized<Query> {
   return {fmt::format("DELETE FROM {}{}", *table_name_, *where_query_),
           where_query_.params};
 }

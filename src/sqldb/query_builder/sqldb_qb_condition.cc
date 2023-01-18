@@ -6,11 +6,11 @@
 #include <utility>
 
 #include "cpp_typed_struct.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_query_wrapper.h"
 
 namespace stonks::sqldb::qb {
-Condition::Condition(p::Parametrized<Query> query)
+Condition::Condition(prm::Parametrized<Query> query)
     : QueryWrapper{std::move(query)} {}
 
 auto Condition::operator&&(const Condition &other) -> Condition & {

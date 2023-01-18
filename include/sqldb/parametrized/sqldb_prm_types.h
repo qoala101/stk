@@ -7,7 +7,7 @@
 #include "cpp_typed_struct.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::p {
+namespace stonks::sqldb::prm {
 /**
  * @brief Query parameter to be substituted with value
  * when executing the statement.

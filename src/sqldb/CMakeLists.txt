@@ -1,9 +1,9 @@
 add_library(libsqldb
-  parametrized/sqldb_p_common.cc
-  parametrized/sqldb_p_db.cc
-  parametrized/sqldb_p_select_statement.cc
-  parametrized/sqldb_p_types.cc
-  parametrized/sqldb_p_update_statement.cc
+  parametrized/sqldb_prm_common.cc
+  parametrized/sqldb_prm_db.cc
+  parametrized/sqldb_prm_select_statement.cc
+  parametrized/sqldb_prm_types.cc
+  parametrized/sqldb_prm_update_statement.cc
   query_builder/sqldb_qb_common.cc
   query_builder/sqldb_qb_condition.cc
   query_builder/sqldb_qb_create.cc

@@ -1,4 +1,4 @@
-#include "sqldb_p_common.h"
+#include "sqldb_prm_common.h"
 
 #include <range/v3/algorithm/equal.hpp>
 #include <range/v3/functional/bind_back.hpp>
@@ -13,7 +13,7 @@
 #include "cpp_typed_struct.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::p {
+namespace stonks::sqldb::prm {
 auto AreParamsValid(const std::vector<Value> &values,
                     const std::vector<QueryParam> &params) -> bool {
   return (values.size() == params.size()) &&

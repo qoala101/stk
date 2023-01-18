@@ -31,7 +31,7 @@
 #include "service_create_network_restsdk_injector.h"
 #include "service_create_server_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
-#include "service_sdu_traits.h"  // IWYU pragma: keep
+#include "service_sdbu_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
 #include "service_symbols_db.h"
 #include "service_symbols_db_updater.h"

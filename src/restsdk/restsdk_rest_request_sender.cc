@@ -173,6 +173,12 @@ auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
 }
 
 void RestRequestSender::ConnectClientTo(const web::uri &authority) {
+  fmt::print("null: {}\n", http_client_ == nullptr);
+
+  if (http_client_ != nullptr) {
+    fmt::print("authority: {}\n", http_client_->base_uri().authority().to_string());
+  }
+
   if ((http_client_ == nullptr) ||
       (http_client_->base_uri().authority() != authority)) {
     http_client_ = cpp::MakeUp<web::http::client::http_client>(authority);

@@ -24,11 +24,11 @@
 #include "service_create_network_restsdk_injector.h"
 #include "service_create_server_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
-#include "service_sdu_traits.h"  // IWYU pragma: keep
+#include "service_sdbu_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
 #include "service_symbols_db.h"
 
-namespace stonks::service::sdu {
+namespace stonks::service::sdbu {
 void Main(int argc, const char *const *argv) {
   auto options = cli::Options();
 
@@ -79,8 +79,8 @@ void Main(int argc, const char *const *argv) {
         auto_injectable, auto_injectable);
   });
 }
-}  // namespace stonks::service::sdu
+}  // namespace stonks::service::sdbu
 
 auto main(int argc, const char *const *argv) -> int {
-  stonks::service::sdu::Main(argc, argv);
+  stonks::service::sdbu::Main(argc, argv);
 }

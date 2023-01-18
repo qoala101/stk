@@ -7,7 +7,7 @@
 
 #include "cpp_lazy.h"
 #include "sqldb_concepts.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_columns_traits.h"
 #include "sqldb_qb_query_value.h"
 #include "sqldb_qb_types.h"
@@ -47,7 +47,7 @@ class Insert {
   /**
    * @brief Builds the query.
    */
-  auto Build [[nodiscard]] () const -> p::Parametrized<Query>;
+  auto Build [[nodiscard]] () const -> prm::Parametrized<Query>;
 
  private:
   auto Value [[nodiscard]] (std::string_view column_name,
@@ -62,7 +62,7 @@ class Insert {
   bool insert_all_{};
   Query table_name_{};
   Query columns_query_{};
-  p::Parametrized<Query> values_query_{};
+  prm::Parametrized<Query> values_query_{};
 };
 }  // namespace stonks::sqldb::qb
 

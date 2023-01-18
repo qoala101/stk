@@ -6,10 +6,10 @@
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::p {
+namespace stonks::sqldb::prm {
 /**
  * @brief Wrapper over DB which checks parameters of prepared statements.
  */

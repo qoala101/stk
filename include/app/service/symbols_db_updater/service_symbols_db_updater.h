@@ -7,7 +7,7 @@
 
 #include "core_i_symbols_db_updater.h"
 #include "service_client_base.h"
-#include "service_sdu_traits.h"  // IWYU pragma: keep
+#include "service_sdbu_traits.h"  // IWYU pragma: keep
 
 namespace stonks::service {
 /**

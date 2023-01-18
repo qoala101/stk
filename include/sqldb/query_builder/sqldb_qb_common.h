@@ -3,7 +3,7 @@
 
 #include "cpp_meta_template_constructor.h"
 #include "sqldb_concepts.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_condition.h"
 #include "sqldb_qb_query_value.h"
 #include "sqldb_qb_wrapped_conditions.h"
@@ -33,7 +33,7 @@ auto Column [[nodiscard]] () -> QueryValue {
  */
 template <SupportedDataType T>
 auto ParamOfType [[nodiscard]] () -> QueryValue {
-  return p::QueryParam{DataType<T>{}};
+  return prm::QueryParam{DataType<T>{}};
 }
 
 /**

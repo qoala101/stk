@@ -3,7 +3,7 @@
 
 #include <string_view>
 
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_query_wrapper.h"
 #include "sqldb_types.h"
 
@@ -16,7 +16,7 @@ class Condition : public QueryWrapper {
   /**
    * @param query Initial condition query.
    */
-  explicit Condition(p::Parametrized<Query> query);
+  explicit Condition(prm::Parametrized<Query> query);
 
   /**
    * @brief Adds AND-condition to the query.

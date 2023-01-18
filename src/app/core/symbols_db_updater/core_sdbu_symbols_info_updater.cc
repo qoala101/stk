@@ -51,7 +51,7 @@ SymbolsInfoUpdater::SymbolsInfoUpdater(
       update_symbols_info_interval_{update_symbols_info_interval} {}
 
 auto SymbolsInfoUpdater::GetAndUpdateSymbolsInfo() -> cppcoro::task<> {
-  const auto db_is_updated = (co_await symbols_db_->SelectAssets()).empty();
+  const auto db_is_updated = !(co_await symbols_db_->SelectAssets()).empty();
   const auto time_since_last_update = absl::Now() - last_update_time_;
   const auto time_for_planned_update =
       time_since_last_update >= update_symbols_info_interval_;

@@ -6,7 +6,7 @@
 
 #include "cpp_meta_template_constructor.h"
 #include "sqldb_concepts.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_query_value.h"
 #include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_types.h"
@@ -40,7 +40,7 @@ class Update {
   /**
    * @brief Builds the query.
    */
-  auto Build [[nodiscard]] () const -> p::Parametrized<Query>;
+  auto Build [[nodiscard]] () const -> prm::Parametrized<Query>;
 
  private:
   explicit Update(std::string table_name);
@@ -49,8 +49,8 @@ class Update {
   -> Update&;
 
   Query table_name_{};
-  p::Parametrized<Query> column_values_query_{};
-  p::Parametrized<Query> where_query_{};
+  prm::Parametrized<Query> column_values_query_{};
+  prm::Parametrized<Query> where_query_{};
 };
 }  // namespace stonks::sqldb::qb
 

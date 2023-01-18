@@ -1,4 +1,4 @@
-#include "sqldb_p_select_statement.h"
+#include "sqldb_prm_select_statement.h"
 
 #include <gsl/assert>
 #include <utility>
@@ -6,9 +6,9 @@
 
 #include "cpp_not_null.h"
 #include "sqldb_i_select_statement.h"
-#include "sqldb_p_common.h"
+#include "sqldb_prm_common.h"
 
-namespace stonks::sqldb::p {
+namespace stonks::sqldb::prm {
 SelectStatement::SelectStatement(cpp::NnUp<ISelectStatement> statement,
                                  std::vector<QueryParam> params)
     : statement_{std::move(statement)}, params_{std::move(params)} {}

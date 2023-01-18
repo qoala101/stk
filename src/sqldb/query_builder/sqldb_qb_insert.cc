@@ -8,12 +8,12 @@
 #include <utility>
 
 #include "cpp_typed_struct.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 
 namespace stonks::sqldb::qb {
 Insert::Insert(All /*unused*/) : insert_all_{true} {}
 
-auto Insert::Build() const -> p::Parametrized<Query> {
+auto Insert::Build() const -> prm::Parametrized<Query> {
   Expects(!table_name_->empty());
   Expects(!columns_query_->empty());
   Expects(!values_query_->empty());
@@ -63,7 +63,7 @@ auto Insert::Into(std::string table_name,
     Expects(columns_query_->empty());
     Expects(values_query_->empty());
 
-    const auto param = QueryValue{p::QueryParam{}};
+    const auto param = QueryValue{prm::QueryParam{}};
 
     for (const auto& column_name : *column_names) {
       ValueImpl(column_name, param);

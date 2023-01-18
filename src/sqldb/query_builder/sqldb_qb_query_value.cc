@@ -17,7 +17,7 @@
 #include <vector>
 
 #include "cpp_typed_struct.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_query_wrapper.h"
 #include "sqldb_qb_select.h"
 
@@ -58,7 +58,7 @@ auto ToString [[nodiscard]] (const Value &value) {
 
 QueryValue::QueryValue(const Value &value) : QueryWrapper{{ToString(value)}} {}
 
-QueryValue::QueryValue(const p::QueryParam &param)
+QueryValue::QueryValue(const prm::QueryParam &param)
     : QueryWrapper{{"?", {{{param}}}}} {}
 
 QueryValue::QueryValue(const Select &query_builder)
@@ -67,7 +67,7 @@ QueryValue::QueryValue(const Select &query_builder)
 QueryValue::QueryValue(std::string column_name)
     : QueryWrapper{{std::move(column_name)}} {}
 
-QueryValue::QueryValue(const p::Parametrized<SelectQuery> &query)
+QueryValue::QueryValue(const prm::Parametrized<SelectQuery> &query)
     : QueryWrapper{{fmt::format("({})", *query), query.params}} {}
 
 auto operator==(const QueryValue &left, const QueryValue &right) -> Condition {

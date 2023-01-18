@@ -3,7 +3,7 @@
 #include <fmt/core.h>
 
 #include "cpp_typed_struct.h"
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_query_wrapper.h"
 #include "sqldb_types.h"
 
@@ -12,7 +12,7 @@ WrappedCondition::WrappedCondition(const Condition &condition,
                                    std::string_view format)
     : QueryWrapper{[&condition, format]() {
         const auto &query = condition.GetQuery();
-        return p::Parametrized<Query>{fmt::format(fmt::runtime(format), *query),
+        return prm::Parametrized<Query>{fmt::format(fmt::runtime(format), *query),
                                       query.params};
       }()} {}
 

@@ -5,7 +5,7 @@
 
 #include "cpp_meta_template_constructor.h"
 #include "sqldb_concepts.h"  // IWYU pragma: keep
-#include "sqldb_p_types.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_types.h"
 
@@ -30,13 +30,13 @@ class Delete {
   /**
    * @brief Builds the query.
    */
-  auto Build [[nodiscard]] () const -> p::Parametrized<Query>;
+  auto Build [[nodiscard]] () const -> prm::Parametrized<Query>;
 
  private:
   explicit Delete(std::string table_name);
 
   Query table_name_{};
-  p::Parametrized<Query> where_query_{};
+  prm::Parametrized<Query> where_query_{};
 };
 }  // namespace stonks::sqldb::qb
 

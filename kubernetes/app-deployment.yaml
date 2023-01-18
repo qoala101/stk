@@ -10,7 +10,7 @@ spec:
       port: 30001
     - name: sdb-port
       port: 30000
-    - name: sdu-port
+    - name: sdbu-port
       port: 30003
 
 ---
