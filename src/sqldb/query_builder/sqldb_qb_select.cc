@@ -40,7 +40,37 @@ constexpr auto magic_enum::customize::enum_name(
 }
 
 namespace stonks::sqldb::qb {
-Select::Select(All /*unused*/) : select_all_{true}, columns_query_{"*"} {
+namespace {
+auto DistinctQueryFrom [[nodiscard]] (bool distinct) {
+  return distinct ? "DISTINCT " : "";
+}
+
+auto ColumnsQueryFrom
+    [[nodiscard]] (const std::vector<SelectColumnData>& select_columns_data) {
+  Expects(!select_columns_data.empty());
+
+  return absl::StrJoin(
+      select_columns_data | ranges::views::transform([](const auto& column) {
+        return column.full_name;
+      }),
+      ", ");
+}
+
+auto ResultDefinitionFrom
+    [[nodiscard]] (const std::vector<SelectColumnData>& select_columns_data) {
+  Expects(!select_columns_data.empty());
+
+  return select_columns_data | ranges::views::transform([](const auto& column) {
+           return ColumnType{.column = {column.name}, .type = column.type};
+         }) |
+         ranges::to_vector;
+}
+}  // namespace
+
+Select::Select(All /*unused*/, bool distinct)
+    : select_all_{true},
+      distinct_query_{DistinctQueryFrom(distinct)},
+      columns_query_{"*"} {
   Ensures(select_all_);
   Ensures(!columns_query_->empty());
 }
@@ -77,9 +107,9 @@ auto Select::Build() const -> p::Parametrized<SelectQuery> {
   Expects(!table_name_->empty());
   Expects(!columns_query_->empty());
 
-  auto query =
-      fmt::format("SELECT {} FROM {}{}{}{}{}", *columns_query_, *table_name_,
-                  *join_query_, *where_query_, *order_by_query_, *limit_query_);
+  auto query = fmt::format("SELECT {}{} FROM {}{}{}{}{}", *distinct_query_,
+                           *columns_query_, *table_name_, *join_query_,
+                           *where_query_, *order_by_query_, *limit_query_);
   auto params = ranges::views::concat(*join_query_.params, *where_query_.params,
                                       *limit_query_.params) |
                 ranges::to_vector;
@@ -87,10 +117,11 @@ auto Select::Build() const -> p::Parametrized<SelectQuery> {
   return {{std::move(query), result_definition_}, std::move(params)};
 }
 
-Select::Select(const std::vector<SelectColumnData>& select_columns_data) {
-  SetColumnsQueryFrom(select_columns_data);
-  SetResultDefinitionFrom(select_columns_data);
-}
+Select::Select(const std::vector<SelectColumnData>& select_columns_data,
+               bool distinct)
+    : distinct_query_{DistinctQueryFrom(distinct)},
+      columns_query_{ColumnsQueryFrom(select_columns_data)},
+      result_definition_{ResultDefinitionFrom(select_columns_data)} {}
 
 auto Select::From(std::string table_name,
                   cpp::Lazy<std::vector<SelectColumnData>> select_columns_data)
@@ -100,7 +131,7 @@ auto Select::From(std::string table_name,
   *table_name_ = std::move(table_name);
 
   if (select_all_) {
-    SetResultDefinitionFrom(*select_columns_data);
+    *result_definition_ = ResultDefinitionFrom(*select_columns_data);
   }
 
   Ensures(!table_name_->empty());
@@ -130,31 +161,5 @@ auto Select::OrderBy(std::string_view column_name, Order order) -> Select& {
       fmt::format(" {} {}", column_name, magic_enum::enum_name(order));
   Ensures(!order_by_query_->empty());
   return *this;
-}
-
-void Select::SetColumnsQueryFrom(
-    const std::vector<SelectColumnData>& select_columns_data) {
-  Expects(!select_columns_data.empty());
-
-  *columns_query_ = absl::StrJoin(
-      select_columns_data | ranges::views::transform([](const auto& column) {
-        return column.full_name;
-      }),
-      ", ");
-
-  Ensures(!columns_query_->empty());
-}
-
-void Select::SetResultDefinitionFrom(
-    const std::vector<SelectColumnData>& select_columns_data) {
-  Expects(!select_columns_data.empty());
-
-  *result_definition_ =
-      select_columns_data | ranges::views::transform([](const auto& column) {
-        return ColumnType{.column = {column.name}, .type = column.type};
-      }) |
-      ranges::to_vector;
-
-  Ensures(!result_definition_->empty());
 }
 }  // namespace stonks::sqldb::qb

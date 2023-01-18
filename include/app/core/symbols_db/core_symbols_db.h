@@ -6,12 +6,11 @@
 #include <cppcoro/task.hpp>
 #include <vector>
 
-#include "cpp_meta_thread_safe.h"
 #include "core_i_symbols_db.h"
 #include "core_types.h"
+#include "cpp_meta_thread_safe.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
-#include "cpp_smart_pointers.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
@@ -38,6 +37,12 @@ class SymbolsDb : public ISymbolsDb {
    */
   auto UpdateAssets [[nodiscard]] (std::vector<Asset> assets)
   -> cppcoro::task<> override;
+
+  /**
+   * @copydoc ISymbolsDb::SelectSymbolsWithPriceRecords
+   */
+  auto SelectSymbolsWithPriceRecords [[nodiscard]] () const
+      -> cppcoro::task<std::vector<Symbol>> override;
 
   /**
    * @copydoc ISymbolsDb::SelectSymbolInfo
@@ -94,6 +99,8 @@ class SymbolsDb : public ISymbolsDb {
     cpp::NnUp<sqldb::ISelectStatement> select_assets;
     cpp::NnUp<sqldb::IUpdateStatement> insert_asset;
     cpp::NnUp<sqldb::IUpdateStatement> delete_asset;
+
+    cpp::NnUp<sqldb::ISelectStatement> select_symbols_with_price_records;
 
     cpp::NnUp<sqldb::ISelectStatement> select_symbol_info;
     cpp::NnUp<sqldb::ISelectStatement> select_symbols_info;

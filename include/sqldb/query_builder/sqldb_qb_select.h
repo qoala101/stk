@@ -24,16 +24,17 @@ class Select {
  public:
   /**
    * @brief Query would select specified columns.
+   * @param distinct Whether to select unique values.
    */
   template <ColumnDefinition... Columns>
-  explicit Select(cpp::meta::TemplateConstructor<Columns...> /*unused*/)
-      : Select{
-            ColumnsTraits<cpp::TypeList<Columns...>>::GetSelectColumnsData()} {}
+  Select(cpp::meta::TemplateConstructor<Columns...> /*unused*/, bool distinct)
+      : Select{ColumnsTraits<cpp::TypeList<Columns...>>::GetSelectColumnsData(),
+               distinct} {}
 
   /**
    * @brief Query would select all table columns.
    */
-  explicit Select(All);
+  explicit Select(All, bool distinct);
 
   /**
    * @brief Query would result in 1 if result has any columns.
@@ -83,7 +84,8 @@ class Select {
   auto Build [[nodiscard]] () const -> p::Parametrized<SelectQuery>;
 
  private:
-  explicit Select(const std::vector<SelectColumnData> &select_columns_data);
+  Select(const std::vector<SelectColumnData> &select_columns_data,
+         bool distinct);
 
   auto From [[nodiscard]] (
       std::string table_name,
@@ -95,14 +97,9 @@ class Select {
   auto OrderBy [[nodiscard]] (std::string_view column_name,
                               Order order = Order::kAscending) -> Select &;
 
-  void SetColumnsQueryFrom(
-      const std::vector<SelectColumnData> &select_columns_data);
-
-  void SetResultDefinitionFrom(
-      const std::vector<SelectColumnData> &select_columns_data);
-
   bool select_all_{};
   Query table_name_{};
+  Query distinct_query_{};
   Query columns_query_{};
   Query order_by_query_{};
   p::Parametrized<Query> where_query_{};

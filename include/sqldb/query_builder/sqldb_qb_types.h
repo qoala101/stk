@@ -29,6 +29,11 @@ struct All {};
  */
 struct One {};
 
+/**
+ * @brief Tag for selecting unique values.
+ */
+struct Distinct {};
+
 template <typename Target, typename Alias>
 struct As;
 

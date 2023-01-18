@@ -202,4 +202,11 @@ TEST(AppSymbolsDb, SelectOrderedAndLimited) {
     EXPECT_GT(new_price_records[0].time, old_price_records[0].time);
   }());
 }
+
+TEST(AppSymbolsDb, SelectSymbolsWithPriceRecords) {
+  cppcoro::sync_wait([]() -> cppcoro::task<> {
+    const auto symbols = co_await symbols_db.SelectSymbolsWithPriceRecords();
+    EXPECT_EQ(symbols.size(), 2);
+  }());
+}
 }  // namespace

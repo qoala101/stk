@@ -32,6 +32,12 @@ class ISymbolsDb {
   -> cppcoro::task<> = 0;
 
   /**
+   * @brief Selects symbols which have price records.
+   */
+  virtual auto SelectSymbolsWithPriceRecords [[nodiscard]] () const
+      -> cppcoro::task<std::vector<Symbol>> = 0;
+
+  /**
    * @brief Selects symbol info.
    * @return Nullopt if symbol doesn't exist.
    */

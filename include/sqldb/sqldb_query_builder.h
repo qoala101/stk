@@ -31,14 +31,16 @@ auto DropTable [[nodiscard]] () {
  * @brief Builds query which selects specified columns.
  */
 template <ColumnDefinition... Columns>
-auto Select [[nodiscard]] () {
-  return qb::Select{cpp::meta::TemplateConstructor<Columns...>{}};
+auto Select [[nodiscard]] (cpp::Opt<qb::Distinct> distinct = std::nullopt) {
+  return qb::Select{cpp::meta::TemplateConstructor<Columns...>{},
+                    distinct.has_value()};
 }
 
 /**
  * @brief Builds query which selects all columns from table.
  */
-auto SelectAll [[nodiscard]] () -> qb::Select;
+auto SelectAll [[nodiscard]] (cpp::Opt<qb::Distinct> distinct = std::nullopt)
+-> qb::Select;
 
 /**
  * @brief Builds special query which is used to check existence of the

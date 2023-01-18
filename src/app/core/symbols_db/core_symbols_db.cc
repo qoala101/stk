@@ -205,6 +205,17 @@ SymbolsDb::SymbolsDb(cpp::meta::ThreadSafe<cpp::NnUp<sqldb::IDb>> sql_db)
                         sqldb::qb::ParamForColumn<sdb::tables::Asset::name>())
                     .Build()),
 
+            .select_symbols_with_price_records =
+                parametrized_db.PrepareStatement(
+                    sqldb::query_builder::Select<sdb::tables::SymbolInfo::name>(
+                        sqldb::qb::Distinct{})
+                        .From<sdb::tables::SymbolPriceRecord>()
+                        .Join<sdb::tables::SymbolInfo>(sqldb::qb::On(
+                            sqldb::qb::Column<
+                                sdb::tables::SymbolPriceRecord::symbol_id>() ==
+                            sqldb::qb::Column<sdb::tables::SymbolInfo::id>()))
+                        .Build()),
+
             .select_symbol_info = parametrized_db.PrepareStatement(
                 SelectSymbolsInfoBuilder()
                     .Where(sqldb::qb::Column<sdb::tables::SymbolInfo::name>() ==
@@ -393,6 +404,16 @@ auto SymbolsDb::UpdateAssets(std::vector<Asset> assets) -> cppcoro::task<> {
       std::bind_front(&SymbolsDb::DeleteAsset, this), &DefaultLess<Asset>,
       &DefaultEquals<Asset>);
   co_return;
+}
+
+auto SymbolsDb::SelectSymbolsWithPriceRecords() const
+    -> cppcoro::task<std::vector<Symbol>> {
+  auto rows = prepared_statements_.select_symbols_with_price_records->Execute();
+  auto &names = rows.GetColumnValues<sdb::tables::SymbolInfo::name>();
+
+  co_return names | ranges::views::transform([](auto &name) {
+    return ValueAs<Symbol>(std::move(name));
+  }) | ranges::to_vector;
 }
 
 auto SymbolsDb::SelectSymbolInfo(Symbol symbol) const

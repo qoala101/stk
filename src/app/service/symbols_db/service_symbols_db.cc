@@ -26,6 +26,11 @@ auto SymbolsDb::UpdateAssets(std::vector<core::Asset> assets)
   co_await Call<&Target::UpdateAssets>(std::move(assets));
 }
 
+auto SymbolsDb::SelectSymbolsWithPriceRecords() const
+    -> cppcoro::task<std::vector<core::Symbol>> {
+  co_await Call<&Target::SelectSymbolsWithPriceRecords>();
+}
+
 auto SymbolsDb::SelectSymbolInfo(core::Symbol symbol) const
     -> cppcoro::task<cpp::Opt<core::SymbolInfo>> {
   co_return co_await Call<&Target::SelectSymbolInfo>(std::move(symbol));
