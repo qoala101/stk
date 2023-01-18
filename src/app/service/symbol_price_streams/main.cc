@@ -33,7 +33,6 @@
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_sdu_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
-#include "service_sps_traits.h"  // IWYU pragma: keep
 #include "service_symbols_db.h"
 #include "service_symbols_db_updater.h"
 
@@ -41,7 +40,6 @@ namespace stonks::service::sps {
 void Main(int argc, const char *const *argv) {
   auto options = cli::Options{};
 
-  const auto server_options = ServerOptions<core::SymbolPriceStreams>{options};
   const auto symbols_db_client_options =
       ClientOptions<core::ISymbolsDb>{options};
   const auto symbols_db_updater_client_options =
@@ -55,7 +53,6 @@ void Main(int argc, const char *const *argv) {
   const auto injector = cpp::Share(di::MakeInjector(
       CreateNetworkRestsdkInjector(), CreateLogSpdlogInjector(),
 
-      CreateServerInjector<core::SymbolPriceStreams>(server_options),
       CreateClientInjector<SymbolsDb>(symbols_db_client_options),
       CreateClientInjector<SymbolsDbUpdater>(symbols_db_updater_client_options),
 
@@ -64,13 +61,11 @@ void Main(int argc, const char *const *argv) {
   app.Run([&injector, &symbols]() {
     auto auto_injectable = di::AutoInjectable{injector};
 
-    return networkx::MakeServerFor<core::SymbolPriceStreams>(
-        cpp::MakeNnUp<core::SymbolPriceStreams>(core::SymbolPriceStreams{
-            *symbols | ranges::views::transform([](auto &symbol) {
-              return core::Symbol{std::move(symbol)};
-            }) | ranges::to_vector,
-            auto_injectable, auto_injectable}),
-        auto_injectable, auto_injectable);
+    return core::SymbolPriceStreams{
+        *symbols | ranges::views::transform([](auto &symbol) {
+          return core::Symbol{std::move(symbol)};
+        }) | ranges::to_vector,
+        auto_injectable, auto_injectable};
   });
 }
 }  // namespace stonks::service::sps

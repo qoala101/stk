@@ -25,14 +25,7 @@ class SymbolPriceStreams {
                      absl::Duration reattempt_interval,
                      sps::StreamFactory stream_factory);
 
-  /**
-   * @brief Gives symbols for which prices are streamed.
-   */
-  auto GetStreamedSymbols [[nodiscard]] () const
-      -> cppcoro::task<std::vector<Symbol>>;
-
  private:
-  std::vector<Symbol> symbols_{};
   std::vector<sps::StreamHandle> stream_handles_{};
 };
 }  // namespace stonks::core
