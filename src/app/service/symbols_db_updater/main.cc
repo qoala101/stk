@@ -38,6 +38,9 @@ void Main(int argc, const char *const *argv) {
   const auto update_symbols_info_interval =
       options.AddOption("--update_symbols_info_interval",
                         absl::ToInt64Milliseconds(absl::Hours(1)));
+  const auto check_if_update_required_interval =
+      options.AddOption("--check_if_update_required_interval",
+                        absl::ToInt64Milliseconds(absl::Minutes(1)));
   const auto delete_old_prices_interval =
       options.AddOption("--delete_old_prices_interval",
                         absl::ToInt64Milliseconds(absl::Hours(1)));
@@ -56,8 +59,8 @@ void Main(int argc, const char *const *argv) {
       di::BindValueTypeToValue(absl::Milliseconds(*keep_prices_for_duration))));
 
   app.Run([&injector, &update_symbols_info_interval,
-           &delete_old_prices_interval, &keep_prices_for_duration,
-           &reattempt_interval]() {
+           &check_if_update_required_interval, &delete_old_prices_interval,
+           &keep_prices_for_duration, &reattempt_interval]() {
     auto auto_injectable = di::AutoInjectable{injector};
 
     return networkx::MakeServerFor<core::ISymbolsDbUpdater>(
@@ -66,6 +69,8 @@ void Main(int argc, const char *const *argv) {
              .binance_api = auto_injectable,
              .update_symbols_info_interval =
                  absl::Milliseconds(*update_symbols_info_interval),
+             .check_if_update_required_interval =
+                 absl::Milliseconds(*check_if_update_required_interval),
              .delete_old_prices_interval =
                  absl::Milliseconds(*delete_old_prices_interval),
              .keep_prices_for_duration =

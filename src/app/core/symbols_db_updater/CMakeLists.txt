@@ -25,6 +25,7 @@ target_link_libraries(libcore_symbols_db_updater
   PRIVATE cppcoro::cppcoro
   PRIVATE di::di
   PRIVATE function2::function2
+  PRIVATE Microsoft.GSL::GSL
   PRIVATE NotNull
   PRIVATE polymorphic_value::polymorphic_value
   PRIVATE range-v3::range-v3

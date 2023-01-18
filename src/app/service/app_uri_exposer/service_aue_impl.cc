@@ -4,6 +4,7 @@
 
 #include <coroutine>
 #include <exception>
+#include <gsl/assert>
 #include <not_null.hpp>
 #include <string>
 #include <utility>
@@ -51,5 +52,6 @@ auto Impl::ExposeNgrokUriIfChanged() -> cppcoro::task<> {
       fmt::format("Updated public app URI {}", *new_uri));
 
   last_exposed_uri_ = std::move(new_uri);
+  Ensures(!last_exposed_uri_->empty());
 }
 }  // namespace stonks::service::aue

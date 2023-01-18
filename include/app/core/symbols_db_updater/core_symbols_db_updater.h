@@ -6,9 +6,9 @@
 #include <cppcoro/task.hpp>
 
 #include "binance_api.h"
-#include "cpp_meta_thread_safe.h"
 #include "core_i_symbols_db.h"
 #include "core_i_symbols_db_updater.h"
+#include "cpp_meta_thread_safe.h"
 #include "cpp_not_null.h"
 #include "cpp_timer.h"
 
@@ -21,8 +21,27 @@ class SymbolsDbUpdater : public ISymbolsDbUpdater {
   struct ConstructorArgs {
     cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db;
     binance::BinanceApi binance_api;
+
+    /**
+     * @brief Default interval at which symbols info is updated on DB.
+     */
     absl::Duration update_symbols_info_interval{};
+
+    /**
+     * @brief Interval at which DB would be checked whether it is in updated
+     * state. If not, updates would happen immediately instead of waiting
+     * for specified intervals.
+     */
+    absl::Duration check_if_update_required_interval{};
+
+    /**
+     * @brief Default interval at which old prices are deleted from DB.
+     */
     absl::Duration delete_old_prices_interval{};
+
+    /**
+     * @brief Maximum lifetime of prices.
+     */
     absl::Duration keep_prices_for_duration{};
 
     /**

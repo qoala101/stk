@@ -28,6 +28,7 @@ target_link_libraries(service_app_uri_exposer
   PRIVATE di::di
   PRIVATE fmt::fmt
   PRIVATE function2::function2
+  PRIVATE Microsoft.GSL::GSL
   PRIVATE NotNull
   PRIVATE polymorphic_value::polymorphic_value
 )

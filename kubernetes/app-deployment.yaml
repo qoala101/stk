@@ -114,6 +114,7 @@ spec:
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
             - --update_symbols_info_interval=3600000
+            - --check_if_update_required_interval=60000
             - --delete_old_prices_interval=3600000
             - --keep_prices_for_duration=3600000
             - --reattempt_interval=60000

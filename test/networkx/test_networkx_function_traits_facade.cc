@@ -23,45 +23,45 @@ struct Type {
     co_return;
   }
 
-  auto BodyValue(std::string body) -> cppcoro::task<> { co_return; }
+  auto BodyValue(std::string body) const -> cppcoro::task<> { co_return; }
 
   auto BodyConstValue(int, const std::string body, int, int, int, int)
-      -> cppcoro::task<> {
+      const -> cppcoro::task<> {
     co_return;
   }
 
   auto BodyConstRef(int, int, const std::string &body, int, int, int)
-      -> cppcoro::task<> {
+      const -> cppcoro::task<> {
     co_return;
   }
 
   auto BodyPointer(int, int, int, const std::string *body, int, int)
-      -> cppcoro::task<> {
+      const -> cppcoro::task<> {
     co_return;
   }
 
   auto BodyOpt(int, int, int, int, const stonks::cpp::Opt<std::string> &body,
-               int) -> cppcoro::task<> {
+               int) const -> cppcoro::task<> {
     co_return;
   }
 
   auto BodyVec(int, int, int, int, int, const std::vector<std::string> &body)
-      -> cppcoro::task<> {
+      const -> cppcoro::task<> {
     co_return;
   }
 
-  auto ResultVoid() -> cppcoro::task<> { co_return; }
+  auto ResultVoid() const -> cppcoro::task<> { co_return; }
 
-  auto ResultValue [[nodiscard]] () -> cppcoro::task<std::string> {
+  auto ResultValue [[nodiscard]] () const -> cppcoro::task<std::string> {
     co_return std::string{};
   }
 
-  auto ResultOpt [[nodiscard]] ()
+  auto ResultOpt [[nodiscard]] () const 
   -> cppcoro::task<stonks::cpp::Opt<std::string>> {
     co_return stonks::cpp::Opt<std::string>{};
   }
 
-  auto ResultVec [[nodiscard]] () -> cppcoro::task<std::vector<std::string>> {
+  auto ResultVec [[nodiscard]] () const -> cppcoro::task<std::vector<std::string>> {
     co_return std::vector<std::string>{};
   }
 
@@ -83,82 +83,82 @@ struct Type {
 namespace stonks::networkx {
 template <>
 struct EndpointFunctionTraits<&Type::Params> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams =
       ParamList("value", "const_value", "const_ref", "pointer", "opt", "vec");
 };
 
 template <>
 struct EndpointFunctionTraits<&Type::BodyValue> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams = ParamList(RequestBody{});
 };
 
 template <>
 struct EndpointFunctionTraits<&Type::BodyConstValue> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams =
       ParamList("0", RequestBody{}, "2", "3", "4", "5");
 };
 
 template <>
 struct EndpointFunctionTraits<&Type::BodyConstRef> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams =
       ParamList("0", "1", RequestBody{}, "3", "4", "5");
 };
 
 template <>
 struct EndpointFunctionTraits<&Type::BodyPointer> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams =
       ParamList("0", "1", "2", RequestBody{}, "4", "5");
 };
 
 template <>
 struct EndpointFunctionTraits<&Type::BodyOpt> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams =
       ParamList("0", "1", "2", "3", RequestBody{}, "5");
 };
 
 template <>
 struct EndpointFunctionTraits<&Type::BodyVec> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams =
       ParamList("0", "1", "2", "3", "4", RequestBody{});
 };
 
 template <>
 struct EndpointFunctionTraits<&Type::ResultVoid> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
 };
 
 template <>
 struct EndpointFunctionTraits<&Type::ResultValue> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
 };
 
 template <>
 struct EndpointFunctionTraits<&Type::ResultOpt> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
 };
 
 template <>
 struct EndpointFunctionTraits<&Type::ResultVec> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
 };
 
 template <>
 struct EndpointFunctionTraits<&Type::Death1> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams =
       ParamList("value", "value", "const_ref", "pointer", "opt", "vec");
 };
 
 template <>
 struct EndpointFunctionTraits<&Type::Death2> {
-  static constexpr auto kMethod = network::Method::kOther;
+  static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams = ParamList(
       RequestBody{}, RequestBody{}, "const_ref", "pointer", "opt", "vec");
 };
