@@ -36,12 +36,6 @@ SymbolsDbUpdater::SymbolsDbUpdater(ConstructorArgs args)
                 })
                     .Every(args.delete_old_prices_interval)
                     .IfThrowsReattemptEvery(args.reattempt_interval)
-                    .Start()},
-            .update_symbols_info_interval{args.update_symbols_info_interval}};
+                    .Start()}};
       }()} {}
-
-auto SymbolsDbUpdater::GetUpdateSymbolsInfoInterval() const
-    -> cppcoro::task<absl::Duration> {
-  co_return impl_.update_symbols_info_interval;
-}
 }  // namespace stonks::core

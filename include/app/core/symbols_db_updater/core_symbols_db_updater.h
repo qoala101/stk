@@ -7,16 +7,15 @@
 
 #include "binance_api.h"
 #include "core_i_symbols_db.h"
-#include "core_i_symbols_db_updater.h"
 #include "cpp_meta_thread_safe.h"
 #include "cpp_not_null.h"
 #include "cpp_timer.h"
 
 namespace stonks::core {
 /**
- * @copydoc ISymbolsDbUpdater
+ * @brief Periodically updates Symbols DB.
  */
-class SymbolsDbUpdater : public ISymbolsDbUpdater {
+class SymbolsDbUpdater {
  public:
   struct ConstructorArgs {
     cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db;
@@ -53,17 +52,10 @@ class SymbolsDbUpdater : public ISymbolsDbUpdater {
 
   explicit SymbolsDbUpdater(ConstructorArgs args);
 
-  /**
-   * @copydoc ISymbolsDbUpdater::GetUpdateSymbolsInfoInterval
-   */
-  auto GetUpdateSymbolsInfoInterval [[nodiscard]] () const
-      -> cppcoro::task<absl::Duration> override;
-
  private:
   struct Impl {
     cpp::Timer update_symbols_info_timer;
     cpp::Timer delete_old_prices_timer;
-    absl::Duration update_symbols_info_interval{};
   } impl_;
 };
 }  // namespace stonks::core

@@ -3,11 +3,10 @@
 
 #include <cppcoro/task.hpp>
 
-#include "cpp_meta_thread_safe.h"
 #include "core_i_symbols_db.h"
-#include "core_i_symbols_db_updater.h"
 #include "core_sps_price_recorder.h"
 #include "core_types.h"
+#include "cpp_meta_thread_safe.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 #include "di_factory.h"
@@ -22,7 +21,6 @@ class StreamFactory {
  public:
   StreamFactory(
       cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
-      cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDbUpdater>> symbols_db_updater,
       cpp::meta::ThreadSafe<di::Factory<network::IWsClient>> ws_client_factory);
 
   /**
@@ -30,14 +28,10 @@ class StreamFactory {
    * @param symbol Symbol for which to get book ticks.
    */
   auto Create [[nodiscard]] (Symbol symbol) const
-      -> cppcoro::task<networkx::WebSocket<&PriceRecorder::RecordAsPrice>>;
+      -> networkx::WebSocket<&PriceRecorder::RecordAsPrice>;
 
  private:
-  auto GetLastPriceRecord [[nodiscard]] (const Symbol &symbol) const
-      -> cppcoro::task<cpp::Opt<SymbolPriceRecord>>;
-
   cpp::NnSp<ISymbolsDb> symbols_db_;
-  cpp::NnUp<ISymbolsDbUpdater> symbols_db_updater_;
   di::Factory<network::IWsClient> ws_client_factory_;
 };
 }  // namespace stonks::core::sps

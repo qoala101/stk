@@ -12,27 +12,21 @@
 #include "cli_app.h"
 #include "cli_option.h"
 #include "cli_options.h"
-#include "core_i_symbols_db_updater.h"
 #include "core_symbols_db_updater.h"
 #include "cpp_share.h"
 #include "di_auto_injectable.h"
 #include "di_make_injector.h"
-#include "networkx_make_server_for.h"
 #include "service_client_options.h"
 #include "service_create_client_injector.h"
 #include "service_create_log_spdlog_injector.h"
 #include "service_create_network_restsdk_injector.h"
-#include "service_create_server_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
-#include "service_sdbu_traits.h"  // IWYU pragma: keep
-#include "service_server_options.h"
 #include "service_symbols_db.h"
 
 namespace stonks::service::sdbu {
 void Main(int argc, const char *const *argv) {
   auto options = cli::Options();
 
-  const auto server_options = ServerOptions<core::ISymbolsDbUpdater>{options};
   const auto symbols_db_client_options =
       ClientOptions<core::ISymbolsDb>{options};
   const auto update_symbols_info_interval =
@@ -53,7 +47,6 @@ void Main(int argc, const char *const *argv) {
   const auto injector = cpp::Share(di::MakeInjector(
       CreateNetworkRestsdkInjector(), CreateLogSpdlogInjector(),
 
-      CreateServerInjector<core::SymbolsDbUpdater>(server_options),
       CreateClientInjector<SymbolsDb>(symbols_db_client_options),
 
       di::BindValueTypeToValue(absl::Milliseconds(*keep_prices_for_duration))));
@@ -63,20 +56,18 @@ void Main(int argc, const char *const *argv) {
            &keep_prices_for_duration, &reattempt_interval]() {
     auto auto_injectable = di::AutoInjectable{injector};
 
-    return networkx::MakeServerFor<core::ISymbolsDbUpdater>(
-        cpp::MakeNnUp<core::SymbolsDbUpdater>(core::SymbolsDbUpdater{
-            {.symbols_db = auto_injectable,
-             .binance_api = auto_injectable,
-             .update_symbols_info_interval =
-                 absl::Milliseconds(*update_symbols_info_interval),
-             .check_if_update_required_interval =
-                 absl::Milliseconds(*check_if_update_required_interval),
-             .delete_old_prices_interval =
-                 absl::Milliseconds(*delete_old_prices_interval),
-             .keep_prices_for_duration =
-                 absl::Milliseconds(*keep_prices_for_duration),
-             .reattempt_interval = absl::Milliseconds(*reattempt_interval)}}),
-        auto_injectable, auto_injectable);
+    return core::SymbolsDbUpdater{
+        {.symbols_db = auto_injectable,
+         .binance_api = auto_injectable,
+         .update_symbols_info_interval =
+             absl::Milliseconds(*update_symbols_info_interval),
+         .check_if_update_required_interval =
+             absl::Milliseconds(*check_if_update_required_interval),
+         .delete_old_prices_interval =
+             absl::Milliseconds(*delete_old_prices_interval),
+         .keep_prices_for_duration =
+             absl::Milliseconds(*keep_prices_for_duration),
+         .reattempt_interval = absl::Milliseconds(*reattempt_interval)}};
   });
 }
 }  // namespace stonks::service::sdbu

@@ -6,7 +6,6 @@
 #include "binance_types.h"
 #include "core_i_symbols_db.h"
 #include "core_types.h"
-#include "cpp_auto_updatable.h"
 #include "cpp_not_null.h"
 
 namespace stonks::core::sps {
@@ -15,9 +14,7 @@ namespace stonks::core::sps {
  */
 class PriceRecorder {
  public:
-  PriceRecorder(Symbol symbol, cpp::NnSp<ISymbolsDb> symbols_db,
-                cpp::AutoUpdatable<double> base_asset_price_step,
-                cpp::Opt<SymbolPriceRecord> last_price_record);
+  PriceRecorder(Symbol symbol, cpp::NnSp<ISymbolsDb> symbols_db);
 
   /**
    * @brief Records book tick as price.
@@ -26,13 +23,16 @@ class PriceRecorder {
   -> cppcoro::task<>;
 
  private:
-  auto SymbolPriceRecordFrom [[nodiscard]] (const binance::BookTick &book_tick)
-  -> cppcoro::task<SymbolPriceRecord>;
+  auto GetBaseAssetPriceStep [[nodiscard]] () const -> cppcoro::task<double>;
+
+  auto GetLastPriceRecord [[nodiscard]] () const
+      -> cppcoro::task<cpp::Opt<SymbolPriceRecord>>;
+
+  auto SymbolPriceRecordFrom [[nodiscard]] (const binance::BookTick &book_tick,
+                                            double base_asset_price_step);
 
   Symbol symbol_{};
   cpp::NnSp<ISymbolsDb> symbols_db_;
-  cpp::AutoUpdatable<double> base_asset_price_step_;
-  cpp::Opt<SymbolPriceRecord> last_price_record_{};
 };
 }  // namespace stonks::core::sps
 

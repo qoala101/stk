@@ -12,8 +12,7 @@ StreamHandle::StreamHandle(Symbol symbol, absl::Duration reattempt_interval,
           cpp::Execute([symbol = std::move(symbol),
                         web_socket_factory = std::move(web_socket_factory),
                         web_socket = web_socket_]() mutable {
-            *web_socket =
-                cppcoro::sync_wait(web_socket_factory->Create(symbol));
+            *web_socket = web_socket_factory->Create(symbol);
           })
               .Once()
               .IfThrowsReattemptEvery(reattempt_interval)

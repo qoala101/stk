@@ -38,7 +38,6 @@ add_executable(service_symbols_db
 
 target_link_libraries(service_symbols_db
   PRIVATE libcli
-  # PRIVATE libcommon
   PRIVATE libcore
   PRIVATE libcore_symbols_db
   PRIVATE libcpp

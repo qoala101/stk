@@ -4,7 +4,6 @@ x-terminal-emulator -e ./service_buy_low_sell_high \
   --symbols_db_port=30000 &
 
 x-terminal-emulator -e ./service_symbol_price_streams \
-  --port=30002 \
   --symbols_db_host=0.0.0.0 \
   --symbols_db_port=30000 \
   --symbols=BTCUSDT,ETHUSDT,BNBUSDT \
