@@ -7,7 +7,7 @@
 #include "di_bind_type_to_value.h"
 #include "di_bind_value_type_to_value.h"
 #include "di_make_injector.h"
-#include "spdlog_logger.h"
+#include "spdlog_thread_safe_logger.h"
 #include "sqldb_i_db.h"
 #include "sqlite_db.h"
 #include "sqlite_native_db_file_handle.h"
@@ -20,7 +20,7 @@ namespace test::app {
 inline auto Injector [[nodiscard]] () -> auto & {
   static auto injector = stonks::di::MakeInjector(
       stonks::di::BindInterfaceToImplementation<stonks::log::ILogger,
-                                                stonks::spdlog::Logger>(),
+                                                stonks::spdlog::ThreadSafeLogger>(),
       stonks::di::BindInterfaceToImplementation<stonks::sqldb::IDb,
                                                 stonks::sqlite::Db>(),
       stonks::di::BindTypeToFactoryFunction<

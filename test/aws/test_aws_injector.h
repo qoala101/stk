@@ -6,7 +6,7 @@
 #include "di_make_injector.h"
 #include "kvdb_i_items_interface.h"
 #include "kvdb_i_tables_interface.h"
-#include "spdlog_logger.h"
+#include "spdlog_thread_safe_logger.h"
 
 namespace test::aws {
 inline auto Injector [[nodiscard]] () -> auto& {

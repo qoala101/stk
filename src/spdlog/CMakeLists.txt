@@ -1,5 +1,5 @@
 add_library(libspdlog
-  spdlog_logger.cc
+  spdlog_thread_safe_logger.cc
 )
 
 set_target_properties(libspdlog PROPERTIES

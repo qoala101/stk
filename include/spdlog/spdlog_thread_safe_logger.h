@@ -8,9 +8,9 @@
 
 namespace stonks::spdlog {
 /**
- * @copydoc log::ILogger
+ * @brief Logger which can be used in multiple threads.
  */
-class Logger : public log::ILogger {
+class ThreadSafeLogger : public log::ILogger {
  public:
   /**
    * @copydoc log::ILogger::Log

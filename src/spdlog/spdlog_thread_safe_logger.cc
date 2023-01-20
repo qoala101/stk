@@ -1,4 +1,4 @@
-#include "spdlog_logger.h"
+#include "spdlog_thread_safe_logger.h"
 
 #include <spdlog/common.h>
 #include <spdlog/spdlog.h>
@@ -17,7 +17,7 @@ auto ToNativeLevel(log::Level level) {
 }
 }  // namespace
 
-void Logger::Log(log::Level level, std::string message) {
+void ThreadSafeLogger::Log(log::Level level, std::string message) {
   ::spdlog::log(ToNativeLevel(level), message);
 }
 }  // namespace stonks::spdlog

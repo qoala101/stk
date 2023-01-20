@@ -9,7 +9,7 @@
 #include "restsdk_rest_request_receiver.h"
 #include "restsdk_rest_request_sender.h"
 #include "restsdk_ws_client.h"
-#include "spdlog_logger.h"
+#include "spdlog_thread_safe_logger.h"
 
 namespace test::restsdk {
 inline auto Injector [[nodiscard]] () -> auto& {
@@ -23,7 +23,7 @@ inline auto Injector [[nodiscard]] () -> auto& {
       stonks::di::BindInterfaceToImplementation<stonks::network::IWsClient,
                                                 stonks::restsdk::WsClient>(),
       stonks::di::BindInterfaceToImplementation<stonks::log::ILogger,
-                                                stonks::spdlog::Logger>());
+                                                stonks::spdlog::ThreadSafeLogger>());
   return injector;
 }
 }  // namespace test::restsdk
