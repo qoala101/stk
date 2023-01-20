@@ -1,4 +1,6 @@
 add_library(libcpp
+  synchronization/cpp_lock.cc
+  synchronization/cpp_mutex.cc
   timer/cpp_timer_builder.cc
   timer/cpp_timer_event_loop.cc
   timer/cpp_timer.cc
@@ -15,6 +17,7 @@ target_include_directories(libcpp
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/algorithm
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/alias
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/meta
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/synchronization
   PUBLIC ${PROJECT_SOURCE_DIR}/include/cpp/timer
 )
 

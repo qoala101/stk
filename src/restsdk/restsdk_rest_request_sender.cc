@@ -17,11 +17,14 @@
 #include <magic_enum.hpp>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <not_null.hpp>
 #include <string>
 #include <string_view>
 #include <utility>
+#include <variant>
 
+#include "cpp_mutex.h"
 #include "cpp_polymorphic_value.h"
 #include "cpp_typed_struct.h"
 #include "network_i_json.h"
@@ -127,8 +130,10 @@ auto NativeUriFrom [[nodiscard]] (const network::RestRequest &request) {
 }
 }  // namespace
 
-RestRequestSender::RestRequestSender(cpp::NnUp<log::ILogger> logger)
-    : logger_{std::move(logger)} {}
+RestRequestSender::RestRequestSender(cpp::NnUp<log::ILogger> logger,
+                                     cpp::MutexVariant http_client_mutex)
+    : logger_{std::move(logger)},
+      http_client_mutex_{std::move(http_client_mutex)} {}
 
 RestRequestSender::RestRequestSender(RestRequestSender &&) noexcept = default;
 
@@ -173,15 +178,19 @@ auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
 }
 
 void RestRequestSender::ConnectClientTo(const web::uri &authority) {
-  fmt::print("null: {}\n", http_client_ == nullptr);
+  auto connection_was_updated = false;
 
-  if (http_client_ != nullptr) {
-    fmt::print("authority: {}\n", http_client_->base_uri().authority().to_string());
+  {
+    const auto lock = http_client_mutex_.Lock();
+
+    if ((http_client_ == nullptr) ||
+        (http_client_->base_uri().authority() != authority)) {
+      http_client_ = cpp::MakeUp<web::http::client::http_client>(authority);
+      connection_was_updated = true;
+    }
   }
 
-  if ((http_client_ == nullptr) ||
-      (http_client_->base_uri().authority() != authority)) {
-    http_client_ = cpp::MakeUp<web::http::client::http_client>(authority);
+  if (connection_was_updated) {
     logger_->LogImportantEvent(
         fmt::format("Connected request sender to {}", authority.to_string()));
   }

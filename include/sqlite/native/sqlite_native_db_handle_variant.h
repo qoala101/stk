@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLITE_SQLITE_DB_HANDLE_VARIANT_H_
-#define STONKS_SQLITE_SQLITE_DB_HANDLE_VARIANT_H_
+#ifndef STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_HANDLE_VARIANT_H_
+#define STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_HANDLE_VARIANT_H_
 
 #include <variant>
 
@@ -14,8 +14,7 @@ namespace stonks::sqlite {
  * @brief Variant of SQLite DB handle which keeps connection alive.
  */
 struct NativeDbHandleVariant
-    : public cpp::VariantStruct<std::monostate, NativeDbHandle,
-                                NativeDbFileHandle> {
+    : public cpp::VariantStruct<NativeDbHandle, NativeDbFileHandle> {
  public:
   /**
    * @brief Gives native SQLite handle.
@@ -40,4 +39,4 @@ struct NativeDbHandleVariant
 };
 }  // namespace stonks::sqlite
 
-#endif  // STONKS_SQLITE_SQLITE_DB_HANDLE_VARIANT_H_
+#endif  // STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_HANDLE_VARIANT_H_

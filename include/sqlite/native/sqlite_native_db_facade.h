@@ -29,10 +29,10 @@ class NativeDbFacade {
   static void EnableForeignKeys(sqlite3 &db);
 
   /**
-   * @brief Turns native synchronization off.
-   * @remark Synchronization is enabled by default.
+   * @brief Sets native synchronization.
+   * @remark Synchronization is enabled for new DBs by default.
    */
-  static void TurnOffSynchronization(sqlite3 &db);
+  static void SetSynchronizationEnabled(sqlite3 &db, bool enabled);
 
   /**
    * @brief Writes DB to file.

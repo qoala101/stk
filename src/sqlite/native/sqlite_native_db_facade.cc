@@ -63,8 +63,8 @@ void NativeDbFacade::EnableForeignKeys(sqlite3 &db) {
   SetPragma(db, "foreign_keys", "ON");
 }
 
-void NativeDbFacade::TurnOffSynchronization(sqlite3 &db) {
-  SetPragma(db, "synchronous", "OFF");
+void NativeDbFacade::SetSynchronizationEnabled(sqlite3 &db, bool enabled) {
+  SetPragma(db, "synchronous", enabled ? "ON" : "OFF");
 }
 
 void NativeDbFacade::WriteToFile(sqlite3 &db, const FilePath &file_path) const {

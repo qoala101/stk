@@ -22,7 +22,6 @@
 #include "di_enable_nn_pointers.h"
 #include "di_make_injector.h"
 #include "network_i_rest_request_sender.h"
-#include "network_ts_rest_request_sender.h"
 #include "networkx_make_server_for.h"
 #include "service_client_options.h"
 #include "service_create_client_injector.h"

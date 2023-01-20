@@ -38,7 +38,6 @@ auto NativeDbHandlesFactory::CreateInMemoryDb() const -> NativeDbHandle {
   }
 
   NativeDbFacade::EnableForeignKeys(*in_memory_db);
-  NativeDbFacade::TurnOffSynchronization(*in_memory_db);
 
   return {cpp::AssumeNn(NullableNativeDbHandle{
       in_memory_db, detail::NativeDbCloser{logger_factory_}})};

@@ -3,6 +3,7 @@
 
 #include <cppcoro/task.hpp>
 
+#include "cpp_mutex.h"
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
 #include "network_i_rest_request_sender.h"
@@ -22,7 +23,8 @@ namespace stonks::restsdk {
  */
 class RestRequestSender : public network::IRestRequestSender {
  public:
-  explicit RestRequestSender(cpp::NnUp<log::ILogger> logger);
+  explicit RestRequestSender(cpp::NnUp<log::ILogger> logger,
+                             cpp::MutexVariant http_client_mutex = {});
 
   RestRequestSender(const RestRequestSender &) = delete;
   RestRequestSender(RestRequestSender &&) noexcept;
@@ -43,6 +45,7 @@ class RestRequestSender : public network::IRestRequestSender {
 
   cpp::Up<web::http::client::http_client> http_client_{};
   cpp::NnUp<log::ILogger> logger_;
+  cpp::MutexVariant http_client_mutex_{};
 };
 }  // namespace stonks::restsdk
 
