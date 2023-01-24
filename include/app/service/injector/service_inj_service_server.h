@@ -8,7 +8,7 @@
 #include "di_make_injector.h"
 #include "service_server_options.h"
 
-namespace stonks::service {
+namespace stonks::service::inj {
 /**
  * @brief Binds target type to service server implementation.
  */

@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_META_CPP_META_THREAD_SAFE_TAG_H_
-#define STONKS_CPP_META_CPP_META_THREAD_SAFE_TAG_H_
+#ifndef STONKS_CPP_META_CPP_META_THREAD_SAFE_H_
+#define STONKS_CPP_META_CPP_META_THREAD_SAFE_H_
 
 #include "cpp_typed_struct.h"
 
@@ -12,4 +12,4 @@ template <typename T>
 struct ThreadSafe : public cpp::TypedStruct<T> {};
 }  // namespace stonks::cpp::meta
 
-#endif  // STONKS_CPP_META_CPP_META_THREAD_SAFE_TAG_H_
+#endif  // STONKS_CPP_META_CPP_META_THREAD_SAFE_H_

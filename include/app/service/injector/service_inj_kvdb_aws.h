@@ -6,7 +6,7 @@
 #include "di_make_injector.h"
 #include "kvdb_i_items_interface.h"
 
-namespace stonks::service {
+namespace stonks::service::inj {
 inline auto CreateKvdbAwsInjector [[nodiscard]] () {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<kvdb::ITablesInterface,

@@ -24,10 +24,11 @@
 #include "network_i_rest_request_sender.h"
 #include "networkx_make_server_for.h"
 #include "service_client_options.h"
-#include "service_create_client_injector.h"
-#include "service_create_log_spdlog_injector.h"
-#include "service_create_network_restsdk_injector.h"
-#include "service_sdb_traits.h"   // IWYU pragma: keep
+#include "service_inj_log_spdlog.h"
+#include "service_inj_network_restsdk.h"
+#include "service_inj_service_client.h"
+#include "service_inj_ts_symbols_db_override.h"
+#include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_symbols_db.h"
 
 namespace stonks::service::sps {
@@ -42,12 +43,12 @@ void Main(int argc, const char *const *argv) {
       "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
 
   const auto app = cli::App{argc, argv, options};
-  const auto injector = cpp::Share(di::MakeInjector(
-      CreateNetworkRestsdkInjector(), CreateLogSpdlogInjector(),
-
-      CreateClientInjector<SymbolsDb>(symbols_db_client_options),
-
-      di::BindValueTypeToValue(absl::Milliseconds(*reattempt_interval))));
+  auto base_injector = di::MakeInjector(
+      inj::CreateNetworkRestsdkInjector(), inj::CreateLogSpdlogInjector(),
+      inj::CreateClientInjector<SymbolsDb>(symbols_db_client_options),
+      di::BindValueTypeToValue(absl::Milliseconds(*reattempt_interval)));
+  const auto injector =
+      cpp::Share(inj::ts::OverrideThreadSafeSymbolsDbInjector(base_injector));
 
   app.Run([&injector, &symbols]() {
     auto auto_injectable = di::AutoInjectable{injector};

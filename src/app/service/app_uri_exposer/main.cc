@@ -12,9 +12,9 @@
 #include "di_make_injector.h"
 #include "service_app_uri_exposer.h"
 #include "service_aue_impl.h"
-#include "service_create_kvdb_aws_injector.h"
-#include "service_create_log_spdlog_injector.h"
-#include "service_create_network_restsdk_injector.h"
+#include "service_inj_kvdb_aws.h"
+#include "service_inj_log_spdlog.h"
+#include "service_inj_network_restsdk.h"
 
 namespace stonks::service::aue {
 void Main(int argc, const char *const *argv) {
@@ -26,9 +26,9 @@ void Main(int argc, const char *const *argv) {
       "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
 
   const auto app = cli::App{argc, argv, options};
-  const auto injector =
-      di::MakeInjector(CreateNetworkRestsdkInjector(),
-                       CreateLogSpdlogInjector(), CreateKvdbAwsInjector());
+  const auto injector = di::MakeInjector(inj::CreateNetworkRestsdkInjector(),
+                                         inj::CreateLogSpdlogInjector(),
+                                         inj::CreateKvdbAwsInjector());
 
   app.Run([&injector, &expose_uri_interval, &reattempt_interval]() {
     return AppUriExposer{

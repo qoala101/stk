@@ -16,10 +16,11 @@
 #include "networkx_make_server_for.h"
 #include "service_blsh_traits.h"  // IWYU pragma: keep
 #include "service_client_options.h"
-#include "service_create_client_injector.h"
-#include "service_create_log_spdlog_injector.h"
-#include "service_create_network_restsdk_injector.h"
-#include "service_create_server_injector.h"
+#include "service_inj_log_spdlog.h"
+#include "service_inj_network_restsdk.h"
+#include "service_inj_service_client.h"
+#include "service_inj_service_server.h"
+#include "service_inj_ts_symbols_db_override.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
 #include "service_symbols_db.h"
@@ -33,11 +34,12 @@ void Main(int argc, const char *const *argv) {
       ClientOptions<core::ISymbolsDb>{options};
 
   const auto app = cli::App{argc, argv, options};
-  const auto injector = di::MakeInjector(
-      CreateNetworkRestsdkInjector(), CreateLogSpdlogInjector(),
-
-      CreateServerInjector<core::BuyLowSellHigh>(server_options),
-      CreateClientInjector<SymbolsDb>(symbols_db_client_options));
+  auto base_injector = di::MakeInjector(
+      inj::CreateNetworkRestsdkInjector(), inj::CreateLogSpdlogInjector(),
+      inj::CreateServerInjector<core::BuyLowSellHigh>(server_options),
+      inj::CreateClientInjector<SymbolsDb>(symbols_db_client_options));
+  const auto injector =
+      inj::ts::OverrideThreadSafeSymbolsDbInjector(base_injector);
 
   app.Run([&injector]() {
     return di::CallWithInjectedArgs(

@@ -10,6 +10,7 @@ set_target_properties(libservice PROPERTIES
 target_include_directories(libservice
   PUBLIC ${PROJECT_SOURCE_DIR}/include/app/service
   PUBLIC ${PROJECT_SOURCE_DIR}/include/app/service/injector
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/app/service/injector/thread_safe
 )
 
 target_link_libraries(libservice

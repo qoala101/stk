@@ -21,10 +21,11 @@
 #include "network_rest_server.h"
 #include "networkx_make_server_for.h"
 #include "networkx_uri.h"
-#include "service_create_log_spdlog_injector.h"
-#include "service_create_network_restsdk_injector.h"
-#include "service_create_server_injector.h"
-#include "service_create_sqldb_sqlite_injector.h"
+#include "service_inj_log_spdlog.h"
+#include "service_inj_network_restsdk.h"
+#include "service_inj_service_server.h"
+#include "service_inj_sqldb_sqlite.h"
+#include "service_inj_ts_sqlite_db_override.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
 #include "sqlite_types.h"
@@ -37,13 +38,13 @@ void Main(int argc, const char *const *argv) {
   auto db_file_path = options.AddOption("--db_file_path", "symbols_db.db");
 
   const auto app = cli::App{argc, argv, options};
-  const auto injector = di::MakeInjector(
-      CreateNetworkRestsdkInjector(), CreateSqldbSqliteInjector(),
-      CreateLogSpdlogInjector(),
-
-      CreateServerInjector<core::SymbolsDb>(server_options),
-
+  auto base_injector = di::MakeInjector(
+      inj::CreateNetworkRestsdkInjector(), inj::CreateSqldbSqliteInjector(),
+      inj::CreateLogSpdlogInjector(),
+      inj::CreateServerInjector<core::SymbolsDb>(server_options),
       di::BindValueTypeToValue(sqlite::FilePath{std::move(*db_file_path)}));
+  const auto injector =
+      inj::ts::OverrideThreadSafeSqliteDbInjector(base_injector);
 
   app.Run([&injector]() {
     return di::CallWithInjectedArgs(networkx::MakeServerFor<core::ISymbolsDb>,

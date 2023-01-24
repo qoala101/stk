@@ -1,5 +1,5 @@
-#ifndef STONKS_SERVICE_SERVICE_CREATE_CLIENT_INJECTOR_H_
-#define STONKS_SERVICE_SERVICE_CREATE_CLIENT_INJECTOR_H_
+#ifndef STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_SERVICE_CLIENT_H_
+#define STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_SERVICE_CLIENT_H_
 
 #include <type_traits>
 
@@ -9,7 +9,7 @@
 #include "service_client_base.h"
 #include "service_client_options.h"
 
-namespace stonks::service {
+namespace stonks::service::inj {
 /**
  * @brief Binds target type to service client implementation.
  */
@@ -22,4 +22,4 @@ auto CreateClientInjector(const ClientOptions<Target> &options) {
 }
 }  // namespace stonks::service
 
-#endif  // STONKS_SERVICE_SERVICE_CREATE_CLIENT_INJECTOR_H_
+#endif  // STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_SERVICE_CLIENT_H_

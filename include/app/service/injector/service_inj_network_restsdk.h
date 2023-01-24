@@ -10,7 +10,7 @@
 #include "restsdk_rest_request_sender.h"
 #include "restsdk_ws_client.h"
 
-namespace stonks::service {
+namespace stonks::service::inj {
 inline auto CreateNetworkRestsdkInjector [[nodiscard]] () {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<network::IRestRequestReceiver,
