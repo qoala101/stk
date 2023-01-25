@@ -24,7 +24,6 @@
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 #include "cpp_polymorphic_value.h"
-#include "di_factory.h"
 #include "gtest/gtest_pred_impl.h"
 #include "network_auto_parsable.h"
 #include "network_auto_parsable_request.h"

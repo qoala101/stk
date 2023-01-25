@@ -6,7 +6,6 @@
 #include "cpp_meta_private_to.h"
 #include "cpp_not_null.h"
 #include "cpp_typed_struct.h"
-#include "di_factory.h"
 #include "network_i_rest_request_sender.h"
 #include "network_response_exception_handler.h"
 #include "network_typed_endpoint_sender.h"

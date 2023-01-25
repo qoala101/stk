@@ -6,10 +6,9 @@
 #include "core_i_symbols_db.h"
 #include "core_sps_price_recorder.h"
 #include "core_types.h"
+#include "cpp_i_factory.h"
 #include "cpp_meta_thread_safe.h"
 #include "cpp_not_null.h"
-#include "cpp_optional.h"
-#include "di_factory.h"
 #include "network_i_ws_client.h"
 #include "networkx_web_socket.h"
 
@@ -21,7 +20,8 @@ class StreamFactory {
  public:
   StreamFactory(
       cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
-      cpp::meta::ThreadSafe<di::Factory<network::IWsClient>> ws_client_factory);
+      cpp::meta::ThreadSafe<cpp::NnUp<cpp::IFactory<network::IWsClient>>>
+          ws_client_factory);
 
   /**
    * @brief Creates web socket from args.
@@ -32,7 +32,7 @@ class StreamFactory {
 
  private:
   cpp::NnSp<ISymbolsDb> symbols_db_;
-  di::Factory<network::IWsClient> ws_client_factory_;
+  cpp::NnUp<cpp::IFactory<network::IWsClient>> ws_client_factory_;
 };
 }  // namespace stonks::core::sps
 
