@@ -2,7 +2,6 @@
 #define STONKS_SQLITE_SQLITE_DB_H_
 
 #include "cpp_not_null.h"
-#include "di_factory.h"
 #include "log_i_logger.h"
 #include "sqldb_i_db.h"
 #include "sqldb_i_select_statement.h"
@@ -20,8 +19,7 @@ class Db : public sqldb::IDb {
   /**
    * @brief Creates wrapper for SQLite DB.
    */
-  Db(di::Factory<log::ILogger> logger_factory,
-     NativeDbHandleVariant native_db_handle);
+  Db(cpp::NnUp<log::ILogger> logger, NativeDbHandleVariant native_db_handle);
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement
@@ -38,7 +36,7 @@ class Db : public sqldb::IDb {
  private:
   auto PreparedStatementImplFrom [[nodiscard]] (sqldb::Query query) const;
 
-  di::Factory<log::ILogger> logger_factory_;
+  cpp::NnSp<log::ILogger> logger_;
   cpp::NnSp<NativeDbHandleVariant> native_db_handle_;
   NativeDbFacade native_db_facade_;
 };

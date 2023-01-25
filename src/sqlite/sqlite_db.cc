@@ -15,17 +15,16 @@
 #include "sqlite_update_statement.h"
 
 namespace stonks::sqlite {
-Db::Db(di::Factory<log::ILogger> logger_factory,
-       NativeDbHandleVariant native_db_handle)
-    : logger_factory_{std::move(logger_factory)},
+Db::Db(cpp::NnUp<log::ILogger> logger, NativeDbHandleVariant native_db_handle)
+    : logger_{std::move(logger)},
       native_db_handle_{cpp::Share(std::move(native_db_handle))},
-      native_db_facade_{logger_factory_} {}
+      native_db_facade_{logger_} {}
 
 auto Db::PreparedStatementImplFrom(sqldb::Query query) const {
   return PreparedStatementImpl{native_db_handle_,
                                native_db_facade_.CreatePreparedStatement(
                                    native_db_handle_->GetNativeDb(), query),
-                               std::move(query), logger_factory_.Create()};
+                               std::move(query), logger_};
 }
 
 auto Db::PrepareStatement(sqldb::SelectQuery query)

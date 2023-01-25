@@ -24,7 +24,7 @@ class PreparedStatementImpl {
    */
   PreparedStatementImpl(cpp::NnSp<NativeDbHandleVariant> native_db_handle,
                         NativeStatementHandle native_statement_handle,
-                        sqldb::Query query, cpp::NnUp<log::ILogger> logger);
+                        sqldb::Query query, cpp::NnSp<log::ILogger> logger);
 
   /**
    * @brief Gives the statement.
@@ -40,7 +40,7 @@ class PreparedStatementImpl {
   cpp::NnSp<NativeDbHandleVariant> native_db_handle_;
   NativeStatementHandle native_statement_handle_;
   sqldb::Query query_{};
-  cpp::NnUp<log::ILogger> logger_;
+  cpp::NnSp<log::ILogger> logger_;
 };
 }  // namespace stonks::sqlite
 

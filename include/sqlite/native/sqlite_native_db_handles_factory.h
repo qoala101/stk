@@ -1,8 +1,7 @@
-#ifndef STONKS_SQLITE_SQLITE_DB_HANDLES_FACTORY_H_
-#define STONKS_SQLITE_SQLITE_DB_HANDLES_FACTORY_H_
+#ifndef STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_HANDLES_FACTORY_H_
+#define STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_HANDLES_FACTORY_H_
 
 #include "cpp_not_null.h"
-#include "di_factory.h"
 #include "log_i_logger.h"
 #include "sqlite_native_handles.h"
 #include "sqlite_types.h"
@@ -14,7 +13,7 @@
 namespace stonks::sqlite {
 class NativeDbHandlesFactory {
  public:
-  explicit NativeDbHandlesFactory(di::Factory<log::ILogger> logger_factory);
+  explicit NativeDbHandlesFactory(cpp::NnSp<log::ILogger> logger);
 
   /**
    * @brief Creates in-memory SQLite DB.
@@ -38,9 +37,8 @@ class NativeDbHandlesFactory {
  private:
   void CreateParentDirectoryIfNotExists(const FilePath &file_path) const;
 
-  di::Factory<log::ILogger> logger_factory_;
-  cpp::NnUp<log::ILogger> logger_;
+  cpp::NnSp<log::ILogger> logger_;
 };
 }  // namespace stonks::sqlite
 
-#endif  // STONKS_SQLITE_SQLITE_DB_HANDLES_FACTORY_H_
+#endif  // STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_HANDLES_FACTORY_H_

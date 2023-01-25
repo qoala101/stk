@@ -2,9 +2,7 @@
 #define STONKS_SQLITE_SQLITE_RAW_HANDLES_H_
 
 #include "cpp_not_null.h"
-#include "cpp_optional.h"
 #include "cpp_smart_pointers.h"
-#include "di_factory.h"
 #include "log_i_logger.h"
 
 class sqlite3;
@@ -23,12 +21,12 @@ class NativeDbCloser {
    */
   NativeDbCloser() = default;
 
-  explicit NativeDbCloser(di::Factory<log::ILogger> logger_factory);
+  explicit NativeDbCloser(cpp::NnSp<log::ILogger> logger);
 
   void operator()(sqlite3 *db) noexcept;
 
  private:
-  cpp::Opt<di::Factory<log::ILogger>> logger_factory_{};
+  cpp::Sp<log::ILogger> logger_{};
 };
 
 class NativeStatementFinalizer {
@@ -38,12 +36,12 @@ class NativeStatementFinalizer {
    */
   NativeStatementFinalizer() = default;
 
-  explicit NativeStatementFinalizer(cpp::NnUp<log::ILogger> logger);
+  explicit NativeStatementFinalizer(cpp::NnSp<log::ILogger> logger);
 
   void operator()(sqlite3_stmt *statement) noexcept;
 
  private:
-  cpp::Up<log::ILogger> logger_{};
+  cpp::Sp<log::ILogger> logger_{};
 };
 }  // namespace detail
 

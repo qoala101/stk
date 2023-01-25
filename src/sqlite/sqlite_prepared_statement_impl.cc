@@ -15,7 +15,7 @@ namespace stonks::sqlite {
 PreparedStatementImpl::PreparedStatementImpl(
     cpp::NnSp<NativeDbHandleVariant> native_db_handle,
     NativeStatementHandle native_statement_handle, sqldb::Query query,
-    cpp::NnUp<log::ILogger> logger)
+    cpp::NnSp<log::ILogger> logger)
     : native_db_handle_{std::move(native_db_handle)},
       native_statement_handle_{std::move(native_statement_handle)},
       query_{std::move(query)},

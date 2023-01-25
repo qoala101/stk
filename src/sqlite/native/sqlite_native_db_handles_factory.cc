@@ -23,10 +23,8 @@ using NullableNativeDbHandle =
     std::remove_cvref_t<decltype(std::declval<NativeDbHandle>().as_nullable())>;
 }  // namespace
 
-NativeDbHandlesFactory::NativeDbHandlesFactory(
-    di::Factory<log::ILogger> logger_factory)
-    : logger_factory_{std::move(logger_factory)},
-      logger_{logger_factory_.Create()} {}
+NativeDbHandlesFactory::NativeDbHandlesFactory(cpp::NnSp<log::ILogger> logger)
+    : logger_{std::move(logger)} {}
 
 auto NativeDbHandlesFactory::CreateInMemoryDb() const -> NativeDbHandle {
   auto *in_memory_db = static_cast<sqlite3 *>(nullptr);
@@ -39,8 +37,8 @@ auto NativeDbHandlesFactory::CreateInMemoryDb() const -> NativeDbHandle {
 
   NativeDbFacade::EnableForeignKeys(*in_memory_db);
 
-  return {cpp::AssumeNn(NullableNativeDbHandle{
-      in_memory_db, detail::NativeDbCloser{logger_factory_}})};
+  return {cpp::AssumeNn(
+      NullableNativeDbHandle{in_memory_db, detail::NativeDbCloser{logger_}})};
 }
 
 auto NativeDbHandlesFactory::CreateHandleToFileDb(
@@ -57,8 +55,8 @@ auto NativeDbHandlesFactory::CreateHandleToFileDb(
                                             *file_path, result_code)};
   }
 
-  return {cpp::AssumeNn(NullableNativeDbHandle{
-      file_db, detail::NativeDbCloser{logger_factory_}})};
+  return {cpp::AssumeNn(
+      NullableNativeDbHandle{file_db, detail::NativeDbCloser{logger_}})};
 }
 
 auto NativeDbHandlesFactory::LoadDbFromFileToMemory(

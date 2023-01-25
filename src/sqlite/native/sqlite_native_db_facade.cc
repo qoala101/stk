@@ -43,10 +43,8 @@ auto GetPrintableFileName [[nodiscard]] (sqlite3 &db) -> std::string {
 }
 }  // namespace
 
-NativeDbFacade::NativeDbFacade(di::Factory<log::ILogger> logger_factory)
-    : logger_factory_{std::move(logger_factory)},
-      logger_{logger_factory_.Create()},
-      handles_factory_{logger_factory_} {}
+NativeDbFacade::NativeDbFacade(cpp::NnSp<log::ILogger> logger)
+    : logger_{std::move(logger)}, handles_factory_{logger_} {}
 
 void NativeDbFacade::CopyDataFrom(sqlite3 &source_db, sqlite3 &target_db) {
   auto *backup = sqlite3_backup_init(&source_db, "main", &target_db, "main");
@@ -93,11 +91,10 @@ auto NativeDbFacade::CreatePreparedStatement(sqlite3 &db,
       fmt::format("Prepared statement for query {}", *query));
 
   return NativeStatementHandle{cpp::AssumeNn(NullableNativeStatementHandle{
-      native_statement,
-      detail::NativeStatementFinalizer{logger_factory_.Create()}})};
+      native_statement, detail::NativeStatementFinalizer{logger_}})};
 }
 
-void NativeDbFacade::Close(sqlite3 &db) {
+void NativeDbFacade::Close(sqlite3 &db) const {
   const auto file_name = GetPrintableFileName(db);
   const auto result_code = sqlite3_close(&db);
 

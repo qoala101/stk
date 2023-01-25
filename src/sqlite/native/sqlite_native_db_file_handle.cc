@@ -6,14 +6,13 @@
 #include <utility>
 
 #include "cpp_not_null.h"
-#include "di_factory.h"
 #include "sqlite_native_db_facade.h"
 
 namespace stonks::sqlite {
-NativeDbFileHandle::NativeDbFileHandle(di::Factory<log::ILogger> logger_factory,
+NativeDbFileHandle::NativeDbFileHandle(cpp::NnUp<log::ILogger> logger,
                                        NativeDbHandle native_db_handle,
                                        FilePath file_path)
-    : logger_factory_{std::move(logger_factory)},
+    : logger_{std::move(logger)},
       native_db_handle_{std::move(native_db_handle)},
       file_path_{std::move(file_path)} {}
 
@@ -24,13 +23,12 @@ NativeDbFileHandle::~NativeDbFileHandle() {
     return;
   }
 
-  auto logger = logger_factory_.Create();
+  const auto native_db_facade = NativeDbFacade{logger_};
 
   try {
-    NativeDbFacade{std::move(logger_factory_)}.WriteToFile(*native_db,
-                                                           file_path_);
+    native_db_facade.WriteToFile(*native_db, file_path_);
   } catch (const std::exception& e) {
-    logger->LogErrorCondition(e.what());
+    logger_->LogErrorCondition(e.what());
   }
 }
 
