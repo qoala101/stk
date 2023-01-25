@@ -39,7 +39,6 @@ target_include_directories(libsqldb
 
 target_link_libraries(libsqldb
   PRIVATE libcpp
-  PRIVATE libdi
 
   PRIVATE absl::absl
   PRIVATE callable

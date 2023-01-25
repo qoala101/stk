@@ -14,7 +14,6 @@ target_include_directories(libnetworkx
 
 target_link_libraries(libnetworkx
   PRIVATE libcpp
-  PRIVATE libdi
   PRIVATE libnetwork
 
   PRIVATE callable

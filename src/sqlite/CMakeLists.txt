@@ -22,7 +22,6 @@ target_include_directories(libsqlite
 
 target_link_libraries(libsqlite
   PRIVATE libcpp
-  PRIVATE libdi
   PRIVATE liblog
   PRIVATE libsqldb
 

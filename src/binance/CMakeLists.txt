@@ -13,7 +13,6 @@ target_include_directories(libbinance
 
 target_link_libraries(libbinance
   PRIVATE libcpp
-  PRIVATE libdi
   PRIVATE libnetwork
   PRIVATE libnetworkx
 

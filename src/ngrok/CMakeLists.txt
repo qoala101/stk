@@ -13,7 +13,6 @@ target_include_directories(libngrok
 
 target_link_libraries(libngrok
   PRIVATE libcpp
-  PRIVATE libdi
   PRIVATE libnetwork
   PRIVATE libnetworkx
 

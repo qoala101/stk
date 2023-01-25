@@ -39,7 +39,6 @@ target_include_directories(libnetwork
 
 target_link_libraries(libnetwork
   PRIVATE libcpp
-  PRIVATE libdi
 
   PRIVATE callable
   PRIVATE cppcoro::cppcoro

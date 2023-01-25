@@ -18,7 +18,6 @@ target_link_libraries(libcore_symbol_price_streams
   PRIVATE libcore
   PRIVATE libcore_symbols_db
   PRIVATE libcpp
-  PRIVATE libdi
   PRIVATE libnetwork
   PRIVATE libnetworkx
 
