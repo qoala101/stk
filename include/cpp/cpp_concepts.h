@@ -77,6 +77,9 @@ concept Vector = std::same_as<T, std::vector<typename T::value_type>>;
 template <typename T>
 concept Enum = std::is_enum_v<T>;
 
+template <typename T>
+concept Interface = std::is_polymorphic_v<T>;
+
 template <typename T, typename... Args>
 concept ConstructibleFrom =
     requires(Args &&...args) { T{std::forward<Args>(args)...}; };

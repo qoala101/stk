@@ -16,10 +16,9 @@
 #include "networkx_make_server_for.h"
 #include "service_blsh_traits.h"  // IWYU pragma: keep
 #include "service_client_options.h"
+#include "service_inj_client_server.h"
 #include "service_inj_log_spdlog.h"
 #include "service_inj_network_restsdk.h"
-#include "service_inj_service_client.h"
-#include "service_inj_service_server.h"
 #include "service_inj_ts_symbols_db_override.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
