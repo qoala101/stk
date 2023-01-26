@@ -73,6 +73,15 @@ spec:
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
 
+        - name: old-symbol-prices-deleter-container
+          image: qoala101/stonks:old_symbol_prices_deleter
+          args:
+            - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
+            - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
+            - --delete_old_prices_interval=3600000
+            - --keep_prices_for_duration=3600000
+            - --reattempt_interval=60000
+
         - name: symbol-price-streams-container
           image: qoala101/stonks:service_symbol_price_streams
           args:
@@ -90,13 +99,11 @@ spec:
             - mountPath: "/app/data"
               name: symbols-db-volume
 
-        - name: symbols-db-updater-container
-          image: qoala101/stonks:service_symbols_db_updater
+        - name: symbols-info-updater-container
+          image: qoala101/stonks:service_symbols_info_updater
           args:
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
             - --update_symbols_info_interval=3600000
             - --check_if_update_required_interval=60000
-            - --delete_old_prices_interval=3600000
-            - --keep_prices_for_duration=3600000
             - --reattempt_interval=60000

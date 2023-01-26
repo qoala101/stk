@@ -1,13 +1,13 @@
-add_executable(service_symbol_price_streams
+add_executable(service_symbols_info_updater
   main.cc
 )
 
-target_link_libraries(service_symbol_price_streams
+target_link_libraries(service_symbols_info_updater
   PRIVATE libbinance
   PRIVATE libcli
   PRIVATE libcore
-  PRIVATE libcore_symbol_price_streams
   PRIVATE libcore_symbols_db
+  PRIVATE libcore_symbols_info_updater
   PRIVATE libcpp
   PRIVATE libdi
   PRIVATE liblog
@@ -28,5 +28,4 @@ target_link_libraries(service_symbol_price_streams
   PRIVATE nameof::nameof
   PRIVATE NotNull
   PRIVATE polymorphic_value::polymorphic_value
-  PRIVATE range-v3::range-v3
 )

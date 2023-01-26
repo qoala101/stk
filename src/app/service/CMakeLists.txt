@@ -31,6 +31,7 @@ target_link_libraries(libservice
 
 add_subdirectory(app_uri_exposer)
 add_subdirectory(buy_low_sell_high)
+add_subdirectory(old_symbol_prices_deleter)
 add_subdirectory(symbol_price_streams)
 add_subdirectory(symbols_db)
-add_subdirectory(symbols_db_updater)
+add_subdirectory(symbols_info_updater)

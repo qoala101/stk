@@ -1,4 +1,4 @@
-#include "core_sdbu_symbols_info_updater.h"
+#include "core_siu_impl.h"
 
 #include <absl/time/clock.h>
 #include <absl/time/time.h>
@@ -28,7 +28,7 @@
 #include "core_types.h"
 #include "cpp_typed_struct.h"
 
-namespace stonks::core::sdbu {
+namespace stonks::core::siu {
 namespace {
 auto ToSymbolInfo
     [[nodiscard]] (const binance::SymbolExchangeInfo &binance_info) {
@@ -43,14 +43,13 @@ auto ToSymbolInfo
 }
 }  // namespace
 
-SymbolsInfoUpdater::SymbolsInfoUpdater(
-    cpp::NnSp<ISymbolsDb> symbols_db, binance::BinanceApi binance_api,
-    absl::Duration update_symbols_info_interval)
+Impl::Impl(cpp::NnUp<ISymbolsDb> symbols_db, binance::BinanceApi binance_api,
+           absl::Duration update_symbols_info_interval)
     : symbols_db_{std::move(symbols_db)},
       binance_api_{std::move(binance_api)},
       update_symbols_info_interval_{update_symbols_info_interval} {}
 
-auto SymbolsInfoUpdater::GetAndUpdateSymbolsInfo() -> cppcoro::task<> {
+auto Impl::GetAndUpdateSymbolsInfo() -> cppcoro::task<> {
   const auto db_is_updated = !(co_await symbols_db_->SelectAssets()).empty();
   const auto time_since_last_update = absl::Now() - last_update_time_;
   const auto time_for_planned_update =
@@ -78,4 +77,4 @@ auto SymbolsInfoUpdater::GetAndUpdateSymbolsInfo() -> cppcoro::task<> {
   last_update_time_ = absl::Now();
   Ensures(last_update_time_ > absl::Time{});
 }
-}  // namespace stonks::core::sdbu
+}  // namespace stonks::core::siu

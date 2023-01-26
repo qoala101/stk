@@ -8,14 +8,14 @@
 #include "core_i_symbols_db.h"
 #include "cpp_not_null.h"
 
-namespace stonks::core::sdbu {
+namespace stonks::core::ospd {
 /**
  * @brief Deletes old symbol prices from Symbols DB.
  */
-class OldPricesDeleter {
+class Impl {
  public:
-  OldPricesDeleter(cpp::NnSp<ISymbolsDb> symbols_db,
-                   absl::Duration keep_prices_for_duration);
+  Impl(cpp::NnUp<ISymbolsDb> symbols_db,
+       absl::Duration keep_prices_for_duration);
 
   /**
    * @brief Deletes old prices.
@@ -23,9 +23,9 @@ class OldPricesDeleter {
   auto DeleteOldPrices [[nodiscard]] () const -> cppcoro::task<>;
 
  private:
-  cpp::NnSp<ISymbolsDb> symbols_db_;
+  cpp::NnUp<ISymbolsDb> symbols_db_;
   absl::Duration keep_prices_for_duration_{};
 };
-}  // namespace stonks::core::sdbu
+}  // namespace stonks::core::ospd
 
 #endif  // STONKS_APP_CORE_SYMBOLS_DB_UPDATER_CORE_SDBU_OLD_PRICES_DELETER_H_

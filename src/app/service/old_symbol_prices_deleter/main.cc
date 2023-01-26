@@ -1,6 +1,7 @@
 // clang-format off
 #include "core_json_conversions.h"  // IWYU pragma: keep
 // clang-format on
+
 #include <absl/time/time.h>
 
 #include <boost/di.hpp>
@@ -11,15 +12,14 @@
 #include "cli_app.h"
 #include "cli_option.h"
 #include "cli_options.h"
-#include "core_symbols_db_updater.h"
+#include "core_old_symbol_prices_deleter.h"
 #include "cpp_share.h"
 #include "di_auto_injectable.h"
 #include "di_make_injector.h"
 #include "service_client_options.h"
+#include "service_inj_client_server.h"
 #include "service_inj_log_spdlog.h"
 #include "service_inj_network_restsdk.h"
-#include "service_inj_client_server.h"
-#include "service_inj_ts_symbols_db_override.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_symbols_db.h"
 
@@ -29,12 +29,6 @@ void Main(int argc, const char *const *argv) {
 
   const auto symbols_db_client_options =
       ClientOptions<core::ISymbolsDb>{options};
-  const auto update_symbols_info_interval =
-      options.AddOption("--update_symbols_info_interval",
-                        absl::ToInt64Milliseconds(absl::Hours(1)));
-  const auto check_if_update_required_interval =
-      options.AddOption("--check_if_update_required_interval",
-                        absl::ToInt64Milliseconds(absl::Minutes(1)));
   const auto delete_old_prices_interval =
       options.AddOption("--delete_old_prices_interval",
                         absl::ToInt64Milliseconds(absl::Hours(1)));
@@ -44,24 +38,16 @@ void Main(int argc, const char *const *argv) {
       "--reattempt_interval", absl::ToInt64Milliseconds(absl::Minutes(1)));
 
   const auto app = cli::App{argc, argv, options};
-  auto base_injector = di::MakeInjector(
+  const auto injector = cpp::Share(di::MakeInjector(
       inj::CreateNetworkRestsdkInjector(), inj::CreateLogSpdlogInjector(),
-      inj::CreateClientInjector<SymbolsDb>(symbols_db_client_options));
-  const auto injector =
-      cpp::Share(inj::ts::OverrideThreadSafeSymbolsDbInjector(base_injector));
+      inj::CreateClientInjector<SymbolsDb>(symbols_db_client_options)));
 
-  app.Run([&injector, &update_symbols_info_interval,
-           &check_if_update_required_interval, &delete_old_prices_interval,
-           &keep_prices_for_duration, &reattempt_interval]() {
+  app.Run([&injector, &delete_old_prices_interval, &keep_prices_for_duration,
+           &reattempt_interval]() {
     auto auto_injectable = di::AutoInjectable{injector};
 
-    return core::SymbolsDbUpdater{
+    return core::OldSymbolPricesDeleter{
         {.symbols_db = auto_injectable,
-         .binance_api = auto_injectable,
-         .update_symbols_info_interval =
-             absl::Milliseconds(*update_symbols_info_interval),
-         .check_if_update_required_interval =
-             absl::Milliseconds(*check_if_update_required_interval),
          .delete_old_prices_interval =
              absl::Milliseconds(*delete_old_prices_interval),
          .keep_prices_for_duration =

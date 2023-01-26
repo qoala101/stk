@@ -1,13 +1,12 @@
-add_executable(service_symbols_db_updater
+add_executable(service_old_symbol_prices_deleter
   main.cc
 )
 
-target_link_libraries(service_symbols_db_updater
-  PRIVATE libbinance
+target_link_libraries(service_old_symbol_prices_deleter
   PRIVATE libcli
   PRIVATE libcore
   PRIVATE libcore_symbols_db
-  PRIVATE libcore_symbols_db_updater
+  PRIVATE libcore_old_symbol_prices_deleter
   PRIVATE libcpp
   PRIVATE libdi
   PRIVATE liblog
