@@ -17,15 +17,15 @@ namespace detail {
 template <typename Implementation, networkx::ClientServerType Target>
   requires std::is_base_of_v<Target, Implementation>
 auto CreateClientServerInjector(networkx::Uri<Target> uri) {
-  auto uri_injector = stonks::di::BindValueTypeToValue(std::move(uri));
+  auto uri_injector = di::BindValueTypeToValue(std::move(uri));
 
   if constexpr (cpp::Interface<Target>) {
     return di::MakeInjector(
         std::move(uri_injector),
-        stonks::di::BindInterfaceToImplementation<Target, Implementation>());
+        di::BindInterfaceToImplementation<Target, Implementation>());
   } else {
     return di::MakeInjector(std::move(uri_injector),
-                            stonks::di::EnableNnPointers<Implementation>());
+                            di::EnableNnPointers<Implementation>());
   }
 }
 }  // namespace detail

@@ -16,7 +16,7 @@ class StreamHandle {
    * Would reattempt connection if it fails.
    */
   StreamHandle(Symbol symbol, absl::Duration reattempt_interval,
-               cpp::NnSp<sps::StreamFactory> web_socket_factory);
+               sps::StreamFactory stream_factory);
 
  private:
   cpp::NnSp<cpp::Opt<networkx::WebSocket<&sps::PriceRecorder::RecordAsPrice>>>

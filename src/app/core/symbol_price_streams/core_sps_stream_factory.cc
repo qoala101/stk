@@ -22,10 +22,9 @@ auto BookTickerEndpointFor [[nodiscard]] (const Symbol &symbol) {
 }
 }  // namespace
 
-StreamFactory::StreamFactory(
-    cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
-    cpp::meta::ThreadSafe<cpp::Factory<network::IWsClient>> ws_client_factory)
-    : symbols_db_{std::move(*symbols_db)},
+StreamFactory::StreamFactory(cpp::NnSp<ISymbolsDb> symbols_db,
+                             cpp::Factory<network::IWsClient> ws_client_factory)
+    : symbols_db_{std::move(symbols_db)},
       ws_client_factory_{std::move(ws_client_factory)} {}
 
 auto StreamFactory::Create(Symbol symbol)

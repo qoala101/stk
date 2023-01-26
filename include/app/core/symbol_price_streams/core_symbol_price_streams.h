@@ -6,9 +6,9 @@
 #include <cppcoro/task.hpp>
 #include <vector>
 
-#include "core_sps_stream_factory.h"
 #include "core_sps_stream_handle.h"
 #include "core_types.h"
+#include "cpp_meta_thread_safe.h"
 
 namespace stonks::core {
 /**
@@ -23,7 +23,9 @@ class SymbolPriceStreams {
    */
   SymbolPriceStreams(std::vector<Symbol> symbols,
                      absl::Duration reattempt_interval,
-                     sps::StreamFactory stream_factory);
+                     cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
+                     cpp::meta::ThreadSafe<cpp::Factory<network::IWsClient>>
+                         ws_client_factory);
 
  private:
   std::vector<sps::StreamHandle> stream_handles_{};

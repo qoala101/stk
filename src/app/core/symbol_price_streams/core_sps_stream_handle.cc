@@ -5,14 +5,14 @@
 
 namespace stonks::core::sps {
 StreamHandle::StreamHandle(Symbol symbol, absl::Duration reattempt_interval,
-                           cpp::NnSp<sps::StreamFactory> web_socket_factory)
+                           sps::StreamFactory stream_factory)
     : web_socket_{cpp::MakeNnSp<
           cpp::Opt<networkx::WebSocket<&sps::PriceRecorder::RecordAsPrice>>>()},
       connect_to_web_socket_timer_{
           cpp::Execute([symbol = std::move(symbol),
-                        web_socket_factory = std::move(web_socket_factory),
+                        stream_factory = std::move(stream_factory),
                         web_socket = web_socket_]() mutable {
-            *web_socket = web_socket_factory->Create(symbol);
+            *web_socket = stream_factory.Create(symbol);
           })
               .Once()
               .IfThrowsReattemptEvery(reattempt_interval)

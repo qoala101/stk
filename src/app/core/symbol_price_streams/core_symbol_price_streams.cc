@@ -13,19 +13,22 @@
 #include "cpp_share.h"
 
 namespace stonks::core {
-SymbolPriceStreams::SymbolPriceStreams(std::vector<Symbol> symbols,
-                                       absl::Duration reattempt_interval,
-                                       sps::StreamFactory stream_factory)
-    : stream_handles_{
-          [symbols = std::move(symbols), reattempt_interval,
-           web_socket_factory = cpp::Share(std::move(stream_factory))]() {
-            return symbols |
-                   ranges::views::transform(
-                       [reattempt_interval,
-                        &web_socket_factory](const auto &symbol) {
-                         return sps::StreamHandle{symbol, reattempt_interval,
-                                                  web_socket_factory};
-                       }) |
-                   ranges::to_vector;
-          }()} {}
+SymbolPriceStreams::SymbolPriceStreams(
+    std::vector<Symbol> symbols, absl::Duration reattempt_interval,
+    cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
+    cpp::meta::ThreadSafe<cpp::Factory<network::IWsClient>> ws_client_factory)
+    : stream_handles_{[symbols = std::move(symbols), reattempt_interval,
+                       symbols_db = cpp::Share(std::move(*symbols_db)),
+                       &ws_client_factory]() {
+        return symbols |
+               ranges::views::transform(
+                   [reattempt_interval, &symbols_db,
+                    &ws_client_factory](const auto &symbol) {
+                     return sps::StreamHandle{
+                         symbol, reattempt_interval,
+                         sps::StreamFactory{symbols_db,
+                                            std::move(*ws_client_factory)}};
+                   }) |
+               ranges::to_vector;
+      }()} {}
 }  // namespace stonks::core

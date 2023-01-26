@@ -20,9 +20,9 @@
 #include "di_bind_value_type_to_value.h"
 #include "di_make_injector.h"
 #include "service_client_options.h"
+#include "service_inj_client_server.h"
 #include "service_inj_log_spdlog.h"
 #include "service_inj_network_restsdk.h"
-#include "service_inj_client_server.h"
 #include "service_inj_ts_symbols_db_override.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_symbols_db.h"
@@ -53,7 +53,7 @@ void Main(int argc, const char *const *argv) {
         *symbols | ranges::views::transform([](auto &symbol) {
           return core::Symbol{std::move(symbol)};
         }) | ranges::to_vector,
-        auto_injectable, auto_injectable};
+        auto_injectable, auto_injectable, auto_injectable};
   });
 }
 }  // namespace stonks::service::sps
