@@ -14,5 +14,6 @@ docker build -t qoala101/stonks:service_app_uri_exposer -f ./docker/service/debu
 docker build -t qoala101/stonks:service_buy_low_sell_high -f ./docker/service/debug/Dockerfile . --build-arg executable_name=service_buy_low_sell_high
 docker build -t qoala101/stonks:service_old_symbol_prices_deleter -f ./docker/service/debug/Dockerfile . --build-arg executable_name=service_old_symbol_prices_deleter
 docker build -t qoala101/stonks:service_symbol_price_streams -f ./docker/service/debug/Dockerfile . --build-arg executable_name=service_symbol_price_streams
+docker build -t qoala101/stonks:service_symbol_prices_filter -f ./docker/service/debug/Dockerfile . --build-arg executable_name=service_symbol_prices_filter
 docker build -t qoala101/stonks:service_symbols_db -f ./docker/service/debug/Dockerfile . --build-arg executable_name=service_symbols_db
 docker build -t qoala101/stonks:service_symbols_info_updater -f ./docker/service/debug/Dockerfile . --build-arg executable_name=service_symbols_info_updater

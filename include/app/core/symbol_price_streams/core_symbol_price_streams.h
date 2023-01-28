@@ -21,7 +21,7 @@ class SymbolPriceStreams {
    * @param reattempt_interval Time in which to reattempt stream connection
    * if it fails.
    */
-  SymbolPriceStreams(std::vector<Symbol> symbols,
+  SymbolPriceStreams(const std::vector<Symbol> &symbols,
                      absl::Duration reattempt_interval,
                      cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
                      cpp::meta::ThreadSafe<cpp::Factory<network::IWsClient>>

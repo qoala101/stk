@@ -12,9 +12,14 @@ x-terminal-emulator -e ./service_old_symbol_prices_deleter \
 
 x-terminal-emulator -e ./service_symbol_price_streams \
   --symbols_db_host=0.0.0.0 \
-  --symbols_db_port=30000 \
+  --symbols_db_port=30002 \
   --symbols=BTCUSDT,ETHUSDT,BNBUSDT \
   --reattempt_interval=60000 &
+
+x-terminal-emulator -e ./service_symbol_prices_filter \
+  --port=30002 \
+  --symbols_db_host=0.0.0.0 \
+  --symbols_db_port=30000 &
 
 x-terminal-emulator -e ./service_symbols_db \
   --port=30000 \

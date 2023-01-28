@@ -45,7 +45,7 @@ class Factory {
   auto Create [[nodiscard]] () { return creator_(); }
 
  private:
-  fu2::unique_function<auto()->ResultType> creator_{};
+  fu2::function<auto()->ResultType> creator_{};
 };
 }  // namespace stonks::cpp
 

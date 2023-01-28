@@ -23,13 +23,8 @@ class PriceRecorder {
   -> cppcoro::task<>;
 
  private:
-  auto GetBaseAssetPriceStep [[nodiscard]] () const -> cppcoro::task<double>;
-
-  auto GetLastPriceRecord [[nodiscard]] () const
-      -> cppcoro::task<cpp::Opt<SymbolPriceRecord>>;
-
-  auto SymbolPriceRecordFrom [[nodiscard]] (const binance::BookTick &book_tick,
-                                            double base_asset_price_step);
+  auto SymbolPriceRecordFrom
+      [[nodiscard]] (const binance::BookTick &book_tick) const;
 
   Symbol symbol_{};
   cpp::NnSp<ISymbolsDb> symbols_db_;

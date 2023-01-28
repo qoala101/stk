@@ -10,6 +10,8 @@ spec:
       port: 30001
     - name: sdb-port
       port: 30000
+    - name: spf-port
+      port: 30002
 
 ---
 apiVersion: networking.k8s.io/v1
@@ -86,9 +88,16 @@ spec:
           image: qoala101/stonks:service_symbol_price_streams
           args:
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
-            - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
+            - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SPF_PORT)
             - --symbols=BTCUSDT,ETHUSDT,BNBUSDT
             - --reattempt_interval=60000
+
+        - name: symbol-prices-filter-container
+          image: qoala101/stonks:service_symbol_prices_filter
+          args:
+            - --port=spf-port
+            - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
+            - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
 
         - name: symbols-db-container
           image: qoala101/stonks:service_symbols_db
