@@ -22,7 +22,7 @@ class AutoUpdatableBase {
   /**
    * @brief Prevents value from being updated in scope.
    */
-  auto LockUpdates [[nodiscard]] () -> cpp::Sp<UpdateLock>;
+  auto LockUpdates [[nodiscard]] () -> Sp<UpdateLock>;
 
  protected:
   explicit AutoUpdatableBase(absl::Duration update_interval);
@@ -34,7 +34,7 @@ class AutoUpdatableBase {
  private:
   absl::Duration update_interval_{};
   absl::Time last_update_time_{};
-  cpp::Wp<detail::UpdateLock> update_lock_;
+  Wp<detail::UpdateLock> update_lock_;
 };
 }  // namespace detail
 
@@ -49,7 +49,7 @@ class AutoUpdatable : public detail::AutoUpdatableBase {
    * when it's requested the first time and then every time when requested after
    * the specified interval.
    */
-  template <cpp::CallableReturning<cppcoro::task<T>> Updater>
+  template <CallableReturning<cppcoro::task<T>> Updater>
   AutoUpdatable(Updater &&updater, absl::Duration update_interval)
       : detail::AutoUpdatableBase{update_interval},
         updater_{std::forward<Updater>(updater)},
@@ -84,7 +84,7 @@ class AutoUpdatable : public detail::AutoUpdatableBase {
   /**
    * @brief Gives the object the updated one points to.
    */
-  auto operator->[[nodiscard]] () -> cppcoro::task<cpp::Nn<T *>> {
+  auto operator->[[nodiscard]] () -> cppcoro::task<Nn<T *>> {
     co_return AssumeNn(&*(co_await (*this)));
   }
 

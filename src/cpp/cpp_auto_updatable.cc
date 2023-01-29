@@ -1,11 +1,11 @@
 #include "cpp_auto_updatable.h"
 
 namespace stonks::cpp::detail {
-auto AutoUpdatableBase::LockUpdates [[nodiscard]] () -> cpp::Sp<UpdateLock> {
+auto AutoUpdatableBase::LockUpdates [[nodiscard]] () -> Sp<UpdateLock> {
   auto update_lock = update_lock_.lock();
 
   if (update_lock == nullptr) {
-    update_lock = cpp::MakeSp<detail::UpdateLock>();
+    update_lock = MakeSp<detail::UpdateLock>();
     update_lock_ = update_lock;
   }
 

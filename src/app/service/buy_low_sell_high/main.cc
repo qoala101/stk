@@ -19,7 +19,7 @@
 #include "service_inj_client_server.h"
 #include "service_inj_log_spdlog.h"
 #include "service_inj_network_restsdk.h"
-#include "service_inj_ts_symbols_db_override.h"
+#include "service_inj_symbols_db_client.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
 #include "service_symbols_db.h"
@@ -33,12 +33,10 @@ void Main(int argc, const char *const *argv) {
       ClientOptions<core::ISymbolsDb>{options};
 
   const auto app = cli::App{argc, argv, options};
-  auto base_injector = di::MakeInjector(
+  const auto injector = di::MakeInjector(
       inj::CreateNetworkRestsdkInjector(), inj::CreateLogSpdlogInjector(),
       inj::CreateServerInjector<core::BuyLowSellHigh>(server_options),
-      inj::CreateClientInjector<SymbolsDb>(symbols_db_client_options));
-  const auto injector =
-      inj::ts::OverrideThreadSafeSymbolsDbInjector(base_injector);
+      inj::CreateSymbolsDbClientInjector(symbols_db_client_options));
 
   app.Run([&injector]() {
     return di::CallWithInjectedArgs(

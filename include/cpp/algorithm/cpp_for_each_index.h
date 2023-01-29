@@ -21,7 +21,7 @@ namespace detail {
 template <unsigned kIndex, typename ResultType>
 auto ForEachIndexImpl [[nodiscard]] (const auto &function) {
   if constexpr (!std::is_same_v<ResultType, void>) {
-    static_assert(cpp::Optional<ResultType>);
+    static_assert(Optional<ResultType>);
 
     auto result = function(CurrentIndexTraits<kIndex>{});
 

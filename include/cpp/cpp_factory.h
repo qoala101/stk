@@ -6,6 +6,7 @@
 #include <type_traits>
 
 #include "cpp_concepts.h"
+#include "cpp_mutex.h"
 #include "cpp_not_null.h"
 
 namespace stonks::cpp {
@@ -32,20 +33,25 @@ class Factory {
   /**
    * @param creator Would be called to create the objects.
    */
-  template <cpp::CallableReturning<ResultType> Creator>
+  template <CallableReturning<ResultType> Creator>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
-  explicit Factory(Creator &&creator)
-      : creator_{std::forward<Creator>(creator)} {
+  explicit Factory(Creator &&creator, MutexVariant create_mutex = {})
+      : creator_{std::forward<Creator>(creator)},
+        create_mutex_{std::move(create_mutex)} {
     Ensures(!creator_.empty());
   }
 
   /**
    * @brief Creates the object.
    */
-  auto Create [[nodiscard]] () { return creator_(); }
+  auto Create [[nodiscard]] () {
+    const auto lock = create_mutex_.Lock();
+    return creator_();
+  }
 
  private:
   fu2::function<auto()->ResultType> creator_{};
+  MutexVariant create_mutex_{};
 };
 }  // namespace stonks::cpp
 

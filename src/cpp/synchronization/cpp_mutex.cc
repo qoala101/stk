@@ -1,7 +1,7 @@
 #include "cpp_mutex.h"
 
 namespace stonks::cpp {
-Mutex::Mutex() : mutex_{cpp::MakeNnSp<std::mutex>()} {}
+Mutex::Mutex() : mutex_{MakeNnSp<std::mutex>()} {}
 
 auto Mutex::Lock() const -> LockVariant {
   return LockVariant{std::in_place_type<class Lock>, mutex_};

@@ -52,9 +52,9 @@ class TimerBuilder {
 
  private:
   fu2::unique_function<void()> event_{};
-  cpp::Opt<absl::Duration> event_interval_{};
-  cpp::Opt<absl::Duration> reattempt_interval_{};
-  cpp::Opt<int> num_reattempts_{};
+  Opt<absl::Duration> event_interval_{};
+  Opt<absl::Duration> reattempt_interval_{};
+  Opt<int> num_reattempts_{};
 };
 
 /**

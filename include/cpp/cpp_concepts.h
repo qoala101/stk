@@ -20,7 +20,7 @@ template <typename T>
 constexpr auto IsTypeList = false;
 
 template <typename... Ts>
-constexpr auto IsTypeList<cpp::TypeList<Ts...>> = true;
+constexpr auto IsTypeList<TypeList<Ts...>> = true;
 
 template <typename T, typename Ts>
 constexpr auto IsVariantOf = false;

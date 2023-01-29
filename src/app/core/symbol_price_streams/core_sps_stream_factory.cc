@@ -22,14 +22,15 @@ auto BookTickerEndpointFor [[nodiscard]] (const Symbol &symbol) {
 }
 }  // namespace
 
-StreamFactory::StreamFactory(cpp::NnSp<ISymbolsDb> symbols_db,
-                             cpp::Factory<network::IWsClient> ws_client_factory)
+StreamFactory::StreamFactory(
+    cpp::NnSp<ISymbolsDb> symbols_db,
+    cpp::NnSp<cpp::Factory<network::IWsClient>> ws_client_factory)
     : symbols_db_{std::move(symbols_db)},
       ws_client_factory_{std::move(ws_client_factory)} {}
 
 auto StreamFactory::Create(Symbol symbol)
     -> networkx::WebSocket<&PriceRecorder::RecordAsPrice> {
-  return {BookTickerEndpointFor(symbol), ws_client_factory_.Create(),
+  return {BookTickerEndpointFor(symbol), ws_client_factory_->Create(),
           sps::PriceRecorder{std::move(symbol), symbols_db_}};
 }
 }  // namespace stonks::core::sps

@@ -11,23 +11,23 @@ namespace stonks::cpp {
  */
 template <typename T>
 auto Share(T t) {
-  return cpp::MakeNnSp<std::remove_cvref_t<T>>(std::move(t));
+  return MakeNnSp<std::remove_cvref_t<T>>(std::move(t));
 }
 
 /**
  * @copydoc Share
  */
 template <typename T>
-auto Share(cpp::Up<T> t) {
-  return cpp::Sp<T>{std::move(t)};
+auto Share(Up<T> t) {
+  return Sp<T>{std::move(t)};
 }
 
 /**
  * @copydoc Share
  */
 template <typename T>
-auto Share(cpp::NnUp<T> t) {
-  return cpp::NnSp<T>{std::move(t)};
+auto Share(NnUp<T> t) {
+  return NnSp<T>{std::move(t)};
 }
 }  // namespace stonks::cpp
 

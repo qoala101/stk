@@ -6,6 +6,8 @@
 #include <type_traits>
 
 #include "cpp_factory.h"
+#include "cpp_meta_thread_safe.h"
+#include "cpp_mutex.h"
 #include "cpp_not_null.h"
 #include "di_bind_type_to_factory_function.h"
 #include "di_enable_nn_pointers.h"
@@ -13,6 +15,16 @@
 
 namespace stonks::di {
 namespace detail {
+template <typename Interface>
+auto FactoryFrom
+    [[nodiscard]] (cpp::NnSp<boost::di::extension::ifactory<Interface>> factory,
+                   cpp::MutexVariant mutex) {
+  return cpp::Factory<Interface>{[factory = std::move(factory)]() {
+                                   return cpp::AssumeNn(factory->create());
+                                 },
+                                 std::move(mutex)};
+}
+
 template <cpp::Interface Interface, std::derived_from<Interface> Implementation>
 auto EnableFactory [[nodiscard]] () {
   return MakeInjector(
@@ -22,9 +34,13 @@ auto EnableFactory [[nodiscard]] () {
       di::BindTypeToFactoryFunction<
           cpp::Factory<Interface>,
           +[](cpp::NnSp<boost::di::extension::ifactory<Interface>> factory) {
-            return cpp::Factory<Interface>{[factory = std::move(factory)]() {
-              return cpp::AssumeNn(factory->create());
-            }};
+            return FactoryFrom(std::move(factory), {});
+          }>(),
+      di::BindTypeToFactoryFunction<
+          cpp::meta::ThreadSafe<cpp::Factory<Interface>>,
+          +[](cpp::NnSp<boost::di::extension::ifactory<Interface>> factory) {
+            return cpp::meta::AssumeThreadSafe(
+                FactoryFrom(std::move(factory), {cpp::Mutex{}}));
           }>());
 }
 }  // namespace detail

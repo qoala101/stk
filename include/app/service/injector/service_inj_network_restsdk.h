@@ -20,6 +20,6 @@ inline auto CreateNetworkRestsdkInjector [[nodiscard]] () {
       di::BindInterfaceToImplementation<network::IWsClient,
                                         restsdk::WsClient>());
 }
-}  // namespace stonks::service
+}  // namespace stonks::service::inj
 
 #endif  // STONKS_APP_SERVICE_SERVICE_CREATE_NETWORK_RESTSDK_INJECTOR_H_

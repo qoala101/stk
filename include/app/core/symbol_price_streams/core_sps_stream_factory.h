@@ -18,7 +18,7 @@ namespace stonks::core::sps {
 class StreamFactory {
  public:
   StreamFactory(cpp::NnSp<ISymbolsDb> symbols_db,
-                cpp::Factory<network::IWsClient> ws_client_factory);
+                cpp::NnSp<cpp::Factory<network::IWsClient>> ws_client_factory);
 
   /**
    * @brief Creates web socket from args.
@@ -29,7 +29,7 @@ class StreamFactory {
 
  private:
   cpp::NnSp<ISymbolsDb> symbols_db_;
-  cpp::Factory<network::IWsClient> ws_client_factory_;
+  cpp::NnSp<cpp::Factory<network::IWsClient>> ws_client_factory_;
 };
 }  // namespace stonks::core::sps
 
