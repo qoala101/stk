@@ -7,7 +7,6 @@
 
 #include "cli_options.h"
 #include "cli_run_scope.h"
-#include "cpp_meta_private_to.h"
 #include "cpp_not_null.h"
 
 namespace stonks::cli {
@@ -22,5 +21,5 @@ App::App(int argc, const char* const* argv, const Options& options)
   options.SetValuesFromNativeOptions(*app_);
 }
 
-auto App::CreateRunScope() const -> RunScope { return {{}, app_}; }
+auto App::CreateRunScope() const -> RunScope { return RunScope{app_}; }
 }  // namespace stonks::cli

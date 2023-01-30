@@ -15,7 +15,6 @@
 
 namespace stonks::sqlite {
 PreparedStatementImpl::PreparedStatementImpl(
-    cpp::meta::PrivateTo<Db> /*unused*/,
     cpp::NnSp<NativeDbHandleVariant> native_db_handle,
     NativeStatementHandle native_statement_handle, sqldb::Query query,
     cpp::NnSp<log::ILogger> logger, cpp::MutexVariant native_statement_mutex)

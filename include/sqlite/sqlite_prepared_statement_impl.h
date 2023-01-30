@@ -3,7 +3,6 @@
 
 #include <vector>
 
-#include "cpp_meta_private_to.h"
 #include "cpp_mutex.h"
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
@@ -14,8 +13,6 @@
 #include "sqlite_native_statement_facade.h"
 
 namespace stonks::sqlite {
-class Db;
-
 /**
  * @brief Common API and fields for prepared statements implementation.
  * @remark Keeps DB alive while handle is alive.
@@ -27,8 +24,7 @@ class PreparedStatementImpl {
    * produced by parent DB.
    * @param mutex Protects lifetime and execution of native statement.
    */
-  PreparedStatementImpl(cpp::meta::PrivateTo<Db>,
-                        cpp::NnSp<NativeDbHandleVariant> native_db_handle,
+  PreparedStatementImpl(cpp::NnSp<NativeDbHandleVariant> native_db_handle,
                         NativeStatementHandle native_statement_handle,
                         sqldb::Query query, cpp::NnSp<log::ILogger> logger,
                         cpp::MutexVariant native_statement_mutex);

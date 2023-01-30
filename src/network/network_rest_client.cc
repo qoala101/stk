@@ -3,7 +3,6 @@
 #include <string>
 #include <utility>
 
-#include "cpp_meta_private_to.h"
 #include "cpp_not_null.h"
 #include "cpp_typed_struct.h"
 #include "network_i_rest_request_sender.h"
@@ -25,6 +24,6 @@ auto RestClient::Call(TypedEndpoint endpoint) const
       cpp::MakeNnUp<TypedEndpointSender>(std::move(endpoint.expected_types),
                                          request_sender_));
 
-  return {{}, std::move(endpoint.endpoint), std::move(decorated_sender)};
+  return {std::move(endpoint.endpoint), std::move(decorated_sender)};
 }
 }  // namespace stonks::network

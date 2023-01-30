@@ -14,10 +14,10 @@
 #include "network_types.h"
 
 namespace stonks::network::rest_client {
-RequestBuilder::RequestBuilder(cpp::meta::PrivateTo<RestClient> /*unused*/,
-                               Endpoint endpoint,
+RequestBuilder::RequestBuilder(Endpoint endpoint,
                                cpp::NnUp<IRestRequestSender> request_sender)
-    : RequestBuilder{std::move(endpoint), std::move(request_sender)} {}
+    : endpoint_{std::move(endpoint)},
+      request_sender_{std::move(request_sender)} {}
 
 template <cpp::This<RequestBuilder> This>
 auto RequestBuilder::DiscardingResultImpl(This& t) -> cppcoro::task<> {
@@ -31,11 +31,6 @@ auto RequestBuilder::DiscardingResult() const -> cppcoro::task<> {
 auto RequestBuilder::DiscardingResult() -> cppcoro::task<> {
   co_await DiscardingResultImpl(*this);
 }
-
-RequestBuilder::RequestBuilder(Endpoint endpoint,
-                               cpp::NnUp<IRestRequestSender> request_sender)
-    : endpoint_{std::move(endpoint)},
-      request_sender_{std::move(request_sender)} {}
 
 template <Parsable T, cpp::This<RequestBuilder> This>
 auto RequestBuilder::SendRequestAndGetResultImpl(This& t) -> cppcoro::task<T> {

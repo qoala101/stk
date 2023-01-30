@@ -4,7 +4,6 @@
 #include <not_null.hpp>
 #include <utility>
 
-#include "cpp_meta_private_to.h"
 #include "cpp_not_null.h"
 #include "cpp_share.h"
 #include "sqldb_i_select_statement.h"
@@ -29,12 +28,9 @@ auto Db::PreparedStatementImplFrom(sqldb::Query query) {
   auto native_statement_handle = native_db_facade_.CreatePreparedStatement(
       native_db_handle_->GetNativeDb(), query);
   auto native_statement_mutex = prepared_statement_mutex_factory_.Create();
-  return PreparedStatementImpl{cpp::meta::PrivateTo<Db>{},
-                               native_db_handle_,
-                               std::move(native_statement_handle),
-                               std::move(query),
-                               logger_,
-                               std::move(native_statement_mutex)};
+  return PreparedStatementImpl{
+      native_db_handle_, std::move(native_statement_handle), std::move(query),
+      logger_, std::move(native_statement_mutex)};
 }
 
 auto Db::PrepareStatement(sqldb::SelectQuery query)

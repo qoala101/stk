@@ -5,7 +5,6 @@
 #include <string>
 #include <utility>
 
-#include "cpp_meta_private_to.h"
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 #include "cpp_this.h"          // IWYU pragma: keep
@@ -14,16 +13,13 @@
 #include "network_json_conversions_facades.h"
 #include "network_types.h"
 
-namespace stonks::network {
-class RestClient;
-
-namespace rest_client {
+namespace stonks::network::rest_client {
 /**
  * @brief Convenience API for building requests from the REST client.
  */
 class RequestBuilder {
  public:
-  RequestBuilder(cpp::meta::PrivateTo<RestClient>, Endpoint endpoint,
+  RequestBuilder(Endpoint endpoint,
                  cpp::NnUp<IRestRequestSender> request_sender);
 
   /**
@@ -71,9 +67,6 @@ class RequestBuilder {
   }
 
  private:
-  RequestBuilder(Endpoint endpoint,
-                 cpp::NnUp<IRestRequestSender> request_sender);
-
   static auto DiscardingResultImpl
       [[nodiscard]] (cpp::This<RequestBuilder> auto &t) -> cppcoro::task<>;
 
@@ -95,7 +88,6 @@ class RequestBuilder {
   cpp::Opt<Body> body_{};
   cpp::NnUp<IRestRequestSender> request_sender_;
 };
-}  // namespace rest_client
-}  // namespace stonks::network
+}  // namespace stonks::network::rest_client
 
 #endif  // STONKS_NETWORK_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_

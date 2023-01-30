@@ -4,7 +4,6 @@
 #include <cppcoro/task.hpp>
 #include <utility>
 
-#include "cpp_meta_private_to.h"
 #include "cpp_not_null.h"
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_ws_client.h"
@@ -12,16 +11,13 @@
 #include "network_ws_types.h"
 
 namespace stonks::network {
-class WsClientBuilder;
-
 /**
  * @brief Web socket facade which allows sending of objects
  * and keeps connection alive.
  */
 class WsConnection {
  public:
-  WsConnection(cpp::meta::PrivateTo<WsClientBuilder>,
-               cpp::NnUp<IWsClient> ws_client);
+  explicit WsConnection(cpp::NnUp<IWsClient> ws_client);
 
   /**
    * @brief Sends the object to the previously connected web socket.
