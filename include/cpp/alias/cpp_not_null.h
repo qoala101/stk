@@ -13,6 +13,9 @@ namespace stonks::cpp {
 template <typename... Ts>
 using Nn = ::cpp::not_null<Ts...>;
 
+template <typename T>
+using Nullable = std::remove_cvref_t<decltype(std::declval<T>().as_nullable())>;
+
 template <typename... Args>
 auto AssumeNn [[nodiscard]] (Args &&...args) {
   return ::cpp::assume_not_null(std::forward<Args>(args)...);

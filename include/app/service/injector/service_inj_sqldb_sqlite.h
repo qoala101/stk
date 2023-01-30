@@ -32,8 +32,12 @@ inline auto CreateSqldbSqliteInjector [[nodiscard]] () {
               sqlite::NativeDbHandleVariant native_db_handle) {
             sqlite::NativeDbFacade::SetSynchronizationEnabled(
                 native_db_handle.GetNativeDb(), true);
-            auto db = cpp::MakeNnUp<sqlite::Db>(std::move(logger),
-                                                std::move(native_db_handle));
+            auto prepared_statement_mutex_factory =
+                cpp::Factory<cpp::MutexVariant>{
+                    []() { return cpp::MutexVariant{cpp::Mutex{}}; }, {}};
+            auto db = cpp::MakeNnUp<sqlite::Db>(
+                std::move(logger), std::move(native_db_handle),
+                std::move(prepared_statement_mutex_factory));
             return cpp::meta::AssumeThreadSafe<cpp::NnUp<sqldb::IDb>>(
                 std::move(db));
           }>());

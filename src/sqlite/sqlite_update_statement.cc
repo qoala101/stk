@@ -15,8 +15,7 @@ UpdateStatement::UpdateStatement(PreparedStatementImpl impl)
     : impl_{std::move(impl)} {}
 
 void UpdateStatement::Execute(std::vector<sqldb::Value> params) const {
-  impl_.BeforeExecution(params);
-
+  const auto lock = impl_.PrepareExecutionAndLock(params);
   const auto result_code =
       NativeStatementFacade::Step(impl_.GetNativeStatement());
 

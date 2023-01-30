@@ -66,7 +66,7 @@ WsClient::WsClient(WsClient &&) noexcept = default;
 auto WsClient::operator=(WsClient &&) noexcept -> WsClient & = default;
 
 WsClient::~WsClient() {
-  if (const auto object_was_moved = native_ws_client_ == nullptr) {
+  if (const auto object_was_moved = native_ws_client_.get() == nullptr) {
     return;
   }
 

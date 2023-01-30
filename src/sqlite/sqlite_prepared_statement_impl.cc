@@ -2,8 +2,10 @@
 
 #include <fmt/core.h>
 
+#include <gsl/assert>
 #include <string>
 #include <utility>
+#include <variant>
 
 #include "cpp_not_null.h"
 #include "cpp_typed_struct.h"
@@ -13,23 +15,39 @@
 
 namespace stonks::sqlite {
 PreparedStatementImpl::PreparedStatementImpl(
+    cpp::meta::PrivateTo<Db> /*unused*/,
     cpp::NnSp<NativeDbHandleVariant> native_db_handle,
     NativeStatementHandle native_statement_handle, sqldb::Query query,
-    cpp::NnSp<log::ILogger> logger)
+    cpp::NnSp<log::ILogger> logger, cpp::MutexVariant native_statement_mutex)
     : native_db_handle_{std::move(native_db_handle)},
-      native_statement_handle_{std::move(native_statement_handle)},
+      native_statement_handle_{
+          std::move(native_statement_handle).as_nullable()},
       query_{std::move(query)},
-      logger_{std::move(logger)} {}
+      logger_{std::move(logger)},
+      native_statement_mutex_{std::move(native_statement_mutex)} {
+  Ensures(native_statement_handle_ != nullptr);
+}
 
-auto PreparedStatementImpl::GetNativeStatement() const -> sqlite3_stmt& {
+PreparedStatementImpl::~PreparedStatementImpl() {
+  if (const auto object_was_moved = native_statement_handle_ == nullptr) {
+    return;
+  }
+
+  const auto lock = native_statement_mutex_.Lock();
+  native_statement_handle_.reset();
+}
+
+auto PreparedStatementImpl::GetNativeStatement() const -> sqlite3_stmt & {
   return *native_statement_handle_;
 }
 
-void PreparedStatementImpl::BeforeExecution(
-    const std::vector<sqldb::Value>& params) const {
+auto PreparedStatementImpl::PrepareExecutionAndLock(
+    const std::vector<sqldb::Value> &params) const -> cpp::LockVariant {
   logger_->LogImportantEvent(fmt::format("Executing query: {}", *query_));
 
+  auto lock = native_statement_mutex_.Lock();
   NativeStatementFacade::Reset(*native_statement_handle_);
   NativeStatementFacade::BindParams(*native_statement_handle_, params);
+  return lock;
 }
 }  // namespace stonks::sqlite

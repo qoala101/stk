@@ -79,8 +79,9 @@ const auto kBuyLowSellHigh = []() {
     }
   }());
 
-  return stonks::core::BuyLowSellHigh{
-      {stonks::cpp::MakeNnUp<stonks::core::SymbolsDb>(std::move(symbols_db))}};
+  return stonks::core::BuyLowSellHigh{stonks::cpp::meta::AssumeThreadSafe<
+      stonks::cpp::NnUp<stonks::core::ISymbolsDb>>(
+      stonks::cpp::MakeNnUp<stonks::core::SymbolsDb>(std::move(symbols_db)))};
 }();
 
 TEST(AppBuyLowSellHigh, CalculateNextOperations) {

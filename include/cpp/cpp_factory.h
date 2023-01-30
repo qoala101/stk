@@ -22,10 +22,10 @@ struct FactoryTraits<T> {
 };
 }  // namespace detail
 
-template <typename T>
 /**
  * @brief Simple factory interface.
  */
+template <typename T>
 class Factory {
  public:
   using ResultType = typename detail::FactoryTraits<T>::ResultType;
@@ -35,11 +35,17 @@ class Factory {
    */
   template <CallableReturning<ResultType> Creator>
   // NOLINTNEXTLINE(*-forwarding-reference-overload)
-  explicit Factory(Creator &&creator, MutexVariant create_mutex = {})
+  Factory(Creator &&creator, MutexVariant create_mutex)
       : creator_{std::forward<Creator>(creator)},
         create_mutex_{std::move(create_mutex)} {
     Ensures(!creator_.empty());
   }
+
+  /**
+   * @brief Creates default constructible objects.
+   */
+  explicit Factory(MutexVariant create_mutex)
+      : Factory{[]() { return T{}; }, std::move(create_mutex)} {}
 
   /**
    * @brief Creates the object.

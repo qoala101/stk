@@ -19,9 +19,6 @@
 
 namespace stonks::sqlite {
 namespace {
-using NullableNativeStatementHandle = std::remove_cvref_t<
-    decltype(std::declval<NativeStatementHandle>().as_nullable())>;
-
 auto GetAssociatedFileName [[nodiscard]] (sqlite3 &db) -> std::string {
   const auto *const file_name = sqlite3_db_filename(&db, nullptr);
 
@@ -62,7 +59,7 @@ void NativeDbFacade::EnableForeignKeys(sqlite3 &db) {
 }
 
 void NativeDbFacade::SetSynchronizationEnabled(sqlite3 &db, bool enabled) {
-  SetPragma(db, "synchronous", enabled ? "ON" : "OFF");
+  SetPragma(db, "synchronous", enabled ? "FULL" : "OFF");
 }
 
 void NativeDbFacade::WriteToFile(sqlite3 &db, const FilePath &file_path) const {
@@ -90,8 +87,8 @@ auto NativeDbFacade::CreatePreparedStatement(sqlite3 &db,
   logger_->LogImportantEvent(
       fmt::format("Prepared statement for query {}", *query));
 
-  return NativeStatementHandle{cpp::AssumeNn(NullableNativeStatementHandle{
-      native_statement, detail::NativeStatementFinalizer{logger_}})};
+  return cpp::AssumeNn(cpp::Nullable<NativeStatementHandle>{
+      native_statement, detail::NativeStatementFinalizer{logger_}});
 }
 
 void NativeDbFacade::Close(sqlite3 &db) const {

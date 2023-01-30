@@ -2,7 +2,6 @@
 
 #include <boost/di.hpp>
 #include <cstdint>
-#include <iostream>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 #include <string>

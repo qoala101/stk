@@ -87,9 +87,7 @@ struct SymbolPriceRecord : public sqldb::Table<SymbolPriceRecord> {
       Column<decltype(core::SymbolPriceRecord::sell_price)::ValueType,
              struct sell_price>;
 
-  struct time : public Column<int64_t, time> {
-    struct Unique;
-  };
+  struct time : public Column<int64_t, struct time> {};
 
   using Columns = cpp::TypeList<symbol_id, buy_price, sell_price, time>;
 };

@@ -19,7 +19,7 @@ class Lock {
 
  private:
   NnSp<std::mutex> mutex_;
-  std::lock_guard<std::mutex> lock_;
+  std::unique_lock<std::mutex> lock_{};
 };
 
 /**

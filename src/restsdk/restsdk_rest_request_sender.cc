@@ -140,7 +140,21 @@ RestRequestSender::RestRequestSender(RestRequestSender &&) noexcept = default;
 auto RestRequestSender::operator=(RestRequestSender &&) noexcept
     -> RestRequestSender & = default;
 
-RestRequestSender::~RestRequestSender() = default;
+RestRequestSender::~RestRequestSender() {
+  if (const auto object_was_moved = http_client_ == nullptr) {
+    return;
+  }
+
+  const auto authority = http_client_->base_uri().authority().to_string();
+
+  {
+    const auto lock = http_client_mutex_.Lock();
+    http_client_.reset();
+  }
+
+  logger_->LogImportantEvent(
+      fmt::format("Disconnected request sender from {}", authority));
+}
 
 auto RestRequestSender::SendRequestAndGetResponse(network::RestRequest request)
     -> cppcoro::task<network::RestResponse> {

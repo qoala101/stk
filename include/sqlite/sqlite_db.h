@@ -1,6 +1,7 @@
 #ifndef STONKS_SQLITE_SQLITE_DB_H_
 #define STONKS_SQLITE_SQLITE_DB_H_
 
+#include "cpp_factory.h"
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
 #include "sqldb_i_db.h"
@@ -18,8 +19,11 @@ class Db : public sqldb::IDb {
  public:
   /**
    * @brief Creates wrapper for SQLite DB.
+   * @param prepared_statement_mutex_factory Produces mutexes for prepared
+   * statements which determines their thread safety.
    */
-  Db(cpp::NnUp<log::ILogger> logger, NativeDbHandleVariant native_db_handle);
+  Db(cpp::NnUp<log::ILogger> logger, NativeDbHandleVariant native_db_handle,
+     cpp::Factory<cpp::MutexVariant> prepared_statement_mutex_factory);
 
   /**
    * @copydoc sqldb::IDb::PrepareStatement
@@ -34,10 +38,11 @@ class Db : public sqldb::IDb {
   -> cpp::NnUp<sqldb::IUpdateStatement> override;
 
  private:
-  auto PreparedStatementImplFrom [[nodiscard]] (sqldb::Query query) const;
+  auto PreparedStatementImplFrom [[nodiscard]] (sqldb::Query query);
 
   cpp::NnSp<log::ILogger> logger_;
   cpp::NnSp<NativeDbHandleVariant> native_db_handle_;
+  cpp::Factory<cpp::MutexVariant> prepared_statement_mutex_factory_;
   NativeDbFacade native_db_facade_;
 };
 }  // namespace stonks::sqlite

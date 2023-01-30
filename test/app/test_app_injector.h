@@ -36,10 +36,17 @@ inline auto Injector [[nodiscard]] () -> auto & {
               stonks::sqlite::NativeDbHandleVariant native_db_handle) {
             stonks::sqlite::NativeDbFacade::SetSynchronizationEnabled(
                 native_db_handle.GetNativeDb(), true);
+            auto prepared_statement_mutex_factory =
+                stonks::cpp::Factory<stonks::cpp::MutexVariant>{
+                    []() {
+                      return stonks::cpp::MutexVariant{stonks::cpp::Mutex{}};
+                    },
+                    {}};
             return stonks::cpp::meta::AssumeThreadSafe<
                 stonks::cpp::NnUp<stonks::sqldb::IDb>>(
                 stonks::cpp::MakeNnUp<stonks::sqlite::Db>(
-                    std::move(logger), std::move(native_db_handle)));
+                    std::move(logger), std::move(native_db_handle),
+                    std::move(prepared_statement_mutex_factory)));
           }>());
   return injector;
 }

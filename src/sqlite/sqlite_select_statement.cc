@@ -46,10 +46,10 @@ SelectStatement::SelectStatement(
 
 auto SelectStatement::Execute(std::vector<sqldb::Value> params) const
     -> sqldb::Rows {
-  impl_.BeforeExecution(params);
-
   auto &native_statement = impl_.GetNativeStatement();
   auto result_rows = sqldb::Rows{result_columns_};
+
+  const auto lock = impl_.PrepareExecutionAndLock(params);
 
   while (true) {
     const auto result_code = NativeStatementFacade::Step(native_statement);

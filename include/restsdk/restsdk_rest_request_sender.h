@@ -20,11 +20,12 @@ class http_client;  // IWYU pragma: keep
 namespace stonks::restsdk {
 /**
  * @copydoc network::IRestRequestSender
+ * @param http_client_mutex Protects lifetime of the native http client.
  */
 class RestRequestSender : public network::IRestRequestSender {
  public:
-  explicit RestRequestSender(cpp::NnUp<log::ILogger> logger,
-                             cpp::MutexVariant http_client_mutex = {});
+  RestRequestSender(cpp::NnUp<log::ILogger> logger,
+                    cpp::MutexVariant http_client_mutex);
 
   RestRequestSender(const RestRequestSender &) = delete;
   RestRequestSender(RestRequestSender &&) noexcept;
