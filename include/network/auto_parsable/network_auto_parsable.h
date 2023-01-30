@@ -43,30 +43,24 @@ class AutoParsable {
     return OperatorTImpl<T>();
   }
 
+  // TODO(vh): This is a hack which allows AutoParsable to be converted
+  // to const cpp::Opt<T> &. Conversion to cpp::Opt<T> value doesn't work
+  // because of ambiguity. This has to be fixed.
   /**
-   * @brief Converts JSON to the specified type and gives pointer to it.
-   * @return Pointer to the internally stored object,
-   * or null if JSON has no value.
-   * @remark Should be called only once.
+   * @copydoc operator T
    */
   template <Parsable T>
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  [[nodiscard]] operator const T *() {
-    Expects(!pointed_.has_value());
-    auto value = OperatorTImpl<cpp::Opt<T>>();
-
-    if (!value.has_value()) {
-      return nullptr;
-    }
-
-    pointed_ = std::move(*value);
-    Ensures(pointed_.has_value());
-    return std::any_cast<T>(&pointed_);
+  [[nodiscard]] operator const cpp::Opt<T> &() {
+    Expects(!optional_.has_value());
+    optional_ = OperatorTImpl<cpp::Opt<T>>();
+    Ensures(optional_.has_value());
+    return std::any_cast<const cpp::Opt<T> &>(optional_);
   }
 
  private:
   cpp::Opt<cpp::Pv<IJson>> json_;
-  std::any pointed_{};
+  std::any optional_{};
 };
 }  // namespace stonks::network
 

@@ -31,7 +31,7 @@ auto DropTable [[nodiscard]] () {
  * @brief Builds query which selects specified columns.
  */
 template <ColumnDefinition... Columns>
-auto Select [[nodiscard]] (cpp::Opt<qb::Distinct> distinct = std::nullopt) {
+auto Select [[nodiscard]] (cpp::Opt<qb::Distinct> distinct = {}) {
   return qb::Select{cpp::meta::TemplateConstructor<Columns...>{},
                     distinct.has_value()};
 }
@@ -39,7 +39,7 @@ auto Select [[nodiscard]] (cpp::Opt<qb::Distinct> distinct = std::nullopt) {
 /**
  * @brief Builds query which selects all columns from table.
  */
-auto SelectAll [[nodiscard]] (cpp::Opt<qb::Distinct> distinct = std::nullopt)
+auto SelectAll [[nodiscard]] (cpp::Opt<qb::Distinct> distinct = {})
 -> qb::Select;
 
 /**

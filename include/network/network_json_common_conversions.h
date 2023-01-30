@@ -43,6 +43,31 @@ auto ConvertToJson [[nodiscard]] (const std::exception &value)
 -> cpp::Pv<IJson>;
 
 /**
+ * @brief Parses enums.
+ */
+template <cpp::Enum T>
+struct JsonParser<T> {
+  using Type = T;
+
+  auto operator() [[nodiscard]] (const IJson &json) const -> Type {
+    return magic_enum::enum_cast<T>(ParseFromJson<std::string>(*json.GetChild(
+                                        magic_enum::enum_type_name<T>())))
+        .value();
+  }
+};
+
+/**
+ * @brief Converts enums.
+ */
+template <cpp::Enum T>
+auto ConvertToJson [[nodiscard]] (T value) {
+  auto json = CreateNullJson();
+  json->SetChild(std::string{magic_enum::enum_type_name<T>()},
+                 ConvertToJson(magic_enum::enum_name(value)));
+  return json;
+}
+
+/**
  * @brief Parses descendants of typed structs.
  */
 template <cpp::IsTypedStruct T>
@@ -82,7 +107,7 @@ struct JsonParser<T> {
             }
           }
 
-          return std::nullopt;
+          return {};
         });
   }
 };
@@ -104,7 +129,7 @@ struct JsonParser<cpp::Opt<T>> {
 
   auto operator() [[nodiscard]] (const IJson &json) const -> Type {
     if (json.IsNull()) {
-      return std::nullopt;
+      return {};
     }
 
     return ParseFromJson<T>(json);
@@ -152,31 +177,6 @@ auto ConvertToJson [[nodiscard]] (const std::vector<T> &value) {
     json->SetChild(i, ConvertToJson(value[i]));
   }
 
-  return json;
-}
-
-/**
- * @brief Parses enums.
- */
-template <cpp::Enum T>
-struct JsonParser<T> {
-  using Type = T;
-
-  auto operator() [[nodiscard]] (const IJson &json) const -> Type {
-    return magic_enum::enum_cast<T>(ParseFromJson<std::string>(*json.GetChild(
-                                        magic_enum::enum_type_name<T>())))
-        .value();
-  }
-};
-
-/**
- * @brief Converts enums.
- */
-template <cpp::Enum T>
-auto ConvertToJson [[nodiscard]] (T value) {
-  auto json = CreateNullJson();
-  json->SetChild(std::string{magic_enum::enum_type_name<T>()},
-                 ConvertToJson(magic_enum::enum_name(value)));
   return json;
 }
 

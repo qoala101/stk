@@ -60,9 +60,11 @@ class SymbolsDb : public ClientBase<core::ISymbolsDb> {
    * @copydoc core::ISymbolsDb::SelectSymbolPriceRecords
    */
   auto SelectSymbolPriceRecords
-      [[nodiscard]] (const core::Symbol &symbol, const core::TimeOrder *order,
-                     const absl::Time *start_time, const absl::Time *end_time,
-                     const int *limit) const
+      [[nodiscard]] (const core::Symbol &symbol,
+                     const cpp::Opt<core::TimeOrder> &order,
+                     const cpp::Opt<absl::Time> &start_time,
+                     const cpp::Opt<absl::Time> &end_time,
+                     const cpp::Opt<int> &limit) const
       -> cppcoro::task<std::vector<core::SymbolPriceRecord>> override;
 
   /**
@@ -75,7 +77,8 @@ class SymbolsDb : public ClientBase<core::ISymbolsDb> {
    * @copydoc core::ISymbolsDb::DeleteSymbolPriceRecords
    */
   auto DeleteSymbolPriceRecords
-      [[nodiscard]] (const absl::Time *start_time, const absl::Time *end_time)
+      [[nodiscard]] (const cpp::Opt<absl::Time> &start_time,
+                     const cpp::Opt<absl::Time> &end_time)
       -> cppcoro::task<> override;
 };
 }  // namespace stonks::service

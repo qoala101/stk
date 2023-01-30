@@ -13,6 +13,6 @@ Impl::Impl(cpp::NnUp<ISymbolsDb> symbols_db,
 
 auto Impl::DeleteOldPrices() const -> cppcoro::task<> {
   const auto end_time = absl::Now() - keep_prices_for_duration_;
-  co_await symbols_db_->DeleteSymbolPriceRecords(nullptr, &end_time);
+  co_await symbols_db_->DeleteSymbolPriceRecords({}, end_time);
 }
 }  // namespace stonks::core::ospd

@@ -17,7 +17,8 @@ BuyLowSellHigh::BuyLowSellHigh(
 
 auto BuyLowSellHigh::CalculateNextOperations(
     Symbol symbol, double profit, const blsh::Operation &last_operation,
-    const absl::Time *start_time, const absl::Time *end_time) const
+    const cpp::Opt<absl::Time> &start_time,
+    const cpp::Opt<absl::Time> &end_time) const
     -> cppcoro::task<std::vector<blsh::Operation>> {
   const auto symbol_info =
       co_await symbols_db_->SelectSymbolInfo(std::move(symbol));

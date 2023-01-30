@@ -17,7 +17,7 @@
 
 namespace stonks::core {
 /**
- * @copydoc ISymbolsDb
+ * @brief Implementation of Symbols DB.
  */
 class SymbolsDb : public ISymbolsDb {
  public:
@@ -66,9 +66,10 @@ class SymbolsDb : public ISymbolsDb {
    * @copydoc ISymbolsDb::SelectSymbolPriceRecords
    */
   auto SelectSymbolPriceRecords
-      [[nodiscard]] (const Symbol &symbol, const TimeOrder *order,
-                     const absl::Time *start_time, const absl::Time *end_time,
-                     const int *limit) const
+      [[nodiscard]] (const Symbol &symbol, const cpp::Opt<TimeOrder> &order,
+                     const cpp::Opt<absl::Time> &start_time,
+                     const cpp::Opt<absl::Time> &end_time,
+                     const cpp::Opt<int> &limit) const
       -> cppcoro::task<std::vector<SymbolPriceRecord>> override;
 
   /**
@@ -81,7 +82,8 @@ class SymbolsDb : public ISymbolsDb {
    * @copydoc ISymbolsDb::DeleteSymbolPriceRecords
    */
   auto DeleteSymbolPriceRecords
-      [[nodiscard]] (const absl::Time *start_time, const absl::Time *end_time)
+      [[nodiscard]] (const cpp::Opt<absl::Time> &start_time,
+                     const cpp::Opt<absl::Time> &end_time)
       -> cppcoro::task<> override;
 
  private:

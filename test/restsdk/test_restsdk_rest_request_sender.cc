@@ -105,7 +105,7 @@ TEST(RestRequestSender, ParameterTypesToString) {
           // .AddParam(
           //     "optional_custom_enum_name",
           //     std::optional<CustomNameEnum>{CustomNameEnum::kCustomEnumName})
-          // .AddParam("no_option", std::optional<int>{std::nullopt})
+          // .AddParam("no_option", std::optional<int>{})
           .Build();
   const auto expected_params = std::map<std::string, std::string>{
       {"string", "abc"},

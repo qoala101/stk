@@ -17,11 +17,11 @@ auto Ceil [[nodiscard]] (const CeilFloorArgs &args) -> double;
 
 auto Floor [[nodiscard]] (const CeilFloorArgs &args) -> double;
 
-auto StartTimeFrom [[nodiscard]] (const absl::Time *time) -> absl::Time;
+auto StartTimeFrom [[nodiscard]] (const cpp::Opt<absl::Time> &time) -> absl::Time;
 
-auto EndTimeFrom [[nodiscard]] (const absl::Time *time) -> absl::Time;
+auto EndTimeFrom [[nodiscard]] (const cpp::Opt<absl::Time> &time) -> absl::Time;
 
-auto TimeOrderFrom [[nodiscard]] (const TimeOrder *order) -> TimeOrder;
+auto TimeOrderFrom [[nodiscard]] (const cpp::Opt<TimeOrder> &order) -> TimeOrder;
 }  // namespace stonks::core
 
 #endif  // STONKS_APP_CORE_CORE_COMMON_H_

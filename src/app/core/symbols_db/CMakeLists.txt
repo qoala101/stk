@@ -1,4 +1,5 @@
 add_library(libcore_symbols_db
+  core_sdb_proxy.cc
   core_sdb_value_conversions.cc
   core_symbols_db.cc
 )

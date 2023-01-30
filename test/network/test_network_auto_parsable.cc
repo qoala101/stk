@@ -15,17 +15,13 @@
 
 namespace {
 TEST(AutoParsable, ParsePointer) {
-  const auto function = [](const int *value) -> stonks::cpp::Opt<int> {
-    if (value == nullptr) {
-      return std::nullopt;
-    }
-
-    return *value;
+  const auto function = [](const stonks::cpp::Opt<int> &value) -> stonks::cpp::Opt<int> {
+    return value;
   };
 
   auto result = function(
       stonks::network::AutoParsable{stonks::network::ConvertToJson(33)});
-  EXPECT_EQ(*result, 33);
+  EXPECT_EQ(result, 33);
 
   result = function(
       stonks::network::AutoParsable{stonks::network::CreateNullJson()});

@@ -95,7 +95,7 @@ TEST(AppBuyLowSellHigh, CalculateNextOperations) {
         .usd_balance = 10};
     const auto next_operations =
         co_await kBuyLowSellHigh.CalculateNextOperations(
-            kSymbol, 0.01, first_operation, nullptr, nullptr);
+            kSymbol, 0.01, first_operation, {}, {});
 
     std::cout << "\nNext operations:\n";
 

@@ -13,15 +13,15 @@ auto Floor(const CeilFloorArgs &args) -> double {
   return std::floor(args.value / args.precision) * args.precision;
 }
 
-auto StartTimeFrom(const absl::Time *time) -> absl::Time {
-  return (time == nullptr) ? absl::InfinitePast() : *time;
+auto StartTimeFrom(const cpp::Opt<absl::Time> &time) -> absl::Time {
+  return time.value_or(absl::InfinitePast());
 }
 
-auto EndTimeFrom(const absl::Time *time) -> absl::Time {
-  return (time == nullptr) ? absl::InfiniteFuture() : *time;
+auto EndTimeFrom(const cpp::Opt<absl::Time> &time) -> absl::Time {
+  return time.value_or(absl::InfiniteFuture());
 }
 
-auto TimeOrderFrom(const TimeOrder *order) -> TimeOrder {
-  return (order == nullptr) ? TimeOrder::kOldFirst : *order;
+auto TimeOrderFrom(const cpp::Opt<TimeOrder> &order) -> TimeOrder {
+  return order.value_or(TimeOrder::kOldFirst);
 }
 }  // namespace stonks::core

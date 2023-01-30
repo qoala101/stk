@@ -25,51 +25,7 @@ auto RoundPricesToStep(SymbolPriceRecord &record,
 }
 }  // namespace
 
-SymbolPricesFilter::SymbolPricesFilter(
-    cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db)
-    : symbols_db_{std::move(symbols_db)} {}
-
-auto SymbolPricesFilter::SelectAssets() const
-    -> cppcoro::task<std::vector<core::Asset>> {
-  co_return co_await symbols_db_->SelectAssets();
-}
-
-auto SymbolPricesFilter::UpdateAssets(std::vector<core::Asset> assets)
-    -> cppcoro::task<> {
-  co_await symbols_db_->UpdateAssets(std::move(assets));
-}
-
-auto SymbolPricesFilter::SelectSymbolsWithPriceRecords() const
-    -> cppcoro::task<std::vector<core::Symbol>> {
-  co_await symbols_db_->SelectSymbolsWithPriceRecords();
-}
-
-auto SymbolPricesFilter::SelectSymbolInfo(core::Symbol symbol) const
-    -> cppcoro::task<cpp::Opt<core::SymbolInfo>> {
-  co_return co_await symbols_db_->SelectSymbolInfo(std::move(symbol));
-}
-
-auto SymbolPricesFilter::SelectSymbolsInfo() const
-    -> cppcoro::task<std::vector<core::SymbolInfo>> {
-  co_return co_await symbols_db_->SelectSymbolsInfo();
-}
-
-auto SymbolPricesFilter::UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos)
-    -> cppcoro::task<> {
-  co_await symbols_db_->UpdateSymbolsInfo(std::move(infos));
-}
-
-auto SymbolPricesFilter::SelectSymbolPriceRecords(const core::Symbol &symbol,
-                                                  const core::TimeOrder *order,
-                                                  const absl::Time *start_time,
-                                                  const absl::Time *end_time,
-                                                  const int *limit) const
-    -> cppcoro::task<std::vector<core::SymbolPriceRecord>> {
-  co_return co_await symbols_db_->SelectSymbolPriceRecords(
-      symbol, order, start_time, end_time, limit);
-}
-
-auto SymbolPricesFilter::InsertSymbolPriceRecord(core::SymbolPriceRecord record)
+auto SymbolPricesFilter::InsertSymbolPriceRecord(SymbolPriceRecord record)
     -> cppcoro::task<> {
   const auto last_price_record = co_await GetLastPriceRecord(record.symbol);
   const auto base_asset_price_step =
@@ -84,13 +40,7 @@ auto SymbolPricesFilter::InsertSymbolPriceRecord(core::SymbolPriceRecord record)
     co_return;
   }
 
-  co_await symbols_db_->InsertSymbolPriceRecord(std::move(record));
-}
-
-auto SymbolPricesFilter::DeleteSymbolPriceRecords(const absl::Time *start_time,
-                                                  const absl::Time *end_time)
-    -> cppcoro::task<> {
-  co_await symbols_db_->DeleteSymbolPriceRecords(start_time, end_time);
+  co_await Proxy::InsertSymbolPriceRecord(std::move(record));
 }
 
 auto SymbolPricesFilter::GetBaseAssetPriceStep(const Symbol &symbol) const
@@ -109,9 +59,8 @@ auto SymbolPricesFilter::GetLastPriceRecord(const Symbol &symbol) const
     -> cppcoro::task<cpp::Opt<SymbolPriceRecord>> {
   const auto order = TimeOrder::kNewFirst;
   const auto limit = 1;
-
-  auto records = co_await SelectSymbolPriceRecords(symbol, &order, nullptr,
-                                                   nullptr, &limit);
+  auto records =
+      co_await SelectSymbolPriceRecords(symbol, order, {}, {}, limit);
 
   if (records.empty()) {
     co_return std::nullopt;

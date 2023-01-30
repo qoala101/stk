@@ -20,7 +20,7 @@ auto TryToParseException [[nodiscard]] (const IJson &json)
   try {
     return ParseFromJson<cpp::MessageException>(json);
   } catch (const std::exception &) {
-    return std::nullopt;
+    return {};
   }
 }
 }  // namespace

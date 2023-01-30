@@ -60,9 +60,10 @@ class ISymbolsDb {
    * @brief Selects symbol price records following the conditions.
    */
   virtual auto SelectSymbolPriceRecords
-      [[nodiscard]] (const Symbol &symbol, const TimeOrder *order,
-                     const absl::Time *start_time, const absl::Time *end_time,
-                     const int *limit) const
+      [[nodiscard]] (const Symbol &symbol, const cpp::Opt<TimeOrder> &order,
+                     const cpp::Opt<absl::Time> &start_time,
+                     const cpp::Opt<absl::Time> &end_time,
+                     const cpp::Opt<int> &limit) const
       -> cppcoro::task<std::vector<SymbolPriceRecord>> = 0;
 
   /**
@@ -75,7 +76,8 @@ class ISymbolsDb {
    * @brief Deletes symbol price records in specified time range.
    */
   virtual auto DeleteSymbolPriceRecords
-      [[nodiscard]] (const absl::Time *start_time, const absl::Time *end_time)
+      [[nodiscard]] (const cpp::Opt<absl::Time> &start_time,
+                     const cpp::Opt<absl::Time> &end_time)
       -> cppcoro::task<> = 0;
 };
 }  // namespace stonks::core

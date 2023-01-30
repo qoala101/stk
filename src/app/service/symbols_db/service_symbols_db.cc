@@ -28,7 +28,7 @@ auto SymbolsDb::UpdateAssets(std::vector<core::Asset> assets)
 
 auto SymbolsDb::SelectSymbolsWithPriceRecords() const
     -> cppcoro::task<std::vector<core::Symbol>> {
-  co_await Call<&Target::SelectSymbolsWithPriceRecords>();
+  co_return co_await Call<&Target::SelectSymbolsWithPriceRecords>();
 }
 
 auto SymbolsDb::SelectSymbolInfo(core::Symbol symbol) const
@@ -47,10 +47,10 @@ auto SymbolsDb::UpdateSymbolsInfo(std::vector<core::SymbolInfo> infos)
 }
 
 auto SymbolsDb::SelectSymbolPriceRecords(const core::Symbol &symbol,
-                                         const core::TimeOrder *order,
-                                         const absl::Time *start_time,
-                                         const absl::Time *end_time,
-                                         const int *limit) const
+                                         const cpp::Opt<core::TimeOrder> &order,
+                                         const cpp::Opt<absl::Time> &start_time,
+                                         const cpp::Opt<absl::Time> &end_time,
+                                         const cpp::Opt<int> &limit) const
     -> cppcoro::task<std::vector<core::SymbolPriceRecord>> {
   co_return co_await Call<&Target::SelectSymbolPriceRecords>(
       symbol, order, start_time, end_time, limit);
@@ -61,8 +61,8 @@ auto SymbolsDb::InsertSymbolPriceRecord(core::SymbolPriceRecord record)
   co_await Call<&Target::InsertSymbolPriceRecord>(std::move(record));
 }
 
-auto SymbolsDb::DeleteSymbolPriceRecords(const absl::Time *start_time,
-                                         const absl::Time *end_time)
+auto SymbolsDb::DeleteSymbolPriceRecords(const cpp::Opt<absl::Time> &start_time,
+                                         const cpp::Opt<absl::Time> &end_time)
     -> cppcoro::task<> {
   co_await Call<&Target::DeleteSymbolPriceRecords>(start_time, end_time);
 }

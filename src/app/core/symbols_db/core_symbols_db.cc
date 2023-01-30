@@ -452,10 +452,10 @@ auto SymbolsDb::UpdateSymbolsInfo(std::vector<SymbolInfo> infos)
 }
 
 auto SymbolsDb::SelectSymbolPriceRecords(const Symbol &symbol,
-                                         const core::TimeOrder *order,
-                                         const absl::Time *start_time,
-                                         const absl::Time *end_time,
-                                         const int *limit) const
+                                         const cpp::Opt<TimeOrder> &order,
+                                         const cpp::Opt<absl::Time> &start_time,
+                                         const cpp::Opt<absl::Time> &end_time,
+                                         const cpp::Opt<int> &limit) const
     -> cppcoro::task<std::vector<SymbolPriceRecord>> {
   const auto &statement = (TimeOrderFrom(order) == TimeOrder::kNewFirst)
                               ? prepared_statements_.select_symbol_price_records
@@ -463,9 +463,9 @@ auto SymbolsDb::SelectSymbolPriceRecords(const Symbol &symbol,
                               : prepared_statements_.select_symbol_price_records
                                     .order_by_time_ascending;
 
-  const auto rows = statement->Execute(sqldb::AsValues(
-      symbol, StartTimeFrom(start_time), EndTimeFrom(end_time),
-      (limit != nullptr) ? *limit : std::numeric_limits<int>::max()));
+  const auto rows = statement->Execute(
+      sqldb::AsValues(symbol, StartTimeFrom(start_time), EndTimeFrom(end_time),
+                      limit.value_or(std::numeric_limits<int>::max())));
 
   const auto &buy_prices =
       rows.GetColumnValues<sdb::tables::SymbolPriceRecord::buy_price>();
@@ -497,8 +497,8 @@ auto SymbolsDb::InsertSymbolPriceRecord(SymbolPriceRecord record)
   co_return;
 }
 
-auto SymbolsDb::DeleteSymbolPriceRecords(const absl::Time *start_time,
-                                         const absl::Time *end_time)
+auto SymbolsDb::DeleteSymbolPriceRecords(const cpp::Opt<absl::Time> &start_time,
+                                         const cpp::Opt<absl::Time> &end_time)
     -> cppcoro::task<> {
   prepared_statements_.delete_symbol_price_records->Execute(
       sqldb::AsValues(StartTimeFrom(start_time), EndTimeFrom(end_time)));
