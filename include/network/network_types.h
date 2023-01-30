@@ -1,6 +1,8 @@
 #ifndef STONKS_NETWORK_NETWORK_TYPES_H_
 #define STONKS_NETWORK_NETWORK_TYPES_H_
 
+#include <absl/container/flat_hash_map.h>
+
 #include <compare>
 #include <map>
 #include <string>
@@ -30,12 +32,12 @@ using Param = cpp::Pv<IJson>;
 /**
  * @brief REST request params.
  */
-using Params = std::map<std::string, Param>;
+using Params = absl::flat_hash_map<std::string, Param>;
 
 /**
  * @brief REST request headers.
  */
-using Headers = std::map<std::string, std::string>;
+using Headers = absl::flat_hash_map<std::string, std::string>;
 
 /**
  * @brief REST request body.
@@ -60,6 +62,14 @@ struct Endpoint {
   friend auto operator<=> [[nodiscard]] (const Endpoint &, const Endpoint &)
   -> std::partial_ordering = default;
 };
+
+/**
+ * @remark Required for Abseil maps to work.
+ */
+template <typename Hash>
+auto AbslHashValue [[nodiscard]] (Hash hash, const Endpoint &value) -> Hash {
+  return Hash::combine(std::move(hash), value.method, *value.uri);
+}
 
 /**
  * @brief Where and what to send via REST API call.

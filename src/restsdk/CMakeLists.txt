@@ -26,6 +26,7 @@ target_link_libraries(librestsdk
   PRIVATE liblog
   PRIVATE libnetwork
 
+  PRIVATE absl::absl
   PRIVATE callable
   PRIVATE cppcoro::cppcoro
   PRIVATE cpprestsdk::cpprest

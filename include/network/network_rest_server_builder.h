@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORK_NETWORK_REST_SERVER_BUILDER_H_
 #define STONKS_NETWORK_NETWORK_REST_SERVER_BUILDER_H_
 
+#include <absl/container/flat_hash_map.h>
 #include <concepts>
 #include <map>
 #include <utility>
@@ -52,7 +53,7 @@ class RestServerBuilder {
 
   cpp::Opt<Uri> base_uri_{};
   cpp::Up<IRestRequestReceiver> request_receiver_{};
-  std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
+  absl::flat_hash_map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
 }  // namespace stonks::network
 

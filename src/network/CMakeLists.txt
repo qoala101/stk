@@ -40,6 +40,7 @@ target_include_directories(libnetwork
 target_link_libraries(libnetwork
   PRIVATE libcpp
 
+  PRIVATE absl::absl
   PRIVATE callable
   PRIVATE cppcoro::cppcoro
   PRIVATE di::di

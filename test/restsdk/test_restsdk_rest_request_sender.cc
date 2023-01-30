@@ -107,7 +107,7 @@ TEST(RestRequestSender, ParameterTypesToString) {
           //     std::optional<CustomNameEnum>{CustomNameEnum::kCustomEnumName})
           // .AddParam("no_option", std::optional<int>{})
           .Build();
-  const auto expected_params = std::map<std::string, std::string>{
+  const auto expected_params = absl::flat_hash_map<std::string, std::string>{
       {"string", "abc"},
       {"milliseconds", "123456789"},
       {"int", "123456789"},

@@ -1,6 +1,7 @@
 #ifndef STONKS_LOG_REDUCED_LOGGER_LOG_RL_LOG_STATS_H_
 #define STONKS_LOG_REDUCED_LOGGER_LOG_RL_LOG_STATS_H_
 
+#include <absl/container/node_hash_map.h>
 #include <absl/time/time.h>
 
 #include <atomic>
@@ -40,7 +41,7 @@ class LogStats {
 
  private:
   cpp::NnUp<ILogger> logger_;
-  std::map<Level, detail::MessageStats> message_stats_;
+  absl::node_hash_map<Level, detail::MessageStats> message_stats_;
   absl::Time last_log_time_{};
 };
 }  // namespace stonks::log::rl

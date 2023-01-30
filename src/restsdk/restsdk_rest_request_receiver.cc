@@ -92,7 +92,7 @@ auto ParamsFrom [[nodiscard]] (const std::string &request_query) {
 
 auto HeadersFrom
     [[nodiscard]] (const web::http::http_headers &request_headers) {
-  return std::map<std::string, std::string>{request_headers.begin(),
+  return absl::flat_hash_map<std::string, std::string>{request_headers.begin(),
                                             request_headers.end()};
 }
 

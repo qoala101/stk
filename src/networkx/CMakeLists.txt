@@ -16,6 +16,7 @@ target_link_libraries(libnetworkx
   PRIVATE libcpp
   PRIVATE libnetwork
 
+  PRIVATE absl::absl
   PRIVATE callable
   PRIVATE cppcoro::cppcoro
   PRIVATE di::di

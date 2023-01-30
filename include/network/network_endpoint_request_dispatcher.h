@@ -1,6 +1,7 @@
 #ifndef STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
 #define STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
 
+#include <absl/container/flat_hash_map.h>
 #include <cppcoro/task.hpp>
 #include <map>
 
@@ -21,7 +22,7 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
    * the remaining part of the requested URI.
    */
   explicit EndpointRequestDispatcher(
-      std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers);
+      absl::flat_hash_map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers);
 
   /**
    * @brief Forwards the request to the appropriate handler.
@@ -30,7 +31,7 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
   -> cppcoro::task<RestResponse> override;
 
  private:
-  std::map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
+  absl::flat_hash_map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
 }  // namespace stonks::network
 

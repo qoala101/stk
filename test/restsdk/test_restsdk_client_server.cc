@@ -286,7 +286,7 @@ TEST(ClientServer, WrongClientTypesReceived) {
     auto entity_client = EntityClient{kBaseUri};
 
     auto handlers =
-        std::map<stonks::network::Endpoint,
+        absl::flat_hash_map<stonks::network::Endpoint,
                  stonks::cpp::NnUp<stonks::network::IRestRequestHandler>>{};
 
     handlers.emplace(

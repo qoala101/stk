@@ -16,6 +16,7 @@ target_link_libraries(libbinance
   PRIVATE libnetwork
   PRIVATE libnetworkx
 
+  PRIVATE absl::absl
   PRIVATE callable
   PRIVATE cppcoro::cppcoro
   PRIVATE di::di

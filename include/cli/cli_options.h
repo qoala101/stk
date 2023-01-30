@@ -1,6 +1,8 @@
 #ifndef STONKS_CLI_CLI_OPTIONS_H_
 #define STONKS_CLI_CLI_OPTIONS_H_
 
+#include <absl/container/flat_hash_map.h>
+
 #include <map>
 #include <string>
 #include <utility>
@@ -32,7 +34,8 @@ class OptionsBase {
   }
 
  private:
-  std::map<std::string, cpp::Wp<OptionValueVariant>> option_values_{};
+  absl::flat_hash_map<std::string, cpp::Wp<OptionValueVariant>>
+      option_values_{};
 };
 }  // namespace detail
 

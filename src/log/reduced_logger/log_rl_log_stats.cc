@@ -10,7 +10,7 @@ namespace stonks::log::rl {
 LogStats::LogStats(cpp::NnUp<ILogger> logger)
     : logger_{std::move(logger)},
       message_stats_{[]() {
-        auto message_stats = std::map<Level, detail::MessageStats>();
+        auto message_stats = absl::node_hash_map<Level, detail::MessageStats>();
 
         magic_enum::enum_for_each<Level>(
             [&message_stats](auto level) { message_stats[level]; });

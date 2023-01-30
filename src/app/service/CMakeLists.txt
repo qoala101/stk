@@ -19,6 +19,7 @@ target_link_libraries(libservice
   PRIVATE libnetwork
   PRIVATE libnetworkx
 
+  PRIVATE absl::absl
   PRIVATE callable
   PRIVATE cppcoro::cppcoro
   PRIVATE fmt::fmt

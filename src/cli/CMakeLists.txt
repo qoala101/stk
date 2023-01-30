@@ -19,6 +19,7 @@ target_include_directories(libcli
 target_link_libraries(libcli
   PRIVATE libcpp
 
+  PRIVATE absl::absl
   PRIVATE callable
   PRIVATE CLI11::CLI11
   PRIVATE fmt::fmt

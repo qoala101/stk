@@ -32,7 +32,7 @@ auto ExpectedType [[nodiscard]] () {
  * @brief Expected request and response types.
  */
 struct EndpointTypes {
-  std::map<std::string, ParseTypeCheck> params{};
+  absl::flat_hash_map<std::string, ParseTypeCheck> params{};
   ParseTypeCheck body{};
   ParseTypeCheck result{};
 };
