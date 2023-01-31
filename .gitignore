@@ -1,7 +1,7 @@
-.cache
-.TODO
-.vscode
-bin
-build
-kubernetes/app-secret.yaml
-lib
+/.cache
+/.TODO
+/.vscode
+/bin
+/build
+/kubernetes/app-secret.yaml
+/lib
