@@ -10,7 +10,7 @@
 #include "sqlite_native_db_facade.h"
 #include "sqlite_native_statement_facade.h"
 
-namespace stonks::sqlite::detail {
+namespace vh::sqlite::detail {
 NativeDbCloser::NativeDbCloser(cpp::NnSp<log::ILogger> logger)
     : logger_{std::move(logger).as_nullable()} {
   Ensures(logger_ != nullptr);
@@ -45,4 +45,4 @@ void NativeStatementFinalizer::operator()(sqlite3_stmt* statement) noexcept {
     logger_->LogErrorCondition(e.what());
   }
 }
-}  // namespace stonks::sqlite::detail
+}  // namespace vh::sqlite::detail

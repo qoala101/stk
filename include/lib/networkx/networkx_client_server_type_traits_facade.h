@@ -4,7 +4,7 @@
 #include "networkx_concepts.h"  // IWYU pragma: keep
 #include "networkx_types.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 /**
  * @brief Convenience API over client-server type traits.
  */
@@ -61,6 +61,6 @@ struct ClientServerTypeTraitsFacade {
     }
   }
 };
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_CLIENT_SERVER_TYPE_TRAITS_FACADE_H_

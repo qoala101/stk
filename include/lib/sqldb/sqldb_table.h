@@ -8,7 +8,7 @@
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 namespace detail {
 auto GetFullNameInTableImpl
     [[nodiscard]] (std::string_view table_name, std::string_view column_name)
@@ -57,7 +57,7 @@ class Table {
      * @brief Gives column data type.
      */
     static auto GetType [[nodiscard]] () {
-      return DataTypeVariant{::stonks::sqldb::DataType<DataType>{}};
+      return DataTypeVariant{::vh::sqldb::DataType<DataType>{}};
     }
 
     /**
@@ -104,6 +104,6 @@ class Table {
     return std::string{nameof::nameof_short_type<TableT>()};
   }
 };
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_TABLE_H_

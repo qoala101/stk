@@ -13,17 +13,17 @@
 
 namespace test::restsdk {
 inline auto Injector [[nodiscard]] () -> auto& {
-  static auto injector = stonks::di::MakeInjector(
-      stonks::di::BindInterfaceToImplementation<
-          stonks::network::IRestRequestSender,
-          stonks::restsdk::RestRequestSender>(),
-      stonks::di::BindInterfaceToImplementation<
-          stonks::network::IRestRequestReceiver,
-          stonks::restsdk::RestRequestReceiver>(),
-      stonks::di::BindInterfaceToImplementation<stonks::network::IWsClient,
-                                                stonks::restsdk::WsClient>(),
-      stonks::di::BindInterfaceToImplementation<stonks::log::ILogger,
-                                                stonks::spdlog::ThreadSafeLogger>());
+  static auto injector = vh::di::MakeInjector(
+      vh::di::BindInterfaceToImplementation<
+          vh::network::IRestRequestSender,
+          vh::restsdk::RestRequestSender>(),
+      vh::di::BindInterfaceToImplementation<
+          vh::network::IRestRequestReceiver,
+          vh::restsdk::RestRequestReceiver>(),
+      vh::di::BindInterfaceToImplementation<vh::network::IWsClient,
+                                                vh::restsdk::WsClient>(),
+      vh::di::BindInterfaceToImplementation<vh::log::ILogger,
+                                                vh::spdlog::ThreadSafeLogger>());
   return injector;
 }
 }  // namespace test::restsdk

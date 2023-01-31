@@ -13,7 +13,7 @@
 #include "cpp_typed_struct.h"
 #include "network_ws_types.h"
 
-namespace stonks::core::sps {
+namespace vh::stk::core::sps {
 namespace {
 auto BookTickerEndpointFor [[nodiscard]] (const Symbol &symbol) {
   return network::WsEndpoint{
@@ -33,4 +33,4 @@ auto StreamFactory::Create(Symbol symbol)
   return {BookTickerEndpointFor(symbol), ws_client_factory_->Create(),
           sps::PriceRecorder{std::move(symbol), symbols_db_}};
 }
-}  // namespace stonks::core::sps
+}  // namespace vh::stk::core::sps

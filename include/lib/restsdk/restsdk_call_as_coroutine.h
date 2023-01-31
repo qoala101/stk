@@ -11,7 +11,7 @@ template <typename T>
 class task;
 }  // namespace pplx
 
-namespace stonks::restsdk {
+namespace vh::restsdk {
 /**
  * @brief Util which allows to call tasks as coroutines.
  */
@@ -37,6 +37,6 @@ auto CallAsCoroutine [[nodiscard]] (const pplx::task<T> &task)
     throw cpp::MessageException{std::move(exception_message)};
   }
 }
-}  // namespace stonks::restsdk
+}  // namespace vh::restsdk
 
 #endif  // STONKS_RESTSDK_RESTSDK_CALL_AS_COROUTINE_H_

@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace stonks::network {
+namespace vh::network {
 WrongTypeException::WrongTypeException(std::string message, cpp::Pv<IJson> json)
     : Exception{std::move(message)}, json_{std::move(json)} {}
 
@@ -18,4 +18,4 @@ auto WrongTypeException::GetJson() const -> const cpp::Pv<IJson>& {
 auto WrongTypeException::GetJson() -> cpp::Pv<IJson>& {
   return GetJsonImpl(*this);
 }
-}  // namespace stonks::network
+}  // namespace vh::network

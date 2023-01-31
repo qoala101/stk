@@ -10,7 +10,7 @@
 #include "network_typed_endpoint_sender.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 RestClient::RestClient(Uri base_uri,
                        cpp::NnUp<IRestRequestSender> request_sender)
     : base_uri_{std::move(base_uri)},
@@ -26,4 +26,4 @@ auto RestClient::Call(TypedEndpoint endpoint) const
 
   return {std::move(endpoint.endpoint), std::move(decorated_sender)};
 }
-}  // namespace stonks::network
+}  // namespace vh::network

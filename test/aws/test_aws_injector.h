@@ -10,13 +10,13 @@
 
 namespace test::aws {
 inline auto Injector [[nodiscard]] () -> auto& {
-  static auto injector = stonks::di::MakeInjector(
-      stonks::di::BindInterfaceToImplementation<stonks::log::ILogger,
-                                                stonks::spdlog::Logger>(),
-      stonks::di::BindInterfaceToImplementation<
-          stonks::kvdb::ITablesInterface, stonks::aws::dynamodb::SyncDbProxy>(),
-      stonks::di::BindInterfaceToImplementation<
-          stonks::kvdb::IItemsInterface, stonks::aws::dynamodb::SyncDbProxy>());
+  static auto injector = vh::di::MakeInjector(
+      vh::di::BindInterfaceToImplementation<vh::log::ILogger,
+                                                vh::spdlog::Logger>(),
+      vh::di::BindInterfaceToImplementation<
+          vh::kvdb::ITablesInterface, vh::aws::dynamodb::SyncDbProxy>(),
+      vh::di::BindInterfaceToImplementation<
+          vh::kvdb::IItemsInterface, vh::aws::dynamodb::SyncDbProxy>());
   return injector;
 }
 }  // namespace test::aws

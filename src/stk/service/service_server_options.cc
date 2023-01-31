@@ -2,7 +2,7 @@
 
 #include <fmt/format.h>
 
-namespace stonks::service::detail {
+namespace vh::stk::service::detail {
 ServerOptionsBase::ServerOptionsBase(cli::Options &options,
                                      std::string_view name,
                                      std::string_view default_port)
@@ -12,4 +12,4 @@ ServerOptionsBase::ServerOptionsBase(cli::Options &options,
 auto ServerOptionsBase::GetUri() const -> network::Uri {
   return {fmt::format("http://0.0.0.0:{}", *port)};
 }
-}  // namespace stonks::service::detail
+}  // namespace vh::stk::service::detail

@@ -12,7 +12,7 @@
 #include "service_client_options.h"
 #include "service_server_options.h"
 
-namespace stonks::service::inj {
+namespace vh::stk::service::inj {
 namespace detail {
 template <typename Implementation, networkx::ClientServerType Target>
   requires std::is_base_of_v<Target, Implementation>
@@ -47,6 +47,6 @@ template <typename Server, networkx::ClientServerType Target>
 auto CreateServerInjector(const ServerOptions<Target> &options) {
   return detail::CreateClientServerInjector<Server>(options.GetUri());
 }
-}  // namespace stonks::service::inj
+}  // namespace vh::stk::service::inj
 
 #endif  // STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_CLIENT_SERVER_H_

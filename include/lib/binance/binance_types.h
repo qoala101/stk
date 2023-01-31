@@ -5,7 +5,7 @@
 
 #include "cpp_typed_struct.h"
 
-namespace stonks::binance {
+namespace vh::binance {
 struct SymbolExchangeInfo {
   std::string symbol{};
   std::string base_asset{};
@@ -23,6 +23,6 @@ struct BookTick {
   std::string best_bid_price{};
   std::string best_ask_price{};
 };
-}  // namespace stonks::binance
+}  // namespace vh::binance
 
 #endif  // STONKS_BINANCE_BINANCE_TYPES_H_

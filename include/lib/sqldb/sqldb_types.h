@@ -10,7 +10,7 @@
 #include "cpp_typed_struct.h"
 #include "cpp_variant_struct.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 /**
  * @brief Type of the data recognized by the library.
  */
@@ -68,6 +68,6 @@ struct Query : public cpp::TypedStruct<std::string> {};
 struct SelectQuery : public Query {
   ResultDefinition result_definition{};
 };
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_TYPES_H_

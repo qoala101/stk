@@ -12,7 +12,7 @@ class sqlite3_stmt;
  * @file RAII wrappers of SQLite objects.
  */
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 namespace detail {
 class NativeDbCloser {
  public:
@@ -55,6 +55,6 @@ using NativeDbHandle = cpp::NnUp<sqlite3, detail::NativeDbCloser>;
  */
 using NativeStatementHandle =
     cpp::NnUp<sqlite3_stmt, detail::NativeStatementFinalizer>;
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite
 
 #endif  // STONKS_SQLITE_NATIVE_SQLITE_NATIVE_HANDLES_H_

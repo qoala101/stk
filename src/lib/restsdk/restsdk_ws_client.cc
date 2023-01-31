@@ -27,7 +27,7 @@
 #include "restsdk_json_native_handle.h"
 #include "restsdk_parse_json_fom_string.h"
 
-namespace stonks::restsdk {
+namespace vh::restsdk {
 namespace {
 auto HandleNativeMessage(
     network::IWsMessageHandler &handler, log::ILogger &logger,
@@ -122,4 +122,4 @@ auto WsClient::SendMessage(network::WsMessage message) const
     throw;
   }
 }
-}  // namespace stonks::restsdk
+}  // namespace vh::restsdk

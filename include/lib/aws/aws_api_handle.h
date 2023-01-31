@@ -4,7 +4,7 @@
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
 
-namespace stonks::aws {
+namespace vh::aws {
 namespace detail {
 class ApiHandleImpl;
 }  // namespace detail
@@ -20,6 +20,6 @@ class ApiHandle {
  private:
   cpp::NnSp<detail::ApiHandleImpl> impl_;
 };
-}  // namespace stonks::aws
+}  // namespace vh::aws
 
 #endif  // STONKS_AWS_AWS_API_HANDLE_H_

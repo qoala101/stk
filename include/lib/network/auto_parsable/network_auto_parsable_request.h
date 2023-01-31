@@ -6,7 +6,7 @@
 #include "network_auto_parsable.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Wraps raw REST request providing convenient auto-parsable API
  * for its members.
@@ -31,6 +31,6 @@ class AutoParsableRestRequest {
   Params params_{};
   cpp::Opt<network::Body> body_{};
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_REQUEST_H_

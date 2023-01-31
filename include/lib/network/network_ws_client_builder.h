@@ -13,7 +13,7 @@
 #include "network_typed_ws_endpoint.h"
 #include "network_ws_connection.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Convenience API for building web socket client.
  */
@@ -49,6 +49,6 @@ class WsClientBuilder {
   cpp::Up<IWsClient> ws_client_{};
   cpp::Up<IWsMessageHandler> handler_{};
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_WS_CLIENT_BUILDER_H_

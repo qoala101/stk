@@ -15,7 +15,7 @@
  * @file Facades for the clients to build and parse JSONs.
  */
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Alias for JSON parser operator which converts JSON to an object.
  */
@@ -49,7 +49,7 @@ auto ParseFromJsonChild [[nodiscard]] (const IJson &json, Key &&child_key) {
  */
 template <typename... KeyValues>
 auto BuildJsonFrom [[nodiscard]] (KeyValues &&...key_values) {
-  auto json = stonks::network::CreateNullJson();
+  auto json = vh::network::CreateNullJson();
 
   cpp::ForEachArg<2>(
       [&json]<typename Key, typename Value>(Key &&key, Value &&value, auto) {
@@ -60,6 +60,6 @@ auto BuildJsonFrom [[nodiscard]] (KeyValues &&...key_values) {
 
   return json;
 }
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_JSON_CONVERSIONS_FACADES_H_

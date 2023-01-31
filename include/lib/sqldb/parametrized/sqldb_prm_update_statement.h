@@ -8,7 +8,7 @@
 #include "sqldb_prm_types.h"
 #include "sqldb_value.h"
 
-namespace stonks::sqldb::prm {
+namespace vh::sqldb::prm {
 /**
  * @brief Validates parameter types before execution.
  */
@@ -29,6 +29,6 @@ class UpdateStatement : public IUpdateStatement {
   cpp::NnUp<IUpdateStatement> statement_;
   std::vector<QueryParam> params_{};
 };
-}  // namespace stonks::sqldb::p
+}  // namespace vh::sqldb::p
 
 #endif  // STONKS_SQLDB_PARAMETRIZED_SQLDB_P_UPDATE_STATEMENT_H_

@@ -7,7 +7,7 @@
 
 #include "cpp_typed_struct.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 /**
  * @brief Currency.
  */
@@ -75,6 +75,6 @@ struct SymbolPriceRecord {
  * @brief Order of time sorting.
  */
 enum class TimeOrder { kNewFirst, kOldFirst };
-}  // namespace stonks::core
+}  // namespace vh::stk::core
 
 #endif  // STONKS_CORE_CORE_TYPES_H_

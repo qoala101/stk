@@ -6,7 +6,7 @@
 
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Executes REST API calls by sending the requests and receiving
  * responses.
@@ -22,6 +22,6 @@ class IRestRequestSender {
   virtual auto SendRequestAndGetResponse [[nodiscard]] (RestRequest request)
   -> cppcoro::task<RestResponse> = 0;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_I_REST_REQUEST_SENDER_H_

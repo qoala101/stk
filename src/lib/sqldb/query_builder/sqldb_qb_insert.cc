@@ -10,7 +10,7 @@
 #include "cpp_typed_struct.h"
 #include "sqldb_prm_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 Insert::Insert(All /*unused*/) : insert_all_{true} {}
 
 auto Insert::Build() const -> prm::Parametrized<Query> {
@@ -73,4 +73,4 @@ auto Insert::Into(std::string table_name,
   Ensures(!table_name_->empty());
   return *this;
 }
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb

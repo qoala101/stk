@@ -27,7 +27,7 @@
 
 namespace {
 struct SymbolPrice {
-  stonks::core::Symbol symbol{};
+  vh::stk::core::Symbol symbol{};
   double price{};
 
   //  private:
@@ -42,10 +42,10 @@ struct SymbolPrice {
 };
 }  // namespace
 
-namespace stonks::network {
+namespace vh::network {
 template <>
 auto JsonParser<SymbolPrice>::operator()(const IJson &json) const -> Type {
-  return {.symbol = ParseFromJsonChild<core::Symbol>(json, "symbol"),
+  return {.symbol = ParseFromJsonChild<stk::core::Symbol>(json, "symbol"),
           .price = std::stod(ParseFromJsonChild<std::string>(json, "price"))};
 }
 
@@ -57,23 +57,23 @@ auto ConvertToJson(const SymbolPrice &value) -> cpp::Pv<IJson> {
   );
   // clang-format on
 }
-}  // namespace stonks::network
+}  // namespace vh::network
 
 namespace {
 TEST(RestRequestReceiver, SendRequest) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
-    struct Handler : public stonks::network::IRestRequestHandler {
+    struct Handler : public vh::network::IRestRequestHandler {
       auto HandleRequestAndGiveResponse
-          [[nodiscard]] (stonks::network::RestRequest request)
-          -> cppcoro::task<stonks::network::RestResponse> override {
-        EXPECT_EQ(request.endpoint.method, stonks::network::Method::kGet);
-        EXPECT_EQ(request.endpoint.uri, stonks::network::Uri{"/Test"});
-        co_return stonks::network::RestResponse{
-            stonks::network::Status::kOk,
-            stonks::network::ConvertToJson(SymbolPrice{
-                .symbol = stonks::network::ParseFromJson<stonks::core::Symbol>(
+          [[nodiscard]] (vh::network::RestRequest request)
+          -> cppcoro::task<vh::network::RestResponse> override {
+        EXPECT_EQ(request.endpoint.method, vh::network::Method::kGet);
+        EXPECT_EQ(request.endpoint.uri, vh::network::Uri{"/Test"});
+        co_return vh::network::RestResponse{
+            vh::network::Status::kOk,
+            vh::network::ConvertToJson(SymbolPrice{
+                .symbol = vh::network::ParseFromJson<vh::stk::core::Symbol>(
                     *request.body),
-                .price = stonks::network::ParseFromJson<double>(
+                .price = vh::network::ParseFromJson<double>(
                     *request.params.at("price"))})};
       }
     };
@@ -82,26 +82,26 @@ TEST(RestRequestReceiver, SendRequest) {
       auto receiver =
           test::restsdk::Injector()
               .create<
-                  stonks::cpp::NnUp<stonks::network::IRestRequestReceiver>>();
+                  vh::cpp::NnUp<vh::network::IRestRequestReceiver>>();
       receiver->Receive({"http://0.0.0.0:30001"},
-                        stonks::cpp::MakeNnUp<Handler>());
+                        vh::cpp::MakeNnUp<Handler>());
       return receiver;
     }();
 
-    const auto request = stonks::network::RestRequestBuilder{}
-                             .WithMethod(stonks::network::Method::kGet)
+    const auto request = vh::network::RestRequestBuilder{}
+                             .WithMethod(vh::network::Method::kGet)
                              .WithBaseUri({"http://0.0.0.0:30001"})
                              .AppendUri({"Test"})
                              .WithBody("BTCUSDT")
                              .AddParam("price", 123.456)
                              .Build();
     auto sender =
-        test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
+        test::restsdk::Injector().create<vh::restsdk::RestRequestSender>();
     const auto response = co_await sender.SendRequestAndGetResponse(request);
     const auto response_price =
-        stonks::network::ParseFromJson<SymbolPrice>(*response.result);
-    EXPECT_EQ(response.status, stonks::network::Status::kOk);
-    EXPECT_EQ(response_price.symbol, stonks::core::Symbol{"BTCUSDT"});
+        vh::network::ParseFromJson<SymbolPrice>(*response.result);
+    EXPECT_EQ(response.status, vh::network::Status::kOk);
+    EXPECT_EQ(response_price.symbol, vh::stk::core::Symbol{"BTCUSDT"});
     EXPECT_EQ(response_price.price, 123.456);
   }());
 }

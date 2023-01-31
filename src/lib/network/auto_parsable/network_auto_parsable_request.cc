@@ -7,7 +7,7 @@
 
 #include "network_json_base_conversions.h"
 
-namespace stonks::network {
+namespace vh::network {
 AutoParsableRestRequest::AutoParsableRestRequest(RestRequest rest_request)
     : params_{std::move(rest_request.params)},
       body_{std::move(rest_request.body)} {
@@ -38,4 +38,4 @@ auto AutoParsableRestRequest::Body() -> AutoParsable {
 
   return result;
 }
-}  // namespace stonks::network
+}  // namespace vh::network

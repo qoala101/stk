@@ -3,7 +3,7 @@
 
 #include <absl/time/time.h>
 
-namespace stonks::core::blsh {
+namespace vh::stk::core::blsh {
 enum class OperationType { kBuy, kSell };
 
 struct Operation {
@@ -35,6 +35,6 @@ struct Operation {
    */
   double usd_balance{};
 };
-}  // namespace stonks::core::blsh
+}  // namespace vh::stk::core::blsh
 
 #endif  // STONKS_APP_CORE_BUY_LOW_SELL_HIGH_CORE_BLSH_TYPES_H_

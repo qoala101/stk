@@ -9,7 +9,7 @@
 #include "network_auto_parsable_ws_message.h"
 #include "network_ws_types.h"
 
-namespace stonks::network::aprh {
+namespace vh::network::aprh {
 using HandlerWithWsMessage =
     fu2::unique_function<auto(AutoParsableWsMessage)->cppcoro::task<>>;
 
@@ -23,6 +23,6 @@ struct WsHandlerVariant
    */
   auto operator() [[nodiscard]] (WsMessage message) -> cppcoro::task<>;
 };
-}  // namespace stonks::network::aprh
+}  // namespace vh::network::aprh
 
 #endif  // STONKS_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_NETWORK_APRH_WS_HANDLER_VARIANT_H_

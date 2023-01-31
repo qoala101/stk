@@ -11,7 +11,7 @@
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 class Select;
 
 /**
@@ -43,6 +43,6 @@ class QueryValue : public QueryWrapper {
   friend auto operator>=(const QueryValue &left, const QueryValue &right)
       -> Condition;
 };
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_QUERY_VALUE_H_

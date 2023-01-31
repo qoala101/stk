@@ -7,7 +7,7 @@
 #include "sqldb_qb_query_wrapper.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 WrappedCondition::WrappedCondition(const Condition &condition,
                                    std::string_view format)
     : QueryWrapper{[&condition, format]() {
@@ -21,4 +21,4 @@ OnCondition::OnCondition(const Condition &condition)
 
 WhereCondition::WhereCondition(const Condition &condition)
     : WrappedCondition{condition, " WHERE ({})"} {}
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb

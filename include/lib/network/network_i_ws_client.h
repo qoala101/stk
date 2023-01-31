@@ -7,7 +7,7 @@
 #include "network_i_ws_message_handler.h"
 #include "network_ws_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Allows communication with an arbitrary web socket.
  */
@@ -32,6 +32,6 @@ class IWsClient {
   virtual auto SendMessage [[nodiscard]] (WsMessage message) const
       -> cppcoro::task<> = 0;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_I_WS_CLIENT_H_

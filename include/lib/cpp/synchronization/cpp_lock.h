@@ -6,7 +6,7 @@
 
 #include "cpp_not_null.h"
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Lock which shares mutex ownership.
  */
@@ -26,6 +26,6 @@ class Lock {
  * @brief Lock variant which does nothing by default.
  */
 using LockVariant = std::variant<std::monostate, Lock>;
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_SYNCHRONIZATION_CPP_LOCK_H_

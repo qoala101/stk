@@ -9,7 +9,7 @@
 #include "ngrok_api.h"
 #include "service_aue_public_db.h"
 
-namespace stonks::service::aue {
+namespace vh::stk::service::aue {
 /**
  * @brief App URI exposer implementation.
  */
@@ -33,6 +33,6 @@ class Impl {
   cpp::NnUp<log::ILogger> logger_;
   network::Uri last_exposed_uri_{};
 };
-}  // namespace stonks::service::aue
+}  // namespace vh::stk::service::aue
 
 #endif  // STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_AUE_IMPL_H_

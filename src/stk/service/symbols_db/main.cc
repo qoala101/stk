@@ -32,7 +32,7 @@
 #include "sqldb_i_db.h"
 #include "sqlite_types.h"
 
-namespace stonks::service::sdb {
+namespace vh::stk::service::sdb {
 void Main(int argc, const char *const *argv) {
   auto options = cli::Options{};
 
@@ -51,8 +51,8 @@ void Main(int argc, const char *const *argv) {
                                     injector);
   });
 }
-}  // namespace stonks::service::sdb
+}  // namespace vh::stk::service::sdb
 
 auto main(int argc, const char *const *argv) -> int {
-  stonks::service::sdb::Main(argc, argv);
+  vh::stk::service::sdb::Main(argc, argv);
 }

@@ -8,7 +8,7 @@
 #include "networkx_concepts.h"  // IWYU pragma: keep
 #include "networkx_types.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 /**
  * @brief Used to declare endpoint function parameter list.
  */
@@ -24,6 +24,6 @@ template <cpp::MemberFunction... Args>
 constexpr auto EndpointFunctionList [[nodiscard]] (Args &&...args) {
   return std::make_tuple(std::forward<Args>(args)...);
 }
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_COMMON_H_

@@ -50,7 +50,7 @@ struct AvgPrice {
 //   return invalid_tag;
 // }
 
-namespace stonks::network {
+namespace vh::network {
 template <>
 auto JsonParser<AvgPrice>::operator()(const IJson &json) const -> Type {
   return {.mins = ParseFromJsonChild<int>(json, "mins"),
@@ -65,21 +65,21 @@ auto ConvertToJson(const AvgPrice &value) -> cpp::Pv<IJson> {
   );
   // clang-format on
 }
-}  // namespace stonks::network
+}  // namespace vh::network
 
 namespace {
 TEST(RestRequestSender, AppendUri) {
-  const auto request = stonks::network::RestRequestBuilder{}
+  const auto request = vh::network::RestRequestBuilder{}
                            .WithBaseUri({"base_uri"})
                            .AppendUri({"appended_uri"})
                            .Build();
   EXPECT_EQ(request.endpoint.uri,
-            stonks::network::Uri{"base_uri/appended_uri"});
+            vh::network::Uri{"base_uri/appended_uri"});
 }
 
 TEST(RestRequestSender, ParameterTypesToString) {
   const auto request =
-      stonks::network::RestRequestBuilder{}
+      vh::network::RestRequestBuilder{}
           .WithBaseUri({})
           .AddParam("string", "abc")
           // .AddParam("milliseconds", absl::Time{123456789})
@@ -130,23 +130,23 @@ TEST(RestRequestSender, ParameterTypesToString) {
 
 TEST(RestRequestSender, SendRequest) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
-    const auto request = stonks::network::RestRequestBuilder{}
+    const auto request = vh::network::RestRequestBuilder{}
                              .WithBaseUri({"https://api.binance.com/api/v3"})
                              .AppendUri({"avgPrice"})
                              .AddParam("symbol", "BTCUSDT")
                              .Build();
     auto sender =
-        test::restsdk::Injector().create<stonks::restsdk::RestRequestSender>();
+        test::restsdk::Injector().create<vh::restsdk::RestRequestSender>();
     const auto response = co_await sender.SendRequestAndGetResponse(request);
     const auto response_price =
-        stonks::network::ParseFromJson<AvgPrice>(*response.result);
+        vh::network::ParseFromJson<AvgPrice>(*response.result);
     EXPECT_GT(response_price.mins, 0);
     EXPECT_GT(response_price.price, 0);
 
     const auto response_price_json =
-        stonks::network::ConvertToJson(response_price);
+        vh::network::ConvertToJson(response_price);
     const auto json_price =
-        stonks::network::ParseFromJson<AvgPrice>(*response_price_json);
+        vh::network::ParseFromJson<AvgPrice>(*response_price_json);
     EXPECT_EQ(response_price, json_price);
   }());
 }

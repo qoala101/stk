@@ -3,7 +3,7 @@
 #include <spdlog/common.h>
 #include <spdlog/spdlog.h>
 
-namespace stonks::spdlog {
+namespace vh::spdlog {
 namespace {
 auto ToNativeLevel(log::Level level) {
   switch (level) {
@@ -20,4 +20,4 @@ auto ToNativeLevel(log::Level level) {
 void ThreadSafeLogger::Log(log::Level level, std::string message) {
   ::spdlog::log(ToNativeLevel(level), message);
 }
-}  // namespace stonks::spdlog
+}  // namespace vh::spdlog

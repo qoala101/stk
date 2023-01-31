@@ -14,7 +14,7 @@
 #include "core_common.h"
 #include "cpp_message_exception.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 namespace {
 auto RoundPricesToStep(SymbolPriceRecord &record,
                        double base_asset_price_step) {
@@ -68,4 +68,4 @@ auto SymbolPricesFilter::GetLastPriceRecord(const Symbol &symbol) const
 
   co_return std::move(records.front());
 }
-}  // namespace stonks::core
+}  // namespace vh::stk::core

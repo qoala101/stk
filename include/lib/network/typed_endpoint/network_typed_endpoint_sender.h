@@ -9,7 +9,7 @@
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Decorator of request sender which adds
  * validation of request and response types.
@@ -34,6 +34,6 @@ class TypedEndpointSender : public IRestRequestSender {
   cpp::NnUp<te::EndpointTypesValidatorTemplate> type_checker_;
   cpp::NnSp<IRestRequestSender> request_sender_;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_ENDPOINT_SENDER_H_

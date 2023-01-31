@@ -1,6 +1,6 @@
 #include "cpp_auto_updatable.h"
 
-namespace stonks::cpp::detail {
+namespace vh::cpp::detail {
 auto AutoUpdatableBase::LockUpdates [[nodiscard]] () -> Sp<UpdateLock> {
   auto update_lock = update_lock_.lock();
 
@@ -24,4 +24,4 @@ auto AutoUpdatableBase::IsTimeToUpdate [[nodiscard]] () const -> bool {
   const auto time_since_last_update = absl::Now() - last_update_time_;
   return time_since_last_update >= update_interval_;
 }
-}  // namespace stonks::cpp::detail
+}  // namespace vh::cpp::detail

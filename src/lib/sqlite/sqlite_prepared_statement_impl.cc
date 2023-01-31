@@ -13,7 +13,7 @@
 #include "sqlite_native_handles.h"
 #include "sqlite_native_statement_facade.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 PreparedStatementImpl::PreparedStatementImpl(
     cpp::NnSp<NativeDbHandleVariant> native_db_handle,
     NativeStatementHandle native_statement_handle, sqldb::Query query,
@@ -49,4 +49,4 @@ auto PreparedStatementImpl::PrepareExecutionAndLock(
   NativeStatementFacade::BindParams(*native_statement_handle_, params);
   return lock;
 }
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite

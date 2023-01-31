@@ -3,7 +3,7 @@
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 
-namespace stonks::cpp {
+namespace vh::cpp {
 namespace detail {
 template <typename From, typename To>
 struct CopyConstTraits {
@@ -31,6 +31,6 @@ struct CopyConstTraits<From, To> {
  */
 template <typename From, typename To>
 using CopyConst = typename detail::CopyConstTraits<From, To>::Type;
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_CPP_COPY_CONST_H_

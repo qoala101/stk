@@ -8,7 +8,7 @@
 #include "network_json_common_conversions.h"
 #include "network_json_conversions_facades.h"
 
-namespace stonks::network {
+namespace vh::network {
 template <>
 auto JsonParser<binance::SymbolExchangeInfo>::operator()(
     const IJson &json) const -> Type {
@@ -53,4 +53,4 @@ auto JsonParser<binance::BookTick>::operator()(const IJson &json) const
   return {.best_bid_price = ParseFromJsonChild<std::string>(json, "b"),
           .best_ask_price = ParseFromJsonChild<std::string>(json, "a")};
 }
-}  // namespace stonks::network
+}  // namespace vh::network

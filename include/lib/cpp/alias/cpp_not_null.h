@@ -9,7 +9,7 @@
  * @file Short cpp::not_null aliases.
  */
 
-namespace stonks::cpp {
+namespace vh::cpp {
 template <typename... Ts>
 using Nn = ::cpp::not_null<Ts...>;
 
@@ -41,6 +41,6 @@ template <typename... Ts, typename... Args>
 auto MakeNnSp [[nodiscard]] (Args &&...args) {
   return AssumeNn(MakeSp<Ts...>(std::forward<Args>(args)...));
 }
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_ALIAS_CPP_NOT_NULL_H_

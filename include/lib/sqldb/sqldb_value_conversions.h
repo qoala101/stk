@@ -9,7 +9,7 @@
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_value.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 namespace detail {
 template <typename T>
 auto AsValue [[nodiscard]] (T &&t) {
@@ -56,6 +56,6 @@ template <typename... Args>
 auto AsValues [[nodiscard]] (Args &&...args) {
   return std::vector<Value>{detail::AsValue(std::forward<Args>(args))...};
 }
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_VALUE_CONVERSIONS_H_

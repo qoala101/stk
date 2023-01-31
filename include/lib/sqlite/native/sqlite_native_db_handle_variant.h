@@ -9,7 +9,7 @@
 #include "sqlite_native_handles.h"
 #include "sqlite_types.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 /**
  * @brief Variant of SQLite DB handle which keeps connection alive.
  */
@@ -37,6 +37,6 @@ struct NativeDbHandleVariant
   static auto GetNativeDbImpl
       [[nodiscard]] (cpp::This<NativeDbHandleVariant> auto &t) -> auto &;
 };
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite
 
 #endif  // STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_HANDLE_VARIANT_H_

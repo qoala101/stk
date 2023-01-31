@@ -7,7 +7,7 @@
 #include "sqldb_value.h"
 #include "sqlite_prepared_statement_impl.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 /**
  * @copydoc sqldb::IUpdateStatement
  */
@@ -23,6 +23,6 @@ class UpdateStatement : public sqldb::IUpdateStatement {
  private:
   PreparedStatementImpl impl_;
 };
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite
 
 #endif  // STONKS_SQLITE_SQLITE_UPDATE_STATEMENT_H_

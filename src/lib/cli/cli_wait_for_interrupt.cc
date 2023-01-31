@@ -5,7 +5,7 @@
 
 #include "cli_thread_blocker.h"
 
-namespace stonks::cli {
+namespace vh::cli {
 void WaitForInterrupt() {
   static auto thread_blocker = ThreadBlocker{};
   static auto unblock_thread = [](auto) { thread_blocker.UnblockThread(); };
@@ -13,4 +13,4 @@ void WaitForInterrupt() {
   std::ignore = std::signal(SIGTERM, unblock_thread);
   thread_blocker.BlockThread();
 }
-}  // namespace stonks::cli
+}  // namespace vh::cli

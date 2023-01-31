@@ -15,7 +15,7 @@ namespace web::websockets::client {
 class websocket_callback_client;  // IWYU pragma: keep
 }  // namespace web::websockets::client
 
-namespace stonks::restsdk {
+namespace vh::restsdk {
 /**
  * @copydoc network::IWsClient
  */
@@ -53,6 +53,6 @@ class WsClient : public network::IWsClient {
       native_ws_client_;
   cpp::NnSp<log::ILogger> logger_;
 };
-}  // namespace stonks::restsdk
+}  // namespace vh::restsdk
 
 #endif  // STONKS_RESTSDK_RESTSDK_WS_CLIENT_H_

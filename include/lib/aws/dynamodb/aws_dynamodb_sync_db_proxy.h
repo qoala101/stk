@@ -8,7 +8,7 @@
 #include "kvdb_i_db.h"
 #include "kvdb_types.h"
 
-namespace stonks::aws::dynamodb {
+namespace vh::aws::dynamodb {
 /**
  * @brief Synchronization proxy to the asynchronous DynamoDB implementation.
  * Blocks after each operation until the result of it can be verified.
@@ -60,6 +60,6 @@ class SyncDbProxy : public kvdb::IDb {
 
   AsyncDb async_db_;
 };
-}  // namespace stonks::aws::dynamodb
+}  // namespace vh::aws::dynamodb
 
 #endif  // STONKS_AWS_DYNAMODB_AWS_DYNAMODB_SYNC_DB_PROXY_H_

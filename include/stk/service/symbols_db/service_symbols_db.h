@@ -12,7 +12,7 @@
 #include "service_client_base.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 
-namespace stonks::service {
+namespace vh::stk::service {
 /**
  * @copydoc core::ISymbolsDb
  */
@@ -81,6 +81,6 @@ class SymbolsDb : public ClientBase<core::ISymbolsDb> {
                      const cpp::Opt<absl::Time> &end_time)
       -> cppcoro::task<> override;
 };
-}  // namespace stonks::service
+}  // namespace vh::stk::service
 
 #endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_

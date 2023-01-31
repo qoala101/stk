@@ -6,7 +6,7 @@
 #include "network_json_conversions_facades.h"
 #include "ngrok_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 template <>
 auto JsonParser<ngrok::Tunnel>::operator()(const IJson &json) const -> Type {
   return MakeFromJson<Type>(json, "public_url");
@@ -16,4 +16,4 @@ template <>
 auto JsonParser<ngrok::Tunnels>::operator()(const IJson &json) const -> Type {
   return {ParseFromJsonChild<std::vector<ngrok::Tunnel>>(json, "tunnels")};
 }
-}  // namespace stonks::network
+}  // namespace vh::network

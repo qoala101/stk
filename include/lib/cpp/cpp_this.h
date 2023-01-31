@@ -5,13 +5,13 @@
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Explicit narrowing to be used for the member instance
  * passed to the static functions.
  */
 template <typename T, typename U>
 concept This = std::same_as<std::remove_const_t<std::remove_reference_t<T>>, U>;
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_CPP_THIS_H_

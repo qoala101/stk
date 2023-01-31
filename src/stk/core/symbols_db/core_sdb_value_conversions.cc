@@ -6,7 +6,7 @@
 
 #include "sqldb_value_conversions.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 template <>
 auto ValueParser<absl::Time>::operator()(const Value &value) const -> Type {
   return absl::FromUnixMillis(value.Get<int64_t>());
@@ -15,4 +15,4 @@ auto ValueParser<absl::Time>::operator()(const Value &value) const -> Type {
 auto ConvertToValue(absl::Time time) -> Value {
   return Value{absl::ToUnixMillis(time)};
 }
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb

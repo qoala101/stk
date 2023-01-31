@@ -9,7 +9,7 @@
 #include "sqldb_query_builder.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 /**
  * @brief Generic DB interface.
  */
@@ -43,6 +43,6 @@ class IDb {
  private:
   void CreateTableIfNotExistsImpl(qb::Create query_builder);
 };
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_I_DB_H_

@@ -15,7 +15,7 @@
 #include "network_json_common_conversions.h"
 #include "networkx_client.h"
 
-namespace stonks::service {
+namespace vh::stk::service {
 auto SymbolsDb::SelectAssets() const
     -> cppcoro::task<std::vector<core::Asset>> {
   co_return co_await Call<&Target::SelectAssets>();
@@ -66,4 +66,4 @@ auto SymbolsDb::DeleteSymbolPriceRecords(const cpp::Opt<absl::Time> &start_time,
     -> cppcoro::task<> {
   co_await Call<&Target::DeleteSymbolPriceRecords>(start_time, end_time);
 }
-}  // namespace stonks::service
+}  // namespace vh::stk::service

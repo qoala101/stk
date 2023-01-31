@@ -3,7 +3,7 @@
 
 #include <type_traits>
 
-namespace stonks::di {
+namespace vh::di {
 /**
  * @brief Calls the function with arguments which are created by injector.
  */
@@ -12,6 +12,6 @@ auto CallWithInjectedArgs
     [[nodiscard]] (auto(*function)(Args...), const auto &injector) {
   return function(injector.template create<std::remove_cvref_t<Args>>()...);
 }
-}  // namespace stonks::di
+}  // namespace vh::di
 
 #endif  // STONKS_DI_DI_CALL_WITH_INJECTED_ARGS_H_

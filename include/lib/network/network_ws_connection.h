@@ -10,7 +10,7 @@
 #include "network_json_base_conversions.h"
 #include "network_ws_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Web socket facade which allows sending of objects
  * and keeps connection alive.
@@ -32,6 +32,6 @@ class WsConnection {
 
   cpp::NnUp<IWsClient> ws_client_;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_WS_CONNECTION_H_

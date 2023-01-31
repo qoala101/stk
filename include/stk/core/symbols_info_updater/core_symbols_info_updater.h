@@ -10,7 +10,7 @@
 #include "cpp_not_null.h"
 #include "cpp_timer.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 /**
  * @brief Periodically updates Symbols DB.
  */
@@ -44,6 +44,6 @@ class SymbolsInfoUpdater {
  private:
   cpp::Timer update_symbols_info_timer_;
 };
-}  // namespace stonks::core
+}  // namespace vh::stk::core
 
 #endif  // STONKS_APP_CORE_SYMBOLS_INFO_UPDATER_CORE_SYMBOLS_DB_UPDATER_H_

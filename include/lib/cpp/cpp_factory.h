@@ -9,7 +9,7 @@
 #include "cpp_mutex.h"
 #include "cpp_not_null.h"
 
-namespace stonks::cpp {
+namespace vh::cpp {
 namespace detail {
 template <typename T>
 struct FactoryTraits {
@@ -59,6 +59,6 @@ class Factory {
   fu2::function<auto()->ResultType> creator_{};
   MutexVariant create_mutex_{};
 };
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_CPP_FACTORY_H_

@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Util to reset the object state by swapping it with the empty one.
  * @param args Arguments to the new object constructor.
@@ -18,6 +18,6 @@ void SwapReset(T &t, Args &&...args) {
   auto other = T{std::forward<Args>(args)...};
   swap(t, other);
 }
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_CPP_SWAP_RESET_H_

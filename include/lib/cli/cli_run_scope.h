@@ -7,7 +7,7 @@ namespace CLI {
 class App;
 }  // namespace CLI
 
-namespace stonks::cli {
+namespace vh::cli {
 /**
  * @brief Used to wrap main application function around.
  * Preforms tasks such as logging before and after main application
@@ -31,6 +31,6 @@ class RunScope {
  private:
   cpp::NnSp<CLI::App> app_;
 };
-}  // namespace stonks::cli
+}  // namespace vh::cli
 
 #endif  // STONKS_CLI_CLI_RUN_SCOPE_H_

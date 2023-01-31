@@ -11,7 +11,7 @@ class App;
 class Option;
 }  // namespace CLI
 
-namespace stonks::cli {
+namespace vh::cli {
 /**
  * @brief Command line option value.
  */
@@ -29,6 +29,6 @@ struct OptionValueVariant
    */
   void SetValueFromNativeOption(const CLI::Option &option);
 };
-}  // namespace stonks::cli
+}  // namespace vh::cli
 
 #endif  // STONKS_CLI_CLI_OPTION_VALUE_VARIANT_H_

@@ -7,7 +7,7 @@
 #include "cpp_not_null.h"
 #include "cpp_optional.h"
 
-namespace stonks::cli {
+namespace vh::cli {
 /**
  * @brief Command line application util.
  * Provides access to command line options, logs its lifetime,
@@ -51,6 +51,6 @@ class App {
 
   cpp::NnSp<CLI::App> app_;
 };
-}  // namespace stonks::cli
+}  // namespace vh::cli
 
 #endif  // STONKS_CLI_CLI_APP_H_

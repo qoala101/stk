@@ -3,7 +3,7 @@
 
 #include "cpp_message_exception.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Generic network exception.
  */
@@ -11,6 +11,6 @@ class Exception : public cpp::MessageException {
  public:
   using cpp::MessageException::MessageException;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_EXCEPTION_H_

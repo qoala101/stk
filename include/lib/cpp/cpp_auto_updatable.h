@@ -13,7 +13,7 @@
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
 
-namespace stonks::cpp {
+namespace vh::cpp {
 namespace detail {
 struct UpdateLock {};
 
@@ -92,6 +92,6 @@ class AutoUpdatable : public detail::AutoUpdatableBase {
   fu2::unique_function<auto()->cppcoro::task<T>> updater_{};
   T object_{};
 };
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_CPP_AUTO_UPDATABLE_H_

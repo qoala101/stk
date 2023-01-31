@@ -2,6 +2,6 @@
 
 #include "sqldb_rows.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 auto ISelectStatement::Execute() const -> Rows { return Execute({}); }
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb

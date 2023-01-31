@@ -43,32 +43,32 @@ struct BinanceWebSocketMessage {
 using MessageVariant = std::variant<std::string, BinanceWebSocketMessage>;
 }  // namespace
 
-namespace stonks::network {
+namespace vh::network {
 template <>
 auto JsonParser<BinanceWebSocketMessage>::operator()(const IJson &json) const
     -> Type {
   return MakeFromJson<Type>(json, "method", "params", "id");
 }
-}  // namespace stonks::network
+}  // namespace vh::network
 
 namespace {
 auto ConvertToJson(const BinanceWebSocketMessage &value)
-    -> stonks::cpp::Pv<stonks::network::IJson> {
-  return stonks::network::BuildJsonFrom("method", value.method, "params",
+    -> vh::cpp::Pv<vh::network::IJson> {
+  return vh::network::BuildJsonFrom("method", value.method, "params",
                                         value.params, "id", value.id);
 }
 
-class WebSocketHandler : public stonks::network::IWsMessageHandler {
+class WebSocketHandler : public vh::network::IWsMessageHandler {
  public:
   explicit WebSocketHandler(
-      stonks::cpp::Nn<std::vector<MessageVariant> *> messages)
+      vh::cpp::Nn<std::vector<MessageVariant> *> messages)
       : messages_{messages} {}
 
-  auto HandleMessage [[nodiscard]] (stonks::network::WsMessage message)
+  auto HandleMessage [[nodiscard]] (vh::network::WsMessage message)
       -> cppcoro::task<> override {
     try {
       messages_->emplace_back(
-          stonks::network::ParseFromJson<MessageVariant>(*message));
+          vh::network::ParseFromJson<MessageVariant>(*message));
     } catch (const std::exception &) {
     }
 
@@ -76,10 +76,10 @@ class WebSocketHandler : public stonks::network::IWsMessageHandler {
   }
 
  private:
-  mutable stonks::cpp::Nn<std::vector<MessageVariant> *> messages_;
+  mutable vh::cpp::Nn<std::vector<MessageVariant> *> messages_;
 };
 
-const auto kEndpoint = stonks::network::WsEndpoint{
+const auto kEndpoint = vh::network::WsEndpoint{
     "wss://demo.piesocket.com/v3/"
     "channel_1?api_key=VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV&notify_"
     "self"};
@@ -89,13 +89,13 @@ const auto kMessage2 = BinanceWebSocketMessage{.method = "UNSUBSCRIBE"};
 TEST(WebSocket, SendAndReceive) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
     auto received_messages = std::vector<MessageVariant>{};
-    auto handler_up = stonks::cpp::MakeNnUp<WebSocketHandler>(
-        stonks::cpp::AssumeNn(&received_messages));
+    auto handler_up = vh::cpp::MakeNnUp<WebSocketHandler>(
+        vh::cpp::AssumeNn(&received_messages));
 
     {
       auto web_socket =
           test::restsdk::Injector()
-              .create<stonks::cpp::NnUp<stonks::network::IWsClient>>();
+              .create<vh::cpp::NnUp<vh::network::IWsClient>>();
 
       web_socket->Connect(kEndpoint);
       web_socket->SetMessageHandler(std::move(handler_up));
@@ -121,23 +121,23 @@ TEST(WebSocket, SendAndReceive) {
   }());
 }
 
-static const auto kTypedSocket = stonks::network::TypedWsEndpoint{
+static const auto kTypedSocket = vh::network::TypedWsEndpoint{
     .endpoint = kEndpoint,
     .expected_types = {
         .received_message =
-            stonks::network::ExpectedType<BinanceWebSocketMessage>(),
+            vh::network::ExpectedType<BinanceWebSocketMessage>(),
         .sent_message =
-            stonks::network::ExpectedType<BinanceWebSocketMessage>()}};
+            vh::network::ExpectedType<BinanceWebSocketMessage>()}};
 
 TEST(WebSocket, Facade) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
     auto received_messages = std::vector<BinanceWebSocketMessage>{};
 
     const auto client =
-        stonks::network::WsClientBuilder{
+        vh::network::WsClientBuilder{
             kTypedSocket,
             test::restsdk::Injector()
-                .create<stonks::cpp::NnUp<stonks::network::IWsClient>>()}
+                .create<vh::cpp::NnUp<vh::network::IWsClient>>()}
             .Handling([&received_messages](auto message) -> cppcoro::task<> {
               received_messages.emplace_back(*message);
               co_return;

@@ -8,7 +8,7 @@
 #include "sqldb_types.h"
 #include "sqldb_value.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 /**
  * @brief Values for many DB rows.
  */
@@ -69,6 +69,6 @@ class Rows {
 
   std::vector<ColumnValues> columns_{};
 };
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_ROWS_H_

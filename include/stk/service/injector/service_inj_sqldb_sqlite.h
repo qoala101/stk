@@ -11,7 +11,7 @@
 #include "sqlite_db.h"
 #include "sqlite_native_db_facade.h"
 
-namespace stonks::service::inj {
+namespace vh::stk::service::inj {
 inline auto CreateSqldbSqliteInjector [[nodiscard]] () {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<sqldb::IDb, sqlite::Db>(),
@@ -42,6 +42,6 @@ inline auto CreateSqldbSqliteInjector [[nodiscard]] () {
                 std::move(db));
           }>());
 }
-}  // namespace stonks::service::inj
+}  // namespace vh::stk::service::inj
 
 #endif  // STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_SQLDB_SQLITE_H_

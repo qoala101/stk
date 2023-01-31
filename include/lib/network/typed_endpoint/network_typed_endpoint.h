@@ -13,7 +13,7 @@
 #include "network_json_conversions_facades.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Tries to parse JSON.
  * @throw Rethrows parsing error if any happens.
@@ -45,6 +45,6 @@ struct TypedEndpoint {
   Endpoint endpoint{};
   EndpointTypes expected_types{};
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_ENDPOINT_H_

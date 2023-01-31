@@ -13,7 +13,7 @@
 #include "cpp_typed_struct.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::prm {
+namespace vh::sqldb::prm {
 auto AreParamsValid(const std::vector<Value> &values,
                     const std::vector<QueryParam> &params) -> bool {
   return (values.size() == params.size()) &&
@@ -22,4 +22,4 @@ auto AreParamsValid(const std::vector<Value> &values,
                        }),
                        params);
 }
-}  // namespace stonks::sqldb::p
+}  // namespace vh::sqldb::p

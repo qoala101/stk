@@ -9,7 +9,7 @@
 #include "cpp_not_null.h"
 #include "cpp_timer.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 /**
  * @brief Periodically deletes old symbol prices from Symbols DB.
  */
@@ -40,6 +40,6 @@ class OldSymbolPricesDeleter {
  private:
   cpp::Timer delete_old_prices_timer_;
 };
-}  // namespace stonks::core
+}  // namespace vh::stk::core
 
 #endif  // STONKS_APP_CORE_SYMBOLS_DB_UPDATER_CORE_SYMBOLS_DB_UPDATER_H_

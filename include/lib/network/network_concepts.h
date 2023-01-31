@@ -8,7 +8,7 @@
  * @file Common network library concepts.
  */
 
-namespace stonks::network {
+namespace vh::network {
 template <typename T>
 concept Parsable = requires(const IJson &json) {
                      { JsonParser<T>{}(json) } -> std::same_as<T>;
@@ -20,6 +20,6 @@ concept Parsable = requires(const IJson &json) {
 template <typename T>
 concept Convertible = !
 std::same_as<T, void>;
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_CONCEPTS_H_

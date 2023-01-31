@@ -7,7 +7,7 @@
 #include "network_i_rest_request_sender.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Decorator of request sender which identifies whether response
  * is an exception and throws it to the client.
@@ -26,6 +26,6 @@ class ResponseExceptionHandler : public IRestRequestSender {
  private:
   cpp::NnSp<IRestRequestSender> request_sender_;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_RESPONSE_EXCEPTION_HANDLER_H_

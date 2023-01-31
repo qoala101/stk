@@ -2,7 +2,7 @@
 
 #include <gsl/assert>
 
-namespace stonks::core {
+namespace vh::stk::core {
 auto Ceil(const CeilFloorArgs &args) -> double {
   Expects(args.precision != 0);
   return std::ceil(args.value / args.precision) * args.precision;
@@ -24,4 +24,4 @@ auto EndTimeFrom(const cpp::Opt<absl::Time> &time) -> absl::Time {
 auto TimeOrderFrom(const cpp::Opt<TimeOrder> &order) -> TimeOrder {
   return order.value_or(TimeOrder::kOldFirst);
 }
-}  // namespace stonks::core
+}  // namespace vh::stk::core

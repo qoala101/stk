@@ -5,73 +5,73 @@
 #include "networkx_common.h"
 #include "networkx_types.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 template <>
-struct EndpointFunctionTraits<&core::ISymbolsDb::SelectAssets> {
+struct EndpointFunctionTraits<&stk::core::ISymbolsDb::SelectAssets> {
   static constexpr auto kMethod = network::Method::kGet;
 };
 
 template <>
-struct EndpointFunctionTraits<&core::ISymbolsDb::UpdateAssets> {
+struct EndpointFunctionTraits<&stk::core::ISymbolsDb::UpdateAssets> {
   static constexpr auto kMethod = network::Method::kPost;
   static constexpr auto kParams = ParamList(RequestBody{});
 };
 
 template <>
 struct EndpointFunctionTraits<
-    &core::ISymbolsDb::SelectSymbolsWithPriceRecords> {
+    &stk::core::ISymbolsDb::SelectSymbolsWithPriceRecords> {
   static constexpr auto kMethod = network::Method::kGet;
 };
 
 template <>
-struct EndpointFunctionTraits<&core::ISymbolsDb::SelectSymbolInfo> {
+struct EndpointFunctionTraits<&stk::core::ISymbolsDb::SelectSymbolInfo> {
   static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams = ParamList("symbol");
 };
 
 template <>
-struct EndpointFunctionTraits<&core::ISymbolsDb::SelectSymbolsInfo> {
+struct EndpointFunctionTraits<&stk::core::ISymbolsDb::SelectSymbolsInfo> {
   static constexpr auto kMethod = network::Method::kGet;
 };
 
 template <>
-struct EndpointFunctionTraits<&core::ISymbolsDb::UpdateSymbolsInfo> {
+struct EndpointFunctionTraits<&stk::core::ISymbolsDb::UpdateSymbolsInfo> {
   static constexpr auto kMethod = network::Method::kPost;
   static constexpr auto kParams = ParamList(RequestBody{});
 };
 
 template <>
-struct EndpointFunctionTraits<&core::ISymbolsDb::SelectSymbolPriceRecords> {
+struct EndpointFunctionTraits<&stk::core::ISymbolsDb::SelectSymbolPriceRecords> {
   static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams =
       ParamList("symbol", "order", "start_time", "end_time", "limit");
 };
 
 template <>
-struct EndpointFunctionTraits<&core::ISymbolsDb::InsertSymbolPriceRecord> {
+struct EndpointFunctionTraits<&stk::core::ISymbolsDb::InsertSymbolPriceRecord> {
   static constexpr auto kMethod = network::Method::kPost;
   static constexpr auto kParams = ParamList(RequestBody{});
 };
 
 template <>
-struct EndpointFunctionTraits<&core::ISymbolsDb::DeleteSymbolPriceRecords> {
+struct EndpointFunctionTraits<&stk::core::ISymbolsDb::DeleteSymbolPriceRecords> {
   static constexpr auto kMethod = network::Method::kDelete;
   static constexpr auto kParams = ParamList("start_time", "end_time");
 };
 
 template <>
-struct ClientServerTypeTraits<core::ISymbolsDb> {
+struct ClientServerTypeTraits<stk::core::ISymbolsDb> {
   static constexpr auto kName = "symbols_db";
   static constexpr auto kDefaultPort = "30000";
   static constexpr auto kEndpointFunctions = EndpointFunctionList(
-      &core::ISymbolsDb::SelectAssets, &core::ISymbolsDb::UpdateAssets,
-      &core::ISymbolsDb::SelectSymbolsWithPriceRecords,
-      &core::ISymbolsDb::SelectSymbolInfo, &core::ISymbolsDb::SelectSymbolsInfo,
-      &core::ISymbolsDb::UpdateSymbolsInfo,
-      &core::ISymbolsDb::SelectSymbolPriceRecords,
-      &core::ISymbolsDb::InsertSymbolPriceRecord,
-      &core::ISymbolsDb::DeleteSymbolPriceRecords);
+      &stk::core::ISymbolsDb::SelectAssets, &stk::core::ISymbolsDb::UpdateAssets,
+      &stk::core::ISymbolsDb::SelectSymbolsWithPriceRecords,
+      &stk::core::ISymbolsDb::SelectSymbolInfo, &stk::core::ISymbolsDb::SelectSymbolsInfo,
+      &stk::core::ISymbolsDb::UpdateSymbolsInfo,
+      &stk::core::ISymbolsDb::SelectSymbolPriceRecords,
+      &stk::core::ISymbolsDb::InsertSymbolPriceRecord,
+      &stk::core::ISymbolsDb::DeleteSymbolPriceRecords);
 };
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_TRAITS_H_

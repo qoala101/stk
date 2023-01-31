@@ -12,7 +12,7 @@
 #include "core_sps_stream_factory.h"
 #include "cpp_share.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 SymbolPriceStreams::SymbolPriceStreams(
     const std::vector<Symbol> &symbols, absl::Duration reattempt_interval,
     cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db,
@@ -31,4 +31,4 @@ SymbolPriceStreams::SymbolPriceStreams(
                        }) |
                    ranges::to_vector;
           }()} {}
-}  // namespace stonks::core
+}  // namespace vh::stk::core

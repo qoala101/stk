@@ -6,7 +6,7 @@
 #include "cpp_timer.h"
 #include "service_aue_impl.h"
 
-namespace stonks::service {
+namespace vh::stk::service {
 /**
  * @brief Periodically exposes app URI to outside world.
  */
@@ -29,6 +29,6 @@ class AppUriExposer {
  private:
   cpp::Timer expose_uri_timer_;
 };
-}  // namespace stonks::service
+}  // namespace vh::stk::service
 
 #endif  // STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_APP_URI_EXPOSER_H_

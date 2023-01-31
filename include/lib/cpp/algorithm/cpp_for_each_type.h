@@ -1,7 +1,7 @@
 #ifndef STONKS_CPP_ALGORITHM_CPP_FOR_EACH_TYPE_H_
 #define STONKS_CPP_ALGORITHM_CPP_FOR_EACH_TYPE_H_
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Passed to function to get info about the current type.
  */
@@ -29,6 +29,6 @@ template <typename... Types>
 void ForEachType(const auto &function) {
   detail::ForEachTypeImpl<Types...>(function);
 }
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_ALGORITHM_CPP_FOR_EACH_TYPE_H_

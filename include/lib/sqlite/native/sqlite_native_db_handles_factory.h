@@ -10,7 +10,7 @@
  * @file Constructors of SQLite handles.
  */
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 class NativeDbHandlesFactory {
  public:
   explicit NativeDbHandlesFactory(cpp::NnSp<log::ILogger> logger);
@@ -39,6 +39,6 @@ class NativeDbHandlesFactory {
 
   cpp::NnSp<log::ILogger> logger_;
 };
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite
 
 #endif  // STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_HANDLES_FACTORY_H_

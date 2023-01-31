@@ -9,7 +9,7 @@
 #include "network_i_rest_request_handler.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Request handler which maps endpoint requests to the distinct handlers.
  */
@@ -33,6 +33,6 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
  private:
   absl::flat_hash_map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_

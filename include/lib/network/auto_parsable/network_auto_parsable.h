@@ -12,7 +12,7 @@
 #include "network_concepts.h"  // IWYU pragma: keep
 #include "network_i_json.h"
 
-namespace stonks::network {
+namespace vh::network {
 template <Parsable T>
 auto ParseFromJson [[nodiscard]] (const IJson &json) -> T;
 
@@ -62,6 +62,6 @@ class AutoParsable {
   cpp::Opt<cpp::Pv<IJson>> json_;
   std::any optional_{};
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_H_

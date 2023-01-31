@@ -3,7 +3,7 @@
 #include "core_sps_price_recorder.h"
 #include "cpp_timer_builder.h"
 
-namespace stonks::core::sps {
+namespace vh::stk::core::sps {
 StreamHandle::StreamHandle(Symbol symbol, absl::Duration reattempt_interval,
                            sps::StreamFactory stream_factory)
     : web_socket_{cpp::MakeNnSp<
@@ -17,4 +17,4 @@ StreamHandle::StreamHandle(Symbol symbol, absl::Duration reattempt_interval,
               .Once()
               .IfThrowsReattemptEvery(reattempt_interval)
               .Start()} {}
-}  // namespace stonks::core::sps
+}  // namespace vh::stk::core::sps

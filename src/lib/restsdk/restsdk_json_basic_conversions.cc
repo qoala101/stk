@@ -12,7 +12,7 @@
 #include "restsdk_json.h"
 #include "restsdk_json_native_handle.h"
 
-namespace stonks::network {
+namespace vh::network {
 auto CreateNullJson() -> cpp::Pv<IJson> {
   return cpp::MakePv<IJson, restsdk::Json>();
 }
@@ -61,4 +61,4 @@ auto JsonParser<std::string>::operator()(const IJson &json) const -> Type {
 auto ConvertToJson(std::string_view value) -> cpp::Pv<IJson> {
   return cpp::MakePv<IJson, restsdk::Json>(value);
 }
-}  // namespace stonks::network
+}  // namespace vh::network

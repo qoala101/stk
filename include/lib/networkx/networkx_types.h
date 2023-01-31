@@ -6,7 +6,7 @@
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 
-namespace stonks::networkx {
+namespace vh::networkx {
 /**
  * @brief Passing the instance to API instead of parameter name
  * would make it to parse parameter as body.
@@ -40,6 +40,6 @@ using ParentType =
 template <cpp::MemberFunction auto kFunction, unsigned kIndex>
 using ArgType = typename member_function_traits<
     decltype(kFunction)>::template argument_type<kIndex>;
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_TYPES_H_

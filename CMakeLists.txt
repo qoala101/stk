@@ -6,8 +6,8 @@ cmake_minimum_required(VERSION 3.25)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(
-  "stonks"
-  VERSION 0.1.0
+  "stk"
+  VERSION 0.2.0
   LANGUAGES CXX
 )
 

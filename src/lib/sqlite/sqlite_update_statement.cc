@@ -10,7 +10,7 @@
 #include "sqlite_prepared_statement_impl.h"
 #include "sqlite_types.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 UpdateStatement::UpdateStatement(PreparedStatementImpl impl)
     : impl_{std::move(impl)} {}
 
@@ -24,4 +24,4 @@ void UpdateStatement::Execute(std::vector<sqldb::Value> params) const {
         fmt::format("Unexpected update statement result: {}", result_code)};
   }
 }
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite

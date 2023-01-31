@@ -4,12 +4,12 @@
 #include "cli_option_value_variant.h"
 #include "cpp_concepts.h"
 
-namespace stonks::cli {
+namespace vh::cli {
 /**
  * @brief Supported command line option types.
  */
 template <typename T>
 concept SupportedOptionType = cpp::VariantOf<T, OptionValueVariant::ValueType>;
-}  // namespace stonks::cli
+}  // namespace vh::cli
 
 #endif  // STONKS_CLI_CLI_CONCEPTS_H_

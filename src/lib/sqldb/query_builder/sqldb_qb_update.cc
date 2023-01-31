@@ -16,7 +16,7 @@
 #include "cpp_typed_struct.h"
 #include "sqldb_prm_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 auto Update::Where(WhereCondition condition) -> Update& {
   Expects(where_query_->empty());
 
@@ -61,4 +61,4 @@ auto Update::Set(std::string_view column_name, const QueryValue& value)
   Ensures(!column_values_query_->empty());
   return *this;
 }
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb

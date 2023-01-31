@@ -27,19 +27,19 @@
 
 template <>
 constexpr auto magic_enum::customize::enum_name(
-    stonks::sqldb::qb::Order value) noexcept
+    vh::sqldb::qb::Order value) noexcept
     -> magic_enum::customize::customize_t {
   switch (value) {
-    case stonks::sqldb::qb::Order::kAscending:
+    case vh::sqldb::qb::Order::kAscending:
       return "ASC";
-    case stonks::sqldb::qb::Order::kDescending:
+    case vh::sqldb::qb::Order::kDescending:
       return "DESC";
     default:
       return invalid_tag;
   }
 }
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 namespace {
 auto DistinctQueryFrom [[nodiscard]] (bool distinct) {
   return distinct ? "DISTINCT " : "";
@@ -162,4 +162,4 @@ auto Select::OrderBy(std::string_view column_name, Order order) -> Select& {
   Ensures(!order_by_query_->empty());
   return *this;
 }
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb

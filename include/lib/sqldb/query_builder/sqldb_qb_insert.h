@@ -13,7 +13,7 @@
 #include "sqldb_qb_types.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 /**
  * @brief Builds queries to insert data to the table.
  */
@@ -64,6 +64,6 @@ class Insert {
   Query columns_query_{};
   prm::Parametrized<Query> values_query_{};
 };
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_

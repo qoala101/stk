@@ -5,8 +5,8 @@
 
 #include "sqldb_value.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 auto ConvertToValue [[nodiscard]] (absl::Time time) -> Value;
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb
 
 #endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_SDB_VALUE_CONVERSIONS_H_

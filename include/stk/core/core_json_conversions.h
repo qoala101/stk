@@ -7,15 +7,15 @@
 #include "cpp_polymorphic_value.h"
 #include "network_i_json.h"
 
-namespace stonks::network {
+namespace vh::network {
 auto ConvertToJson [[nodiscard]] (absl::Duration value) -> cpp::Pv<IJson>;
 auto ConvertToJson [[nodiscard]] (absl::Time value) -> cpp::Pv<IJson>;
-auto ConvertToJson [[nodiscard]] (const core::AssetInfo &value)
+auto ConvertToJson [[nodiscard]] (const stk::core::AssetInfo &value)
 -> cpp::Pv<IJson>;
-auto ConvertToJson [[nodiscard]] (const core::SymbolInfo &value)
+auto ConvertToJson [[nodiscard]] (const stk::core::SymbolInfo &value)
 -> cpp::Pv<IJson>;
-auto ConvertToJson [[nodiscard]] (const core::SymbolPriceRecord &value)
+auto ConvertToJson [[nodiscard]] (const stk::core::SymbolPriceRecord &value)
 -> cpp::Pv<IJson>;
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_APP_CORE_CORE_JSON_CONVERSIONS_H_

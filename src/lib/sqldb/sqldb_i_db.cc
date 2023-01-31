@@ -2,8 +2,8 @@
 
 #include <not_null.hpp>
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 void IDb::CreateTableIfNotExistsImpl(qb::Create query_builder) {
   PrepareStatement(query_builder.IfNotExists().Build())->Execute();
 }
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb

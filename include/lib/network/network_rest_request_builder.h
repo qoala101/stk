@@ -9,7 +9,7 @@
 #include "network_json_base_conversions.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Utility to build data for REST request.
  */
@@ -80,6 +80,6 @@ class RestRequestBuilder {
   Headers headers_{};
   cpp::Opt<Body> body_{};
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_REST_REQUEST_BUILDER_H_

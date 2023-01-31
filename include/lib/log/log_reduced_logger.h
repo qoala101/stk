@@ -11,7 +11,7 @@
 #include "log_rl_log_stats.h"
 #include "log_types.h"
 
-namespace stonks::log {
+namespace vh::log {
 /**
  * @brief Logger wrapper which reduces amount of logging by logging only
  * the statistics about the logged messages at specified intervals instead
@@ -34,6 +34,6 @@ class ReducedLogger : public ILogger {
   cpp::NnSp<rl::LogStats> log_stats_;
   cpp::Timer log_stats_timer_;
 };
-}  // namespace stonks::log
+}  // namespace vh::log
 
 #endif  // STONKS_LOG_LOG_REDUCED_LOGGER_H_

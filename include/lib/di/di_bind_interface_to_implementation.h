@@ -13,7 +13,7 @@
 #include "di_enable_nn_pointers.h"
 #include "di_make_injector.h"
 
-namespace stonks::di {
+namespace vh::di {
 namespace detail {
 template <typename Interface>
 auto FactoryFrom
@@ -57,6 +57,6 @@ auto BindInterfaceToImplementation [[nodiscard]] () {
       detail::EnableNnPointers<Interface>(),
       detail::EnableFactory<Interface, Implementation>());
 }
-}  // namespace stonks::di
+}  // namespace vh::di
 
 #endif  // STONKS_DI_DI_BIND_INTERFACE_TO_IMPLEMENTATION_H_

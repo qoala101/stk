@@ -8,7 +8,7 @@
 
 #include "network_typed_endpoint.h"
 
-namespace stonks::network {
+namespace vh::network {
 TypedWsMessageHandler::TypedWsMessageHandler(
     ParseTypeCheck received_message_type, cpp::NnUp<IWsMessageHandler> handler)
     : received_message_type_{(Expects(!received_message_type.empty()),
@@ -25,4 +25,4 @@ auto TypedWsMessageHandler::HandleMessage(WsMessage message)
 
   co_await handler_->HandleMessage(std::move(message));
 }
-}  // namespace stonks::network
+}  // namespace vh::network

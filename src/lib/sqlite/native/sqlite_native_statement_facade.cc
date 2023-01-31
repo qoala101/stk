@@ -14,7 +14,7 @@
 #include "cpp_typed_struct.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 namespace {
 void BindParam(sqlite3_stmt &statement, int index, const sqldb::Value &value) {
   Expects(index > 0);
@@ -129,4 +129,4 @@ void NativeStatementFacade::Finalize(sqlite3_stmt &statement) {
         fmt::format("Couldn't finalize prepared statement: {}", result_code)};
   }
 }
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite

@@ -33,7 +33,7 @@
 #include "cpp_message_exception.h"
 #include "cpp_typed_struct.h"
 
-namespace stonks::aws::dynamodb {
+namespace vh::aws::dynamodb {
 AsyncDb::AsyncDb(ApiHandle api_handle)
     : api_handle_{std::move(api_handle)},
       db_client_{cpp::MakeNnUp<Aws::DynamoDB::DynamoDBClient>()} {}
@@ -226,4 +226,4 @@ auto AsyncDb::GetTableStatus(const kvdb::Table &table) const
 
   co_return result.GetResult().GetTable().GetTableStatus();
 }
-}  // namespace stonks::aws::dynamodb
+}  // namespace vh::aws::dynamodb

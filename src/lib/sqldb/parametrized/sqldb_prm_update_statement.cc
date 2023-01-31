@@ -8,7 +8,7 @@
 #include "sqldb_i_update_statement.h"
 #include "sqldb_prm_common.h"
 
-namespace stonks::sqldb::prm {
+namespace vh::sqldb::prm {
 UpdateStatement::UpdateStatement(cpp::NnUp<IUpdateStatement> statement,
                                  std::vector<QueryParam> params)
     : statement_{std::move(statement)}, params_{std::move(params)} {}
@@ -17,4 +17,4 @@ void UpdateStatement::Execute(std::vector<sqldb::Value> params) const {
   Expects(AreParamsValid(params, params_));
   statement_->Execute(params);
 }
-}  // namespace stonks::sqldb::p
+}  // namespace vh::sqldb::p

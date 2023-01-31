@@ -14,7 +14,7 @@
 #include "cpp_typed_struct.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 Rows::Rows(std::vector<Column> columns)
     : columns_{columns | ranges::views::transform([](auto &column) {
                  return ColumnValues{.column = std::move(column)};
@@ -57,4 +57,4 @@ auto Rows::GetColumnValues(const Column &column) const
 auto Rows::GetColumnValues(const Column &column) -> std::vector<Value> & {
   return GetColumnValuesImpl(*this, column);
 }
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb

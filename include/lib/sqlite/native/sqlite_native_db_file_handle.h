@@ -6,7 +6,7 @@
 #include "sqlite_native_handles.h"
 #include "sqlite_types.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 /**
  * @remark Closes DB connection and writes DB to the file when destroyed.
  */
@@ -52,6 +52,6 @@ class NativeDbFileHandle {
   NativeDbHandle native_db_handle_;
   FilePath file_path_{};
 };
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite
 
 #endif  // STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_FILE_HANDLE_H_

@@ -15,7 +15,7 @@
 #include "sqlite_select_statement.h"
 #include "sqlite_update_statement.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 Db::Db(cpp::NnUp<log::ILogger> logger, NativeDbHandleVariant native_db_handle,
        cpp::Factory<cpp::MutexVariant> prepared_statement_mutex_factory)
     : logger_{std::move(logger)},
@@ -46,4 +46,4 @@ auto Db::PrepareStatement(sqldb::Query query)
   return cpp::MakeNnUp<UpdateStatement>(
       PreparedStatementImplFrom(std::move(query)));
 }
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite

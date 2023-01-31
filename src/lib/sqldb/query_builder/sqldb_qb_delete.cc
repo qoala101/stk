@@ -9,7 +9,7 @@
 
 #include "cpp_typed_struct.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 auto Delete::Where(WhereCondition condition) -> Delete& {
   Expects(where_query_->empty());
 
@@ -30,4 +30,4 @@ Delete::Delete(std::string table_name)
     : table_name_{(Expects(!table_name.empty()), std::move(table_name))} {
   Ensures(!table_name_->empty());
 }
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb

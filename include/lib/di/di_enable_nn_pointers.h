@@ -7,7 +7,7 @@
 #include "cpp_not_null.h"
 #include "di_make_injector.h"
 
-namespace stonks::di {
+namespace vh::di {
 namespace detail {
 template <typename T>
 struct AssumedNn : public cpp::Nn<T> {
@@ -30,6 +30,6 @@ template <typename T>
 auto EnableNnPointers [[nodiscard]] () {
   return detail::EnableNnPointers<T>();
 }
-}  // namespace stonks::di
+}  // namespace vh::di
 
 #endif  // STONKS_DI_DI_ENABLE_NN_POINTERS_H_

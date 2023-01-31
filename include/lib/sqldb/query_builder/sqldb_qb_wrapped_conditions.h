@@ -6,7 +6,7 @@
 #include "sqldb_qb_condition.h"
 #include "sqldb_qb_query_wrapper.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 /**
  * @brief Wraps condition query.
  */
@@ -32,6 +32,6 @@ class WhereCondition : public WrappedCondition {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   WhereCondition(const Condition &condition);
 };
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_WRAPPED_CONDITIONS_H_

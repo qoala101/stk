@@ -18,7 +18,7 @@ namespace {
 struct Type {
   auto Params(std::string value, const std::string const_value,
               const std::string &const_ref, const std::string *pointer,
-              const stonks::cpp::Opt<std::string> &opt,
+              const vh::cpp::Opt<std::string> &opt,
               const std::vector<std::string> &vec) const -> cppcoro::task<> {
     co_return;
   }
@@ -40,7 +40,7 @@ struct Type {
     co_return;
   }
 
-  auto BodyOpt(int, int, int, int, const stonks::cpp::Opt<std::string> &body,
+  auto BodyOpt(int, int, int, int, const vh::cpp::Opt<std::string> &body,
                int) const -> cppcoro::task<> {
     co_return;
   }
@@ -57,8 +57,8 @@ struct Type {
   }
 
   auto ResultOpt [[nodiscard]] () const 
-  -> cppcoro::task<stonks::cpp::Opt<std::string>> {
-    co_return stonks::cpp::Opt<std::string>{};
+  -> cppcoro::task<vh::cpp::Opt<std::string>> {
+    co_return vh::cpp::Opt<std::string>{};
   }
 
   auto ResultVec [[nodiscard]] () const -> cppcoro::task<std::vector<std::string>> {
@@ -67,20 +67,20 @@ struct Type {
 
   auto Death1(std::string value, const std::string const_value,
               const std::string &const_ref, const std::string *pointer,
-              const stonks::cpp::Opt<std::string> &opt,
+              const vh::cpp::Opt<std::string> &opt,
               const std::vector<std::string> &vec) const -> cppcoro::task<> {
     co_return;
   }
   auto Death2(std::string value, const std::string const_value,
               const std::string &const_ref, const std::string *pointer,
-              const stonks::cpp::Opt<std::string> &opt,
+              const vh::cpp::Opt<std::string> &opt,
               const std::vector<std::string> &vec) const -> cppcoro::task<> {
     co_return;
   }
 };
 }  // namespace
 
-namespace stonks::networkx {
+namespace vh::networkx {
 template <>
 struct EndpointFunctionTraits<&Type::Params> {
   static constexpr auto kMethod = network::Method::kGet;
@@ -162,16 +162,16 @@ struct EndpointFunctionTraits<&Type::Death2> {
   static constexpr auto kParams = ParamList(
       RequestBody{}, RequestBody{}, "const_ref", "pointer", "opt", "vec");
 };
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 namespace {
-const auto value_json = stonks::network::ConvertToJson("text");
-const auto null_json = stonks::network::CreateNullJson();
+const auto value_json = vh::network::ConvertToJson("text");
+const auto null_json = vh::network::CreateNullJson();
 const auto vec_json =
-    stonks::network::ConvertToJson(std::vector<std::string>{"text1", "text2"});
+    vh::network::ConvertToJson(std::vector<std::string>{"text1", "text2"});
 
 TEST(FunctionTypes, Params) {
-  const auto types = stonks::networkx::EndpointFunctionTraitsFacade<
+  const auto types = vh::networkx::EndpointFunctionTraitsFacade<
                          &Type::Params>::AsTypedEndpoint()
                          .expected_types;
   EXPECT_TRUE(types.body.empty());
@@ -200,7 +200,7 @@ TEST(FunctionTypes, Params) {
 }
 
 TEST(FunctionTypes, Body) {
-  auto types = stonks::networkx::EndpointFunctionTraitsFacade<
+  auto types = vh::networkx::EndpointFunctionTraitsFacade<
                    &Type::BodyValue>::AsTypedEndpoint()
                    .expected_types;
   EXPECT_TRUE(types.params.empty());
@@ -209,7 +209,7 @@ TEST(FunctionTypes, Body) {
   EXPECT_ANY_THROW(types.body(*vec_json));
   EXPECT_TRUE(types.result.empty());
 
-  types = stonks::networkx::EndpointFunctionTraitsFacade<
+  types = vh::networkx::EndpointFunctionTraitsFacade<
               &Type::BodyConstValue>::AsTypedEndpoint()
               .expected_types;
   EXPECT_EQ(types.params.size(), 5);
@@ -218,7 +218,7 @@ TEST(FunctionTypes, Body) {
   EXPECT_ANY_THROW(types.body(*vec_json));
   EXPECT_TRUE(types.result.empty());
 
-  types = stonks::networkx::EndpointFunctionTraitsFacade<
+  types = vh::networkx::EndpointFunctionTraitsFacade<
               &Type::BodyConstRef>::AsTypedEndpoint()
               .expected_types;
   EXPECT_EQ(types.params.size(), 5);
@@ -227,7 +227,7 @@ TEST(FunctionTypes, Body) {
   EXPECT_ANY_THROW(types.body(*vec_json));
   EXPECT_TRUE(types.result.empty());
 
-  types = stonks::networkx::EndpointFunctionTraitsFacade<
+  types = vh::networkx::EndpointFunctionTraitsFacade<
               &Type::BodyPointer>::AsTypedEndpoint()
               .expected_types;
   EXPECT_EQ(types.params.size(), 5);
@@ -236,7 +236,7 @@ TEST(FunctionTypes, Body) {
   EXPECT_ANY_THROW(types.body(*vec_json));
   EXPECT_TRUE(types.result.empty());
 
-  types = stonks::networkx::EndpointFunctionTraitsFacade<
+  types = vh::networkx::EndpointFunctionTraitsFacade<
               &Type::BodyOpt>::AsTypedEndpoint()
               .expected_types;
   EXPECT_EQ(types.params.size(), 5);
@@ -245,7 +245,7 @@ TEST(FunctionTypes, Body) {
   EXPECT_ANY_THROW(types.body(*vec_json));
   EXPECT_TRUE(types.result.empty());
 
-  types = stonks::networkx::EndpointFunctionTraitsFacade<
+  types = vh::networkx::EndpointFunctionTraitsFacade<
               &Type::BodyVec>::AsTypedEndpoint()
               .expected_types;
   EXPECT_EQ(types.params.size(), 5);
@@ -256,14 +256,14 @@ TEST(FunctionTypes, Body) {
 }
 
 TEST(FunctionTypes, Result) {
-  auto types = stonks::networkx::EndpointFunctionTraitsFacade<
+  auto types = vh::networkx::EndpointFunctionTraitsFacade<
                    &Type::ResultVoid>::AsTypedEndpoint()
                    .expected_types;
   EXPECT_TRUE(types.params.empty());
   EXPECT_TRUE(types.body.empty());
   EXPECT_TRUE(types.result.empty());
 
-  types = stonks::networkx::EndpointFunctionTraitsFacade<
+  types = vh::networkx::EndpointFunctionTraitsFacade<
               &Type::ResultValue>::AsTypedEndpoint()
               .expected_types;
   EXPECT_TRUE(types.params.empty());
@@ -272,7 +272,7 @@ TEST(FunctionTypes, Result) {
   EXPECT_ANY_THROW(types.result(*null_json));
   EXPECT_ANY_THROW(types.result(*vec_json));
 
-  types = stonks::networkx::EndpointFunctionTraitsFacade<
+  types = vh::networkx::EndpointFunctionTraitsFacade<
               &Type::ResultOpt>::AsTypedEndpoint()
               .expected_types;
   EXPECT_TRUE(types.params.empty());
@@ -281,7 +281,7 @@ TEST(FunctionTypes, Result) {
   EXPECT_NO_THROW(types.result(*null_json));
   EXPECT_ANY_THROW(types.result(*vec_json));
 
-  types = stonks::networkx::EndpointFunctionTraitsFacade<
+  types = vh::networkx::EndpointFunctionTraitsFacade<
               &Type::ResultVec>::AsTypedEndpoint()
               .expected_types;
   EXPECT_TRUE(types.params.empty());
@@ -292,11 +292,11 @@ TEST(FunctionTypes, Result) {
 }
 
 TEST(FunctionTypesDeathTest, Errors) {
-  EXPECT_DEATH(std::ignore = stonks::networkx::EndpointFunctionTraitsFacade<
+  EXPECT_DEATH(std::ignore = vh::networkx::EndpointFunctionTraitsFacade<
                                  &Type::Death1>::AsTypedEndpoint()
                                  .expected_types,
                "");
-  EXPECT_DEATH(std::ignore = stonks::networkx::EndpointFunctionTraitsFacade<
+  EXPECT_DEATH(std::ignore = vh::networkx::EndpointFunctionTraitsFacade<
                                  &Type::Death2>::AsTypedEndpoint()
                                  .expected_types,
                "");

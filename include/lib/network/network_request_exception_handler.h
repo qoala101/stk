@@ -7,7 +7,7 @@
 #include "network_i_rest_request_handler.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Decorator of request handler which transforms the exception thrown by
  * the handler to the appropriate response.
@@ -26,6 +26,6 @@ class RequestExceptionHandler : public IRestRequestHandler {
  private:
   cpp::NnUp<IRestRequestHandler> handler_;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_REQUEST_EXCEPTION_HANDLER_H_

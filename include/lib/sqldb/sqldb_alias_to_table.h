@@ -7,7 +7,7 @@
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_table.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 /**
  * @brief Base for table alias definition types.
  */
@@ -43,6 +43,6 @@ struct AliasToTable : public Table<AliasTable> {
     }
   };
 };
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_ALIAS_TO_TABLE_H_

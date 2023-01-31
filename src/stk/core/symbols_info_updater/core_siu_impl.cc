@@ -28,7 +28,7 @@
 #include "core_types.h"
 #include "cpp_typed_struct.h"
 
-namespace stonks::core::siu {
+namespace vh::stk::core::siu {
 namespace {
 auto ToSymbolInfo
     [[nodiscard]] (const binance::SymbolExchangeInfo &binance_info) {
@@ -77,4 +77,4 @@ auto Impl::GetAndUpdateSymbolsInfo() -> cppcoro::task<> {
   last_update_time_ = absl::Now();
   Ensures(last_update_time_ > absl::Time{});
 }
-}  // namespace stonks::core::siu
+}  // namespace vh::stk::core::siu

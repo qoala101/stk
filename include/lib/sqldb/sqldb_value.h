@@ -12,7 +12,7 @@
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 namespace detail {
 template <SupportedDataType T>
 struct GetResultTraits {
@@ -63,6 +63,6 @@ class Value : public cpp::VariantStruct<std::monostate, bool, int, int64_t,
   template <SupportedDataType T>
   static auto GetImpl [[nodiscard]] (cpp::This<Value> auto &t) -> auto &;
 };
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_VALUE_H_

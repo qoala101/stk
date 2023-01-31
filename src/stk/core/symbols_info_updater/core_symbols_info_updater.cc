@@ -9,7 +9,7 @@
 #include "core_siu_impl.h"
 #include "cpp_timer_builder.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 SymbolsInfoUpdater::SymbolsInfoUpdater(ConstructorArgs args)
     : update_symbols_info_timer_{
           cpp::Execute(
@@ -21,4 +21,4 @@ SymbolsInfoUpdater::SymbolsInfoUpdater(ConstructorArgs args)
               .Every(args.check_if_update_required_interval)
               .IfThrowsReattemptEvery(args.reattempt_interval)
               .Start()} {}
-}  // namespace stonks::core
+}  // namespace vh::stk::core

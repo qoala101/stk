@@ -16,7 +16,7 @@
  * for conversion of user types.
  */
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief In order to make the type parsable, client must provide definition
  * of the operator for the type.
@@ -57,6 +57,6 @@ auto ConvertToJson [[nodiscard]] (double value) -> cpp::Pv<IJson>;
  * @remark To be defined by the library implementer.
  */
 auto ConvertToJson [[nodiscard]] (std::string_view value) -> cpp::Pv<IJson>;
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_JSON_BASE_CONVERSIONS_H_

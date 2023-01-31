@@ -13,7 +13,7 @@
 #include "network_types.h"
 #include "network_wrong_type_exception.h"
 
-namespace stonks::network {
+namespace vh::network {
 namespace {
 class TypeChecker : public te::EndpointTypesValidatorTemplate {
  public:
@@ -66,4 +66,4 @@ auto TypedEndpointSender::SendRequestAndGetResponse(RestRequest request)
   type_checker_->ValidateResponse(response);
   co_return response;
 }
-}  // namespace stonks::network
+}  // namespace vh::network

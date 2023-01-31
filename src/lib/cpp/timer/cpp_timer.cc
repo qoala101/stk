@@ -2,8 +2,8 @@
 
 #include <utility>
 
-namespace stonks::cpp {
+namespace vh::cpp {
 Timer::Timer(timer::EventLoop event_loop) : thread_{std::move(event_loop)} {}
 
 Timer::~Timer() { thread_.request_stop(); }
-}  // namespace stonks::cpp
+}  // namespace vh::cpp

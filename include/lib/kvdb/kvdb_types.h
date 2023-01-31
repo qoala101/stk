@@ -5,7 +5,7 @@
 
 #include "cpp_typed_struct.h"
 
-namespace stonks::kvdb {
+namespace vh::kvdb {
 /**
  * @brief Name of Key-Value table which stores string key-value pairs.
  */
@@ -27,6 +27,6 @@ struct Item {
   friend auto operator== [[nodiscard]] (const Item &, const Item &)
   -> bool = default;
 };
-}  // namespace stonks::kvdb
+}  // namespace vh::kvdb
 
 #endif  // STONKS_KVDB_KVDB_TYPES_H_

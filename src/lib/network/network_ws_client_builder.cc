@@ -9,7 +9,7 @@
 #include "network_typed_ws_endpoint.h"
 #include "network_ws_connection.h"
 
-namespace stonks::network {
+namespace vh::network {
 WsClientBuilder::WsClientBuilder(TypedWsEndpoint endpoint,
                                  cpp::NnUp<IWsClient> ws_client)
     : endpoint_{std::move(endpoint)},
@@ -47,4 +47,4 @@ auto WsClientBuilder::Handling(cpp::NnUp<IWsMessageHandler> handler)
   Ensures(handler_ != nullptr);
   return *this;
 }
-}  // namespace stonks::network
+}  // namespace vh::network

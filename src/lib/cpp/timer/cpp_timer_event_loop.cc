@@ -7,7 +7,7 @@
 #include <gsl/assert>
 #include <utility>
 
-namespace stonks::cpp::timer {
+namespace vh::cpp::timer {
 EventLoop::EventLoop(fu2::unique_function<void()> event,
                      absl::Duration event_interval,
                      ReattemptPolicy reattempt_policy)
@@ -91,4 +91,4 @@ void EventLoop::InterruptableSleepFor(absl::Duration sleep_duration) const {
     absl::SleepFor(std::min(time_till_wake_up, absl::Seconds(1)));
   }
 }
-}  // namespace stonks::cpp::timer
+}  // namespace vh::cpp::timer

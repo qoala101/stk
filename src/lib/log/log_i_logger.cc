@@ -4,7 +4,7 @@
 
 #include "log_types.h"
 
-namespace stonks::log {
+namespace vh::log {
 void ILogger::LogImportantEvent(std::string message) {
   Log(Level::Info, std::move(message));
 }
@@ -16,4 +16,4 @@ void ILogger::LogStrangeEvent(std::string message) {
 void ILogger::LogErrorCondition(std::string message) {
   Log(Level::Error, std::move(message));
 }
-}  // namespace stonks::log
+}  // namespace vh::log

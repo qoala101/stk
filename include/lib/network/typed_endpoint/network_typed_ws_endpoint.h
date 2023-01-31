@@ -8,7 +8,7 @@
 #include "network_typed_endpoint.h"
 #include "network_ws_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Expected web socket message types.
  */
@@ -25,6 +25,6 @@ struct TypedWsEndpoint {
   WsEndpoint endpoint{};
   WsEndpointTypes expected_types{};
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_WS_ENDPOINT_H_

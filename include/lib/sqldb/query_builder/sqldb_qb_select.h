@@ -16,7 +16,7 @@
 #include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 /**
  * @brief Builds query to select data from DB.
  */
@@ -107,6 +107,6 @@ class Select {
   prm::Parametrized<Query> join_query_{};
   ResultDefinition result_definition_{};
 };
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_SELECT_H_

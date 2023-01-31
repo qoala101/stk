@@ -1,4 +1,4 @@
-FROM qoala101/stonks:dependencies
+FROM qoala101/stk:dependencies
 WORKDIR /app
 COPY ./include ./include
 COPY ./src ./src

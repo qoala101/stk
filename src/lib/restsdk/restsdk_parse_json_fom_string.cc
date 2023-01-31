@@ -9,7 +9,7 @@
 #include "restsdk_json.h"
 #include "restsdk_json_native_handle.h"
 
-namespace stonks::restsdk {
+namespace vh::restsdk {
 auto ParseJsonFromString(const std::string &value) -> cpp::Pv<network::IJson> {
   auto error_code = std::error_code{};
   auto json = web::json::value::parse(value, error_code);
@@ -21,4 +21,4 @@ auto ParseJsonFromString(const std::string &value) -> cpp::Pv<network::IJson> {
   return cpp::MakePv<network::IJson, Json>(
       network::IJson::NativeHandle{std::move(json)});
 }
-}  // namespace stonks::restsdk
+}  // namespace vh::restsdk

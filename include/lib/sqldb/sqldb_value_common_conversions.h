@@ -7,7 +7,7 @@
  * @file Common conversions based on the base ones and standard templates.
  */
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 /**
  * @brief Parses descendants of typed structs.
  */
@@ -38,6 +38,6 @@ template <typename T>
 auto ConvertToValue [[nodiscard]] (const cpp::TypedStruct<T> &value) {
   return ConvertToValue(*value);
 }
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_VALUE_COMMON_CONVERSIONS_H_

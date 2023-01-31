@@ -22,7 +22,7 @@
  * @file Common conversions based on the base ones and standard templates.
  */
 
-namespace stonks::network {
+namespace vh::network {
 template <Parsable T>
 auto ParseFromJson [[nodiscard]] (const IJson &json) -> T;
 
@@ -192,6 +192,6 @@ auto ConvertToJson [[nodiscard]] (T *value) {
 
   return ConvertToJson(*value);
 }
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_JSON_COMMON_CONVERSIONS_H_

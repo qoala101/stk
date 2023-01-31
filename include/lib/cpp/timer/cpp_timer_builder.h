@@ -8,7 +8,7 @@
 #include "cpp_optional.h"
 #include "cpp_timer.h"
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Convenience API to setup timed event.
  */
@@ -61,6 +61,6 @@ class TimerBuilder {
  * @brief Begins timer builder.
  */
 auto Execute [[nodiscard]] (fu2::unique_function<void()> event) -> TimerBuilder;
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_TIMER_CPP_TIMER_BUILDER_H_

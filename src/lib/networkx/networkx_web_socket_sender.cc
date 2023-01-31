@@ -2,7 +2,7 @@
 
 #include "network_ws_client_builder.h"
 
-namespace stonks::networkx::detail {
+namespace vh::networkx::detail {
 WebSocketSenderBase::WebSocketSenderBase(network::WsConnection connection)
     : connection_{std::move(connection)} {}
 
@@ -19,4 +19,4 @@ auto WebSocketSenderBase::GetConnection() const
     -> const network::WsConnection& {
   return connection_;
 }
-}  // namespace stonks::networkx::detail
+}  // namespace vh::networkx::detail

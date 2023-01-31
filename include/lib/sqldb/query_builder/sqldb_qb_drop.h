@@ -7,7 +7,7 @@
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 /**
  * @brief Builds drop table query.
  */
@@ -30,6 +30,6 @@ class Drop {
 
   Query table_name_{};
 };
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_DROP_H_

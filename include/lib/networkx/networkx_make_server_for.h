@@ -19,7 +19,7 @@
 #include "networkx_types.h"
 #include "networkx_uri.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 namespace detail {
 template <EndpointParam Param>
 auto GetParamValue [[nodiscard]] (network::AutoParsableRestRequest &request,
@@ -97,6 +97,6 @@ auto MakeServerFor
   detail::SetEndpointHandlers(server_builder, shared_target);
   return server_builder.Start();
 }
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_MAKE_SERVER_FOR_H_

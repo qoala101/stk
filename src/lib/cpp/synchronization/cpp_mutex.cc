@@ -1,6 +1,6 @@
 #include "cpp_mutex.h"
 
-namespace stonks::cpp {
+namespace vh::cpp {
 Mutex::Mutex() : mutex_{MakeNnSp<std::mutex>()} {}
 
 auto Mutex::Lock() const -> LockVariant {
@@ -20,4 +20,4 @@ auto MutexVariant::Lock() const -> LockVariant {
       },
       **this);
 }
-}  // namespace stonks::cpp
+}  // namespace vh::cpp

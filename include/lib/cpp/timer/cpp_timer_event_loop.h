@@ -8,7 +8,7 @@
 
 #include "cpp_timer_reattempt_policy.h"
 
-namespace stonks::cpp::timer {
+namespace vh::cpp::timer {
 /**
  * @brief Timer event loop.
  */
@@ -41,6 +41,6 @@ class EventLoop {
   ReattemptPolicy reattempt_policy_{};
   const std::stop_token* stop_token_{};
 };
-}  // namespace stonks::cpp::timer
+}  // namespace vh::cpp::timer
 
 #endif  // STONKS_CPP_TIMER_CPP_TIMER_EVENT_LOOP_H_

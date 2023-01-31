@@ -5,7 +5,7 @@
 
 #include "cpp_not_null.h"
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Explicit conversion to shared pointer.
  */
@@ -29,6 +29,6 @@ template <typename T>
 auto Share(NnUp<T> t) {
   return NnSp<T>{std::move(t)};
 }
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_CPP_SHARE_H_

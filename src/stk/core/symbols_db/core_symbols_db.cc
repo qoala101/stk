@@ -53,7 +53,7 @@
 #include "sqldb_value_common_conversions.h"  // IWYU pragma: keep
 #include "sqldb_value_conversions.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 namespace {
 struct BaseAsset : public sqldb::AliasToTable<sdb::tables::Asset, BaseAsset> {
   using id = AliasToColumn<Target::id>;
@@ -533,4 +533,4 @@ void SymbolsDb::DeleteSymbolInfo(SymbolInfo info) const {
   prepared_statements_.delete_symbol_info->Execute(
       sqldb::AsValues(std::move(info.symbol)));
 }
-}  // namespace stonks::core
+}  // namespace vh::stk::core

@@ -6,7 +6,7 @@
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 
-namespace stonks::di {
+namespace vh::di {
 namespace detail {
 template <typename T, typename Injected>
   requires cpp::ConstructibleFrom<T, Injected>
@@ -24,6 +24,6 @@ template <typename T, typename Injected>
 auto BindTypeToOtherType [[nodiscard]] () {
   return boost::di::bind<T>().template to<detail::TypeInjector<T, Injected>>();
 }
-}  // namespace stonks::di
+}  // namespace vh::di
 
 #endif  // STONKS_DI_DI_BIND_TYPE_TO_OTHER_TYPE_H_

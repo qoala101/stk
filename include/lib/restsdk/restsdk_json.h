@@ -11,7 +11,7 @@
 #include "network_i_json.h"
 #include "restsdk_json_native_handle.h"
 
-namespace stonks::restsdk {
+namespace vh::restsdk {
 /**
  * @copydoc network::IJson
  */
@@ -88,6 +88,6 @@ class Json : public network::IJson {
 
   network::IJson::NativeHandle native_handle_;
 };
-}  // namespace stonks::restsdk
+}  // namespace vh::restsdk
 
 #endif  // STONKS_RESTSDK_RESTSDK_JSON_H_

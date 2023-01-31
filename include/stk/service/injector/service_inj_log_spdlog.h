@@ -6,11 +6,11 @@
 #include "log_i_logger.h"
 #include "spdlog_thread_safe_logger.h"
 
-namespace stonks::service::inj {
+namespace vh::stk::service::inj {
 inline auto CreateLogSpdlogInjector [[nodiscard]] () {
   return di::MakeInjector(
       di::BindInterfaceToImplementation<log::ILogger, spdlog::ThreadSafeLogger>());
 }
-}  // namespace stonks::service
+}  // namespace vh::stk::service
 
 #endif  // STONKS_APP_COMMON_COMMON_CREATE_LOG_SPDLOG_INJECTOR_H_

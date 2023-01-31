@@ -1,4 +1,4 @@
-FROM qoala101/stonks:base
+FROM qoala101/stk:base
 ARG executable_name
 ENV EXECUTABLE_NAME=$executable_name
 WORKDIR /app

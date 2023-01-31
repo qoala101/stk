@@ -10,7 +10,7 @@
 #include "cli_wait_for_interrupt.h"
 #include "cpp_not_null.h"
 
-namespace stonks::cli {
+namespace vh::cli {
 RunScope::RunScope(cpp::NnSp<CLI::App> app) : app_{std::move(app)} {
   fmt::print(R"(Starting: {}
 )",
@@ -25,4 +25,4 @@ RunScope::~RunScope() {
 )",
              app_->get_name());
 }
-}  // namespace stonks::cli
+}  // namespace vh::cli

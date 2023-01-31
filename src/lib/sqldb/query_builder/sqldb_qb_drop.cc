@@ -8,7 +8,7 @@
 
 #include "cpp_typed_struct.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 auto Drop::Build() const -> Query {
   return {fmt::format("DROP TABLE {}", *table_name_)};
 }
@@ -17,4 +17,4 @@ Drop::Drop(std::string table_name)
     : table_name_{(Expects(!table_name.empty()), std::move(table_name))} {
   Ensures(!table_name_->empty());
 }
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb

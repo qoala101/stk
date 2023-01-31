@@ -23,7 +23,7 @@
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_symbols_db.h"
 
-namespace stonks::service::sdbu {
+namespace vh::stk::service::sdbu {
 void Main(int argc, const char *const *argv) {
   auto options = cli::Options();
 
@@ -57,8 +57,8 @@ void Main(int argc, const char *const *argv) {
          .reattempt_interval = absl::Milliseconds(*reattempt_interval)}};
   });
 }
-}  // namespace stonks::service::sdbu
+}  // namespace vh::stk::service::sdbu
 
 auto main(int argc, const char *const *argv) -> int {
-  stonks::service::sdbu::Main(argc, argv);
+  vh::stk::service::sdbu::Main(argc, argv);
 }

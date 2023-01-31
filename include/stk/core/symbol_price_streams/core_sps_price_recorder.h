@@ -8,7 +8,7 @@
 #include "core_types.h"
 #include "cpp_not_null.h"
 
-namespace stonks::core::sps {
+namespace vh::stk::core::sps {
 /**
  * @brief Records symbol prices to Symbols DB.
  */
@@ -29,6 +29,6 @@ class PriceRecorder {
   Symbol symbol_{};
   cpp::NnSp<ISymbolsDb> symbols_db_;
 };
-}  // namespace stonks::core::sps
+}  // namespace vh::stk::core::sps
 
 #endif  // STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_PRICE_RECORDER_H_

@@ -9,7 +9,7 @@
 #include "network_typed_ws_endpoint.h"
 #include "network_ws_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Decorator of web socket client which invalidates unexpected messages.
  */
@@ -37,6 +37,6 @@ class TypedWsClient : public IWsClient {
   WsEndpointTypes endpoint_types_{};
   cpp::NnUp<IWsClient> ws_client_;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_WS_CLIENT_H_

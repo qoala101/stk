@@ -13,7 +13,7 @@
 #include "cpp_swap_reset.h"
 #include "network_types.h"
 
-namespace stonks::network::rest_client {
+namespace vh::network::rest_client {
 RequestBuilder::RequestBuilder(Endpoint endpoint,
                                cpp::NnUp<IRestRequestSender> request_sender)
     : endpoint_{std::move(endpoint)},
@@ -74,4 +74,4 @@ auto RequestBuilder::SendRequestAndGetResult() -> cppcoro::task<Result> {
 
   co_return result;
 }
-}  // namespace stonks::network::rest_client
+}  // namespace vh::network::rest_client

@@ -32,7 +32,7 @@
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_symbols_db.h"
 
-namespace stonks::service::spf {
+namespace vh::stk::service::spf {
 void Main(int argc, const char *const *argv) {
   auto options = cli::Options{};
 
@@ -54,8 +54,8 @@ void Main(int argc, const char *const *argv) {
         server_options.GetUri(), auto_injectable);
   });
 }
-}  // namespace stonks::service::spf
+}  // namespace vh::stk::service::spf
 
 auto main(int argc, const char *const *argv) -> int {
-  stonks::service::spf::Main(argc, argv);
+  vh::stk::service::spf::Main(argc, argv);
 }

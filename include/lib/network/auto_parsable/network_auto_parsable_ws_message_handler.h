@@ -12,7 +12,7 @@
 #include "network_i_ws_message_handler.h"
 #include "network_ws_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Convenient request handler constructible from any callable which may
  * take auto-parsable request and return any convertible value.
@@ -42,6 +42,6 @@ class AutoParsableWsMessageHandler : public IWsMessageHandler {
  private:
   aprh::WsHandlerVariant handler_{};
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_WS_MESSAGE_HANDLER_H_

@@ -12,7 +12,7 @@ namespace Aws::DynamoDB {
 class DynamoDBClient;  // IWYU pragma: keep
 }  // namespace Aws::DynamoDB
 
-namespace stonks::aws::dynamodb {
+namespace vh::aws::dynamodb {
 /**
  * @brief Util which allows to call member async functions as coroutines.
  */
@@ -42,6 +42,6 @@ auto CallAsCoroutine
   co_await result_is_ready;
   co_return result;
 }
-}  // namespace stonks::aws::dynamodb
+}  // namespace vh::aws::dynamodb
 
 #endif  // STONKS_AWS_DYNAMODB_AWS_DYNAMODB_CALL_AS_COROUTINE_H_

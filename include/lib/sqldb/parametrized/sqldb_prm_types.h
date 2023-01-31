@@ -7,7 +7,7 @@
 #include "cpp_typed_struct.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::prm {
+namespace vh::sqldb::prm {
 /**
  * @brief Query parameter to be substituted with value
  * when executing the statement.
@@ -31,6 +31,6 @@ template <std::derived_from<Query> Query>
 struct Parametrized : public Query {
   QueryParams params{};
 };
-}  // namespace stonks::sqldb::p
+}  // namespace vh::sqldb::p
 
 #endif  // STONKS_SQLDB_PARAMETRIZED_SQLDB_P_TYPES_H_

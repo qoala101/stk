@@ -7,7 +7,7 @@
  * @file Utils for conditional applying of rvalue cast.
  */
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Applies rvalue cast to the value if T is rvalue.
  * @remark Proper usage with forwarding reference:
@@ -37,6 +37,6 @@ auto MoveIfNotConst(U &&value) -> auto && {
     return std::forward<U>(value);
   }
 }
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_CPP_MOVE_IF_H_

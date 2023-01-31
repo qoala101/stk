@@ -6,7 +6,7 @@
 #include <gsl/assert>
 #include <magic_enum.hpp>
 
-namespace stonks::log::rl {
+namespace vh::log::rl {
 LogStats::LogStats(cpp::NnUp<ILogger> logger)
     : logger_{std::move(logger)},
       message_stats_{[]() {
@@ -50,4 +50,4 @@ void LogStats::LogMessageStats() {
 
   last_log_time_ = absl::Now();
 }
-}  // namespace stonks::log::rl
+}  // namespace vh::log::rl

@@ -19,32 +19,32 @@
 
 namespace test::app {
 inline auto Injector [[nodiscard]] () -> auto & {
-  static auto injector = stonks::di::MakeInjector(
-      stonks::di::BindInterfaceToImplementation<
-          stonks::log::ILogger, stonks::spdlog::ThreadSafeLogger>(),
-      stonks::di::BindInterfaceToImplementation<stonks::sqldb::IDb,
-                                                stonks::sqlite::Db>(),
-      stonks::di::BindTypeToFactoryFunction<
-          stonks::sqlite::NativeDbHandleVariant,
-          +[](const stonks::sqlite::NativeDbHandlesFactory &factory) {
-            return stonks::sqlite::NativeDbHandleVariant{
+  static auto injector = vh::di::MakeInjector(
+      vh::di::BindInterfaceToImplementation<
+          vh::log::ILogger, vh::spdlog::ThreadSafeLogger>(),
+      vh::di::BindInterfaceToImplementation<vh::sqldb::IDb,
+                                                vh::sqlite::Db>(),
+      vh::di::BindTypeToFactoryFunction<
+          vh::sqlite::NativeDbHandleVariant,
+          +[](const vh::sqlite::NativeDbHandlesFactory &factory) {
+            return vh::sqlite::NativeDbHandleVariant{
                 factory.CreateInMemoryDb()};
           }>(),
-      stonks::di::BindTypeToFactoryFunction<
-          stonks::cpp::meta::ThreadSafe<stonks::cpp::NnUp<stonks::sqldb::IDb>>,
-          +[](stonks::cpp::NnUp<stonks::log::ILogger> logger,
-              stonks::sqlite::NativeDbHandleVariant native_db_handle) {
-            stonks::sqlite::NativeDbFacade::SetSynchronizationEnabled(
+      vh::di::BindTypeToFactoryFunction<
+          vh::cpp::meta::ThreadSafe<vh::cpp::NnUp<vh::sqldb::IDb>>,
+          +[](vh::cpp::NnUp<vh::log::ILogger> logger,
+              vh::sqlite::NativeDbHandleVariant native_db_handle) {
+            vh::sqlite::NativeDbFacade::SetSynchronizationEnabled(
                 native_db_handle.GetNativeDb(), true);
             auto prepared_statement_mutex_factory =
-                stonks::cpp::Factory<stonks::cpp::MutexVariant>{
+                vh::cpp::Factory<vh::cpp::MutexVariant>{
                     []() {
-                      return stonks::cpp::MutexVariant{stonks::cpp::Mutex{}};
+                      return vh::cpp::MutexVariant{vh::cpp::Mutex{}};
                     },
                     {}};
-            return stonks::cpp::meta::AssumeThreadSafe<
-                stonks::cpp::NnUp<stonks::sqldb::IDb>>(
-                stonks::cpp::MakeNnUp<stonks::sqlite::Db>(
+            return vh::cpp::meta::AssumeThreadSafe<
+                vh::cpp::NnUp<vh::sqldb::IDb>>(
+                vh::cpp::MakeNnUp<vh::sqlite::Db>(
                     std::move(logger), std::move(native_db_handle),
                     std::move(prepared_statement_mutex_factory)));
           }>());

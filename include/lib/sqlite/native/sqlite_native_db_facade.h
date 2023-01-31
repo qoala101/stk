@@ -8,7 +8,7 @@
 #include "sqlite_native_handles.h"
 #include "sqlite_types.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 /**
  * @brief Convenience API for SQLite DB.
  */
@@ -58,6 +58,6 @@ class NativeDbFacade {
   cpp::NnSp<log::ILogger> logger_;
   NativeDbHandlesFactory handles_factory_;
 };
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite
 
 #endif  // STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_FACADE_H_

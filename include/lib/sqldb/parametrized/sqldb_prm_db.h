@@ -9,7 +9,7 @@
 #include "sqldb_prm_types.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::prm {
+namespace vh::sqldb::prm {
 /**
  * @brief Wrapper over DB which checks parameters of prepared statements.
  */
@@ -43,6 +43,6 @@ class Db {
 
   cpp::NnUp<IDb> db_;
 };
-}  // namespace stonks::sqldb::p
+}  // namespace vh::sqldb::p
 
 #endif  // STONKS_SQLDB_PARAMETRIZED_SQLDB_P_DB_H_

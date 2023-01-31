@@ -14,7 +14,7 @@
 #include "network_types.h"
 #include "ngrok_types.h"
 
-namespace stonks::service::aue {
+namespace vh::stk::service::aue {
 Impl::Impl(PublicDb public_db, ngrok::NgrokApi ngrok_api,
            cpp::NnUp<log::ILogger> logger)
     : public_db_{std::move(public_db)},
@@ -54,4 +54,4 @@ auto Impl::ExposeNgrokUriIfChanged() -> cppcoro::task<> {
   last_exposed_uri_ = std::move(new_uri);
   Ensures(!last_exposed_uri_->empty());
 }
-}  // namespace stonks::service::aue
+}  // namespace vh::stk::service::aue

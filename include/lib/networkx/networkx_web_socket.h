@@ -12,7 +12,7 @@
 #include "networkx_concepts.h"  // IWYU pragma: keep
 #include "networkx_web_socket_sender.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 template <cpp::MemberFunction auto F>
 class WebSocket;
 
@@ -118,6 +118,6 @@ class WebSocket<kFunction> {
 
   cpp::NnSp<cpp::Opt<Sender>> sender_;
 };
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_WEB_SOCKET_H_

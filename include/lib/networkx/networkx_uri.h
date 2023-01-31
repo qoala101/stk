@@ -7,7 +7,7 @@
 #include "networkx_client_server_type_traits_facade.h"
 #include "networkx_concepts.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 namespace detail {
 struct UriBase : public network::Uri {
  protected:
@@ -28,6 +28,6 @@ struct Uri : public detail::UriBase {
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
   Uri(network::Uri uri) : Uri{*uri} {}
 };
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_URI_H_

@@ -17,7 +17,7 @@
 #include "sqlite_native_db_handles_factory.h"
 #include "sqlite_native_handles.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 namespace {
 auto GetAssociatedFileName [[nodiscard]] (sqlite3 &db) -> std::string {
   const auto *const file_name = sqlite3_db_filename(&db, nullptr);
@@ -114,4 +114,4 @@ void NativeDbFacade::SetPragma(sqlite3 &db, std::string_view pragma,
                                             pragma, value, result_code)};
   }
 }
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite

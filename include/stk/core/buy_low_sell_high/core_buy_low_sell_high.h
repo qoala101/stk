@@ -12,7 +12,7 @@
 #include "cpp_meta_thread_safe.h"
 #include "cpp_not_null.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 class BuyLowSellHigh {
  public:
   explicit BuyLowSellHigh(
@@ -29,6 +29,6 @@ class BuyLowSellHigh {
   cpp::NnUp<ISymbolsDb> symbols_db_;
   double commission_{};
 };
-}  // namespace stonks::core
+}  // namespace vh::stk::core
 
 #endif  // STONKS_APP_CORE_BUY_LOW_SELL_HIGH_CORE_BUY_LOW_SELL_HIGH_H_

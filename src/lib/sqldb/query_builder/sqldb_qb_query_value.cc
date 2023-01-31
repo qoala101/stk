@@ -21,7 +21,7 @@
 #include "sqldb_qb_query_wrapper.h"
 #include "sqldb_qb_select.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 namespace {
 auto ConditionFrom
     [[nodiscard]] (std::string_view format, const QueryValue &left,
@@ -81,4 +81,4 @@ auto operator<(const QueryValue &left, const QueryValue &right) -> Condition {
 auto operator>=(const QueryValue &left, const QueryValue &right) -> Condition {
   return ConditionFrom("{} >= {}", left, right);
 }
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb

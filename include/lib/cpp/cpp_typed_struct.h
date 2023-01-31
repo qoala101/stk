@@ -9,7 +9,7 @@
 #include "cpp_not_null.h"
 #include "cpp_this.h"  // IWYU pragma: keep
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Type-safe replacement for type aliases.
  * Can only be constructed explicitly and implicitly converts
@@ -79,6 +79,6 @@ struct TypedStruct {
     return AssumeNn(&*t);
   }
 };
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_CPP_TYPED_STRUCT_H_

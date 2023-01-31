@@ -10,7 +10,7 @@
 #include "sqldb_qb_select.h"
 #include "sqldb_qb_update.h"
 
-namespace stonks::sqldb::query_builder {
+namespace vh::sqldb::query_builder {
 /**
  * @brief Builds query which creates the table from its definition.
  */
@@ -73,6 +73,6 @@ template <TableDefinition Table>
 auto DeleteFromTable [[nodiscard]] () {
   return qb::Delete{cpp::meta::TemplateConstructor<Table>{}};
 }
-}  // namespace stonks::sqldb::query_builder
+}  // namespace vh::sqldb::query_builder
 
 #endif  // STONKS_SQLDB_SQLDB_QUERY_BUILDER_H_

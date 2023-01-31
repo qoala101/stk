@@ -19,7 +19,7 @@ enum class TableStatus;  // IWYU pragma: keep
 }  // namespace Model
 }  // namespace Aws::DynamoDB
 
-namespace stonks::aws::dynamodb {
+namespace vh::aws::dynamodb {
 /**
  * @brief Implementation of Key-Value DB interface using DynamoDB from AWS.
  * @remark All operations are asynchronous. Calling one operation immediately
@@ -96,6 +96,6 @@ class AsyncDb : public kvdb::IDb {
   ApiHandle api_handle_;
   cpp::NnUp<Aws::DynamoDB::DynamoDBClient> db_client_;
 };
-}  // namespace stonks::aws::dynamodb
+}  // namespace vh::aws::dynamodb
 
 #endif  // STONKS_AWS_DYNAMODB_AWS_DYNAMODB_ASYNC_DB_H_

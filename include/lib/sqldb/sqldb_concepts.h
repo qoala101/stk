@@ -7,7 +7,7 @@
 #include "cpp_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 /**
  * @brief Data types supported by library.
  */
@@ -29,6 +29,6 @@ concept ColumnDefinition = requires {
                              TableDefinition<typename T::Table>;
                              SupportedDataType<typename T::DataType>;
                            };
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_CONCEPTS_H_

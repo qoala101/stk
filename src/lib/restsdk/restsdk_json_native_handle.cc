@@ -8,7 +8,7 @@
 #include "cpp_not_null.h"
 #include "network_i_json.h"
 
-namespace stonks::network {
+namespace vh::network {
 IJson::NativeHandle::NativeHandle()
     : json_{cpp::MakeNnUp<web::json::value>()} {}
 
@@ -64,4 +64,4 @@ auto IJson::NativeHandle::operator->() const
 auto IJson::NativeHandle::operator->() -> cpp::Nn<web::json::value *> {
   return OperatorArrowImpl(*this);
 }
-}  // namespace stonks::network
+}  // namespace vh::network

@@ -39,7 +39,7 @@
 #include "restsdk_json_native_handle.h"
 #include "restsdk_parse_json_fom_string.h"
 
-namespace stonks::restsdk {
+namespace vh::restsdk {
 namespace {
 auto MethodFrom [[nodiscard]] (const web::http::method &method) {
   if (method == web::http::methods::GET) {
@@ -193,4 +193,4 @@ void RestRequestReceiver::Receive(
 
   Ensures(http_listener_ != nullptr);
 }
-}  // namespace stonks::restsdk
+}  // namespace vh::restsdk

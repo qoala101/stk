@@ -14,7 +14,7 @@
 
 #include "network_json_base_conversions.h"
 
-namespace stonks::network::te {
+namespace vh::network::te {
 EndpointTypesValidatorTemplate::EndpointTypesValidatorTemplate(
     EndpointTypes endpoint_types)
     : endpoint_types_{std::move(endpoint_types)} {}
@@ -109,4 +109,4 @@ void EndpointTypesValidatorTemplate::ValidateResponse(
     HandleUnexpectedResponseBody();
   }
 }
-}  // namespace stonks::network::te
+}  // namespace vh::network::te

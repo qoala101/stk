@@ -6,7 +6,7 @@
 #include "log_i_logger.h"
 #include "log_types.h"
 
-namespace stonks::spdlog {
+namespace vh::spdlog {
 /**
  * @brief Logger which can be used in multiple threads.
  */
@@ -17,6 +17,6 @@ class ThreadSafeLogger : public log::ILogger {
    */
   void Log(log::Level level, std::string message) override;
 };
-}  // namespace stonks::spdlog
+}  // namespace vh::spdlog
 
 #endif  // STONKS_SPDLOG_SPDLOG_LOGGER_H_

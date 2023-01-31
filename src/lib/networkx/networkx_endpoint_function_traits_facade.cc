@@ -4,8 +4,8 @@
 
 #include "network_types.h"
 
-namespace stonks::networkx::detail {
+namespace vh::networkx::detail {
 auto ToUri(std::string_view function_name) -> network::Uri {
   return {fmt::format("/{}", function_name)};
 }
-}  // namespace stonks::networkx::detail
+}  // namespace vh::networkx::detail

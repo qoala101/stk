@@ -8,7 +8,7 @@
 #include "network_typed_endpoint.h"
 #include "network_ws_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Decorator of web socket handler which invalidates unexpected messages.
  */
@@ -30,6 +30,6 @@ class TypedWsMessageHandler : public IWsMessageHandler {
   ParseTypeCheck received_message_type_{};
   cpp::NnUp<IWsMessageHandler> handler_;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_WS_MESSAGE_HANDLER_H_

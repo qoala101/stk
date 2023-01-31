@@ -9,7 +9,7 @@
 #include "sqldb_value.h"
 #include "sqlite_prepared_statement_impl.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 /**
  * @copydoc sqldb::ISelectStatement
  */
@@ -33,6 +33,6 @@ class SelectStatement : public sqldb::ISelectStatement {
   std::vector<sqldb::Column> result_columns_{};
   std::vector<sqldb::DataTypeVariant> result_types_{};
 };
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite
 
 #endif  // STONKS_SQLITE_SQLITE_SELECT_STATEMENT_H_

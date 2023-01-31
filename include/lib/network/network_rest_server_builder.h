@@ -16,7 +16,7 @@
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Convenience API for building server-like REST request listener.
  */
@@ -55,6 +55,6 @@ class RestServerBuilder {
   cpp::Up<IRestRequestReceiver> request_receiver_{};
   absl::flat_hash_map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_REST_SERVER_BUILDER_H_

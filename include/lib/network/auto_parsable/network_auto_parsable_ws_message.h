@@ -5,7 +5,7 @@
 #include "network_auto_parsable.h"
 #include "network_ws_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Wraps raw web socket message providing convenient auto-parsable API
  * for it.
@@ -23,6 +23,6 @@ class AutoParsableWsMessage {
  private:
   cpp::Opt<WsMessage> message_;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_WS_MESSAGE_H_

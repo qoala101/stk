@@ -11,7 +11,7 @@
 #include "sqlite_native_db_facade.h"
 #include "sqlite_native_db_handle_variant.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 /**
  * @copydoc sqldb::IDb
  */
@@ -45,6 +45,6 @@ class Db : public sqldb::IDb {
   cpp::Factory<cpp::MutexVariant> prepared_statement_mutex_factory_;
   NativeDbFacade native_db_facade_;
 };
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite
 
 #endif  // STONKS_SQLITE_SQLITE_DB_H_

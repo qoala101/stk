@@ -7,7 +7,7 @@
 #include "cpp_not_null.h"
 #include "cpp_this.h"
 
-namespace stonks::cli {
+namespace vh::cli {
 namespace detail {
 class OptionBase {
  public:
@@ -50,6 +50,6 @@ class Option : public detail::OptionBase {
     return std::get<T>(*t.GetValue());
   }
 };
-}  // namespace stonks::cli
+}  // namespace vh::cli
 
 #endif  // STONKS_CLI_CLI_OPTION_H_

@@ -13,7 +13,7 @@
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
 
-namespace stonks::aws {
+namespace vh::aws {
 namespace detail {
 class ApiHandleImpl {
  public:
@@ -62,4 +62,4 @@ auto GetCachedApiHandle [[nodiscard]] (cpp::NnUp<log::ILogger> logger) {
 
 ApiHandle::ApiHandle(cpp::NnUp<log::ILogger> logger)
     : impl_{GetCachedApiHandle(std::move(logger))} {}
-}  // namespace stonks::aws
+}  // namespace vh::aws

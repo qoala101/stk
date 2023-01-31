@@ -17,7 +17,7 @@
 #include "sqlite_native_db_facade.h"
 #include "sqlite_native_handles.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 namespace {
 using NullableNativeDbHandle =
     std::remove_cvref_t<decltype(std::declval<NativeDbHandle>().as_nullable())>;
@@ -94,4 +94,4 @@ void NativeDbHandlesFactory::CreateParentDirectoryIfNotExists(
         fmt::format("Created directory path to store DB {}", *file_path));
   }
 }
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite

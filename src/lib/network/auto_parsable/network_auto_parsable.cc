@@ -3,8 +3,8 @@
 #include <gsl/assert>
 #include <utility>
 
-namespace stonks::network {
+namespace vh::network {
 AutoParsable::AutoParsable(cpp::Pv<IJson> json) : json_{std::move(json)} {
   Ensures(json_.has_value());
 }
-}  // namespace stonks::network
+}  // namespace vh::network

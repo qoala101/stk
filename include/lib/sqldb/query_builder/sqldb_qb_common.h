@@ -9,7 +9,7 @@
 #include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 /**
  * @brief Adds ON to condition.
  */
@@ -43,6 +43,6 @@ template <ColumnDefinition Column>
 auto ParamForColumn [[nodiscard]] () -> QueryValue {
   return ParamOfType<typename Column::DataType>();
 }
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COMMON_H_

@@ -9,7 +9,7 @@
 #include "gtest/gtest_pred_impl.h"
 
 namespace {
-struct TypedString : public stonks::cpp::TypedStruct<std::string> {};
+struct TypedString : public vh::cpp::TypedStruct<std::string> {};
 
 TEST(TypedStruct, RvalueConversion) {
   auto typed_s = TypedString{"value"};

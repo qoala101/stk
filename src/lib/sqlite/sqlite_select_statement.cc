@@ -18,7 +18,7 @@
 #include "sqlite_native_statement_facade.h"
 #include "sqlite_types.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 namespace {
 auto GetColumns
     [[nodiscard]] (const sqldb::ResultDefinition &result_definition) {
@@ -69,4 +69,4 @@ auto SelectStatement::Execute(std::vector<sqldb::Value> params) const
     }
   }
 }
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite

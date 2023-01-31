@@ -7,7 +7,7 @@
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief JSON object.
  */
@@ -73,6 +73,6 @@ class IJson {
       -> const NativeHandle& = 0;
   virtual auto GetNativeHandle [[nodiscard]] () -> NativeHandle& = 0;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_I_JSON_H_

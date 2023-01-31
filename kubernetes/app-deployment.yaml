@@ -69,14 +69,14 @@ spec:
 
       containers:
         - name: buy-low-sell-high-container
-          image: qoala101/stonks:service_buy_low_sell_high
+          image: qoala101/stk:service_buy_low_sell_high
           args:
             - --port=$(APP_SERVICE_SERVICE_PORT_BLSH_PORT)
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
 
         - name: old-symbol-prices-deleter-container
-          image: qoala101/stonks:old_symbol_prices_deleter
+          image: qoala101/stk:old_symbol_prices_deleter
           args:
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
@@ -85,7 +85,7 @@ spec:
             - --reattempt_interval=60000
 
         - name: symbol-price-streams-container
-          image: qoala101/stonks:service_symbol_price_streams
+          image: qoala101/stk:service_symbol_price_streams
           args:
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SPF_PORT)
@@ -93,14 +93,14 @@ spec:
             - --reattempt_interval=60000
 
         - name: symbol-prices-filter-container
-          image: qoala101/stonks:service_symbol_prices_filter
+          image: qoala101/stk:service_symbol_prices_filter
           args:
             - --port=spf-port
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
 
         - name: symbols-db-container
-          image: qoala101/stonks:service_symbols_db
+          image: qoala101/stk:service_symbols_db
           args:
             - --port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
             - --db_file_path=/app/data/symbols_db.db
@@ -109,7 +109,7 @@ spec:
               name: symbols-db-volume
 
         - name: symbols-info-updater-container
-          image: qoala101/stonks:service_symbols_info_updater
+          image: qoala101/stk:service_symbols_info_updater
           args:
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)

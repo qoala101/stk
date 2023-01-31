@@ -4,7 +4,7 @@
 #include <exception>
 #include <string>
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Exception with custom message.
  */
@@ -20,6 +20,6 @@ class MessageException : public std::exception {
  private:
   std::string message_{};
 };
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_CPP_MESSAGE_EXCEPTION_H_

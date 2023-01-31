@@ -9,7 +9,7 @@
 
 #include "cpp_typed_struct.h"
 
-namespace stonks::cli::detail {
+namespace vh::cli::detail {
 void OptionsBase::AddToNativeApp(CLI::App &app) const {
   for (const auto &[name, weak_value] : option_values_) {
     if (const auto value = weak_value.lock()) {
@@ -32,4 +32,4 @@ void OptionsBase::SetValuesFromNativeOptions(const CLI::App &app) const {
     }
   }
 }
-}  // namespace stonks::cli::detail
+}  // namespace vh::cli::detail

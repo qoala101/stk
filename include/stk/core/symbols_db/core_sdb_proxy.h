@@ -3,7 +3,7 @@
 
 #include "core_i_symbols_db.h"
 
-namespace stonks::core::sdb {
+namespace vh::stk::core::sdb {
 /**
  * @brief No-op proxy to Symbols DB.
  */
@@ -74,6 +74,6 @@ class Proxy : public ISymbolsDb {
  private:
   cpp::NnUp<ISymbolsDb> symbols_db_;
 };
-}  // namespace stonks::core::sdb
+}  // namespace vh::stk::core::sdb
 
 #endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_SYMBOLS_DB_PROXY_H_

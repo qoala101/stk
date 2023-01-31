@@ -10,7 +10,7 @@
 #include "core_ospd_impl.h"
 #include "cpp_timer_builder.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 OldSymbolPricesDeleter::OldSymbolPricesDeleter(ConstructorArgs args)
     : delete_old_prices_timer_{
           cpp::Execute([impl = ospd::Impl{std::move(args.symbols_db),
@@ -20,4 +20,4 @@ OldSymbolPricesDeleter::OldSymbolPricesDeleter(ConstructorArgs args)
               .Every(args.delete_old_prices_interval)
               .IfThrowsReattemptEvery(args.reattempt_interval)
               .Start()} {}
-}  // namespace stonks::core
+}  // namespace vh::stk::core

@@ -8,7 +8,7 @@
 #include "network_exception.h"
 #include "network_i_json.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Exception produced by the attempt to parse a JSON.
  */
@@ -32,6 +32,6 @@ class WrongTypeException : public Exception {
 
   cpp::Pv<IJson> json_{};
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_WRONG_TYPE_EXCEPTION_H_

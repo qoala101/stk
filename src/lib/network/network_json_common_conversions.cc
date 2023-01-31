@@ -7,7 +7,7 @@
 #include "network_json_base_conversions.h"
 #include "network_json_conversions_facades.h"
 
-namespace stonks::network {
+namespace vh::network {
 auto ConvertToJson(const char *value) -> cpp::Pv<IJson> {
   return ConvertToJson(std::string_view{value});
 }
@@ -34,4 +34,4 @@ auto JsonParser<cpp::MessageException>::operator()(const IJson &json) const
 auto ConvertToJson(const std::exception &value) -> cpp::Pv<IJson> {
   return BuildJsonFrom("message", value.what());
 }
-}  // namespace stonks::network
+}  // namespace vh::network

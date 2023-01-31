@@ -6,7 +6,7 @@
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Client for the REST resource with many endpoints.
  */
@@ -29,6 +29,6 @@ class RestClient {
   Uri base_uri_{};
   cpp::NnSp<IRestRequestSender> request_sender_;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_REST_CLIENT_H_

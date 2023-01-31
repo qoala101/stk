@@ -9,7 +9,7 @@
 #include "network_json_common_conversions.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 RequestExceptionHandler::RequestExceptionHandler(
     cpp::NnUp<IRestRequestHandler> handler)
     : handler_{std::move(handler)} {}
@@ -27,4 +27,4 @@ auto RequestExceptionHandler::HandleRequestAndGiveResponse(
                            .result = ConvertToJson(e)};
   }
 }
-}  // namespace stonks::network
+}  // namespace vh::network

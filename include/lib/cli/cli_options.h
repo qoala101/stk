@@ -19,7 +19,7 @@ namespace CLI {
 class App;
 }  // namespace CLI
 
-namespace stonks::cli {
+namespace vh::cli {
 namespace detail {
 class OptionsBase {
  public:
@@ -62,6 +62,6 @@ class Options : public detail::OptionsBase {
     return AddOption(std::move(name), std::string{default_value});
   }
 };
-}  // namespace stonks::cli
+}  // namespace vh::cli
 
 #endif  // STONKS_CLI_CLI_OPTIONS_H_

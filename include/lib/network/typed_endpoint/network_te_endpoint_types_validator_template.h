@@ -7,7 +7,7 @@
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 
-namespace stonks::network::te {
+namespace vh::network::te {
 /**
  * @brief Template of REST request-response type checking algorithm.
  * Client would extend and handle the detected errors.
@@ -54,6 +54,6 @@ class EndpointTypesValidatorTemplate {
 
   EndpointTypes endpoint_types_{};
 };
-}  // namespace stonks::network::te
+}  // namespace vh::network::te
 
 #endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TE_ENDPOINT_TYPES_VALIDATOR_TEMPLATE_H_

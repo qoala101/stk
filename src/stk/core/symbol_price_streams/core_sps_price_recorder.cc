@@ -15,7 +15,7 @@
 
 #include "core_types.h"
 
-namespace stonks::core::sps {
+namespace vh::stk::core::sps {
 PriceRecorder::PriceRecorder(Symbol symbol, cpp::NnSp<ISymbolsDb> symbols_db)
     : symbol_{std::move(symbol)}, symbols_db_{std::move(symbols_db)} {}
 
@@ -36,4 +36,4 @@ auto PriceRecorder::RecordAsPrice(binance::BookTick book_tick)
   } catch (...) {
   }
 }
-}  // namespace stonks::core::sps
+}  // namespace vh::stk::core::sps

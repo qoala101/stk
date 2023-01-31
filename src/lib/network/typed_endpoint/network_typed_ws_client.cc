@@ -11,7 +11,7 @@
 #include "network_typed_endpoint.h"
 #include "network_typed_ws_message_handler.h"
 
-namespace stonks::network {
+namespace vh::network {
 TypedWsClient::TypedWsClient(WsEndpointTypes endpoint_types,
                              cpp::NnUp<IWsClient> ws_client)
     : endpoint_types_{std::move(endpoint_types)},
@@ -41,4 +41,4 @@ auto TypedWsClient::SendMessage(WsMessage message) const -> cppcoro::task<> {
 
   co_await ws_client_->SendMessage(std::move(message));
 }
-}  // namespace stonks::network
+}  // namespace vh::network

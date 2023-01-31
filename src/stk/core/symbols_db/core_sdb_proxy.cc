@@ -1,6 +1,6 @@
 #include "core_sdb_proxy.h"
 
-namespace stonks::core::sdb {
+namespace vh::stk::core::sdb {
 Proxy::Proxy(cpp::NnUp<ISymbolsDb> symbols_db)
     : symbols_db_{std::move(symbols_db)} {}
 
@@ -52,4 +52,4 @@ auto Proxy::DeleteSymbolPriceRecords(const cpp::Opt<absl::Time> &start_time,
     -> cppcoro::task<> {
   co_await symbols_db_->DeleteSymbolPriceRecords(start_time, end_time);
 }
-}  // namespace stonks::core::sdb
+}  // namespace vh::stk::core::sdb

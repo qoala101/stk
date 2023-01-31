@@ -9,7 +9,7 @@
  * @file Short isocpp_p0201::polymorphic_value aliases.
  */
 
-namespace stonks::cpp {
+namespace vh::cpp {
 template <typename... Ts>
 using Pv = isocpp_p0201::polymorphic_value<Ts...>;
 
@@ -18,6 +18,6 @@ auto MakePv [[nodiscard]] (Args &&...args) {
   return isocpp_p0201::make_polymorphic_value<Ts...>(
       std::forward<Args>(args)...);
 }
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_ALIAS_CPP_POLYMORPHIC_VALUE_H_

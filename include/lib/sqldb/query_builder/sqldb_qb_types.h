@@ -7,7 +7,7 @@
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 namespace detail {
 auto GetFullAliasName
     [[nodiscard]] (std::string_view target_name, std::string_view alias_name)
@@ -104,6 +104,6 @@ struct SelectColumnData {
   std::string full_name{};
   DataTypeVariant type{};
 };
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_TYPES_H_

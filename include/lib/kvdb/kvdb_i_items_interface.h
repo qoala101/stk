@@ -6,7 +6,7 @@
 #include "cpp_optional.h"
 #include "kvdb_types.h"
 
-namespace stonks::kvdb {
+namespace vh::kvdb {
 /**
  * @brief Generic Key-Value DB interface to manipulate the items.
  */
@@ -34,6 +34,6 @@ class IItemsInterface {
   virtual auto DeleteItemIfExists(const Table &table, const Key &key)
       -> cppcoro::task<> = 0;
 };
-}  // namespace stonks::kvdb
+}  // namespace vh::kvdb
 
 #endif  // STONKS_KVDB_KVDB_I_ITEMS_INTERFACE_H_

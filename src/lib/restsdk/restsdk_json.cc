@@ -12,7 +12,7 @@
 #include "cpp_not_null.h"
 #include "network_i_json.h"
 
-namespace stonks::restsdk {
+namespace vh::restsdk {
 Json::Json(bool value) : native_handle_{web::json::value::boolean(value)} {}
 
 Json::Json(int value) : native_handle_{web::json::value::number(value)} {}
@@ -102,4 +102,4 @@ auto Json::GetNativeHandle() const -> const IJson::NativeHandle& {
 auto Json::GetNativeHandle() -> IJson::NativeHandle& {
   return GetNativeHandleImpl(*this);
 }
-}  // namespace stonks::restsdk
+}  // namespace vh::restsdk

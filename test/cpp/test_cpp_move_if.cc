@@ -25,7 +25,7 @@ struct S {
 template <typename T>
 void NotConstSetSImpl(T &&t) {
   auto s = S{};
-  t.s_ = stonks::cpp::MoveIfNotConst<T>(s);
+  t.s_ = vh::cpp::MoveIfNotConst<T>(s);
 }
 
 TEST(MoveIf, IfNotConst) {
@@ -49,7 +49,7 @@ TEST(MoveIf, IfNotConst) {
 template <typename T>
 void RvalueSetSImpl(T &&t) {
   auto s = S{};
-  t.s_ = stonks::cpp::MoveIfRvalue<decltype(std::forward<T>(t))>(s);
+  t.s_ = vh::cpp::MoveIfRvalue<decltype(std::forward<T>(t))>(s);
 }
 
 TEST(MoveIf, IfRvalue) {

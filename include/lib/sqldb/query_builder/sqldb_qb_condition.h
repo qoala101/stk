@@ -7,7 +7,7 @@
 #include "sqldb_qb_query_wrapper.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 /**
  * @brief API to build the condition.
  */
@@ -32,6 +32,6 @@ class Condition : public QueryWrapper {
   void AppendCondition(const Condition &condition,
                        std::string_view operator_string);
 };
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CONDITION_H_

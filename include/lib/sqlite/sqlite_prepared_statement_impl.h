@@ -12,7 +12,7 @@
 #include "sqlite_native_handles.h"
 #include "sqlite_native_statement_facade.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 /**
  * @brief Common API and fields for prepared statements implementation.
  * @remark Keeps DB alive while handle is alive.
@@ -59,6 +59,6 @@ class PreparedStatementImpl {
   cpp::NnSp<log::ILogger> logger_;
   cpp::MutexVariant native_statement_mutex_{};
 };
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite
 
 #endif  // STONKS_SQLITE_SQLITE_PREPARED_STATEMENT_IMPL_H_

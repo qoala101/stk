@@ -5,7 +5,7 @@
 
 #include "cpp_not_null.h"
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Pointers to multiple elements.
  */
@@ -17,6 +17,6 @@ using View = std::vector<Nn<T *>>;
  */
 template <typename T>
 using ConstView = View<const T>;
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_CPP_VIEWS_H_

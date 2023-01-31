@@ -5,21 +5,21 @@
 #include "networkx_common.h"
 #include "networkx_types.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 template <>
-struct EndpointFunctionTraits<&core::BuyLowSellHigh::CalculateNextOperations> {
+struct EndpointFunctionTraits<&stk::core::BuyLowSellHigh::CalculateNextOperations> {
   static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams =
       ParamList("symbol", "profit", "last_operation", "start_time", "end_time");
 };
 
 template <>
-struct ClientServerTypeTraits<core::BuyLowSellHigh> {
+struct ClientServerTypeTraits<stk::core::BuyLowSellHigh> {
   static constexpr auto kName = "buy_low_sell_high";
   static constexpr auto kDefaultPort = "30001";
   static constexpr auto kEndpointFunctions =
-      EndpointFunctionList(&core::BuyLowSellHigh::CalculateNextOperations);
+      EndpointFunctionList(&stk::core::BuyLowSellHigh::CalculateNextOperations);
 };
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_APP_SERVICE_BUY_LOW_SELL_HIGH_SERVICE_BLSH_TRAITS_H_

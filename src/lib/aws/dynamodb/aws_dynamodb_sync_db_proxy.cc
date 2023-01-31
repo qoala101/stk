@@ -24,7 +24,7 @@
 #include "cpp_typed_struct.h"
 #include "kvdb_types.h"
 
-namespace stonks::aws::dynamodb {
+namespace vh::aws::dynamodb {
 namespace {
 template <cpp::CallableReturning<cppcoro::task<bool>> Predicate>
 auto WaitUntil(const Predicate &predicate) -> cppcoro::task<> {
@@ -95,4 +95,4 @@ auto SyncDbProxy::IsItemExists(const kvdb::Table &table,
   const auto selected_item = co_await async_db_.SelectItem(table, item.key);
   co_return selected_item.has_value() && (*selected_item == item);
 }
-}  // namespace stonks::aws::dynamodb
+}  // namespace vh::aws::dynamodb

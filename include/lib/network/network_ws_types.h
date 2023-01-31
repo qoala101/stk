@@ -10,7 +10,7 @@
 #include "network_i_json.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Web socket message.
  */
@@ -20,6 +20,6 @@ using WsMessage = cpp::Pv<IJson>;
  * @brief Web socket endpoint.
  */
 struct WsEndpoint : public cpp::TypedStruct<Uri> {};
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_WS_TYPES_H_

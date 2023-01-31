@@ -14,7 +14,7 @@
 #include "cpp_typed_struct.h"
 #include "sqldb_qb_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 namespace {
 auto ToString [[nodiscard]] (const DataTypeVariant &type) {
   return std::visit(
@@ -137,4 +137,4 @@ Create::Create(std::string table_name,
   Ensures(!table_name_->empty());
   Ensures(!columns_query_->empty());
 }
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb

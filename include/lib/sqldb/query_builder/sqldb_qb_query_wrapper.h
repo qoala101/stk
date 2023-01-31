@@ -5,7 +5,7 @@
 #include "sqldb_prm_types.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 /**
  * @brief Wraps the query.
  */
@@ -26,6 +26,6 @@ class QueryWrapper {
 
   prm::Parametrized<Query> query_{};
 };
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_QUERY_WRAPPER_H_

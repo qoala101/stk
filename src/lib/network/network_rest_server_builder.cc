@@ -11,7 +11,7 @@
 #include "network_typed_endpoint_handler.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 RestServerBuilder::RestServerBuilder(
     Uri base_uri, cpp::NnUp<IRestRequestReceiver> request_receiver)
     : base_uri_{std::move(base_uri)},
@@ -53,4 +53,4 @@ auto RestServerBuilder::Handling(TypedEndpoint endpoint,
   Ensures(!endpoint_handlers_.empty());
   return *this;
 }
-}  // namespace stonks::network
+}  // namespace vh::network

@@ -9,7 +9,7 @@
 #include "sqldb_prm_select_statement.h"
 #include "sqldb_prm_update_statement.h"
 
-namespace stonks::sqldb::prm {
+namespace vh::sqldb::prm {
 Db::Db(cpp::NnUp<IDb> db) : db_{std::move(db)} {}
 
 auto Db::PrepareStatement(Parametrized<SelectQuery> query)
@@ -29,4 +29,4 @@ auto Db::GetDbImpl(cpp::This<Db> auto &t) -> auto & { return *t.db_; }
 auto Db::GetDb() const -> const IDb & { return GetDbImpl(*this); }
 
 auto Db::GetDb() -> IDb & { return GetDbImpl(*this); }
-}  // namespace stonks::sqldb::p
+}  // namespace vh::sqldb::p

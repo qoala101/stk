@@ -5,7 +5,7 @@
 
 #include "kvdb_types.h"
 
-namespace stonks::kvdb {
+namespace vh::kvdb {
 /**
  * @brief Generic Key-Value DB interface to manipulate the tables.
  */
@@ -25,6 +25,6 @@ class ITablesInterface {
    */
   virtual auto DropTableIfExists(const Table &table) -> cppcoro::task<> = 0;
 };
-}  // namespace stonks::kvdb
+}  // namespace vh::kvdb
 
 #endif  // STONKS_KVDB_KVDB_I_TABLES_INTERFACE_H_

@@ -24,7 +24,7 @@
 #include "service_inj_symbols_db_client.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 
-namespace stonks::service::sps {
+namespace vh::stk::service::sps {
 void Main(int argc, const char *const *argv) {
   auto options = cli::Options{};
 
@@ -51,8 +51,8 @@ void Main(int argc, const char *const *argv) {
         auto_injectable, auto_injectable, auto_injectable};
   });
 }
-}  // namespace stonks::service::sps
+}  // namespace vh::stk::service::sps
 
 auto main(int argc, const char *const *argv) -> int {
-  stonks::service::sps::Main(argc, argv);
+  vh::stk::service::sps::Main(argc, argv);
 }

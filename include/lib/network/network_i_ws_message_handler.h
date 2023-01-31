@@ -5,7 +5,7 @@
 
 #include "network_ws_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Handles web socket messages.
  */
@@ -20,6 +20,6 @@ class IWsMessageHandler {
   virtual auto HandleMessage [[nodiscard]] (WsMessage message)
   -> cppcoro::task<> = 0;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_I_WS_MESSAGE_HANDLER_H_

@@ -7,7 +7,7 @@
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 
-namespace stonks::di {
+namespace vh::di {
 namespace detail {
 template <typename T, auto kFactoryFunction,
           typename FactoryFunction = decltype(kFactoryFunction)>
@@ -36,6 +36,6 @@ auto BindTypeToFactoryFunction [[nodiscard]] () {
   return boost::di::bind<T>()
       .template to<detail::FactoryFunctionInjector<T, kFactoryFunction>>();
 }
-}  // namespace stonks::di
+}  // namespace vh::di
 
 #endif  // STONKS_DI_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_

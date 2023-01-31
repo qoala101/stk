@@ -5,7 +5,7 @@
 
 #include "network_i_rest_request_handler.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Receives REST requests at the specified URI and redirects
  * them to the handler.
@@ -21,6 +21,6 @@ class IRestRequestReceiver {
    */
   virtual void Receive(Uri uri, cpp::NnUp<IRestRequestHandler> handler) = 0;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_I_REST_REQUEST_RECEIVER_H_

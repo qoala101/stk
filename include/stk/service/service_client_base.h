@@ -4,7 +4,7 @@
 #include "networkx_client.h"
 #include "networkx_concepts.h"
 
-namespace stonks::service {
+namespace vh::stk::service {
 /**
  * @brief Convenience base for service clients.
  */
@@ -31,6 +31,6 @@ class ClientBase : public TargetT {
  private:
   networkx::Client<Target> client_;
 };
-}  // namespace stonks::service
+}  // namespace vh::stk::service
 
 #endif  // STONKS_APP_SERVICE_SERVICE_CLIENT_BASE_H_

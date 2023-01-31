@@ -4,9 +4,9 @@
 
 #include <string>
 
-namespace stonks::sqldb::detail {
+namespace vh::sqldb::detail {
 auto GetFullNameInTableImpl(std::string_view table_name,
                             std::string_view column_name) -> std::string {
   return fmt::format("{}.{}", table_name, column_name);
 }
-}  // namespace stonks::sqldb::detail
+}  // namespace vh::sqldb::detail

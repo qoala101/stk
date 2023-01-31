@@ -14,7 +14,7 @@
 #include "network_json_base_conversions.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Convenient request handler constructible from any callable which may
  * take auto-parsable request and return any convertible value.
@@ -64,6 +64,6 @@ class AutoParsableRequestHandler : public IRestRequestHandler {
  private:
   aprh::HandlerVariant handler_{};
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_H_

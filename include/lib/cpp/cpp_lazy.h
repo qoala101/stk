@@ -8,7 +8,7 @@
 #include "cpp_not_null.h"
 #include "cpp_this.h"  // IWYU pragma: keep
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Lazy initialized object.
  */
@@ -60,6 +60,6 @@ class Lazy {
   fu2::unique_function<auto()->T> initializer_{};
   Opt<T> object_{};
 };
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_CPP_LAZY_H_

@@ -8,7 +8,7 @@
 #include "network_json_base_conversions.h"
 #include "network_json_conversions_facades.h"
 
-namespace stonks::network {
+namespace vh::network {
 template <>
 auto JsonParser<absl::Duration>::operator()(const IJson &json) const -> Type {
   return absl::Milliseconds(ParseFromJson<int64_t>(json));
@@ -28,37 +28,37 @@ auto ConvertToJson(absl::Time value) -> cpp::Pv<IJson> {
 }
 
 template <>
-auto JsonParser<core::AssetInfo>::operator()(const IJson &json) const -> Type {
+auto JsonParser<stk::core::AssetInfo>::operator()(const IJson &json) const -> Type {
   return MakeFromJson<Type>(json, "asset", "min_amount", "price_step");
 }
 
-auto ConvertToJson(const core::AssetInfo &value) -> cpp::Pv<network::IJson> {
+auto ConvertToJson(const stk::core::AssetInfo &value) -> cpp::Pv<network::IJson> {
   return network::BuildJsonFrom("asset", value.asset, "min_amount",
                                 value.min_amount, "price_step",
                                 value.price_step);
 }
 
 template <>
-auto JsonParser<core::SymbolInfo>::operator()(const IJson &json) const -> Type {
+auto JsonParser<stk::core::SymbolInfo>::operator()(const IJson &json) const -> Type {
   return MakeFromJson<Type>(json, "symbol", "base_asset", "quote_asset");
 }
 
-auto ConvertToJson(const core::SymbolInfo &value) -> cpp::Pv<network::IJson> {
+auto ConvertToJson(const stk::core::SymbolInfo &value) -> cpp::Pv<network::IJson> {
   return network::BuildJsonFrom("symbol", value.symbol, "base_asset",
                                 value.base_asset, "quote_asset",
                                 value.quote_asset);
 }
 
 template <>
-auto JsonParser<core::SymbolPriceRecord>::operator()(const IJson &json) const
+auto JsonParser<stk::core::SymbolPriceRecord>::operator()(const IJson &json) const
     -> Type {
   return MakeFromJson<Type>(json, "symbol", "buy_price", "sell_price", "time");
 }
 
-auto ConvertToJson(const core::SymbolPriceRecord &value)
+auto ConvertToJson(const stk::core::SymbolPriceRecord &value)
     -> cpp::Pv<network::IJson> {
   return network::BuildJsonFrom("symbol", value.symbol, "buy_price",
                                 value.buy_price, "sell_price", value.sell_price,
                                 "time", value.time);
 }
-}  // namespace stonks::network
+}  // namespace vh::network

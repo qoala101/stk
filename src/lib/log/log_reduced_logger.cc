@@ -11,7 +11,7 @@
 #include "log_rl_log_stats.h"
 #include "log_types.h"
 
-namespace stonks::log {
+namespace vh::log {
 ReducedLogger::ReducedLogger(rl::LogStats log_stats,
                              absl::Duration log_interval)
     : log_stats_{cpp::Share(std::move(log_stats))},
@@ -24,4 +24,4 @@ ReducedLogger::ReducedLogger(rl::LogStats log_stats,
 void ReducedLogger::Log(Level level, std::string message) {
   log_stats_->RecordMessage(level, std::move(message));
 }
-}  // namespace stonks::log
+}  // namespace vh::log

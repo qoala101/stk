@@ -7,7 +7,7 @@
 #include "cpp_not_null.h"
 #include "network_i_rest_request_sender.h"
 
-namespace stonks::binance {
+namespace vh::binance {
 /**
  * @brief Client to Binance REST API.
  */
@@ -30,6 +30,6 @@ class BinanceApi {
 
   cpp::NnUp<Impl> impl_;
 };
-}  // namespace stonks::binance
+}  // namespace vh::binance
 
 #endif  // STONKS_BINANCE_BINANCE_API_H_

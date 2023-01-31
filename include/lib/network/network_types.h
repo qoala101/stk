@@ -13,7 +13,7 @@
 #include "network_i_json.h"
 #include "network_json_base_conversions.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Full or partial HTTP URI.
  */
@@ -105,6 +105,6 @@ struct RestResponse {
   // TODO(vh): Find a way to initialize the value with null JSON by default.
   Result result{CreateNullJson()};
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_TYPES_H_

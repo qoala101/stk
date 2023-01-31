@@ -5,7 +5,7 @@
 #include "networkx_common.h"
 #include "networkx_types.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 template <>
 struct EndpointFunctionTraits<&binance::BinanceApi::exchangeInfo> {
   static constexpr auto kMethod = network::Method::kGet;
@@ -16,6 +16,6 @@ struct ClientServerTypeTraits<binance::BinanceApi> {
   static constexpr auto kEndpointFunctions =
       EndpointFunctionList(&binance::BinanceApi::exchangeInfo);
 };
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_BINANCE_BINANCE_API_TRAITS_H_

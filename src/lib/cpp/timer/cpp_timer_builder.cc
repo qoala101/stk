@@ -8,7 +8,7 @@
 
 #include "cpp_timer.h"
 
-namespace stonks::cpp {
+namespace vh::cpp {
 TimerBuilder::TimerBuilder(fu2::unique_function<void()> event)
     : event_{(Expects(!event.empty()), std::move(event))} {
   Ensures(!event_.empty());
@@ -69,4 +69,4 @@ auto TimerBuilder::Start() -> Timer {
 auto Execute(fu2::unique_function<void()> event) -> TimerBuilder {
   return TimerBuilder{std::move(event)};
 }
-}  // namespace stonks::cpp
+}  // namespace vh::cpp

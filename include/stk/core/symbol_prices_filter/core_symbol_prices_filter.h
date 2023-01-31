@@ -9,7 +9,7 @@
 #include "core_sdb_proxy.h"
 #include "core_types.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 /**
  * @brief Filters inserted symbol prices.
  */
@@ -31,6 +31,6 @@ class SymbolPricesFilter : public sdb::Proxy {
   auto GetLastPriceRecord [[nodiscard]] (const Symbol &symbol) const
       -> cppcoro::task<cpp::Opt<SymbolPriceRecord>>;
 };
-}  // namespace stonks::core
+}  // namespace vh::stk::core
 
 #endif  // STONKS_APP_CORE_SYMBOL_PRICES_FILTER_CORE_SYMBOL_PRICES_FILTER_H_

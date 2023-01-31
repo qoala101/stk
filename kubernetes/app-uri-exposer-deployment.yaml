@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: app-uri-exposer-container
-          image: qoala101/stonks:service_app_uri_exposer
+          image: qoala101/stk:service_app_uri_exposer
           args:
             - --expose_uri_interval=60000
             - --reattempt_interval=60000

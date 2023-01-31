@@ -7,7 +7,7 @@
 
 #include "sqldb_types.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 template <>
 auto Value::Get<bool>() const -> bool {
   Expects(std::holds_alternative<bool>(**this));
@@ -65,4 +65,4 @@ auto Value::GetType() const -> DataTypeVariant {
 auto Value::IsNull() const -> bool {
   return std::holds_alternative<std::monostate>(**this);
 }
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb

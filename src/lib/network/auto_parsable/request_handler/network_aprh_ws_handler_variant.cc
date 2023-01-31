@@ -6,7 +6,7 @@
 #include <utility>
 #include <variant>
 
-namespace stonks::network::aprh {
+namespace vh::network::aprh {
 auto WsHandlerVariant::operator()(WsMessage message) -> cppcoro::task<> {
   co_await std::visit(
       [&message](auto &v) -> cppcoro::task<> {
@@ -24,4 +24,4 @@ auto WsHandlerVariant::operator()(WsMessage message) -> cppcoro::task<> {
       },
       **this);
 }
-}  // namespace stonks::network::aprh
+}  // namespace vh::network::aprh

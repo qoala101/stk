@@ -8,7 +8,7 @@
 #include "cpp_not_null.h"
 #include "sqlite_native_db_facade.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 NativeDbFileHandle::NativeDbFileHandle(cpp::NnUp<log::ILogger> logger,
                                        NativeDbHandle native_db_handle,
                                        FilePath file_path)
@@ -48,4 +48,4 @@ auto NativeDbFileHandle::GetNativeDb() -> sqlite3& {
 auto NativeDbFileHandle::GetFilePath() const -> const FilePath& {
   return file_path_;
 }
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite

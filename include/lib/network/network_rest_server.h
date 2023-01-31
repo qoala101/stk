@@ -4,7 +4,7 @@
 #include "cpp_not_null.h"
 #include "network_i_rest_request_receiver.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Handle which keeps REST receiver alive.
  */
@@ -15,6 +15,6 @@ class RestServer {
  private:
   cpp::NnUp<IRestRequestReceiver> request_receiver_;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_REST_SERVER_H_

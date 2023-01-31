@@ -11,7 +11,7 @@
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
 
-namespace stonks::log::rl {
+namespace vh::log::rl {
 namespace detail {
 struct MessageStats {
   std::string last_message_{};
@@ -44,6 +44,6 @@ class LogStats {
   absl::node_hash_map<Level, detail::MessageStats> message_stats_;
   absl::Time last_log_time_{};
 };
-}  // namespace stonks::log::rl
+}  // namespace vh::log::rl
 
 #endif  // STONKS_LOG_REDUCED_LOGGER_LOG_RL_LOG_STATS_H_

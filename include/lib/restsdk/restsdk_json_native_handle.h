@@ -11,7 +11,7 @@ namespace web::json {
 class value;  // IWYU pragma: keep
 }  // namespace web::json
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief JSON implementation details.
  */
@@ -49,6 +49,6 @@ class IJson::NativeHandle {
 
   cpp::NnUp<web::json::value> json_;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_RESTSDK_RESTSDK_JSON_NATIVE_HANDLE_H_

@@ -6,7 +6,7 @@
 
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 EndpointRequestDispatcher::EndpointRequestDispatcher(
     absl::flat_hash_map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers)
     : endpoint_handlers_{std::move(endpoint_handlers)} {}
@@ -22,4 +22,4 @@ auto EndpointRequestDispatcher::HandleRequestAndGiveResponse(
   co_return co_await endpoint_handler->second->HandleRequestAndGiveResponse(
       std::move(request));
 }
-}  // namespace stonks::network
+}  // namespace vh::network

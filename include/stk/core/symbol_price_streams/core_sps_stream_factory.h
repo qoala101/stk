@@ -11,7 +11,7 @@
 #include "network_i_ws_client.h"
 #include "networkx_web_socket.h"
 
-namespace stonks::core::sps {
+namespace vh::stk::core::sps {
 /**
  * @brief Creates book tick web socket.
  */
@@ -31,6 +31,6 @@ class StreamFactory {
   cpp::NnSp<ISymbolsDb> symbols_db_;
   cpp::NnSp<cpp::Factory<network::IWsClient>> ws_client_factory_;
 };
-}  // namespace stonks::core::sps
+}  // namespace vh::stk::core::sps
 
 #endif  // STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_STREAM_FACTORY_H_

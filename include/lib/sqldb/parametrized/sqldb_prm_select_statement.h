@@ -9,7 +9,7 @@
 #include "sqldb_rows.h"
 #include "sqldb_value.h"
 
-namespace stonks::sqldb::prm {
+namespace vh::sqldb::prm {
 /**
  * @brief Validates parameter types before execution.
  */
@@ -30,6 +30,6 @@ class SelectStatement : public ISelectStatement {
   cpp::NnUp<ISelectStatement> statement_;
   std::vector<QueryParam> params_{};
 };
-}  // namespace stonks::sqldb::p
+}  // namespace vh::sqldb::p
 
 #endif  // STONKS_SQLDB_PARAMETRIZED_SQLDB_P_SELECT_STATEMENT_H_

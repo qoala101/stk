@@ -9,7 +9,7 @@
 
 class sqlite3_stmt;
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 /**
  * @brief Convenience API for SQLite prepared statement.
  */
@@ -48,6 +48,6 @@ class NativeStatementFacade {
    */
   static void Finalize(sqlite3_stmt &statement);
 };
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite
 
 #endif  // STONKS_SQLITE_SQLITE_PREPARED_STATEMENT_FACADE_H_

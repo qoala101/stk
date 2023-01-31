@@ -9,7 +9,7 @@
 #include "network_typed_endpoint.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Decorator of request handler which adds validation of request
  * and response types.
@@ -34,6 +34,6 @@ class TypedEndpointHandler : public IRestRequestHandler {
   cpp::NnUp<te::EndpointTypesValidatorTemplate> type_checker_;
   cpp::NnUp<IRestRequestHandler> handler_;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_ENDPOINT_HANDLER_H_

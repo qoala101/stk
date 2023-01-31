@@ -13,7 +13,7 @@
 #include "service_inj_client_server.h"
 #include "service_symbols_db.h"
 
-namespace stonks::service::inj {
+namespace vh::stk::service::inj {
 inline auto CreateSymbolsDbClientInjector(
     const ClientOptions<core::ISymbolsDb> &options) {
   return di::MakeInjector(
@@ -32,6 +32,6 @@ inline auto CreateSymbolsDbClientInjector(
                 std::move(symbols_db));
           }>());
 }
-}  // namespace stonks::service::inj
+}  // namespace vh::stk::service::inj
 
 #endif  // STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_SYMBOLS_DB_CLIENT_H_

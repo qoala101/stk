@@ -6,7 +6,7 @@
 
 #include "cpp_timer_builder.h"
 
-namespace stonks::service {
+namespace vh::stk::service {
 AppUriExposer::AppUriExposer(ConstructorArgs args)
     : expose_uri_timer_{
           cpp::Execute([exposer = std::move(args.exposer)]() mutable {
@@ -15,4 +15,4 @@ AppUriExposer::AppUriExposer(ConstructorArgs args)
               .Every(args.expose_uri_interval)
               .IfThrowsReattemptEvery(args.reattempt_interval)
               .Start()} {}
-}  // namespace stonks::service
+}  // namespace vh::stk::service

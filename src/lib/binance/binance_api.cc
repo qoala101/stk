@@ -8,7 +8,7 @@
 #include "binance_api_traits.h"  // IWYU pragma: keep
 #include "networkx_client.h"
 
-namespace stonks::binance {
+namespace vh::binance {
 class BinanceApi::Impl {
  public:
   explicit Impl(networkx::Client<BinanceApi> client)
@@ -34,4 +34,4 @@ auto BinanceApi::exchangeInfo() const -> cppcoro::task<ExchangeInfo> {
   co_return co_await impl_->GetClient()
       .Call<&binance::BinanceApi::exchangeInfo>();
 }
-}  // namespace stonks::binance
+}  // namespace vh::binance

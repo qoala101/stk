@@ -8,7 +8,7 @@
 #include "network_auto_parsable_request.h"
 #include "network_types.h"
 
-namespace stonks::network::aprh {
+namespace vh::network::aprh {
 using Handler = fu2::unique_function<auto()->cppcoro::task<>>;
 using HandlerWithRequest =
     fu2::unique_function<auto(AutoParsableRestRequest)->cppcoro::task<>>;
@@ -29,6 +29,6 @@ struct HandlerVariant
   auto operator() [[nodiscard]] (RestRequest request)
   -> cppcoro::task<RestResponse>;
 };
-}  // namespace stonks::network::aprh
+}  // namespace vh::network::aprh
 
 #endif  // STONKS_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_NETWORK_APRH_HANDLER_VARIANT_H_

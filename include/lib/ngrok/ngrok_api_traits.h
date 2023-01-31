@@ -5,7 +5,7 @@
 #include "networkx_types.h"
 #include "ngrok_api.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 template <>
 struct EndpointFunctionTraits<&ngrok::NgrokApi::tunnels> {
   static constexpr auto kMethod = network::Method::kGet;
@@ -16,6 +16,6 @@ struct ClientServerTypeTraits<ngrok::NgrokApi> {
   static constexpr auto kEndpointFunctions =
       EndpointFunctionList(&ngrok::NgrokApi::tunnels);
 };
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_NGROK_NGROK_API_TRAITS_H_

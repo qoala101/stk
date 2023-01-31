@@ -8,7 +8,7 @@
 #include "network_i_rest_request_sender.h"
 #include "ngrok_types.h"
 
-namespace stonks::ngrok {
+namespace vh::ngrok {
 /**
  * @brief Client to Ngrok REST API.
  */
@@ -31,6 +31,6 @@ class NgrokApi {
 
   cpp::NnUp<Impl> impl_;
 };
-}  // namespace stonks::ngrok
+}  // namespace vh::ngrok
 
 #endif  // STONKS_NGROK_NGROK_API_H_

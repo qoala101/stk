@@ -2,7 +2,7 @@
 
 #include <fmt/format.h>
 
-namespace stonks::service::detail {
+namespace vh::stk::service::detail {
 ClientOptionsBase::ClientOptionsBase(cli::Options &options,
                                      std::string_view name,
                                      std::string_view default_host,
@@ -15,4 +15,4 @@ ClientOptionsBase::ClientOptionsBase(cli::Options &options,
 auto ClientOptionsBase::GetUri() const -> network::Uri {
   return {fmt::format("http://{}:{}", *host, *port)};
 }
-}  // namespace stonks::service::detail
+}  // namespace vh::stk::service::detail

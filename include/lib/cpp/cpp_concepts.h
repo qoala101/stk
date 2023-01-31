@@ -14,7 +14,7 @@
  * @file Common concepts.
  */
 
-namespace stonks::cpp {
+namespace vh::cpp {
 namespace detail {
 template <typename T>
 constexpr auto IsTypeList = false;
@@ -120,6 +120,6 @@ template <typename T, typename... Args>
 concept NonVoidCallableTaking =
     requires(T t, Args &&...args) { t(std::forward<Args>(args)...); } && !
 VoidCallableTaking<T, Args...>;
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_CPP_CONCEPTS_H_

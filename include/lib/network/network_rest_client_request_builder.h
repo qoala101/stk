@@ -13,7 +13,7 @@
 #include "network_json_conversions_facades.h"
 #include "network_types.h"
 
-namespace stonks::network::rest_client {
+namespace vh::network::rest_client {
 /**
  * @brief Convenience API for building requests from the REST client.
  */
@@ -88,6 +88,6 @@ class RequestBuilder {
   cpp::Opt<Body> body_{};
   cpp::NnUp<IRestRequestSender> request_sender_;
 };
-}  // namespace stonks::network::rest_client
+}  // namespace vh::network::rest_client
 
 #endif  // STONKS_NETWORK_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_

@@ -4,9 +4,9 @@
 #include <cppcoro/task.hpp>
 #include <utility>
 
-namespace stonks::network {
+namespace vh::network {
 auto AutoParsableWsMessageHandler::HandleMessage(WsMessage message)
     -> cppcoro::task<> {
   co_await handler_(std::move(message));
 }
-}  // namespace stonks::network
+}  // namespace vh::network

@@ -1,4 +1,4 @@
-# stonks
+# stk
 
 ## Install required apps
 
@@ -67,7 +67,7 @@ cmake --build .
 {
   "C/C++ Include Guard.Macro Type": "Filepath",
   "C/C++ Include Guard.Path Skip": 1,
-  "C/C++ Include Guard.Prefix": "STONKS_",
+  "C/C++ Include Guard.Prefix": "VH_",
   "C/C++ Include Guard.Comment Style": "Line",
   "C/C++ Include Guard.Insert Blank Line": true,
   "C/C++ Include Guard.Remove Extension": false,

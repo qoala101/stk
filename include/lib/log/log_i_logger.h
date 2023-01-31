@@ -5,7 +5,7 @@
 
 #include "log_types.h"
 
-namespace stonks::log {
+namespace vh::log {
 // NOLINTNEXTLINE(*-special-member-functions)
 class ILogger {
  public:
@@ -31,6 +31,6 @@ class ILogger {
    */
   void LogErrorCondition(std::string message);
 };
-}  // namespace stonks::log
+}  // namespace vh::log
 
 #endif  // STONKS_LOG_LOG_LOGGER_H_

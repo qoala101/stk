@@ -7,7 +7,7 @@
  * @file Short std::optional aliases.
  */
 
-namespace stonks::cpp {
+namespace vh::cpp {
 template <typename... Ts>
 using Opt = std::optional<Ts...>;
 
@@ -15,6 +15,6 @@ template <typename... Ts, typename... Args>
 auto MakeOpt [[nodiscard]] (Args &&...args) {
   return std::make_optional<Ts...>(std::forward<Args>(args)...);
 }
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_ALIAS_CPP_OPTIONAL_H_

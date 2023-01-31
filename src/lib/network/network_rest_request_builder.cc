@@ -13,7 +13,7 @@
 #include "network_json_base_conversions.h"
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 auto RestRequestBuilder::WithMethod(Method method) -> RestRequestBuilder& {
   Expects(!method_.has_value());
   method_ = method;
@@ -91,4 +91,4 @@ auto RestRequestBuilder::Build() -> RestRequest {
   Ensures(!body_.has_value());
   return request;
 }
-}  // namespace stonks::network
+}  // namespace vh::network

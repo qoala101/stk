@@ -2,7 +2,7 @@
 
 #include <fmt/format.h>
 
-namespace stonks::networkx::detail {
+namespace vh::networkx::detail {
 UriBase::UriBase(std::string_view uri, std::string_view target_name)
     : Uri{[uri, target_name]() {
         if (target_name.empty()) {
@@ -11,4 +11,4 @@ UriBase::UriBase(std::string_view uri, std::string_view target_name)
 
         return fmt::format("{}/{}", uri, target_name);
       }()} {}
-}  // namespace stonks::networkx::detail
+}  // namespace vh::networkx::detail

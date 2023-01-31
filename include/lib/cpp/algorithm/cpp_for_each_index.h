@@ -8,7 +8,7 @@
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Passed to function to get info about the current index.
  */
@@ -56,6 +56,6 @@ auto ForEachIndex [[nodiscard]] (const auto &function) {
 
   return detail::ForEachIndexImpl<kSize - 1, ResultType>(function);
 }
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_ALGORITHM_CPP_FOR_EACH_INDEX_H_

@@ -14,7 +14,7 @@ namespace web::http::experimental::listener {
 class http_listener;  // IWYU pragma: keep
 }  // namespace web::http::experimental::listener
 
-namespace stonks::restsdk {
+namespace vh::restsdk {
 /**
  * @copydoc network::IRestRequestReceiver
  */
@@ -40,6 +40,6 @@ class RestRequestReceiver : public network::IRestRequestReceiver {
   cpp::Up<web::http::experimental::listener::http_listener> http_listener_{};
   cpp::NnSp<log::ILogger> logger_;
 };
-}  // namespace stonks::restsdk
+}  // namespace vh::restsdk
 
 #endif  // STONKS_RESTSDK_RESTSDK_REST_REQUEST_RECEIVER_H_

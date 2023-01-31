@@ -10,7 +10,7 @@
 #include "sqldb_qb_types.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 /**
  * @brief Builds create table query.
  */
@@ -48,6 +48,6 @@ class Create {
   Query foreign_keys_query_{};
   Query if_not_exists_query_{};
 };
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CREATE_H_

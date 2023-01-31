@@ -5,7 +5,7 @@
 
 #include "cpp_concepts.h"
 
-namespace stonks::cli {
+namespace vh::cli {
 void OptionValueVariant::AddOptionToNativeApp(std::string option_name,
                                               CLI::App &app) const {
   std::visit(
@@ -32,4 +32,4 @@ void OptionValueVariant::SetValueFromNativeOption(const CLI::Option &option) {
       },
       **this);
 }
-}  // namespace stonks::cli
+}  // namespace vh::cli

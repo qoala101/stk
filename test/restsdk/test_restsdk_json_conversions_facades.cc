@@ -24,7 +24,7 @@ TEST(JsonConversionsFacades, StringIndex) {
                                   std::numeric_limits<double>::max(), "text"};
 
   // clang-format off
-  auto json = stonks::network::BuildJsonFrom(
+  auto json = vh::network::BuildJsonFrom(
     "a", original.a,
     "b", original.b,
     "c", original.c,
@@ -33,11 +33,11 @@ TEST(JsonConversionsFacades, StringIndex) {
   );
   // clang-format on
 
-  const auto parsed_const = stonks::network::MakeFromJson<BaseTypes>(
-      const_cast<const stonks::network::IJson &>(*json), "a", "b", "c", "d",
+  const auto parsed_const = vh::network::MakeFromJson<BaseTypes>(
+      const_cast<const vh::network::IJson &>(*json), "a", "b", "c", "d",
       "e");
   const auto parsed_non_const =
-      stonks::network::MakeFromJson<BaseTypes>(*json, "a", "b", "c", "d", "e");
+      vh::network::MakeFromJson<BaseTypes>(*json, "a", "b", "c", "d", "e");
 
   EXPECT_EQ(original, parsed_const);
   EXPECT_EQ(original, parsed_non_const);
@@ -47,7 +47,7 @@ TEST(JsonConversionsFacades, IntIndex) {
   const auto original = std::vector<std::string>{"a", "b", "c", "d", "e"};
 
   // clang-format off
-  auto json = stonks::network::BuildJsonFrom(
+  auto json = vh::network::BuildJsonFrom(
     0, original[0],
     1, original[1],
     2, original[2],
@@ -57,10 +57,10 @@ TEST(JsonConversionsFacades, IntIndex) {
   // clang-format on
 
   const auto parsed_const =
-      stonks::network::MakeFromJson<std::vector<std::string>>(
-          const_cast<const stonks::network::IJson &>(*json), 0, 1, 2, 3, 4);
+      vh::network::MakeFromJson<std::vector<std::string>>(
+          const_cast<const vh::network::IJson &>(*json), 0, 1, 2, 3, 4);
   const auto parsed_non_const =
-      stonks::network::MakeFromJson<std::vector<std::string>>(*json, 0, 1, 2, 3,
+      vh::network::MakeFromJson<std::vector<std::string>>(*json, 0, 1, 2, 3,
                                                               4);
 
   EXPECT_EQ(original, parsed_const);

@@ -13,7 +13,7 @@
 #include "network_types.h"
 #include "network_wrong_type_exception.h"
 
-namespace stonks::network {
+namespace vh::network {
 namespace {
 auto TryToParseException [[nodiscard]] (const IJson &json)
 -> cpp::Opt<cpp::MessageException> {
@@ -44,4 +44,4 @@ auto ResponseExceptionHandler::SendRequestAndGetResponse(RestRequest request)
     throw;
   }
 }
-}  // namespace stonks::network
+}  // namespace vh::network

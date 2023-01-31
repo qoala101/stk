@@ -15,16 +15,16 @@
 
 namespace {
 TEST(AutoParsable, ParsePointer) {
-  const auto function = [](const stonks::cpp::Opt<int> &value) -> stonks::cpp::Opt<int> {
+  const auto function = [](const vh::cpp::Opt<int> &value) -> vh::cpp::Opt<int> {
     return value;
   };
 
   auto result = function(
-      stonks::network::AutoParsable{stonks::network::ConvertToJson(33)});
+      vh::network::AutoParsable{vh::network::ConvertToJson(33)});
   EXPECT_EQ(result, 33);
 
   result = function(
-      stonks::network::AutoParsable{stonks::network::CreateNullJson()});
+      vh::network::AutoParsable{vh::network::CreateNullJson()});
   EXPECT_FALSE(result.has_value());
 }
 }  // namespace

@@ -12,7 +12,7 @@
 #include "network_ws_connection.h"
 #include "network_ws_types.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 namespace detail {
 class WebSocketSenderBase {
  protected:
@@ -59,6 +59,6 @@ class WebSocketSender : public detail::WebSocketSenderBase {
     co_await GetConnection().Send(std::forward<T>(message_object));
   }
 };
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_WEB_SOCKET_SENDER_H_

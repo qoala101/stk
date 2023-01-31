@@ -24,7 +24,7 @@
 #include "service_server_options.h"
 #include "service_symbols_db.h"
 
-namespace stonks::service::aue {
+namespace vh::stk::service::aue {
 void Main(int argc, const char *const *argv) {
   auto options = cli::Options();
 
@@ -43,8 +43,8 @@ void Main(int argc, const char *const *argv) {
         networkx::MakeServerFor<core::BuyLowSellHigh>, injector);
   });
 }
-}  // namespace stonks::service::aue
+}  // namespace vh::stk::service::aue
 
 auto main(int argc, const char *const *argv) -> int {
-  stonks::service::aue::Main(argc, argv);
+  vh::stk::service::aue::Main(argc, argv);
 }

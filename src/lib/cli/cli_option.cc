@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace stonks::cli::detail {
+namespace vh::cli::detail {
 OptionBase::OptionBase(cpp::NnSp<OptionValueVariant> value)
     : value_{std::move(value)} {}
 
@@ -17,4 +17,4 @@ auto OptionBase::GetValue() const -> const OptionValueVariant& {
 auto OptionBase::GetValue() -> OptionValueVariant& {
   return GetValueImpl(*this);
 }
-}  // namespace stonks::cli::detail
+}  // namespace vh::cli::detail

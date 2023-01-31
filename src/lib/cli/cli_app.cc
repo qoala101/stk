@@ -9,7 +9,7 @@
 #include "cli_run_scope.h"
 #include "cpp_not_null.h"
 
-namespace stonks::cli {
+namespace vh::cli {
 App::App(int argc, const char* const* argv) : app_{cpp::MakeNnSp<CLI::App>()} {
   app_->parse(argc, argv);
 }
@@ -22,4 +22,4 @@ App::App(int argc, const char* const* argv, const Options& options)
 }
 
 auto App::CreateRunScope() const -> RunScope { return RunScope{app_}; }
-}  // namespace stonks::cli
+}  // namespace vh::cli

@@ -9,7 +9,7 @@
 #include "network_auto_parsable_request.h"
 #include "network_types.h"
 
-namespace stonks::network::aprh {
+namespace vh::network::aprh {
 auto HandlerVariant::operator()(RestRequest request)
     -> cppcoro::task<RestResponse> {
   co_return co_await std::visit(
@@ -37,4 +37,4 @@ auto HandlerVariant::operator()(RestRequest request)
       },
       **this);
 }
-}  // namespace stonks::network::aprh
+}  // namespace vh::network::aprh

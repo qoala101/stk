@@ -33,7 +33,7 @@
 #include "restsdk_json.h"
 #include "restsdk_json_native_handle.h"
 
-namespace stonks::restsdk {
+namespace vh::restsdk {
 namespace {
 auto NativeMethodFrom [[nodiscard]] (network::Method method) {
   switch (method) {
@@ -211,4 +211,4 @@ void RestRequestSender::ConnectClientTo(const web::uri &authority) {
 
   Ensures(http_client_ != nullptr);
 }
-}  // namespace stonks::restsdk
+}  // namespace vh::restsdk

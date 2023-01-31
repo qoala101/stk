@@ -15,7 +15,7 @@
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 /**
  * @brief Implementation of Symbols DB.
  */
@@ -119,6 +119,6 @@ class SymbolsDb : public ISymbolsDb {
     cpp::NnUp<sqldb::IUpdateStatement> delete_symbol_price_records;
   } prepared_statements_;
 };
-}  // namespace stonks::core
+}  // namespace vh::stk::core
 
 #endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_SYMBOLS_DB_H_

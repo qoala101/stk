@@ -17,7 +17,7 @@
 #include "networkx_concepts.h"  // IWYU pragma: keep
 #include "networkx_types.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 namespace detail {
 auto ToUri [[nodiscard]] (std::string_view function_name) -> network::Uri;
 
@@ -122,6 +122,6 @@ struct EndpointFunctionTraitsFacade : public FunctionTraits {
     return endpoint_types;
   }
 };
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_ENDPOINT_FUNCTION_TRAITS_FACADE_H_

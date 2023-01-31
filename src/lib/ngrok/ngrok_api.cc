@@ -10,7 +10,7 @@
 #include "ngrok_api_traits.h"  // IWYU pragma: keep
 #include "ngrok_types.h"
 
-namespace stonks::ngrok {
+namespace vh::ngrok {
 class NgrokApi::Impl {
  public:
   explicit Impl(networkx::Client<NgrokApi> client)
@@ -35,4 +35,4 @@ NgrokApi::NgrokApi(cpp::NnUp<network::IRestRequestSender> request_sender)
 auto NgrokApi::tunnels() const -> cppcoro::task<Tunnels> {
   co_return co_await impl_->GetClient().Call<&NgrokApi::tunnels>();
 }
-}  // namespace stonks::ngrok
+}  // namespace vh::ngrok

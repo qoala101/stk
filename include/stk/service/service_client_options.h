@@ -9,7 +9,7 @@
 #include "networkx_concepts.h"
 #include "networkx_uri.h"
 
-namespace stonks::service {
+namespace vh::stk::service {
 namespace detail {
 class ClientOptionsBase {
  protected:
@@ -49,6 +49,6 @@ class ClientOptions : public detail::ClientOptionsBase {
     return networkx::Uri<Target>{ClientOptionsBase::GetUri()};
   }
 };
-}  // namespace stonks::service
+}  // namespace vh::stk::service
 
 #endif  // STONKS_SERVICE_SERVICE_CLIENT_OPTIONS_H_

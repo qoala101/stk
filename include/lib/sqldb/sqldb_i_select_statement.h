@@ -6,7 +6,7 @@
 #include "sqldb_rows.h"
 #include "sqldb_value.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 /**
  * @brief Select statement which is expected to be prepared by DB once and later
  * be called many times.
@@ -28,6 +28,6 @@ class ISelectStatement {
   virtual auto Execute [[nodiscard]] (std::vector<Value> params) const
       -> Rows = 0;
 };
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_I_SELECT_STATEMENT_H_

@@ -14,7 +14,7 @@
 #include "networkx_types.h"
 #include "networkx_web_socket_sender.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 namespace detail {
 template <cpp::MemberFunction auto kFunction>
 constexpr auto HasParamForEachArg [[nodiscard]] () {
@@ -93,6 +93,6 @@ concept WebSocketReceiverSender =
                 ArgType<kFunction, 1>>::SendsType>>())
         } -> std::same_as<cppcoro::task<>>;
     };
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_CONCEPTS_H_

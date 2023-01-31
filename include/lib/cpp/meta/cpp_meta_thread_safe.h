@@ -3,7 +3,7 @@
 
 #include "cpp_typed_struct.h"
 
-namespace stonks::cpp::meta {
+namespace vh::cpp::meta {
 /**
  * @brief Used to explicitly mark variables that are expected to be thread safe
  * so that clients can provide specific implementations.
@@ -24,6 +24,6 @@ template <typename T>
 auto AssumeThreadSafe(T t) {
   return ThreadSafe<T>{std::move(t)};
 }
-}  // namespace stonks::cpp::meta
+}  // namespace vh::cpp::meta
 
 #endif  // STONKS_CPP_META_CPP_META_THREAD_SAFE_H_

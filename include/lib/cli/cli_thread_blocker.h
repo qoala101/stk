@@ -4,7 +4,7 @@
 #include <condition_variable>
 #include <mutex>
 
-namespace stonks::cli {
+namespace vh::cli {
 /**
  * @brief API to block the thread.
  */
@@ -24,6 +24,6 @@ class ThreadBlocker {
   std::mutex mutex{};
   std::condition_variable cond_var{};
 };
-}  // namespace stonks::cli
+}  // namespace vh::cli
 
 #endif  // STONKS_CLI_CLI_THREAD_BLOCKER_H_

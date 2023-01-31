@@ -11,7 +11,7 @@
  * @file Concepts used by auto-parsable handlers.
  */
 
-namespace stonks::network::aprh {
+namespace vh::network::aprh {
 template <typename T>
 concept VoidCallable = cpp::CallableReturning<T, cppcoro::task<>>;
 
@@ -26,6 +26,6 @@ concept ConvertibleCallableTaking =
 
 template <typename T>
 concept ConvertibleCallable = ConvertibleCallableTaking<T>;
-}  // namespace stonks::network::aprh
+}  // namespace vh::network::aprh
 
 #endif  // STONKS_NETWORK_AUTO_PARSABLE_REQUEST_HANDLER_NETWORK_APRH_CONCEPTS_H_

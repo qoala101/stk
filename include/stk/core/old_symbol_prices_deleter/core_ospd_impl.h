@@ -8,7 +8,7 @@
 #include "core_i_symbols_db.h"
 #include "cpp_not_null.h"
 
-namespace stonks::core::ospd {
+namespace vh::stk::core::ospd {
 /**
  * @brief Deletes old symbol prices from Symbols DB.
  */
@@ -26,6 +26,6 @@ class Impl {
   cpp::NnUp<ISymbolsDb> symbols_db_;
   absl::Duration keep_prices_for_duration_{};
 };
-}  // namespace stonks::core::ospd
+}  // namespace vh::stk::core::ospd
 
 #endif  // STONKS_APP_CORE_SYMBOLS_DB_UPDATER_CORE_SDBU_OLD_PRICES_DELETER_H_

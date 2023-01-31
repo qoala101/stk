@@ -7,7 +7,7 @@
 
 #include "core_types.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 struct CeilFloorArgs {
   double value{};
   double precision{1};
@@ -22,6 +22,6 @@ auto StartTimeFrom [[nodiscard]] (const cpp::Opt<absl::Time> &time) -> absl::Tim
 auto EndTimeFrom [[nodiscard]] (const cpp::Opt<absl::Time> &time) -> absl::Time;
 
 auto TimeOrderFrom [[nodiscard]] (const cpp::Opt<TimeOrder> &order) -> TimeOrder;
-}  // namespace stonks::core
+}  // namespace vh::stk::core
 
 #endif  // STONKS_APP_CORE_CORE_COMMON_H_

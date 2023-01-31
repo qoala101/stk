@@ -3,7 +3,7 @@
 
 #include "cpp_not_null.h"
 
-namespace stonks::di {
+namespace vh::di {
 /**
  * @brief Automatically converts to any type created by injector.
  */
@@ -25,6 +25,6 @@ class AutoInjectable {
  private:
   cpp::NnSp<Injector> injector_;
 };
-}  // namespace stonks::di
+}  // namespace vh::di
 
 #endif  // STONKS_DI_DI_AUTO_INJECTABLE_H_

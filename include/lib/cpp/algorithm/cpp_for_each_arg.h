@@ -3,7 +3,7 @@
 
 #include <utility>
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Passed to function to get info about the current argument.
  */
@@ -63,6 +63,6 @@ void ForEachArg(const auto &function, Args &&...args) {
   detail::ForEachArgImpl<kNumArgsPerIteration, Args...>{}(
       function, std::forward<Args>(args)...);
 }
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_ALGORITHM_CPP_FOR_EACH_ARG_H_

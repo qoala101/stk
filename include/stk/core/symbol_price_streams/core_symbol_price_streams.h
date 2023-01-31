@@ -10,7 +10,7 @@
 #include "core_types.h"
 #include "cpp_meta_thread_safe.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 /**
  * @brief Streams prices of specified symbols to Symbols DB.
  */
@@ -30,6 +30,6 @@ class SymbolPriceStreams {
  private:
   std::vector<sps::StreamHandle> stream_handles_{};
 };
-}  // namespace stonks::core
+}  // namespace vh::stk::core
 
 #endif  // STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SYMBOL_PRICE_STREAMS_H_

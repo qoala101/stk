@@ -10,7 +10,7 @@
 #include "core_common.h"
 #include "cpp_message_exception.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 BuyLowSellHigh::BuyLowSellHigh(
     cpp::meta::ThreadSafe<cpp::NnUp<ISymbolsDb>> symbols_db)
     : symbols_db_{std::move(symbols_db)}, commission_{0.001} {}
@@ -126,4 +126,4 @@ auto BuyLowSellHigh::CalculateNextOperations(
 
   // co_return std::vector<blsh::Operation>{};
 }
-}  // namespace stonks::core
+}  // namespace vh::stk::core

@@ -7,7 +7,7 @@
 #include "cpp_copy_const.h"
 #include "sqlite_native_db_file_handle.h"
 
-namespace stonks::sqlite {
+namespace vh::sqlite {
 template <cpp::This<NativeDbHandleVariant> This>
 auto NativeDbHandleVariant::GetNativeDbImpl(This &t) -> auto & {
   return std::visit(
@@ -51,4 +51,4 @@ auto NativeDbHandleVariant::GetFilePath() const -> const FilePath & {
 auto NativeDbHandleVariant::HasFilePath() const -> bool {
   return std::holds_alternative<NativeDbFileHandle>(**this);
 }
-}  // namespace stonks::sqlite
+}  // namespace vh::sqlite

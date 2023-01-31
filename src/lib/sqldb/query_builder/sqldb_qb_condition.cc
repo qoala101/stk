@@ -9,7 +9,7 @@
 #include "sqldb_prm_types.h"
 #include "sqldb_qb_query_wrapper.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 Condition::Condition(prm::Parametrized<Query> query)
     : QueryWrapper{std::move(query)} {}
 
@@ -31,4 +31,4 @@ void Condition::AppendCondition(const Condition &condition,
   *this_query += fmt::format(" {} ({})", operator_string, *condition_query);
   this_query.params += condition_query.params;
 }
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb

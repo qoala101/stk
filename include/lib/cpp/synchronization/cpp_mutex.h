@@ -9,7 +9,7 @@
 #include "cpp_not_null.h"
 #include "cpp_variant_struct.h"
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Mutex which is shared with created locks.
  */
@@ -43,6 +43,6 @@ struct MutexVariant : public VariantStruct<std::monostate, Mutex> {
    */
   auto Lock [[nodiscard]] () const -> LockVariant;
 };
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_SYNCHRONIZATION_CPP_MUTEX_H_

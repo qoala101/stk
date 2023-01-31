@@ -23,14 +23,14 @@
 #include "test_app_injector.h"
 
 namespace {
-const auto kAssets = std::vector<stonks::core::Asset>{{"BTC"}, {"USDT"}};
-const auto kSymbol = stonks::core::Symbol{"BTCUSDT"};
-const auto kSymbolInfo = stonks::core::SymbolInfo{
+const auto kAssets = std::vector<vh::stk::core::Asset>{{"BTC"}, {"USDT"}};
+const auto kSymbol = vh::stk::core::Symbol{"BTCUSDT"};
+const auto kSymbolInfo = vh::stk::core::SymbolInfo{
     .symbol = kSymbol,
     .base_asset = {.asset = {"BTC"}, .min_amount = 0.001, .price_step = 0.001},
     .quote_asset = {
         .asset = {"USDT"}, .min_amount = 0.001, .price_step = 0.001}};
-const auto kPrices = std::vector<stonks::core::SymbolPriceRecord>{
+const auto kPrices = std::vector<vh::stk::core::SymbolPriceRecord>{
     // clang-format off
     { kSymbol,  2,  1, absl::FromUnixMillis( 0) },
     { kSymbol, 12, 11, absl::FromUnixMillis( 1) },
@@ -68,7 +68,7 @@ const auto kPrices = std::vector<stonks::core::SymbolPriceRecord>{
 };
 
 const auto kBuyLowSellHigh = []() {
-  auto symbols_db = test::app::Injector().create<stonks::core::SymbolsDb>();
+  auto symbols_db = test::app::Injector().create<vh::stk::core::SymbolsDb>();
 
   cppcoro::sync_wait([&symbols_db]() -> cppcoro::task<> {
     co_await symbols_db.UpdateAssets(kAssets);
@@ -79,16 +79,16 @@ const auto kBuyLowSellHigh = []() {
     }
   }());
 
-  return stonks::core::BuyLowSellHigh{stonks::cpp::meta::AssumeThreadSafe<
-      stonks::cpp::NnUp<stonks::core::ISymbolsDb>>(
-      stonks::cpp::MakeNnUp<stonks::core::SymbolsDb>(std::move(symbols_db)))};
+  return vh::stk::core::BuyLowSellHigh{vh::cpp::meta::AssumeThreadSafe<
+      vh::cpp::NnUp<vh::stk::core::ISymbolsDb>>(
+      vh::cpp::MakeNnUp<vh::stk::core::SymbolsDb>(std::move(symbols_db)))};
 }();
 
 TEST(AppBuyLowSellHigh, CalculateNextOperations) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
-    const auto first_operation = stonks::core::blsh::Operation{
+    const auto first_operation = vh::stk::core::blsh::Operation{
         .time = absl::FromUnixMillis(9),
-        .type = stonks::core::blsh::OperationType::kBuy,
+        .type = vh::stk::core::blsh::OperationType::kBuy,
         .btc_buy_price = 92,
         .btc_sell_price_waiting_for = {},
         .btc_balance = 0,

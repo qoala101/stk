@@ -3,7 +3,7 @@
 #include <gsl/assert>
 #include <utility>
 
-namespace stonks::network {
+namespace vh::network {
 AutoParsableWsMessage::AutoParsableWsMessage(WsMessage message)
     : message_{std::move(message)} {}
 
@@ -16,4 +16,4 @@ auto AutoParsableWsMessage::operator*() -> AutoParsable {
 
   return result;
 }
-}  // namespace stonks::network
+}  // namespace vh::network

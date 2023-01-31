@@ -18,20 +18,20 @@ namespace {
 TEST(DynamoDb, Test1) {
   auto tables_interface =
       test::aws::Injector()
-          .create<stonks::cpp::NnUp<stonks::kvdb::ITablesInterface>>();
+          .create<vh::cpp::NnUp<vh::kvdb::ITablesInterface>>();
   auto items_interface =
       test::aws::Injector()
-          .create<stonks::cpp::NnUp<stonks::kvdb::IItemsInterface>>();
+          .create<vh::cpp::NnUp<vh::kvdb::IItemsInterface>>();
 
   cppcoro::sync_wait([&tables_interface,
                       &items_interface]() -> cppcoro::task<> {
-    static const auto kTable = stonks::kvdb::Table{"TestTable"};
+    static const auto kTable = vh::kvdb::Table{"TestTable"};
 
     co_await tables_interface->DropTableIfExists(kTable);
     co_await tables_interface->CreateTableIfNotExists(kTable);
 
     const auto item1 =
-        stonks::kvdb::Item{.key = {"TestKey1"}, .value = "TestValue1"};
+        vh::kvdb::Item{.key = {"TestKey1"}, .value = "TestValue1"};
     EXPECT_EQ(co_await items_interface->SelectItem(kTable, item1.key),
               std::nullopt);
 
@@ -39,13 +39,13 @@ TEST(DynamoDb, Test1) {
     EXPECT_EQ(co_await items_interface->SelectItem(kTable, item1.key), item1);
 
     const auto item1_new_value =
-        stonks::kvdb::Item{.key = item1.key, .value = "TestValue2"};
+        vh::kvdb::Item{.key = item1.key, .value = "TestValue2"};
     co_await items_interface->InsertOrUpdateItem(kTable, item1_new_value);
     EXPECT_EQ(co_await items_interface->SelectItem(kTable, item1.key),
               item1_new_value);
 
     const auto item2 =
-        stonks::kvdb::Item{.key = {"TestKey2"}, .value = "TestValue2"};
+        vh::kvdb::Item{.key = {"TestKey2"}, .value = "TestValue2"};
     co_await items_interface->InsertOrUpdateItem(kTable, item2);
     EXPECT_EQ(co_await items_interface->SelectItem(kTable, item2.key), item2);
 

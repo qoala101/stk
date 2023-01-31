@@ -10,20 +10,20 @@
 #include "network_json_base_conversions.h"
 #include "network_json_conversions_facades.h"
 
-namespace stonks::network {
+namespace vh::network {
 template <>
-auto JsonParser<core::blsh::Operation>::operator()(const IJson &json) const
+auto JsonParser<stk::core::blsh::Operation>::operator()(const IJson &json) const
     -> Type {
   return MakeFromJson<Type>(json, "time", "type", "btc_buy_price",
                             "btc_sell_price_waiting_for", "btc_balance",
                             "usd_balance");
 }
 
-auto ConvertToJson(const core::blsh::Operation &value) -> cpp::Pv<IJson> {
+auto ConvertToJson(const stk::core::blsh::Operation &value) -> cpp::Pv<IJson> {
   return network::BuildJsonFrom(
       "time", value.time, "type", value.type, "btc_buy_price",
       value.btc_buy_price, "btc_sell_price_waiting_for",
       value.btc_sell_price_waiting_for, "btc_balance", value.btc_balance,
       "usd_balance", value.usd_balance);
 }
-}  // namespace stonks::network
+}  // namespace vh::network

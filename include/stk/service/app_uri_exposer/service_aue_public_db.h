@@ -7,7 +7,7 @@
 #include "kvdb_i_db.h"
 #include "network_types.h"
 
-namespace stonks::service::aue {
+namespace vh::stk::service::aue {
 /**
  * @brief DB which is exposed to public.
  * Used to share the data with web clients and doesn't require
@@ -25,6 +25,6 @@ class PublicDb {
  private:
   cpp::NnUp<kvdb::IDb> db_;
 };
-}  // namespace stonks::service::aue
+}  // namespace vh::stk::service::aue
 
 #endif  // STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_AUE_PUBLIC_DB_H_

@@ -4,7 +4,7 @@
 #include "core_sps_stream_factory.h"
 #include "cpp_timer.h"
 
-namespace stonks::core::sps {
+namespace vh::stk::core::sps {
 /**
  * @brief Keeps web socket connection which redirects received Binance
  * book ticks to price recorder.
@@ -23,6 +23,6 @@ class StreamHandle {
       web_socket_;
   cpp::Timer connect_to_web_socket_timer_;
 };
-}  // namespace stonks::core::sps
+}  // namespace vh::stk::core::sps
 
 #endif  // STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_STREAM_HANDLE_H_

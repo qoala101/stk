@@ -5,7 +5,7 @@
 
 #include "sqldb_value.h"
 
-namespace stonks::sqldb {
+namespace vh::sqldb {
 /**
  * @brief Statement which is expected to be prepared by DB once and later be
  * called many times.
@@ -26,6 +26,6 @@ class IUpdateStatement {
    */
   virtual void Execute(std::vector<Value> params) const = 0;
 };
-}  // namespace stonks::sqldb
+}  // namespace vh::sqldb
 
 #endif  // STONKS_SQLDB_SQLDB_I_UPDATE_STATEMENT_H_

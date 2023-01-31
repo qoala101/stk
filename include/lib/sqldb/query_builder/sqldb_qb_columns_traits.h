@@ -7,7 +7,7 @@
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_qb_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 template <typename T>
 struct ColumnsTraits;
 
@@ -98,6 +98,6 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
     return data;
   }
 };
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COLUMNS_TRAITS_H_

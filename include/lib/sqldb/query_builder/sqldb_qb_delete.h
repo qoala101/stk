@@ -9,7 +9,7 @@
 #include "sqldb_qb_wrapped_conditions.h"
 #include "sqldb_types.h"
 
-namespace stonks::sqldb::qb {
+namespace vh::sqldb::qb {
 /**
  * @brief Builds query which deletes rows from the table.
  */
@@ -38,6 +38,6 @@ class Delete {
   Query table_name_{};
   prm::Parametrized<Query> where_query_{};
 };
-}  // namespace stonks::sqldb::qb
+}  // namespace vh::sqldb::qb
 
 #endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_DELETE_H_

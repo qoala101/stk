@@ -5,7 +5,7 @@
 
 #include "network_types.h"
 
-namespace stonks::network {
+namespace vh::network {
 /**
  * @brief Handles REST request.
  */
@@ -20,6 +20,6 @@ class IRestRequestHandler {
   virtual auto HandleRequestAndGiveResponse [[nodiscard]] (RestRequest request)
   -> cppcoro::task<RestResponse> = 0;
 };
-}  // namespace stonks::network
+}  // namespace vh::network
 
 #endif  // STONKS_NETWORK_NETWORK_I_REST_REQUEST_HANDLER_H_

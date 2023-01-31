@@ -9,7 +9,7 @@
 #include "core_types.h"
 #include "cpp_optional.h"
 
-namespace stonks::core {
+namespace vh::stk::core {
 /**
  * @brief SQL DB manager which provides API to operate with symbols
  * and prices related data.
@@ -80,6 +80,6 @@ class ISymbolsDb {
                      const cpp::Opt<absl::Time> &end_time)
       -> cppcoro::task<> = 0;
 };
-}  // namespace stonks::core
+}  // namespace vh::stk::core
 
 #endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_I_SYMBOLS_DB_H_

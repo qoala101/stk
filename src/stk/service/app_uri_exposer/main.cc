@@ -16,7 +16,7 @@
 #include "service_inj_log_spdlog.h"
 #include "service_inj_network_restsdk.h"
 
-namespace stonks::service::aue {
+namespace vh::stk::service::aue {
 void Main(int argc, const char *const *argv) {
   auto options = cli::Options{};
 
@@ -37,8 +37,8 @@ void Main(int argc, const char *const *argv) {
          .reattempt_interval = absl::Milliseconds(*reattempt_interval)}};
   });
 }
-}  // namespace stonks::service::aue
+}  // namespace vh::stk::service::aue
 
 auto main(int argc, const char *const *argv) -> int {
-  stonks::service::aue::Main(argc, argv);
+  vh::stk::service::aue::Main(argc, argv);
 }

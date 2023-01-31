@@ -16,7 +16,7 @@
 #include "networkx_types.h"
 #include "networkx_uri.h"
 
-namespace stonks::networkx {
+namespace vh::networkx {
 namespace detail {
 template <cpp::MemberFunction auto kFunction>
   requires EndpointFunction<kFunction>
@@ -96,6 +96,6 @@ class Client {
  private:
   network::RestClient rest_client_;
 };
-}  // namespace stonks::networkx
+}  // namespace vh::networkx
 
 #endif  // STONKS_NETWORKX_NETWORKX_CLIENT_H_

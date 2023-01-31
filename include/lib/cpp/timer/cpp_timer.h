@@ -5,7 +5,7 @@
 
 #include "cpp_timer_event_loop.h"
 
-namespace stonks::cpp {
+namespace vh::cpp {
 /**
  * @brief Executes event at specified interval in the separate thread.
  */
@@ -30,6 +30,6 @@ class Timer {
  private:
   std::jthread thread_{};
 };
-}  // namespace stonks::cpp
+}  // namespace vh::cpp
 
 #endif  // STONKS_CPP_TIMER_CPP_TIMER_H_
