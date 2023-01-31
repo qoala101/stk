@@ -32,14 +32,6 @@ if(THIRD_PARTY_ONLY)
   return()
 endif(THIRD_PARTY_ONLY)
 
-find_program(iwyu NAMES iwyu include-what-you-use)
-set(iwyu ${iwyu}
-  -Xiwyu --no_comments
-  -Xiwyu --no_fwd_decls
-  -Xiwyu --cxx17ns
-)
-set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu})
-
 add_compile_options(
   -Wall
   -Wextra

@@ -5,10 +5,6 @@
   "[cpp]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
   },
-  "iwyu.reorder": false,
-  "iwyu.safe": false,
-  "iwyu.no_fwd_decls": true,
-  "iwyu.comments": false,
   "files.autoSaveDelay": 2000,
   "C/C++ Include Guard.Spaces After Endif": 2,
   "C/C++ Include Guard.Macro Type": "Filename",

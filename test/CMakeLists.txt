@@ -21,11 +21,6 @@ add_executable(unittests
   stk/test_stk_core_symbols_db.cc
 )
 
-# Disables IWYU.
-set_property(TARGET unittests
-  PROPERTY CXX_INCLUDE_WHAT_YOU_USE
-)
-
 target_link_libraries(unittests
   PRIVATE GTest::gtest GTest::gtest_main
 )
