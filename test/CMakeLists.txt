@@ -3,26 +3,26 @@ include(GoogleTest)
 enable_testing()
 
 add_executable(unittests
-  app/test_app_core_buy_low_sell_high.cc
-  app/test_app_core_symbols_db.cc
-
   # Disabled in order to not waste AWS API credits.
-  # aws/test_aws_dynamodb_db.cc
-  cpp/test_cpp_move_if.cc
-  cpp/test_cpp_typed_struct.cc
+  # lib/aws/test_aws_dynamodb_db.cc
+  lib/cpp/test_cpp_move_if.cc
+  lib/cpp/test_cpp_typed_struct.cc
 
-  network/test_network_auto_parsable.cc
+  lib/network/test_network_auto_parsable.cc
 
-  networkx/test_networkx_function_traits_facade.cc
+  lib/networkx/test_networkx_function_traits_facade.cc
 
-  restsdk/test_restsdk_client_server.cc
-  restsdk/test_restsdk_json_common_conversions.cc
-  restsdk/test_restsdk_json_conversions_facades.cc
-  restsdk/test_restsdk_rest_request_receiver.cc
-  restsdk/test_restsdk_rest_request_sender.cc
-  restsdk/test_restsdk_web_socket.cc
+  lib/restsdk/test_restsdk_client_server.cc
+  lib/restsdk/test_restsdk_json_common_conversions.cc
+  lib/restsdk/test_restsdk_json_conversions_facades.cc
+  lib/restsdk/test_restsdk_rest_request_receiver.cc
+  lib/restsdk/test_restsdk_rest_request_sender.cc
+  lib/restsdk/test_restsdk_web_socket.cc
 
-  sqlite/test_sqlite_db.cc
+  lib/sqlite/test_sqlite_db.cc
+
+  stk/test_stk_core_buy_low_sell_high.cc
+  stk/test_stk_core_symbols_db.cc
 )
 
 # Disables IWYU.

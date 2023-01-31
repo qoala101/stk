@@ -15,7 +15,7 @@
 #include "cpp_smart_pointers.h"
 #include "cpp_typed_struct.h"
 #include "gtest/gtest_pred_impl.h"
-#include "test_app_injector.h"
+#include "test_stk_injector.h"
 
 namespace {
 auto symbols_db = []() {

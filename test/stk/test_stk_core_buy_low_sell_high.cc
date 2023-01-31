@@ -20,7 +20,7 @@
 #include "core_symbols_db.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
-#include "test_app_injector.h"
+#include "test_stk_injector.h"
 
 namespace {
 const auto kAssets = std::vector<vh::stk::core::Asset>{{"BTC"}, {"USDT"}};
