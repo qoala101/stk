@@ -1,0 +1,24 @@
+{
+  "C_Cpp.intelliSenseEngine": "Disabled",
+  "clangd.path": "/home/vh/.config/Code/User/globalStorage/llvm-vs-code-extensions.vscode-clangd/install/15.0.6/clangd_15.0.6/bin/clangd",
+  "clangd.checkUpdates": true,
+  "[cpp]": {
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+  },
+  "iwyu.reorder": false,
+  "iwyu.safe": false,
+  "iwyu.no_fwd_decls": true,
+  "iwyu.comments": false,
+  "files.autoSaveDelay": 2000,
+  "C/C++ Include Guard.Spaces After Endif": 2,
+  "C/C++ Include Guard.Macro Type": "Filename",
+  "C/C++ Include Guard.Path Skip": 1,
+  "C/C++ Include Guard.Prefix": "VH_",
+  "C/C++ Include Guard.Comment Style": "Line",
+  "C/C++ Include Guard.Insert Blank Line": true,
+  "C/C++ Include Guard.Remove Extension": false,
+  "C/C++ Include Guard.Suffix": "_",
+  "C/C++ Include Guard.Subfolder Prefixes": [
+    { "folderPath": "include/stk", "prefix": "STK_" }
+  ]
+}
