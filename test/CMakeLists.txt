@@ -3,6 +3,7 @@ include(GoogleTest)
 enable_testing()
 
 add_executable(unittests
+
   # Disabled in order to not waste AWS API credits.
   # lib/aws/test_aws_dynamodb_db.cc
   lib/cpp/test_cpp_move_if.cc
@@ -34,33 +35,9 @@ target_link_libraries(unittests
 gtest_discover_tests(unittests)
 
 target_link_libraries(unittests
-  PRIVATE libaws
   PRIVATE libcore
-  PRIVATE libcore_buy_low_sell_high
-  PRIVATE libcore_symbols_db
-  PRIVATE libcpp
-  PRIVATE libdi
-  PRIVATE libkvdb
-  PRIVATE liblog
-  PRIVATE libnetwork
-  PRIVATE libnetworkx
-  PRIVATE libngrok
-  PRIVATE librestsdk
   PRIVATE libservice
-  PRIVATE libspdlog
-  PRIVATE libsqldb
-  PRIVATE libsqlite
 
-  PRIVATE absl::absl
-  PRIVATE callable
-  PRIVATE cppcoro::cppcoro
-  PRIVATE di::di
   PRIVATE fmt::fmt
-  PRIVATE function2::function2
-  PRIVATE magic_enum::magic_enum
-  PRIVATE Microsoft.GSL::GSL
-  PRIVATE nameof::nameof
-  PRIVATE NotNull
-  PRIVATE polymorphic_value::polymorphic_value
   PRIVATE range-v3::range-v3
 )

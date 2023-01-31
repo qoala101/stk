@@ -10,24 +10,18 @@ set_target_properties(libservice PROPERTIES
 target_include_directories(libservice
   PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/service
   PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/service/injector
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/service/injector/thread_safe
 )
 
 target_link_libraries(libservice
-  PRIVATE libcli
-  PRIVATE libcpp
-  PRIVATE libnetwork
-  PRIVATE libnetworkx
+  PUBLIC libaws
+  PUBLIC libcli
+  PUBLIC libdi
+  PUBLIC libnetworkx
+  PUBLIC librestsdk
+  PUBLIC libspdlog
+  PUBLIC libsqlite
 
-  PRIVATE absl::absl
-  PRIVATE callable
-  PRIVATE cppcoro::cppcoro
   PRIVATE fmt::fmt
-  PRIVATE function2::function2
-  PRIVATE magic_enum::magic_enum
-  PRIVATE Microsoft.GSL::GSL
-  PRIVATE NotNull
-  PRIVATE polymorphic_value::polymorphic_value
 )
 
 add_subdirectory(app_uri_exposer)

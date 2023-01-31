@@ -14,14 +14,9 @@ target_include_directories(libaws
 )
 
 target_link_libraries(libaws
-  PRIVATE libcpp
-  PRIVATE libkvdb
-  PRIVATE liblog
+  PUBLIC libkvdb
+  PUBLIC liblog
 
   PRIVATE AWS::dynamodb
-  PRIVATE callable
-  PRIVATE cppcoro::cppcoro
   PRIVATE fmt::fmt
-  PRIVATE Microsoft.GSL::GSL
-  PRIVATE NotNull
 )

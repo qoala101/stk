@@ -13,11 +13,11 @@
 #include "service_inj_client_server.h"
 #include "service_symbols_db.h"
 
-namespace vh::stk::service::inj {
+namespace vh::stk::service::sdb {
 inline auto CreateSymbolsDbClientInjector(
     const ClientOptions<core::ISymbolsDb> &options) {
   return di::MakeInjector(
-      CreateClientInjector<SymbolsDb>(options),
+      inj::CreateClientInjector<SymbolsDb>(options),
       di::BindTypeToFactoryFunction<
           cpp::meta::ThreadSafe<cpp::NnUp<core::ISymbolsDb>>,
           +[](networkx::Uri<core::ISymbolsDb> uri,
@@ -32,6 +32,6 @@ inline auto CreateSymbolsDbClientInjector(
                 std::move(symbols_db));
           }>());
 }
-}  // namespace vh::stk::service::inj
+}  // namespace vh::stk::service::sdb
 
 #endif  // STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_SYMBOLS_DB_CLIENT_H_

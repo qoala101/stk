@@ -38,15 +38,10 @@ target_include_directories(libsqldb
 )
 
 target_link_libraries(libsqldb
-  PRIVATE libcpp
+  PUBLIC libcpp
 
-  PRIVATE absl::absl
-  PRIVATE callable
+  PUBLIC nameof::nameof
   PRIVATE fmt::fmt
-  PRIVATE function2::function2
   PRIVATE magic_enum::magic_enum
-  PRIVATE Microsoft.GSL::GSL
-  PRIVATE nameof::nameof
-  PRIVATE NotNull
   PRIVATE range-v3::range-v3
 )

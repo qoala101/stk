@@ -25,18 +25,15 @@ target_include_directories(libcore
   PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core/buy_low_sell_high
   PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core/old_symbol_prices_deleter
   PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core/symbol_price_streams
+  PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core/symbol_prices_filter
   PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core/symbols_db
   PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core/symbols_info_updater
 )
 
 target_link_libraries(libcore
-  PRIVATE libcpp
-  PRIVATE libnetwork
+  PUBLIC libbinance
+  PUBLIC libsqldb
 
-  PRIVATE absl::absl
-  PRIVATE callable
-  PRIVATE magic_enum::magic_enum
-  PRIVATE Microsoft.GSL::GSL
-  PRIVATE NotNull
-  PRIVATE polymorphic_value::polymorphic_value
+  PRIVATE fmt::fmt
+  PRIVATE range-v3::range-v3
 )

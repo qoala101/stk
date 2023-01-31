@@ -28,7 +28,7 @@
 #include "service_inj_client_server.h"
 #include "service_inj_log_spdlog.h"
 #include "service_inj_network_restsdk.h"
-#include "service_inj_symbols_db_client.h"
+#include "service_sdb_client_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_symbols_db.h"
 
@@ -43,7 +43,7 @@ void Main(int argc, const char *const *argv) {
   const auto app = cli::App{argc, argv, options};
   const auto injector = cpp::Share(di::MakeInjector(
       inj::CreateNetworkRestsdkInjector(), inj::CreateLogSpdlogInjector(),
-      inj::CreateSymbolsDbClientInjector(symbols_db_client_options),
+      sdb::CreateSymbolsDbClientInjector(symbols_db_client_options),
       di::EnableNnPointers<core::SymbolPricesFilter>()));
 
   app.Run([&injector, &server_options]() {

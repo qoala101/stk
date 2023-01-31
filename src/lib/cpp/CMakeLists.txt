@@ -4,7 +4,6 @@ add_library(libcpp
   timer/cpp_timer_builder.cc
   timer/cpp_timer_event_loop.cc
   timer/cpp_timer.cc
-  cpp_auto_updatable.cc
   cpp_message_exception.cc
 )
 
@@ -22,11 +21,10 @@ target_include_directories(libcpp
 )
 
 target_link_libraries(libcpp
-  PRIVATE absl::absl
-  PRIVATE callable
-  PRIVATE cppcoro::cppcoro
-  PRIVATE function2::function2
-  PRIVATE Microsoft.GSL::GSL
-  PRIVATE NotNull
-  PRIVATE polymorphic_value::polymorphic_value
+  PUBLIC absl::absl
+  PUBLIC callable
+  PUBLIC function2::function2
+  PUBLIC Microsoft.GSL::GSL
+  PUBLIC NotNull
+  PUBLIC polymorphic_value::polymorphic_value
 )

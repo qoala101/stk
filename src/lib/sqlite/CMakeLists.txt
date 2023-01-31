@@ -21,16 +21,10 @@ target_include_directories(libsqlite
 )
 
 target_link_libraries(libsqlite
-  PRIVATE libcpp
-  PRIVATE liblog
-  PRIVATE libsqldb
+  PUBLIC liblog
+  PUBLIC libsqldb
 
-  PRIVATE callable
-  PRIVATE di::di
   PRIVATE fmt::fmt
-  PRIVATE function2::function2
-  PRIVATE Microsoft.GSL::GSL
-  PRIVATE NotNull
   PRIVATE range-v3::range-v3
   PRIVATE SQLite::SQLite3
 )

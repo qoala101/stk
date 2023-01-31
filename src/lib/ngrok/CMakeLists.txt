@@ -12,19 +12,7 @@ target_include_directories(libngrok
 )
 
 target_link_libraries(libngrok
-  PRIVATE libcpp
-  PRIVATE libnetwork
-  PRIVATE libnetworkx
+  PUBLIC libnetworkx
 
-  PRIVATE absl::absl
-  PRIVATE callable
-  PRIVATE cppcoro::cppcoro
-  PRIVATE di::di
   PRIVATE fmt::fmt
-  PRIVATE function2::function2
-  PRIVATE magic_enum::magic_enum
-  PRIVATE Microsoft.GSL::GSL
-  PRIVATE nameof::nameof
-  PRIVATE NotNull
-  PRIVATE polymorphic_value::polymorphic_value
 )

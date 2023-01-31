@@ -22,18 +22,10 @@ target_include_directories(librestsdk
 )
 
 target_link_libraries(librestsdk
-  PRIVATE libcpp
-  PRIVATE liblog
-  PRIVATE libnetwork
+  PUBLIC liblog
+  PUBLIC libnetwork
 
-  PRIVATE absl::absl
-  PRIVATE callable
-  PRIVATE cppcoro::cppcoro
   PRIVATE cpprestsdk::cpprest
   PRIVATE fmt::fmt
-  PRIVATE magic_enum::magic_enum
-  PRIVATE Microsoft.GSL::GSL
-  PRIVATE NotNull
   PRIVATE range-v3::range-v3
-  PRIVATE polymorphic_value::polymorphic_value
 )

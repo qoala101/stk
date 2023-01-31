@@ -17,12 +17,8 @@ target_include_directories(libcli
 )
 
 target_link_libraries(libcli
-  PRIVATE libcpp
+  PUBLIC libcpp
 
-  PRIVATE absl::absl
-  PRIVATE callable
   PRIVATE CLI11::CLI11
   PRIVATE fmt::fmt
-  PRIVATE Microsoft.GSL::GSL
-  PRIVATE NotNull
 )

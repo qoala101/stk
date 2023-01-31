@@ -2,8 +2,6 @@
 #include "core_json_conversions.h"  // IWYU pragma: keep
 // clang-format on
 
-#include <fmt/core.h>
-
 #include <boost/di.hpp>
 #include <string>
 #include <utility>

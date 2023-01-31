@@ -38,17 +38,10 @@ target_include_directories(libnetwork
 )
 
 target_link_libraries(libnetwork
-  PRIVATE libcpp
+  PUBLIC libcpp
 
-  PRIVATE absl::absl
-  PRIVATE callable
-  PRIVATE cppcoro::cppcoro
-  PRIVATE di::di
+  PUBLIC cppcoro::cppcoro
+  PUBLIC magic_enum::magic_enum
   PRIVATE fmt::fmt
-  PRIVATE function2::function2
-  PRIVATE magic_enum::magic_enum
-  PRIVATE Microsoft.GSL::GSL
-  PRIVATE NotNull
-  PRIVATE polymorphic_value::polymorphic_value
   PRIVATE range-v3::range-v3
 )

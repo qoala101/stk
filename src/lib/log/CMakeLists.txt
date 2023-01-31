@@ -14,12 +14,8 @@ target_include_directories(liblog
 )
 
 target_link_libraries(liblog
-  PRIVATE libcpp
+  PUBLIC libcpp
 
-  PRIVATE absl::absl
   PRIVATE fmt::fmt
-  PRIVATE function2::function2
   PRIVATE magic_enum::magic_enum
-  PRIVATE Microsoft.GSL::GSL
-  PRIVATE NotNull
 )
