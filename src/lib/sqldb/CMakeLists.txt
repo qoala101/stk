@@ -25,6 +25,7 @@ add_library(libsqldb
   sqldb_types.cc
   sqldb_value.cc
 )
+add_library(vh::libsqldb ALIAS libsqldb)
 
 set_target_properties(libsqldb PROPERTIES
   OUTPUT_NAME sqldb
@@ -38,9 +39,8 @@ target_include_directories(libsqldb
 )
 
 target_link_libraries(libsqldb
-  PUBLIC libcpp
-
   PUBLIC nameof::nameof
+  PUBLIC vh::libcpp
   PRIVATE fmt::fmt
   PRIVATE magic_enum::magic_enum
   PRIVATE range-v3::range-v3

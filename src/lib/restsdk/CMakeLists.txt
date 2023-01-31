@@ -7,6 +7,7 @@ add_library(librestsdk
   restsdk_rest_request_sender.cc
   restsdk_ws_client.cc
 )
+add_library(vh::librestsdk ALIAS librestsdk)
 
 set_target_properties(librestsdk PROPERTIES
   OUTPUT_NAME restsdk
@@ -22,9 +23,8 @@ target_include_directories(librestsdk
 )
 
 target_link_libraries(librestsdk
-  PUBLIC liblog
-  PUBLIC libnetwork
-
+  PUBLIC vh::liblog
+  PUBLIC vh::libnetwork
   PRIVATE cpprestsdk::cpprest
   PRIVATE fmt::fmt
   PRIVATE range-v3::range-v3

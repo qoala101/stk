@@ -8,6 +8,7 @@ FetchContent_Declare(callable SYSTEM
 FetchContent_MakeAvailable(callable)
 
 add_library(callable INTERFACE)
+add_library(thirdparty::callable ALIAS callable)
 
 target_include_directories(callable
   SYSTEM INTERFACE ${callable_SOURCE_DIR}

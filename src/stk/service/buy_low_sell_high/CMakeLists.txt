@@ -8,5 +8,5 @@ target_include_directories(service_buy_low_sell_high
 )
 
 target_link_libraries(service_buy_low_sell_high
-  PRIVATE libservice_symbols_db
+  PRIVATE vh::stk::libservice_symbols_db
 )

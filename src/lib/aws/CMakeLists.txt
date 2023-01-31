@@ -3,6 +3,7 @@ add_library(libaws
   dynamodb/aws_dynamodb_sync_db_proxy.cc
   aws_api_handle.cc
 )
+add_library(vh::libaws ALIAS libaws)
 
 set_target_properties(libaws PROPERTIES
   OUTPUT_NAME aws
@@ -14,9 +15,8 @@ target_include_directories(libaws
 )
 
 target_link_libraries(libaws
-  PUBLIC libkvdb
-  PUBLIC liblog
-
+  PUBLIC vh::libkvdb
+  PUBLIC vh::liblog
   PRIVATE AWS::dynamodb
   PRIVATE fmt::fmt
 )

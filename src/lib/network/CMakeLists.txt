@@ -24,6 +24,7 @@ add_library(libnetwork
   network_ws_client_builder.cc
   network_ws_connection.cc
 )
+add_library(vh::libnetwork ALIAS libnetwork)
 
 set_target_properties(libnetwork PROPERTIES
   OUTPUT_NAME network
@@ -38,10 +39,9 @@ target_include_directories(libnetwork
 )
 
 target_link_libraries(libnetwork
-  PUBLIC libcpp
-
   PUBLIC cppcoro::cppcoro
   PUBLIC magic_enum::magic_enum
+  PUBLIC vh::libcpp
   PRIVATE fmt::fmt
   PRIVATE range-v3::range-v3
 )

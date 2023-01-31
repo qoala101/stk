@@ -2,6 +2,7 @@ add_library(libservice
   service_client_options.cc
   service_server_options.cc
 )
+add_library(vh::stk::libservice ALIAS libservice)
 
 set_target_properties(libservice PROPERTIES
   OUTPUT_NAME service
@@ -13,14 +14,13 @@ target_include_directories(libservice
 )
 
 target_link_libraries(libservice
-  PUBLIC libaws
-  PUBLIC libcli
-  PUBLIC libdi
-  PUBLIC libnetworkx
-  PUBLIC librestsdk
-  PUBLIC libspdlog
-  PUBLIC libsqlite
-
+  PUBLIC vh::libaws
+  PUBLIC vh::libcli
+  PUBLIC vh::libdi
+  PUBLIC vh::libnetworkx
+  PUBLIC vh::librestsdk
+  PUBLIC vh::libspdlog
+  PUBLIC vh::libsqlite
   PRIVATE fmt::fmt
 )
 

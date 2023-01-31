@@ -10,8 +10,7 @@ target_include_directories(service_app_uri_exposer
 )
 
 target_link_libraries(service_app_uri_exposer
-  PRIVATE libngrok
-  PRIVATE libservice
-
+  PRIVATE vh::libngrok
+  PRIVATE vh::stk::libservice
   PRIVATE fmt::fmt
 )

@@ -7,6 +7,7 @@ add_library(libcli
   cli_thread_blocker.cc
   cli_wait_for_interrupt.cc
 )
+add_library(vh::libcli ALIAS libcli)
 
 set_target_properties(libcli PROPERTIES
   OUTPUT_NAME cli
@@ -17,8 +18,7 @@ target_include_directories(libcli
 )
 
 target_link_libraries(libcli
-  PUBLIC libcpp
-
+  PUBLIC vh::libcpp
   PRIVATE CLI11::CLI11
   PRIVATE fmt::fmt
 )

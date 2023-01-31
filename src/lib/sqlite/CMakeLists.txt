@@ -10,6 +10,7 @@ add_library(libsqlite
   sqlite_select_statement.cc
   sqlite_update_statement.cc
 )
+add_library(vh::libsqlite ALIAS libsqlite)
 
 set_target_properties(libsqlite PROPERTIES
   OUTPUT_NAME sqlite
@@ -21,9 +22,8 @@ target_include_directories(libsqlite
 )
 
 target_link_libraries(libsqlite
-  PUBLIC liblog
-  PUBLIC libsqldb
-
+  PUBLIC vh::liblog
+  PUBLIC vh::libsqldb
   PRIVATE fmt::fmt
   PRIVATE range-v3::range-v3
   PRIVATE SQLite::SQLite3

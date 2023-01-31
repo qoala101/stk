@@ -7,6 +7,8 @@ add_library(libcpp
   cpp_message_exception.cc
 )
 
+add_library(vh::libcpp ALIAS libcpp)
+
 set_target_properties(libcpp PROPERTIES
   OUTPUT_NAME cpp
 )
@@ -22,9 +24,9 @@ target_include_directories(libcpp
 
 target_link_libraries(libcpp
   PUBLIC absl::absl
-  PUBLIC callable
+  PUBLIC thirdparty::callable
   PUBLIC function2::function2
   PUBLIC Microsoft.GSL::GSL
-  PUBLIC NotNull
+  PUBLIC thirdparty::NotNull
   PUBLIC polymorphic_value::polymorphic_value
 )

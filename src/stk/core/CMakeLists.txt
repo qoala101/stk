@@ -15,6 +15,7 @@ add_library(libcore
   core_common.cc
   core_json_conversions.cc
 )
+add_library(vh::stk::libcore ALIAS libcore)
 
 set_target_properties(libcore PROPERTIES
   OUTPUT_NAME core
@@ -31,9 +32,8 @@ target_include_directories(libcore
 )
 
 target_link_libraries(libcore
-  PUBLIC libbinance
-  PUBLIC libsqldb
-
+  PUBLIC vh::libbinance
+  PUBLIC vh::libsqldb
   PRIVATE fmt::fmt
   PRIVATE range-v3::range-v3
 )
