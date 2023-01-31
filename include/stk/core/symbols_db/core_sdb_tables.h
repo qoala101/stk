@@ -9,7 +9,7 @@
 #include "cpp_type_list.h"
 #include "sqldb_table.h"
 
-namespace vh::stk::core::sdb::tables {
+namespace vh::stk::core::sdb::table {
 /**
  * @copydoc Asset
  */
@@ -91,6 +91,6 @@ struct SymbolPriceRecord : public sqldb::Table<SymbolPriceRecord> {
 
   using Columns = cpp::TypeList<symbol_id, buy_price, sell_price, time>;
 };
-}  // namespace vh::stk::core::sdb::tables
+}  // namespace vh::stk::core::sdb::table
 
 #endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_SDB_TABLES_H_
