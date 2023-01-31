@@ -1,14 +1,16 @@
 #include "core_buy_low_sell_high.h"
 
-#include <fmt/format.h>
+#include <fmt/core.h>
 
 #include <coroutine>
-#include <gsl/assert>
+#include <optional>
+#include <string>
 #include <utility>
 
 #include "core_blsh_types.h"
 #include "core_common.h"
 #include "cpp_message_exception.h"
+#include "cpp_typed_struct.h"
 
 namespace vh::stk::core {
 BuyLowSellHigh::BuyLowSellHigh(

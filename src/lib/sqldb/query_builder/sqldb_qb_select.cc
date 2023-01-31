@@ -27,8 +27,7 @@
 
 template <>
 constexpr auto magic_enum::customize::enum_name(
-    vh::sqldb::qb::Order value) noexcept
-    -> magic_enum::customize::customize_t {
+    vh::sqldb::qb::Order value) noexcept -> magic_enum::customize::customize_t {
   switch (value) {
     case vh::sqldb::qb::Order::kAscending:
       return "ASC";

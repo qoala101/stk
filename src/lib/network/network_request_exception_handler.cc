@@ -2,9 +2,9 @@
 
 #include <coroutine>
 #include <exception>
+#include <not_null.hpp>
 #include <utility>
 
-#include "cpp_polymorphic_value.h"
 #include "network_exception.h"
 #include "network_json_common_conversions.h"
 #include "network_types.h"
@@ -14,8 +14,8 @@ RequestExceptionHandler::RequestExceptionHandler(
     cpp::NnUp<IRestRequestHandler> handler)
     : handler_{std::move(handler)} {}
 
-auto RequestExceptionHandler::HandleRequestAndGiveResponse(
-    RestRequest request) -> cppcoro::task<RestResponse> {
+auto RequestExceptionHandler::HandleRequestAndGiveResponse(RestRequest request)
+    -> cppcoro::task<RestResponse> {
   try {
     co_return co_await handler_->HandleRequestAndGiveResponse(
         std::move(request));

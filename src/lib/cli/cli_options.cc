@@ -4,10 +4,6 @@
 #include <CLI/Option.hpp>
 #include <gsl/assert>
 #include <memory>
-#include <type_traits>
-#include <variant>
-
-#include "cpp_typed_struct.h"
 
 namespace vh::cli::detail {
 void OptionsBase::AddToNativeApp(CLI::App &app) const {

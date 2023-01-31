@@ -29,6 +29,6 @@ class UpdateStatement : public IUpdateStatement {
   cpp::NnUp<IUpdateStatement> statement_;
   std::vector<QueryParam> params_{};
 };
-}  // namespace vh::sqldb::p
+}  // namespace vh::sqldb::prm
 
 #endif  // VH_SQLDB_PRM_UPDATE_STATEMENT_H_

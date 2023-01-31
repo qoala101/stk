@@ -7,7 +7,8 @@
 
 namespace vh::networkx {
 template <>
-struct EndpointFunctionTraits<&stk::core::BuyLowSellHigh::CalculateNextOperations> {
+struct EndpointFunctionTraits<
+    &stk::core::BuyLowSellHigh::CalculateNextOperations> {
   static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams =
       ParamList("symbol", "profit", "last_operation", "start_time", "end_time");

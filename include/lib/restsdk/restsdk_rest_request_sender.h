@@ -1,10 +1,13 @@
 #ifndef VH_RESTSDK_REST_REQUEST_SENDER_H_
 #define VH_RESTSDK_REST_REQUEST_SENDER_H_
 
+// IWYU pragma: no_include <cpprest/http_client.h>
+
 #include <cppcoro/task.hpp>
 
 #include "cpp_mutex.h"
 #include "cpp_not_null.h"
+#include "cpp_smart_pointers.h"
 #include "log_i_logger.h"
 #include "network_i_rest_request_sender.h"
 #include "network_types.h"

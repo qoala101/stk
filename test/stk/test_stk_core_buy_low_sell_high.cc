@@ -1,6 +1,5 @@
 #include <absl/time/time.h>
 #include <fmt/core.h>
-#include <gtest/gtest.h>
 
 #include <boost/di.hpp>
 #include <coroutine>
@@ -19,7 +18,9 @@
 #include "core_i_symbols_db.h"
 #include "core_symbols_db.h"
 #include "core_types.h"
+#include "cpp_meta_thread_safe.h"
 #include "cpp_not_null.h"
+#include "gtest/gtest_pred_impl.h"
 #include "test_stk_injector.h"
 
 namespace {
@@ -79,9 +80,9 @@ const auto kBuyLowSellHigh = []() {
     }
   }());
 
-  return vh::stk::core::BuyLowSellHigh{vh::cpp::meta::AssumeThreadSafe<
-      vh::cpp::NnUp<vh::stk::core::ISymbolsDb>>(
-      vh::cpp::MakeNnUp<vh::stk::core::SymbolsDb>(std::move(symbols_db)))};
+  return vh::stk::core::BuyLowSellHigh{
+      vh::cpp::meta::AssumeThreadSafe<vh::cpp::NnUp<vh::stk::core::ISymbolsDb>>(
+          vh::cpp::MakeNnUp<vh::stk::core::SymbolsDb>(std::move(symbols_db)))};
 }();
 
 TEST(AppBuyLowSellHigh, CalculateNextOperations) {

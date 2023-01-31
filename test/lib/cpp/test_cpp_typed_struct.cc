@@ -2,7 +2,6 @@
 #include <gtest/gtest-test-part.h>
 
 #include <string>
-#include <type_traits>
 #include <utility>
 
 #include "cpp_typed_struct.h"

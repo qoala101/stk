@@ -2,12 +2,14 @@
 #define VH_SQLDB_QUERY_BUILDER_H_
 
 #include "cpp_meta_template_constructor.h"
+#include "cpp_optional.h"
 #include "sqldb_concepts.h"  // IWYU pragma: keep
 #include "sqldb_qb_create.h"
 #include "sqldb_qb_delete.h"
 #include "sqldb_qb_drop.h"
 #include "sqldb_qb_insert.h"
 #include "sqldb_qb_select.h"
+#include "sqldb_qb_types.h"
 #include "sqldb_qb_update.h"
 
 namespace vh::sqldb::query_builder {

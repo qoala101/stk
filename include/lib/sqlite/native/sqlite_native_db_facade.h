@@ -1,6 +1,8 @@
 #ifndef VH_SQLITE_NATIVE_DB_FACADE_H_
 #define VH_SQLITE_NATIVE_DB_FACADE_H_
 
+#include <string_view>
+
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
 #include "sqldb_types.h"

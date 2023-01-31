@@ -12,11 +12,11 @@ namespace test::aws {
 inline auto Injector [[nodiscard]] () -> auto& {
   static auto injector = vh::di::MakeInjector(
       vh::di::BindInterfaceToImplementation<vh::log::ILogger,
-                                                vh::spdlog::Logger>(),
-      vh::di::BindInterfaceToImplementation<
-          vh::kvdb::ITablesInterface, vh::aws::dynamodb::SyncDbProxy>(),
-      vh::di::BindInterfaceToImplementation<
-          vh::kvdb::IItemsInterface, vh::aws::dynamodb::SyncDbProxy>());
+                                            vh::spdlog::Logger>(),
+      vh::di::BindInterfaceToImplementation<vh::kvdb::ITablesInterface,
+                                            vh::aws::dynamodb::SyncDbProxy>(),
+      vh::di::BindInterfaceToImplementation<vh::kvdb::IItemsInterface,
+                                            vh::aws::dynamodb::SyncDbProxy>());
   return injector;
 }
 }  // namespace test::aws

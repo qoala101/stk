@@ -1,18 +1,15 @@
 #include <absl/time/time.h>
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
-#include <gtest/gtest.h>
 
 #include <boost/di.hpp>
+#include <coroutine>
 #include <cppcoro/sync_wait.hpp>
 #include <cppcoro/task.hpp>
-#include <ext/alloc_traits.h>
-#include <memory>
 #include <vector>
 
 #include "core_symbols_db.h"
 #include "core_types.h"
-#include "cpp_smart_pointers.h"
 #include "cpp_typed_struct.h"
 #include "gtest/gtest_pred_impl.h"
 #include "test_stk_injector.h"
@@ -54,8 +51,8 @@ TEST(AppSymbolsDb, UpdateSymbolsInfo) {
 
     symbols_info = std::vector<vh::stk::core::SymbolInfo>{
         vh::stk::core::SymbolInfo{.symbol = {"BTCUSDT"},
-                                 .base_asset = {"BTC"},
-                                 .quote_asset = {"USDT"}}};
+                                  .base_asset = {"BTC"},
+                                  .quote_asset = {"USDT"}}};
     co_await symbols_db.UpdateSymbolsInfo(symbols_info);
     EXPECT_EQ(co_await symbols_db.SelectSymbolsInfo(), symbols_info);
 
@@ -72,8 +69,8 @@ TEST(AppSymbolsDb, UpdateSymbolsInfo) {
 
     symbols_info.emplace_back(
         vh::stk::core::SymbolInfo{.symbol = {"NEW_NAME"},
-                                 .base_asset = {"USDT"},
-                                 .quote_asset = {"USDT"}});
+                                  .base_asset = {"USDT"},
+                                  .quote_asset = {"USDT"}});
     co_await symbols_db.UpdateSymbolsInfo(symbols_info);
     EXPECT_EQ(co_await symbols_db.SelectSymbolsInfo(), symbols_info);
 
@@ -106,37 +103,45 @@ TEST(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
         co_await symbols_db.SelectSymbolPriceRecords(eth_usdt, {}, {}, {}, {});
     EXPECT_TRUE(symbol_price_records.empty());
 
-    const auto eth_price_records = std::vector<vh::stk::core::SymbolPriceRecord>{
-        vh::stk::core::SymbolPriceRecord{.symbol = eth_usdt,
-                                        .buy_price = {0.1},
-                                        .sell_price = {0.1},
-                                        .time = absl::FromUnixMillis(1000)},
-        vh::stk::core::SymbolPriceRecord{.symbol = eth_usdt,
-                                        .buy_price = {0.2},
-                                        .sell_price = {0.2},
-                                        .time = absl::FromUnixMillis(2000)},
-        vh::stk::core::SymbolPriceRecord{.symbol = eth_usdt,
-                                        .buy_price = {0.3},
-                                        .sell_price = {0.3},
-                                        .time = absl::FromUnixMillis(3000)}};
+    const auto eth_price_records =
+        std::vector<vh::stk::core::SymbolPriceRecord>{
+            vh::stk::core::SymbolPriceRecord{
+                .symbol = eth_usdt,
+                .buy_price = {0.1},
+                .sell_price = {0.1},
+                .time = absl::FromUnixMillis(1000)},
+            vh::stk::core::SymbolPriceRecord{
+                .symbol = eth_usdt,
+                .buy_price = {0.2},
+                .sell_price = {0.2},
+                .time = absl::FromUnixMillis(2000)},
+            vh::stk::core::SymbolPriceRecord{
+                .symbol = eth_usdt,
+                .buy_price = {0.3},
+                .sell_price = {0.3},
+                .time = absl::FromUnixMillis(3000)}};
 
     for (const auto &symbol_price_record : eth_price_records) {
       co_await symbols_db.InsertSymbolPriceRecord(symbol_price_record);
     }
 
-    const auto btc_price_records = std::vector<vh::stk::core::SymbolPriceRecord>{
-        vh::stk::core::SymbolPriceRecord{.symbol = btc_usdt,
-                                        .buy_price = {0.1},
-                                        .sell_price = {0.1},
-                                        .time = absl::FromUnixMillis(10000)},
-        vh::stk::core::SymbolPriceRecord{.symbol = btc_usdt,
-                                        .buy_price = {0.2},
-                                        .sell_price = {0.2},
-                                        .time = absl::FromUnixMillis(20000)},
-        vh::stk::core::SymbolPriceRecord{.symbol = btc_usdt,
-                                        .buy_price = {0.3},
-                                        .sell_price = {0.3},
-                                        .time = absl::FromUnixMillis(30000)}};
+    const auto btc_price_records =
+        std::vector<vh::stk::core::SymbolPriceRecord>{
+            vh::stk::core::SymbolPriceRecord{
+                .symbol = btc_usdt,
+                .buy_price = {0.1},
+                .sell_price = {0.1},
+                .time = absl::FromUnixMillis(10000)},
+            vh::stk::core::SymbolPriceRecord{
+                .symbol = btc_usdt,
+                .buy_price = {0.2},
+                .sell_price = {0.2},
+                .time = absl::FromUnixMillis(20000)},
+            vh::stk::core::SymbolPriceRecord{
+                .symbol = btc_usdt,
+                .buy_price = {0.3},
+                .sell_price = {0.3},
+                .time = absl::FromUnixMillis(30000)}};
 
     for (const auto &symbol_price_record : btc_price_records) {
       co_await symbols_db.InsertSymbolPriceRecord(symbol_price_record);

@@ -4,6 +4,7 @@
 #include <exception>
 #include <function2/function2.hpp>
 #include <gsl/assert>
+#include <not_null.hpp>
 #include <utility>
 
 #include "network_typed_endpoint.h"

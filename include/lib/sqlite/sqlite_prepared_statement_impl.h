@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "cpp_lock.h"
 #include "cpp_mutex.h"
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
@@ -10,7 +11,6 @@
 #include "sqldb_value.h"
 #include "sqlite_native_db_handle_variant.h"
 #include "sqlite_native_handles.h"
-#include "sqlite_native_statement_facade.h"
 
 namespace vh::sqlite {
 /**

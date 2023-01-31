@@ -1,7 +1,5 @@
 #include "ngrok_api.h"
 
-#include <fmt/core.h>
-
 #include <coroutine>
 #include <not_null.hpp>
 #include <utility>

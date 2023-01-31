@@ -1,8 +1,5 @@
 #include "core_symbols_info_updater.h"
 
-#include <absl/time/time.h>
-
-#include <coroutine>
 #include <cppcoro/sync_wait.hpp>
 #include <utility>
 

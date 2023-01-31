@@ -4,16 +4,15 @@
 
 #include "service_symbols_db.h"
 
+#include <absl/container/flat_hash_map.h>
 #include <absl/time/time.h>
 
 #include <coroutine>
-#include <string>
 #include <tuple>
 #include <utility>
 
 #include "core_types.h"
 #include "network_json_common_conversions.h"
-#include "networkx_client.h"
 
 namespace vh::stk::service {
 auto SymbolsDb::SelectAssets() const

@@ -3,9 +3,10 @@
 #include <fmt/core.h>
 
 #include <gsl/assert>
+#include <memory>
+#include <not_null.hpp>
 #include <string>
 #include <utility>
-#include <variant>
 
 #include "cpp_not_null.h"
 #include "cpp_typed_struct.h"

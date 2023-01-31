@@ -1,19 +1,40 @@
-#include <gtest/gtest.h>
+#include <gtest/gtest-message.h>
+#include <gtest/gtest-test-part.h>
 
+#include <boost/di.hpp>
 #include <cstdint>
 #include <filesystem>
+#include <memory>
 #include <not_null.hpp>
-#include <range/v3/range/conversion.hpp>
-#include <range/v3/view/transform.hpp>
+#include <string>
+#include <tuple>
+#include <variant>
+#include <vector>
 
 #include "cpp_not_null.h"
+#include "cpp_smart_pointers.h"
+#include "cpp_type_list.h"
+#include "cpp_typed_struct.h"
+#include "gtest/gtest_pred_impl.h"
 #include "sqldb_alias_to_table.h"
 #include "sqldb_i_db.h"
+#include "sqldb_i_select_statement.h"
+#include "sqldb_i_update_statement.h"
+#include "sqldb_prm_types.h"
 #include "sqldb_qb_common.h"
+#include "sqldb_qb_create.h"
+#include "sqldb_qb_delete.h"
+#include "sqldb_qb_drop.h"
+#include "sqldb_qb_insert.h"
+#include "sqldb_qb_query_value.h"
+#include "sqldb_qb_select.h"
 #include "sqldb_query_builder.h"
+#include "sqldb_rows.h"
 #include "sqldb_table.h"
+#include "sqldb_types.h"
 #include "sqldb_value.h"
 #include "sqldb_value_conversions.h"
+#include "sqlite_types.h"
 #include "test_sqlite_injector.h"
 
 namespace {
@@ -59,8 +80,7 @@ TEST(SqliteDb, CreateAndDropTable) {
                            .IfNotExists()
                            .Build())
       ->Execute();
-  db->PrepareStatement(
-        vh::sqldb::query_builder::DropTable<TestTable>().Build())
+  db->PrepareStatement(vh::sqldb::query_builder::DropTable<TestTable>().Build())
       ->Execute();
   EXPECT_ANY_THROW(
       db->PrepareStatement(
@@ -69,16 +89,15 @@ TEST(SqliteDb, CreateAndDropTable) {
 }
 
 TEST(SqliteDb, InsertAndSelect) {
-  db->PrepareStatement(vh::sqldb::query_builder::CreateTable<Asset>()
-                           .IfNotExists()
-                           .Build())
+  db->PrepareStatement(
+        vh::sqldb::query_builder::CreateTable<Asset>().IfNotExists().Build())
       ->Execute();
 
-  auto insert_statement = db->PrepareStatement(
-      vh::sqldb::query_builder::Insert()
-          .Value<Asset::name>(vh::sqldb::prm::QueryParam{})
-          .Into<Asset>()
-          .Build());
+  auto insert_statement =
+      db->PrepareStatement(vh::sqldb::query_builder::Insert()
+                               .Value<Asset::name>(vh::sqldb::prm::QueryParam{})
+                               .Into<Asset>()
+                               .Build());
   insert_statement->Execute(vh::sqldb::AsValues("BTC"));
   insert_statement->Execute(vh::sqldb::AsValues("ETH"));
   insert_statement->Execute(vh::sqldb::AsValues("USDT"));
@@ -133,9 +152,8 @@ struct SymbolPrice : public vh::sqldb::Table<SymbolPrice> {
 };
 
 TEST(SqliteDb, ForeignKey) {
-  db->PrepareStatement(vh::sqldb::query_builder::CreateTable<Symbol>()
-                           .IfNotExists()
-                           .Build())
+  db->PrepareStatement(
+        vh::sqldb::query_builder::CreateTable<Symbol>().IfNotExists().Build())
       ->Execute();
 
   auto insert_symbol_statement = db->PrepareStatement(
@@ -146,8 +164,7 @@ TEST(SqliteDb, ForeignKey) {
           .Build());
   insert_symbol_statement->Execute(vh::sqldb::AsValues(1, 3));
   insert_symbol_statement->Execute(vh::sqldb::AsValues(2, 3));
-  EXPECT_ANY_THROW(
-      insert_symbol_statement->Execute(vh::sqldb::AsValues(5, 6)));
+  EXPECT_ANY_THROW(insert_symbol_statement->Execute(vh::sqldb::AsValues(5, 6)));
 
   db->PrepareStatement(vh::sqldb::query_builder::CreateTable<SymbolPrice>()
                            .IfNotExists()
@@ -173,12 +190,10 @@ struct QuoteAsset : public vh::sqldb::AliasToTable<Asset, QuoteAsset> {
 TEST(SqliteDb, SelectJoin) {
   const auto cell_definitions =
       vh::sqldb::ResultDefinition{std::vector<vh::sqldb::ColumnType>{
-          vh::sqldb::ColumnType{
-              .column = {"base_asset"},
-              .type = {vh::sqldb::DataType<std::string>{}}},
-          vh::sqldb::ColumnType{
-              .column = {"quote_asset"},
-              .type = {vh::sqldb::DataType<std::string>{}}}}};
+          vh::sqldb::ColumnType{.column = {"base_asset"},
+                                .type = {vh::sqldb::DataType<std::string>{}}},
+          vh::sqldb::ColumnType{.column = {"quote_asset"},
+                                .type = {vh::sqldb::DataType<std::string>{}}}}};
 
   auto select_statement = db->PrepareStatement(
       {"SELECT BaseAsset.name AS base_asset, QuoteAsset.name AS "
@@ -210,8 +225,7 @@ TEST(SqliteDb, FileWriteAndRead) {
   EXPECT_TRUE(std::filesystem::exists(db_file_name));
 
   db = test::sqlite::Injector().create<vh::cpp::Up<vh::sqldb::IDb>>();
-  auto db_copy =
-      test::sqlite::Injector().create<vh::cpp::Up<vh::sqldb::IDb>>();
+  auto db_copy = test::sqlite::Injector().create<vh::cpp::Up<vh::sqldb::IDb>>();
 
   const auto select_query =
       vh::sqldb::query_builder::SelectAll().From<SymbolPrice>().Build();

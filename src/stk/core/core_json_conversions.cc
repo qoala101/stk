@@ -28,30 +28,34 @@ auto ConvertToJson(absl::Time value) -> cpp::Pv<IJson> {
 }
 
 template <>
-auto JsonParser<stk::core::AssetInfo>::operator()(const IJson &json) const -> Type {
+auto JsonParser<stk::core::AssetInfo>::operator()(const IJson &json) const
+    -> Type {
   return MakeFromJson<Type>(json, "asset", "min_amount", "price_step");
 }
 
-auto ConvertToJson(const stk::core::AssetInfo &value) -> cpp::Pv<network::IJson> {
+auto ConvertToJson(const stk::core::AssetInfo &value)
+    -> cpp::Pv<network::IJson> {
   return network::BuildJsonFrom("asset", value.asset, "min_amount",
                                 value.min_amount, "price_step",
                                 value.price_step);
 }
 
 template <>
-auto JsonParser<stk::core::SymbolInfo>::operator()(const IJson &json) const -> Type {
+auto JsonParser<stk::core::SymbolInfo>::operator()(const IJson &json) const
+    -> Type {
   return MakeFromJson<Type>(json, "symbol", "base_asset", "quote_asset");
 }
 
-auto ConvertToJson(const stk::core::SymbolInfo &value) -> cpp::Pv<network::IJson> {
+auto ConvertToJson(const stk::core::SymbolInfo &value)
+    -> cpp::Pv<network::IJson> {
   return network::BuildJsonFrom("symbol", value.symbol, "base_asset",
                                 value.base_asset, "quote_asset",
                                 value.quote_asset);
 }
 
 template <>
-auto JsonParser<stk::core::SymbolPriceRecord>::operator()(const IJson &json) const
-    -> Type {
+auto JsonParser<stk::core::SymbolPriceRecord>::operator()(
+    const IJson &json) const -> Type {
   return MakeFromJson<Type>(json, "symbol", "buy_price", "sell_price", "time");
 }
 

@@ -1,8 +1,14 @@
-#include <gtest/gtest.h>
+#include <gtest/gtest-message.h>
+#include <gtest/gtest-test-part.h>
 
 #include <cstdint>
 #include <limits>
+#include <string>
+#include <vector>
 
+#include "cpp_polymorphic_value.h"
+#include "gtest/gtest_pred_impl.h"
+#include "network_i_json.h"
 #include "network_json_conversions_facades.h"
 
 namespace {
@@ -34,8 +40,7 @@ TEST(JsonConversionsFacades, StringIndex) {
   // clang-format on
 
   const auto parsed_const = vh::network::MakeFromJson<BaseTypes>(
-      const_cast<const vh::network::IJson &>(*json), "a", "b", "c", "d",
-      "e");
+      const_cast<const vh::network::IJson &>(*json), "a", "b", "c", "d", "e");
   const auto parsed_non_const =
       vh::network::MakeFromJson<BaseTypes>(*json, "a", "b", "c", "d", "e");
 
@@ -56,12 +61,10 @@ TEST(JsonConversionsFacades, IntIndex) {
   );
   // clang-format on
 
-  const auto parsed_const =
-      vh::network::MakeFromJson<std::vector<std::string>>(
-          const_cast<const vh::network::IJson &>(*json), 0, 1, 2, 3, 4);
+  const auto parsed_const = vh::network::MakeFromJson<std::vector<std::string>>(
+      const_cast<const vh::network::IJson &>(*json), 0, 1, 2, 3, 4);
   const auto parsed_non_const =
-      vh::network::MakeFromJson<std::vector<std::string>>(*json, 0, 1, 2, 3,
-                                                              4);
+      vh::network::MakeFromJson<std::vector<std::string>>(*json, 0, 1, 2, 3, 4);
 
   EXPECT_EQ(original, parsed_const);
   EXPECT_EQ(original, parsed_non_const);

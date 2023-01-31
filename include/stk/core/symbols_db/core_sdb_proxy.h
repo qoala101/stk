@@ -1,7 +1,15 @@
 #ifndef VH_STK_CORE_SDB_PROXY_H_
 #define VH_STK_CORE_SDB_PROXY_H_
 
+#include <absl/time/time.h>
+
+#include <cppcoro/task.hpp>
+#include <vector>
+
 #include "core_i_symbols_db.h"
+#include "core_types.h"
+#include "cpp_not_null.h"
+#include "cpp_optional.h"
 
 namespace vh::stk::core::sdb {
 /**

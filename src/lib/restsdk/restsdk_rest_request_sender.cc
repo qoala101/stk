@@ -1,5 +1,6 @@
 #include "restsdk_rest_request_sender.h"
 
+#include <absl/container/flat_hash_map.h>
 #include <cpprest/base_uri.h>
 #include <cpprest/http_client.h>
 #include <cpprest/http_headers.h>
@@ -15,14 +16,11 @@
 #include <exception>
 #include <gsl/assert>
 #include <magic_enum.hpp>
-#include <map>
 #include <memory>
-#include <mutex>
 #include <not_null.hpp>
 #include <string>
 #include <string_view>
 #include <utility>
-#include <variant>
 
 #include "cpp_mutex.h"
 #include "cpp_polymorphic_value.h"

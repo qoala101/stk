@@ -1,6 +1,7 @@
 #ifndef VH_SQLITE_NATIVE_DB_FILE_HANDLE_H_
 #define VH_SQLITE_NATIVE_DB_FILE_HANDLE_H_
 
+#include "cpp_not_null.h"
 #include "cpp_this.h"  // IWYU pragma: keep
 #include "log_i_logger.h"
 #include "sqlite_native_handles.h"

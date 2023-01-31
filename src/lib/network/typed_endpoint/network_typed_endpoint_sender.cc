@@ -4,6 +4,7 @@
 #include <exception>
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <string>
 #include <string_view>
 #include <utility>

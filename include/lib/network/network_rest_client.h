@@ -1,6 +1,7 @@
 #ifndef VH_NETWORK_REST_CLIENT_H_
 #define VH_NETWORK_REST_CLIENT_H_
 
+#include "cpp_not_null.h"
 #include "network_i_rest_request_sender.h"
 #include "network_rest_client_request_builder.h"
 #include "network_typed_endpoint.h"

@@ -2,7 +2,6 @@
 #define VH_NGROK_API_H_
 
 #include <cppcoro/task.hpp>
-#include <string>
 
 #include "cpp_not_null.h"
 #include "network_i_rest_request_sender.h"

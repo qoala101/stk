@@ -41,7 +41,8 @@ struct EndpointFunctionTraits<&stk::core::ISymbolsDb::UpdateSymbolsInfo> {
 };
 
 template <>
-struct EndpointFunctionTraits<&stk::core::ISymbolsDb::SelectSymbolPriceRecords> {
+struct EndpointFunctionTraits<
+    &stk::core::ISymbolsDb::SelectSymbolPriceRecords> {
   static constexpr auto kMethod = network::Method::kGet;
   static constexpr auto kParams =
       ParamList("symbol", "order", "start_time", "end_time", "limit");
@@ -54,7 +55,8 @@ struct EndpointFunctionTraits<&stk::core::ISymbolsDb::InsertSymbolPriceRecord> {
 };
 
 template <>
-struct EndpointFunctionTraits<&stk::core::ISymbolsDb::DeleteSymbolPriceRecords> {
+struct EndpointFunctionTraits<
+    &stk::core::ISymbolsDb::DeleteSymbolPriceRecords> {
   static constexpr auto kMethod = network::Method::kDelete;
   static constexpr auto kParams = ParamList("start_time", "end_time");
 };
@@ -64,9 +66,11 @@ struct ClientServerTypeTraits<stk::core::ISymbolsDb> {
   static constexpr auto kName = "symbols_db";
   static constexpr auto kDefaultPort = "30000";
   static constexpr auto kEndpointFunctions = EndpointFunctionList(
-      &stk::core::ISymbolsDb::SelectAssets, &stk::core::ISymbolsDb::UpdateAssets,
+      &stk::core::ISymbolsDb::SelectAssets,
+      &stk::core::ISymbolsDb::UpdateAssets,
       &stk::core::ISymbolsDb::SelectSymbolsWithPriceRecords,
-      &stk::core::ISymbolsDb::SelectSymbolInfo, &stk::core::ISymbolsDb::SelectSymbolsInfo,
+      &stk::core::ISymbolsDb::SelectSymbolInfo,
+      &stk::core::ISymbolsDb::SelectSymbolsInfo,
       &stk::core::ISymbolsDb::UpdateSymbolsInfo,
       &stk::core::ISymbolsDb::SelectSymbolPriceRecords,
       &stk::core::ISymbolsDb::InsertSymbolPriceRecord,

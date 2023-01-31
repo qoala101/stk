@@ -1,13 +1,10 @@
 #include "network_rest_request_builder.h"
 
-#include <polymorphic_value.h>
-
 #include <gsl/assert>
 #include <not_null.hpp>
 #include <string>
 #include <utility>
 
-#include "cpp_polymorphic_value.h"
 #include "cpp_swap_reset.h"
 #include "cpp_typed_struct.h"
 #include "network_json_base_conversions.h"

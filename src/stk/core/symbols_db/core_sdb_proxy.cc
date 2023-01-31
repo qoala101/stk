@@ -1,5 +1,10 @@
 #include "core_sdb_proxy.h"
 
+#include <coroutine>
+#include <not_null.hpp>
+#include <optional>
+#include <utility>
+
 namespace vh::stk::core::sdb {
 Proxy::Proxy(cpp::NnUp<ISymbolsDb> symbols_db)
     : symbols_db_{std::move(symbols_db)} {}

@@ -17,11 +17,9 @@
 namespace {
 TEST(DynamoDb, Test1) {
   auto tables_interface =
-      test::aws::Injector()
-          .create<vh::cpp::NnUp<vh::kvdb::ITablesInterface>>();
+      test::aws::Injector().create<vh::cpp::NnUp<vh::kvdb::ITablesInterface>>();
   auto items_interface =
-      test::aws::Injector()
-          .create<vh::cpp::NnUp<vh::kvdb::IItemsInterface>>();
+      test::aws::Injector().create<vh::cpp::NnUp<vh::kvdb::IItemsInterface>>();
 
   cppcoro::sync_wait([&tables_interface,
                       &items_interface]() -> cppcoro::task<> {

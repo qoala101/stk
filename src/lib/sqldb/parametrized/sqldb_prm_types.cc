@@ -6,4 +6,4 @@ namespace vh::sqldb::prm {
 void QueryParams::operator+=(const QueryParams& other) {
   (*this)->insert((*this)->end(), other->begin(), other->end());
 }
-}  // namespace vh::sqldb::p
+}  // namespace vh::sqldb::prm

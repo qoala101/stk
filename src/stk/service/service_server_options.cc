@@ -1,6 +1,8 @@
 #include "service_server_options.h"
 
-#include <fmt/format.h>
+#include <fmt/core.h>
+
+#include <variant>
 
 namespace vh::stk::service::detail {
 ServerOptionsBase::ServerOptionsBase(cli::Options &options,

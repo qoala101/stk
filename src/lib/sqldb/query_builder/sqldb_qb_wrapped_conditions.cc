@@ -12,8 +12,8 @@ WrappedCondition::WrappedCondition(const Condition &condition,
                                    std::string_view format)
     : QueryWrapper{[&condition, format]() {
         const auto &query = condition.GetQuery();
-        return prm::Parametrized<Query>{fmt::format(fmt::runtime(format), *query),
-                                      query.params};
+        return prm::Parametrized<Query>{
+            fmt::format(fmt::runtime(format), *query), query.params};
       }()} {}
 
 OnCondition::OnCondition(const Condition &condition)

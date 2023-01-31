@@ -1,8 +1,6 @@
 #ifndef VH_STK_CORE_SPS_STREAM_FACTORY_H_
 #define VH_STK_CORE_SPS_STREAM_FACTORY_H_
 
-#include <cppcoro/task.hpp>
-
 #include "core_i_symbols_db.h"
 #include "core_sps_price_recorder.h"
 #include "core_types.h"

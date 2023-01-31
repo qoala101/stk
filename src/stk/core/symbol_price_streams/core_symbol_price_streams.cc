@@ -1,16 +1,19 @@
 #include "core_symbol_price_streams.h"
 
-#include <coroutine>
+#include <memory>
+#include <not_null.hpp>
 #include <range/v3/functional/bind_back.hpp>
 #include <range/v3/functional/invoke.hpp>
 #include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
+#include <type_traits>
 #include <utility>
 
 #include "core_sps_stream_factory.h"
 #include "cpp_share.h"
+#include "cpp_typed_struct.h"
 
 namespace vh::stk::core {
 SymbolPriceStreams::SymbolPriceStreams(

@@ -1,5 +1,7 @@
 #include "network_endpoint_request_dispatcher.h"
 
+#include <absl/meta/type_traits.h>
+
 #include <coroutine>
 #include <not_null.hpp>
 #include <utility>
@@ -8,7 +10,8 @@
 
 namespace vh::network {
 EndpointRequestDispatcher::EndpointRequestDispatcher(
-    absl::flat_hash_map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers)
+    absl::flat_hash_map<Endpoint, cpp::NnUp<IRestRequestHandler>>
+        endpoint_handlers)
     : endpoint_handlers_{std::move(endpoint_handlers)} {}
 
 auto EndpointRequestDispatcher::HandleRequestAndGiveResponse(

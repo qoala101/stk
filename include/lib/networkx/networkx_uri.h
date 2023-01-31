@@ -3,6 +3,7 @@
 
 #include <string_view>
 
+#include "cpp_typed_struct.h"
 #include "network_types.h"
 #include "networkx_client_server_type_traits_facade.h"
 #include "networkx_concepts.h"

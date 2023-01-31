@@ -2,23 +2,31 @@
 
 #include <boost/di.hpp>
 #include <cstdint>
+#include <memory>
+#include <not_null.hpp>
+#include <range/v3/functional/bind_back.hpp>
+#include <range/v3/functional/invoke.hpp>
+#include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
+#include <range/v3/view/view.hpp>
 #include <string>
+#include <type_traits>
+#include <utility>
 #include <variant>
+#include <vector>
 
 #include "cli_app.h"
 #include "cli_option.h"
 #include "cli_options.h"
 #include "core_i_symbols_db.h"
 #include "core_symbol_price_streams.h"
-#include "cpp_not_null.h"
+#include "core_types.h"
 #include "cpp_share.h"
 #include "di_auto_injectable.h"
 #include "di_bind_value_type_to_value.h"
 #include "di_make_injector.h"
 #include "service_client_options.h"
-#include "service_inj_client_server.h"
 #include "service_inj_log_spdlog.h"
 #include "service_inj_network_restsdk.h"
 #include "service_sdb_client_injector.h"

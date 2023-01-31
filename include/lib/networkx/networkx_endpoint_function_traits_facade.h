@@ -13,7 +13,6 @@
 #include "cpp_optional.h"
 #include "network_typed_endpoint.h"
 #include "network_types.h"
-#include "networkx_client_server_type_traits_facade.h"
 #include "networkx_concepts.h"  // IWYU pragma: keep
 #include "networkx_types.h"
 

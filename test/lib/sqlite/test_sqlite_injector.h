@@ -19,14 +19,12 @@
 namespace test::sqlite {
 inline auto Injector [[nodiscard]] () -> auto & {
   static auto injector = vh::di::MakeInjector(
-      vh::di::BindValueTypeToValue(
-          vh::sqlite::FilePath{"sqlite_db_test.db"}),
+      vh::di::BindValueTypeToValue(vh::sqlite::FilePath{"sqlite_db_test.db"}),
       vh::di::BindInterfaceToImplementation<vh::log::ILogger,
-                                                vh::spdlog::ThreadSafeLogger>(),
-      vh::di::BindInterfaceToImplementation<vh::sqldb::IDb,
-                                                vh::sqlite::Db>(),
+                                            vh::spdlog::ThreadSafeLogger>(),
+      vh::di::BindInterfaceToImplementation<vh::sqldb::IDb, vh::sqlite::Db>(),
       vh::di::BindTypeToOtherType<vh::sqlite::NativeDbHandleVariant,
-                                      vh::sqlite::NativeDbFileHandle>(),
+                                  vh::sqlite::NativeDbFileHandle>(),
       vh::di::BindTypeToFactoryFunction<
           vh::sqlite::NativeDbHandle,
           +[](const vh::sqlite::NativeDbHandlesFactory &factory,

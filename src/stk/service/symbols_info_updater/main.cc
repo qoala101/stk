@@ -1,5 +1,6 @@
 // clang-format off
 #include "core_json_conversions.h"  // IWYU pragma: keep
+#include "core_i_symbols_db.h"
 // clang-format on
 
 #include <absl/time/time.h>
@@ -7,6 +8,9 @@
 #include <boost/di.hpp>
 #include <cstdint>
 #include <memory>
+#include <not_null.hpp>
+#include <type_traits>
+#include <utility>
 #include <variant>
 
 #include "cli_app.h"
@@ -17,12 +21,10 @@
 #include "di_auto_injectable.h"
 #include "di_make_injector.h"
 #include "service_client_options.h"
-#include "service_inj_client_server.h"
 #include "service_inj_log_spdlog.h"
 #include "service_inj_network_restsdk.h"
 #include "service_sdb_client_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
-#include "service_symbols_db.h"
 
 namespace vh::stk::service::sdbu {
 void Main(int argc, const char *const *argv) {

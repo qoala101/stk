@@ -1,5 +1,10 @@
 #include "cpp_mutex.h"
 
+#include <type_traits>
+#include <utility>
+
+#include "cpp_typed_struct.h"
+
 namespace vh::cpp {
 Mutex::Mutex() : mutex_{MakeNnSp<std::mutex>()} {}
 

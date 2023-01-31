@@ -3,8 +3,6 @@
 
 #include <absl/time/time.h>
 
-#include <cppcoro/task.hpp>
-
 #include "core_i_symbols_db.h"
 #include "cpp_not_null.h"
 #include "cpp_timer.h"

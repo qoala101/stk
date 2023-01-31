@@ -1,9 +1,5 @@
 #include "core_old_symbol_prices_deleter.h"
 
-#include <absl/time/clock.h>
-#include <absl/time/time.h>
-
-#include <coroutine>
 #include <cppcoro/sync_wait.hpp>
 #include <utility>
 

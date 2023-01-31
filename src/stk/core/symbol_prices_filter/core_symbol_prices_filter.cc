@@ -1,18 +1,17 @@
 #include "core_symbol_prices_filter.h"
 
-#include <fmt/format.h>
+#include <absl/time/time.h>
+#include <fmt/core.h>
 
 #include <coroutine>
-#include <range/v3/functional/bind_back.hpp>
-#include <range/v3/functional/invoke.hpp>
-#include <range/v3/iterator/basic_iterator.hpp>
-#include <range/v3/range/conversion.hpp>
-#include <range/v3/view/transform.hpp>
-#include <range/v3/view/view.hpp>
+#include <optional>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "core_common.h"
 #include "cpp_message_exception.h"
+#include "cpp_typed_struct.h"
 
 namespace vh::stk::core {
 namespace {

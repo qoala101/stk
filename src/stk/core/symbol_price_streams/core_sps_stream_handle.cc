@@ -1,5 +1,10 @@
 #include "core_sps_stream_handle.h"
 
+#include <not_null.hpp>
+#include <optional>
+#include <type_traits>
+#include <utility>
+
 #include "core_sps_price_recorder.h"
 #include "cpp_timer_builder.h"
 

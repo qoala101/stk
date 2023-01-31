@@ -1,12 +1,13 @@
+#include <absl/container/flat_hash_map.h>
 #include <fmt/core.h>
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
-#include <polymorphic_value.h>
 
 #include <boost/di.hpp>
+#include <coroutine>
 #include <cppcoro/sync_wait.hpp>
+#include <cppcoro/task.hpp>
 #include <cstdint>
-#include <map>
 #include <string>
 
 #include "cpp_polymorphic_value.h"
@@ -73,8 +74,7 @@ TEST(RestRequestSender, AppendUri) {
                            .WithBaseUri({"base_uri"})
                            .AppendUri({"appended_uri"})
                            .Build();
-  EXPECT_EQ(request.endpoint.uri,
-            vh::network::Uri{"base_uri/appended_uri"});
+  EXPECT_EQ(request.endpoint.uri, vh::network::Uri{"base_uri/appended_uri"});
 }
 
 TEST(RestRequestSender, ParameterTypesToString) {
@@ -143,8 +143,7 @@ TEST(RestRequestSender, SendRequest) {
     EXPECT_GT(response_price.mins, 0);
     EXPECT_GT(response_price.price, 0);
 
-    const auto response_price_json =
-        vh::network::ConvertToJson(response_price);
+    const auto response_price_json = vh::network::ConvertToJson(response_price);
     const auto json_price =
         vh::network::ParseFromJson<AvgPrice>(*response_price_json);
     EXPECT_EQ(response_price, json_price);

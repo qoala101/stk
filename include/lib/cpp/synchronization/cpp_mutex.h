@@ -2,7 +2,6 @@
 #define VH_CPP_MUTEX_H_
 
 #include <mutex>
-#include <utility>
 #include <variant>
 
 #include "cpp_lock.h"

@@ -3,6 +3,7 @@
 
 #include <string_view>
 
+#include "cpp_optional.h"
 #include "network_auto_parsable.h"
 #include "network_types.h"
 

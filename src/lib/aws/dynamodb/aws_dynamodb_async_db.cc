@@ -11,12 +11,15 @@
 #include <aws/dynamodb/model/DeleteItemRequest.h>
 #include <aws/dynamodb/model/DeleteTableRequest.h>
 #include <aws/dynamodb/model/DescribeTableRequest.h>
+#include <aws/dynamodb/model/DescribeTableResult.h>
 #include <aws/dynamodb/model/GetItemRequest.h>
 #include <aws/dynamodb/model/GetItemResult.h>
 #include <aws/dynamodb/model/KeySchemaElement.h>
 #include <aws/dynamodb/model/KeyType.h>
 #include <aws/dynamodb/model/ProvisionedThroughput.h>
 #include <aws/dynamodb/model/ScalarAttributeType.h>
+#include <aws/dynamodb/model/TableDescription.h>
+#include <aws/dynamodb/model/TableStatus.h>
 #include <aws/dynamodb/model/UpdateItemRequest.h>
 #include <fmt/core.h>
 

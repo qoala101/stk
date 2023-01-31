@@ -17,4 +17,4 @@ auto SelectStatement::Execute(std::vector<Value> params) const -> sqldb::Rows {
   Expects(AreParamsValid(params, params_));
   return statement_->Execute(std::move(params));
 }
-}  // namespace vh::sqldb::p
+}  // namespace vh::sqldb::prm

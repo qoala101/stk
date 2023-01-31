@@ -2,7 +2,7 @@
 
 #include <coroutine>
 #include <exception>
-#include <optional>
+#include <not_null.hpp>
 #include <utility>
 
 #include "cpp_message_exception.h"

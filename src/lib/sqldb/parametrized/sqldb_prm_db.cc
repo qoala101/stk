@@ -29,4 +29,4 @@ auto Db::GetDbImpl(cpp::This<Db> auto &t) -> auto & { return *t.db_; }
 auto Db::GetDb() const -> const IDb & { return GetDbImpl(*this); }
 
 auto Db::GetDb() -> IDb & { return GetDbImpl(*this); }
-}  // namespace vh::sqldb::p
+}  // namespace vh::sqldb::prm

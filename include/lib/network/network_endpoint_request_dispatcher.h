@@ -2,8 +2,9 @@
 #define VH_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
 
 #include <absl/container/flat_hash_map.h>
+#include <absl/hash/hash.h>
+
 #include <cppcoro/task.hpp>
-#include <map>
 
 #include "cpp_not_null.h"
 #include "network_i_rest_request_handler.h"
@@ -22,7 +23,8 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
    * the remaining part of the requested URI.
    */
   explicit EndpointRequestDispatcher(
-      absl::flat_hash_map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers);
+      absl::flat_hash_map<Endpoint, cpp::NnUp<IRestRequestHandler>>
+          endpoint_handlers);
 
   /**
    * @brief Forwards the request to the appropriate handler.
@@ -31,7 +33,8 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
   -> cppcoro::task<RestResponse> override;
 
  private:
-  absl::flat_hash_map<Endpoint, cpp::NnUp<IRestRequestHandler>> endpoint_handlers_{};
+  absl::flat_hash_map<Endpoint, cpp::NnUp<IRestRequestHandler>>
+      endpoint_handlers_{};
 };
 }  // namespace vh::network
 

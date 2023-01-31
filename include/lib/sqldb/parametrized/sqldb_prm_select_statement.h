@@ -30,6 +30,6 @@ class SelectStatement : public ISelectStatement {
   cpp::NnUp<ISelectStatement> statement_;
   std::vector<QueryParam> params_{};
 };
-}  // namespace vh::sqldb::p
+}  // namespace vh::sqldb::prm
 
 #endif  // VH_SQLDB_PRM_SELECT_STATEMENT_H_

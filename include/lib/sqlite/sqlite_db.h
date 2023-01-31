@@ -2,6 +2,7 @@
 #define VH_SQLITE_DB_H_
 
 #include "cpp_factory.h"
+#include "cpp_mutex.h"
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
 #include "sqldb_i_db.h"
@@ -10,6 +11,7 @@
 #include "sqldb_types.h"
 #include "sqlite_native_db_facade.h"
 #include "sqlite_native_db_handle_variant.h"
+#include "sqlite_prepared_statement_impl.h"
 
 namespace vh::sqlite {
 /**

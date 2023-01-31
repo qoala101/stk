@@ -3,11 +3,9 @@
 #include <absl/strings/ascii.h>
 #include <fmt/core.h>
 
-#include <coroutine>
-#include <optional>
+#include <not_null.hpp>
 #include <string>
 #include <utility>
-#include <vector>
 
 #include "core_sps_price_recorder.h"
 #include "cpp_typed_struct.h"

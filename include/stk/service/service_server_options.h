@@ -2,7 +2,9 @@
 #define VH_STK_SERVICE_SERVER_OPTIONS_H_
 
 #include <string>
+#include <string_view>
 
+#include "cli_option.h"
 #include "cli_options.h"
 #include "network_types.h"
 #include "networkx_client_server_type_traits_facade.h"

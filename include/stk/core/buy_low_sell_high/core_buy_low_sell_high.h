@@ -11,6 +11,7 @@
 #include "core_types.h"
 #include "cpp_meta_thread_safe.h"
 #include "cpp_not_null.h"
+#include "cpp_optional.h"
 
 namespace vh::stk::core {
 class BuyLowSellHigh {

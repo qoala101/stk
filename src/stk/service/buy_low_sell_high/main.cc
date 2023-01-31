@@ -2,8 +2,10 @@
 #include "service_blsh_json_conversions.h"  // IWYU pragma: keep
 // clang-format on
 
+#include <absl/container/flat_hash_map.h>
+
 #include <boost/di.hpp>
-#include <string>
+#include <utility>
 
 #include "cli_app.h"
 #include "cli_options.h"
@@ -22,7 +24,6 @@
 #include "service_sdb_client_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
-#include "service_symbols_db.h"
 
 namespace vh::stk::service::aue {
 void Main(int argc, const char *const *argv) {

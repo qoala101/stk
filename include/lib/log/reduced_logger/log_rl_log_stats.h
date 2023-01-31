@@ -5,11 +5,11 @@
 #include <absl/time/time.h>
 
 #include <atomic>
-#include <map>
 #include <string>
 
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
+#include "log_types.h"
 
 namespace vh::log::rl {
 namespace detail {

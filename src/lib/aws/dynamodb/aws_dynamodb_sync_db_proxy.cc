@@ -1,27 +1,14 @@
 #include "aws_dynamodb_sync_db_proxy.h"
 
-#include <aws/core/utils/Outcome.h>
-#include <aws/dynamodb/DynamoDBClient.h>
-#include <aws/dynamodb/DynamoDBErrors.h>
-#include <aws/dynamodb/model/DescribeTableRequest.h>
-#include <aws/dynamodb/model/DescribeTableResult.h>
-#include <aws/dynamodb/model/TableDescription.h>
-#include <aws/dynamodb/model/TableStatus.h>
-#include <fmt/core.h>
-
 #include <coroutine>
 #include <cppcoro/task.hpp>
 #include <gsl/assert>
 #include <optional>
-#include <string>
 #include <utility>
 
 #include "aws_dynamodb_async_db.h"
-#include "aws_dynamodb_call_as_coroutine.h"
 #include "cpp_concepts.h"
-#include "cpp_message_exception.h"
 #include "cpp_optional.h"
-#include "cpp_typed_struct.h"
 #include "kvdb_types.h"
 
 namespace vh::aws::dynamodb {

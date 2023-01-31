@@ -17,4 +17,4 @@ void UpdateStatement::Execute(std::vector<sqldb::Value> params) const {
   Expects(AreParamsValid(params, params_));
   statement_->Execute(params);
 }
-}  // namespace vh::sqldb::p
+}  // namespace vh::sqldb::prm

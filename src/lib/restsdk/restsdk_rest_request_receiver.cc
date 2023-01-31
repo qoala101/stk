@@ -1,25 +1,22 @@
 #include "restsdk_rest_request_receiver.h"
 
+#include <absl/container/flat_hash_map.h>
 #include <cpprest/base_uri.h>
 #include <cpprest/http_headers.h>
 #include <cpprest/http_listener.h>
-#include <cpprest/json.h>
 #include <fmt/core.h>
-#include <polymorphic_value.h>
 #include <pplx/pplx.h>
 #include <pplx/pplxtasks.h>
 
 #include <coroutine>
-#include <cppcoro/single_consumer_event.hpp>
 #include <cppcoro/sync_wait.hpp>
 #include <cppcoro/task.hpp>
+#include <exception>
 #include <gsl/assert>
 #include <magic_enum.hpp>
 #include <map>
 #include <memory>
 #include <not_null.hpp>
-#include <optional>
-#include <range/v3/iterator/basic_iterator.hpp>
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/all.hpp>
 #include <range/v3/view/transform.hpp>
@@ -93,7 +90,7 @@ auto ParamsFrom [[nodiscard]] (const std::string &request_query) {
 auto HeadersFrom
     [[nodiscard]] (const web::http::http_headers &request_headers) {
   return absl::flat_hash_map<std::string, std::string>{request_headers.begin(),
-                                            request_headers.end()};
+                                                       request_headers.end()};
 }
 
 auto BodyFrom [[nodiscard]] (const web::http::http_request &request)

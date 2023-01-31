@@ -43,6 +43,6 @@ class Db {
 
   cpp::NnUp<IDb> db_;
 };
-}  // namespace vh::sqldb::p
+}  // namespace vh::sqldb::prm
 
 #endif  // VH_SQLDB_PRM_DB_H_

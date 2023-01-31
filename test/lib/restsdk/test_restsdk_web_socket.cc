@@ -1,31 +1,35 @@
 #include <absl/time/clock.h>
 #include <absl/time/time.h>
-#include <gtest/gtest.h>
+#include <gtest/gtest-message.h>
+#include <gtest/gtest-test-part.h>
 
-#include <concepts>
+#include <boost/di.hpp>
+#include <coroutine>
 #include <cppcoro/sync_wait.hpp>
 #include <cppcoro/task.hpp>
 #include <exception>
+#include <not_null.hpp>
 #include <range/v3/algorithm/find_if.hpp>
+#include <range/v3/functional/identity.hpp>
+#include <range/v3/range/dangling.hpp>
+#include <string>
+#include <utility>
 #include <variant>
+#include <vector>
 
-#include "cpp_concepts.h"
 #include "cpp_not_null.h"
 #include "cpp_polymorphic_value.h"
-#include "log_i_logger.h"
-#include "network_aprh_ws_handler_variant.h"
-#include "network_auto_parsable.h"
-#include "network_auto_parsable_request.h"
+#include "gtest/gtest_pred_impl.h"
 #include "network_i_json.h"
 #include "network_i_ws_client.h"
 #include "network_i_ws_message_handler.h"
 #include "network_json_base_conversions.h"
-#include "network_json_common_conversions.h"
 #include "network_json_conversions_facades.h"
 #include "network_typed_endpoint.h"
-#include "network_types.h"
+#include "network_typed_ws_endpoint.h"
 #include "network_ws_client_builder.h"
-#include "restsdk_ws_client.h"
+#include "network_ws_connection.h"
+#include "network_ws_types.h"
 #include "test_restsdk_injector.h"
 
 namespace {
@@ -55,17 +59,16 @@ namespace {
 auto ConvertToJson(const BinanceWebSocketMessage &value)
     -> vh::cpp::Pv<vh::network::IJson> {
   return vh::network::BuildJsonFrom("method", value.method, "params",
-                                        value.params, "id", value.id);
+                                    value.params, "id", value.id);
 }
 
 class WebSocketHandler : public vh::network::IWsMessageHandler {
  public:
-  explicit WebSocketHandler(
-      vh::cpp::Nn<std::vector<MessageVariant> *> messages)
+  explicit WebSocketHandler(vh::cpp::Nn<std::vector<MessageVariant> *> messages)
       : messages_{messages} {}
 
   auto HandleMessage [[nodiscard]] (vh::network::WsMessage message)
-      -> cppcoro::task<> override {
+  -> cppcoro::task<> override {
     try {
       messages_->emplace_back(
           vh::network::ParseFromJson<MessageVariant>(*message));
@@ -93,9 +96,8 @@ TEST(WebSocket, SendAndReceive) {
         vh::cpp::AssumeNn(&received_messages));
 
     {
-      auto web_socket =
-          test::restsdk::Injector()
-              .create<vh::cpp::NnUp<vh::network::IWsClient>>();
+      auto web_socket = test::restsdk::Injector()
+                            .create<vh::cpp::NnUp<vh::network::IWsClient>>();
 
       web_socket->Connect(kEndpoint);
       web_socket->SetMessageHandler(std::move(handler_up));
@@ -126,8 +128,7 @@ static const auto kTypedSocket = vh::network::TypedWsEndpoint{
     .expected_types = {
         .received_message =
             vh::network::ExpectedType<BinanceWebSocketMessage>(),
-        .sent_message =
-            vh::network::ExpectedType<BinanceWebSocketMessage>()}};
+        .sent_message = vh::network::ExpectedType<BinanceWebSocketMessage>()}};
 
 TEST(WebSocket, Facade) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
@@ -135,9 +136,8 @@ TEST(WebSocket, Facade) {
 
     const auto client =
         vh::network::WsClientBuilder{
-            kTypedSocket,
-            test::restsdk::Injector()
-                .create<vh::cpp::NnUp<vh::network::IWsClient>>()}
+            kTypedSocket, test::restsdk::Injector()
+                              .create<vh::cpp::NnUp<vh::network::IWsClient>>()}
             .Handling([&received_messages](auto message) -> cppcoro::task<> {
               received_messages.emplace_back(*message);
               co_return;

@@ -1,7 +1,11 @@
 #ifndef VH_NETWORK_REST_REQUEST_BUILDER_H_
 #define VH_NETWORK_REST_REQUEST_BUILDER_H_
 
+#include <absl/container/flat_hash_map.h>
+
+#include <optional>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include "cpp_optional.h"

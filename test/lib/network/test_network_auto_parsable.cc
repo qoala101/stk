@@ -4,7 +4,6 @@
 #include <gtest/gtest-test-part.h>
 
 #include <memory>
-#include <optional>
 
 #include "cpp_optional.h"
 #include "gtest/gtest_pred_impl.h"
@@ -15,16 +14,14 @@
 
 namespace {
 TEST(AutoParsable, ParsePointer) {
-  const auto function = [](const vh::cpp::Opt<int> &value) -> vh::cpp::Opt<int> {
-    return value;
-  };
+  const auto function =
+      [](const vh::cpp::Opt<int> &value) -> vh::cpp::Opt<int> { return value; };
 
-  auto result = function(
-      vh::network::AutoParsable{vh::network::ConvertToJson(33)});
+  auto result =
+      function(vh::network::AutoParsable{vh::network::ConvertToJson(33)});
   EXPECT_EQ(result, 33);
 
-  result = function(
-      vh::network::AutoParsable{vh::network::CreateNullJson()});
+  result = function(vh::network::AutoParsable{vh::network::CreateNullJson()});
   EXPECT_FALSE(result.has_value());
 }
 }  // namespace

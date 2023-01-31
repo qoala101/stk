@@ -6,6 +6,7 @@
 #include <utility>
 #include <variant>
 
+#include "cpp_typed_struct.h"
 #include "network_auto_parsable_request.h"
 #include "network_types.h"
 

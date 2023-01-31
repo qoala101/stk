@@ -1,13 +1,11 @@
 #ifndef VH_STK_CORE_SYMBOL_PRICES_FILTER_H_
 #define VH_STK_CORE_SYMBOL_PRICES_FILTER_H_
 
-#include <absl/time/time.h>
-
 #include <cppcoro/task.hpp>
-#include <vector>
 
 #include "core_sdb_proxy.h"
 #include "core_types.h"
+#include "cpp_optional.h"
 
 namespace vh::stk::core {
 /**

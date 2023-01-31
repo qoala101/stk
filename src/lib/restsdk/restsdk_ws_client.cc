@@ -9,7 +9,6 @@
 #include <pplx/pplxtasks.h>
 
 #include <coroutine>
-#include <cppcoro/single_consumer_event.hpp>
 #include <cppcoro/sync_wait.hpp>
 #include <cppcoro/task.hpp>
 #include <exception>
@@ -17,7 +16,6 @@
 #include <string>
 #include <utility>
 
-#include "cpp_message_exception.h"
 #include "cpp_not_null.h"
 #include "cpp_share.h"
 #include "cpp_typed_struct.h"

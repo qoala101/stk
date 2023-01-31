@@ -1,5 +1,6 @@
 #include "core_common.h"
 
+#include <cmath>
 #include <gsl/assert>
 
 namespace vh::stk::core {

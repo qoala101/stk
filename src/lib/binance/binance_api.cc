@@ -1,7 +1,6 @@
 #include "binance_api.h"
 
 #include <coroutine>
-#include <memory>
 #include <not_null.hpp>
 #include <utility>
 

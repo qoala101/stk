@@ -1,16 +1,15 @@
 // clang-format off
 #include "core_json_conversions.h"  // IWYU pragma: keep
+#include "service_server_options.h"
 // clang-format on
 
-#include <absl/time/time.h>
+#include <absl/container/flat_hash_map.h>
 
 #include <boost/di.hpp>
-#include <cstdint>
-#include <iostream>
-#include <range/v3/range/conversion.hpp>
-#include <range/v3/view/transform.hpp>
-#include <string>
-#include <variant>
+#include <memory>
+#include <not_null.hpp>
+#include <type_traits>
+#include <utility>
 
 #include "cli_app.h"
 #include "cli_options.h"
@@ -21,16 +20,13 @@
 #include "di_auto_injectable.h"
 #include "di_enable_nn_pointers.h"
 #include "di_make_injector.h"
-#include "network_json_base_conversions.h"
 #include "network_json_common_conversions.h"
 #include "networkx_make_server_for.h"
 #include "service_client_options.h"
-#include "service_inj_client_server.h"
 #include "service_inj_log_spdlog.h"
 #include "service_inj_network_restsdk.h"
 #include "service_sdb_client_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
-#include "service_symbols_db.h"
 
 namespace vh::stk::service::spf {
 void Main(int argc, const char *const *argv) {

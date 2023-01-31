@@ -11,7 +11,7 @@
 #include <coroutine>
 #include <functional>
 #include <gsl/assert>
-#include <memory>
+#include <limits>
 #include <not_null.hpp>
 #include <optional>
 #include <range/v3/action/action.hpp>
@@ -37,7 +37,6 @@
 #include "sqldb_i_select_statement.h"
 #include "sqldb_i_update_statement.h"
 #include "sqldb_prm_db.h"
-#include "sqldb_prm_types.h"
 #include "sqldb_qb_common.h"
 #include "sqldb_qb_condition.h"
 #include "sqldb_qb_delete.h"
@@ -48,8 +47,6 @@
 #include "sqldb_qb_update.h"
 #include "sqldb_query_builder.h"
 #include "sqldb_rows.h"
-#include "sqldb_types.h"
-#include "sqldb_value.h"
 #include "sqldb_value_common_conversions.h"  // IWYU pragma: keep
 #include "sqldb_value_conversions.h"
 
@@ -200,9 +197,8 @@ SymbolsDb::SymbolsDb(cpp::meta::ThreadSafe<cpp::NnUp<sqldb::IDb>> sql_db)
 
             .delete_asset = parametrized_db.PrepareStatement(
                 sqldb::query_builder::DeleteFromTable<sdb::table::Asset>()
-                    .Where(
-                        sqldb::qb::Column<sdb::table::Asset::name>() ==
-                        sqldb::qb::ParamForColumn<sdb::table::Asset::name>())
+                    .Where(sqldb::qb::Column<sdb::table::Asset::name>() ==
+                           sqldb::qb::ParamForColumn<sdb::table::Asset::name>())
                     .Build()),
 
             .select_symbols_with_price_records =
@@ -309,9 +305,8 @@ SymbolsDb::SymbolsDb(cpp::meta::ThreadSafe<cpp::NnUp<sqldb::IDb>> sql_db)
                           sdb::table::SymbolPriceRecord::time>()
                           .From<sdb::table::SymbolPriceRecord>()
                           .Where(
-                              (sqldb::qb::Column<
-                                   sdb::table::SymbolPriceRecord::
-                                       symbol_id>() ==
+                              (sqldb::qb::Column<sdb::table::SymbolPriceRecord::
+                                                     symbol_id>() ==
                                sqldb::query_builder::Select<
                                    sdb::table::SymbolInfo::id>()
                                    .From<sdb::table::SymbolInfo>()
@@ -334,15 +329,13 @@ SymbolsDb::SymbolsDb(cpp::meta::ThreadSafe<cpp::NnUp<sqldb::IDb>> sql_db)
                       .order_by_time_ascending =
                           parametrized_db.PrepareStatement(
                               sqldb::qb::Select{query_builder}
-                                  .OrderBy<
-                                      sdb::table::SymbolPriceRecord::time>(
+                                  .OrderBy<sdb::table::SymbolPriceRecord::time>(
                                       sqldb::qb::Order::kAscending)
                                   .Build()),
                       .order_by_time_descending =
                           parametrized_db.PrepareStatement(
                               query_builder
-                                  .OrderBy<
-                                      sdb::table::SymbolPriceRecord::time>(
+                                  .OrderBy<sdb::table::SymbolPriceRecord::time>(
                                       sqldb::qb::Order::kDescending)
                                   .Build())};
                 }(),

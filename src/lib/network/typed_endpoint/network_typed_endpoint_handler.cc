@@ -6,6 +6,7 @@
 #include <exception>
 #include <gsl/assert>
 #include <memory>
+#include <not_null.hpp>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -68,8 +69,8 @@ TypedEndpointHandler::TypedEndpointHandler(
     : type_checker_{cpp::MakeNnUp<TypeChecker>(std::move(endpoint_types))},
       handler_{std::move(handler)} {}
 
-auto TypedEndpointHandler::HandleRequestAndGiveResponse(
-    RestRequest request) -> cppcoro::task<RestResponse> {
+auto TypedEndpointHandler::HandleRequestAndGiveResponse(RestRequest request)
+    -> cppcoro::task<RestResponse> {
   type_checker_->ValidateRequest(request);
   auto response =
       co_await handler_->HandleRequestAndGiveResponse(std::move(request));

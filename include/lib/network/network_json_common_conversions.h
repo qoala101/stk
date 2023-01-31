@@ -4,7 +4,6 @@
 #include <exception>
 #include <gsl/util>
 #include <magic_enum.hpp>
-#include <optional>
 #include <string>
 #include <variant>
 #include <vector>

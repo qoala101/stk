@@ -14,16 +14,14 @@
 namespace test::restsdk {
 inline auto Injector [[nodiscard]] () -> auto& {
   static auto injector = vh::di::MakeInjector(
-      vh::di::BindInterfaceToImplementation<
-          vh::network::IRestRequestSender,
-          vh::restsdk::RestRequestSender>(),
-      vh::di::BindInterfaceToImplementation<
-          vh::network::IRestRequestReceiver,
-          vh::restsdk::RestRequestReceiver>(),
+      vh::di::BindInterfaceToImplementation<vh::network::IRestRequestSender,
+                                            vh::restsdk::RestRequestSender>(),
+      vh::di::BindInterfaceToImplementation<vh::network::IRestRequestReceiver,
+                                            vh::restsdk::RestRequestReceiver>(),
       vh::di::BindInterfaceToImplementation<vh::network::IWsClient,
-                                                vh::restsdk::WsClient>(),
+                                            vh::restsdk::WsClient>(),
       vh::di::BindInterfaceToImplementation<vh::log::ILogger,
-                                                vh::spdlog::ThreadSafeLogger>());
+                                            vh::spdlog::ThreadSafeLogger>());
   return injector;
 }
 }  // namespace test::restsdk

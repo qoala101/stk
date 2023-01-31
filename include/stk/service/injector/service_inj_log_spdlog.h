@@ -9,8 +9,9 @@
 namespace vh::stk::service::inj {
 inline auto CreateLogSpdlogInjector [[nodiscard]] () {
   return di::MakeInjector(
-      di::BindInterfaceToImplementation<log::ILogger, spdlog::ThreadSafeLogger>());
+      di::BindInterfaceToImplementation<log::ILogger,
+                                        spdlog::ThreadSafeLogger>());
 }
-}  // namespace vh::stk::service
+}  // namespace vh::stk::service::inj
 
 #endif  // VH_STK_SERVICE_INJ_LOG_SPDLOG_H_

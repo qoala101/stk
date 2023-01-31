@@ -1,13 +1,15 @@
+#include <absl/container/flat_hash_map.h>
 #include <fmt/core.h>
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
 #include <polymorphic_value.h>
 
+#include <boost/di.hpp>
+#include <coroutine>
 #include <cppcoro/sync_wait.hpp>
-#include <map>
+#include <cppcoro/task.hpp>
 #include <memory>
 #include <not_null.hpp>
-#include <ostream>
 #include <string>
 
 #include "core_types.h"
@@ -81,10 +83,8 @@ TEST(RestRequestReceiver, SendRequest) {
     const auto receiver = []() {
       auto receiver =
           test::restsdk::Injector()
-              .create<
-                  vh::cpp::NnUp<vh::network::IRestRequestReceiver>>();
-      receiver->Receive({"http://0.0.0.0:30001"},
-                        vh::cpp::MakeNnUp<Handler>());
+              .create<vh::cpp::NnUp<vh::network::IRestRequestReceiver>>();
+      receiver->Receive({"http://0.0.0.0:30001"}, vh::cpp::MakeNnUp<Handler>());
       return receiver;
     }();
 

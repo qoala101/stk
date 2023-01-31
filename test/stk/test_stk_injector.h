@@ -20,10 +20,9 @@
 namespace test::app {
 inline auto Injector [[nodiscard]] () -> auto & {
   static auto injector = vh::di::MakeInjector(
-      vh::di::BindInterfaceToImplementation<
-          vh::log::ILogger, vh::spdlog::ThreadSafeLogger>(),
-      vh::di::BindInterfaceToImplementation<vh::sqldb::IDb,
-                                                vh::sqlite::Db>(),
+      vh::di::BindInterfaceToImplementation<vh::log::ILogger,
+                                            vh::spdlog::ThreadSafeLogger>(),
+      vh::di::BindInterfaceToImplementation<vh::sqldb::IDb, vh::sqlite::Db>(),
       vh::di::BindTypeToFactoryFunction<
           vh::sqlite::NativeDbHandleVariant,
           +[](const vh::sqlite::NativeDbHandlesFactory &factory) {
@@ -38,9 +37,7 @@ inline auto Injector [[nodiscard]] () -> auto & {
                 native_db_handle.GetNativeDb(), true);
             auto prepared_statement_mutex_factory =
                 vh::cpp::Factory<vh::cpp::MutexVariant>{
-                    []() {
-                      return vh::cpp::MutexVariant{vh::cpp::Mutex{}};
-                    },
+                    []() { return vh::cpp::MutexVariant{vh::cpp::Mutex{}}; },
                     {}};
             return vh::cpp::meta::AssumeThreadSafe<
                 vh::cpp::NnUp<vh::sqldb::IDb>>(

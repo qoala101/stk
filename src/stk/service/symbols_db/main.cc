@@ -2,6 +2,8 @@
 #include "core_json_conversions.h"  // IWYU pragma: keep
 // clang-format on
 
+#include <absl/container/flat_hash_map.h>
+
 #include <boost/di.hpp>
 #include <string>
 #include <utility>
@@ -12,22 +14,18 @@
 #include "cli_options.h"
 #include "core_i_symbols_db.h"
 #include "core_symbols_db.h"
-#include "cpp_meta_thread_safe.h"
-#include "di_bind_type_to_factory_function.h"
 #include "di_bind_value_type_to_value.h"
 #include "di_call_with_injected_args.h"
 #include "di_make_injector.h"
 #include "network_json_common_conversions.h"  // IWYU pragma: keep
 #include "network_rest_server.h"
 #include "networkx_make_server_for.h"
-#include "networkx_uri.h"
 #include "service_inj_client_server.h"
 #include "service_inj_log_spdlog.h"
 #include "service_inj_network_restsdk.h"
 #include "service_inj_sqldb_sqlite.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
-#include "sqldb_i_db.h"
 #include "sqlite_types.h"
 
 namespace vh::stk::service::sdb {

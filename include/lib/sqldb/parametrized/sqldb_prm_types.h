@@ -31,6 +31,6 @@ template <std::derived_from<Query> Query>
 struct Parametrized : public Query {
   QueryParams params{};
 };
-}  // namespace vh::sqldb::p
+}  // namespace vh::sqldb::prm
 
 #endif  // VH_SQLDB_PRM_TYPES_H_

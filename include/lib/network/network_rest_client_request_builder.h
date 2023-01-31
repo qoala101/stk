@@ -1,8 +1,12 @@
 #ifndef VH_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
 #define VH_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
 
+#include <absl/container/flat_hash_map.h>
+
 #include <cppcoro/task.hpp>
-#include <string>
+#include <not_null.hpp>
+#include <optional>
+#include <string_view>
 #include <utility>
 
 #include "cpp_not_null.h"

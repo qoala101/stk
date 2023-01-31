@@ -22,4 +22,4 @@ auto AreParamsValid(const std::vector<Value> &values,
                        }),
                        params);
 }
-}  // namespace vh::sqldb::p
+}  // namespace vh::sqldb::prm

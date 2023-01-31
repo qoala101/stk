@@ -7,6 +7,7 @@
 #include <compare>
 #include <coroutine>
 #include <gsl/assert>
+#include <not_null.hpp>
 #include <range/v3/action/action.hpp>
 #include <range/v3/action/sort.hpp>
 #include <range/v3/action/unique.hpp>

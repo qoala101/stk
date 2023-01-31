@@ -1,9 +1,15 @@
 #include "cli_option_value_variant.h"
 
 #include <CLI/App.hpp>
+#include <CLI/Option.hpp>
+#include <CLI/StringTools.hpp>
 #include <gsl/assert>
+#include <type_traits>
+#include <utility>
+#include <variant>
 
 #include "cpp_concepts.h"
+#include "cpp_typed_struct.h"
 
 namespace vh::cli {
 void OptionValueVariant::AddOptionToNativeApp(std::string option_name,

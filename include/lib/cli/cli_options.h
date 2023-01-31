@@ -3,7 +3,6 @@
 
 #include <absl/container/flat_hash_map.h>
 
-#include <map>
 #include <string>
 #include <utility>
 
@@ -14,10 +13,6 @@
 #include "cpp_not_null.h"
 #include "cpp_share.h"
 #include "cpp_smart_pointers.h"
-
-namespace CLI {
-class App;
-}  // namespace CLI
 
 namespace vh::cli {
 namespace detail {

@@ -1,15 +1,22 @@
+#include <absl/container/flat_hash_map.h>
 #include <gtest/gtest-death-test.h>
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
-#include <gtest/gtest.h>
 
+#include <coroutine>
 #include <cppcoro/task.hpp>
-#include <memory>
-#include <type_traits>
-#include <utility>
+#include <function2/function2.hpp>
+#include <string>
+#include <tuple>
+#include <vector>
 
+#include "cpp_optional.h"
+#include "cpp_polymorphic_value.h"
+#include "gtest/gtest_pred_impl.h"
 #include "network_json_base_conversions.h"
 #include "network_json_common_conversions.h"
+#include "network_typed_endpoint.h"
+#include "network_types.h"
 #include "networkx_common.h"
 #include "networkx_endpoint_function_traits_facade.h"
 #include "networkx_types.h"
@@ -25,18 +32,18 @@ struct Type {
 
   auto BodyValue(std::string body) const -> cppcoro::task<> { co_return; }
 
-  auto BodyConstValue(int, const std::string body, int, int, int, int)
-      const -> cppcoro::task<> {
+  auto BodyConstValue(int, const std::string body, int, int, int, int) const
+      -> cppcoro::task<> {
     co_return;
   }
 
-  auto BodyConstRef(int, int, const std::string &body, int, int, int)
-      const -> cppcoro::task<> {
+  auto BodyConstRef(int, int, const std::string &body, int, int, int) const
+      -> cppcoro::task<> {
     co_return;
   }
 
-  auto BodyPointer(int, int, int, const std::string *body, int, int)
-      const -> cppcoro::task<> {
+  auto BodyPointer(int, int, int, const std::string *body, int, int) const
+      -> cppcoro::task<> {
     co_return;
   }
 
@@ -45,8 +52,8 @@ struct Type {
     co_return;
   }
 
-  auto BodyVec(int, int, int, int, int, const std::vector<std::string> &body)
-      const -> cppcoro::task<> {
+  auto BodyVec(int, int, int, int, int,
+               const std::vector<std::string> &body) const -> cppcoro::task<> {
     co_return;
   }
 
@@ -56,12 +63,13 @@ struct Type {
     co_return std::string{};
   }
 
-  auto ResultOpt [[nodiscard]] () const 
-  -> cppcoro::task<vh::cpp::Opt<std::string>> {
+  auto ResultOpt [[nodiscard]] () const
+      -> cppcoro::task<vh::cpp::Opt<std::string>> {
     co_return vh::cpp::Opt<std::string>{};
   }
 
-  auto ResultVec [[nodiscard]] () const -> cppcoro::task<std::vector<std::string>> {
+  auto ResultVec [[nodiscard]] () const
+      -> cppcoro::task<std::vector<std::string>> {
     co_return std::vector<std::string>{};
   }
 

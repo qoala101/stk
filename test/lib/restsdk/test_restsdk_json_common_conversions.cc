@@ -1,14 +1,14 @@
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
-#include <gtest/gtest.h>
-#include <polymorphic_value.h>
 
+#include <exception>
 #include <optional>
 #include <string>
 #include <variant>
 #include <vector>
 
 #include "cpp_optional.h"
+#include "cpp_polymorphic_value.h"
 #include "gtest/gtest_pred_impl.h"
 #include "network_json_base_conversions.h"
 #include "network_json_common_conversions.h"
@@ -27,8 +27,7 @@ TEST(JsonSpecializedConversions, ConvertAndParseOptional) {
   const auto *text_ptr = &text;
   const auto text_ptr_json = vh::network::ConvertToJson(text_ptr);
   const auto parsed_text_ptr =
-      vh::network::ParseFromJson<vh::cpp::Opt<std::string>>(
-          *text_ptr_json);
+      vh::network::ParseFromJson<vh::cpp::Opt<std::string>>(*text_ptr_json);
 
   ASSERT_TRUE(parsed_text_ptr.has_value());
   EXPECT_EQ(*parsed_text_ptr, *text_ptr);
@@ -36,8 +35,7 @@ TEST(JsonSpecializedConversions, ConvertAndParseOptional) {
   const auto *text_null = decltype(&text_ptr){};
   const auto text_null_json = vh::network::ConvertToJson(text_null);
   const auto parsed_text_null =
-      vh::network::ParseFromJson<vh::cpp::Opt<std::string>>(
-          *text_null_json);
+      vh::network::ParseFromJson<vh::cpp::Opt<std::string>>(*text_null_json);
 
   EXPECT_FALSE(parsed_text_null.has_value());
 }
@@ -56,16 +54,18 @@ TEST(JsonSpecializedConversions, ConvertAndParseOptionalVector) {
 
   const auto *items_ptr = &items;
   const auto items_ptr_json = vh::network::ConvertToJson(items_ptr);
-  const auto parsed_items_ptr = vh::network::ParseFromJson<
-      vh::cpp::Opt<std::vector<std::string>>>(*items_ptr_json);
+  const auto parsed_items_ptr =
+      vh::network::ParseFromJson<vh::cpp::Opt<std::vector<std::string>>>(
+          *items_ptr_json);
 
   ASSERT_TRUE(parsed_items_ptr.has_value());
   EXPECT_EQ(*parsed_items_ptr, *items_ptr);
 
   const auto *items_null = decltype(&items_ptr){};
   const auto items_null_json = vh::network::ConvertToJson(items_null);
-  const auto parsed_items_null = vh::network::ParseFromJson<
-      vh::cpp::Opt<std::vector<std::string>>>(*items_null_json);
+  const auto parsed_items_null =
+      vh::network::ParseFromJson<vh::cpp::Opt<std::vector<std::string>>>(
+          *items_null_json);
 
   EXPECT_FALSE(parsed_items_null.has_value());
 }

@@ -3,12 +3,9 @@
 #include <fmt/core.h>
 #include <sqlite3.h>
 
-#include <gsl/assert>
 #include <gsl/util>
-#include <memory>
 #include <not_null.hpp>
 #include <string>
-#include <type_traits>
 #include <utility>
 
 #include "cpp_message_exception.h"

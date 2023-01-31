@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <variant>
 
+#include "cpp_typed_struct.h"
 #include "sqldb_types.h"
 
 namespace vh::sqldb {

@@ -6,6 +6,8 @@
 #include <utility>
 #include <variant>
 
+#include "cpp_typed_struct.h"
+
 namespace vh::network::aprh {
 auto WsHandlerVariant::operator()(WsMessage message) -> cppcoro::task<> {
   co_await std::visit(

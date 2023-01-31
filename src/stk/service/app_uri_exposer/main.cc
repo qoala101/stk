@@ -3,7 +3,6 @@
 #include <boost/di.hpp>
 #include <cstdint>
 #include <string>
-#include <string_view>
 #include <variant>
 
 #include "cli_app.h"

@@ -1,17 +1,12 @@
 #include "core_sps_price_recorder.h"
 
 #include <absl/time/clock.h>
-#include <absl/time/time.h>
-#include <fmt/core.h>
 
 #include <coroutine>
-#include <cppcoro/sync_wait.hpp>
 #include <cppcoro/task.hpp>
 #include <not_null.hpp>
-#include <optional>
 #include <string>
 #include <utility>
-#include <vector>
 
 #include "core_types.h"
 

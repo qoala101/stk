@@ -1,10 +1,13 @@
 #include "log_rl_log_stats.h"
 
+#include <absl/hash/hash.h>
 #include <absl/time/clock.h>
-#include <fmt/format.h>
+#include <fmt/core.h>
 
 #include <gsl/assert>
 #include <magic_enum.hpp>
+#include <not_null.hpp>
+#include <utility>
 
 namespace vh::log::rl {
 LogStats::LogStats(cpp::NnUp<ILogger> logger)
