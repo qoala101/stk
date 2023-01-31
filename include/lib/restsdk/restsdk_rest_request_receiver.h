@@ -1,5 +1,5 @@
-#ifndef STONKS_RESTSDK_RESTSDK_REST_REQUEST_RECEIVER_H_
-#define STONKS_RESTSDK_RESTSDK_REST_REQUEST_RECEIVER_H_
+#ifndef VH_RESTSDK_REST_REQUEST_RECEIVER_H_
+#define VH_RESTSDK_REST_REQUEST_RECEIVER_H_
 
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
@@ -42,4 +42,4 @@ class RestRequestReceiver : public network::IRestRequestReceiver {
 };
 }  // namespace vh::restsdk
 
-#endif  // STONKS_RESTSDK_RESTSDK_REST_REQUEST_RECEIVER_H_
+#endif  // VH_RESTSDK_REST_REQUEST_RECEIVER_H_

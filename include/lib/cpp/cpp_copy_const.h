@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_CPP_COPY_CONST_H_
-#define STONKS_CPP_CPP_COPY_CONST_H_
+#ifndef VH_CPP_COPY_CONST_H_
+#define VH_CPP_COPY_CONST_H_
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 
@@ -33,4 +33,4 @@ template <typename From, typename To>
 using CopyConst = typename detail::CopyConstTraits<From, To>::Type;
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_CPP_COPY_CONST_H_
+#endif  // VH_CPP_COPY_CONST_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_EXCEPTION_H_
-#define STONKS_NETWORK_NETWORK_EXCEPTION_H_
+#ifndef VH_NETWORK_EXCEPTION_H_
+#define VH_NETWORK_EXCEPTION_H_
 
 #include "cpp_message_exception.h"
 
@@ -13,4 +13,4 @@ class Exception : public cpp::MessageException {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_EXCEPTION_H_
+#endif  // VH_NETWORK_EXCEPTION_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_LOG_LOG_TYPES_H_
-#define STONKS_LOG_LOG_TYPES_H_
+#ifndef VH_LOG_TYPES_H_
+#define VH_LOG_TYPES_H_
 
 namespace vh::log {
 /**
@@ -8,4 +8,4 @@ namespace vh::log {
 enum class Level { Info, Warning, Error };
 }  // namespace vh::log
 
-#endif  // STONKS_LOG_LOG_TYPES_H_
+#endif  // VH_LOG_TYPES_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_WS_CLIENT_BUILDER_H_
-#define STONKS_NETWORK_NETWORK_WS_CLIENT_BUILDER_H_
+#ifndef VH_NETWORK_WS_CLIENT_BUILDER_H_
+#define VH_NETWORK_WS_CLIENT_BUILDER_H_
 
 #include <concepts>
 #include <utility>
@@ -51,4 +51,4 @@ class WsClientBuilder {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_WS_CLIENT_BUILDER_H_
+#endif  // VH_NETWORK_WS_CLIENT_BUILDER_H_

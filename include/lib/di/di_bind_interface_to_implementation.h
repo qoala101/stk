@@ -1,5 +1,5 @@
-#ifndef STONKS_DI_DI_BIND_INTERFACE_TO_IMPLEMENTATION_H_
-#define STONKS_DI_DI_BIND_INTERFACE_TO_IMPLEMENTATION_H_
+#ifndef VH_DI_BIND_INTERFACE_TO_IMPLEMENTATION_H_
+#define VH_DI_BIND_INTERFACE_TO_IMPLEMENTATION_H_
 
 #include <boost/di.hpp>
 #include <boost/di/extension/injections/factory.hpp>
@@ -59,4 +59,4 @@ auto BindInterfaceToImplementation [[nodiscard]] () {
 }
 }  // namespace vh::di
 
-#endif  // STONKS_DI_DI_BIND_INTERFACE_TO_IMPLEMENTATION_H_
+#endif  // VH_DI_BIND_INTERFACE_TO_IMPLEMENTATION_H_

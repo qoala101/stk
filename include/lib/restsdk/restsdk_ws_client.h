@@ -1,5 +1,5 @@
-#ifndef STONKS_RESTSDK_RESTSDK_WS_CLIENT_H_
-#define STONKS_RESTSDK_RESTSDK_WS_CLIENT_H_
+#ifndef VH_RESTSDK_WS_CLIENT_H_
+#define VH_RESTSDK_WS_CLIENT_H_
 
 #include <cppcoro/task.hpp>
 
@@ -55,4 +55,4 @@ class WsClient : public network::IWsClient {
 };
 }  // namespace vh::restsdk
 
-#endif  // STONKS_RESTSDK_RESTSDK_WS_CLIENT_H_
+#endif  // VH_RESTSDK_WS_CLIENT_H_

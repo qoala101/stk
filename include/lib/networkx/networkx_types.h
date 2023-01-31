@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORKX_NETWORKX_TYPES_H_
-#define STONKS_NETWORKX_NETWORKX_TYPES_H_
+#ifndef VH_NETWORKX_TYPES_H_
+#define VH_NETWORKX_TYPES_H_
 
 #include <callable.hpp>
 #include <member_function.hpp>
@@ -42,4 +42,4 @@ using ArgType = typename member_function_traits<
     decltype(kFunction)>::template argument_type<kIndex>;
 }  // namespace vh::networkx
 
-#endif  // STONKS_NETWORKX_NETWORKX_TYPES_H_
+#endif  // VH_NETWORKX_TYPES_H_

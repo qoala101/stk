@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_JSON_CONVERSIONS_FACADES_H_
-#define STONKS_NETWORK_NETWORK_JSON_CONVERSIONS_FACADES_H_
+#ifndef VH_NETWORK_JSON_CONVERSIONS_FACADES_H_
+#define VH_NETWORK_JSON_CONVERSIONS_FACADES_H_
 
 #include <utility>
 
@@ -62,4 +62,4 @@ auto BuildJsonFrom [[nodiscard]] (KeyValues &&...key_values) {
 }
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_JSON_CONVERSIONS_FACADES_H_
+#endif  // VH_NETWORK_JSON_CONVERSIONS_FACADES_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_
-#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_
+#ifndef VH_SQLDB_QB_INSERT_H_
+#define VH_SQLDB_QB_INSERT_H_
 
 #include <string>
 #include <string_view>
@@ -66,4 +66,4 @@ class Insert {
 };
 }  // namespace vh::sqldb::qb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_INSERT_H_
+#endif  // VH_SQLDB_QB_INSERT_H_

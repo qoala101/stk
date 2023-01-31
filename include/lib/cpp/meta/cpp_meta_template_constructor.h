@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_META_CPP_META_TEMPLATE_CONSTRUCTOR_H_
-#define STONKS_CPP_META_CPP_META_TEMPLATE_CONSTRUCTOR_H_
+#ifndef VH_CPP_META_TEMPLATE_CONSTRUCTOR_H_
+#define VH_CPP_META_TEMPLATE_CONSTRUCTOR_H_
 
 #include "cpp_type_list.h"
 
@@ -11,4 +11,4 @@ template <typename... Ts>
 using TemplateConstructor = TypeList<Ts...> *;
 }  // namespace vh::cpp::meta
 
-#endif  // STONKS_CPP_META_CPP_META_TEMPLATE_CONSTRUCTOR_H_
+#endif  // VH_CPP_META_TEMPLATE_CONSTRUCTOR_H_

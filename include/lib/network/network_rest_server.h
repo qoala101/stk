@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_REST_SERVER_H_
-#define STONKS_NETWORK_NETWORK_REST_SERVER_H_
+#ifndef VH_NETWORK_REST_SERVER_H_
+#define VH_NETWORK_REST_SERVER_H_
 
 #include "cpp_not_null.h"
 #include "network_i_rest_request_receiver.h"
@@ -17,4 +17,4 @@ class RestServer {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_REST_SERVER_H_
+#endif  // VH_NETWORK_REST_SERVER_H_

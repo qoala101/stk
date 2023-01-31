@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_CPP_THIS_H_
-#define STONKS_CPP_CPP_THIS_H_
+#ifndef VH_CPP_THIS_H_
+#define VH_CPP_THIS_H_
 
 #include <type_traits>
 
@@ -14,4 +14,4 @@ template <typename T, typename U>
 concept This = std::same_as<std::remove_const_t<std::remove_reference_t<T>>, U>;
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_CPP_THIS_H_
+#endif  // VH_CPP_THIS_H_

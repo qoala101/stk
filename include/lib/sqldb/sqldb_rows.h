@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_ROWS_H_
-#define STONKS_SQLDB_SQLDB_ROWS_H_
+#ifndef VH_SQLDB_ROWS_H_
+#define VH_SQLDB_ROWS_H_
 
 #include <vector>
 
@@ -71,4 +71,4 @@ class Rows {
 };
 }  // namespace vh::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_ROWS_H_
+#endif  // VH_SQLDB_ROWS_H_

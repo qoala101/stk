@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_ALGORITHM_CPP_FOR_EACH_INDEX_H_
-#define STONKS_CPP_ALGORITHM_CPP_FOR_EACH_INDEX_H_
+#ifndef VH_CPP_FOR_EACH_INDEX_H_
+#define VH_CPP_FOR_EACH_INDEX_H_
 
 #include <gsl/assert>
 #include <optional>
@@ -58,4 +58,4 @@ auto ForEachIndex [[nodiscard]] (const auto &function) {
 }
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_ALGORITHM_CPP_FOR_EACH_INDEX_H_
+#endif  // VH_CPP_FOR_EACH_INDEX_H_

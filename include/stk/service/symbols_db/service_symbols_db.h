@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_
-#define STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_
+#ifndef VH_STK_SERVICE_SYMBOLS_DB_H_
+#define VH_STK_SERVICE_SYMBOLS_DB_H_
 
 #include <absl/time/time.h>
 
@@ -83,4 +83,4 @@ class SymbolsDb : public ClientBase<core::ISymbolsDb> {
 };
 }  // namespace vh::stk::service
 
-#endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SYMBOLS_DB_H_
+#endif  // VH_STK_SERVICE_SYMBOLS_DB_H_

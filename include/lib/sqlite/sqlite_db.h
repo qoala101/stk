@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLITE_SQLITE_DB_H_
-#define STONKS_SQLITE_SQLITE_DB_H_
+#ifndef VH_SQLITE_DB_H_
+#define VH_SQLITE_DB_H_
 
 #include "cpp_factory.h"
 #include "cpp_not_null.h"
@@ -47,4 +47,4 @@ class Db : public sqldb::IDb {
 };
 }  // namespace vh::sqlite
 
-#endif  // STONKS_SQLITE_SQLITE_DB_H_
+#endif  // VH_SQLITE_DB_H_

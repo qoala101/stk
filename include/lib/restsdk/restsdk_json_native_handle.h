@@ -1,5 +1,5 @@
-#ifndef STONKS_RESTSDK_RESTSDK_JSON_NATIVE_HANDLE_H_
-#define STONKS_RESTSDK_RESTSDK_JSON_NATIVE_HANDLE_H_
+#ifndef VH_RESTSDK_JSON_NATIVE_HANDLE_H_
+#define VH_RESTSDK_JSON_NATIVE_HANDLE_H_
 
 #include "cpp_not_null.h"
 #include "cpp_this.h"  // IWYU pragma: keep
@@ -51,4 +51,4 @@ class IJson::NativeHandle {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_RESTSDK_RESTSDK_JSON_NATIVE_HANDLE_H_
+#endif  // VH_RESTSDK_JSON_NATIVE_HANDLE_H_

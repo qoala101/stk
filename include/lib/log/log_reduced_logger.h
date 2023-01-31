@@ -1,5 +1,5 @@
-#ifndef STONKS_LOG_LOG_REDUCED_LOGGER_H_
-#define STONKS_LOG_LOG_REDUCED_LOGGER_H_
+#ifndef VH_LOG_REDUCED_LOGGER_H_
+#define VH_LOG_REDUCED_LOGGER_H_
 
 #include <absl/time/time.h>
 
@@ -36,4 +36,4 @@ class ReducedLogger : public ILogger {
 };
 }  // namespace vh::log
 
-#endif  // STONKS_LOG_LOG_REDUCED_LOGGER_H_
+#endif  // VH_LOG_REDUCED_LOGGER_H_

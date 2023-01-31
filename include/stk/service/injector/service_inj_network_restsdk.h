@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_SERVICE_CREATE_NETWORK_RESTSDK_INJECTOR_H_
-#define STONKS_APP_SERVICE_SERVICE_CREATE_NETWORK_RESTSDK_INJECTOR_H_
+#ifndef VH_STK_SERVICE_INJ_NETWORK_RESTSDK_H_
+#define VH_STK_SERVICE_INJ_NETWORK_RESTSDK_H_
 
 #include "di_bind_interface_to_implementation.h"
 #include "di_make_injector.h"
@@ -22,4 +22,4 @@ inline auto CreateNetworkRestsdkInjector [[nodiscard]] () {
 }
 }  // namespace vh::stk::service::inj
 
-#endif  // STONKS_APP_SERVICE_SERVICE_CREATE_NETWORK_RESTSDK_INJECTOR_H_
+#endif  // VH_STK_SERVICE_INJ_NETWORK_RESTSDK_H_

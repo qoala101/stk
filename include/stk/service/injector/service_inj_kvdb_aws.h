@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_KVDB_AWS_H_
-#define STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_KVDB_AWS_H_
+#ifndef VH_STK_SERVICE_INJ_KVDB_AWS_H_
+#define VH_STK_SERVICE_INJ_KVDB_AWS_H_
 
 #include "aws_dynamodb_sync_db_proxy.h"
 #include "di_bind_interface_to_implementation.h"
@@ -18,4 +18,4 @@ inline auto CreateKvdbAwsInjector [[nodiscard]] () {
 }
 }  // namespace vh::stk::service::inj
 
-#endif  // STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_KVDB_AWS_H_
+#endif  // VH_STK_SERVICE_INJ_KVDB_AWS_H_

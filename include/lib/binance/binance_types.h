@@ -1,5 +1,5 @@
-#ifndef STONKS_BINANCE_BINANCE_TYPES_H_
-#define STONKS_BINANCE_BINANCE_TYPES_H_
+#ifndef VH_BINANCE_TYPES_H_
+#define VH_BINANCE_TYPES_H_
 
 #include <string>
 
@@ -25,4 +25,4 @@ struct BookTick {
 };
 }  // namespace vh::binance
 
-#endif  // STONKS_BINANCE_BINANCE_TYPES_H_
+#endif  // VH_BINANCE_TYPES_H_

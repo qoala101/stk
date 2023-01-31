@@ -1,5 +1,5 @@
-#ifndef STONKS_BINANCE_BINANCE_API_H_
-#define STONKS_BINANCE_BINANCE_API_H_
+#ifndef VH_BINANCE_API_H_
+#define VH_BINANCE_API_H_
 
 #include <cppcoro/task.hpp>
 
@@ -32,4 +32,4 @@ class BinanceApi {
 };
 }  // namespace vh::binance
 
-#endif  // STONKS_BINANCE_BINANCE_API_H_
+#endif  // VH_BINANCE_API_H_

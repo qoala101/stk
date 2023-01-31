@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_WS_TYPES_H_
-#define STONKS_NETWORK_NETWORK_WS_TYPES_H_
+#ifndef VH_NETWORK_WS_TYPES_H_
+#define VH_NETWORK_WS_TYPES_H_
 
 #include <compare>
 #include <map>
@@ -22,4 +22,4 @@ using WsMessage = cpp::Pv<IJson>;
 struct WsEndpoint : public cpp::TypedStruct<Uri> {};
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_WS_TYPES_H_
+#endif  // VH_NETWORK_WS_TYPES_H_

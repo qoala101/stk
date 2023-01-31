@@ -1,5 +1,5 @@
-#ifndef STONKS_RESTSDK_TEST_RESTSDK_INJECTOR_H_
-#define STONKS_RESTSDK_TEST_RESTSDK_INJECTOR_H_
+#ifndef VH_TEST_RESTSDK_INJECTOR_H_
+#define VH_TEST_RESTSDK_INJECTOR_H_
 
 #include "di_bind_interface_to_implementation.h"
 #include "di_make_injector.h"
@@ -28,4 +28,4 @@ inline auto Injector [[nodiscard]] () -> auto& {
 }
 }  // namespace test::restsdk
 
-#endif  // STONKS_RESTSDK_TEST_RESTSDK_INJECTOR_H_
+#endif  // VH_TEST_RESTSDK_INJECTOR_H_

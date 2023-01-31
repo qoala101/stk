@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_WS_ENDPOINT_H_
-#define STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_WS_ENDPOINT_H_
+#ifndef VH_NETWORK_TYPED_WS_ENDPOINT_H_
+#define VH_NETWORK_TYPED_WS_ENDPOINT_H_
 
 #include <function2/function2.hpp>
 #include <map>
@@ -27,4 +27,4 @@ struct TypedWsEndpoint {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_WS_ENDPOINT_H_
+#endif  // VH_NETWORK_TYPED_WS_ENDPOINT_H_

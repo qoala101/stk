@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_CPP_SWAP_RESET_H_
-#define STONKS_CPP_CPP_SWAP_RESET_H_
+#ifndef VH_CPP_SWAP_RESET_H_
+#define VH_CPP_SWAP_RESET_H_
 
 #include <concepts>
 #include <type_traits>
@@ -20,4 +20,4 @@ void SwapReset(T &t, Args &&...args) {
 }
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_CPP_SWAP_RESET_H_
+#endif  // VH_CPP_SWAP_RESET_H_

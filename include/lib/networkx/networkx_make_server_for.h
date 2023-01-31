@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORKX_NETWORKX_MAKE_SERVER_FOR_H_
-#define STONKS_NETWORKX_NETWORKX_MAKE_SERVER_FOR_H_
+#ifndef VH_NETWORKX_MAKE_SERVER_FOR_H_
+#define VH_NETWORKX_MAKE_SERVER_FOR_H_
 
 #include <cppcoro/task.hpp>
 #include <tuple>
@@ -99,4 +99,4 @@ auto MakeServerFor
 }
 }  // namespace vh::networkx
 
-#endif  // STONKS_NETWORKX_NETWORKX_MAKE_SERVER_FOR_H_
+#endif  // VH_NETWORKX_MAKE_SERVER_FOR_H_

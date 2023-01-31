@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_TIMER_CPP_TIMER_EVENT_LOOP_H_
-#define STONKS_CPP_TIMER_CPP_TIMER_EVENT_LOOP_H_
+#ifndef VH_CPP_TIMER_EVENT_LOOP_H_
+#define VH_CPP_TIMER_EVENT_LOOP_H_
 
 #include <absl/time/time.h>
 
@@ -43,4 +43,4 @@ class EventLoop {
 };
 }  // namespace vh::cpp::timer
 
-#endif  // STONKS_CPP_TIMER_CPP_TIMER_EVENT_LOOP_H_
+#endif  // VH_CPP_TIMER_EVENT_LOOP_H_

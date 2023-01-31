@@ -1,5 +1,5 @@
-#ifndef STONKS_AWS_AWS_API_HANDLE_H_
-#define STONKS_AWS_AWS_API_HANDLE_H_
+#ifndef VH_AWS_API_HANDLE_H_
+#define VH_AWS_API_HANDLE_H_
 
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
@@ -22,4 +22,4 @@ class ApiHandle {
 };
 }  // namespace vh::aws
 
-#endif  // STONKS_AWS_AWS_API_HANDLE_H_
+#endif  // VH_AWS_API_HANDLE_H_

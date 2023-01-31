@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLITE_SQLITE_TYPES_H_
-#define STONKS_SQLITE_SQLITE_TYPES_H_
+#ifndef VH_SQLITE_TYPES_H_
+#define VH_SQLITE_TYPES_H_
 
 #include <string>
 
@@ -17,4 +17,4 @@ struct FilePath : public cpp::TypedStruct<std::string> {};
 struct ResultCode : public cpp::TypedStruct<int> {};
 }  // namespace vh::sqlite
 
-#endif  // STONKS_SQLITE_SQLITE_TYPES_H_
+#endif  // VH_SQLITE_TYPES_H_

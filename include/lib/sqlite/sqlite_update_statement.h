@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLITE_SQLITE_UPDATE_STATEMENT_H_
-#define STONKS_SQLITE_SQLITE_UPDATE_STATEMENT_H_
+#ifndef VH_SQLITE_UPDATE_STATEMENT_H_
+#define VH_SQLITE_UPDATE_STATEMENT_H_
 
 #include <vector>
 
@@ -25,4 +25,4 @@ class UpdateStatement : public sqldb::IUpdateStatement {
 };
 }  // namespace vh::sqlite
 
-#endif  // STONKS_SQLITE_SQLITE_UPDATE_STATEMENT_H_
+#endif  // VH_SQLITE_UPDATE_STATEMENT_H_

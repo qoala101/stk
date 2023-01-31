@@ -1,5 +1,5 @@
-#ifndef STONKS_AWS_DYNAMODB_AWS_DYNAMODB_SYNC_DB_PROXY_H_
-#define STONKS_AWS_DYNAMODB_AWS_DYNAMODB_SYNC_DB_PROXY_H_
+#ifndef VH_AWS_DYNAMODB_SYNC_DB_PROXY_H_
+#define VH_AWS_DYNAMODB_SYNC_DB_PROXY_H_
 
 #include <cppcoro/task.hpp>
 
@@ -62,4 +62,4 @@ class SyncDbProxy : public kvdb::IDb {
 };
 }  // namespace vh::aws::dynamodb
 
-#endif  // STONKS_AWS_DYNAMODB_AWS_DYNAMODB_SYNC_DB_PROXY_H_
+#endif  // VH_AWS_DYNAMODB_SYNC_DB_PROXY_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_DELETE_H_
-#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_DELETE_H_
+#ifndef VH_SQLDB_QB_DELETE_H_
+#define VH_SQLDB_QB_DELETE_H_
 
 #include <string>
 
@@ -40,4 +40,4 @@ class Delete {
 };
 }  // namespace vh::sqldb::qb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_DELETE_H_
+#endif  // VH_SQLDB_QB_DELETE_H_

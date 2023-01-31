@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_CPP_VIEWS_H_
-#define STONKS_CPP_CPP_VIEWS_H_
+#ifndef VH_CPP_VIEWS_H_
+#define VH_CPP_VIEWS_H_
 
 #include <vector>
 
@@ -19,4 +19,4 @@ template <typename T>
 using ConstView = View<const T>;
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_CPP_VIEWS_H_
+#endif  // VH_CPP_VIEWS_H_

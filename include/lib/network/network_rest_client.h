@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_REST_CLIENT_H_
-#define STONKS_NETWORK_NETWORK_REST_CLIENT_H_
+#ifndef VH_NETWORK_REST_CLIENT_H_
+#define VH_NETWORK_REST_CLIENT_H_
 
 #include "network_i_rest_request_sender.h"
 #include "network_rest_client_request_builder.h"
@@ -31,4 +31,4 @@ class RestClient {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_REST_CLIENT_H_
+#endif  // VH_NETWORK_REST_CLIENT_H_

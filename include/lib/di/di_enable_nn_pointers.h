@@ -1,5 +1,5 @@
-#ifndef STONKS_DI_DI_ENABLE_NN_POINTERS_H_
-#define STONKS_DI_DI_ENABLE_NN_POINTERS_H_
+#ifndef VH_DI_ENABLE_NN_POINTERS_H_
+#define VH_DI_ENABLE_NN_POINTERS_H_
 
 #include <boost/di.hpp>
 #include <type_traits>
@@ -32,4 +32,4 @@ auto EnableNnPointers [[nodiscard]] () {
 }
 }  // namespace vh::di
 
-#endif  // STONKS_DI_DI_ENABLE_NN_POINTERS_H_
+#endif  // VH_DI_ENABLE_NN_POINTERS_H_

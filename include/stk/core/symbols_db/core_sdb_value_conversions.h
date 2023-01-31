@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_SYMBOLS_DB_CORE_SDB_VALUE_CONVERSIONS_H_
-#define STONKS_APP_CORE_SYMBOLS_DB_CORE_SDB_VALUE_CONVERSIONS_H_
+#ifndef VH_STK_CORE_SDB_VALUE_CONVERSIONS_H_
+#define VH_STK_CORE_SDB_VALUE_CONVERSIONS_H_
 
 #include <absl/time/time.h>
 
@@ -9,4 +9,4 @@ namespace vh::sqldb {
 auto ConvertToValue [[nodiscard]] (absl::Time time) -> Value;
 }  // namespace vh::sqldb
 
-#endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_SDB_VALUE_CONVERSIONS_H_
+#endif  // VH_STK_CORE_SDB_VALUE_CONVERSIONS_H_

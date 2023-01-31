@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_SYNCHRONIZATION_CPP_MUTEX_H_
-#define STONKS_CPP_SYNCHRONIZATION_CPP_MUTEX_H_
+#ifndef VH_CPP_MUTEX_H_
+#define VH_CPP_MUTEX_H_
 
 #include <mutex>
 #include <utility>
@@ -45,4 +45,4 @@ struct MutexVariant : public VariantStruct<std::monostate, Mutex> {
 };
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_SYNCHRONIZATION_CPP_MUTEX_H_
+#endif  // VH_CPP_MUTEX_H_

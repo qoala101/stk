@@ -1,5 +1,5 @@
-#ifndef STONKS_DI_DI_MAKE_INJECTOR_H_
-#define STONKS_DI_DI_MAKE_INJECTOR_H_
+#ifndef VH_DI_MAKE_INJECTOR_H_
+#define VH_DI_MAKE_INJECTOR_H_
 
 #include <boost/di.hpp>
 
@@ -14,4 +14,4 @@ auto MakeInjector [[nodiscard]] (Args &&...args) {
 }
 }  // namespace vh::di
 
-#endif  // STONKS_DI_DI_MAKE_INJECTOR_H_
+#endif  // VH_DI_MAKE_INJECTOR_H_

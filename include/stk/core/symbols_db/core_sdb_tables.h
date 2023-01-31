@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_SYMBOLS_DB_CORE_SDB_TABLES_H_
-#define STONKS_APP_CORE_SYMBOLS_DB_CORE_SDB_TABLES_H_
+#ifndef VH_STK_CORE_SDB_TABLES_H_
+#define VH_STK_CORE_SDB_TABLES_H_
 
 #include <cstdint>
 #include <gsl/assert>
@@ -93,4 +93,4 @@ struct SymbolPriceRecord : public sqldb::Table<SymbolPriceRecord> {
 };
 }  // namespace vh::stk::core::sdb::table
 
-#endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_SDB_TABLES_H_
+#endif  // VH_STK_CORE_SDB_TABLES_H_

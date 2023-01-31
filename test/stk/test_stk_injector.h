@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_TEST_APP_INJECTOR_H_
-#define STONKS_APP_TEST_APP_INJECTOR_H_
+#ifndef VH_TEST_STK_INJECTOR_H_
+#define VH_TEST_STK_INJECTOR_H_
 
 #include "cpp_meta_thread_safe.h"
 #include "di_bind_interface_to_implementation.h"
@@ -52,4 +52,4 @@ inline auto Injector [[nodiscard]] () -> auto & {
 }
 }  // namespace test::app
 
-#endif  // STONKS_APP_TEST_APP_INJECTOR_H_
+#endif  // VH_TEST_STK_INJECTOR_H_

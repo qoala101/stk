@@ -1,5 +1,5 @@
-#ifndef STONKS_SPDLOG_SPDLOG_LOGGER_H_
-#define STONKS_SPDLOG_SPDLOG_LOGGER_H_
+#ifndef VH_SPDLOG_THREAD_SAFE_LOGGER_H_
+#define VH_SPDLOG_THREAD_SAFE_LOGGER_H_
 
 #include <string>
 
@@ -19,4 +19,4 @@ class ThreadSafeLogger : public log::ILogger {
 };
 }  // namespace vh::spdlog
 
-#endif  // STONKS_SPDLOG_SPDLOG_LOGGER_H_
+#endif  // VH_SPDLOG_THREAD_SAFE_LOGGER_H_

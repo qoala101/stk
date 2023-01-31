@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_SQLDB_SQLITE_H_
-#define STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_SQLDB_SQLITE_H_
+#ifndef VH_STK_SERVICE_INJ_SQLDB_SQLITE_H_
+#define VH_STK_SERVICE_INJ_SQLDB_SQLITE_H_
 
 #include "cpp_meta_thread_safe.h"
 #include "cpp_not_null.h"
@@ -44,4 +44,4 @@ inline auto CreateSqldbSqliteInjector [[nodiscard]] () {
 }
 }  // namespace vh::stk::service::inj
 
-#endif  // STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_SQLDB_SQLITE_H_
+#endif  // VH_STK_SERVICE_INJ_SQLDB_SQLITE_H_

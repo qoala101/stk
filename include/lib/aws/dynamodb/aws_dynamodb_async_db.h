@@ -1,5 +1,5 @@
-#ifndef STONKS_AWS_DYNAMODB_AWS_DYNAMODB_ASYNC_DB_H_
-#define STONKS_AWS_DYNAMODB_AWS_DYNAMODB_ASYNC_DB_H_
+#ifndef VH_AWS_DYNAMODB_ASYNC_DB_H_
+#define VH_AWS_DYNAMODB_ASYNC_DB_H_
 
 #include <cppcoro/task.hpp>
 
@@ -98,4 +98,4 @@ class AsyncDb : public kvdb::IDb {
 };
 }  // namespace vh::aws::dynamodb
 
-#endif  // STONKS_AWS_DYNAMODB_AWS_DYNAMODB_ASYNC_DB_H_
+#endif  // VH_AWS_DYNAMODB_ASYNC_DB_H_

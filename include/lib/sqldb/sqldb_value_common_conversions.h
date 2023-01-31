@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_VALUE_COMMON_CONVERSIONS_H_
-#define STONKS_SQLDB_SQLDB_VALUE_COMMON_CONVERSIONS_H_
+#ifndef VH_SQLDB_VALUE_COMMON_CONVERSIONS_H_
+#define VH_SQLDB_VALUE_COMMON_CONVERSIONS_H_
 
 #include "sqldb_value_conversions.h"
 
@@ -40,4 +40,4 @@ auto ConvertToValue [[nodiscard]] (const cpp::TypedStruct<T> &value) {
 }
 }  // namespace vh::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_VALUE_COMMON_CONVERSIONS_H_
+#endif  // VH_SQLDB_VALUE_COMMON_CONVERSIONS_H_

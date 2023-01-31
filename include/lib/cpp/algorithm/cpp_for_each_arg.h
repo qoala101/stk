@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_ALGORITHM_CPP_FOR_EACH_ARG_H_
-#define STONKS_CPP_ALGORITHM_CPP_FOR_EACH_ARG_H_
+#ifndef VH_CPP_FOR_EACH_ARG_H_
+#define VH_CPP_FOR_EACH_ARG_H_
 
 #include <utility>
 
@@ -65,4 +65,4 @@ void ForEachArg(const auto &function, Args &&...args) {
 }
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_ALGORITHM_CPP_FOR_EACH_ARG_H_
+#endif  // VH_CPP_FOR_EACH_ARG_H_

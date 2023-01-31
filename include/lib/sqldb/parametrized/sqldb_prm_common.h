@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_PARAMETRIZED_SQLDB_P_COMMON_H_
-#define STONKS_SQLDB_PARAMETRIZED_SQLDB_P_COMMON_H_
+#ifndef VH_SQLDB_PRM_COMMON_H_
+#define VH_SQLDB_PRM_COMMON_H_
 
 #include <vector>
 
@@ -15,4 +15,4 @@ auto AreParamsValid [[nodiscard]] (const std::vector<Value> &values,
 -> bool;
 }  // namespace vh::sqldb::prm
 
-#endif  // STONKS_SQLDB_PARAMETRIZED_SQLDB_P_COMMON_H_
+#endif  // VH_SQLDB_PRM_COMMON_H_

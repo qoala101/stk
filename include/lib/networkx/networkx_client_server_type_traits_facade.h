@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORKX_NETWORKX_CLIENT_SERVER_TYPE_TRAITS_FACADE_H_
-#define STONKS_NETWORKX_NETWORKX_CLIENT_SERVER_TYPE_TRAITS_FACADE_H_
+#ifndef VH_NETWORKX_CLIENT_SERVER_TYPE_TRAITS_FACADE_H_
+#define VH_NETWORKX_CLIENT_SERVER_TYPE_TRAITS_FACADE_H_
 
 #include "networkx_concepts.h"  // IWYU pragma: keep
 #include "networkx_types.h"
@@ -63,4 +63,4 @@ struct ClientServerTypeTraitsFacade {
 };
 }  // namespace vh::networkx
 
-#endif  // STONKS_NETWORKX_NETWORKX_CLIENT_SERVER_TYPE_TRAITS_FACADE_H_
+#endif  // VH_NETWORKX_CLIENT_SERVER_TYPE_TRAITS_FACADE_H_

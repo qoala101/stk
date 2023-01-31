@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_PARAMETRIZED_SQLDB_P_SELECT_STATEMENT_H_
-#define STONKS_SQLDB_PARAMETRIZED_SQLDB_P_SELECT_STATEMENT_H_
+#ifndef VH_SQLDB_PRM_SELECT_STATEMENT_H_
+#define VH_SQLDB_PRM_SELECT_STATEMENT_H_
 
 #include <vector>
 
@@ -32,4 +32,4 @@ class SelectStatement : public ISelectStatement {
 };
 }  // namespace vh::sqldb::p
 
-#endif  // STONKS_SQLDB_PARAMETRIZED_SQLDB_P_SELECT_STATEMENT_H_
+#endif  // VH_SQLDB_PRM_SELECT_STATEMENT_H_

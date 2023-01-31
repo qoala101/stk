@@ -1,5 +1,5 @@
-#ifndef STONKS_KVDB_KVDB_I_TABLES_INTERFACE_H_
-#define STONKS_KVDB_KVDB_I_TABLES_INTERFACE_H_
+#ifndef VH_KVDB_I_TABLES_INTERFACE_H_
+#define VH_KVDB_I_TABLES_INTERFACE_H_
 
 #include <cppcoro/task.hpp>
 
@@ -27,4 +27,4 @@ class ITablesInterface {
 };
 }  // namespace vh::kvdb
 
-#endif  // STONKS_KVDB_KVDB_I_TABLES_INTERFACE_H_
+#endif  // VH_KVDB_I_TABLES_INTERFACE_H_

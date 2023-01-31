@@ -1,5 +1,5 @@
-#ifndef STONKS_SERVICE_SERVICE_CLIENT_OPTIONS_H_
-#define STONKS_SERVICE_SERVICE_CLIENT_OPTIONS_H_
+#ifndef VH_STK_SERVICE_CLIENT_OPTIONS_H_
+#define VH_STK_SERVICE_CLIENT_OPTIONS_H_
 
 #include <string>
 
@@ -51,4 +51,4 @@ class ClientOptions : public detail::ClientOptionsBase {
 };
 }  // namespace vh::stk::service
 
-#endif  // STONKS_SERVICE_SERVICE_CLIENT_OPTIONS_H_
+#endif  // VH_STK_SERVICE_CLIENT_OPTIONS_H_

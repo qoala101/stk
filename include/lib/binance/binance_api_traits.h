@@ -1,5 +1,5 @@
-#ifndef STONKS_BINANCE_BINANCE_API_TRAITS_H_
-#define STONKS_BINANCE_BINANCE_API_TRAITS_H_
+#ifndef VH_BINANCE_API_TRAITS_H_
+#define VH_BINANCE_API_TRAITS_H_
 
 #include "binance_api.h"
 #include "networkx_common.h"
@@ -18,4 +18,4 @@ struct ClientServerTypeTraits<binance::BinanceApi> {
 };
 }  // namespace vh::networkx
 
-#endif  // STONKS_BINANCE_BINANCE_API_TRAITS_H_
+#endif  // VH_BINANCE_API_TRAITS_H_

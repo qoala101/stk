@@ -1,5 +1,5 @@
-#ifndef STONKS_CLI_CLI_OPTION_VALUE_VARIANT_H_
-#define STONKS_CLI_CLI_OPTION_VALUE_VARIANT_H_
+#ifndef VH_CLI_OPTION_VALUE_VARIANT_H_
+#define VH_CLI_OPTION_VALUE_VARIANT_H_
 
 #include <cstdint>
 #include <string>
@@ -31,4 +31,4 @@ struct OptionValueVariant
 };
 }  // namespace vh::cli
 
-#endif  // STONKS_CLI_CLI_OPTION_VALUE_VARIANT_H_
+#endif  // VH_CLI_OPTION_VALUE_VARIANT_H_

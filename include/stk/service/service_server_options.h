@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_SERVICE_SERVER_OPTIONS_H_
-#define STONKS_APP_SERVICE_SERVICE_SERVER_OPTIONS_H_
+#ifndef VH_STK_SERVICE_SERVER_OPTIONS_H_
+#define VH_STK_SERVICE_SERVER_OPTIONS_H_
 
 #include <string>
 
@@ -48,4 +48,4 @@ class ServerOptions : public detail::ServerOptionsBase {
 };
 }  // namespace vh::stk::service
 
-#endif  // STONKS_APP_SERVICE_SERVICE_SERVER_OPTIONS_H_
+#endif  // VH_STK_SERVICE_SERVER_OPTIONS_H_

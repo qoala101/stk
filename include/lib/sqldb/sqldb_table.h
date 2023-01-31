@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_TABLE_H_
-#define STONKS_SQLDB_SQLDB_TABLE_H_
+#ifndef VH_SQLDB_TABLE_H_
+#define VH_SQLDB_TABLE_H_
 
 #include <nameof.hpp>
 #include <string>
@@ -106,4 +106,4 @@ class Table {
 };
 }  // namespace vh::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_TABLE_H_
+#endif  // VH_SQLDB_TABLE_H_

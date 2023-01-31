@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLITE_SQLITE_SELECT_STATEMENT_H_
-#define STONKS_SQLITE_SQLITE_SELECT_STATEMENT_H_
+#ifndef VH_SQLITE_SELECT_STATEMENT_H_
+#define VH_SQLITE_SELECT_STATEMENT_H_
 
 #include <vector>
 
@@ -35,4 +35,4 @@ class SelectStatement : public sqldb::ISelectStatement {
 };
 }  // namespace vh::sqlite
 
-#endif  // STONKS_SQLITE_SQLITE_SELECT_STATEMENT_H_
+#endif  // VH_SQLITE_SELECT_STATEMENT_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_BUY_LOW_SELL_HIGH_CORE_BUY_LOW_SELL_HIGH_H_
-#define STONKS_APP_CORE_BUY_LOW_SELL_HIGH_CORE_BUY_LOW_SELL_HIGH_H_
+#ifndef VH_STK_CORE_BUY_LOW_SELL_HIGH_H_
+#define VH_STK_CORE_BUY_LOW_SELL_HIGH_H_
 
 #include <absl/time/time.h>
 
@@ -31,4 +31,4 @@ class BuyLowSellHigh {
 };
 }  // namespace vh::stk::core
 
-#endif  // STONKS_APP_CORE_BUY_LOW_SELL_HIGH_CORE_BUY_LOW_SELL_HIGH_H_
+#endif  // VH_STK_CORE_BUY_LOW_SELL_HIGH_H_

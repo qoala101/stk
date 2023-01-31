@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_CPP_FACTORY_H_
-#define STONKS_CPP_CPP_FACTORY_H_
+#ifndef VH_CPP_FACTORY_H_
+#define VH_CPP_FACTORY_H_
 
 #include <function2/function2.hpp>
 #include <gsl/assert>
@@ -61,4 +61,4 @@ class Factory {
 };
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_CPP_FACTORY_H_
+#endif  // VH_CPP_FACTORY_H_

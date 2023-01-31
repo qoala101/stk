@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_I_SELECT_STATEMENT_H_
-#define STONKS_SQLDB_SQLDB_I_SELECT_STATEMENT_H_
+#ifndef VH_SQLDB_I_SELECT_STATEMENT_H_
+#define VH_SQLDB_I_SELECT_STATEMENT_H_
 
 #include <vector>
 
@@ -30,4 +30,4 @@ class ISelectStatement {
 };
 }  // namespace vh::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_I_SELECT_STATEMENT_H_
+#endif  // VH_SQLDB_I_SELECT_STATEMENT_H_

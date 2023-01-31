@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_TRAITS_H_
-#define STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_TRAITS_H_
+#ifndef VH_STK_SERVICE_SDB_TRAITS_H_
+#define VH_STK_SERVICE_SDB_TRAITS_H_
 
 #include "core_i_symbols_db.h"
 #include "networkx_common.h"
@@ -74,4 +74,4 @@ struct ClientServerTypeTraits<stk::core::ISymbolsDb> {
 };
 }  // namespace vh::networkx
 
-#endif  // STONKS_APP_SERVICE_SYMBOLS_DB_SERVICE_SDB_TRAITS_H_
+#endif  // VH_STK_SERVICE_SDB_TRAITS_H_

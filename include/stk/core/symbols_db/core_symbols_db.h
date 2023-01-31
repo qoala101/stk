@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_SYMBOLS_DB_CORE_SYMBOLS_DB_H_
-#define STONKS_APP_CORE_SYMBOLS_DB_CORE_SYMBOLS_DB_H_
+#ifndef VH_STK_CORE_SYMBOLS_DB_H_
+#define VH_STK_CORE_SYMBOLS_DB_H_
 
 #include <absl/time/time.h>
 
@@ -121,4 +121,4 @@ class SymbolsDb : public ISymbolsDb {
 };
 }  // namespace vh::stk::core
 
-#endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_SYMBOLS_DB_H_
+#endif  // VH_STK_CORE_SYMBOLS_DB_H_

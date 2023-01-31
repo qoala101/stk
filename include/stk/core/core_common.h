@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_CORE_COMMON_H_
-#define STONKS_APP_CORE_CORE_COMMON_H_
+#ifndef VH_STK_CORE_COMMON_H_
+#define VH_STK_CORE_COMMON_H_
 
 #include <absl/time/time.h>
 
@@ -24,4 +24,4 @@ auto EndTimeFrom [[nodiscard]] (const cpp::Opt<absl::Time> &time) -> absl::Time;
 auto TimeOrderFrom [[nodiscard]] (const cpp::Opt<TimeOrder> &order) -> TimeOrder;
 }  // namespace vh::stk::core
 
-#endif  // STONKS_APP_CORE_CORE_COMMON_H_
+#endif  // VH_STK_CORE_COMMON_H_

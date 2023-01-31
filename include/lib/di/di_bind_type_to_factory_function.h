@@ -1,5 +1,5 @@
-#ifndef STONKS_DI_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_
-#define STONKS_DI_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_
+#ifndef VH_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_
+#define VH_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_
 
 #include <boost/di.hpp>
 #include <callable.hpp>
@@ -38,4 +38,4 @@ auto BindTypeToFactoryFunction [[nodiscard]] () {
 }
 }  // namespace vh::di
 
-#endif  // STONKS_DI_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_
+#endif  // VH_DI_BIND_TYPE_TO_FACTORY_FUNCTION_H_

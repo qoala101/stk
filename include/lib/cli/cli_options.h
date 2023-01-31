@@ -1,5 +1,5 @@
-#ifndef STONKS_CLI_CLI_OPTIONS_H_
-#define STONKS_CLI_CLI_OPTIONS_H_
+#ifndef VH_CLI_OPTIONS_H_
+#define VH_CLI_OPTIONS_H_
 
 #include <absl/container/flat_hash_map.h>
 
@@ -64,4 +64,4 @@ class Options : public detail::OptionsBase {
 };
 }  // namespace vh::cli
 
-#endif  // STONKS_CLI_CLI_OPTIONS_H_
+#endif  // VH_CLI_OPTIONS_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_SYMBOLS_DB_UPDATER_CORE_SDBU_OLD_PRICES_DELETER_H_
-#define STONKS_APP_CORE_SYMBOLS_DB_UPDATER_CORE_SDBU_OLD_PRICES_DELETER_H_
+#ifndef VH_STK_CORE_OSPD_IMPL_H_
+#define VH_STK_CORE_OSPD_IMPL_H_
 
 #include <absl/time/time.h>
 
@@ -28,4 +28,4 @@ class Impl {
 };
 }  // namespace vh::stk::core::ospd
 
-#endif  // STONKS_APP_CORE_SYMBOLS_DB_UPDATER_CORE_SDBU_OLD_PRICES_DELETER_H_
+#endif  // VH_STK_CORE_OSPD_IMPL_H_

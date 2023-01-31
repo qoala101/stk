@@ -1,5 +1,5 @@
-#ifndef STONKS_CLI_CLI_APP_H_
-#define STONKS_CLI_CLI_APP_H_
+#ifndef VH_CLI_APP_H_
+#define VH_CLI_APP_H_
 
 #include "cli_options.h"
 #include "cli_run_scope.h"
@@ -53,4 +53,4 @@ class App {
 };
 }  // namespace vh::cli
 
-#endif  // STONKS_CLI_CLI_APP_H_
+#endif  // VH_CLI_APP_H_

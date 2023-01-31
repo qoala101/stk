@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COMMON_H_
-#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COMMON_H_
+#ifndef VH_SQLDB_QB_COMMON_H_
+#define VH_SQLDB_QB_COMMON_H_
 
 #include "cpp_meta_template_constructor.h"
 #include "sqldb_concepts.h"
@@ -45,4 +45,4 @@ auto ParamForColumn [[nodiscard]] () -> QueryValue {
 }
 }  // namespace vh::sqldb::qb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COMMON_H_
+#endif  // VH_SQLDB_QB_COMMON_H_

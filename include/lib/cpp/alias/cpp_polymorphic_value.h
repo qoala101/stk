@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_ALIAS_CPP_POLYMORPHIC_VALUE_H_
-#define STONKS_CPP_ALIAS_CPP_POLYMORPHIC_VALUE_H_
+#ifndef VH_CPP_POLYMORPHIC_VALUE_H_
+#define VH_CPP_POLYMORPHIC_VALUE_H_
 
 #include <polymorphic_value.h>
 
@@ -20,4 +20,4 @@ auto MakePv [[nodiscard]] (Args &&...args) {
 }
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_ALIAS_CPP_POLYMORPHIC_VALUE_H_
+#endif  // VH_CPP_POLYMORPHIC_VALUE_H_

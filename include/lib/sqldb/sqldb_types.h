@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_TYPES_H_
-#define STONKS_SQLDB_SQLDB_TYPES_H_
+#ifndef VH_SQLDB_TYPES_H_
+#define VH_SQLDB_TYPES_H_
 
 #include <stdint.h>
 
@@ -70,4 +70,4 @@ struct SelectQuery : public Query {
 };
 }  // namespace vh::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_TYPES_H_
+#endif  // VH_SQLDB_TYPES_H_

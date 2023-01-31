@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_CPP_SHARE_H_
-#define STONKS_CPP_CPP_SHARE_H_
+#ifndef VH_CPP_SHARE_H_
+#define VH_CPP_SHARE_H_
 
 #include <type_traits>
 
@@ -31,4 +31,4 @@ auto Share(NnUp<T> t) {
 }
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_CPP_SHARE_H_
+#endif  // VH_CPP_SHARE_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_I_DB_H_
-#define STONKS_SQLDB_SQLDB_I_DB_H_
+#ifndef VH_SQLDB_I_DB_H_
+#define VH_SQLDB_I_DB_H_
 
 #include "cpp_not_null.h"
 #include "sqldb_concepts.h"  // IWYU pragma: keep
@@ -45,4 +45,4 @@ class IDb {
 };
 }  // namespace vh::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_I_DB_H_
+#endif  // VH_SQLDB_I_DB_H_

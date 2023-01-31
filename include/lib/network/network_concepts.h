@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_CONCEPTS_H_
-#define STONKS_NETWORK_NETWORK_CONCEPTS_H_
+#ifndef VH_NETWORK_CONCEPTS_H_
+#define VH_NETWORK_CONCEPTS_H_
 
 #include "network_i_json.h"
 #include "network_json_base_conversions.h"
@@ -22,4 +22,4 @@ concept Convertible = !
 std::same_as<T, void>;
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_CONCEPTS_H_
+#endif  // VH_NETWORK_CONCEPTS_H_

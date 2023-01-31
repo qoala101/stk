@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_ALIAS_CPP_NOT_NULL_H_
-#define STONKS_CPP_ALIAS_CPP_NOT_NULL_H_
+#ifndef VH_CPP_NOT_NULL_H_
+#define VH_CPP_NOT_NULL_H_
 
 #include <not_null.hpp>
 
@@ -43,4 +43,4 @@ auto MakeNnSp [[nodiscard]] (Args &&...args) {
 }
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_ALIAS_CPP_NOT_NULL_H_
+#endif  // VH_CPP_NOT_NULL_H_

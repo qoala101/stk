@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
-#define STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
+#ifndef VH_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
+#define VH_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
 
 #include <absl/container/flat_hash_map.h>
 #include <cppcoro/task.hpp>
@@ -35,4 +35,4 @@ class EndpointRequestDispatcher : public IRestRequestHandler {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_
+#endif  // VH_NETWORK_ENDPOINT_REQUEST_DISPATCHER_H_

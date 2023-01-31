@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_TIMER_CPP_TIMER_REATTEMPT_POLICY_H_
-#define STONKS_CPP_TIMER_CPP_TIMER_REATTEMPT_POLICY_H_
+#ifndef VH_CPP_TIMER_REATTEMPT_POLICY_H_
+#define VH_CPP_TIMER_REATTEMPT_POLICY_H_
 
 #include <absl/time/time.h>
 
@@ -13,4 +13,4 @@ struct ReattemptPolicy {
 };
 }  // namespace vh::cpp::timer
 
-#endif  // STONKS_CPP_TIMER_CPP_TIMER_REATTEMPT_POLICY_H_
+#endif  // VH_CPP_TIMER_REATTEMPT_POLICY_H_

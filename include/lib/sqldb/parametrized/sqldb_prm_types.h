@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_PARAMETRIZED_SQLDB_P_TYPES_H_
-#define STONKS_SQLDB_PARAMETRIZED_SQLDB_P_TYPES_H_
+#ifndef VH_SQLDB_PRM_TYPES_H_
+#define VH_SQLDB_PRM_TYPES_H_
 
 #include <concepts>
 #include <vector>
@@ -33,4 +33,4 @@ struct Parametrized : public Query {
 };
 }  // namespace vh::sqldb::p
 
-#endif  // STONKS_SQLDB_PARAMETRIZED_SQLDB_P_TYPES_H_
+#endif  // VH_SQLDB_PRM_TYPES_H_

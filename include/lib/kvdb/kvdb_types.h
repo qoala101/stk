@@ -1,5 +1,5 @@
-#ifndef STONKS_KVDB_KVDB_TYPES_H_
-#define STONKS_KVDB_KVDB_TYPES_H_
+#ifndef VH_KVDB_TYPES_H_
+#define VH_KVDB_TYPES_H_
 
 #include <string>
 
@@ -29,4 +29,4 @@ struct Item {
 };
 }  // namespace vh::kvdb
 
-#endif  // STONKS_KVDB_KVDB_TYPES_H_
+#endif  // VH_KVDB_TYPES_H_

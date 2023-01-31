@@ -1,5 +1,5 @@
-#ifndef STONKS_LOG_LOG_LOGGER_H_
-#define STONKS_LOG_LOG_LOGGER_H_
+#ifndef VH_LOG_I_LOGGER_H_
+#define VH_LOG_I_LOGGER_H_
 
 #include <string>
 
@@ -33,4 +33,4 @@ class ILogger {
 };
 }  // namespace vh::log
 
-#endif  // STONKS_LOG_LOG_LOGGER_H_
+#endif  // VH_LOG_I_LOGGER_H_

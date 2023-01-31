@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_JSON_COMMON_CONVERSIONS_H_
-#define STONKS_NETWORK_NETWORK_JSON_COMMON_CONVERSIONS_H_
+#ifndef VH_NETWORK_JSON_COMMON_CONVERSIONS_H_
+#define VH_NETWORK_JSON_COMMON_CONVERSIONS_H_
 
 #include <exception>
 #include <gsl/util>
@@ -194,4 +194,4 @@ auto ConvertToJson [[nodiscard]] (T *value) {
 }
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_JSON_COMMON_CONVERSIONS_H_
+#endif  // VH_NETWORK_JSON_COMMON_CONVERSIONS_H_

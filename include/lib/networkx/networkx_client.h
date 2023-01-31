@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORKX_NETWORKX_CLIENT_H_
-#define STONKS_NETWORKX_NETWORKX_CLIENT_H_
+#ifndef VH_NETWORKX_CLIENT_H_
+#define VH_NETWORKX_CLIENT_H_
 
 #include <concepts>
 #include <cppcoro/task.hpp>
@@ -98,4 +98,4 @@ class Client {
 };
 }  // namespace vh::networkx
 
-#endif  // STONKS_NETWORKX_NETWORKX_CLIENT_H_
+#endif  // VH_NETWORKX_CLIENT_H_

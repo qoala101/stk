@@ -1,5 +1,5 @@
-#ifndef STONKS_NGROK_NGROK_API_H_
-#define STONKS_NGROK_NGROK_API_H_
+#ifndef VH_NGROK_API_H_
+#define VH_NGROK_API_H_
 
 #include <cppcoro/task.hpp>
 #include <string>
@@ -33,4 +33,4 @@ class NgrokApi {
 };
 }  // namespace vh::ngrok
 
-#endif  // STONKS_NGROK_NGROK_API_H_
+#endif  // VH_NGROK_API_H_

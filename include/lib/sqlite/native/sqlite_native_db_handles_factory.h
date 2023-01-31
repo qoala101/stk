@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_HANDLES_FACTORY_H_
-#define STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_HANDLES_FACTORY_H_
+#ifndef VH_SQLITE_NATIVE_DB_HANDLES_FACTORY_H_
+#define VH_SQLITE_NATIVE_DB_HANDLES_FACTORY_H_
 
 #include "cpp_not_null.h"
 #include "log_i_logger.h"
@@ -41,4 +41,4 @@ class NativeDbHandlesFactory {
 };
 }  // namespace vh::sqlite
 
-#endif  // STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_HANDLES_FACTORY_H_
+#endif  // VH_SQLITE_NATIVE_DB_HANDLES_FACTORY_H_

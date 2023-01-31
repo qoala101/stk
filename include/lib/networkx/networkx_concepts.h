@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORKX_NETWORKX_CONCEPTS_H_
-#define STONKS_NETWORKX_NETWORKX_CONCEPTS_H_
+#ifndef VH_NETWORKX_CONCEPTS_H_
+#define VH_NETWORKX_CONCEPTS_H_
 
 #include <callable.hpp>
 #include <concepts>
@@ -95,4 +95,4 @@ concept WebSocketReceiverSender =
     };
 }  // namespace vh::networkx
 
-#endif  // STONKS_NETWORKX_NETWORKX_CONCEPTS_H_
+#endif  // VH_NETWORKX_CONCEPTS_H_

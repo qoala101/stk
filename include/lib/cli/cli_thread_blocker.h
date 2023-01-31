@@ -1,5 +1,5 @@
-#ifndef STONKS_CLI_CLI_THREAD_BLOCKER_H_
-#define STONKS_CLI_CLI_THREAD_BLOCKER_H_
+#ifndef VH_CLI_THREAD_BLOCKER_H_
+#define VH_CLI_THREAD_BLOCKER_H_
 
 #include <condition_variable>
 #include <mutex>
@@ -26,4 +26,4 @@ class ThreadBlocker {
 };
 }  // namespace vh::cli
 
-#endif  // STONKS_CLI_CLI_THREAD_BLOCKER_H_
+#endif  // VH_CLI_THREAD_BLOCKER_H_

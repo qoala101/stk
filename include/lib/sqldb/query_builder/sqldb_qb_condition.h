@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CONDITION_H_
-#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CONDITION_H_
+#ifndef VH_SQLDB_QB_CONDITION_H_
+#define VH_SQLDB_QB_CONDITION_H_
 
 #include <string_view>
 
@@ -34,4 +34,4 @@ class Condition : public QueryWrapper {
 };
 }  // namespace vh::sqldb::qb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CONDITION_H_
+#endif  // VH_SQLDB_QB_CONDITION_H_

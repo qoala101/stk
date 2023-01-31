@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_TIMER_CPP_TIMER_H_
-#define STONKS_CPP_TIMER_CPP_TIMER_H_
+#ifndef VH_CPP_TIMER_H_
+#define VH_CPP_TIMER_H_
 
 #include <thread>
 
@@ -32,4 +32,4 @@ class Timer {
 };
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_TIMER_CPP_TIMER_H_
+#endif  // VH_CPP_TIMER_H_

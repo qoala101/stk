@@ -1,5 +1,5 @@
-#ifndef STONKS_DI_DI_BIND_TYPE_TO_VALUE_H_
-#define STONKS_DI_DI_BIND_TYPE_TO_VALUE_H_
+#ifndef VH_DI_BIND_TYPE_TO_VALUE_H_
+#define VH_DI_BIND_TYPE_TO_VALUE_H_
 
 #include <boost/di.hpp>
 
@@ -13,4 +13,4 @@ auto BindTypeToValue [[nodiscard]] (Value &&value) {
 }
 }  // namespace vh::di
 
-#endif  // STONKS_DI_DI_BIND_TYPE_TO_VALUE_H_
+#endif  // VH_DI_BIND_TYPE_TO_VALUE_H_

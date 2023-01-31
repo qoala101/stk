@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_I_WS_CLIENT_H_
-#define STONKS_NETWORK_NETWORK_I_WS_CLIENT_H_
+#ifndef VH_NETWORK_I_WS_CLIENT_H_
+#define VH_NETWORK_I_WS_CLIENT_H_
 
 #include <cppcoro/task.hpp>
 
@@ -34,4 +34,4 @@ class IWsClient {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_I_WS_CLIENT_H_
+#endif  // VH_NETWORK_I_WS_CLIENT_H_

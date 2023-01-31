@@ -1,5 +1,5 @@
-#ifndef STONKS_RESTSDK_RESTSDK_CALL_AS_COROUTINE_H_
-#define STONKS_RESTSDK_RESTSDK_CALL_AS_COROUTINE_H_
+#ifndef VH_RESTSDK_CALL_AS_COROUTINE_H_
+#define VH_RESTSDK_CALL_AS_COROUTINE_H_
 
 #include <cppcoro/single_consumer_event.hpp>
 #include <cppcoro/task.hpp>
@@ -39,4 +39,4 @@ auto CallAsCoroutine [[nodiscard]] (const pplx::task<T> &task)
 }
 }  // namespace vh::restsdk
 
-#endif  // STONKS_RESTSDK_RESTSDK_CALL_AS_COROUTINE_H_
+#endif  // VH_RESTSDK_CALL_AS_COROUTINE_H_

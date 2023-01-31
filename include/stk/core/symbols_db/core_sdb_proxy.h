@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_SYMBOLS_DB_CORE_SYMBOLS_DB_PROXY_H_
-#define STONKS_APP_CORE_SYMBOLS_DB_CORE_SYMBOLS_DB_PROXY_H_
+#ifndef VH_STK_CORE_SDB_PROXY_H_
+#define VH_STK_CORE_SDB_PROXY_H_
 
 #include "core_i_symbols_db.h"
 
@@ -76,4 +76,4 @@ class Proxy : public ISymbolsDb {
 };
 }  // namespace vh::stk::core::sdb
 
-#endif  // STONKS_APP_CORE_SYMBOLS_DB_CORE_SYMBOLS_DB_PROXY_H_
+#endif  // VH_STK_CORE_SDB_PROXY_H_

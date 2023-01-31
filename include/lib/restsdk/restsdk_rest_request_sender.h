@@ -1,5 +1,5 @@
-#ifndef STONKS_RESTSDK_RESTSDK_REST_REQUEST_SENDER_H_
-#define STONKS_RESTSDK_RESTSDK_REST_REQUEST_SENDER_H_
+#ifndef VH_RESTSDK_REST_REQUEST_SENDER_H_
+#define VH_RESTSDK_REST_REQUEST_SENDER_H_
 
 #include <cppcoro/task.hpp>
 
@@ -50,4 +50,4 @@ class RestRequestSender : public network::IRestRequestSender {
 };
 }  // namespace vh::restsdk
 
-#endif  // STONKS_RESTSDK_RESTSDK_REST_REQUEST_SENDER_H_
+#endif  // VH_RESTSDK_REST_REQUEST_SENDER_H_

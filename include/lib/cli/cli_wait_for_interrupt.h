@@ -1,5 +1,5 @@
-#ifndef STONKS_CLI_CLI_WAIT_FOR_INTERRUPT_H_
-#define STONKS_CLI_CLI_WAIT_FOR_INTERRUPT_H_
+#ifndef VH_CLI_WAIT_FOR_INTERRUPT_H_
+#define VH_CLI_WAIT_FOR_INTERRUPT_H_
 
 namespace vh::cli {
 /**
@@ -8,4 +8,4 @@ namespace vh::cli {
 void WaitForInterrupt();
 }  // namespace vh::cli
 
-#endif  // STONKS_CLI_CLI_WAIT_FOR_INTERRUPT_H_
+#endif  // VH_CLI_WAIT_FOR_INTERRUPT_H_

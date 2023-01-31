@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_CPP_CONCEPTS_H_
-#define STONKS_CPP_CPP_CONCEPTS_H_
+#ifndef VH_CPP_CONCEPTS_H_
+#define VH_CPP_CONCEPTS_H_
 
 #include <callable.hpp>
 #include <member_function.hpp>
@@ -122,4 +122,4 @@ concept NonVoidCallableTaking =
 VoidCallableTaking<T, Args...>;
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_CPP_CONCEPTS_H_
+#endif  // VH_CPP_CONCEPTS_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_CPP_TYPED_STRUCT_H_
-#define STONKS_CPP_CPP_TYPED_STRUCT_H_
+#ifndef VH_CPP_TYPED_STRUCT_H_
+#define VH_CPP_TYPED_STRUCT_H_
 
 #include <compare>
 #include <ostream>
@@ -81,4 +81,4 @@ struct TypedStruct {
 };
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_CPP_TYPED_STRUCT_H_
+#endif  // VH_CPP_TYPED_STRUCT_H_

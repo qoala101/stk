@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_VALUE_CONVERSIONS_H_
-#define STONKS_SQLDB_SQLDB_VALUE_CONVERSIONS_H_
+#ifndef VH_SQLDB_VALUE_CONVERSIONS_H_
+#define VH_SQLDB_VALUE_CONVERSIONS_H_
 
 #include <type_traits>
 #include <utility>
@@ -58,4 +58,4 @@ auto AsValues [[nodiscard]] (Args &&...args) {
 }
 }  // namespace vh::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_VALUE_CONVERSIONS_H_
+#endif  // VH_SQLDB_VALUE_CONVERSIONS_H_

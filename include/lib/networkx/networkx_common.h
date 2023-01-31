@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORKX_NETWORKX_COMMON_H_
-#define STONKS_NETWORKX_NETWORKX_COMMON_H_
+#ifndef VH_NETWORKX_COMMON_H_
+#define VH_NETWORKX_COMMON_H_
 
 #include <shared_mutex>
 #include <tuple>
@@ -26,4 +26,4 @@ constexpr auto EndpointFunctionList [[nodiscard]] (Args &&...args) {
 }
 }  // namespace vh::networkx
 
-#endif  // STONKS_NETWORKX_NETWORKX_COMMON_H_
+#endif  // VH_NETWORKX_COMMON_H_

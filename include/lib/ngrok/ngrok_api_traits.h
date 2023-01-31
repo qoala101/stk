@@ -1,5 +1,5 @@
-#ifndef STONKS_NGROK_NGROK_API_TRAITS_H_
-#define STONKS_NGROK_NGROK_API_TRAITS_H_
+#ifndef VH_NGROK_API_TRAITS_H_
+#define VH_NGROK_API_TRAITS_H_
 
 #include "networkx_common.h"
 #include "networkx_types.h"
@@ -18,4 +18,4 @@ struct ClientServerTypeTraits<ngrok::NgrokApi> {
 };
 }  // namespace vh::networkx
 
-#endif  // STONKS_NGROK_NGROK_API_TRAITS_H_
+#endif  // VH_NGROK_API_TRAITS_H_

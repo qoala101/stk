@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_PARAMETRIZED_SQLDB_P_UPDATE_STATEMENT_H_
-#define STONKS_SQLDB_PARAMETRIZED_SQLDB_P_UPDATE_STATEMENT_H_
+#ifndef VH_SQLDB_PRM_UPDATE_STATEMENT_H_
+#define VH_SQLDB_PRM_UPDATE_STATEMENT_H_
 
 #include <vector>
 
@@ -31,4 +31,4 @@ class UpdateStatement : public IUpdateStatement {
 };
 }  // namespace vh::sqldb::p
 
-#endif  // STONKS_SQLDB_PARAMETRIZED_SQLDB_P_UPDATE_STATEMENT_H_
+#endif  // VH_SQLDB_PRM_UPDATE_STATEMENT_H_

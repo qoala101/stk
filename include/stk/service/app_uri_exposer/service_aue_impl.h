@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_AUE_IMPL_H_
-#define STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_AUE_IMPL_H_
+#ifndef VH_STK_SERVICE_AUE_IMPL_H_
+#define VH_STK_SERVICE_AUE_IMPL_H_
 
 #include <cppcoro/task.hpp>
 
@@ -35,4 +35,4 @@ class Impl {
 };
 }  // namespace vh::stk::service::aue
 
-#endif  // STONKS_APP_SERVICE_APP_URI_EXPOSER_SERVICE_AUE_IMPL_H_
+#endif  // VH_STK_SERVICE_AUE_IMPL_H_

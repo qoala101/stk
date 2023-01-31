@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_VALUE_H_
-#define STONKS_SQLDB_SQLDB_VALUE_H_
+#ifndef VH_SQLDB_VALUE_H_
+#define VH_SQLDB_VALUE_H_
 
 #include <cstdint>
 #include <string>
@@ -65,4 +65,4 @@ class Value : public cpp::VariantStruct<std::monostate, bool, int, int64_t,
 };
 }  // namespace vh::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_VALUE_H_
+#endif  // VH_SQLDB_VALUE_H_

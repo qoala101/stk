@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_WS_CLIENT_H_
-#define STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_WS_CLIENT_H_
+#ifndef VH_NETWORK_TYPED_WS_CLIENT_H_
+#define VH_NETWORK_TYPED_WS_CLIENT_H_
 
 #include <cppcoro/task.hpp>
 
@@ -39,4 +39,4 @@ class TypedWsClient : public IWsClient {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_TYPED_ENDPOINT_NETWORK_TYPED_WS_CLIENT_H_
+#endif  // VH_NETWORK_TYPED_WS_CLIENT_H_

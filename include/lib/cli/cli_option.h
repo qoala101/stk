@@ -1,5 +1,5 @@
-#ifndef STONKS_CLI_CLI_OPTION_H_
-#define STONKS_CLI_CLI_OPTION_H_
+#ifndef VH_CLI_OPTION_H_
+#define VH_CLI_OPTION_H_
 
 #include "cli_concepts.h"
 #include "cli_option_value_variant.h"
@@ -52,4 +52,4 @@ class Option : public detail::OptionBase {
 };
 }  // namespace vh::cli
 
-#endif  // STONKS_CLI_CLI_OPTION_H_
+#endif  // VH_CLI_OPTION_H_

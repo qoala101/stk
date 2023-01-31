@@ -1,5 +1,5 @@
-#ifndef STONKS_RESTSDK_RESTSDK_JSON_H_
-#define STONKS_RESTSDK_RESTSDK_JSON_H_
+#ifndef VH_RESTSDK_JSON_H_
+#define VH_RESTSDK_JSON_H_
 
 #include <cstdint>
 #include <string>
@@ -90,4 +90,4 @@ class Json : public network::IJson {
 };
 }  // namespace vh::restsdk
 
-#endif  // STONKS_RESTSDK_RESTSDK_JSON_H_
+#endif  // VH_RESTSDK_JSON_H_

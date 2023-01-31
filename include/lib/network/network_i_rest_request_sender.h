@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_I_REST_REQUEST_SENDER_H_
-#define STONKS_NETWORK_NETWORK_I_REST_REQUEST_SENDER_H_
+#ifndef VH_NETWORK_I_REST_REQUEST_SENDER_H_
+#define VH_NETWORK_I_REST_REQUEST_SENDER_H_
 
 #include <cppcoro/task.hpp>
 #include <utility>
@@ -24,4 +24,4 @@ class IRestRequestSender {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_I_REST_REQUEST_SENDER_H_
+#endif  // VH_NETWORK_I_REST_REQUEST_SENDER_H_

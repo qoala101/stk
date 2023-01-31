@@ -1,5 +1,5 @@
-#ifndef STONKS_RESTSDK_RESTSDK_PARSE_JSON_FOM_STRING_H_
-#define STONKS_RESTSDK_RESTSDK_PARSE_JSON_FOM_STRING_H_
+#ifndef VH_RESTSDK_PARSE_JSON_FOM_STRING_H_
+#define VH_RESTSDK_PARSE_JSON_FOM_STRING_H_
 
 #include <string>
 
@@ -14,4 +14,4 @@ auto ParseJsonFromString [[nodiscard]] (const std::string &value)
 -> cpp::Pv<network::IJson>;
 }  // namespace vh::restsdk
 
-#endif  // STONKS_RESTSDK_RESTSDK_PARSE_JSON_FOM_STRING_H_
+#endif  // VH_RESTSDK_PARSE_JSON_FOM_STRING_H_

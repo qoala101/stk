@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_I_JSON_H_
-#define STONKS_NETWORK_NETWORK_I_JSON_H_
+#ifndef VH_NETWORK_I_JSON_H_
+#define VH_NETWORK_I_JSON_H_
 
 #include <string>
 #include <string_view>
@@ -75,4 +75,4 @@ class IJson {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_I_JSON_H_
+#endif  // VH_NETWORK_I_JSON_H_

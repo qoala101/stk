@@ -1,5 +1,5 @@
-#ifndef STONKS_AWS_DYNAMODB_AWS_DYNAMODB_CALL_AS_COROUTINE_H_
-#define STONKS_AWS_DYNAMODB_AWS_DYNAMODB_CALL_AS_COROUTINE_H_
+#ifndef VH_AWS_DYNAMODB_CALL_AS_COROUTINE_H_
+#define VH_AWS_DYNAMODB_CALL_AS_COROUTINE_H_
 
 #include <callable.hpp>
 #include <cppcoro/single_consumer_event.hpp>
@@ -44,4 +44,4 @@ auto CallAsCoroutine
 }
 }  // namespace vh::aws::dynamodb
 
-#endif  // STONKS_AWS_DYNAMODB_AWS_DYNAMODB_CALL_AS_COROUTINE_H_
+#endif  // VH_AWS_DYNAMODB_CALL_AS_COROUTINE_H_

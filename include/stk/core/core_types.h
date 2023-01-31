@@ -1,5 +1,5 @@
-#ifndef STONKS_CORE_CORE_TYPES_H_
-#define STONKS_CORE_CORE_TYPES_H_
+#ifndef VH_STK_CORE_TYPES_H_
+#define VH_STK_CORE_TYPES_H_
 
 #include <absl/time/time.h>
 
@@ -77,4 +77,4 @@ struct SymbolPriceRecord {
 enum class TimeOrder { kNewFirst, kOldFirst };
 }  // namespace vh::stk::core
 
-#endif  // STONKS_CORE_CORE_TYPES_H_
+#endif  // VH_STK_CORE_TYPES_H_

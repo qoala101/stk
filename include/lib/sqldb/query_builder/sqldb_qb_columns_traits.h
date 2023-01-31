@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COLUMNS_TRAITS_H_
-#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COLUMNS_TRAITS_H_
+#ifndef VH_SQLDB_QB_COLUMNS_TRAITS_H_
+#define VH_SQLDB_QB_COLUMNS_TRAITS_H_
 
 #include <string>
 
@@ -100,4 +100,4 @@ struct ColumnsTraits<cpp::TypeList<Columns...>> {
 };
 }  // namespace vh::sqldb::qb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_COLUMNS_TRAITS_H_
+#endif  // VH_SQLDB_QB_COLUMNS_TRAITS_H_

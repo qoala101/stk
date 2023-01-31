@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_JSON_BASE_CONVERSIONS_H_
-#define STONKS_NETWORK_NETWORK_JSON_BASE_CONVERSIONS_H_
+#ifndef VH_NETWORK_JSON_BASE_CONVERSIONS_H_
+#define VH_NETWORK_JSON_BASE_CONVERSIONS_H_
 
 #include <polymorphic_value.h>
 
@@ -59,4 +59,4 @@ auto ConvertToJson [[nodiscard]] (double value) -> cpp::Pv<IJson>;
 auto ConvertToJson [[nodiscard]] (std::string_view value) -> cpp::Pv<IJson>;
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_JSON_BASE_CONVERSIONS_H_
+#endif  // VH_NETWORK_JSON_BASE_CONVERSIONS_H_

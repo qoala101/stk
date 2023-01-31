@@ -1,5 +1,5 @@
-#ifndef STONKS_DI_DI_BIND_TYPE_TO_OTHER_TYPE_H_
-#define STONKS_DI_DI_BIND_TYPE_TO_OTHER_TYPE_H_
+#ifndef VH_DI_BIND_TYPE_TO_OTHER_TYPE_H_
+#define VH_DI_BIND_TYPE_TO_OTHER_TYPE_H_
 
 #include <boost/di.hpp>
 #include <type_traits>
@@ -26,4 +26,4 @@ auto BindTypeToOtherType [[nodiscard]] () {
 }
 }  // namespace vh::di
 
-#endif  // STONKS_DI_DI_BIND_TYPE_TO_OTHER_TYPE_H_
+#endif  // VH_DI_BIND_TYPE_TO_OTHER_TYPE_H_

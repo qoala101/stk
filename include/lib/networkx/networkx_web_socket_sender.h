@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORKX_NETWORKX_WEB_SOCKET_SENDER_H_
-#define STONKS_NETWORKX_NETWORKX_WEB_SOCKET_SENDER_H_
+#ifndef VH_NETWORKX_WEB_SOCKET_SENDER_H_
+#define VH_NETWORKX_WEB_SOCKET_SENDER_H_
 
 #include <concepts>
 #include <cppcoro/task.hpp>
@@ -61,4 +61,4 @@ class WebSocketSender : public detail::WebSocketSenderBase {
 };
 }  // namespace vh::networkx
 
-#endif  // STONKS_NETWORKX_NETWORKX_WEB_SOCKET_SENDER_H_
+#endif  // VH_NETWORKX_WEB_SOCKET_SENDER_H_

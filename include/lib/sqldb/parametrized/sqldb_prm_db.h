@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_PARAMETRIZED_SQLDB_P_DB_H_
-#define STONKS_SQLDB_PARAMETRIZED_SQLDB_P_DB_H_
+#ifndef VH_SQLDB_PRM_DB_H_
+#define VH_SQLDB_PRM_DB_H_
 
 #include "cpp_not_null.h"
 #include "cpp_this.h"
@@ -45,4 +45,4 @@ class Db {
 };
 }  // namespace vh::sqldb::p
 
-#endif  // STONKS_SQLDB_PARAMETRIZED_SQLDB_P_DB_H_
+#endif  // VH_SQLDB_PRM_DB_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_CLI_CLI_RUN_SCOPE_H_
-#define STONKS_CLI_CLI_RUN_SCOPE_H_
+#ifndef VH_CLI_RUN_SCOPE_H_
+#define VH_CLI_RUN_SCOPE_H_
 
 #include "cpp_not_null.h"
 
@@ -33,4 +33,4 @@ class RunScope {
 };
 }  // namespace vh::cli
 
-#endif  // STONKS_CLI_CLI_RUN_SCOPE_H_
+#endif  // VH_CLI_RUN_SCOPE_H_

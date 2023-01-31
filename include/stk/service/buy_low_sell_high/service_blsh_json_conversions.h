@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_BUY_LOW_SELL_HIGH_SERVICE_BLSH_JSON_CONVERSIONS_H_
-#define STONKS_APP_SERVICE_BUY_LOW_SELL_HIGH_SERVICE_BLSH_JSON_CONVERSIONS_H_
+#ifndef VH_STK_SERVICE_BLSH_JSON_CONVERSIONS_H_
+#define VH_STK_SERVICE_BLSH_JSON_CONVERSIONS_H_
 
 #include "core_blsh_types.h"
 #include "cpp_polymorphic_value.h"
@@ -10,4 +10,4 @@ auto ConvertToJson [[nodiscard]] (const stk::core::blsh::Operation &value)
 -> cpp::Pv<IJson>;
 }  // namespace vh::network
 
-#endif  // STONKS_APP_SERVICE_BUY_LOW_SELL_HIGH_SERVICE_BLSH_JSON_CONVERSIONS_H_
+#endif  // VH_STK_SERVICE_BLSH_JSON_CONVERSIONS_H_

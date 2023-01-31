@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_FILE_HANDLE_H_
-#define STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_FILE_HANDLE_H_
+#ifndef VH_SQLITE_NATIVE_DB_FILE_HANDLE_H_
+#define VH_SQLITE_NATIVE_DB_FILE_HANDLE_H_
 
 #include "cpp_this.h"  // IWYU pragma: keep
 #include "log_i_logger.h"
@@ -54,4 +54,4 @@ class NativeDbFileHandle {
 };
 }  // namespace vh::sqlite
 
-#endif  // STONKS_SQLITE_NATIVE_SQLITE_NATIVE_DB_FILE_HANDLE_H_
+#endif  // VH_SQLITE_NATIVE_DB_FILE_HANDLE_H_

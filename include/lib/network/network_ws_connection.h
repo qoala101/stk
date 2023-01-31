@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_WS_CONNECTION_H_
-#define STONKS_NETWORK_NETWORK_WS_CONNECTION_H_
+#ifndef VH_NETWORK_WS_CONNECTION_H_
+#define VH_NETWORK_WS_CONNECTION_H_
 
 #include <cppcoro/task.hpp>
 #include <utility>
@@ -34,4 +34,4 @@ class WsConnection {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_WS_CONNECTION_H_
+#endif  // VH_NETWORK_WS_CONNECTION_H_

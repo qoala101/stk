@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CREATE_H_
-#define STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CREATE_H_
+#ifndef VH_SQLDB_QB_CREATE_H_
+#define VH_SQLDB_QB_CREATE_H_
 
 #include <string>
 #include <vector>
@@ -50,4 +50,4 @@ class Create {
 };
 }  // namespace vh::sqldb::qb
 
-#endif  // STONKS_SQLDB_QUERY_BUILDER_SQLDB_QB_CREATE_H_
+#endif  // VH_SQLDB_QB_CREATE_H_

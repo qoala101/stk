@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_STREAM_HANDLE_H_
-#define STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_STREAM_HANDLE_H_
+#ifndef VH_STK_CORE_SPS_STREAM_HANDLE_H_
+#define VH_STK_CORE_SPS_STREAM_HANDLE_H_
 
 #include "core_sps_stream_factory.h"
 #include "cpp_timer.h"
@@ -25,4 +25,4 @@ class StreamHandle {
 };
 }  // namespace vh::stk::core::sps
 
-#endif  // STONKS_APP_CORE_SYMBOL_PRICE_STREAMS_CORE_SPS_STREAM_HANDLE_H_
+#endif  // VH_STK_CORE_SPS_STREAM_HANDLE_H_

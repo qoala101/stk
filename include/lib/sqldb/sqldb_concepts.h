@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_CONCEPTS_H_
-#define STONKS_SQLDB_SQLDB_CONCEPTS_H_
+#ifndef VH_SQLDB_CONCEPTS_H_
+#define VH_SQLDB_CONCEPTS_H_
 
 #include <concepts>
 #include <type_traits>
@@ -31,4 +31,4 @@ concept ColumnDefinition = requires {
                            };
 }  // namespace vh::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_CONCEPTS_H_
+#endif  // VH_SQLDB_CONCEPTS_H_

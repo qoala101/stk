@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_CLIENT_SERVER_H_
-#define STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_CLIENT_SERVER_H_
+#ifndef VH_STK_SERVICE_INJ_CLIENT_SERVER_H_
+#define VH_STK_SERVICE_INJ_CLIENT_SERVER_H_
 
 #include <type_traits>
 
@@ -49,4 +49,4 @@ auto CreateServerInjector(const ServerOptions<Target> &options) {
 }
 }  // namespace vh::stk::service::inj
 
-#endif  // STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_CLIENT_SERVER_H_
+#endif  // VH_STK_SERVICE_INJ_CLIENT_SERVER_H_

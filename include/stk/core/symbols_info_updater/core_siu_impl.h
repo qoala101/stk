@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_SYMBOLS_INFO_UPDATER_CORE_SIU_IMPL_H_
-#define STONKS_APP_CORE_SYMBOLS_INFO_UPDATER_CORE_SIU_IMPL_H_
+#ifndef VH_STK_CORE_SIU_IMPL_H_
+#define VH_STK_CORE_SIU_IMPL_H_
 
 #include <absl/time/time.h>
 
@@ -31,4 +31,4 @@ class Impl {
 };
 }  // namespace vh::stk::core::siu
 
-#endif  // STONKS_APP_CORE_SYMBOLS_INFO_UPDATER_CORE_SIU_IMPL_H_
+#endif  // VH_STK_CORE_SIU_IMPL_H_

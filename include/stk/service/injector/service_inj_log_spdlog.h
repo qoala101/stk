@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_COMMON_COMMON_CREATE_LOG_SPDLOG_INJECTOR_H_
-#define STONKS_APP_COMMON_COMMON_CREATE_LOG_SPDLOG_INJECTOR_H_
+#ifndef VH_STK_SERVICE_INJ_LOG_SPDLOG_H_
+#define VH_STK_SERVICE_INJ_LOG_SPDLOG_H_
 
 #include "di_bind_interface_to_implementation.h"
 #include "di_make_injector.h"
@@ -13,4 +13,4 @@ inline auto CreateLogSpdlogInjector [[nodiscard]] () {
 }
 }  // namespace vh::stk::service
 
-#endif  // STONKS_APP_COMMON_COMMON_CREATE_LOG_SPDLOG_INJECTOR_H_
+#endif  // VH_STK_SERVICE_INJ_LOG_SPDLOG_H_

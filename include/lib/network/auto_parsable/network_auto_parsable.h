@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_H_
-#define STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_H_
+#ifndef VH_NETWORK_AUTO_PARSABLE_H_
+#define VH_NETWORK_AUTO_PARSABLE_H_
 
 #include <polymorphic_value.h>
 
@@ -64,4 +64,4 @@ class AutoParsable {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_AUTO_PARSABLE_NETWORK_AUTO_PARSABLE_H_
+#endif  // VH_NETWORK_AUTO_PARSABLE_H_

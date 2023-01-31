@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_SYNCHRONIZATION_CPP_LOCK_H_
-#define STONKS_CPP_SYNCHRONIZATION_CPP_LOCK_H_
+#ifndef VH_CPP_LOCK_H_
+#define VH_CPP_LOCK_H_
 
 #include <mutex>
 #include <variant>
@@ -28,4 +28,4 @@ class Lock {
 using LockVariant = std::variant<std::monostate, Lock>;
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_SYNCHRONIZATION_CPP_LOCK_H_
+#endif  // VH_CPP_LOCK_H_

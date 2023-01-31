@@ -1,5 +1,5 @@
-#ifndef STONKS_DI_DI_AUTO_INJECTABLE_H_
-#define STONKS_DI_DI_AUTO_INJECTABLE_H_
+#ifndef VH_DI_AUTO_INJECTABLE_H_
+#define VH_DI_AUTO_INJECTABLE_H_
 
 #include "cpp_not_null.h"
 
@@ -27,4 +27,4 @@ class AutoInjectable {
 };
 }  // namespace vh::di
 
-#endif  // STONKS_DI_DI_AUTO_INJECTABLE_H_
+#endif  // VH_DI_AUTO_INJECTABLE_H_

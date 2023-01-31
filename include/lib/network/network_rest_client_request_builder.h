@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
-#define STONKS_NETWORK_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
+#ifndef VH_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
+#define VH_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
 
 #include <cppcoro/task.hpp>
 #include <string>
@@ -90,4 +90,4 @@ class RequestBuilder {
 };
 }  // namespace vh::network::rest_client
 
-#endif  // STONKS_NETWORK_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_
+#endif  // VH_NETWORK_REST_CLIENT_REQUEST_BUILDER_H_

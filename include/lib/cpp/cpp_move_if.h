@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_CPP_MOVE_IF_H_
-#define STONKS_CPP_CPP_MOVE_IF_H_
+#ifndef VH_CPP_MOVE_IF_H_
+#define VH_CPP_MOVE_IF_H_
 
 #include "cpp_concepts.h"  // IWYU pragma: keep
 
@@ -39,4 +39,4 @@ auto MoveIfNotConst(U &&value) -> auto && {
 }
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_CPP_MOVE_IF_H_
+#endif  // VH_CPP_MOVE_IF_H_

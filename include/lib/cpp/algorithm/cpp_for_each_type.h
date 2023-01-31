@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_ALGORITHM_CPP_FOR_EACH_TYPE_H_
-#define STONKS_CPP_ALGORITHM_CPP_FOR_EACH_TYPE_H_
+#ifndef VH_CPP_FOR_EACH_TYPE_H_
+#define VH_CPP_FOR_EACH_TYPE_H_
 
 namespace vh::cpp {
 /**
@@ -31,4 +31,4 @@ void ForEachType(const auto &function) {
 }
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_ALGORITHM_CPP_FOR_EACH_TYPE_H_
+#endif  // VH_CPP_FOR_EACH_TYPE_H_

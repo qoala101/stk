@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_CORE_BUY_LOW_SELL_HIGH_CORE_BLSH_TYPES_H_
-#define STONKS_APP_CORE_BUY_LOW_SELL_HIGH_CORE_BLSH_TYPES_H_
+#ifndef VH_STK_CORE_BLSH_TYPES_H_
+#define VH_STK_CORE_BLSH_TYPES_H_
 
 #include <absl/time/time.h>
 
@@ -37,4 +37,4 @@ struct Operation {
 };
 }  // namespace vh::stk::core::blsh
 
-#endif  // STONKS_APP_CORE_BUY_LOW_SELL_HIGH_CORE_BLSH_TYPES_H_
+#endif  // VH_STK_CORE_BLSH_TYPES_H_

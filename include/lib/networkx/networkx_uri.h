@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORKX_NETWORKX_URI_H_
-#define STONKS_NETWORKX_NETWORKX_URI_H_
+#ifndef VH_NETWORKX_URI_H_
+#define VH_NETWORKX_URI_H_
 
 #include <string_view>
 
@@ -30,4 +30,4 @@ struct Uri : public detail::UriBase {
 };
 }  // namespace vh::networkx
 
-#endif  // STONKS_NETWORKX_NETWORKX_URI_H_
+#endif  // VH_NETWORKX_URI_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_REST_REQUEST_BUILDER_H_
-#define STONKS_NETWORK_NETWORK_REST_REQUEST_BUILDER_H_
+#ifndef VH_NETWORK_REST_REQUEST_BUILDER_H_
+#define VH_NETWORK_REST_REQUEST_BUILDER_H_
 
 #include <string>
 #include <utility>
@@ -82,4 +82,4 @@ class RestRequestBuilder {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_REST_REQUEST_BUILDER_H_
+#endif  // VH_NETWORK_REST_REQUEST_BUILDER_H_

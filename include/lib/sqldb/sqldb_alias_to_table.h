@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_ALIAS_TO_TABLE_H_
-#define STONKS_SQLDB_SQLDB_ALIAS_TO_TABLE_H_
+#ifndef VH_SQLDB_ALIAS_TO_TABLE_H_
+#define VH_SQLDB_ALIAS_TO_TABLE_H_
 
 #include <nameof.hpp>
 
@@ -45,4 +45,4 @@ struct AliasToTable : public Table<AliasTable> {
 };
 }  // namespace vh::sqldb
 
-#endif  // STONKS_SQLDB_SQLDB_ALIAS_TO_TABLE_H_
+#endif  // VH_SQLDB_ALIAS_TO_TABLE_H_

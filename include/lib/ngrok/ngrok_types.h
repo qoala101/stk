@@ -1,5 +1,5 @@
-#ifndef STONKS_NGROK_NGROK_TYPES_H_
-#define STONKS_NGROK_NGROK_TYPES_H_
+#ifndef VH_NGROK_TYPES_H_
+#define VH_NGROK_TYPES_H_
 
 #include <string>
 
@@ -13,4 +13,4 @@ struct Tunnel {
 struct Tunnels : public cpp::TypedStruct<std::vector<Tunnel>> {};
 }  // namespace vh::ngrok
 
-#endif  // STONKS_NGROK_NGROK_TYPES_H_
+#endif  // VH_NGROK_TYPES_H_

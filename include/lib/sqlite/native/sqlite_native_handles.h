@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLITE_NATIVE_SQLITE_NATIVE_HANDLES_H_
-#define STONKS_SQLITE_NATIVE_SQLITE_NATIVE_HANDLES_H_
+#ifndef VH_SQLITE_NATIVE_HANDLES_H_
+#define VH_SQLITE_NATIVE_HANDLES_H_
 
 #include "cpp_not_null.h"
 #include "cpp_smart_pointers.h"
@@ -57,4 +57,4 @@ using NativeStatementHandle =
     cpp::NnUp<sqlite3_stmt, detail::NativeStatementFinalizer>;
 }  // namespace vh::sqlite
 
-#endif  // STONKS_SQLITE_NATIVE_SQLITE_NATIVE_HANDLES_H_
+#endif  // VH_SQLITE_NATIVE_HANDLES_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_SYMBOLS_DB_CLIENT_H_
-#define STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_SYMBOLS_DB_CLIENT_H_
+#ifndef VH_STK_SERVICE_SDB_CLIENT_INJECTOR_H_
+#define VH_STK_SERVICE_SDB_CLIENT_INJECTOR_H_
 
 #include "core_i_symbols_db.h"
 #include "cpp_meta_thread_safe.h"
@@ -34,4 +34,4 @@ inline auto CreateSymbolsDbClientInjector(
 }
 }  // namespace vh::stk::service::sdb
 
-#endif  // STONKS_APP_SERVICE_INJECTOR_SERVICE_INJ_SYMBOLS_DB_CLIENT_H_
+#endif  // VH_STK_SERVICE_SDB_CLIENT_INJECTOR_H_

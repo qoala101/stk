@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_REST_SERVER_BUILDER_H_
-#define STONKS_NETWORK_NETWORK_REST_SERVER_BUILDER_H_
+#ifndef VH_NETWORK_REST_SERVER_BUILDER_H_
+#define VH_NETWORK_REST_SERVER_BUILDER_H_
 
 #include <absl/container/flat_hash_map.h>
 #include <concepts>
@@ -57,4 +57,4 @@ class RestServerBuilder {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_REST_SERVER_BUILDER_H_
+#endif  // VH_NETWORK_REST_SERVER_BUILDER_H_

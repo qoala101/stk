@@ -1,5 +1,5 @@
-#ifndef STONKS_SQLDB_SQLDB_QUERY_BUILDER_H_
-#define STONKS_SQLDB_SQLDB_QUERY_BUILDER_H_
+#ifndef VH_SQLDB_QUERY_BUILDER_H_
+#define VH_SQLDB_QUERY_BUILDER_H_
 
 #include "cpp_meta_template_constructor.h"
 #include "sqldb_concepts.h"  // IWYU pragma: keep
@@ -75,4 +75,4 @@ auto DeleteFromTable [[nodiscard]] () {
 }
 }  // namespace vh::sqldb::query_builder
 
-#endif  // STONKS_SQLDB_SQLDB_QUERY_BUILDER_H_
+#endif  // VH_SQLDB_QUERY_BUILDER_H_

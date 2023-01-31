@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORKX_NETWORKX_ENDPOINT_FUNCTION_TRAITS_FACADE_H_
-#define STONKS_NETWORKX_NETWORKX_ENDPOINT_FUNCTION_TRAITS_FACADE_H_
+#ifndef VH_NETWORKX_ENDPOINT_FUNCTION_TRAITS_FACADE_H_
+#define VH_NETWORKX_ENDPOINT_FUNCTION_TRAITS_FACADE_H_
 
 #include <callable.hpp>  // IWYU pragma: keep
 #include <gsl/assert>
@@ -124,4 +124,4 @@ struct EndpointFunctionTraitsFacade : public FunctionTraits {
 };
 }  // namespace vh::networkx
 
-#endif  // STONKS_NETWORKX_NETWORKX_ENDPOINT_FUNCTION_TRAITS_FACADE_H_
+#endif  // VH_NETWORKX_ENDPOINT_FUNCTION_TRAITS_FACADE_H_

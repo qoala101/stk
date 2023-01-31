@@ -1,5 +1,5 @@
-#ifndef STONKS_CPP_CPP_MESSAGE_EXCEPTION_H_
-#define STONKS_CPP_CPP_MESSAGE_EXCEPTION_H_
+#ifndef VH_CPP_MESSAGE_EXCEPTION_H_
+#define VH_CPP_MESSAGE_EXCEPTION_H_
 
 #include <exception>
 #include <string>
@@ -22,4 +22,4 @@ class MessageException : public std::exception {
 };
 }  // namespace vh::cpp
 
-#endif  // STONKS_CPP_CPP_MESSAGE_EXCEPTION_H_
+#endif  // VH_CPP_MESSAGE_EXCEPTION_H_

@@ -1,5 +1,5 @@
-#ifndef STONKS_NETWORK_NETWORK_TYPES_H_
-#define STONKS_NETWORK_NETWORK_TYPES_H_
+#ifndef VH_NETWORK_TYPES_H_
+#define VH_NETWORK_TYPES_H_
 
 #include <absl/container/flat_hash_map.h>
 
@@ -107,4 +107,4 @@ struct RestResponse {
 };
 }  // namespace vh::network
 
-#endif  // STONKS_NETWORK_NETWORK_TYPES_H_
+#endif  // VH_NETWORK_TYPES_H_

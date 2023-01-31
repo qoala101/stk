@@ -1,5 +1,5 @@
-#ifndef STONKS_DI_DI_CALL_WITH_INJECTED_ARGS_H_
-#define STONKS_DI_DI_CALL_WITH_INJECTED_ARGS_H_
+#ifndef VH_DI_CALL_WITH_INJECTED_ARGS_H_
+#define VH_DI_CALL_WITH_INJECTED_ARGS_H_
 
 #include <type_traits>
 
@@ -14,4 +14,4 @@ auto CallWithInjectedArgs
 }
 }  // namespace vh::di
 
-#endif  // STONKS_DI_DI_CALL_WITH_INJECTED_ARGS_H_
+#endif  // VH_DI_CALL_WITH_INJECTED_ARGS_H_

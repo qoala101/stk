@@ -1,5 +1,5 @@
-#ifndef STONKS_LOG_REDUCED_LOGGER_LOG_RL_LOG_STATS_H_
-#define STONKS_LOG_REDUCED_LOGGER_LOG_RL_LOG_STATS_H_
+#ifndef VH_LOG_RL_LOG_STATS_H_
+#define VH_LOG_RL_LOG_STATS_H_
 
 #include <absl/container/node_hash_map.h>
 #include <absl/time/time.h>
@@ -46,4 +46,4 @@ class LogStats {
 };
 }  // namespace vh::log::rl
 
-#endif  // STONKS_LOG_REDUCED_LOGGER_LOG_RL_LOG_STATS_H_
+#endif  // VH_LOG_RL_LOG_STATS_H_
