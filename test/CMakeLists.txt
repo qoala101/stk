@@ -7,20 +7,15 @@ add_executable(unittests
   # lib/aws/test_aws_dynamodb_db.cc
   lib/cpp/test_cpp_move_if.cc
   lib/cpp/test_cpp_typed_struct.cc
-
   lib/network/test_network_auto_parsable.cc
-
   lib/networkx/test_networkx_function_traits_facade.cc
-
   lib/restsdk/test_restsdk_client_server.cc
   lib/restsdk/test_restsdk_json_common_conversions.cc
   lib/restsdk/test_restsdk_json_conversions_facades.cc
   lib/restsdk/test_restsdk_rest_request_receiver.cc
   lib/restsdk/test_restsdk_rest_request_sender.cc
   lib/restsdk/test_restsdk_web_socket.cc
-
   lib/sqlite/test_sqlite_db.cc
-
   stk/test_stk_core_buy_low_sell_high.cc
   stk/test_stk_core_symbols_db.cc
 )
