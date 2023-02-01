@@ -1,5 +1,6 @@
 add_library(libservice
   service_client_options.cc
+  service_json_conversions.cc
   service_server_options.cc
 )
 add_library(vh::stk::libservice ALIAS libservice)
@@ -21,6 +22,7 @@ target_link_libraries(libservice
   PUBLIC vh::librestsdk
   PUBLIC vh::libspdlog
   PUBLIC vh::libsqlite
+  PUBLIC vh::stk::libcore
   PRIVATE fmt::fmt
 )
 

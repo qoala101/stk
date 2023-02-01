@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 
-# Generates compile_commands.json which should be included
-# in .vscode/c_cpp_properties.json so that VS Code IntelliSence
-# can find external library headers.
+# Generates compile_commands.json which is used by external tools to parse the project.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(

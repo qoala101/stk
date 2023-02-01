@@ -1,6 +1,5 @@
 // clang-format off
-#include "core_json_conversions.h"  // IWYU pragma: keep
-#include "core_i_symbols_db.h"
+#include "service_json_conversions.h"  // IWYU pragma: keep
 // clang-format on
 
 #include <absl/time/time.h>
@@ -16,6 +15,7 @@
 #include "cli_app.h"
 #include "cli_option.h"
 #include "cli_options.h"
+#include "core_i_symbols_db.h"
 #include "core_symbols_info_updater.h"
 #include "cpp_share.h"
 #include "di_auto_injectable.h"

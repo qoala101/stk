@@ -30,7 +30,6 @@ target_link_libraries(unittests
 gtest_discover_tests(unittests)
 
 target_link_libraries(unittests
-  PRIVATE vh::stk::libcore
   PRIVATE vh::stk::libservice
   PRIVATE fmt::fmt
   PRIVATE range-v3::range-v3

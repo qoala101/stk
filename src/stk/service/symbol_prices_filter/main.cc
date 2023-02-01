@@ -1,6 +1,5 @@
 // clang-format off
-#include "core_json_conversions.h"  // IWYU pragma: keep
-#include "service_server_options.h"
+#include "service_json_conversions.h"  // IWYU pragma: keep
 // clang-format on
 
 #include <absl/container/flat_hash_map.h>
@@ -27,6 +26,7 @@
 #include "service_inj_network_restsdk.h"
 #include "service_sdb_client_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
+#include "service_server_options.h"
 
 namespace vh::stk::service::spf {
 void Main(int argc, const char *const *argv) {

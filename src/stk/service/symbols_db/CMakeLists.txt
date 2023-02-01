@@ -12,7 +12,6 @@ target_include_directories(libservice_symbols_db
 )
 
 target_link_libraries(libservice_symbols_db
-  PUBLIC vh::stk::libcore
   PUBLIC vh::stk::libservice
 )
 

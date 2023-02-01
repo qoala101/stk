@@ -13,7 +13,6 @@ add_library(libcore
   symbols_info_updater/core_siu_impl.cc
   symbols_info_updater/core_symbols_info_updater.cc
   core_common.cc
-  core_json_conversions.cc
 )
 add_library(vh::stk::libcore ALIAS libcore)
 
