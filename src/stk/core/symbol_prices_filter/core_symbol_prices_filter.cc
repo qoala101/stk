@@ -32,11 +32,16 @@ auto SymbolPricesFilter::InsertSymbolPriceRecord(SymbolPriceRecord record)
 
   RoundPricesToStep(record, base_asset_price_step);
 
-  if (const auto price_not_changed =
-          last_price_record.has_value() &&
-          (*last_price_record->buy_price == record.buy_price) &&
-          (*last_price_record->sell_price == record.sell_price)) {
-    co_return;
+  if (last_price_record.has_value()) {
+    const auto record_is_older_than_last =
+        record.time < last_price_record->time;
+    const auto price_not_changed =
+        (*last_price_record->buy_price == record.buy_price) &&
+        (*last_price_record->sell_price == record.sell_price);
+
+    if (record_is_older_than_last || price_not_changed) {
+      co_return;
+    }
   }
 
   co_await Proxy::InsertSymbolPriceRecord(std::move(record));

@@ -1,5 +1,5 @@
-#ifndef VH_STK_CORE_JSON_CONVERSIONS_H_
-#define VH_STK_CORE_JSON_CONVERSIONS_H_
+#ifndef VH_STK_SERVICE_JSON_CONVERSIONS_H_
+#define VH_STK_SERVICE_JSON_CONVERSIONS_H_
 
 #include <absl/time/time.h>
 
@@ -18,4 +18,4 @@ auto ConvertToJson [[nodiscard]] (const stk::core::SymbolPriceRecord &value)
 -> cpp::Pv<IJson>;
 }  // namespace vh::network
 
-#endif  // VH_STK_CORE_JSON_CONVERSIONS_H_
+#endif  // VH_STK_SERVICE_JSON_CONVERSIONS_H_
