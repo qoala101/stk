@@ -1,7 +1,5 @@
 add_library(liblog
-  reduced_logger/log_rl_log_stats.cc
   log_i_logger.cc
-  log_reduced_logger.cc
 )
 add_library(vh::liblog ALIAS liblog)
 
@@ -16,6 +14,5 @@ target_include_directories(liblog
 
 target_link_libraries(liblog
   PUBLIC vh::libcpp
-  PRIVATE fmt::fmt
   PRIVATE magic_enum::magic_enum
 )
