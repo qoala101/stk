@@ -49,9 +49,7 @@ struct JsonParser<T> {
   using Type = T;
 
   auto operator() [[nodiscard]] (const IJson &json) const -> Type {
-    return magic_enum::enum_cast<T>(ParseFromJson<std::string>(*json.GetChild(
-                                        magic_enum::enum_type_name<T>())))
-        .value();
+    return magic_enum::enum_cast<T>(ParseFromJson<std::string>(json)).value();
   }
 };
 
@@ -60,10 +58,7 @@ struct JsonParser<T> {
  */
 template <cpp::Enum T>
 auto ConvertToJson [[nodiscard]] (T value) {
-  auto json = CreateNullJson();
-  json->SetChild(std::string{magic_enum::enum_type_name<T>()},
-                 ConvertToJson(magic_enum::enum_name(value)));
-  return json;
+  return ConvertToJson(magic_enum::enum_name(value));
 }
 
 /**
