@@ -3,13 +3,12 @@
 
 #include <absl/time/time.h>
 
-#include "core_sps_price_recorder.h"
+#include <future>
+
 #include "core_sps_stream_factory.h"
 #include "core_types.h"
 #include "cpp_not_null.h"
-#include "cpp_optional.h"
 #include "cpp_timer.h"
-#include "networkx_web_socket.h"
 
 namespace vh::stk::core::sps {
 /**
@@ -25,9 +24,17 @@ class StreamHandle {
   StreamHandle(Symbol symbol, absl::Duration reattempt_interval,
                sps::StreamFactory stream_factory);
 
+  /**
+   * @brief Disconnects web socket asynchronously.
+   * @remark Web socket would be disconnected in destructor if not called
+   * explicitly.
+   */
+  auto Disconnect [[nodiscard]] () const -> std::future<void>;
+
  private:
-  cpp::NnSp<cpp::Opt<networkx::WebSocket<&sps::PriceRecorder::RecordAsPrice>>>
-      web_socket_;
+  struct Impl;
+
+  cpp::NnSp<Impl> impl_;
   cpp::Timer connect_to_web_socket_timer_;
 };
 }  // namespace vh::stk::core::sps

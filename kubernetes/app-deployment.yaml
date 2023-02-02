@@ -95,7 +95,7 @@ spec:
         - name: symbol-prices-filter-container
           image: qoala101/stk:service_symbol_prices_filter
           args:
-            - --port=spf-port
+            - --port=$(APP_SERVICE_SERVICE_PORT_SPF_PORT)
             - --symbols_db_host=$(APP_SERVICE_SERVICE_HOST)
             - --symbols_db_port=$(APP_SERVICE_SERVICE_PORT_SDB_PORT)
 

@@ -1,25 +1,46 @@
 #include "core_sps_stream_handle.h"
 
+#include <future>
+#include <mutex>
 #include <not_null.hpp>
 #include <optional>
 #include <type_traits>
 #include <utility>
 
 #include "core_sps_price_recorder.h"
+#include "cpp_not_null.h"
 #include "cpp_timer_builder.h"
 
 namespace vh::stk::core::sps {
+struct StreamHandle::Impl {
+  cpp::Opt<networkx::WebSocket<&sps::PriceRecorder::RecordAsPrice>>
+      web_socket{};
+  std::mutex mutex{};
+  bool disconnected{};
+};
+
 StreamHandle::StreamHandle(Symbol symbol, absl::Duration reattempt_interval,
                            sps::StreamFactory stream_factory)
-    : web_socket_{cpp::MakeNnSp<
-          cpp::Opt<networkx::WebSocket<&sps::PriceRecorder::RecordAsPrice>>>()},
+    : impl_{cpp::MakeNnSp<Impl>()},
       connect_to_web_socket_timer_{
           cpp::Execute([symbol = std::move(symbol),
                         stream_factory = std::move(stream_factory),
-                        web_socket = web_socket_]() mutable {
-            *web_socket = stream_factory.Create(symbol);
+                        impl = impl_]() mutable {
+            const auto lock = std::lock_guard{impl->mutex};
+
+            if (!impl->disconnected) {
+              impl->web_socket = stream_factory.Create(symbol);
+            }
           })
               .Once()
               .IfThrowsReattemptEvery(reattempt_interval)
               .Start()} {}
+
+auto StreamHandle::Disconnect() const -> std::future<void> {
+  return std::async([impl = impl_]() {
+    const auto lock = std::lock_guard{impl->mutex};
+    impl->web_socket.reset();
+    impl->disconnected = true;
+  });
+}
 }  // namespace vh::stk::core::sps

@@ -30,6 +30,18 @@ class SymbolPriceStreams {
                      cpp::meta::ThreadSafe<cpp::Factory<network::IWsClient>>
                          ws_client_factory);
 
+  SymbolPriceStreams(const SymbolPriceStreams &) = delete;
+  SymbolPriceStreams(SymbolPriceStreams &&) noexcept = default;
+
+  auto operator=(const SymbolPriceStreams &) -> SymbolPriceStreams & = delete;
+  auto operator=(SymbolPriceStreams &&) noexcept
+      -> SymbolPriceStreams & = default;
+
+  /**
+   * @brief Disconnects the streams simultaneously.
+   */
+  ~SymbolPriceStreams();
+
  private:
   std::vector<sps::StreamHandle> stream_handles_{};
 };

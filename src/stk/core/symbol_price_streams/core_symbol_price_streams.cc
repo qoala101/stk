@@ -34,4 +34,16 @@ SymbolPriceStreams::SymbolPriceStreams(
                        }) |
                    ranges::to_vector;
           }()} {}
+
+SymbolPriceStreams::~SymbolPriceStreams() {
+  const auto disconnect_tasks =
+      stream_handles_ | ranges::views::transform([](const auto &stream_handle) {
+        return stream_handle.Disconnect();
+      }) |
+      ranges::to_vector;
+
+  for (const auto &task : disconnect_tasks) {
+    task.wait();
+  }
+}
 }  // namespace vh::stk::core
