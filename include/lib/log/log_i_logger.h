@@ -12,11 +12,6 @@ class ILogger {
   virtual ~ILogger() = default;
 
   /**
-   * @brief Logs message with specified level.
-   */
-  virtual void Log(Level level, std::string message) = 0;
-
-  /**
    * @brief Logs important event.
    */
   void LogImportantEvent(std::string message);
@@ -30,6 +25,12 @@ class ILogger {
    * @brief Logs error condition.
    */
   void LogErrorCondition(std::string message);
+
+ private:
+  /**
+   * @brief Logs message with specified level.
+   */
+  virtual void Log(Level level, std::string message) = 0;
 };
 }  // namespace vh::log
 

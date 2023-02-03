@@ -14,6 +14,7 @@ namespace vh::kvdb {
 class IItemsInterface {
  public:
   virtual ~IItemsInterface() = default;
+
   /**
    * @brief Selects the item with the specified key.
    * @return Nullopt if there is no item with such key.

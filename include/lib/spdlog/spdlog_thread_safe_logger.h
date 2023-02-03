@@ -11,7 +11,7 @@ namespace vh::spdlog {
  * @brief Logger which can be used in multiple threads.
  */
 class ThreadSafeLogger : public log::ILogger {
- public:
+ private:
   /**
    * @copydoc log::ILogger::Log
    */
