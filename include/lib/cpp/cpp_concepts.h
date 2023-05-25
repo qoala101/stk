@@ -1,3 +1,9 @@
+/**
+ * STK @link https://github.com/qoala101/stk @endlink
+ * @author Volodymyr Hromakov (4y5t6r@gmail.com)
+ * @copyright Copyright (c) 2023, MIT License
+ */
+
 #ifndef VH_CPP_CONCEPTS_H_
 #define VH_CPP_CONCEPTS_H_
 
@@ -44,9 +50,9 @@ concept RawPointer = std::is_pointer_v<T>;
 
 template <typename T>
 concept PointerLike = requires(T t) {
-                        t.operator->();
-                        t.operator*();
-                      };
+  t.operator->();
+  t.operator*();
+};
 
 template <typename T>
 concept Rvalue = std::is_rvalue_reference_v<T>;
@@ -96,30 +102,27 @@ concept MemberFunctionOf =
 
 template <typename T, typename U>
 concept CallableReturning = requires(T t) {
-                              { t() } -> std::same_as<U>;
-                            };
+  { t() } -> std::same_as<U>;
+};
 
 template <typename T>
 concept VoidCallable = CallableReturning<T, void>;
 
 template <typename T>
-concept NonVoidCallable = requires(T t) { t(); } && !
-VoidCallable<T>;
+concept NonVoidCallable = requires(T t) { t(); } && !VoidCallable<T>;
 
 template <typename T, typename U, typename... Args>
 concept CallableReturningTaking = requires(T t, Args &&...args) {
-                                    {
-                                      t(std::forward<Args>(args)...)
-                                      } -> std::same_as<U>;
-                                  };
+  { t(std::forward<Args>(args)...) } -> std::same_as<U>;
+};
 
 template <typename T, typename... Args>
 concept VoidCallableTaking = CallableReturningTaking<T, void, Args...>;
 
 template <typename T, typename... Args>
-concept NonVoidCallableTaking =
-    requires(T t, Args &&...args) { t(std::forward<Args>(args)...); } && !
-VoidCallableTaking<T, Args...>;
+concept NonVoidCallableTaking = requires(T t, Args &&...args) {
+  t(std::forward<Args>(args)...);
+} && !VoidCallableTaking<T, Args...>;
 }  // namespace vh::cpp
 
 #endif  // VH_CPP_CONCEPTS_H_

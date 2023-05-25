@@ -1,3 +1,9 @@
+/**
+ * STK @link https://github.com/qoala101/stk @endlink
+ * @author Volodymyr Hromakov (4y5t6r@gmail.com)
+ * @copyright Copyright (c) 2023, MIT License
+ */
+
 #ifndef VH_STK_CORE_BUY_LOW_SELL_HIGH_H_
 #define VH_STK_CORE_BUY_LOW_SELL_HIGH_H_
 

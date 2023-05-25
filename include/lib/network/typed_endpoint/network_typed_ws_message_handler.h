@@ -1,3 +1,9 @@
+/**
+ * STK @link https://github.com/qoala101/stk @endlink
+ * @author Volodymyr Hromakov (4y5t6r@gmail.com)
+ * @copyright Copyright (c) 2023, MIT License
+ */
+
 #ifndef VH_NETWORK_TYPED_WS_MESSAGE_HANDLER_H_
 #define VH_NETWORK_TYPED_WS_MESSAGE_HANDLER_H_
 

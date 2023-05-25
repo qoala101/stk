@@ -1,3 +1,9 @@
+/**
+ * STK @link https://github.com/qoala101/stk @endlink
+ * @author Volodymyr Hromakov (4y5t6r@gmail.com)
+ * @copyright Copyright (c) 2023, MIT License
+ */
+
 #ifndef VH_NETWORKX_CONCEPTS_H_
 #define VH_NETWORKX_CONCEPTS_H_
 
@@ -71,12 +77,11 @@ concept ClientServerType = detail::IsEndpointFunctions<std::remove_cvref_t<
  * @brief Function which can be used as web socket receiver.
  */
 template <auto kFunction>
-concept WebSocketReceiver =
-    requires(ParentType<kFunction> parent) {
-      {
-        (parent.*kFunction)(std::declval<network::AutoParsable>())
-        } -> std::same_as<cppcoro::task<>>;
-    };
+concept WebSocketReceiver = requires(ParentType<kFunction> parent) {
+  {
+    (parent.*kFunction)(std::declval<network::AutoParsable>())
+  } -> std::same_as<cppcoro::task<>>;
+};
 
 /**
  * @brief Function which can be used as web socket receiver with ability
@@ -91,7 +96,7 @@ concept WebSocketReceiverSender =
             std::declval<network::AutoParsable>(),
             std::declval<WebSocketSender<typename std::remove_cvref_t<
                 ArgType<kFunction, 1>>::SendsType>>())
-        } -> std::same_as<cppcoro::task<>>;
+      } -> std::same_as<cppcoro::task<>>;
     };
 }  // namespace vh::networkx
 

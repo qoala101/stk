@@ -1,3 +1,9 @@
+/**
+ * STK @link https://github.com/qoala101/stk @endlink
+ * @author Volodymyr Hromakov (4y5t6r@gmail.com)
+ * @copyright Copyright (c) 2023, MIT License
+ */
+
 #include "aws_dynamodb_async_db.h"
 
 #include <aws/core/utils/Outcome.h>
