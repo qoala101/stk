@@ -15,7 +15,6 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install conan==1.60.0
-          conan profile detect
           conan install .. --build=missing -pr=../conanprofile.txt
 
       - name: Configure CMake
