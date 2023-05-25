@@ -1,0 +1,10 @@
+noExplicitConstructor
+unmatchedSuppression
+unreadVariable
+shadowFunction
+missingIncludeSystem
+unusedFunction
+unusedPrivateFunction
+functionStatic
+internalAstError
+syntaxError

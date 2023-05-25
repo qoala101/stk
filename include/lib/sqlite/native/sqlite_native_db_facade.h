@@ -60,7 +60,7 @@ class NativeDbFacade {
   void Close(sqlite3 &db) const;
 
  private:
-  static void SetPragma(sqlite3 &db, std::string_view pragma_name,
+  static void SetPragma(sqlite3 &db, std::string_view pragma,
                         std::string_view value);
 
   cpp::NnSp<log::ILogger> logger_;

@@ -24,7 +24,7 @@ class SyncDbProxy : public kvdb::IDb {
   /**
    * @param async_db_ Proxied DB.
    */
-  explicit SyncDbProxy(AsyncDb async_db_);
+  explicit SyncDbProxy(AsyncDb async_db);
 
   /**
    * @copydoc kvdb::IDb::CreateTableIfNotExists

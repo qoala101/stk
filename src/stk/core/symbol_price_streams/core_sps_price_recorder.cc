@@ -28,7 +28,8 @@ auto PriceRecorder::SymbolPriceRecordFrom(
                            .time = absl::Now()};
 }
 
-auto PriceRecorder::RecordAsPrice(binance::BookTick book_tick)
+// cppcheck-suppress passedByValue
+auto PriceRecorder::RecordAsPrice(binance::BookTick book_tick) const
     -> cppcoro::task<> {
   auto price_record = SymbolPriceRecordFrom(book_tick);
 

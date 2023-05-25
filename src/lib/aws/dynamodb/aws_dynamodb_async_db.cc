@@ -204,6 +204,7 @@ auto AsyncDb::IsTableReadyForUse(const kvdb::Table &table) const
     co_return false;
   }
 
+  // cppcheck-suppress constStatement
   co_return *status == Aws::DynamoDB::Model::TableStatus::ACTIVE;
 }
 

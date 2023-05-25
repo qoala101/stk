@@ -99,7 +99,7 @@ auto BuildForeignKeysQuery
     [[nodiscard]] (const std::vector<ForeignKeyData> &foreign_keys_data) {
   auto query = ranges::accumulate(
       foreign_keys_data, std::string{},
-      [](auto &query, const auto &foreign_key) {
+      [](const auto &query, const auto &foreign_key) {
         Expects(!foreign_key.column_name.empty());
         Expects(!foreign_key.target_table_name.empty());
         Expects(!foreign_key.target_column_name.empty());

@@ -15,6 +15,7 @@
 #include "network_json_base_conversions.h"
 
 namespace vh::network {
+// cppcheck-suppress passedByValue
 AutoParsableRestRequest::AutoParsableRestRequest(RestRequest rest_request)
     : params_{std::move(rest_request.params)},
       body_{std::move(rest_request.body)} {

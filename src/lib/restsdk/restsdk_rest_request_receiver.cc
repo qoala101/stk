@@ -10,6 +10,7 @@
 #include <cpprest/base_uri.h>
 #include <cpprest/http_headers.h>
 #include <cpprest/http_listener.h>
+#include <cpprest/http_msg.h>
 #include <fmt/core.h>
 #include <pplx/pplx.h>
 #include <pplx/pplxtasks.h>
@@ -34,7 +35,6 @@
 #include "cpp_polymorphic_value.h"
 #include "cpp_share.h"
 #include "cpp_typed_struct.h"
-#include "cpprest/http_msg.h"
 #include "network_i_json.h"
 #include "network_types.h"
 #include "restsdk_call_as_coroutine.h"
@@ -176,6 +176,7 @@ RestRequestReceiver::~RestRequestReceiver() {
 }
 
 void RestRequestReceiver::Receive(
+    // cppcheck-suppress passedByValue
     network::Uri uri, cpp::NnUp<network::IRestRequestHandler> handler) {
   Expects(http_listener_ == nullptr);
 

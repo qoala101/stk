@@ -13,6 +13,7 @@
 #include "cpp_timer_builder.h"
 
 namespace vh::stk::service {
+// cppcheck-suppress passedByValue
 AppUriExposer::AppUriExposer(ConstructorArgs args)
     : expose_uri_timer_{
           cpp::Execute([exposer = std::move(args.exposer)]() mutable {

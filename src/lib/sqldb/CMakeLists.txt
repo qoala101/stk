@@ -36,7 +36,6 @@ target_include_directories(libsqldb
   ${PROJECT_SOURCE_DIR}/include/lib/sqldb
   ${PROJECT_SOURCE_DIR}/include/lib/sqldb/parametrized
   ${PROJECT_SOURCE_DIR}/include/lib/sqldb/query_builder
-  ${PROJECT_SOURCE_DIR}/include/lib/sqldb/thread_safe
 )
 
 target_link_libraries(libsqldb

@@ -40,6 +40,7 @@ class WebSocket<kFunction> {
   WebSocket(network::WsEndpoint endpoint,
             cpp::NnUp<network::IWsClient> ws_client, Parent parent)
       : connection_{[&endpoint, &ws_client, &parent]() {
+          // cppcheck-suppress accessMoved
           return network::WsClientBuilder{{.endpoint = std::move(endpoint),
                                            .expected_types = EndpointTypes()},
                                           std::move(ws_client)}
@@ -87,6 +88,7 @@ class WebSocket<kFunction> {
           auto sender = cpp::MakeNnSp<cpp::Opt<Sender>>();
 
           *sender = Sender{
+              // cppcheck-suppress accessMoved
               network::WsClientBuilder{{.endpoint = std::move(endpoint),
                                         .expected_types = EndpointTypes()},
                                        std::move(ws_client)}

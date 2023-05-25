@@ -40,6 +40,7 @@ auto RestServerBuilder::Start() -> RestServer {
   base_uri_.reset();
   endpoint_handlers_.clear();
 
+  // cppcheck-suppress accessMoved
   Ensures(request_receiver_ == nullptr);
   Ensures(!base_uri_.has_value());
   Ensures(endpoint_handlers_.empty());

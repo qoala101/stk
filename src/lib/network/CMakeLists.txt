@@ -35,7 +35,6 @@ target_include_directories(libnetwork
   ${PROJECT_SOURCE_DIR}/include/lib/network
   ${PROJECT_SOURCE_DIR}/include/lib/network/auto_parsable
   ${PROJECT_SOURCE_DIR}/include/lib/network/auto_parsable/request_handler
-  ${PROJECT_SOURCE_DIR}/include/lib/network/thread_safe
   ${PROJECT_SOURCE_DIR}/include/lib/network/typed_endpoint
 )
 

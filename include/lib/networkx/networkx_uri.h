@@ -33,7 +33,7 @@ struct Uri : public detail::UriBase {
       : UriBase{uri, ClientServerTypeTraitsFacade<Target>::GetName()} {}
 
   // NOLINTNEXTLINE(*-explicit-constructor, *-explicit-conversions)
-  Uri(network::Uri uri) : Uri{*uri} {}
+  Uri(const network::Uri &uri) : Uri{*uri} {}
 };
 }  // namespace vh::networkx
 

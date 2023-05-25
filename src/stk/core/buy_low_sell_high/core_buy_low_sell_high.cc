@@ -28,8 +28,7 @@ auto BuyLowSellHigh::CalculateNextOperations(
     const cpp::Opt<absl::Time> &start_time,
     const cpp::Opt<absl::Time> &end_time) const
     -> cppcoro::task<std::vector<blsh::Operation>> {
-  const auto symbol_info =
-      co_await symbols_db_->SelectSymbolInfo(std::move(symbol));
+  const auto symbol_info = co_await symbols_db_->SelectSymbolInfo(symbol);
 
   if (!symbol_info.has_value()) {
     throw cpp::MessageException{
@@ -51,6 +50,7 @@ auto BuyLowSellHigh::CalculateNextOperations(
 
     const auto usd_would_be_actually_withdrawn_from_balance_to_place_order =
         btc_order_amount * btc_buy_price;
+    // cppcheck-suppress redundantAssignment
     const auto btc_would_be_actually_added_to_balance_after_order_is_executed =
         btc_order_amount * (double{1} - commission_);
 
@@ -63,14 +63,17 @@ auto BuyLowSellHigh::CalculateNextOperations(
         Floor({.value = btc_sell_order_amount_not_stepped,
                .precision = symbol_info->base_asset.price_step});
 
+    // cppcheck-suppress redundantAssignment
     const auto usd_we_spent_to_purchase_btc_we_would_sell =
         usd_would_be_actually_withdrawn_from_balance_to_place_order *
         btc_sell_order_amount /
         btc_would_be_actually_added_to_balance_after_order_is_executed;
 
+    // cppcheck-suppress redundantAssignment
     const auto usd_we_need_to_be_added_to_balance_to_get_profit =
         usd_we_spent_to_purchase_btc_we_would_sell * (double{1} + profit);
 
+    // cppcheck-suppress redundantAssignment
     const auto usd_we_need_to_receive_with_commission =
         usd_we_need_to_be_added_to_balance_to_get_profit /
         (double{1} - commission_);
@@ -83,6 +86,7 @@ auto BuyLowSellHigh::CalculateNextOperations(
 
     //////////////////////////
 
+    // cppcheck-suppress redundantAssignment
     const auto usd_would_be_actually_added_to_balance_after_order_is_executed =
         btc_sell_order_amount * btc_sell_price * (double{1} - commission_);
 

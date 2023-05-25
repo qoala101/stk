@@ -47,8 +47,10 @@ class App {
    */
   template <cpp::NonVoidCallable Main>
   void Run(const Main &main) const {
+    // vh: Optional is used so that instance is destroyed after the run_scope.
     auto instance = cpp::Opt<decltype(main())>{};
     const auto run_scope = CreateRunScope();
+    // cppcheck-suppress redundantInitialization
     instance = main();
   }
 

@@ -9,6 +9,7 @@
 
 #include <cppcoro/single_consumer_event.hpp>
 #include <cppcoro/task.hpp>
+#include <gsl/assert>
 
 #include "cpp_message_exception.h"
 
@@ -42,6 +43,8 @@ auto CallAsCoroutine [[nodiscard]] (const pplx::task<T> &task)
   if (!exception_message.empty()) {
     throw cpp::MessageException{std::move(exception_message)};
   }
+
+  Expects(false);
 }
 }  // namespace vh::restsdk
 

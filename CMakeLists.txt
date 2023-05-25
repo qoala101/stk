@@ -37,6 +37,31 @@ add_compile_options(
   -Wno-missing-braces
 )
 
+if(FAIL_ON_WARNINGS)
+  add_compile_options(-Werror)
+endif()
+
+find_program(CPPCHECK cppcheck)
+
+if(CPPCHECK)
+  set(CMAKE_CXX_CPPCHECK ${CPPCHECK})
+  list(APPEND CMAKE_CXX_CPPCHECK
+    "--enable=all"
+    "--inconclusive"
+    "--inline-suppr"
+    "--quiet"
+    "--suppress=*:${CMAKE_SOURCE_DIR}/test*"
+    "--suppress=*:${FETCHCONTENT_BASE_DIR}*"
+    "--suppressions-list=${CMAKE_SOURCE_DIR}/.cppcheck"
+  )
+
+  if(FAIL_ON_WARNINGS)
+    list(APPEND CMAKE_CXX_CPPCHECK
+      "--error-exitcode=1"
+    )
+  endif()
+endif()
+
 add_subdirectory(src)
 
 if(BUILD_TESTS)

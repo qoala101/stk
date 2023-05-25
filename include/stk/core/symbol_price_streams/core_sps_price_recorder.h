@@ -25,8 +25,8 @@ class PriceRecorder {
   /**
    * @brief Records book tick as price.
    */
-  auto RecordAsPrice [[nodiscard]] (binance::BookTick book_tick)
-  -> cppcoro::task<>;
+  auto RecordAsPrice [[nodiscard]] (binance::BookTick book_tick) const
+      -> cppcoro::task<>;
 
  private:
   auto SymbolPriceRecordFrom

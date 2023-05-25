@@ -21,6 +21,7 @@
 #include "sqldb_types.h"
 
 namespace vh::sqldb {
+// cppcheck-suppress passedByValue
 Rows::Rows(std::vector<Column> columns)
     : columns_{columns | ranges::views::transform([](auto &column) {
                  return ColumnValues{.column = std::move(column)};
