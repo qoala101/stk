@@ -15,6 +15,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          conan install .. --build=missing -pr=../conanprofile.txt
           sudo apt-get update
           sudo apt-get install -y cppcheck
 
