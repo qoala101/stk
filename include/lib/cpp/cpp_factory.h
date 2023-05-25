@@ -56,6 +56,7 @@ class Factory {
   /**
    * @brief Creates the object.
    */
+  // cppcheck-suppress functionConst
   auto Create [[nodiscard]] () {
     const auto lock = create_mutex_.Lock();
     return creator_();

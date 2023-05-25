@@ -63,7 +63,6 @@ auto BuyLowSellHigh::CalculateNextOperations(
         Floor({.value = btc_sell_order_amount_not_stepped,
                .precision = symbol_info->base_asset.price_step});
 
-    // cppcheck-suppress redundantAssignment
     const auto usd_we_spent_to_purchase_btc_we_would_sell =
         usd_would_be_actually_withdrawn_from_balance_to_place_order *
         btc_sell_order_amount /

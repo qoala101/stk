@@ -4,7 +4,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(
   "stk"
-  VERSION 0.2.0
+  VERSION 0.2.1
   LANGUAGES CXX
 )
 

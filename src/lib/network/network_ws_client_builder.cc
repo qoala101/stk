@@ -39,10 +39,8 @@ auto WsClientBuilder::Connect() -> WsConnection {
   typed_client->Connect(std::move(endpoint_->endpoint));
   endpoint_.reset();
 
-  // cppcheck-suppress accessMoved
   Ensures(ws_client_ == nullptr);
   Ensures(!endpoint_.has_value());
-  // cppcheck-suppress accessMoved
   Ensures(handler_ == nullptr);
 
   return WsConnection{std::move(typed_client)};

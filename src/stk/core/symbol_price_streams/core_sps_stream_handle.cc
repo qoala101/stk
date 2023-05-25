@@ -22,7 +22,6 @@ struct StreamHandle::Impl {
   cpp::Opt<networkx::WebSocket<&sps::PriceRecorder::RecordAsPrice>>
       web_socket{};
   std::mutex mutex{};
-  // cppcheck-suppress unusedStructMember
   bool disconnected{};
 };
 

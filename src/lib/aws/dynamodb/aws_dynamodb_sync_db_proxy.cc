@@ -86,6 +86,7 @@ auto SyncDbProxy::IsItemExists(const kvdb::Table &table,
                                const kvdb::Item &item) const
     -> cppcoro::task<bool> {
   const auto selected_item = co_await async_db_.SelectItem(table, item.key);
+  // cppcheck-suppress constStatement
   co_return selected_item.has_value() && (*selected_item == item);
 }
 }  // namespace vh::aws::dynamodb
