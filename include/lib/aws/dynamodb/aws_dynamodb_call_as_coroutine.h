@@ -17,13 +17,13 @@ namespace vh::aws::dynamodb {
  * @brief Util which allows to call member async functions as coroutines.
  */
 template <
-    cpp::MemberFunctionOf<Aws::DynamoDB::DynamoDBClient> auto kFunction,
-    typename FunctionType = decltype(kFunction),
+    auto kFunction, typename FunctionType = decltype(kFunction),
     typename NativeTraits = member_function_traits<FunctionType>,
     typename RequestType = typename NativeTraits::template argument_type<0>,
     typename HandlerType = typename NativeTraits::template argument_type<1>,
     typename OutcomeType = std::remove_cvref_t<
         typename callable_traits<HandlerType>::template argument_type<2>>>
+  requires cpp::MemberFunctionOf<FunctionType, Aws::DynamoDB::DynamoDBClient>
 auto CallAsCoroutine
     [[nodiscard]] (const Aws::DynamoDB::DynamoDBClient &db_client,
                    const RequestType &request) -> cppcoro::task<OutcomeType> {

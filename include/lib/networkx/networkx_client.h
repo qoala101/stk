@@ -81,14 +81,14 @@ class Client {
   /**
    * @brief Remotely calls specified function with provided arguments.
    */
-  template <cpp::MemberFunctionOf<Target> auto kFunction, typename... Args,
+  template <auto kFunction, typename... Args,
             typename FunctionType = decltype(kFunction),
             typename ResultType =
                 typename EndpointFunctionTraitsFacade<kFunction>::ResultType>
     requires EndpointFunction<kFunction> &&
+             cpp::MemberFunctionOf<FunctionType, Target> &&
              std::invocable<FunctionType, Target &, Args...>
-             auto Call [[nodiscard]] (Args &&...args) const
-             -> cppcoro::task<ResultType> {
+  auto Call [[nodiscard]] (Args &&...args) const -> cppcoro::task<ResultType> {
     co_return co_await detail::CallImpl<kFunction>{rest_client_}(
         std::forward<Args>(args)...);
   }

@@ -20,9 +20,10 @@ class ClientBase : public TargetT {
   /**
    * @copydoc networkx::Client::Call
    */
-  template <cpp::MemberFunctionOf<Target> auto kFunction, typename... Args,
+  template <auto kFunction, typename... Args,
             typename ResultType = typename networkx::
                 EndpointFunctionTraitsFacade<kFunction>::ResultType>
+    requires cpp::MemberFunctionOf<decltype(kFunction), Target>
   auto Call [[nodiscard]] (Args &&...args) const -> cppcoro::task<ResultType> {
     co_return co_await client_.template Call<kFunction>(
         std::forward<Args>(args)...);

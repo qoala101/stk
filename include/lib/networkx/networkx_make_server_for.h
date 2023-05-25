@@ -36,10 +36,9 @@ template <cpp::MemberFunction auto kFunction, ClientServerType Target,
           typename ResultType = typename FunctionTraits::ResultType>
   requires EndpointFunction<kFunction> &&
            cpp::MemberFunctionOf<decltype(kFunction), Target>
-           auto CallWithRequestParams
-           [[nodiscard]] (Target &target,
-                          network::AutoParsableRestRequest &request)
-           -> cppcoro::task<ResultType> {
+auto CallWithRequestParams
+    [[nodiscard]] (Target &target, network::AutoParsableRestRequest &request)
+    -> cppcoro::task<ResultType> {
   co_return co_await std::apply(
       [&target, &request]<typename... Params>(
           Params &&...params) -> cppcoro::task<ResultType> {
