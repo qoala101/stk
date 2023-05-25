@@ -10,15 +10,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Clang
-        uses: egor-tensin/setup-clang@v1
-        with:
-          version: 15
+      - name: Install Clang
+        run: bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
 
-      - name: Install Dependencies
+      - name: Install Conan Dependencies
         run: |
           pip install conan==1.60.0
-          conan install . --build=missing -pr=./conanprofile.txt -if ./build
+          conan install . --build=missing -pr=./conanprofile.txt build_type=Release -if ./build
 
       - name: Configure CMake
         run: cmake -B ${{github.workspace}}/build -DBUILD_TESTS=OFF
