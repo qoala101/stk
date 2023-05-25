@@ -10,13 +10,17 @@ set_target_properties(libaws PROPERTIES
 )
 
 target_include_directories(libaws
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/aws
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/aws/dynamodb
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/lib/aws
+  ${PROJECT_SOURCE_DIR}/include/lib/aws/dynamodb
 )
 
 target_link_libraries(libaws
-  PUBLIC vh::libkvdb
-  PUBLIC vh::liblog
-  PRIVATE AWS::dynamodb
-  PRIVATE fmt::fmt
+  PUBLIC
+  vh::libkvdb
+  vh::liblog
+
+  PRIVATE
+  AWS::dynamodb
+  fmt::fmt
 )

@@ -8,11 +8,15 @@ set_target_properties(liblog PROPERTIES
 )
 
 target_include_directories(liblog
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/log
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/log/reduced_logger
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/lib/log
+  ${PROJECT_SOURCE_DIR}/include/lib/log/reduced_logger
 )
 
 target_link_libraries(liblog
-  PUBLIC vh::libcpp
-  PRIVATE magic_enum::magic_enum
+  PUBLIC
+  vh::libcpp
+
+  PRIVATE
+  magic_enum::magic_enum
 )

@@ -6,7 +6,6 @@ add_library(libcpp
   timer/cpp_timer.cc
   cpp_message_exception.cc
 )
-
 add_library(vh::libcpp ALIAS libcpp)
 
 set_target_properties(libcpp PROPERTIES
@@ -14,19 +13,21 @@ set_target_properties(libcpp PROPERTIES
 )
 
 target_include_directories(libcpp
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/cpp
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/cpp/algorithm
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/cpp/alias
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/cpp/meta
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/cpp/synchronization
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/cpp/timer
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/lib/cpp
+  ${PROJECT_SOURCE_DIR}/include/lib/cpp/algorithm
+  ${PROJECT_SOURCE_DIR}/include/lib/cpp/alias
+  ${PROJECT_SOURCE_DIR}/include/lib/cpp/meta
+  ${PROJECT_SOURCE_DIR}/include/lib/cpp/synchronization
+  ${PROJECT_SOURCE_DIR}/include/lib/cpp/timer
 )
 
 target_link_libraries(libcpp
-  PUBLIC absl::absl
-  PUBLIC thirdparty::callable
-  PUBLIC function2::function2
-  PUBLIC Microsoft.GSL::GSL
-  PUBLIC thirdparty::NotNull
-  PUBLIC polymorphic_value::polymorphic_value
+  PUBLIC
+  absl::absl
+  thirdparty::callable
+  function2::function2
+  Microsoft.GSL::GSL
+  thirdparty::NotNull
+  polymorphic_value::polymorphic_value
 )

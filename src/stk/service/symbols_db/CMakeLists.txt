@@ -8,11 +8,13 @@ set_target_properties(libservice_symbols_db PROPERTIES
 )
 
 target_include_directories(libservice_symbols_db
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/service/symbols_db
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/stk/service/symbols_db
 )
 
 target_link_libraries(libservice_symbols_db
-  PUBLIC vh::stk::libservice
+  PUBLIC
+  vh::stk::libservice
 )
 
 add_executable(service_symbols_db
@@ -20,5 +22,6 @@ add_executable(service_symbols_db
 )
 
 target_link_libraries(service_symbols_db
-  PRIVATE vh::stk::libservice_symbols_db
+  PRIVATE
+  vh::stk::libservice_symbols_db
 )

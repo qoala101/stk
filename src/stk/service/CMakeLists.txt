@@ -10,20 +10,24 @@ set_target_properties(libservice PROPERTIES
 )
 
 target_include_directories(libservice
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/service
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/service/injector
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/stk/service
+  ${PROJECT_SOURCE_DIR}/include/stk/service/injector
 )
 
 target_link_libraries(libservice
-  PUBLIC vh::libaws
-  PUBLIC vh::libcli
-  PUBLIC vh::libdi
-  PUBLIC vh::libnetworkx
-  PUBLIC vh::librestsdk
-  PUBLIC vh::libspdlog
-  PUBLIC vh::libsqlite
-  PUBLIC vh::stk::libcore
-  PRIVATE fmt::fmt
+  PUBLIC
+  vh::libaws
+  vh::libcli
+  vh::libdi
+  vh::libnetworkx
+  vh::librestsdk
+  vh::libspdlog
+  vh::libsqlite
+  vh::stk::libcore
+
+  PRIVATE
+  fmt::fmt
 )
 
 add_subdirectory(app_uri_exposer)

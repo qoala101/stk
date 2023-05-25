@@ -31,17 +31,21 @@ set_target_properties(libnetwork PROPERTIES
 )
 
 target_include_directories(libnetwork
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/network
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/network/auto_parsable
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/network/auto_parsable/request_handler
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/network/thread_safe
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/network/typed_endpoint
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/lib/network
+  ${PROJECT_SOURCE_DIR}/include/lib/network/auto_parsable
+  ${PROJECT_SOURCE_DIR}/include/lib/network/auto_parsable/request_handler
+  ${PROJECT_SOURCE_DIR}/include/lib/network/thread_safe
+  ${PROJECT_SOURCE_DIR}/include/lib/network/typed_endpoint
 )
 
 target_link_libraries(libnetwork
-  PUBLIC cppcoro::cppcoro
-  PUBLIC magic_enum::magic_enum
-  PUBLIC vh::libcpp
-  PRIVATE fmt::fmt
-  PRIVATE range-v3::range-v3
+  PUBLIC
+  cppcoro::cppcoro
+  magic_enum::magic_enum
+  vh::libcpp
+
+  PRIVATE
+  fmt::fmt
+  range-v3::range-v3
 )

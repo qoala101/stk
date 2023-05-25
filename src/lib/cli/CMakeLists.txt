@@ -14,11 +14,15 @@ set_target_properties(libcli PROPERTIES
 )
 
 target_include_directories(libcli
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/cli
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/lib/cli
 )
 
 target_link_libraries(libcli
-  PUBLIC vh::libcpp
-  PRIVATE CLI11::CLI11
-  PRIVATE fmt::fmt
+  PUBLIC
+  vh::libcpp
+
+  PRIVATE
+  CLI11::CLI11
+  fmt::fmt
 )

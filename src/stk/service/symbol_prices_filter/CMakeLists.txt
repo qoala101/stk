@@ -3,6 +3,7 @@ add_executable(service_symbol_prices_filter
 )
 
 target_link_libraries(service_symbol_prices_filter
-  PRIVATE vh::stk::libservice_symbols_db
-  PRIVATE range-v3::range-v3
+  PRIVATE
+  vh::stk::libservice_symbols_db
+  range-v3::range-v3
 )

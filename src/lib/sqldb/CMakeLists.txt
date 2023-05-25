@@ -32,16 +32,20 @@ set_target_properties(libsqldb PROPERTIES
 )
 
 target_include_directories(libsqldb
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/sqldb
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/sqldb/parametrized
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/sqldb/query_builder
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/sqldb/thread_safe
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/lib/sqldb
+  ${PROJECT_SOURCE_DIR}/include/lib/sqldb/parametrized
+  ${PROJECT_SOURCE_DIR}/include/lib/sqldb/query_builder
+  ${PROJECT_SOURCE_DIR}/include/lib/sqldb/thread_safe
 )
 
 target_link_libraries(libsqldb
-  PUBLIC nameof::nameof
-  PUBLIC vh::libcpp
-  PRIVATE fmt::fmt
-  PRIVATE magic_enum::magic_enum
-  PRIVATE range-v3::range-v3
+  PUBLIC
+  nameof::nameof
+  vh::libcpp
+
+  PRIVATE
+  fmt::fmt
+  magic_enum::magic_enum
+  range-v3::range-v3
 )

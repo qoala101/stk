@@ -8,10 +8,14 @@ set_target_properties(libspdlog PROPERTIES
 )
 
 target_include_directories(libspdlog
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/spdlog
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/lib/spdlog
 )
 
 target_link_libraries(libspdlog
-  PUBLIC vh::liblog
-  PRIVATE spdlog::spdlog
+  PUBLIC
+  vh::liblog
+
+  PRIVATE
+  spdlog::spdlog
 )

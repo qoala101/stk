@@ -22,7 +22,8 @@ add_executable(unittests
 )
 
 target_link_libraries(unittests
-  PRIVATE GTest::gtest GTest::gtest_main
+  PRIVATE
+  GTest::gtest GTest::gtest_main
 )
 
 # Has to come after linking to GTest and before other libs.
@@ -30,7 +31,8 @@ target_link_libraries(unittests
 gtest_discover_tests(unittests)
 
 target_link_libraries(unittests
-  PRIVATE vh::stk::libservice
-  PRIVATE fmt::fmt
-  PRIVATE range-v3::range-v3
+  PRIVATE
+  vh::stk::libservice
+  fmt::fmt
+  range-v3::range-v3
 )

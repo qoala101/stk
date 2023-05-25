@@ -9,10 +9,14 @@ set_target_properties(libngrok PROPERTIES
 )
 
 target_include_directories(libngrok
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/ngrok
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/lib/ngrok
 )
 
 target_link_libraries(libngrok
-  PUBLIC vh::libnetworkx
-  PRIVATE fmt::fmt
+  PUBLIC
+  vh::libnetworkx
+
+  PRIVATE
+  fmt::fmt
 )

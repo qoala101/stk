@@ -8,3 +8,5 @@ FetchContent_Declare(NotNull SYSTEM
 FetchContent_MakeAvailable(NotNull)
 
 add_library(thirdparty::NotNull ALIAS NotNull)
+
+mark_as_system_target(NotNull)

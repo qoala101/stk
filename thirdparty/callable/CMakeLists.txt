@@ -11,5 +11,8 @@ add_library(callable INTERFACE)
 add_library(thirdparty::callable ALIAS callable)
 
 target_include_directories(callable
-  SYSTEM INTERFACE ${callable_SOURCE_DIR}
+  SYSTEM INTERFACE
+  ${callable_SOURCE_DIR}
 )
+
+mark_as_system_target(callable)

@@ -21,18 +21,22 @@ set_target_properties(libcore PROPERTIES
 )
 
 target_include_directories(libcore
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core/buy_low_sell_high
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core/old_symbol_prices_deleter
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core/symbol_price_streams
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core/symbol_prices_filter
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core/symbols_db
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/stk/core/symbols_info_updater
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/stk/core
+  ${PROJECT_SOURCE_DIR}/include/stk/core/buy_low_sell_high
+  ${PROJECT_SOURCE_DIR}/include/stk/core/old_symbol_prices_deleter
+  ${PROJECT_SOURCE_DIR}/include/stk/core/symbol_price_streams
+  ${PROJECT_SOURCE_DIR}/include/stk/core/symbol_prices_filter
+  ${PROJECT_SOURCE_DIR}/include/stk/core/symbols_db
+  ${PROJECT_SOURCE_DIR}/include/stk/core/symbols_info_updater
 )
 
 target_link_libraries(libcore
-  PUBLIC vh::libbinance
-  PUBLIC vh::libsqldb
-  PRIVATE fmt::fmt
-  PRIVATE range-v3::range-v3
+  PUBLIC
+  vh::libbinance
+  vh::libsqldb
+
+  PRIVATE
+  fmt::fmt
+  range-v3::range-v3
 )

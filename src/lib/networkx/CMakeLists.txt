@@ -10,11 +10,15 @@ set_target_properties(libnetworkx PROPERTIES
 )
 
 target_include_directories(libnetworkx
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/networkx
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/lib/networkx
 )
 
 target_link_libraries(libnetworkx
-  PUBLIC nameof::nameof
-  PUBLIC vh::libnetwork
-  PRIVATE fmt::fmt
+  PUBLIC
+  nameof::nameof
+  vh::libnetwork
+
+  PRIVATE
+  fmt::fmt
 )

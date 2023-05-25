@@ -17,14 +17,18 @@ set_target_properties(libsqlite PROPERTIES
 )
 
 target_include_directories(libsqlite
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/sqlite
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/sqlite/native
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/lib/sqlite
+  ${PROJECT_SOURCE_DIR}/include/lib/sqlite/native
 )
 
 target_link_libraries(libsqlite
-  PUBLIC vh::liblog
-  PUBLIC vh::libsqldb
-  PRIVATE fmt::fmt
-  PRIVATE range-v3::range-v3
-  PRIVATE SQLite::SQLite3
+  PUBLIC
+  vh::liblog
+  vh::libsqldb
+
+  PRIVATE
+  fmt::fmt
+  range-v3::range-v3
+  SQLite::SQLite3
 )

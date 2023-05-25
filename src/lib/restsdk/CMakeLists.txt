@@ -15,17 +15,22 @@ set_target_properties(librestsdk PROPERTIES
 
 # Removes the clash of U macro between cpprestsdk and other libs.
 target_compile_definitions(librestsdk
-  PRIVATE _TURN_OFF_PLATFORM_STRING
+  PRIVATE
+  _TURN_OFF_PLATFORM_STRING
 )
 
 target_include_directories(librestsdk
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/restsdk
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/lib/restsdk
 )
 
 target_link_libraries(librestsdk
-  PUBLIC vh::liblog
-  PUBLIC vh::libnetwork
-  PRIVATE cpprestsdk::cpprest
-  PRIVATE fmt::fmt
-  PRIVATE range-v3::range-v3
+  PUBLIC
+  vh::liblog
+  vh::libnetwork
+
+  PRIVATE
+  cpprestsdk::cpprest
+  fmt::fmt
+  range-v3::range-v3
 )

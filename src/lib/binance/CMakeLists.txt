@@ -9,9 +9,11 @@ set_target_properties(libbinance PROPERTIES
 )
 
 target_include_directories(libbinance
-  PUBLIC ${PROJECT_SOURCE_DIR}/include/lib/binance
+  PUBLIC
+  ${PROJECT_SOURCE_DIR}/include/lib/binance
 )
 
 target_link_libraries(libbinance
-  PUBLIC vh::libnetworkx
+  PUBLIC
+  vh::libnetworkx
 )

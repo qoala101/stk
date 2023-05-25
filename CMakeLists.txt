@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
 
-# Generates compile_commands.json which is used by external tools to parse the project.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(
@@ -10,9 +9,10 @@ project(
 )
 
 option(THIRD_PARTY_ONLY "If true, CMake would stop after making third party dependencies available.")
+option(FAIL_ON_WARNINGS "Whether to treat compilation warnings as errors.")
 option(BUILD_TESTS "Whether to include the test folder to the build." ON)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -35,10 +35,6 @@ add_compile_options(
   -Wextra
   -pedantic
   -Wno-missing-braces
-
-  # Uncomment to treat warnings like errors. Not convenient for development.
-  # -Werror
-  # -pedantic-errors
 )
 
 add_subdirectory(src)
