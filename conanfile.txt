@@ -21,7 +21,7 @@ libcurl/7.85.0#63e97620160ac0273d500d743786e4dd
 openssl/1.1.1q#d09951d2f9ed326551512e63839d0767
 zlib/1.2.12#82202701ea360c0863f1db5008067122
 
-# Added to fix AWS build
+# Added to fix new recipes build issues
 bzip2/1.0.8#0c10430c6fe37dec1b37a7bc1fbbe51b
 gnu-config/cci.20210814#58573fa18a083c1ccb883b392b826bb2
 aws-c-io/0.10.20#9699126d8889135fd1ac22bf097a26c9
@@ -36,6 +36,17 @@ aws-c-s3/0.1.37#b80dcbd74b28fcba5898272f77bc9b8b
 aws-c-sdkutils/0.1.2#668686d6d5c844e1ae4f597f17e641ff
 aws-crt-cpp/0.17.23#f3272a7219d4d58a1e4976b68da820e5
 aws-checksums/0.1.12#d27222a24697575e39cb59c034d4cd19
+m4/1.4.19#7bf4b7de37a545f40f65aeb26e4f135f
+pkgconf/1.9.3#02904517fb960fa340bee15bef847751
+
+# In case of library build issues:
+# 1. conan remove "LIB_NAME*"
+# 2. Add library here with the oldest recipe revision from conan.io
+
+# In case of severe issues:
+# 1. pip remove conan
+# 2. Remove /home/vh/.conan directory
+# 3. Reinstall conan
 
 [options]
 aws-sdk-cpp:access-management=False

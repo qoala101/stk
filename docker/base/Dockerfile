@@ -1,5 +1,6 @@
 FROM debian:latest
-RUN apt update && \
+RUN \
+  apt update && \
   apt -y install \
   \
   # Required for networking to work.

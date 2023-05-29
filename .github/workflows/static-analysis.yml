@@ -15,10 +15,10 @@ jobs:
         with:
           version: 15
 
-      - name: Install Cppcheck
+      - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cppcheck
+          sudo apt-get install -y libstdc++6 cppcheck
 
       - name: Build Conan Dependencies
         run: |

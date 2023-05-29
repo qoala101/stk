@@ -4,7 +4,8 @@ COPY ./thirdparty ./thirdparty
 COPY CMakeLists.txt .
 COPY conanfile.txt .
 COPY conanprofile.txt .
-RUN apt update && \
+RUN \
+  apt update && \
   apt -y install \
   \
   # Required to fetch git dependencies by cmake.
@@ -25,9 +26,7 @@ RUN apt update && \
   apt clean && \
   rm -rf /var/lib/apt/lists/* && \
   \
-  pip --no-input install && \
-  cmake && \
-  conan && \
+  pip --no-input install cmake conan==1.60.0 && \
   \
   mkdir build && \
   cd build && \

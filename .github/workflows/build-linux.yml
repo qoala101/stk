@@ -15,6 +15,11 @@ jobs:
         with:
           version: 15
 
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libstdc++6
+
       - name: Build Conan Dependencies
         run: |
           pip install conan==1.60.0
