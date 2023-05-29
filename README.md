@@ -90,11 +90,11 @@ See **script/development_environment** for environment setup.
 
 ### C++
 
-- [REST SDK](https://github.com/microsoft/cpprestsdk) - async REST and WebSocket client/server and JSON
+- [C++ REST SDK](https://github.com/microsoft/cpprestsdk) - async REST and WebSocket client/server and JSON
 - [CppCoro](https://github.com/lewissbaker/cppcoro) - wrapping of async code in coroutine tasks
 - [range-v3](https://github.com/ericniebler/range-v3) - algorithms, transformations, views, etc.
 - [SQLite](https://github.com/sqlite/sqlite) - management of file-based SQL DB
-- [AWS SDK](https://github.com/aws/aws-sdk-cpp) - management of key-value Dynamo DB in the cloud
+- [AWS SDK for C++](https://github.com/aws/aws-sdk-cpp) - management of key-value Dynamo DB in the cloud
 - [[Boost::ext].DI](https://github.com/boost-ext/di) - dependency injection and construction of complex objects
 - [CLI11](https://github.com/CLIUtils/CLI11) - command line arguments parsing
 - [Abseil](https://github.com/abseil/abseil-cpp) - time API and flat containers
