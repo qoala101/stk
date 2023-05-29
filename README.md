@@ -31,23 +31,23 @@ See [stk_ui](https://github.com/qoala101/stk_ui) for the client app.
 
 ### Deployment
 
-STK consists of several services running in Docker containers deployed on the local Kubernetes cluster.  
-ngrok instance running in the same cluster exposes the local cluster port to the public.  
-Once exposed, the public cluster URI is written to AWS Dynamo DB from where clients can get it to access the app.  
-Access to the service's endpoints and CORS is managed by NGINX ingress.  
+STK consists of several services running in Docker containers deployed on the local Kubernetes cluster.
+ngrok instance running in the same cluster exposes the local cluster port to the public.
+Once exposed, the public cluster URI is written to AWS Dynamo DB from where clients can get it to access the app.
+Access to the service's endpoints and CORS is managed by NGINX ingress.
 Persistent data is stored in Docker volumes.
 
 ### C++
 
-Each service core functionality is C++ interface with coroutine functions.  
-On the server side, implementation is exposed with a REST server, which maps incoming requests to C++ functions.  
-On the client side, the interface is implemented as a REST client, which maps C++ functions to server endpoints.  
+Each service core functionality is C++ interface with coroutine functions.
+On the server side, implementation is exposed with a REST server, which maps incoming requests to C++ functions.
+On the client side, the interface is implemented as a REST client, which maps C++ functions to server endpoints.
 Client-server building, JSON-C++ conversions, parameter validation, exception propagation, and fail reattempts are automatically handled with TMP and function traits.
 
-Services are build as command line applications with argument parsing, interruption handling, and logging.  
+Services are build as command line applications with argument parsing, interruption handling, and logging.
 They are constructed with **di** which automatically injects command line arguments and library implementations.
 
-All async code is wrapped in cppcoro::tasks and handled as coroutines.  
+All async code is wrapped in cppcoro::tasks and handled as coroutines.
 Most of the libraries are implemented with extensive use of concepts and TMP.
 
 ### Services
