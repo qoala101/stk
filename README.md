@@ -62,11 +62,11 @@ Most of the libraries are implemented with extensive use of concepts and TMP.
 
 ## Build
 
-Conan is used to download most of C++ dependencies.  
-**NOTE**: Some Conan recipes might get broken because of the recent updates. To be fixed later.
+Conan is used to download most of C++ dependencies.
 
 ```sh
 pip install conan==1.60.0
+conan config set general.revisions_enabled=True
 conan install . --build=missing -pr=./conanprofile.txt build_type=Release -if ./build
 
 cmake -B ./build

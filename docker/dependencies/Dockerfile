@@ -33,6 +33,7 @@ RUN apt update && \
   cd build && \
   \
   # Installs dependencies.
+  conan config set general.revisions_enabled=True && \
   conan install .. --build=missing -pr=../conanprofile.txt -s build_type=Release && \
   \
   conan remove "*" -s -b -f && \

@@ -23,6 +23,7 @@ jobs:
       - name: Build Conan Dependencies
         run: |
           pip install conan==1.60.0
+          conan config set general.revisions_enabled=True
           conan install . --build=missing -pr=./conanprofile.txt build_type=Release -if ./build
 
       - name: Configure CMake
