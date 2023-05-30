@@ -10,7 +10,7 @@ project(
 
 option(THIRD_PARTY_ONLY "If true, CMake would stop after making third party dependencies available.")
 option(FAIL_ON_WARNINGS "Whether to treat compilation warnings as errors.")
-option(BUILD_TESTS "Whether to include the test folder to the build." ON)
+option(BUILD_TESTS "Whether to include the test folder to the build.")
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
