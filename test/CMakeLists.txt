@@ -23,7 +23,8 @@ add_executable(unittests
 
 target_link_libraries(unittests
   PRIVATE
-  GTest::gtest GTest::gtest_main
+  GTest::gtest
+  GTest::gtest_main
 )
 
 # Has to come after linking to GTest and before other libs.
