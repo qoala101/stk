@@ -43,8 +43,6 @@ auto CallAsCoroutine [[nodiscard]] (const pplx::task<T> &task)
   if (!exception_message.empty()) {
     throw cpp::MessageException{std::move(exception_message)};
   }
-
-  Expects(false);
 }
 }  // namespace vh::restsdk
 

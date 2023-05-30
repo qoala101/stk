@@ -19,7 +19,7 @@ sqlite3/3.39.2#bcbc402aeced01e756cb1e7199a7f188
 # Added to fix clashes between dependencies
 libcurl/7.85.0#63e97620160ac0273d500d743786e4dd
 openssl/1.1.1q#d09951d2f9ed326551512e63839d0767
-zlib/1.2.12#82202701ea360c0863f1db5008067122
+zlib/1.2.12#b1fd071d8a2234a488b3ff74a3526f81
 
 # Added to fix new recipes build issues
 bzip2/1.0.8#0c10430c6fe37dec1b37a7bc1fbbe51b
@@ -38,6 +38,7 @@ aws-crt-cpp/0.17.23#f3272a7219d4d58a1e4976b68da820e5
 aws-checksums/0.1.12#d27222a24697575e39cb59c034d4cd19
 m4/1.4.19#7bf4b7de37a545f40f65aeb26e4f135f
 pkgconf/1.9.3#02904517fb960fa340bee15bef847751
+libtool/2.4.6#5c0876c3f4d1d47b56c56cdd4e14202e
 
 # In case of library build issues:
 # 1. conan remove "LIB_NAME*"
