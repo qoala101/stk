@@ -1,0 +1,19 @@
+name: tests
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docker images
+        run: |
+          docker build -t qoala101/stk:base -f ./docker/base/Dockerfile .
+          docker build -t qoala101/stk:dependencies -f ./docker/dependencies/Dockerfile .
+
+      - name: Run tests
+        run: docker build -t qoala101/stk:dependencies -f ./.github/docker/test/Dockerfile .

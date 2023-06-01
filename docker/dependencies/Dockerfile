@@ -30,7 +30,7 @@ RUN \
   \
   # Installs dependencies.
   conan config set general.revisions_enabled=True && \
-  conan install . -if ./build --build=missing -pr=../conanprofile.txt -s build_type=Release && \
+  conan install . -if ./build --build=missing -pr=./conanprofile.txt -s build_type=Release && \
   \
   conan remove "*" -s -b -f && \
   \

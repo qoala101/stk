@@ -1,6 +1,7 @@
 # \[WIP\] STK
 
-[![Build Linux](https://github.com/qoala101/stk/actions/workflows/build-linux.yml/badge.svg)](https://github.com/qoala101/stk/actions/workflows/build-linux.yml)
+[![CI](https://github.com/qoala101/stk/actions/workflows/ci.yml/badge.svg)](https://github.com/qoala101/stk/actions/workflows/ci.yml)
+[![Tests](https://github.com/qoala101/stk/actions/workflows/tests.yml/badge.svg)](https://github.com/qoala101/stk/actions/workflows/tests.yml)
 [![Static Analysis](https://github.com/qoala101/stk/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/qoala101/stk/actions/workflows/static-analysis.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/qoala101/stk/badge)](https://www.codefactor.io/repository/github/qoala101/stk)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
