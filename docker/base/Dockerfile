@@ -1,7 +1,7 @@
-FROM debian:latest
+FROM debian:11
 RUN \
-  apt update && \
-  apt -y install \
+  apt-get update && \
+  apt-get -y install \
   \
   # Required for networking to work.
   libcurl3-gnutls \
@@ -10,7 +10,7 @@ RUN \
   libatomic1 && \
   \
   # Reduces image size.
-  apt autoclean && \
-  apt autoremove && \
-  apt clean && \
+  apt-get autoclean && \
+  apt-get autoremove && \
+  apt-get clean && \
   rm -rf /var/lib/apt/lists/*

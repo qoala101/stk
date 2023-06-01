@@ -67,7 +67,7 @@ Conan is used to download and build most of C++ dependencies.
 ```sh
 pip install conan==1.60.0
 conan config set general.revisions_enabled=True
-conan install . --build=missing -pr=./conanprofile.txt -if ./build -s build_type=Release
+conan install . -if ./build --build=missing -pr=./conanprofile.txt -s build_type=Release
 
 cmake -B ./build
 cmake --build ./build --config Release

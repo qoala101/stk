@@ -6,23 +6,12 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Clang
-        run: |
-          sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
-          sudo apt-get install -y libc++-15-dev libc++abi-15-dev
+      - name: Build Docker images
+        run: bash ./script/build_images_release.sh
 
-      - name: Build Conan Dependencies
-        run: |
-          pip install conan==1.60.0
-          conan config set general.revisions_enabled=True
-          conan install . --build=missing -pr=./conanprofile.txt -if ./build -s build_type=Release -s andreasbuhr-cppcoro:compiler.libcxx=libc++
-
-      - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_C_COMPILER="/usr/bin/clang++-15" -DCMAKE_CXX_COMPILER="/usr/bin/clang++-15" -DCXXFLAGS="-stdlib=libstdc++"
-
-      - name: Build
-        run: cmake --build ${{github.workspace}}/build --config Release
+      - name: Deploy on Kubernetes
+        run: kubectl apply -f ./kubernetes/app-deployment.yaml

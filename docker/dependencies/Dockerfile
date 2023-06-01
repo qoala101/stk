@@ -1,12 +1,12 @@
-FROM debian:latest
+FROM debian:11
 WORKDIR /app
 COPY ./thirdparty ./thirdparty
 COPY CMakeLists.txt .
 COPY conanfile.txt .
 COPY conanprofile.txt .
 RUN \
-  apt update && \
-  apt -y install \
+  apt-get update && \
+  apt-get -y install \
   \
   # Required to fetch git dependencies by cmake.
   git \
@@ -18,24 +18,21 @@ RUN \
   pip && \
   \
   # Installs latest clang.
-  bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" && \
+  bash -c "$(wget -nv -O - https://apt.llvm.org/llvm.sh)" && \
   \
   # Reduces image size.
-  apt autoclean && \
-  apt autoremove && \
-  apt clean && \
+  apt-get autoclean && \
+  apt-get autoremove && \
+  apt-get clean && \
   rm -rf /var/lib/apt/lists/* && \
   \
-  pip --no-input install cmake conan==1.60.0 && \
-  \
-  mkdir build && \
-  cd build && \
+  pip --no-cache-dir --no-input install cmake conan==1.60.0 && \
   \
   # Installs dependencies.
   conan config set general.revisions_enabled=True && \
-  conan install .. --build=missing -pr=../conanprofile.txt -s build_type=Release && \
+  conan install . -if ./build --build=missing -pr=../conanprofile.txt -s build_type=Release && \
   \
   conan remove "*" -s -b -f && \
   \
   # Fetches dependencies from git.
-  cmake .. -DTHIRD_PARTY_ONLY=ON
+  cmake -B ./build -DTHIRD_PARTY_ONLY=ON
