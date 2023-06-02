@@ -21,20 +21,29 @@
 #include "test_stk_injector.h"
 
 namespace {
-auto symbols_db = []() {
-  return test::app::Injector().create<vh::stk::core::SymbolsDb>();
-}();
+class AppSymbolsDb : public testing::Test {
+ protected:
+  static void SetUpTestSuite() {
+    symbols_db = test::app::Injector().create<vh::stk::core::SymbolsDb>();
+  }
 
-TEST(AppSymbolsDb, UpdateSymbolsInfo) {
+  static void TearDownTestSuite() { symbols_db.reset(); }
+
+  static vh::cpp::Opt<vh::stk::core::SymbolsDb> symbols_db;
+};
+
+vh::cpp::Opt<vh::stk::core::SymbolsDb> AppSymbolsDb::symbols_db{};
+
+TEST_F(AppSymbolsDb, UpdateSymbolsInfo) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
-    co_await symbols_db.UpdateAssets({{"YYY"}, {"USDT"}});
-    auto assets = co_await symbols_db.SelectAssets();
+    co_await symbols_db->UpdateAssets({{"YYY"}, {"USDT"}});
+    auto assets = co_await symbols_db->SelectAssets();
     EXPECT_EQ(assets.size(), 2);
     EXPECT_EQ(*assets[0], "USDT");
     EXPECT_EQ(*assets[1], "YYY");
 
-    co_await symbols_db.UpdateAssets({{"ETH"}, {"USDT"}});
-    assets = co_await symbols_db.SelectAssets();
+    co_await symbols_db->UpdateAssets({{"ETH"}, {"USDT"}});
+    assets = co_await symbols_db->SelectAssets();
     EXPECT_EQ(assets.size(), 2);
     EXPECT_EQ(*assets[0], "USDT");
     EXPECT_EQ(*assets[1], "ETH");
@@ -45,68 +54,68 @@ TEST(AppSymbolsDb, UpdateSymbolsInfo) {
             .base_asset = {.asset = {"ETH"}, .min_amount = 1, .price_step = 3},
             .quote_asset = {
                 .asset = {"USDT"}, .min_amount = 2, .price_step = 4}}};
-    co_await symbols_db.UpdateSymbolsInfo(symbols_info);
-    EXPECT_EQ(co_await symbols_db.SelectSymbolsInfo(), symbols_info);
+    co_await symbols_db->UpdateSymbolsInfo(symbols_info);
+    EXPECT_EQ(co_await symbols_db->SelectSymbolsInfo(), symbols_info);
 
-    co_await symbols_db.UpdateAssets({{"BTC"}, {"USDT"}});
-    assets = co_await symbols_db.SelectAssets();
+    co_await symbols_db->UpdateAssets({{"BTC"}, {"USDT"}});
+    assets = co_await symbols_db->SelectAssets();
     EXPECT_EQ(assets.size(), 2);
     EXPECT_EQ(*assets[0], "USDT");
     EXPECT_EQ(*assets[1], "BTC");
-    EXPECT_TRUE((co_await symbols_db.SelectSymbolsInfo()).empty());
+    EXPECT_TRUE((co_await symbols_db->SelectSymbolsInfo()).empty());
 
     symbols_info = std::vector<vh::stk::core::SymbolInfo>{
         vh::stk::core::SymbolInfo{.symbol = {"BTCUSDT"},
                                   .base_asset = {"BTC"},
                                   .quote_asset = {"USDT"}}};
-    co_await symbols_db.UpdateSymbolsInfo(symbols_info);
-    EXPECT_EQ(co_await symbols_db.SelectSymbolsInfo(), symbols_info);
+    co_await symbols_db->UpdateSymbolsInfo(symbols_info);
+    EXPECT_EQ(co_await symbols_db->SelectSymbolsInfo(), symbols_info);
 
     symbols_info[0].base_asset.min_amount = 1;
     symbols_info[0].quote_asset.min_amount = 2;
     symbols_info[0].base_asset.price_step = 3;
     symbols_info[0].quote_asset.price_step = 4;
-    co_await symbols_db.UpdateSymbolsInfo(symbols_info);
-    EXPECT_EQ(co_await symbols_db.SelectSymbolsInfo(), symbols_info);
+    co_await symbols_db->UpdateSymbolsInfo(symbols_info);
+    EXPECT_EQ(co_await symbols_db->SelectSymbolsInfo(), symbols_info);
 
     symbols_info[0].base_asset = {"USDT"};
-    co_await symbols_db.UpdateSymbolsInfo(symbols_info);
-    EXPECT_EQ(co_await symbols_db.SelectSymbolsInfo(), symbols_info);
+    co_await symbols_db->UpdateSymbolsInfo(symbols_info);
+    EXPECT_EQ(co_await symbols_db->SelectSymbolsInfo(), symbols_info);
 
     symbols_info.emplace_back(
         vh::stk::core::SymbolInfo{.symbol = {"NEW_NAME"},
                                   .base_asset = {"USDT"},
                                   .quote_asset = {"USDT"}});
-    co_await symbols_db.UpdateSymbolsInfo(symbols_info);
-    EXPECT_EQ(co_await symbols_db.SelectSymbolsInfo(), symbols_info);
+    co_await symbols_db->UpdateSymbolsInfo(symbols_info);
+    EXPECT_EQ(co_await symbols_db->SelectSymbolsInfo(), symbols_info);
 
-    co_await symbols_db.InsertSymbolPriceRecord(
+    co_await symbols_db->InsertSymbolPriceRecord(
         vh::stk::core::SymbolPriceRecord{.symbol = {"BTCUSDT"}});
-    EXPECT_FALSE((co_await symbols_db.SelectSymbolPriceRecords({"BTCUSDT"}, {},
-                                                               {}, {}, {}))
+    EXPECT_FALSE((co_await symbols_db->SelectSymbolPriceRecords({"BTCUSDT"}, {},
+                                                                {}, {}, {}))
                      .empty());
 
-    co_await symbols_db.UpdateAssets({{"NONE_ASSET"}});
-    EXPECT_TRUE((co_await symbols_db.SelectSymbolPriceRecords({"BTCUSDT"}, {},
-                                                              {}, {}, {}))
+    co_await symbols_db->UpdateAssets({{"NONE_ASSET"}});
+    EXPECT_TRUE((co_await symbols_db->SelectSymbolPriceRecords({"BTCUSDT"}, {},
+                                                               {}, {}, {}))
                     .empty());
   }());
 }
 
-TEST(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
+TEST_F(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
     const auto eth_usdt = vh::stk::core::Symbol{"ETHUSDT"};
     const auto btc_usdt = vh::stk::core::Symbol{"BTCUSDT"};
 
-    co_await symbols_db.UpdateAssets({{"BTC"}, {"ETH"}, {"USDT"}});
-    co_await symbols_db.UpdateSymbolsInfo(
+    co_await symbols_db->UpdateAssets({{"BTC"}, {"ETH"}, {"USDT"}});
+    co_await symbols_db->UpdateSymbolsInfo(
         {{.symbol = {eth_usdt}, .base_asset = {"ETH"}, .quote_asset = {"USDT"}},
          {.symbol = {btc_usdt},
           .base_asset = {"BTC"},
           .quote_asset = {"USDT"}}});
 
     const auto symbol_price_records =
-        co_await symbols_db.SelectSymbolPriceRecords(eth_usdt, {}, {}, {}, {});
+        co_await symbols_db->SelectSymbolPriceRecords(eth_usdt, {}, {}, {}, {});
     EXPECT_TRUE(symbol_price_records.empty());
 
     const auto eth_price_records =
@@ -128,7 +137,7 @@ TEST(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
                 .time = absl::FromUnixMillis(3000)}};
 
     for (const auto &symbol_price_record : eth_price_records) {
-      co_await symbols_db.InsertSymbolPriceRecord(symbol_price_record);
+      co_await symbols_db->InsertSymbolPriceRecord(symbol_price_record);
     }
 
     const auto btc_price_records =
@@ -150,49 +159,51 @@ TEST(AppSymbolsDb, InsertAndSelectSymbolPriceRecords) {
                 .time = absl::FromUnixMillis(30000)}};
 
     for (const auto &symbol_price_record : btc_price_records) {
-      co_await symbols_db.InsertSymbolPriceRecord(symbol_price_record);
+      co_await symbols_db->InsertSymbolPriceRecord(symbol_price_record);
     }
 
     const auto eth_price_records_received =
-        co_await symbols_db.SelectSymbolPriceRecords(eth_usdt, {}, {}, {}, {});
+        co_await symbols_db->SelectSymbolPriceRecords(eth_usdt, {}, {}, {}, {});
     EXPECT_EQ(eth_price_records_received, eth_price_records);
 
     const auto btc_price_records_received =
-        co_await symbols_db.SelectSymbolPriceRecords(btc_usdt, {}, {}, {}, {});
+        co_await symbols_db->SelectSymbolPriceRecords(btc_usdt, {}, {}, {}, {});
     EXPECT_EQ(btc_price_records_received, btc_price_records);
   }());
 }
 
-TEST(AppSymbolsDb, SelectPeriod) {
+TEST_F(AppSymbolsDb, SelectPeriod) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
     const auto symbol = vh::stk::core::Symbol{"ETHUSDT"};
     auto price_records =
-        co_await symbols_db.SelectSymbolPriceRecords(symbol, {}, {}, {}, {});
+        co_await symbols_db->SelectSymbolPriceRecords(symbol, {}, {}, {}, {});
     EXPECT_EQ(price_records.size(), 3);
 
-    price_records = co_await symbols_db.SelectSymbolPriceRecords(
+    price_records = co_await symbols_db->SelectSymbolPriceRecords(
         symbol, {}, absl::FromUnixMillis(1001), {}, {});
     EXPECT_EQ(price_records.size(), 2);
 
-    price_records = co_await symbols_db.SelectSymbolPriceRecords(
+    price_records = co_await symbols_db->SelectSymbolPriceRecords(
         symbol, {}, {}, absl::FromUnixMillis(2999), {});
     EXPECT_EQ(price_records.size(), 2);
 
-    price_records = co_await symbols_db.SelectSymbolPriceRecords(
+    price_records = co_await symbols_db->SelectSymbolPriceRecords(
         symbol, {}, absl::FromUnixMillis(1001), absl::FromUnixMillis(2999), {});
     EXPECT_EQ(price_records.size(), 1);
   }());
 }
 
-TEST(AppSymbolsDb, SelectOrderedAndLimited) {
+TEST_F(AppSymbolsDb, SelectOrderedAndLimited) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
-    const auto new_price_records = co_await symbols_db.SelectSymbolPriceRecords(
-        {"ETHUSDT"}, vh::stk::core::TimeOrder::kNewFirst, {}, {}, 2);
+    const auto new_price_records =
+        co_await symbols_db->SelectSymbolPriceRecords(
+            {"ETHUSDT"}, vh::stk::core::TimeOrder::kNewFirst, {}, {}, 2);
     EXPECT_EQ(new_price_records.size(), 2);
     EXPECT_GT(new_price_records[0].time, new_price_records[1].time);
 
-    const auto old_price_records = co_await symbols_db.SelectSymbolPriceRecords(
-        {"ETHUSDT"}, vh::stk::core::TimeOrder::kOldFirst, {}, {}, 2);
+    const auto old_price_records =
+        co_await symbols_db->SelectSymbolPriceRecords(
+            {"ETHUSDT"}, vh::stk::core::TimeOrder::kOldFirst, {}, {}, 2);
     EXPECT_EQ(old_price_records.size(), 2);
     EXPECT_LT(old_price_records[0].time, old_price_records[1].time);
 
@@ -200,9 +211,9 @@ TEST(AppSymbolsDb, SelectOrderedAndLimited) {
   }());
 }
 
-TEST(AppSymbolsDb, SelectSymbolsWithPriceRecords) {
+TEST_F(AppSymbolsDb, SelectSymbolsWithPriceRecords) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
-    const auto symbols = co_await symbols_db.SelectSymbolsWithPriceRecords();
+    const auto symbols = co_await symbols_db->SelectSymbolsWithPriceRecords();
     EXPECT_EQ(symbols.size(), 2);
   }());
 }

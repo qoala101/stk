@@ -88,10 +88,7 @@ class WebSocketHandler : public vh::network::IWsMessageHandler {
   mutable vh::cpp::Nn<std::vector<MessageVariant> *> messages_;
 };
 
-const auto kEndpoint = vh::network::WsEndpoint{
-    "wss://demo.piesocket.com/v3/"
-    "channel_1?api_key=VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV&notify_"
-    "self"};
+const auto kEndpoint = vh::network::WsEndpoint{"wss://ws.postman-echo.com/raw"};
 const auto kMessage1 = BinanceWebSocketMessage{.method = "SUBSCRIBE"};
 const auto kMessage2 = BinanceWebSocketMessage{.method = "UNSUBSCRIBE"};
 

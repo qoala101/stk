@@ -44,7 +44,21 @@
 #include "test_sqlite_injector.h"
 
 namespace {
-auto db = vh::cpp::Up<vh::sqldb::IDb>{};
+class SqliteDb : public testing::Test {
+ protected:
+  static void SetUpTestSuite() {
+    const auto db_file_name =
+        *test::sqlite::Injector().create<vh::sqlite::FilePath>();
+    std::ignore = std::filesystem::remove(db_file_name);
+    db = test::sqlite::Injector().create<vh::cpp::Up<vh::sqldb::IDb>>();
+  }
+
+  static void TearDownTestSuite() { db.reset(); }
+
+  static vh::cpp::Up<vh::sqldb::IDb> db;
+};
+
+vh::cpp::Up<vh::sqldb::IDb> SqliteDb::db{};
 
 struct TestTable : public vh::sqldb::Table<TestTable> {
   struct IntTrue : public Column<int, IntTrue> {
@@ -72,12 +86,7 @@ struct Asset : public vh::sqldb::Table<Asset> {
   using Columns = vh::cpp::TypeList<id, name>;
 };
 
-TEST(SqliteDb, CreateAndDropTable) {
-  const auto db_file_name =
-      *test::sqlite::Injector().create<vh::sqlite::FilePath>();
-  std::ignore = std::filesystem::remove(db_file_name);
-  db = test::sqlite::Injector().create<vh::cpp::Up<vh::sqldb::IDb>>();
-
+TEST_F(SqliteDb, CreateAndDropTable) {
   db->PrepareStatement(vh::sqldb::query_builder::CreateTable<TestTable>()
                            .IfNotExists()
                            .Build())
@@ -94,7 +103,7 @@ TEST(SqliteDb, CreateAndDropTable) {
           ->Execute());
 }
 
-TEST(SqliteDb, InsertAndSelect) {
+TEST_F(SqliteDb, InsertAndSelect) {
   db->PrepareStatement(
         vh::sqldb::query_builder::CreateTable<Asset>().IfNotExists().Build())
       ->Execute();
@@ -121,7 +130,7 @@ TEST(SqliteDb, InsertAndSelect) {
   EXPECT_EQ(rows.GetColumnValues<Asset::name>()[2].Get<std::string>(), "USDT");
 }
 
-TEST(SqliteDb, InsertNull) {
+TEST_F(SqliteDb, InsertNull) {
   auto insert_statement = db->PrepareStatement(
       vh::sqldb::query_builder::InsertAll().Into<Asset>().Build());
   EXPECT_ANY_THROW(insert_statement->Execute());
@@ -157,7 +166,7 @@ struct SymbolPrice : public vh::sqldb::Table<SymbolPrice> {
   using Columns = vh::cpp::TypeList<symbol_id, time, price>;
 };
 
-TEST(SqliteDb, ForeignKey) {
+TEST_F(SqliteDb, ForeignKey) {
   db->PrepareStatement(
         vh::sqldb::query_builder::CreateTable<Symbol>().IfNotExists().Build())
       ->Execute();
@@ -193,7 +202,7 @@ struct QuoteAsset : public vh::sqldb::AliasToTable<Asset, QuoteAsset> {
   struct quote_asset : public AliasToColumn<Target::name, quote_asset> {};
 };
 
-TEST(SqliteDb, SelectJoin) {
+TEST_F(SqliteDb, SelectJoin) {
   const auto cell_definitions =
       vh::sqldb::ResultDefinition{std::vector<vh::sqldb::ColumnType>{
           vh::sqldb::ColumnType{.column = {"base_asset"},
@@ -223,7 +232,7 @@ TEST(SqliteDb, SelectJoin) {
       "USDT");
 }
 
-TEST(SqliteDb, FileWriteAndRead) {
+TEST_F(SqliteDb, FileWriteAndRead) {
   const auto db_file_name =
       *test::sqlite::Injector().create<vh::sqlite::FilePath>();
   EXPECT_FALSE(std::filesystem::exists(db_file_name));
@@ -244,7 +253,7 @@ TEST(SqliteDb, FileWriteAndRead) {
   EXPECT_TRUE(std::filesystem::exists(db_file_name));
 }
 
-TEST(SqliteDb, CascadeForeignKeyDelete) {
+TEST_F(SqliteDb, CascadeForeignKeyDelete) {
   db->PrepareStatement(vh::sqldb::query_builder::DeleteFromTable<Asset>()
                            .Where(vh::sqldb::qb::Column<Asset::name>() ==
                                   vh::sqldb::Value{"USDT"})

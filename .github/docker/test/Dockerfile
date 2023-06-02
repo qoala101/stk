@@ -8,4 +8,4 @@ RUN \
   export CXX=/usr/bin/clang++-15 && \
   cmake -B ./build --fresh -DFAIL_ON_WARNINGS=ON -DBUILD_TESTS=ON && \
   cmake --build ./build && \
-  ctest --test-dir ./build --output-on-failure
+  ./bin/unittests
