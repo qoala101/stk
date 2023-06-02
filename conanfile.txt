@@ -1,6 +1,6 @@
 [requires]
 abseil/20220623.0#afa0bca6db76c58b37d9e44cb8daf302
-andreasbuhr-cppcoro/cci.20210113#b77a82c22962152ad21920a1485a48c7
+andreasbuhr-cppcoro/cci.20210113#ee0ed314d205d4eaca23027a8784a3ae
 aws-sdk-cpp/1.9.234#bb761d0f02a3ba0dc45f870d8fd35e95
 cli11/2.2.0#33cd38722fa134b15ae308dfb4e6c942
 cpprestsdk/2.10.18#a1364840bf08430b294058dafbd7bad7

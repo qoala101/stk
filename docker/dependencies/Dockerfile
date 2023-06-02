@@ -35,4 +35,6 @@ RUN \
   conan remove "*" -s -b -f && \
   \
   # Fetches dependencies from git.
+  export CC=/usr/bin/clang-15 && \
+  export CXX=/usr/bin/clang++-15 && \
   cmake -B ./build -DTHIRD_PARTY_ONLY=ON
