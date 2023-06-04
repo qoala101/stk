@@ -31,7 +31,7 @@ auto JsonParser<binance::SymbolExchangeInfo>::operator()(
       continue;
     }
 
-    if (type == "MIN_NOTIONAL") {
+    if (type == "NOTIONAL") {
       value.min_notional =
           ParseFromJsonChild<std::string>(*filter, "minNotional");
       continue;

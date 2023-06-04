@@ -24,7 +24,6 @@
 #include <range/v3/utility/get.hpp>
 #include <range/v3/view/all.hpp>
 #include <range/v3/view/join.hpp>
-#include <range/v3/view/move.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/view.hpp>
 #include <string>
@@ -67,8 +66,7 @@ auto Impl::GetAndUpdateSymbolsInfo() -> cppcoro::task<> {
   }
 
   auto exchange_info = co_await binance_api_.exchangeInfo();
-  auto symbols_info = *exchange_info | ranges::views::move |
-                      ranges::views::transform(ToSymbolInfo) |
+  auto symbols_info = *exchange_info | ranges::views::transform(ToSymbolInfo) |
                       ranges::to_vector;
   auto assets = symbols_info |
                 ranges::views::transform([](const auto &symbol_info) {

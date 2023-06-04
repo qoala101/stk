@@ -2,7 +2,6 @@
 
 [![CI](https://github.com/qoala101/stk/actions/workflows/ci.yml/badge.svg)](https://github.com/qoala101/stk/actions/workflows/ci.yml)
 [![Tests](https://github.com/qoala101/stk/actions/workflows/tests.yml/badge.svg)](https://github.com/qoala101/stk/actions/workflows/tests.yml)
-[![Static Analysis](https://github.com/qoala101/stk/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/qoala101/stk/actions/workflows/static-analysis.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/qoala101/stk/badge)](https://www.codefactor.io/repository/github/qoala101/stk)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
@@ -66,7 +65,6 @@ Most of the libraries are implemented with extensive use of concepts and TMP.
 Conan is used to download and build most of C++ dependencies.
 
 ```sh
-pip install conan==1.60.0
 conan config set general.revisions_enabled=True
 conan install . -if ./build --build=missing -pr=./conanprofile.txt -s build_type=Release
 
@@ -74,7 +72,7 @@ cmake -B ./build
 cmake --build ./build --config Release
 ```
 
-Build might require additional dependencies. See **docker** images and **.github/workflows** to build from scratch.
+See **docker** images and **.github/workflows** for additional dependencies and ways to build from scratch.
 
 ## Deployment
 
@@ -82,6 +80,7 @@ Deployment requires Docker and Kubernetes.
 
 ```sh
 bash ./script/build_images_release.sh
+kubectl apply -f ./kubernetes/app-persistent-volume.yaml
 kubectl apply -f ./kubernetes/app-deployment.yaml
 ```
 

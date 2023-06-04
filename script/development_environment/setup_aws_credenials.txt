@@ -1,3 +1,0 @@
-Create and set AWS credentials file following the guides
-https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/credentials.html
-https://docs.aws.amazon.com/sdkref/latest/guide/file-location.html

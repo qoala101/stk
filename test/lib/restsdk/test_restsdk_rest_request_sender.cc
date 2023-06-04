@@ -31,15 +31,17 @@ namespace {
 enum class DefaultNameEnum { kDefaultEnumName };
 enum class CustomNameEnum { kCustomEnumName };
 
-struct AvgPrice {
-  int mins{};
-  double price{};
+struct PostmanResponse {
+  std::string string_param{};
+  int int_param{};
 
  private:
-  friend auto operator==(const AvgPrice &, const AvgPrice &) -> bool = default;
-  //   friend auto operator<<(std::ostream &stream, const AvgPrice &avg_price)
+  friend auto operator==(const PostmanResponse &, const PostmanResponse &)
+      -> bool = default;
+  //   friend auto operator<<(std::ostream &stream, const PostmanResponse
+  //   &response)
   //       -> std::ostream & {
-  //     return stream << avg_price.mins << " " << avg_price.price;
+  //     return stream << response.string_param << " " << response.int_param;
   //   }
 };
 }  // namespace
@@ -59,18 +61,26 @@ struct AvgPrice {
 
 namespace vh::network {
 template <>
-auto JsonParser<AvgPrice>::operator()(const IJson &json) const -> Type {
-  return {.mins = ParseFromJsonChild<int>(json, "mins"),
-          .price = std::stod(ParseFromJsonChild<std::string>(json, "price"))};
+auto JsonParser<PostmanResponse>::operator()(const IJson &json) const -> Type {
+  const auto &args = json.GetChild("args");
+
+  return {
+      .string_param = ParseFromJsonChild<std::string>(*args, "string_param"),
+      .int_param =
+          std::stoi(ParseFromJsonChild<std::string>(*args, "int_param"))};
 }
 
-auto ConvertToJson(const AvgPrice &value) -> cpp::Pv<IJson> {
+auto ConvertToJson(const PostmanResponse &value) -> cpp::Pv<IJson> {
   // clang-format off
-  return BuildJsonFrom(
-    "mins", value.mins,
-    "price", fmt::format("{}", value.price)
+  auto args = BuildJsonFrom(
+    "string_param", value.string_param,
+    "int_param", fmt::format("{}", value.int_param)
   );
   // clang-format on
+
+  auto json = CreateNullJson();
+  json->SetChild("args", std::move(args));
+  return json;
 }
 }  // namespace vh::network
 
@@ -137,21 +147,22 @@ TEST(RestRequestSender, ParameterTypesToString) {
 TEST(RestRequestSender, SendRequest) {
   cppcoro::sync_wait([]() -> cppcoro::task<> {
     const auto request = vh::network::RestRequestBuilder{}
-                             .WithBaseUri({"https://api.binance.com/api/v3"})
-                             .AppendUri({"avgPrice"})
-                             .AddParam("symbol", "BTCUSDT")
+                             .WithBaseUri({"https://postman-echo.com"})
+                             .AppendUri({"get"})
+                             .AddParam("string_param", "text")
+                             .AddParam("int_param", 123)
                              .Build();
     auto sender =
         test::restsdk::Injector().create<vh::restsdk::RestRequestSender>();
     const auto response = co_await sender.SendRequestAndGetResponse(request);
     const auto response_price =
-        vh::network::ParseFromJson<AvgPrice>(*response.result);
-    EXPECT_GT(response_price.mins, 0);
-    EXPECT_GT(response_price.price, 0);
+        vh::network::ParseFromJson<PostmanResponse>(*response.result);
+    EXPECT_EQ(response_price.string_param, "text");
+    EXPECT_EQ(response_price.int_param, 123);
 
     const auto response_price_json = vh::network::ConvertToJson(response_price);
     const auto json_price =
-        vh::network::ParseFromJson<AvgPrice>(*response_price_json);
+        vh::network::ParseFromJson<PostmanResponse>(*response_price_json);
     EXPECT_EQ(response_price, json_price);
   }());
 }

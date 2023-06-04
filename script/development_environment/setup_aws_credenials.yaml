@@ -1,0 +1,14 @@
+# Create and set AWS credentials file following the guides
+# https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/credentials.html
+# https://docs.aws.amazon.com/sdkref/latest/guide/file-location.html
+
+# Put credentials into app-secret.yaml with following content in kubernetes folder
+# and apply it before applying the app-uri-exposer-deployment.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+stringData:
+  aws-access-key-id: 00000000000000000000
+  aws-secret-access-key: 0000000000000000000000000000000000000000
+  ngrok-authtoken: 0000000000000000000000000000000000000000000000000

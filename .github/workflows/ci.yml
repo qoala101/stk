@@ -17,4 +17,6 @@ jobs:
         uses: medyagh/setup-minikube@latest
 
       - name: Deploy on Kubernetes
-        run: kubectl apply -f ./kubernetes/app-deployment.yaml
+        run: |
+          kubectl apply -f ./kubernetes/app-persistent-volume.yaml
+          kubectl apply -f ./kubernetes/app-deployment.yaml
