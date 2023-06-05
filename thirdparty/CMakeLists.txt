@@ -15,7 +15,7 @@ find_package(range-v3 REQUIRED GLOBAL)
 find_package(spdlog REQUIRED GLOBAL)
 find_package(SQLite3 REQUIRED GLOBAL)
 
-# vh: Supresses target warnings and makes includes appear in <> brackets.
+# Supresses target warnings and makes includes appear in <> brackets.
 function(mark_as_system_target target)
   get_target_property(target_type ${target} TYPE)
 

@@ -32,7 +32,7 @@
 #include "service_sdb_client_injector.h"
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 
-namespace vh::stk::service::sdbu {
+namespace vh::stk::service::siu {
 void Main(int argc, const char *const *argv) {
   auto options = cli::Options();
 
@@ -66,8 +66,8 @@ void Main(int argc, const char *const *argv) {
          .reattempt_interval = absl::Milliseconds(*reattempt_interval)}};
   });
 }
-}  // namespace vh::stk::service::sdbu
+}  // namespace vh::stk::service::siu
 
 auto main(int argc, const char *const *argv) -> int {
-  vh::stk::service::sdbu::Main(argc, argv);
+  vh::stk::service::siu::Main(argc, argv);
 }

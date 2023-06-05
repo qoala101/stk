@@ -31,7 +31,7 @@
 #include "service_sdb_traits.h"  // IWYU pragma: keep
 #include "service_server_options.h"
 
-namespace vh::stk::service::aue {
+namespace vh::stk::service::blsh {
 void Main(int argc, const char *const *argv) {
   auto options = cli::Options();
 
@@ -50,8 +50,8 @@ void Main(int argc, const char *const *argv) {
         networkx::MakeServerFor<core::BuyLowSellHigh>, injector);
   });
 }
-}  // namespace vh::stk::service::aue
+}  // namespace vh::stk::service::blsh
 
 auto main(int argc, const char *const *argv) -> int {
-  vh::stk::service::aue::Main(argc, argv);
+  vh::stk::service::blsh::Main(argc, argv);
 }

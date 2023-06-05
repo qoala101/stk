@@ -1,7 +1,7 @@
 FROM debian:11
 RUN \
   apt-get update && \
-  apt-get -y install \
+  apt-get install -y -no-install-recommends \
   \
   # Required for networking to work.
   libcurl3-gnutls \
