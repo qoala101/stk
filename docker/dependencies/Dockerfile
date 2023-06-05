@@ -6,7 +6,7 @@ COPY conanfile.txt .
 COPY conanprofile.txt .
 RUN \
   apt-get update && \
-  apt-get install -y --no-install-recommends \
+  apt-get install -y \
   \
   # Required to fetch git dependencies by cmake.
   git \
@@ -17,8 +17,9 @@ RUN \
   # Required to install conan and latest cmake.
   pip && \
   \
-  # Installs latest clang.
-  bash -c "$(wget -nv -O - https://apt.llvm.org/llvm.sh)" && \
+  # Installs Clang.
+  wget -nv https://apt.llvm.org/llvm.sh && \
+  bash ./llvm.sh 15 && \
   \
   # Reduces image size.
   apt-get autoclean && \
