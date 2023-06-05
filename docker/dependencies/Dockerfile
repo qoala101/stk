@@ -6,7 +6,7 @@ COPY conanfile.txt .
 COPY conanprofile.txt .
 RUN \
   apt-get update && \
-  apt-get install -y -no-install-recommends \
+  apt-get install -y --no-install-recommends \
   \
   # Required to fetch git dependencies by cmake.
   git \
